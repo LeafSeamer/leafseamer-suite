@@ -2,7 +2,7 @@
 
 日期：2026-10-17。
 
-- 旧仓已改名为 [ikenainanodesu/leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy)，停止维护并在 README 指向新组织及 Suite。
+- 旧仓已改名为 [ikenainanodesu/leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy)，停止维护并在 README 指向新组织及 Suite；最终推送核验后已设为 GitHub 只读归档，未删除代码或历史。
 - 最终旧版 main 提交：[`5d60491`](https://github.com/ikenainanodesu/leafseamer-legacy/commit/5d60491d7158f87fc27b564f510d321074aedac9)。已通过 Git 远端引用核对与本地提交一致。
 - 最终旧版提交仅包含七份设计、README 和开发记录文档，旧业务代码及 MIT 许可保持原状；未推送 stash、全部 refs 或本地运行资料。
 - 原工作区完整搬离新父目录保留，包含 Git 历史、原有未提交改动、被忽略配置、数据库、依赖、工具索引及嵌套工作树；嵌套 Git 路径已修复。搬移不代表已完成旧环境可运行性验证。

@@ -135,7 +135,7 @@ def main():
         'jcs_digest_generation_executed': False,
         'checks': results,
     }
-    (ROOT / 'reference-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    (ROOT / 'reference-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     print(json.dumps({k: report[k] for k in ('all_passed', 'check_count', 'schema_cases', 'decision_cases', 'serial_consumption_cases')}))
 
 

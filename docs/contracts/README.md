@@ -52,6 +52,10 @@ OpenAPI 描述 HTTP 和 WS 升级入口；升级后的消息由 `WsFrame` 校验
 
 ## 本地复现
 
+保存报告后运行 `python docs/contracts/check_report_bindings.py`，提交前使用 `--staged`，提交后使用 `--ref HEAD`。该只读工具按生成器的明确路径基准，核对10份报告声明的原始输入SHA-256；不做换行/JCS归一化，不重新执行测试，也不证明输入列表完整或报告可信。新增报告必须更新其显式清单。合成反例通过 `python docs/contracts/test_report_bindings.py` 运行。
+
+先将受版本控制文本按仓库`.gitattributes`保存为LF，再运行相应验证器的报告生成入口；不要直接改报告摘要。修改报告所引用的文档同样使报告过期。工作区验证通过与Git保存字节相符需要分别检查。
+
 后续候选资料独立验证：[F02／F03 IPC](f02-f03/README.md)、[F04／F05 身份与时间容量](f04-f05/README.md)、[F06／F07 OBS／依赖／恢复](f06-f07/README.md)。本目录顶层检查不会递归运行这些检查，不能用顶层报告代替它们；公共 draft.2 文件保持原版。
 
 依赖安装到独立虚拟环境或临时目录，不修改组件依赖。Python 3.14 与 Node.js 本轮实际用于离线校验；工具顶层版本见 [requirements-validation.txt](requirements-validation.txt)，本轮完整解析版本见 [requirements-validation.lock.txt](requirements-validation.lock.txt)。这不是产品运行时支持矩阵。

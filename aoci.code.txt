@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5S]: F:记录设计确认、工具链观察与按轮本地提交及离线验证进展 | R:code:docs/rebirth-toolchain-lock-design.md | A:开发历程与验证边界 | S:候选不等于确认；本地提交非推送授权，参考运行不代替候选工具链验收
+DEVELOPMENT_MEMO.md[SO5S]: F:记录设计确认、按轮提交及报告字节绑定修复和验证进展 | R:code:docs/contracts/check_report_bindings.py | A:开发历程与验证边界 | S:同机导出复验非跨平台证明；本地提交不授权推送，候选不因自动续跑获准
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及契约、设备、GUI部署和工具链设计入口 | R:code:docs/rebirth-design.md,code:docs/rebirth-readiness.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -49,7 +49,7 @@ rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖的�
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
-README.md[SN7T]: F:说明首闭环机器契约的权威来源、校验层次和复现入口 | R:code:docs/contracts/validate_contracts.py | A:契约资料使用说明 | S:顶层draft.2为历史且不递归验证子目录；当前入口为draft.4；Schema通过不代表授权或设备执行
+README.md[SN7T]: F:说明机器契约层次、分版本复验与报告字节绑定检查入口 | R:code:docs/contracts/validate_contracts.py,code:docs/contracts/check_report_bindings.py | A:契约资料使用说明 | S:顶层历史draft.2不递归验证新版；报告匹配不证明覆盖或真实性，变更引用文档也使报告过期
 boundary-traces.json[TB6L]: F:保存接管屏障与命令生命周期的人工正反时序轨迹 | R:code:docs/contracts/build_examples.py | A:barrier与command模型轨迹 | S:模型顺序检查不证明真实并发或持久化
 build_contracts.py[XN7M]: F:生成公共draft.2模型库、路由和两份自包含OpenAPI | R:code:docs/contracts/first-loop.schema.json | A:build与--check | S:默认对象关闭额外字段；动态Payload需能力Schema二次校验；202仅表示受理
 build_examples.py[TN6M]: F:人工编排draft.2正反例、时序与规范化及能力向量 | R:code:docs/contracts/examples.json | A:examples与--check | S:预期结果独立于Schema；只生成合成资料，不执行设备动作
@@ -66,7 +66,8 @@ routes.json[FN7M]: F:枚举draft.2两服务及共用HTTP操作的模型、状态
 seamer.openapi.json[FN8L]: F:描述draft.2 Seamer目录事件、定义发布、运行与恢复HTTP及WS接口 | R:code:docs/contracts/build_contracts.py | A:OpenAPI 3.1.1、/api/v1 | S:模型内联可独立解析；历史bearer订阅声明不等于后续单次票据流程，预发布写协议不可混投
 validate_contracts.py[TQ8M]: F:运行draft.2结构、端点、模型轨迹与双语言规范化校验 | R:code:docs/contracts/validate_vectors.cjs | A:--report | S:原始JSON先拒重复键及非法数值；全部通过才写报告，未递归执行后续版本或真实服务测试
 validate_vectors.cjs[TN7T]: F:用Node核验固定JCS文本、摘要及请求身份投影 | R:code:docs/contracts/identity-vectors.json | A:命令行向量检查 | S:递归排序实现仅验证给定向量，不是完整生产JCS库；只删除顶层身份外字段
-validation-report.json[SQ5T]: F:记录draft.2离线校验计数、工具版本及输入摘要 | R:code:docs/contracts/validate_contracts.py | A:all_passed、artifact_sha256 | S:服务、IPC、数据库并发和设备运行不在报告范围；历史通过不证明当前源码未漂移
+validation-report.json[SQ5T]: F:保存draft.2离线校验计数版本及顶层资料输入摘要 | R:code:docs/contracts/validate_contracts.py | A:all_passed与artifact_sha256 | S:纳入顶层检查脚本摘要不表示已执行它们；非服务IPC数据库并发或设备证据
+check_report_bindings.py[TQ7S]: F:只读核验十份报告在工作区暂存区或指定提交的声明输入摘要 | R:code:docs/contracts/README.md | A:check_report、--staged与--ref | S:显式路径基准且不归一化字节；拒绝重复键逃逸及空摘要表，不重跑测试或证明声明覆盖完整
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/draft3/===
 README.md[SN6T]: F:说明公共draft.3与IPC0.2归并来源和离线复验方式 | R:code:docs/contracts/draft3/validate_contracts.py | A:历史契约入口 | S:当前入口已转draft.4；旧写请求解析失败不得回退旧语义
@@ -92,7 +93,7 @@ ipc.schema.json[SN8L]: F:定义IPC0.3全部19类消息的运行域绑定和时�
 routes.json[FN6L]: F:映射draft.4公共及内部时钟查询的模型、权限和认证方案 | R:code:docs/contracts/draft4/build_contracts.py | A:HTTP路由清单 | S:内部profile查询包含精确revision；WS入口另定义
 seamer.openapi.json[SN8L]: F:声明draft.4自动化、恢复和内部时间证据查询接口 | R:code:docs/contracts/draft4/build_contracts.py | A:Seamer HTTP与WS契约 | S:内部原始证据只供受限mTLS查询；响应结构不代表运行效果
 validate_contracts.py[TN8M]: F:校验draft.4生成物、关联摘要、条件时间区间及公开响应隔离 | R:code:docs/contracts/draft4/examples.json | A:main与--report | S:有理数向外取整；检查公开引用图不达内部证据；可信上下文为人工夹具
-validation-report.json[SO5T]: F:记录draft.4离线检查数量、工具版本和全部输入摘要 | R:code:docs/contracts/draft4/validate_contracts.py | A:离线验证记录 | S:平台、服务、IPC与设备运行验收执行数为零
+validation-report.json[SO5T]: F:保存draft.4离线检查计数工具版本及生成资料和审阅文档摘要 | R:code:docs/contracts/draft4/validate_contracts.py | A:离线验证记录 | S:平台服务IPC与设备运行执行数为零；引用文档修改也需要重新生成报告
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/f02-f03/===
 README.md[SN6T]: F:说明IPC0.1定义源、完整屏障账本和离线快照验证边界 | R:code:docs/contracts/f02-f03/validate_ipc.py | A:F02与F03资料复现入口 | S:父验证器不递归本目录；有限符号轨迹不证明线程、socket或fsync
@@ -131,23 +132,23 @@ vectors.json[TN7T]: F:固定JCS文本、整数边界、精确除法与基线缺�
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df04/===
 README.md[SD6T]: F:说明DF04局部SQL约束探针的复现与验证边界 | R:code:docs/contracts/df04/check_storage_probes.py,code:docs/rebirth-df04-storage-design.md | A:SP01至SP13参考入口 | S:仅内存探针非生产DDL；参考SQLite未满足产品WAL修复门槛，旧协议词法未改
-check_storage_probes.py[TD7S]: F:在内存运行十进制与约束边界探针并写输入绑定报告 | R:code:docs/contracts/df04/storage-probes.sql | A:22项局部参考检查 | S:只用memory且不接收DB路径；预期独立手写，检查扩展错误码；通过不证明驱动、WAL或证据来源
-reference-report.json[SQ5S]: F:记录DF04内存探针结果与解释器引擎版本及输入摘要 | R:code:docs/contracts/df04/check_storage_probes.py | A:参考检查报告 | S:SQLite3.50.4非产品批准引擎；运行验收为零，不能替代当前输入复验
+check_storage_probes.py[TD7S]: F:在内存运行十进制及SQL约束探针并写LF输入绑定报告 | R:code:docs/contracts/df04/storage-probes.sql | A:22项局部参考检查 | S:仅memory且不接收DB路径；预期独立手写，扩展错误码验证不证明驱动WAL或证据来源
+reference-report.json[SQ5S]: F:记录DF04内存探针结果与实际引擎版本及SQL脚本摘要 | R:code:docs/contracts/df04/check_storage_probes.py | A:22项参考结果 | S:SQLite3.50.4非产品批准引擎；运行验收仍为零，摘要只绑定记录时输入
 storage-probes.sql[TD6T]: F:定义十进制文本、命令终态、归属与单次消费的局部探针表 | R:code:docs/contracts/df04/check_storage_probes.py | A:STRICT表与FK及部分唯一索引 | S:不是生产迁移；release和resolution只验非空配对，外键不能证明完整屏障或真实证据
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df05/===
 README.md[SV6T]: F:说明DF05候选清单、离线复验入口及真实发行证据边界 | R:code:docs/contracts/df05/validate_manifest.py,code:docs/rebirth-df05-release-design.md | A:候选资料使用说明 | S:合成stable正例不构成晋级；字符串路径检查不证明解包与加载安全
 examples.json[TV7L]: F:保存发布清单合成基例和36组结构及关联的人工正反预期 | R:code:docs/contracts/df05/validate_manifest.py | A:base与cases | S:hash、commit、版本与报告均为合成占位，不对应真实发布物；预期独立于判定器
-reference-report.json[SQ5M]: F:记录DF05格式关联检查的结果、依赖版本和输入摘要 | R:code:docs/contracts/df05/validate_manifest.py | A:36例参考报告 | S:release_authorized为false；TUF、签名、字节、加载、安装与恢复运行计数均为零
+reference-report.json[SQ5M]: F:记录DF05合成格式关联检查结果及工具与原始输入摘要 | R:code:docs/contracts/df05/validate_manifest.py | A:36例参考报告 | S:release_authorized为false；TUF签名制品加载安装恢复运行均未执行
 release-manifest.schema.json[FV8L]: F:定义五仓组合、平台、ABI、依赖和能力报告的发布清单候选结构 | R:code:docs/rebirth-df05-release-design.md | A:native-release/0.1.0-draft.1 | S:本文件为候选格式唯一源；对象封闭、整数序号用字符串，结构通过不证明签名或平台批准，不改变业务draft4
-validate_manifest.py[TV7S]: F:离线校验发布清单结构、路径角色引用与兼容关系并生成报告 | R:code:docs/contracts/df05/examples.json,code:docs/contracts/df05/release-manifest.schema.json | A:contract_errors与main | S:只读取本目录合成资料；不验证真实制品或TUF；全部预期通过后才写报告
+validate_manifest.py[TV7S]: F:离线校验发布清单结构路径角色与兼容关系并生成LF报告 | R:code:docs/contracts/df05/examples.json,code:docs/contracts/df05/release-manifest.schema.json | A:contract_errors与main | S:仅读合成资料，不验证真实制品TUF；全部预期通过才写报告并绑定原始输入字节
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df06/===
 README.md[SN6T]: F:说明DF06局部模型、合成上下文参考复验及真实证明边界 | R:code:docs/contracts/df06/check_reference_cases.py,code:docs/rebirth-df06-internal-trust-design.md | A:附属候选资料入口 | S:可信标志和摘要由夹具提供；未运行TLS、来源采样、并发或日志脱敏，局部结构不能当完整SDK
-check_reference_cases.py[TN7S]: F:核验内部对象读取、因果来源年龄及串行消费的固定预期 | R:code:docs/contracts/df06/examples.json,code:docs/contracts/df06/internal-trust.schema.json | A:read_decision、capture_decision与main | S:可信上下文是合成前提，摘要仅比较不生成；全部通过后写报告，串行步骤不证明真实CAS
+check_reference_cases.py[TN7S]: F:核验对象读取因果来源年龄及串行消费预期并输出LF报告 | R:code:docs/contracts/df06/examples.json,code:docs/contracts/df06/internal-trust.schema.json | A:read_decision、capture_decision与main | S:可信上下文为合成前提，摘要只比较不生成；全部通过才写报告，串行步骤非真实CAS
 examples.json[TN7L]: F:保存DF06模型及对象授权、来源绑定与年龄边界的人工正反预期 | R:code:docs/contracts/df06/check_reference_cases.py | A:19结构例、35决策例与3串行消费步 | S:上下文可信标志与digest均为合成；预期不由判定器生成，不能证明证书或实际采样
 internal-trust.schema.json[FN8L]: F:定义内部来源引用、采样请求回执、消费、单对象读授权及实验预算 | R:code:docs/rebirth-df06-internal-trust-design.md | A:internal-trust候选7个局部模型 | S:模型封闭且数值串严格尾锚；不是完整配对或存储结构，Version需SDK二次验证，合法字段不赋予真实权威
-reference-report.json[SQ5M]: F:记录DF06合成参考结果、校验版本及输入摘要 | R:code:docs/contracts/df06/check_reference_cases.py | A:57项参考报告 | S:运行验证全为零且未生成JCS摘要，不能替代身份、采样或并发证据
+reference-report.json[SQ5M]: F:保存DF06合成参考结果工具版本及原始输入字节摘要 | R:code:docs/contracts/df06/check_reference_cases.py | A:57项参考报告 | S:未执行真实身份采样并发与JCS生成，摘要匹配不补足这些证据
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c11-audio/===
 README.md[SH6T]: F:说明DM3逐行来源清单及转录检查与设备验证的区别 | R:code:docs/contracts/c11-audio/dm3-legacy-catalog.json,code:docs/rebirth-c11-audio-design.md | A:184项来源资料入口 | S:原行缺OK仍保留；旧注释不是本轮设备证据，清单不能直接发布运行能力

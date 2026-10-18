@@ -177,5 +177,5 @@ report = {
     'limitations': ['只覆盖局部结构，不是完整生产DDL', '未执行SDK输入或驱动绑定器', '释放证据来源未在探针实现', '参考SQLite未满足产品WAL修复门槛'],
     'input_sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in [DDL, Path(__file__)]},
 }
-(ROOT / 'reference-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+(ROOT / 'reference-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n', encoding='utf-8', newline='\n')
 print(json.dumps({'all_passed': True, 'check_count': len(checks), 'sqlite_version': sqlite3.sqlite_version, 'product_engine_qualified': False}))

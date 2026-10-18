@@ -122,7 +122,7 @@ def main():
                                'native_loading': 0, 'installation': 0, 'crash_recovery': 0},
         'cases': results,
     }
-    (ROOT / 'reference-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    (ROOT / 'reference-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     print(json.dumps({'all_passed': True, 'case_count': len(results), 'release_authorized': False}))
 
 

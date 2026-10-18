@@ -5,7 +5,7 @@
 - 当前协议基线：[公共draft.4／IPC 0.3](contracts/draft4/README.md)已获用户同意。[DF01细化](rebirth-df01-sdk-freeze.md)列出源切换、完整工具锁、原始JSON／JCS／大整数及SV01—SV20交付；仅部分参考向量已执行，生成链和SDK验收仍待取证。C01—C12、A01—A22及其余DF运行门槛未关闭。
 - 已知事实：用户已确认 Q1—Q72，当前授权为设计与文档整理，暂不修改业务代码。决策原文以 [设计稿](rebirth-design.md) 和 [逐轮审阅记录](rebirth-review.md) 为依据。
 - 最新阶段决定（2026-10-17）：用户明确“先完成所有系统方案设计后进行业务实现”。本清单据此将全部首期模块方案前移至阶段0；先完成6.1的设计门槛，再按既定范围实施，不重复索取同一范围授权。DF01新推荐仍待确认，文档决定不替代运行验证或外部操作授权。
-- 本文分析：上一轮跨项审阅发现的失败继续范围歧义已由 Q72 解决；其余为已有约束的解释、文档同步或技术证明义务。
+- 历史Q系列审阅：失败继续范围歧义已由 Q72 解决；该轮其余项为已有约束的解释、文档同步或技术证明义务。之后DF与C专题新增的实质推荐仍需审阅，不能沿用该历史结论视作自动确认。
 - 状态：首闭环相关契约已形成 [字段、状态、接管时序及用例草案](rebirth-first-loop-contract.md)，各契约包仍未正式冻结，验收均未执行。本清单不是 SDK 实现、生产可用性或发布批准；仓库交接事实见 [交接记录](LEGACY_HANDOVER.md)。
 - 最新进展：首闭环推荐方案已获同意，[Schema／OpenAPI资料](contracts/README.md)及离线正反例校验已完成本轮基线；A01—A22、FC01—FC24 的运行验收仍未执行。[F01—F07边界审阅](rebirth-contract-review.md)分别登记已交付与剩余证据，不将静态模型轨迹记为真实进程验证。
 - 后续进展：用户已同意 draft.2 与 [F02／F03 推荐方案](rebirth-f02-f03-design.md)；[F04／F05 候选设计](rebirth-f04-f05-design.md)补齐 C07／C06／C05 的身份撤销、时间边界及容量资料，新增 FA01—FA24、TB01—TB24 未运行验收规范。完整下一版 OpenAPI／IPC 合并、库选型及发布参数实测仍待落实，实验 profile 不是生产批准。
@@ -25,7 +25,7 @@ C11 NodeCG细化：[NG01—NG07](rebirth-c11-nodecg-design.md)补齐远端桥消
 
 C09细化：[ME01—ME07候选](rebirth-c09-extension-design.md)和MX01—MX40（未运行）明确安装／运行／动作权限、复合操作的逐次发送、目录／足迹批准、面板身份及撤销。现有Actor、CapabilityCatalog和IPC尚缺这些完整关联，必须下一版显式归并。[设备](rebirth-legacy-device-map.md)、[排期](rebirth-legacy-schedule-map.md)、[其他系统](rebirth-legacy-system-map.md)三份来源盘点覆盖18个旧bundle；184项DM3目录、各协议完成政策及GUI／NodeCG交付仍未逐字段冻结，6.1设计门槛尚未达到。
 
-C06细化：[排期设计](rebirth-c06-schedule-design.md)给出SCH01—SCH07候选及CT01—CT42（未运行），明确身份、日历、草稿／观察分离、激活受理串行化、逐步窗口和聚合状态边界。[LS01—LS11旧能力映射](rebirth-legacy-schedule-map.md)覆盖五个排期bundle的源码事实，其余模块仍待盘点。当前ScheduleGuard缺排期来源绑定，关联校验未比较其definition_version与RunBinding；下一版显式归并，不将合法结构当成来源或实际发送证明。
+C06细化：[排期设计](rebirth-c06-schedule-design.md)给出SCH01—SCH07候选及CT01—CT42（未运行），明确身份、日历、草稿／观察分离、激活受理串行化、逐步窗口和聚合状态边界。[LS01—LS11旧能力映射](rebirth-legacy-schedule-map.md)覆盖五个排期bundle的源码事实；结合设备与其他系统表，18个bundle来源范围盘点已完成，逐项契约仍未全部冻结。当前ScheduleGuard缺排期来源绑定，关联校验未比较其definition_version与RunBinding；下一版显式归并，不将合法结构当成来源或实际发送证明。
 
 C05细化：[事件与同步设计](rebirth-c05-event-sync-design.md)给出ES01—ES06候选及EV01—EV36（未运行）。快照水位已存在，本轮补完整交接；stream_id／epoch含义、快照缺runs、ACK／票据订阅绑定和来源namespace须下一版显式修订。C04/C05受理事务及失步至出口保护仍需联合归并，C06和各模块采集边界未关闭。
 
@@ -167,6 +167,8 @@ T01—T15 编号继续以 [审阅稿第 2 节](rebirth-review.md) 为主清单�
 Q72已确认，首闭环草案已开始细化；全系统设计完成条件、实施范围与运行验收分别可追踪，当前仍未达到业务实施条件。
 
 ### 6.1 全系统设计完成门槛
+
+当前统一关闭视图见[设计定稿收敛清单](rebirth-design-closure.md)：按C01—C12列出设计缺口和实现后证据，汇总待审阅推荐及合并顺序。GUI、日历和TUF已有精确候选，尚非完整依赖锁或制品验收；历史“待选择/待盘点”记录不能覆盖最新状态。本清单仍未关闭阶段0。
 
 2026-10-18补充：[工具链收敛](rebirth-toolchain-lock-design.md)记录精确候选及18包官方元数据。尚未解析完整传递锁、核验tarball或运行构建，不能据此关闭设计/制品门槛。用户新增每轮完成后本地commit要求；推送、发布、部署和真实设备操作仍分别授权。
 

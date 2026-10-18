@@ -13,6 +13,7 @@ LeafSeamer 是直播软硬件控制与自动化项目。各组件独立仓库、
 | [leafseamer-suite](https://github.com/LeafSeamer/leafseamer-suite) | 总入口、设计、兼容组合、部署与验收 |
 
 - [完整设计稿与 Q1—Q72 决策](docs/rebirth-design.md)
+- [全系统设计定稿收敛清单：具体缺口、审阅包与实施交接](docs/rebirth-design-closure.md)
 - [当前归并审阅：受监督运行域、NTP 证据、公共 draft.4 与 IPC 0.3](docs/rebirth-draft4-review.md)
 - [DF01：SDK 唯一契约源、固定生成链、JCS 与大整数](docs/rebirth-df01-sdk-freeze.md)
 - [工具链收敛：精确候选、官方元数据与冻结验证步骤](docs/rebirth-toolchain-lock-design.md)

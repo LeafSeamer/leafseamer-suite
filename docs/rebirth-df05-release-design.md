@@ -1,6 +1,6 @@
 # DF05：发布清单、信任根、升级与回退
 
-日期：2026-10-17。本稿细化已确认NF03，AF01—AF06是待审阅推荐。继续先完成全系统设计，不创建发布密钥、不签名、不安装或发布制品、不修改业务实现。
+日期：2026-10-18。本稿细化已确认NF03，AF01—AF06及第8节具体信任方案均为待审阅推荐。继续先完成全系统设计，不创建发布密钥、不签名、不安装或发布制品、不修改业务实现。
 
 依据：[NF03](rebirth-platform-freeze.md)、[DF01 SDK源与工具链](rebirth-df01-sdk-freeze.md)、[DF02可信启动](rebirth-df02-runtime-design.md)、[DF04存储恢复](rebirth-df04-storage-design.md)。本轮的可校验候选为`native-release/0.1.0-draft.1`，独立于公共draft.4／IPC 0.3；不在业务接口增加远程安装权。
 
@@ -71,7 +71,7 @@ TUF格式由受测客户端处理；不得按业务JCS重签TUF metadata，也�
 
 ### 3.2 回滚保护与密钥事故
 
-持久保存最高已接受root／metadata版本、release_sequence、撤销记录和可信渠道状态，置于安装管理域而非可被业务备份覆盖的数据库。丢失或损坏进入显式重新引导信任流程，不从“缺文件”推断首次安装。普通应用回退、业务恢复、清理缓存均不得降低这些下界。
+持久保存root版本、当前TUF缓存代际内的metadata版本／原字节、发行序号、撤销记录和可信渠道状态，置于安装管理域而非可被业务备份覆盖的数据库。普通回退／恢复不能降低这些下界；TUF在线角色密钥合法轮换触发的缓存重置必须按第8.4节独立记录，不能用全局metadata最大值阻断规范允许的失陷恢复。丢失或损坏进入显式信任修复，不从“缺文件”推断首次安装。
 
 被入侵密钥先按TUF角色撤销／轮换，发布新的metadata与受影响制品清单，再按维护操作处理已安装组合。旧targets签名仍合法不代表制品永远获准；根阈值全失或全部泄露时，必须独立可信重新引导，不能用同一失陷密钥宣告自己恢复可信。TUF与本地文件权限也不能阻止完全控制宿主管理员的攻击者，相关假设写入运行profile。
 
@@ -116,7 +116,7 @@ C12 DEP07避免覆盖被占用的活动程序路径，并给出installation.db�
 
 ## 6. 回退与升级故障
 
-维护回退不是接受旧TUF metadata：新的、当前有效且获授权的targets／release计划可以引用已知旧payload，安装管理operation明确from/to及理由，所有信任版本下界继续递增。旧payload必须仍未被撤销、依赖完整且有兼容证据。
+维护回退不是接受旧TUF metadata：新的、当前有效且获授权的targets／release计划可以引用已知旧payload，安装管理operation明确from/to及理由，root和发行序号下界保持不下降；metadata按当前TUF缓存代际校验，不能绕过第8.4节。旧payload必须仍未被撤销、依赖完整且有兼容证据。
 
 若旧程序能安全读写当前Schema并经过该组合验证，可在维护中切换；否则恢复配套备份并走新DB实例／control/request epoch流程，核对备份之后可能已发生的设备副作用，默认未布防。绝不自动降Schema、丢新数据、撤销floor或unknown来换取启动成功。用户数据处置属于可审阅维护计划，不在失败回调里猜测。
 
@@ -168,4 +168,97 @@ RA01—RA28为待执行运行／发行验收，不能由Schema正反例代替。
 
 本轮只交付文档、候选Schema和合成正反例，具体检查数量与输入hash见[参考报告](contracts/df05/reference-report.json)。没有真实签名验证、TUF客户端运行、归档解包、原生构建、安装、升级或设备试验。
 
-设计未决：AF01—AF06及C12切换候选审阅；精确TUF客户端／完整依赖锁、工具链manifest内层Schema、安装记录／部署模型归并、初始信任渠道及角色保管安排。实现后证据：所有真实制品hash、签名、独立重建、运行能力、PF14—PF18及RA01—RA28／DPT01—DPT48。候选清单与合成hash不进入release-ready目录，不降低首期Windows/Linux目标或全部模块交付范围。
+设计未决：AF01—AF06及C12切换候选审阅；第8节已给初始信任、保管、时间及缓存恢复具体方案，客户端适配补丁尚未批准／实现，完整锁、工具链manifest内层Schema与安装记录归并仍待完成。实际持有人、发布身份及根指纹在首次发行登记，不虚构。实现后证据：真实制品hash、签名、独立重建、运行能力、PF14—PF18及RA／DPT。候选清单与合成hash不进入release-ready目录，不降低首期Windows/Linux目标或全部模块交付范围。
+
+## 8. AF02／AF03／AF05具体冻结候选
+
+本节区分官方接口事实与项目推荐。未生成密钥、未下载npm包或运行TUF；官方源码读取不等于所发布tarball已经核验。
+
+### 8.1 固定客户端的真实边界
+
+官方npm元数据所指tuf-js6.0.0源码提交为`c30653d07f0c41fbe5a2030d25eca6fd04f8547f`。该提交的Updater公开选项不含时间注入，TrustedMetadataStore构造时取一次`new Date()`；store未由公共index导出。loadRoot逐代验证并保存root，所读路径没有比较在线角色key集合并清除timestamp／snapshot缓存的步骤。普通metadata持久化直接调用`writeFileSync`，没有临时换名／fsync或事务回调；downloadTarget本身不刷新metadata或重验到期，只验证所给TargetFile的长度hash。不能从返回成功推导发行授权仍有效或安装数据库与文件共同耐久。（来源：[固定Updater](https://raw.githubusercontent.com/theupdateframework/tuf-js/c30653d07f0c41fbe5a2030d25eca6fd04f8547f/packages/client/src/updater.ts)、[固定Store](https://raw.githubusercontent.com/theupdateframework/tuf-js/c30653d07f0c41fbe5a2030d25eca6fd04f8547f/packages/client/src/store.ts)、[公共导出](https://raw.githubusercontent.com/theupdateframework/tuf-js/c30653d07f0c41fbe5a2030d25eca6fd04f8547f/packages/client/src/index.ts)、[本地元数据记录](contracts/toolchain/metadata-observation.json)。）
+
+**项目推荐。** 保留成熟TUF签名／metadata验证核心，以精确上游版本加可审计的窄范围适配补丁交付；补丁限固定时间入口、metadata存储接口和规范轮换缓存状态。不访问private字段、不全局替换Date、不把源码深层导入当稳定公共API、不在外层重写验签器。补丁必须有原始源码hash、补丁hash、上游测试及本项目故障用例；发行包标识包含补丁版本，不能仍宣称与未修改npm包完全相同。上游将来具备同等接口后，以新精确版本复验替换；本轮不提交上游或生成补丁。
+
+若审阅不接受维护该补丁，则必须重新选择满足这些接口的成熟客户端，并完成语言／制品方案评估；不能将缺口隐藏在wrapper里，也不能以现有6.0.0候选名义标记已冻结。仅添加应用侧过期检查无法自动补齐逐步持久化与轮换恢复。
+
+### 8.2 初始信任与密钥保管
+
+首次安装支持两个明确入口：已通过宿主包签名体系验证且发布者匹配的安装器内置初始root；或由管理员通过**既有独立认证渠道**取得验证器摘要及root指纹后，再核对下载物。两者都记录BootstrapTrustReceipt：trust_domain_id、安装身份、初始root原字节SHA-256／版本、验证器制品hash、渠道类型／证据引用、批准人及操作ID。普通下载页与同页checksum、同GitHub账号控制的两链接不算两个独立根。未知渠道进入未建立信任状态，不能仅点“信任下载包”让包自证。
+
+| 角色 | 保管及签发推荐 | 事故边界 |
+| --- | --- | --- |
+| root | 2-of-3；三名可独立审阅的持有人，各自离线加密介质／专用签名环境；每人只持自己的密钥及异地加密备份 | 少于阈值泄露可由未失陷阈值轮换；阈值失陷或无法集齐有效阈值需带外重建 |
+| targets | 独立于root的2-of-3密钥；每次签名前核对五仓组合、平台报告、目标长度hash和撤销清单 | CI仅产待签对象，不能调用两把离线私钥；换人不复制全套私钥 |
+| snapshot／timestamp | 分开密钥及受限在线签名身份；只接收已批准metadata集合，分别轮换；发布存储无私钥 | 在线密钥不能签targets或root；受控轮换仍须保留快进攻击恢复证据 |
+| 第三方委托 | 具体路径、角色、阈值与批准范围；与本平台稳定频道隔离 | 有效委托不授予设备或安装权限，不能跨路径签平台更新 |
+
+持有人姓名、介质编号及保管位置不放公开仓库；公开材料记录角色、keyid、阈值和签名仪式摘要，私有台账记录交接与恢复测试。一个人创建三把key可测试阈值算法，但不满足三个独立持有者的生产安排；不能以preview标签绕过生产目标。设备型号／硬件密钥供应商不在本轮虚构。
+
+候选运维期限：root365日、targets90日、snapshot7日、timestamp24小时；分别在到期前90日、30日、2日、12小时告警。期限是项目政策，非TUF强制值；续签更新版本并重新验证，不能只覆盖旧字节。失陷时不等到期再处理。root轮换演练须能使用两位有效持有人、公开连续链和离线恢复副本完成，不把“备份文件存在”当恢复成功。
+
+### 8.3 更新专用时间与客户端接口
+
+TUF在一个更新流程内固定开始时间，最终root及后续metadata到期必须晚于该时间；中间root允许按规范经过过期版本。（来源：[TUF1.0.37 §5.1—§5.6](https://theupdateframework.github.io/specification/v1.0.37/index.html#detailed-client-workflow)。）
+
+**项目候选。** 首期更新按明确维护操作启动，推荐`operator_attested_utc_interval`作为独立引导方式：具有本机安装管理权限的操作者从既有可信时间来源核对UTC，声明一个包含当前真实UTC的区间。UpdateTimeAnchor保存anchor_id、方法／证据引用、操作者、安装进程时基身份、anchor_tick、utc_lower／upper、最大年龄及profile。GUI只展示本机时间供比较，勾选“看起来正确”或包内created_at不构成独立来源。该方式依赖操作者声明正确，并非机器证明精确授时；增加一次维护核对的运维代价须审阅。以后可增加已独立批准的机器时间来源，不自动采用仍待选择的DF03模型。
+
+实验建议区间宽度最多240s、开始更新时anchor年龄小于300s、一个验证会话最多600s；本地单调经过量按已批准安装时基profile保守外推。没有该profile、发生休眠／时基变化或无法给出区间时拒绝更新。每次开始得到`[L0,U0]`，固定`reference_time_ms=ceil(U0)`注入客户端，expires必须严格大于它；此保守选择可能提前拒绝临近到期metadata。只拒绝更新，不因此停现有直播服务。
+
+安装域保存`trusted_time_lower_floor=max(历史floor,L0)`，不能把历史U0当真实时间下界。新U0小于floor时拒绝；跨重启floor只辅助检出明显回退，不能推导经过了多少时间，更不能证明整机快照未回滚。开始时将floor与会话身份持久化；错误的大幅前跳不能通过删除记录修复，须独立时间复核和显式信任修复记录，不自动调低floor。
+
+下载可复用已核对hash的暂存字节，但超过600s或进入实际激活前，必须使用新时间锚点／会话重新刷新metadata并核对同一目标仍获授权；不能用数小时前的固定开始时间无限延长安装许可。这属于项目激活门槛，不改变单次TUF流程中的固定时间语义。失效前已经运行的程序不因本次刷新失败被自动停止。
+
+适配补丁的接口契约为：`fixedReferenceTime`构造输入；`loadTrusted(role)`返回安装域保存的精确原字节；`persistVerified(role,bytes,transition)`完成持久提交才返回；`finalizeRootPhase(rotationReceipt)`负责下节的缓存转换；会话输出只包含已验证metadata摘要、路径和目标绑定。输入时间必须有限、在Date可表达范围且为精确整数毫秒；TUF数值版本超出客户端安全整数范围拒绝，不改写为业务字符串再验签。Metadata本体仍由TUF规则编码，应用审计对象才使用DF01投影。
+
+Suite门面只允许以当前成功会话内取得的目标路径／摘要调用下载，不接收模块传来的任意TargetFile；一个客户端实例只服务一个固定时间会话。另在验签前做有界原始输入限制而不重序列化：重复JSON键、非有限值和不安全／非整数版本拒绝；expires采用本项目全串UTC整秒格式`YYYY-MM-DDTHH:mm:ssZ`并检查真实日历日期及有限Date值，禁止依赖Date对非法日期的归一化。未知的合法TUF字段仍由原库保留。该限制是项目POUF候选，不能宣称未修改模型已具备；合法原字节继续交原库验签，不用业务JCS替代签名算法。补丁与外部门面分别列测试范围。
+
+### 8.4 三种下界与逐步持久化
+
+TUF §5.3.11规定：timestamp或snapshot密钥轮换后删除旧timestamp和snapshot缓存，用于解除fast-forward造成的锁死。这不同于用户回退程序或删除缓存文件。（来源：[TUF固定规范](https://theupdateframework.github.io/specification/v1.0.37/index.html#update-the-root-role)。）
+
+| 对象 | 持久作用域与比较规则 |
+| --- | --- |
+| root | 同trust_domain逐代N+1，原字节及轮换证据追加保存；普通恢复不得降低 |
+| TUF metadata | 在当前`metadata_epoch`内由完整可信metadata执行TUF版本／引用／期限检查；不是只有一个max数字 |
+| release_sequence | `(trust_domain,channel,target_profile)`内保持最高已批准发行授权序号；更低拒绝，相同只准同manifest字节的幂等查询；旧payload回退须新序号授权 |
+| 撤销与时间记录 | 撤销记录追加，时间floor按8.3；metadata_epoch切换不清这两类记录或业务保护 |
+
+installation.db新增候选记录：TrustDomain、TrustedMetadata原字节BLOB及hash、RootTransition、MetadataEpoch、UpdateSession、UpdateTimeAnchor、ReleaseAuthorization、RevocationRecord。每个trust_domain只有安装管理writer可写。快照／targets引用表与缓存原字节共同保留，不能删缓存后只拿数字重建半套TUF信任。工作目录文件仅为导出副本，不能覆盖数据库权威。
+
+每次成功验证N→N+1后，在一个SQLite事务内CAS当前root版本／hash，保存新root原字节、转换依据、是否发生在线角色key集合变化及`cache_reset_pending`，提交完成才允许客户端继续。任何提交失败／结果不明立即废弃该内存客户端实例，按operation查询持久结果，不继续使用只存在内存的新root。
+
+最终root阶段有效后，若pending为真，另一个事务追加RotationReceipt并递增metadata_epoch，使旧timestamp／snapshot及其派生targets缓存退出可用集合，清pending；旧原字节留审计。额外失效派生缓存是项目保守策略，不是宣称TUF要求删除所有历史记录。只有已验证root链引起的变化可设置pending，普通清缓存／过期／版本过高不能触发。A→B→A发生于同链或跨崩溃时仍保留pending，不能仅比较链头与链尾就漏掉轮换。重启遇pending先完成root阶段校验，禁止旧缓存进入timestamp流程。
+
+后续每个被验证接受的metadata也单独持久化原字节／摘要／版本与当前epoch，遵循TUF的部分进展；后续目标下载失败不回滚已接受root或metadata。验证流程只有在所有所需角色、目标字节和本项目发行授权检查完成后才给出安装可用receipt，不能把任一角色提交当整套可安装。事务只负责metadata BLOB与引用耐久，不证明下载包文件已flush，文件证据仍按C12处理。
+
+在线密钥轮换后的新epoch可以接受低于旧epoch的timestamp／snapshot版本，但仍须完整验签和引用校验；root版本、release授权序号及撤销记录不能随之降低。没有root轮换证据的降版本一律拒绝。损坏或缺失installation.db不自动建空库；整机受控快照回滚无法仅凭同一磁盘内的记录检出，必须在部署profile明示该假设，恢复进入独立信任核对。
+
+### 8.5 密钥事故与冻结用例
+
+少于root阈值的泄露：隔离签名端 → 未失陷有效阈值签连续新root → 轮换相关在线／targets key → 发布当前撤销与新metadata → 客户端完成epoch转换并禁止新加载被撤销组合。targets阈值失陷但root仍可信时同样依root撤权，不让旧targets自己签“已恢复”作为唯一依据。已经发出的设备动作不受发行签名撤回，现场处置仍走C12保护流程。
+
+root阈值失陷或足够私钥不可恢复：原trust_domain进入`rebootstrap_required`，不再从其更新链自动接受新根。通过8.2独立渠道和显式安装管理操作建立新trust_domain，记录旧域终止及迁移收据；旧审计、撤销、安装事实与业务unknown全部保留，不把新域当首次安装清空数据。跨域不直接比较无共同意义的root／release数字；迁移计划必须列新批准组合和旧撤销继承，不能利用换域安装旧恶意包。带外渠道实际控制与恢复演练是发行证据，不能由本稿自授可信。
+
+| 新增用例 | 输入／故障 | 必须结果 |
+| --- | --- | --- |
+| RA29 | 未验证ZIP同时带root和checksum | 无独立BootstrapTrustReceipt，不进入可信更新 |
+| RA30 | 一人持三key或同key重复签名 | 算法签名计数与独立持有人政策分别检查，不能假报2-of-3生产安排 |
+| RA31 | 时间区间[1000,1240]s，expires=1240s／1241s | 前者拒绝；后者只通过时间这一项 |
+| RA32 | 历史真实时间下界1000s，新区间[990,1001]／[990,999] | 前者未被floor单独否定但须当前来源；后者拒绝，不能将旧upper当floor |
+| RA33 | 更新时间中途wall跳变、单调域失效或600s用尽 | 不修改固定referenceTime继续；退出会话并重新取证 |
+| RA34 | 新root已提交、后续timestamp失败 | root进展保留，下次从持久root继续，不回滚到旧root |
+| RA35 | 在线key变化后root提交即崩溃 | pending保留，重启先完成root阶段及epoch转换 |
+| RA36 | 在线key A→B→A，两端相同 | 仍处理pending，不漏掉途中轮换 |
+| RA37 | 原epoch timestamp=9000，新epoch合法新key签version=1 | 有完整轮换证据可按新epoch验证；普通降版则拒绝 |
+| RA38 | metadata_epoch已换但旧release_sequence或已撤销payload | 不因TUF恢复重置应用发行授权／撤销边界 |
+| RA39 | persist回调失败而内存store已更新 | 丢弃客户端实例，查原operation，不签发安装receipt |
+| RA40 | 同release序号不同manifest，或低序号旧payload | 拒绝；维护回退须当前授权的新序号 |
+| RA41 | root阈值失陷后同链自称新可信root | 拒绝自动恢复，显式带外新域并保留旧事实 |
+| RA42 | 包下载成功但激活前授权过期／撤销 | 新会话重验失败，不切换；已运行服务不因更新失败停机 |
+| RA43 | 导出缓存文件写入成功但数据库提交未知 | 按DB原字节与operation恢复，不以导出文件替代权威 |
+| RA44 | 初始根恢复、时间引导及补丁上游测试／两平台故障 | 分别取得真实证据；文档用例不作验收通过 |
+| RA45 | 非法日历日期、日期尾部字符、重复键、不安全版本 | 原始入口拒绝，不因Date返回无效值而绕过expiry |
+| RA46 | 外部TargetFile、已结束会话或旧客户端对象再次下载 | Suite门面拒绝，不以目标hash正确代替当前发行授权 |
+
+RA29—RA46均为计划；本轮仅核对源码、文档与离线边界算例。实施前需审阅窄适配补丁、独立持有者及人工时间引导的运维取舍，并归并上述安装记录与POUF；具体密钥、真实渠道和平台结果在发行验收交付。不得据此标记tuf-js、更新器或全系统已完成。

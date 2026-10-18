@@ -134,6 +134,8 @@ managed_bridge的独占写证明仍须验证原生客户端／其他bundle不能
 
 推荐细化DF05：**不以symlink、junction或通用rename作为唯一active权威**。Suite本机安装管理使用独立`installation.db`保存安装日志、信任下界和活动组合引用；它不属于可恢复业务备份，模块和普通GUI不能写。采用与该发行物共同验收的SQLite引擎及耐久配置，单写者、受保护本机目录；缺库或损坏进入修复，不新建空库绕过信任下界。
 
+[DF05第8节](rebirth-df05-release-design.md#8-af02af03af05具体冻结候选)补充独立引导信任、时间锚点及逐metadata事务。root和发行序号与当前TUF缓存epoch分别比较；合法在线key轮换可使旧缓存退出可用集，但不能清掉撤销／发行授权或业务未决记录。更新客户端原字节由安装库保存，普通缓存目录仅为导出；密钥阈值、窄适配补丁与人工更新时间核对仍待审阅，未实现或运行验收。
+
 `ActiveDeployment`候选：deployment_id、generation、release_manifest_ref、组件版本／程序根、各service的data_generation_ref、配置／秘密版本引用、maintenance_operation_ref、activation_operation_id、phase。其路径都由已验证计划解析到受保护根内；安装事务只更新引用及日志，不在事务中启动进程。程序根按release_id不可变，数据按独立generation目录选择；运行时只写被选中的那一代。
 
 1. 验证DF05发行授权、metadata、所有包字节和依赖闭包；在独立目录准备程序，不覆盖活动release。
@@ -145,7 +147,7 @@ managed_bridge的独占写证明仍须验证原生客户端／其他bundle不能
 
 Windows无需替换被占用的active程序路径，Linux无需依赖原子切换软链；新目录持久化、目标文件flush、installation.db提交及宿主存储兑现flush能力仍须平台断电试验。崩溃后未被活动记录引用的staging目录不执行，只有引用与实物全部核对才可启动。数据库事务不能证明先前文件flush或硬件持久化真实成功，证据不足保持indeterminate。
 
-激活前可放弃候选并保留原组合，但旧域已退休时重新启动也换域且保持保护；激活后若新代已产生任何业务写，不能只回到旧数据目录。回退程序必须与当前数据Schema兼容，或执行单独获准的恢复计划并保留新代证据／未决账本；不自动丢掉新命令来恢复旧快照。TUF／release下界及撤销记录不回退，旧payload须由当前有效发行授权批准。清理release／data generation前证明无活动或恢复引用，卸载不触现场设备。
+激活前可放弃候选并保留原组合，但旧域已退休时重新启动也换域且保持保护；激活后若新代已产生任何业务写，不能只回到旧数据目录。回退程序必须与当前数据Schema兼容，或执行单独获准的恢复计划并保留新代证据／未决账本；不自动丢掉新命令来恢复旧快照。root／release下界及撤销记录不随回退下降，TUF在线角色缓存按上述epoch规则处理；旧payload须由当前有效发行授权批准。清理release／data generation前证明无活动或恢复引用，卸载不触现场设备。
 
 ## 8. DEP08：交付包、教程与故障验收
 

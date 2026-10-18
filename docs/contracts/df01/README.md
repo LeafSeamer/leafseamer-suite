@@ -13,3 +13,7 @@ python docs/contracts/df01/check_reference_vectors.py
 本机Node为24.11.1时，结果只能记录该版本；候选Node24.22.0、canonicalize5.1.0、TS／Ajv生成、浏览器CSP及真实SDK验收仍未执行。signed_ns的字符串-0与25字符规则按draft4保留；本轮没有暗改已确认接受集合。
 
 另有两项基线差异探针：确认draft4 Schema接受Revision尾部LF及有符号ns字符串-0，结果只证明缺口／差异存在，不代表修复完成。下一版建议拒绝，正式SDK放行前须显式修订及跨语言反例验证。
+
+2026-10-18新增[局部设计Schema](decoder-design.schema.json)、[描述与原始报文夹具](decoder-design-cases.json)及[描述校验器](check_decoder_design.py)。原参考入口现在同时核验20组预算/HTTP/WS绑定描述及原始夹具承载格式，报告绑定新增文件。30组DW原始报文只登记预期，**没有执行SDK扫描、UTF-8入口或Ajv token守卫**；profile均为design_fixture，不是生产批准。
+
+局部关联检查只证明profile引用、操作唯一性、服务/源路径和WS升级关联等声明一致，不解析完整OpenAPI源、不证明metadata覆盖71个操作或传递工具锁。缺这些证据不能记SV02/SV10已通过。历史6组原始报文待执行记录继续保留，不能与30组新描述相加伪报解析器通过数。

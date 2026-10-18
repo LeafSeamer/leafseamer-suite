@@ -73,7 +73,7 @@ draft4的`/$defs/SchemaDescriptor/properties/document`使用`type:[object,boolea
 
 standalone可能保留Ajv runtime／format helper依赖，必须检查生成imports及最终依赖清单；浏览器使用构建后的ESM入口，禁止引入Node原生库、fs或运行时Schema编译。无unsafe-eval的CSP实测是独立用例，不能以code.esm=true推定通过。（来源：[standalone说明](https://ajv.js.org/standalone.html)、[formats兼容说明](https://ajv.js.org/guide/formats.html)）
 
-类型较宽可接受，但必须标注“需要运行验证”；Schema不能因TS类型较宽而放松。输入／输出都验证；WS升级不替代每条事件验证。客户端应保留原始响应文本进入严格解析层，例如使用库的text解析模式再走受控解码，避免默认response.json提前覆盖键或舍入整数。204等无体响应独立处理，错误体不当成功数据解析。（客户端选项依据：[openapi-fetch API](https://openapi-ts.dev/openapi-fetch/api)）
+类型较宽可接受，但必须标注“需要运行验证”；Schema不能因TS类型较宽而放松。输入／输出都验证；WS升级不替代每条事件验证。2026-10-18修正：客户端须有界读取原始响应bytes后严格UTF-8解码，不能先用response.json或text解析模式；后者也可能丢失非法字节证据。204等无体响应独立处理，错误体不当成功数据解析。具体入口及新增候选见第8节。（依据：[Fetch Body](https://fetch.spec.whatwg.org/#body-mixin)、[Encoding](https://encoding.spec.whatwg.org/#interface-textdecoder)）
 
 语义层包含摘要、域、关联、年龄及版本等纯判定；授权权威、事务、真实屏障和设备效果仍属于服务。生成TS声明或校验函数不生成状态机、重试和设备执行器。
 
@@ -149,4 +149,69 @@ wire上的revision、sequence、tick及纳秒继续保持字符串；TS生成DTO
 
 本轮附[固定向量与参考检查](contracts/df01/README.md)，只核验部分JCS、字符串边界及数学规则；它们不等于SV01—SV20全通过。正式SDK选择成熟JCS库；旧validate_vectors.cjs的小型递归排序器只保留历史用例角色，不升级成生产实现。
 
-放行需同时具备：用户确认本轮推荐、源提取等价报告、精确锁及制品来源、生成／校验／消费报告、跨语言固定向量、浏览器CSP和平台构建证明。当前未闭合：实际npm完整性与传递锁、严格原始JSON解析器的选型／预算、全部Ajv编译差异、浏览器打包工具精确版本、各语言适配与有符号-0的下一版修订。它们是DF01的具体出口条件，不自动开启业务实现。
+正式SDK放行需同时具备：用户确认推荐、源提取等价报告、精确锁及制品来源、生成／校验／消费报告、跨语言固定向量、浏览器CSP和平台构建证明。2026-10-18第8/9节补出严格解码路径、有限预算、完整生成元数据及拒绝规则的具体候选；这些设计待审阅，实际npm闭包、Ajv派生视图、各语言适配与数字新版修订仍未完成。GUI已有[精确候选](rebirth-toolchain-lock-design.md)，不再视为未选型。设计定稿门槛与正式SDK运行放行分开，不要求产品未实现前先通过运行验收。
+
+## 8. D3—D5补充：严格入口的具体候选
+
+本节是基于规范与现有契约的工程推荐，尚未批准或实现。选用SDK内小型、迭代式原始JSON审计扫描器，加平台JSON.parse构造值及Ajv派生校验；不选择让第三方宽松解析器替换协议语法。扫描器只承担语法/字符/重复键/预算/数字token留存，不实现Schema、授权或执行器；JCS继续使用既定库。新增扫描器属于需要独立差分与模糊测试的安全边界，不能因代码少便省略验收。
+
+### 8.1 输入、阶段及字节所有权
+
+建议内部入口为`decodeWire(bytes, modelRef, profileRef, dynamicSchemaRef?)`，结果只返回不可变DTO或结构化错误。模型、预算与动态能力Schema引用由可信路由/批准目录选择，不能由请求体自行声明以扩大限制。入口先复制或转移原始缓冲区所有权，拒绝SharedArrayBuffer及可并发变更视图；扫描、构值、摘要必须使用同一份未改写输入。token表只在本次校验内有效，不进入日志、事件或公开响应。
+
+顺序固定：入口媒体类型/长度/权限预算 → 原始bytes上限与BOM检查 → fatal UTF-8解码 → 完整JSON审计扫描 → JSON.parse同一文本（无reviver） → 带token上下文的Schema与能力Schema → 关联语义/具名投影/JCS。扫描失败不构造DTO、计算可受理摘要或产生设备命令。入口鉴权/限流可以在读取前拒绝，错误优先级不承诺向未授权用户揭示报文细节。
+
+HTTP客户端使用Response.body有界读取并及时cancel，不能只信Content-Length，也不先执行无界arrayBuffer；Node服务禁止中间件预先json/text转换。首期业务JSON请求不接受Content-Encoding压缩，响应读取限制按实际解码后bytes计；代理与浏览器内部解压内存不由SDK完全控制，发布验证须单独覆盖。无体状态不得送JSON解析器，错误响应同样有界。（Fetch的text使用平台UTF-8 decode；Encoding默认替换错误，fatal才报错，BOM还可能被去除。来源：[Fetch](https://fetch.spec.whatwg.org/#dom-body-text)、[Encoding](https://encoding.spec.whatwg.org/#interface-textdecoder)。）
+
+网络入口显式拒绝开头EF BB BF；解码使用`TextDecoder('utf-8',{fatal:true,ignoreBOM:true})`以保留而非暗吞BOM，再由入口规则拒绝。拒绝BOM是本项目候选收紧，RFC8259允许接收器选择忽略，不能声称标准强制拒绝。字符串内部U+FEFF按普通字符保留。（来源：[RFC8259 §8.1](https://www.rfc-editor.org/rfc/rfc8259#section-8.1)。）
+
+WS text只在完整消息重组后校验；服务端库必须在重组中限制帧和消息，首期不协商压缩。浏览器收到的text已由WS实现做UTF-8处理，SDK再检查字符、JSON和编码后的字节预算；不能声称SDK能在浏览器分配消息前拦截。二进制帧除非特性明确注册，否则拒绝。IPC按长度前缀限制后读取，拆包/粘包不改变JSON消息边界。（UTF-8错误须失败连接的规范依据：[RFC6455 §8.1](https://www.rfc-editor.org/rfc/rfc6455#section-8.1)。）
+
+### 8.2 扫描器与精确数字守卫
+
+扫描器采用显式容器栈：object的key/colon/value/comma-or-end状态，array的value-or-end/comma-or-end状态；只允许一份根JSON及末尾JSON空白，拒绝尾逗号、注释、拼接根和截断。每个object维护独立解码键集合，重复比较不做NFC/NFD转换。键和值均拒绝孤立代理及非字符U+FDD0—FDEF、各平面末尾FFFE/FFFF；合法代理对先组合为scalar。JSON Pointer保留空键并转义`~`、`/`，数组序号为十进制；`__proto__`等作为自身数据属性，不走对象赋值合并。（字符和重复键依据：[RFC7493 §2](https://www.rfc-editor.org/rfc/rfc7493#section-2)。）
+
+每个数字保留`instance_pointer`、原始半开字节区间、token文本、符号、有效数字及十进制指数。按JSON数字文法扫描，不调用parseInt/parseFloat猜前缀；先计token长度和指数预算，再进行数学判定。将系数尾零消去后，以小数位数和指数计算是否为数学整数；比较位数及字典序即可先拒绝超安全范围，禁止按攻击者指数构造巨大的10的幂。`1.0`/`1e0`可作为整数，`1.0000000000000001`不可。
+
+所有数字先要求转换后的binary64有限；非零数学值转换为0推荐拒绝为`number_underflow`，这是项目候选收紧，不是JCS原规则。普通number字段明确接受binary64近似，精确十进制必须使用带单位字符串；不对所有number强套安全整数范围。integer字段额外要求原始数学值为整数且绝对值不超过9007199254740991，之后再受字段minimum/maximum约束。JSON number的-0按JCS成为0；字符串"-0"仍按所属协议版本处理。
+
+**类型归属不得用字段名或一次预选分支猜测。** 推荐生成仅供SDK校验的私有Schema视图，在每个含integer类型的子Schema挂接原始整数守卫；守卫位于相同的if/then/else、allOf/anyOf/oneOf、ref分支中，nullable的非数字值不调用。含number的union不误收紧成integer；共享ref以同一转换规则处理。模块提供的Schema同样受批准编译流程，不能上传自定义守卫代码。公共权威Schema不含私有关键字，生成清单记录源JSON Pointer→派生节点及转换器摘要。
+
+候选实现使用Ajv的code关键字及`passContext:true`传入请求专属只读token表，关键字按instancePath查原始token；缺表/缺路径一律失败，不能回落到舍入后的值。禁止全局currentTokens、异步共享上下文或修改输入；按原分支组合求值，失败分支不产生资格。Ajv官方提供自定义关键字/上下文/standalone机制，但**尚未验证本组合中ref、条件、生成代码的上下文传播**；SV07/SV10必须覆盖运行编译与standalone差分，失败则修订该适配，不能删除守卫放行。（来源：[Ajv options](https://ajv.js.org/options.html#passcontext)、[keywords](https://ajv.js.org/keywords.html)、[standalone](https://ajv.js.org/standalone.html)。）
+
+开放Payload先保留数字token，随后按精确能力Schema二次校验；没有获批Schema的设备写参数不受理。SchemaDescriptor.document自身是JSON数据，内部minimum/enum等数字不能靠外层integer路径自动覆盖，必须在动态Schema批准时验证其数值表示及语义。SDK接受同进程对象的便利门面只面向可信调用代码；不能承诺检测任意Proxy而完全不触发其陷阱。不可信模块只跨受限bytes边界，深冻结DTO也不代替进程隔离。
+
+### 8.3 有限预算与失败
+
+候选`sim-df01-wire-v1`仅用于故障夹具：普通HTTP/WS单消息65536 bytes、深度32、总值节点16384、每object成员4096、单键解码UTF-8 1024 bytes、单字符串解码UTF-8 32768 bytes、数字token128 ASCII字符、指数绝对值4096；含根容器深度从1计，标量根深度0，键不计值节点。所有上限允许等号、超1拒绝；原始总字节含空白/转义，token不含周围空白，解码字符串上限与原字节上限都检查。没有限制用null/0/Infinity关闭的模式。
+
+这些值与C05普通消息、F04深度候选对齐，**不批准生产吞吐或承诺全部4096步定义都能放入64KiB**。snapshot页、定义/证明发布和IPC各有独立有限profile，由可信操作绑定；同一入口同时适用的预算取最严格者。大型产物不能借普通命令接口绕过限制，完整发布字节预算仍随C04/C05联合归并。不得默默截断、自动分拆执行或按客户端字段切换大profile。
+
+内存累计计原bytes、解码文本、键集合、token表、DTO及生成校验开销，不只计网络体积。扫描器按输入字节/解码字符/节点操作计步，每4096单位检查取消并让出执行；在独立有界worker池处理大消息，保护IPC有独立预留通路。候选普通解析deadline100ms，由本地单调时钟计，自开始处理到完成；超时取消不能受理，非实时停发保证。发布profile必须测最坏内存、CPU、worker排队及保护通路延迟，未达标时收紧容量或优化，不能直接把此实验值作为生产配置。
+
+错误内部形状为`{stage,reason_code,byte_offset?,instance_pointer?}`，偏移从0计，EOF指向总字节数；只返回首个确定错误，不暴露原文/重复键名/秘密。公有响应按已确认错误模型映射，安全路径使用已登记字段名或省略；不可直接输出攻击者键组成的pointer。UTF-8/JSON/词法错误归无效输入，预算超限归容量拒绝；上游响应非法是SDK协议错误，不是服务已拒绝或命令失败。已提交写操作遇非法响应仍须查询原operation，禁止因此重发。
+
+## 9. D1—D2补充：生成元数据的完整性
+
+当前源码对账：routes有52条九字段定义（common17、Controller21、Seamer14），展开后69个普通HTTP操作，加两服务各1个WS升级即71；WS的安全/Origin/子协议/票据及帧引用不在routes中。首次issueWsTicket的201秘密响应与重复200绑定响应、登录Set-Cookie/X-CSRF-Token/Cache-Control均须保留。公共Schema的86个integer和5个number节点包含条件重复约束；number实际用于JsonValue及ClockStatus两个字段。CapacityStatus.usage的used/limit没有maximum，SDK安全整数守卫仍适用。IPC evidence payload的空对象Schema另受allOf分流，不能当作最终无约束；SchemaDescriptor.document才是待二次批准的开放文档。（来源：当前[路由](contracts/draft4/routes.json)、[Controller OpenAPI](contracts/draft4/controller.openapi.json)、[公共Schema](contracts/draft4/first-loop.schema.json)、[IPC](contracts/draft4/ipc.schema.json)；本轮只读逐节点核对。）
+
+权威HTTP源推荐保存完整OpenAPI文档骨架，包括root、Path Item、Operation和所有非schemas components；`components.schemas`只由公共Schema导出映射生成，不手写第二份模型。第2节的`http/*.operations.json`据此包含完整骨架，而非routes九字段表。保留所有headers、参数required/style/explode、requestBody、各状态/content、security、servers、tags、描述、x-*及WS升级声明；空security与继承security不能混同。原完整OpenAPI留作迁移对账输入，生成时不得从旧Python补默认值。
+
+| 源记录 | 必须字段与关联规则 |
+| --- | --- |
+| source-manifest | source_release、schema_dialect、public_protocol、ipc_protocol、文件path/role/原始sha256、上游来源及许可引用；自身不列自身hash，外层批准记录绑定整个manifest |
+| schema_registry | 唯一$id→本地file；export_name→model_pointer、public/internal可见性；ref解析封闭、同$id不同内容拒绝，内部类型不得意外公开 |
+| http_binding | service、operation_id、HTTP源path及operation_pointer、request/response各自wire_profile_ref、semantic_rule_ids；唯一键为(service,operation_id)，共用操作在两服务分别绑定 |
+| ws_binding | service、upgrade_operation_id、subprotocol、双向message_root及wire_profile_ref、ticket/ACK语义规则、关闭原因映射；HTTP101不能代替帧契约 |
+| ipc_binding | ipc_protocol、message_kind、方向、message_root、wire_profile_ref及semantic_rule_ids；与全部19类历史消息对账，新增另版 |
+| digest-projections | projection_id/version、input_model_ref、精确字段路径/缺省/排序/排除规则、规范化算法及fixture_ids；不允许递归按字段名删除；历史有缺陷投影只在等价包保留 |
+| semantic-rules | rule_id、输入根/关联引用、失败码、执行层、fixture_ids、实现符号映射；代码实现由规则追踪，纯数据说明不冒充可运行判定 |
+| generated-manifest | 原始源清单hash、完整工具锁hash、编译器/转换器配置hash、输出path/role/hash、源节点→输出节点映射、验证报告引用；生成记录与输入源分开，避免循环hash |
+
+公开/内部、HTTP/WS/IPC目录都以具名根注册，不把所有$defs自动导出。每条操作必须有唯一匹配，不存在的模型/方向/profile/规则、重复操作、漏WS、未消费源字段或意外输出均令生成失败。输出只允许清单里的相对POSIX路径，拒绝穿越、绝对/盘符路径和大小写碰撞；禁止运行时fetch外部ref。生成清单的原始文件hash与JCS业务内容hash分栏，任何生成物改动须重生成而非手修。
+
+等价提取时须如实记录draft.4尚无客户端ACK帧，`client_message_root=null`表示该历史入口不接受应用层客户端帧；不能捏造ACK模型凑成完整双向协议。C05下一版再显式增加客户端帧及规则，不能把这个null继承为新版已完成。候选夹具里的fixtureWsUpgrade是合成关联标识，不声称它是现有operationId；实际源节点解析及全覆盖对账仍须执行SV02。
+
+附[候选输入描述Schema与正反例](contracts/df01/decoder-design.schema.json)用于校验预算、HTTP/WS绑定的**局部格式和关联规则**；不是完整OpenAPI替代物、完整source-manifest或产品解码器。原始报文用例独立登记，当前只核验夹具格式/数学预期及描述元数据，不声称报文已被SDK正确拒绝。
+
+本轮新增放行细项仍归SV02/SV07/SV10/SV14/SV16/SV18：无效UTF-8不能被text模式修复；分片代理对/UTF-8截断/BOM；重复转义键；integer条件及oneOf分支保留；ref/嵌套数组token定位；两并发上下文互不污染；number下溢；预算等号/超1；缺/错操作绑定和双向WS遗漏；源节点映射覆盖；错误响应不重发。实际SDK/Ajv/CSP/并发及压测均未运行，新推荐审阅和完整机器归并仍是实施前设计门槛。

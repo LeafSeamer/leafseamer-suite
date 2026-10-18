@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5S]: F:记录严格解码候选、系统设计收敛及参考验证和本地提交进展 | R:code:docs/rebirth-df01-sdk-freeze.md | A:开发历程与验证边界 | S:元数据检查不执行SDK解析器；候选不因自动续跑获准，本地提交不授权推送
+DEVELOPMENT_MEMO.md[SO5S]: F:记录授时模型复审、严格解码候选及设计验证和本地提交进展 | R:code:docs/rebirth-df03-time-profile-design.md,code:docs/rebirth-df01-sdk-freeze.md | A:开发历程与验证边界 | S:算术和描述检查不是采集器或SDK运行；候选不因自动续跑获准，本地提交不授权推送
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -29,7 +29,7 @@ rebirth-review.md[SG8M]: F:保留需求确认和跨项冲突记录并连接实�
 rebirth-technology-selection.md[SV8S]: F:记录SDK生成、认证、SQLite与时钟技术方向及试验计划 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-df01-sdk-freeze.md | A:TS01至TS05、TV01至TV14 | S:早期TS6.0建议被DF01的5.9.3生成候选替代；精确制品未冻结，旧宿主boot建域已由受监督域取代
 rebirth-df01-sdk-freeze.md[SN9M]: F:设计SDK唯一源生成链与严格字节解码及JCS大整数和元数据冻结 | R:code:docs/contracts/df01/README.md,code:docs/rebirth-c04-automation-design.md | A:D1至D6、SV01至SV20及原始token候选 | S:text响应会丢非法字节证据；整数守卫随Schema分支，候选Ajv适配未验；BOM下溢收紧须审阅，历史无ACK不能伪补；等价提取和新版修订分离
 rebirth-df02-runtime-design.md[SR9S]: F:设计可信启动、创建时纳管及运行域恢复与故障验收 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-f02-f03-design.md,code:docs/rebirth-draft4-review.md | A:R01至R06、bootstrap候选、RT01至RT35 | S:Job须创建时加入；Linux分UID阻止路径重开迁移；HMAC绑定不可变启动意图。组空不证明未发送或释放资源；候选Schema与平台试验未完成
-rebirth-df03-time-profile-design.md[SR9M]: F:设计授时字段映射、源年龄和一致性证明及批准失效流程 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-draft4-review.md,code:docs/rebirth-df02-runtime-design.md | A:P01至P07、采集附属记录及TP01至TP36 | S:前后等值不证明原子快照；LastRx不直接代表模型年龄。W32查询隔离权限；缺来源身份只诊断不造证据；推荐待审阅，平台无获批profile，机器基线不变
+rebirth-df03-time-profile-design.md[SR9M]: F:设计授时年龄一致性和失效边界并提出应用参考时钟复审路径 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-draft4-review.md,code:docs/rebirth-df02-runtime-design.md | A:P01至P07、两模型路线及TP01至TP48 | S:查询相同非原子证明，W32有年龄但绑定未证；参考区间依赖服务端误差及本地速率前提，NTS认证不证准确。新模型待审阅不得混入system-bound；无平台批准或运行验收
 rebirth-df04-storage-design.md[SD9M]: F:设计SQLite表索引、精确整数、执行事务及保留备份恢复 | R:code:docs/rebirth-f02-f03-design.md,code:docs/contracts/df04/README.md,code:docs/rebirth-c06-schedule-design.md,code:docs/rebirth-c12-deployment-design.md | A:DB01至DB06、T1至T8与R1至R5、ST01至ST32 | S:终态资源和ready分离；intent不作重传outbox，旧域资格不恢复；安装库不随业务备份回退且只选择引用；局部SQL通过非完整DDL或运行验收
 rebirth-df05-release-design.md[SV9S]: F:设计发布清单、TUF信任根、原生能力和维护升级回退 | R:code:docs/rebirth-platform-freeze.md,code:docs/contracts/df05/README.md,code:docs/rebirth-c12-deployment-design.md | A:AF01至AF06、RA01至RA28 | S:回退旧payload不降信任或恢复旧许可；TUF不套业务JCS；C12安装库选择完整程序数据代，非跨文件原子；安装完成非ready，候选及真实发行未验
 rebirth-df06-internal-trust-design.md[SN9S]: F:设计内部mTLS对象授权、来源注册、因果采样、查询保护和日志边界 | R:code:docs/rebirth-f04-f05-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/contracts/df06/README.md | A:IA01至IA06、IN01至IN32 | S:TLS与digest不单独证明权限或新采样；来源跨服务命名空间及一次消费待归并，旧机器基线不变；新推荐待审阅，运行未验收
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9S]: F:设计Mixer与DM3及WING和VB完整控制�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份、完整投影、控制转交、实时编辑、恢复与设备及兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:转交accepted非effective或ready；只合并未提交输入，手势结束不延后补发；刷新查询不重放，unknown核对不改终态；兼容编辑器须显式批准，原入口不继承仲裁；工具链未锁且运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署拓扑与代理、宿主生命周期、只读图文、备份和维护切换 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器需宿主退役证明；输出仅三路有限读取且保留原渲染，非通用NodeCG隔离；安装库只原子选择整组引用，文件耐久另验；备份不恢复旧资格，候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖的精确候选及冻结步骤和验证用例 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，构建原生依赖另验；TUF不套业务JCS，初始根与时间适配待定，运行未验
-rebirth-design-closure.md[SQ8T]: F:汇总十二契约关闭条件及严格解码候选等实质缺口的收敛状态 | R:code:docs/rebirth-readiness.md,code:docs/rebirth-df01-sdk-freeze.md | A:C01至C12关闭条件与七类缺口 | S:DF01已有方案仍待审阅归并；十八模块已盘点但未逐项冻结，运行证据后置不免设计，先等价再修订
+rebirth-design-closure.md[SQ8T]: F:汇总十二契约关闭条件及解码与授时路线等实质缺口的收敛状态 | R:code:docs/rebirth-readiness.md,code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-df03-time-profile-design.md | A:C01至C12关闭条件与七类缺口 | S:DF03模型变更待审阅不替换NF02；十八模块已盘点未逐项冻结，运行证据后置不免设计；先等价再修订
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-

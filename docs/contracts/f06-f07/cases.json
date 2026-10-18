@@ -1,0 +1,4047 @@
+{
+  "examples": [
+    {
+      "case_id": "EX-CatalogBinding",
+      "model": "CatalogBinding",
+      "instance": {
+        "device_id": "obs-1",
+        "device_session_id": "session-1",
+        "collection_ref": "collection-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "binding_revision": "1",
+        "status": "ready",
+        "entries": [
+          {
+            "scene_id": "scene-1",
+            "obs_scene_uuid": "00000000-0000-4000-8000-000000000001",
+            "display_name": "Scene A"
+          }
+        ]
+      },
+      "schema_valid": true,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-ObsEvidenceFrame",
+      "model": "ObsEvidenceFrame",
+      "instance": {
+        "evidence_id": "ev-0",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "protocol_request_id": "set-1",
+        "kind": "set_send",
+        "io_seq": "1",
+        "tick_ns": "1000000",
+        "success": null,
+        "scene_uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "schema_valid": true,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-ObsCompletionBundle",
+      "model": "ObsCompletionBundle",
+      "instance": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "schema_valid": true,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-EffectFootprint",
+      "model": "EffectFootprint",
+      "instance": {
+        "action_ref": "sim.marker.set",
+        "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "semantics_revision": "1",
+        "complete": true,
+        "reads": [],
+        "writes": [
+          "device/A/marker"
+        ],
+        "failure_writes": [
+          "device/A/marker"
+        ],
+        "resources": [
+          "device/A"
+        ],
+        "safe_failure_classes": [
+          "rejected_before_effect"
+        ]
+      },
+      "schema_valid": true,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-IndependenceProof",
+      "model": "IndependenceProof",
+      "instance": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "schema_valid": true,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-RecoverySnapshot",
+      "model": "RecoverySnapshot",
+      "instance": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "schema_valid": true,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-RecoveryOperation",
+      "model": "RecoveryOperation",
+      "instance": {
+        "operation_id": "recovery-1",
+        "run_id": "run-1",
+        "preview_id": "preview-1",
+        "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "previous_run_revision": "8",
+        "committed_run_revision": "9",
+        "recovery_generation": "3",
+        "state": "reserved",
+        "new_execution_id": "exec-2",
+        "new_command_ids": [],
+        "consumed": true
+      },
+      "schema_valid": true,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-extra",
+      "model": "RecoveryOperation",
+      "instance": {
+        "operation_id": "recovery-1",
+        "run_id": "run-1",
+        "preview_id": "preview-1",
+        "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "previous_run_revision": "8",
+        "committed_run_revision": "9",
+        "recovery_generation": "3",
+        "state": "reserved",
+        "new_execution_id": "exec-2",
+        "new_command_ids": [],
+        "consumed": true,
+        "retry_old_intent": true
+      },
+      "schema_valid": false,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-integer-revision",
+      "model": "RecoverySnapshot",
+      "instance": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": 8,
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "schema_valid": false,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-bad-uuid",
+      "model": "ObsEvidenceFrame",
+      "instance": {
+        "evidence_id": "ev-0",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "protocol_request_id": "set-1",
+        "kind": "set_send",
+        "io_seq": "1",
+        "tick_ns": "1000000",
+        "success": null,
+        "scene_uuid": "by-name"
+      },
+      "schema_valid": false,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-missing-frame",
+      "model": "ObsCompletionBundle",
+      "instance": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "schema_valid": false,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-reopened",
+      "model": "RecoveryOperation",
+      "instance": {
+        "operation_id": "recovery-1",
+        "run_id": "run-1",
+        "preview_id": "preview-1",
+        "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "previous_run_revision": "8",
+        "committed_run_revision": "9",
+        "recovery_generation": "3",
+        "state": "queued",
+        "new_execution_id": "exec-2",
+        "new_command_ids": [],
+        "consumed": true
+      },
+      "schema_valid": false,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-wildcard",
+      "model": "EffectFootprint",
+      "instance": {
+        "action_ref": "sim.marker.set",
+        "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "semantics_revision": "1",
+        "complete": true,
+        "reads": [],
+        "writes": [
+          "device/*"
+        ],
+        "failure_writes": [
+          "device/A/marker"
+        ],
+        "resources": [
+          "device/A"
+        ],
+        "safe_failure_classes": [
+          "rejected_before_effect"
+        ]
+      },
+      "schema_valid": false,
+      "semantic_error": null
+    },
+    {
+      "case_id": "EX-duplicate-scene",
+      "model": "CatalogBinding",
+      "instance": {
+        "device_id": "obs-1",
+        "device_session_id": "session-1",
+        "collection_ref": "collection-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "binding_revision": "1",
+        "status": "ready",
+        "entries": [
+          {
+            "scene_id": "scene-1",
+            "obs_scene_uuid": "00000000-0000-4000-8000-000000000001",
+            "display_name": "Scene A"
+          },
+          {
+            "scene_id": "scene-2",
+            "obs_scene_uuid": "00000000-0000-4000-8000-000000000001",
+            "display_name": "B"
+          }
+        ]
+      },
+      "schema_valid": true,
+      "semantic_error": "catalog_identity"
+    },
+    {
+      "case_id": "EX-bad-digest",
+      "model": "RecoverySnapshot",
+      "instance": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "schema_valid": true,
+      "semantic_error": "preview_digest"
+    },
+    {
+      "case_id": "EX-zero-ttl",
+      "model": "RecoverySnapshot",
+      "instance": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "1000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:cb9ee2f94e487890861e7b92a69a0246d025e1cdebd2c37ce36fb57bddee7d40"
+      },
+      "schema_valid": true,
+      "semantic_error": "preview_window"
+    },
+    {
+      "case_id": "EX-no-revision-advance",
+      "model": "RecoveryOperation",
+      "instance": {
+        "operation_id": "recovery-1",
+        "run_id": "run-1",
+        "preview_id": "preview-1",
+        "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "previous_run_revision": "8",
+        "committed_run_revision": "8",
+        "recovery_generation": "3",
+        "state": "reserved",
+        "new_execution_id": "exec-2",
+        "new_command_ids": [],
+        "consumed": true
+      },
+      "schema_valid": true,
+      "semantic_error": "revision_advance"
+    },
+    {
+      "case_id": "EX-forged-proof",
+      "model": "IndependenceProof",
+      "instance": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/A/marker"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "schema_valid": true,
+      "semantic_error": "proof_verdict"
+    }
+  ],
+  "obs_cases": [
+    {
+      "case_id": "O01",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "verified"
+    },
+    {
+      "case_id": "O02",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-old",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "identity"
+    },
+    {
+      "case_id": "O03",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-old",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "identity"
+    },
+    {
+      "case_id": "O04",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "1",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "identity"
+    },
+    {
+      "case_id": "O05",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "2",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "order"
+    },
+    {
+      "case_id": "O06",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "1",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "order"
+    },
+    {
+      "case_id": "O07",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "request"
+    },
+    {
+      "case_id": "O08",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "set-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "request"
+    },
+    {
+      "case_id": "O09",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": false,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "ack"
+    },
+    {
+      "case_id": "O10",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000002"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "predicate"
+    },
+    {
+      "case_id": "O11",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "1000000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "deadline"
+    },
+    {
+      "case_id": "O12",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "504000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "age"
+    },
+    {
+      "case_id": "O13",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "503999999",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "verified"
+    },
+    {
+      "case_id": "O14",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": false,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "generation"
+    },
+    {
+      "case_id": "O15",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": false,
+        "durable": true
+      },
+      "expected": "generation"
+    },
+    {
+      "case_id": "O16",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": false
+      },
+      "expected": "durability"
+    },
+    {
+      "case_id": "O17",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "set_ack",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "kind"
+    },
+    {
+      "case_id": "O18",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "identity"
+    },
+    {
+      "case_id": "O19",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "5000000",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "predicate"
+    },
+    {
+      "case_id": "O20",
+      "bundle": {
+        "policy_id": "obs.program_scene.cut.v1",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "worker_boot_id": "boot-1",
+        "device_session_id": "session-1",
+        "collection_generation": "1",
+        "catalog_revision": "2",
+        "target_scene_uuid": "00000000-0000-4000-8000-000000000001",
+        "set_request_id": "set-1",
+        "query_request_id": "query-1",
+        "frames": [
+          {
+            "evidence_id": "ev-0",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_send",
+            "io_seq": "1",
+            "tick_ns": "1000000",
+            "success": null,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "evidence_id": "ev-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "set-1",
+            "kind": "set_ack",
+            "io_seq": "2",
+            "tick_ns": "2000000",
+            "success": true,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-2",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_send",
+            "io_seq": "3",
+            "tick_ns": "3000000",
+            "success": null,
+            "scene_uuid": null
+          },
+          {
+            "evidence_id": "ev-3",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "worker_boot_id": "boot-1",
+            "device_session_id": "session-1",
+            "collection_generation": "1",
+            "catalog_revision": "2",
+            "protocol_request_id": "query-1",
+            "kind": "query_result",
+            "io_seq": "4",
+            "tick_ns": "4000000",
+            "success": true,
+            "scene_uuid": "00000000-0000-4000-8000-000000000001"
+          }
+        ],
+        "evaluation_tick_ns": "3999999",
+        "deadline_tick_ns": "1000000000",
+        "max_query_age_ms": 500,
+        "catalog_current": true,
+        "fixture_current": true,
+        "durable": true
+      },
+      "expected": "age"
+    }
+  ],
+  "proof_cases": [
+    {
+      "case_id": "P01",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "independent"
+    },
+    {
+      "case_id": "P02",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/A/marker"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "dependent"
+    },
+    {
+      "case_id": "P03",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/A"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "dependent"
+    },
+    {
+      "case_id": "P04",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/A/marker/detail"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "dependent"
+    },
+    {
+      "case_id": "P05",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/A"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "dependent"
+    },
+    {
+      "case_id": "P06",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": true,
+        "verdict": "independent"
+      },
+      "expected": "dependent"
+    },
+    {
+      "case_id": "P07",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": false,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "unknown"
+    },
+    {
+      "case_id": "P08",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": false,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "unknown"
+    },
+    {
+      "case_id": "P09",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/B"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "dependent"
+    },
+    {
+      "case_id": "P10",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/A"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/AB"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "independent"
+    },
+    {
+      "case_id": "P11",
+      "proof": {
+        "proof_id": "proof-1",
+        "proof_revision": "1",
+        "generator_version": "finite-dsl-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "failed_step_id": "step-1",
+        "successor_step_ids": [
+          "step-2"
+        ],
+        "failed_footprint": {
+          "action_ref": "sim.marker.set",
+          "manifest_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "semantics_revision": "1",
+          "complete": true,
+          "reads": [],
+          "writes": [
+            "device/A/marker"
+          ],
+          "failure_writes": [
+            "device/A/marker"
+          ],
+          "resources": [
+            "device/B"
+          ],
+          "safe_failure_classes": [
+            "rejected_before_effect"
+          ]
+        },
+        "successor_reads": [
+          "device/B/state"
+        ],
+        "successor_writes": [
+          "device/B/marker"
+        ],
+        "successor_resources": [
+          "device/B"
+        ],
+        "graph_complete": true,
+        "control_dependency": false,
+        "verdict": "independent"
+      },
+      "expected": "dependent"
+    }
+  ],
+  "continue_cases": [
+    {
+      "case_id": "C01",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": true
+    },
+    {
+      "case_id": "C02",
+      "input": {
+        "context": "transition",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C03",
+      "input": {
+        "context": "parallel",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C04",
+      "input": {
+        "context": "simple_sequence",
+        "required": true,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C05",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "unknown",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C06",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "blocked",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C07",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "expired",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C08",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "cancelled",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C09",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "permission_revoked",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C10",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "unresolved",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C11",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": false,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C12",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": false,
+        "proof_verdict": "independent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C13",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "dependent",
+        "gates_valid": true
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    },
+    {
+      "case_id": "C14",
+      "input": {
+        "context": "simple_sequence",
+        "required": false,
+        "outcome": "failed",
+        "failure_class": "rejected_before_effect",
+        "resource_status": "clear",
+        "release_proved": true,
+        "proof_current": true,
+        "proof_verdict": "independent",
+        "gates_valid": false
+      },
+      "safe_failure_classes": [
+        "rejected_before_effect"
+      ],
+      "expected": false
+    }
+  ],
+  "recovery_cases": [
+    {
+      "case_id": "R01",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        },
+        {
+          "key": "actor-B/key-2",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "accepted",
+        "conflict"
+      ]
+    },
+    {
+      "case_id": "R02",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-B/key-2",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        },
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "accepted",
+        "conflict"
+      ]
+    },
+    {
+      "case_id": "R03",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        },
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "accepted",
+        "existing"
+      ]
+    },
+    {
+      "case_id": "R04",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        },
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "accepted",
+        "request_conflict"
+      ]
+    },
+    {
+      "case_id": "R05",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "30001000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "expired"
+      ]
+    },
+    {
+      "case_id": "R06",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        },
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "30001000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "accepted",
+        "existing"
+      ]
+    },
+    {
+      "case_id": "R07",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "new-boot",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R08",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R09",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R10",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R11",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [
+          "cmd-old"
+        ],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:b1ef5be8e047fea3c1339e8bc9034da9a5d265f8968451a9e632c6fec8834890"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "unresolved"
+      ]
+    },
+    {
+      "case_id": "R12",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        },
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": false,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "accepted",
+        "forbidden"
+      ]
+    },
+    {
+      "case_id": "R13",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": false
+        },
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "protected",
+        "accepted"
+      ]
+    },
+    {
+      "case_id": "R14",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "9",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "conflict"
+      ]
+    },
+    {
+      "case_id": "R15",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "new-epoch",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R16",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R17",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "999999",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "expired"
+      ]
+    },
+    {
+      "case_id": "R18",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "3"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R19",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "step-2"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "stale"
+      ]
+    },
+    {
+      "case_id": "R20",
+      "snapshot": {
+        "preview_id": "preview-1",
+        "run_id": "run-1",
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2",
+        "issued_tick_ns": "1000000",
+        "expires_tick_ns": "30001000000",
+        "unresolved_command_ids": [],
+        "proposed_step_ids": [
+          "tampered-step"
+        ],
+        "preview_digest": "sha256:e02a3f45d57778e9dde33c9b870e5701d8fec2eb889bc147952a3c5e7aadd358"
+      },
+      "current": {
+        "run_revision": "8",
+        "service_boot_id": "seamer-boot-1",
+        "request_epoch": "epoch-1",
+        "definition_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "plan_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "authorization_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "control_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "proof_bindings_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "arm_generation": "2"
+      },
+      "actions": [
+        {
+          "key": "actor-A/key-1",
+          "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "now_tick_ns": "2000000",
+          "authorized": true,
+          "storage_healthy": true
+        }
+      ],
+      "expected": [
+        "invalid_snapshot"
+      ]
+    }
+  ]
+}

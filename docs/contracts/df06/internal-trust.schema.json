@@ -1,0 +1,496 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DF06有限附属候选；选择具体defs校验，不构成鉴权",
+  "$defs": {
+    "SourceBindingRef": {
+      "type": "object",
+      "properties": {
+        "registration_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 20
+        },
+        "owner_service_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "database_instance_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "provider_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "provider_boot_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "device_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "trigger_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capability_version": {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z.+-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capture_policy_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capture_policy_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 20
+        },
+        "delivery_semantics": {
+          "enum": [
+            "sampled",
+            "discrete"
+          ]
+        }
+      },
+      "required": [
+        "registration_id",
+        "revision",
+        "owner_service_id",
+        "database_instance_id",
+        "provider_id",
+        "provider_boot_id",
+        "device_id",
+        "trigger_id",
+        "capability_version",
+        "capture_policy_id",
+        "capture_policy_revision",
+        "delivery_semantics"
+      ],
+      "additionalProperties": false
+    },
+    "ClockDomainRef": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 70
+        },
+        "descriptor_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 71
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "SampleChallenge": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "internal-trust/0.1.0-draft.1"
+        },
+        "challenge_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 64
+        },
+        "verifier_service_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "verifier_domain": {
+          "$ref": "#/$defs/ClockDomainRef"
+        },
+        "source_binding": {
+          "$ref": "#/$defs/SourceBindingRef"
+        },
+        "scope_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 71
+        },
+        "max_age_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        }
+      },
+      "required": [
+        "schema_version",
+        "challenge_id",
+        "verifier_service_id",
+        "verifier_domain",
+        "source_binding",
+        "scope_digest",
+        "max_age_ms"
+      ],
+      "additionalProperties": false
+    },
+    "CaptureReceipt": {
+      "type": "object",
+      "properties": {
+        "challenge_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 64
+        },
+        "request_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 71
+        },
+        "source_binding": {
+          "$ref": "#/$defs/SourceBindingRef"
+        },
+        "scope_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 71
+        },
+        "origin_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 71
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "source_sequence": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 20
+        },
+        "capture_query_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "source_session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capture_policy_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capture_policy_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 20
+        },
+        "capture_mode": {
+          "const": "fresh_query"
+        }
+      },
+      "required": [
+        "challenge_id",
+        "request_digest",
+        "source_binding",
+        "scope_digest",
+        "origin_digest",
+        "event_id",
+        "source_sequence",
+        "capture_query_id",
+        "source_session_id",
+        "capture_policy_id",
+        "capture_policy_revision",
+        "capture_mode"
+      ],
+      "additionalProperties": false
+    },
+    "PendingCapture": {
+      "type": "object",
+      "properties": {
+        "challenge_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 64
+        },
+        "request_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+          "maxLength": 71
+        },
+        "verifier_domain": {
+          "$ref": "#/$defs/ClockDomainRef"
+        },
+        "sent_tick_ns": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 24
+        },
+        "expires_tick_ns": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 24
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "consumed",
+            "expired",
+            "invalidated"
+          ]
+        },
+        "result_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+              "maxLength": 71
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "challenge_id",
+        "request_digest",
+        "verifier_domain",
+        "sent_tick_ns",
+        "expires_tick_ns",
+        "state",
+        "result_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "consumed"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "result_digest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+                "maxLength": 71
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "result_digest": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "EvidenceReadGrant": {
+      "type": "object",
+      "properties": {
+        "peer_binding_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "peer_binding_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 20
+        },
+        "authority_service_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "object_kind": {
+          "enum": [
+            "clock_domain",
+            "clock_sample",
+            "time_evidence",
+            "time_profile"
+          ]
+        },
+        "object_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "object_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+              "maxLength": 20
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "purpose": {
+          "enum": [
+            "validation",
+            "audit"
+          ]
+        },
+        "state": {
+          "enum": [
+            "active",
+            "revoked"
+          ]
+        }
+      },
+      "required": [
+        "peer_binding_id",
+        "peer_binding_revision",
+        "authority_service_id",
+        "object_kind",
+        "object_id",
+        "object_revision",
+        "purpose",
+        "state"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "object_kind": {
+                "const": "time_profile"
+              }
+            },
+            "required": [
+              "object_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "object_revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+                "maxLength": 20
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "object_revision": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "InternalQueryBudget": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "const": "sim-df06-v1"
+        },
+        "purpose": {
+          "const": "simulation"
+        },
+        "per_peer_concurrent": {
+          "const": 4
+        },
+        "global_concurrent": {
+          "const": 16
+        },
+        "request_max_bytes": {
+          "const": 65536
+        },
+        "response_max_bytes": {
+          "const": 262144
+        },
+        "json_max_depth": {
+          "const": 32
+        },
+        "per_peer_pending_capture": {
+          "const": 8
+        },
+        "global_pending_capture": {
+          "const": 64
+        },
+        "deadline_ms": {
+          "const": 2000
+        },
+        "per_peer_rate": {
+          "const": 10
+        },
+        "per_peer_burst": {
+          "const": 20
+        },
+        "reserved_reconcile_slots": {
+          "const": 4
+        }
+      },
+      "required": [
+        "profile_id",
+        "purpose",
+        "per_peer_concurrent",
+        "global_concurrent",
+        "request_max_bytes",
+        "response_max_bytes",
+        "json_max_depth",
+        "per_peer_pending_capture",
+        "global_pending_capture",
+        "deadline_ms",
+        "per_peer_rate",
+        "per_peer_burst",
+        "reserved_reconcile_slots"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/SourceBindingRef"
+    },
+    {
+      "$ref": "#/$defs/ClockDomainRef"
+    },
+    {
+      "$ref": "#/$defs/SampleChallenge"
+    },
+    {
+      "$ref": "#/$defs/CaptureReceipt"
+    },
+    {
+      "$ref": "#/$defs/PendingCapture"
+    },
+    {
+      "$ref": "#/$defs/EvidenceReadGrant"
+    },
+    {
+      "$ref": "#/$defs/InternalQueryBudget"
+    }
+  ]
+}

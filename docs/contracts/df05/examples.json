@@ -1,0 +1,829 @@
+{
+  "purpose": "synthetic-only-no-payload-no-signatures",
+  "base": {
+    "manifest_schema": "native-release/0.1.0-draft.1",
+    "release_id": "synthetic-preview-1",
+    "release_sequence": "9007199254740993",
+    "channel": "preview",
+    "created_at": "2026-10-17T00:00:00Z",
+    "target_profile_id": "synthetic-windows-x64",
+    "components": {
+      "leafseamer": {
+        "version": "0.1.0-preview.1",
+        "source_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_archive_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "lockfile_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "leafseamer-controller": {
+        "version": "0.1.0-preview.1",
+        "source_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_archive_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "lockfile_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "leafseamer-gui": {
+        "version": "0.1.0-preview.1",
+        "source_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_archive_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "lockfile_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "leafseamer-sdk": {
+        "version": "0.1.0-preview.1",
+        "source_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_archive_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "lockfile_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "leafseamer-suite": {
+        "version": "0.1.0-preview.1",
+        "source_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_archive_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "lockfile_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    "target": {
+      "os": "windows",
+      "arch": "x64",
+      "libc": null,
+      "tested_environment_ref": "reports/environment.json",
+      "required_cpu_features": [],
+      "container_image_digest": null
+    },
+    "protocols": {
+      "public": "1.0.0-draft.4",
+      "ipc": "ipc/0.3.0-draft.1",
+      "bootstrap": "bootstrap/0.1.0-candidate"
+    },
+    "db_compatibility": {
+      "controller": {
+        "read_schema_revisions": [
+          "1"
+        ],
+        "write_schema_revisions": [
+          "1"
+        ]
+      },
+      "seamer": {
+        "read_schema_revisions": [
+          "1"
+        ],
+        "write_schema_revisions": [
+          "1"
+        ]
+      }
+    },
+    "runtime": {
+      "node_version": "24.22.0",
+      "npm_version": "11.19.1",
+      "openssl_version": "synthetic",
+      "artifact_path": "bin/node.exe"
+    },
+    "build": {
+      "toolchain_manifest_path": "build/toolchain.json"
+    },
+    "artifacts": [
+      {
+        "path": "bin/node.exe",
+        "role": "runtime",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "lib/sqlite.node",
+        "role": "native_addon",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "node_api",
+          "napi_version": 10
+        }
+      },
+      {
+        "path": "reports/environment.json",
+        "role": "report",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "build/toolchain.json",
+        "role": "build_metadata",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "reports/sqlite.json",
+        "role": "report",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "reports/argon2.json",
+        "role": "report",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "reports/clock.json",
+        "role": "report",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "reports/acceptance.json",
+        "role": "report",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "reports/rebuild.json",
+        "role": "report",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "reports/sbom.json",
+        "role": "sbom",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "licenses/NOTICE.txt",
+        "role": "license",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      },
+      {
+        "path": "reports/provenance.json",
+        "role": "provenance",
+        "size_bytes": 1,
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "component": "leafseamer-suite",
+        "abi": {
+          "kind": "none"
+        }
+      }
+    ],
+    "dynamic_dependencies": [
+      {
+        "kind": "bundled",
+        "artifact_path": "lib/sqlite.node"
+      },
+      {
+        "kind": "host",
+        "name": "kernel32",
+        "requirement": "synthetic-only",
+        "environment_report_path": "reports/environment.json"
+      }
+    ],
+    "capabilities": {
+      "sqlite": {
+        "version": "3.53.4",
+        "source_id": "synthetic-not-measured",
+        "compile_options_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "expected_pragmas": {
+          "journal_mode": "wal",
+          "synchronous": "FULL",
+          "foreign_keys": true,
+          "busy_timeout": 0,
+          "wal_autocheckpoint": 0
+        },
+        "report_path": "reports/sqlite.json"
+      },
+      "argon2": {
+        "reference_commit": "cccccccccccccccccccccccccccccccccccccccc",
+        "report_path": "reports/argon2.json"
+      },
+      "clock": {
+        "adapter_abi": "synthetic-1",
+        "backend_profile_id": "synthetic-clock",
+        "report_path": "reports/clock.json"
+      }
+    },
+    "reports": {
+      "sbom_path": "reports/sbom.json",
+      "license_bundle_path": "licenses/NOTICE.txt",
+      "acceptance_path": "reports/acceptance.json",
+      "provenance_path": "reports/provenance.json"
+    },
+    "reproducibility": {
+      "status": "unverified",
+      "comparison_target": "unsigned_payload",
+      "report_path": null
+    }
+  },
+  "cases": [
+    {
+      "id": "MF01",
+      "schema_valid": true,
+      "contract_valid": true,
+      "changes": []
+    },
+    {
+      "id": "MF02",
+      "schema_valid": true,
+      "contract_valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "target",
+            "os"
+          ],
+          "value": "linux"
+        },
+        {
+          "op": "set",
+          "path": [
+            "target",
+            "libc"
+          ],
+          "value": "glibc"
+        }
+      ]
+    },
+    {
+      "id": "MF03",
+      "schema_valid": true,
+      "contract_valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "channel"
+          ],
+          "value": "stable"
+        },
+        {
+          "op": "set",
+          "path": [
+            "reproducibility",
+            "status"
+          ],
+          "value": "verified"
+        },
+        {
+          "op": "set",
+          "path": [
+            "reproducibility",
+            "report_path"
+          ],
+          "value": "reports/rebuild.json"
+        }
+      ]
+    },
+    {
+      "id": "MF04",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "delete",
+          "path": [
+            "components",
+            "leafseamer-sdk"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MF05",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "install_script"
+          ],
+          "value": "synthetic"
+        }
+      ]
+    },
+    {
+      "id": "MF06",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "release_sequence"
+          ],
+          "value": 9007199254740992
+        }
+      ]
+    },
+    {
+      "id": "MF07",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "release_sequence"
+          ],
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "id": "MF08",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "release_sequence"
+          ],
+          "value": "1\n"
+        }
+      ]
+    },
+    {
+      "id": "MF09",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "sha256"
+          ],
+          "value": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
+        }
+      ]
+    },
+    {
+      "id": "MF10",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "path"
+          ],
+          "value": "../escape"
+        }
+      ]
+    },
+    {
+      "id": "MF11",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "path"
+          ],
+          "value": "C:/escape"
+        }
+      ]
+    },
+    {
+      "id": "MF12",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "path"
+          ],
+          "value": "bin\\node.exe"
+        }
+      ]
+    },
+    {
+      "id": "MF13",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "path"
+          ],
+          "value": "bin/CON.txt"
+        }
+      ]
+    },
+    {
+      "id": "MF14",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "path"
+          ],
+          "value": "bin/node."
+        }
+      ]
+    },
+    {
+      "id": "MF15",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            1,
+            "path"
+          ],
+          "value": "BIN/NODE.EXE"
+        }
+      ]
+    },
+    {
+      "id": "MF16",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            1,
+            "abi",
+            "modules_abi"
+          ],
+          "value": 137
+        }
+      ]
+    },
+    {
+      "id": "MF17",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            1,
+            "abi"
+          ],
+          "value": {
+            "kind": "none"
+          }
+        }
+      ]
+    },
+    {
+      "id": "MF18",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "runtime",
+            "artifact_path"
+          ],
+          "value": "bin/missing.exe"
+        }
+      ]
+    },
+    {
+      "id": "MF19",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "runtime",
+            "artifact_path"
+          ],
+          "value": "reports/sqlite.json"
+        }
+      ]
+    },
+    {
+      "id": "MF20",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "target",
+            "libc"
+          ],
+          "value": "glibc"
+        }
+      ]
+    },
+    {
+      "id": "MF21",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "channel"
+          ],
+          "value": "stable"
+        }
+      ]
+    },
+    {
+      "id": "MF22",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "reproducibility",
+            "status"
+          ],
+          "value": "verified"
+        }
+      ]
+    },
+    {
+      "id": "MF23",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "dynamic_dependencies",
+            0,
+            "artifact_path"
+          ],
+          "value": "lib/missing.node"
+        }
+      ]
+    },
+    {
+      "id": "MF24",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "capabilities",
+            "sqlite",
+            "expected_pragmas",
+            "synchronous"
+          ],
+          "value": "NORMAL"
+        }
+      ]
+    },
+    {
+      "id": "MF25",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "db_compatibility",
+            "controller",
+            "write_schema_revisions"
+          ],
+          "value": [
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MF26",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "size_bytes"
+          ],
+          "value": -1
+        }
+      ]
+    },
+    {
+      "id": "MF27",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "size_bytes"
+          ],
+          "value": 9007199254740992
+        }
+      ]
+    },
+    {
+      "id": "MF28",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            1,
+            "path"
+          ],
+          "value": "bin/node.exe"
+        }
+      ]
+    },
+    {
+      "id": "MF29",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "dynamic_dependencies",
+            1,
+            "environment_report_path"
+          ],
+          "value": "bin/node.exe"
+        }
+      ]
+    },
+    {
+      "id": "MF30",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "artifacts",
+            0,
+            "path"
+          ],
+          "value": "bin/%2e%2e/node"
+        }
+      ]
+    },
+    {
+      "id": "MF31",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "created_at"
+          ],
+          "value": "2026-99-17T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "MF32",
+      "schema_valid": true,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "target",
+            "container_image_digest"
+          ],
+          "value": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "id": "MF33",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "components",
+            "leafseamer-sdk",
+            "version"
+          ],
+          "value": "1.2.3-preview.01"
+        }
+      ]
+    },
+    {
+      "id": "MF34",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "components",
+            "leafseamer-sdk",
+            "version"
+          ],
+          "value": "1.2.3-preview..1"
+        }
+      ]
+    },
+    {
+      "id": "MF35",
+      "schema_valid": true,
+      "contract_valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "components",
+            "leafseamer-sdk",
+            "version"
+          ],
+          "value": "1.2.3-preview.1+build.01"
+        }
+      ]
+    },
+    {
+      "id": "MF36",
+      "schema_valid": false,
+      "contract_valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": [
+            "components",
+            "leafseamer-sdk",
+            "version"
+          ],
+          "value": "01.2.3"
+        }
+      ]
+    }
+  ]
+}

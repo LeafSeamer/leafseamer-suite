@@ -1,0 +1,6125 @@
+[
+  {
+    "case_id": "valid-Meta",
+    "model": "Meta",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "protocol_version": "1.0.0-draft.2",
+      "component_version": "1.0.0-draft.2",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "features": [
+        "commands-v1"
+      ],
+      "limits_profile": "sim-first-loop"
+    }
+  },
+  {
+    "case_id": "valid-ClockStatus",
+    "model": "ClockStatus",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "status": "synchronized",
+      "source_ref": "clock-test",
+      "sampled_at": "2026-10-17T00:00:00.000Z",
+      "offset_ms": 0,
+      "uncertainty_ms": 5,
+      "sample_age_ms": 1,
+      "policy_revision": "1"
+    }
+  },
+  {
+    "case_id": "valid-Session",
+    "model": "Session",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "principal_id": "user-test",
+      "authorization_revision": "2",
+      "permissions": [
+        "device.read"
+      ],
+      "validity": {
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-17T00:01:00.000Z",
+        "authorization_policy_revision": "1"
+      },
+      "session_id": "session-test"
+    }
+  },
+  {
+    "case_id": "valid-RequestContextRequest",
+    "model": "RequestContextRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "audience": "controller-test",
+      "operations": [
+        "submitCommand"
+      ],
+      "ttl_ms": 60000,
+      "max_unique_requests": 256
+    }
+  },
+  {
+    "case_id": "valid-RequestContext",
+    "model": "RequestContext",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "service_id": "controller-test",
+      "principal_id": "user-test",
+      "audience": "controller-test",
+      "operations": [
+        "submitCommand"
+      ],
+      "issued_at": "2026-10-17T00:00:00.000Z",
+      "expires_at": "2026-10-17T00:01:00.000Z",
+      "ttl_ms": 60000,
+      "max_unique_requests": 256,
+      "context_epoch": "ctx-epoch-test"
+    }
+  },
+  {
+    "case_id": "valid-DevicePage",
+    "model": "DevicePage",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "items": [
+        {
+          "device_id": "obs-test",
+          "device_kind": "obs",
+          "display_name": "隔离测试",
+          "connection_state": "ready",
+          "actions": [
+            {
+              "action_id": "test.set",
+              "capability_version": "1.0.0-draft.2",
+              "parameters_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "result_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "resources": [
+                "device/test/value"
+              ],
+              "completion": {
+                "supported": [
+                  "effect_verified"
+                ],
+                "default": "effect_verified",
+                "evidence_policy_id": "evidence-test"
+              },
+              "cancel": {
+                "mode": "before_dispatch_only"
+              },
+              "retry": {
+                "mode": "never"
+              },
+              "preconditions_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "read_set": [],
+              "write_set": [
+                "device/test/value"
+              ],
+              "evidence_timeout_ms": 5000,
+              "limits_profile": "sim-first-loop",
+              "platforms": [
+                {
+                  "os": "windows",
+                  "arch": "x64",
+                  "status": "untested"
+                }
+              ],
+              "dependencies": []
+            }
+          ],
+          "triggers": [
+            {
+              "trigger_id": "test.changed",
+              "capability_version": "1.0.0-draft.2",
+              "payload_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "delivery_semantics": "discrete",
+              "time_requirement": "relative_age",
+              "max_age_ms": 2000,
+              "causation_support": "none",
+              "sampling_policy": null
+            }
+          ],
+          "state_schema": {
+            "schema_id": "schema-test",
+            "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+            "dialect": "https://json-schema.org/draft/2020-12/schema",
+            "document": {
+              "type": "object",
+              "properties": {
+                "scene_ref": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "scene_ref"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ],
+      "next_cursor": null,
+      "catalog_revision": "3"
+    }
+  },
+  {
+    "case_id": "valid-CapabilityCatalog",
+    "model": "CapabilityCatalog",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "provider_id": "provider-test",
+      "provider_boot_id": "provider-boot-test",
+      "catalog_revision": "3",
+      "module_id": "module-test",
+      "module_version": "1.0.0-draft.2",
+      "devices": [
+        {
+          "device_id": "obs-test",
+          "device_kind": "obs",
+          "display_name": "隔离测试",
+          "connection_state": "ready",
+          "actions": [
+            {
+              "action_id": "test.set",
+              "capability_version": "1.0.0-draft.2",
+              "parameters_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "result_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "resources": [
+                "device/test/value"
+              ],
+              "completion": {
+                "supported": [
+                  "effect_verified"
+                ],
+                "default": "effect_verified",
+                "evidence_policy_id": "evidence-test"
+              },
+              "cancel": {
+                "mode": "before_dispatch_only"
+              },
+              "retry": {
+                "mode": "never"
+              },
+              "preconditions_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "read_set": [],
+              "write_set": [
+                "device/test/value"
+              ],
+              "evidence_timeout_ms": 5000,
+              "limits_profile": "sim-first-loop",
+              "platforms": [
+                {
+                  "os": "windows",
+                  "arch": "x64",
+                  "status": "untested"
+                }
+              ],
+              "dependencies": []
+            }
+          ],
+          "triggers": [
+            {
+              "trigger_id": "test.changed",
+              "capability_version": "1.0.0-draft.2",
+              "payload_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "delivery_semantics": "discrete",
+              "time_requirement": "relative_age",
+              "max_age_ms": 2000,
+              "causation_support": "none",
+              "sampling_policy": null
+            }
+          ],
+          "state_schema": {
+            "schema_id": "schema-test",
+            "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+            "dialect": "https://json-schema.org/draft/2020-12/schema",
+            "document": {
+              "type": "object",
+              "properties": {
+                "scene_ref": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "scene_ref"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "valid-CatalogUpdate",
+    "model": "CatalogUpdate",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "expected_revision": null,
+      "catalog": {
+        "provider_id": "provider-test",
+        "provider_boot_id": "provider-boot-test",
+        "catalog_revision": "3",
+        "module_id": "module-test",
+        "module_version": "1.0.0-draft.2",
+        "devices": [
+          {
+            "device_id": "obs-test",
+            "device_kind": "obs",
+            "display_name": "隔离测试",
+            "connection_state": "ready",
+            "actions": [
+              {
+                "action_id": "test.set",
+                "capability_version": "1.0.0-draft.2",
+                "parameters_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "result_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "resources": [
+                  "device/test/value"
+                ],
+                "completion": {
+                  "supported": [
+                    "effect_verified"
+                  ],
+                  "default": "effect_verified",
+                  "evidence_policy_id": "evidence-test"
+                },
+                "cancel": {
+                  "mode": "before_dispatch_only"
+                },
+                "retry": {
+                  "mode": "never"
+                },
+                "preconditions_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "read_set": [],
+                "write_set": [
+                  "device/test/value"
+                ],
+                "evidence_timeout_ms": 5000,
+                "limits_profile": "sim-first-loop",
+                "platforms": [
+                  {
+                    "os": "windows",
+                    "arch": "x64",
+                    "status": "untested"
+                  }
+                ],
+                "dependencies": []
+              }
+            ],
+            "triggers": [
+              {
+                "trigger_id": "test.changed",
+                "capability_version": "1.0.0-draft.2",
+                "payload_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "delivery_semantics": "discrete",
+                "time_requirement": "relative_age",
+                "max_age_ms": 2000,
+                "causation_support": "none",
+                "sampling_policy": null
+              }
+            ],
+            "state_schema": {
+              "schema_id": "schema-test",
+              "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+              "dialect": "https://json-schema.org/draft/2020-12/schema",
+              "document": {
+                "type": "object",
+                "properties": {
+                  "scene_ref": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "scene_ref"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "case_id": "valid-Observation",
+    "model": "Observation",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "observation_id": "obs-evidence-test",
+      "device_id": "obs-test",
+      "provider_boot_id": "provider-boot-test",
+      "device_session_id": "device-session-test",
+      "state_revision": "5",
+      "observed_at": "2026-10-17T00:00:00.000Z",
+      "clock": {
+        "status": "synchronized",
+        "source_ref": "clock-test",
+        "sampled_at": "2026-10-17T00:00:00.000Z",
+        "offset_ms": 0,
+        "uncertainty_ms": 5,
+        "sample_age_ms": 1,
+        "policy_revision": "1"
+      },
+      "freshness_ms": 10,
+      "values": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "integrity": "complete"
+    }
+  },
+  {
+    "case_id": "valid-EventEnvelope",
+    "model": "EventEnvelope",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "event_id": "event-test",
+      "provider_id": "provider-test",
+      "provider_boot_id": "provider-boot-test",
+      "source_sequence": "7",
+      "trigger_id": "test.changed",
+      "capability_version": "1.0.0-draft.2",
+      "device_id": "obs-test",
+      "occurred_at": null,
+      "observed_at": "2026-10-17T00:00:00.000Z",
+      "clock": {
+        "status": "synchronized",
+        "source_ref": "clock-test",
+        "sampled_at": "2026-10-17T00:00:00.000Z",
+        "offset_ms": 0,
+        "uncertainty_ms": 5,
+        "sample_age_ms": 1,
+        "policy_revision": "1"
+      },
+      "payload": {
+        "scene_ref": "scene-b"
+      }
+    }
+  },
+  {
+    "case_id": "valid-CommandRequest",
+    "model": "CommandRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000
+    }
+  },
+  {
+    "case_id": "valid-CommandRecord",
+    "model": "CommandRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "queued",
+      "outcome": "pending",
+      "effect_status": "not_sent",
+      "resource_status": "held",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "valid-CancelRequest",
+    "model": "CancelRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": "1",
+      "reason": "隔离取消"
+    }
+  },
+  {
+    "case_id": "valid-CancelOperation",
+    "model": "CancelOperation",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "operation_id": "cancel-test",
+      "command_id": "command-test",
+      "state": "requested",
+      "reason_code": null
+    }
+  },
+  {
+    "case_id": "valid-AcquireRequest",
+    "model": "AcquireRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "隔离验证"
+    }
+  },
+  {
+    "case_id": "valid-ReleaseRequest",
+    "model": "ReleaseRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "隔离验证"
+    }
+  },
+  {
+    "case_id": "valid-TransferRequest",
+    "model": "TransferRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "隔离验证",
+      "target_principal_id": "user-b",
+      "offer_ttl_ms": 60000
+    }
+  },
+  {
+    "case_id": "valid-TransferAcceptRequest",
+    "model": "TransferAcceptRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "隔离验证"
+    }
+  },
+  {
+    "case_id": "valid-TransferOffer",
+    "model": "TransferOffer",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "transfer_id": "transfer-test",
+      "device_id": "obs-test",
+      "from_principal_id": "user-test",
+      "target_principal_id": "user-b",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "expires_at": "2026-10-17T00:01:00.000Z",
+      "state": "offered"
+    }
+  },
+  {
+    "case_id": "valid-ControlRecord",
+    "model": "ControlRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "device_id": "obs-test",
+      "revision": "1",
+      "control_epoch": "control-test",
+      "effective_version": "8",
+      "effective_holder_id": null,
+      "mode": "automatic",
+      "pending_change": null,
+      "gate_state": "ready",
+      "in_flight_command_ids": [],
+      "unresolved_command_ids": []
+    }
+  },
+  {
+    "case_id": "valid-ControlOperation",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "pending",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [],
+      "unresolved_snapshot": [],
+      "applied_revision": null,
+      "failure_code": null,
+      "barrier_ack": null,
+      "effective_record_durable": false
+    }
+  },
+  {
+    "case_id": "valid-BarrierAck",
+    "model": "BarrierAck",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "barrier_id": "barrier-test",
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "control_epoch": "control-test",
+      "installed_version": "9",
+      "discarded_permit_ids": [
+        "permit-old"
+      ],
+      "in_flight_command_ids": [
+        "command-test"
+      ],
+      "unresolved_command_ids": [],
+      "all_write_exits_fenced": true
+    }
+  },
+  {
+    "case_id": "valid-GrantUpdate",
+    "model": "GrantUpdate",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": null,
+      "grant": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "arm_generation": "4",
+        "device_actions": [
+          {
+            "device_id": "obs-test",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2"
+          }
+        ],
+        "parameter_constraints": [],
+        "validity": {
+          "not_before": "2026-10-17T00:00:00.000Z",
+          "not_after": "2026-10-17T00:01:00.000Z",
+          "authorization_policy_revision": "1"
+        },
+        "approval_id": "approval-test"
+      }
+    }
+  },
+  {
+    "case_id": "valid-RevokeRequest",
+    "model": "RevokeRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": "2",
+      "reason": "暂停测试"
+    }
+  },
+  {
+    "case_id": "valid-MutationReceipt",
+    "model": "MutationReceipt",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "operation_id": "mutation-test",
+      "state": "pending",
+      "entity_id": "run-test",
+      "revision": "1",
+      "targets": [
+        {
+          "service_id": "controller-test",
+          "status": "pending",
+          "applied_revision": null
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "valid-DefinitionCreate",
+    "model": "DefinitionCreate",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "definition": {
+        "kind": "state_machine",
+        "name": "隔离闭环",
+        "initial_state": "state-a",
+        "states": [
+          "state-a",
+          "state-b"
+        ],
+        "transitions": [
+          {
+            "transition_id": "transition-test",
+            "from_state": "state-a",
+            "to_state": "state-b",
+            "priority": 1,
+            "trigger": {
+              "provider_id": "provider-test",
+              "device_id": "obs-test",
+              "trigger_id": "test.changed",
+              "capability_version": "1.0.0-draft.2",
+              "conditions": []
+            },
+            "guards": [],
+            "exit_steps": [],
+            "transition_steps": [
+              {
+                "step_id": "step-test",
+                "action_ref": {
+                  "provider_id": "provider-test",
+                  "device_id": "obs-test",
+                  "action_id": "obs.program_scene.set",
+                  "capability_version": "1.0.0-draft.2"
+                },
+                "parameters": {
+                  "scene_ref": {
+                    "collection_ref": "collection-test",
+                    "scene_id": "scene-b",
+                    "catalog_revision": "3"
+                  }
+                },
+                "required": true,
+                "on_failure": "stop",
+                "depends_on": [],
+                "preconditions": [],
+                "completion": "effect_verified",
+                "deadlines": {
+                  "max_queue_ms": 2000,
+                  "evidence_timeout_ms": 5000
+                }
+              }
+            ],
+            "enter_steps": []
+          }
+        ]
+      }
+    }
+  },
+  {
+    "case_id": "valid-DraftUpdate",
+    "model": "DraftUpdate",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "expected_revision": "1",
+      "definition": {
+        "kind": "state_machine",
+        "name": "隔离闭环",
+        "initial_state": "state-a",
+        "states": [
+          "state-a",
+          "state-b"
+        ],
+        "transitions": [
+          {
+            "transition_id": "transition-test",
+            "from_state": "state-a",
+            "to_state": "state-b",
+            "priority": 1,
+            "trigger": {
+              "provider_id": "provider-test",
+              "device_id": "obs-test",
+              "trigger_id": "test.changed",
+              "capability_version": "1.0.0-draft.2",
+              "conditions": []
+            },
+            "guards": [],
+            "exit_steps": [],
+            "transition_steps": [
+              {
+                "step_id": "step-test",
+                "action_ref": {
+                  "provider_id": "provider-test",
+                  "device_id": "obs-test",
+                  "action_id": "obs.program_scene.set",
+                  "capability_version": "1.0.0-draft.2"
+                },
+                "parameters": {
+                  "scene_ref": {
+                    "collection_ref": "collection-test",
+                    "scene_id": "scene-b",
+                    "catalog_revision": "3"
+                  }
+                },
+                "required": true,
+                "on_failure": "stop",
+                "depends_on": [],
+                "preconditions": [],
+                "completion": "effect_verified",
+                "deadlines": {
+                  "max_queue_ms": 2000,
+                  "evidence_timeout_ms": 5000
+                }
+              }
+            ],
+            "enter_steps": []
+          }
+        ]
+      }
+    }
+  },
+  {
+    "case_id": "valid-PublishRequest",
+    "model": "PublishRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": "1"
+    }
+  },
+  {
+    "case_id": "valid-DefinitionRecord",
+    "model": "DefinitionRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "definition_id": "definition-test",
+      "revision": "1",
+      "definition_version": null,
+      "definition": {
+        "kind": "state_machine",
+        "name": "隔离闭环",
+        "initial_state": "state-a",
+        "states": [
+          "state-a",
+          "state-b"
+        ],
+        "transitions": [
+          {
+            "transition_id": "transition-test",
+            "from_state": "state-a",
+            "to_state": "state-b",
+            "priority": 1,
+            "trigger": {
+              "provider_id": "provider-test",
+              "device_id": "obs-test",
+              "trigger_id": "test.changed",
+              "capability_version": "1.0.0-draft.2",
+              "conditions": []
+            },
+            "guards": [],
+            "exit_steps": [],
+            "transition_steps": [
+              {
+                "step_id": "step-test",
+                "action_ref": {
+                  "provider_id": "provider-test",
+                  "device_id": "obs-test",
+                  "action_id": "obs.program_scene.set",
+                  "capability_version": "1.0.0-draft.2"
+                },
+                "parameters": {
+                  "scene_ref": {
+                    "collection_ref": "collection-test",
+                    "scene_id": "scene-b",
+                    "catalog_revision": "3"
+                  }
+                },
+                "required": true,
+                "on_failure": "stop",
+                "depends_on": [],
+                "preconditions": [],
+                "completion": "effect_verified",
+                "deadlines": {
+                  "max_queue_ms": 2000,
+                  "evidence_timeout_ms": 5000
+                }
+              }
+            ],
+            "enter_steps": []
+          }
+        ]
+      },
+      "published": false
+    }
+  },
+  {
+    "case_id": "valid-RunCreate",
+    "model": "RunCreate",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "definition_id": "definition-test",
+      "definition_version": "1.0.0-draft.2"
+    }
+  },
+  {
+    "case_id": "valid-RunRecord",
+    "model": "RunRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "run_id": "run-test",
+      "definition_id": "definition-test",
+      "definition_version": "1.0.0-draft.2",
+      "revision": "1",
+      "business_state": "state-a",
+      "transition": null,
+      "lifecycle": "disarmed",
+      "execution_summary": "pending",
+      "arm_generation": "0",
+      "grant_bindings": [],
+      "active_execution_id": null
+    }
+  },
+  {
+    "case_id": "valid-RunRevisionRequest",
+    "model": "RunRevisionRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "expected_revision": "1"
+    }
+  },
+  {
+    "case_id": "valid-RunMutationRequest",
+    "model": "RunMutationRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": "1",
+      "reason": "暂停测试"
+    }
+  },
+  {
+    "case_id": "valid-ArmRequest",
+    "model": "ArmRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": "1",
+      "preflight_id": "preflight-test",
+      "approval_id": "approval-test"
+    }
+  },
+  {
+    "case_id": "valid-ResumeRequest",
+    "model": "ResumeRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": "1",
+      "preview_id": "preview-test",
+      "preview_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "case_id": "valid-Preflight",
+    "model": "Preflight",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "preflight_id": "preflight-test",
+      "run_id": "run-test",
+      "run_revision": "1",
+      "passed": true,
+      "checks": [
+        {
+          "code": "storage-ready",
+          "passed": true,
+          "details": "模拟"
+        }
+      ],
+      "observed_at": "2026-10-17T00:00:00.000Z"
+    }
+  },
+  {
+    "case_id": "valid-RecoveryPreview",
+    "model": "RecoveryPreview",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "preview_id": "preview-test",
+      "preview_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "run_id": "run-test",
+      "run_revision": "1",
+      "proposed_step_ids": [],
+      "unresolved_command_ids": [],
+      "observations": [
+        {
+          "observation_id": "obs-evidence-test",
+          "device_id": "obs-test",
+          "provider_boot_id": "provider-boot-test",
+          "device_session_id": "device-session-test",
+          "state_revision": "5",
+          "observed_at": "2026-10-17T00:00:00.000Z",
+          "clock": {
+            "status": "synchronized",
+            "source_ref": "clock-test",
+            "sampled_at": "2026-10-17T00:00:00.000Z",
+            "offset_ms": 0,
+            "uncertainty_ms": 5,
+            "sample_age_ms": 1,
+            "policy_revision": "1"
+          },
+          "freshness_ms": 10,
+          "values": {
+            "scene_ref": {
+              "collection_ref": "collection-test",
+              "scene_id": "scene-b",
+              "catalog_revision": "3"
+            }
+          },
+          "integrity": "complete"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "valid-SubscriptionRequest",
+    "model": "SubscriptionRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "scope": [
+        "obs-test"
+      ],
+      "event_types": [
+        "command.updated"
+      ]
+    }
+  },
+  {
+    "case_id": "valid-Subscription",
+    "model": "Subscription",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "subscription_id": "subscription-test",
+      "stream_id": "stream-test",
+      "snapshot_id": "snapshot-test",
+      "snapshot_cursor": "8",
+      "expires_in_ms": 60000
+    }
+  },
+  {
+    "case_id": "valid-Snapshot",
+    "model": "Snapshot",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "snapshot_id": "snapshot-test",
+      "stream_id": "stream-test",
+      "snapshot_cursor": "8",
+      "commands": [
+        {
+          "command_id": "command-test",
+          "revision": "1",
+          "request_identity": {
+            "service_id": "controller-test",
+            "context_epoch": "ctx-epoch-test",
+            "principal_id": "user-test",
+            "operation": "submitCommand",
+            "context_id": "ctx-test",
+            "idempotency_key": "key-test"
+          },
+          "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "target": {
+            "device_id": "obs-test",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2"
+          },
+          "actor": {
+            "principal_id": "user-test",
+            "session_id": "session-test",
+            "authorization_revision": "2"
+          },
+          "origin": "manual",
+          "accepted_at": "2026-10-17T00:00:00.000Z",
+          "phase": "queued",
+          "outcome": "pending",
+          "effect_status": "not_sent",
+          "resource_status": "held",
+          "resource_evidence_ids": [],
+          "cancellation": {
+            "status": "none",
+            "operation_id": null,
+            "reason_code": null
+          },
+          "completion": {
+            "required": "effect_verified",
+            "achieved": null,
+            "evidence_policy_id": "evidence-test",
+            "evidence_ids": []
+          },
+          "attempts": [],
+          "dispatch": {
+            "mode": "immediate",
+            "max_queue_ms": 2000
+          },
+          "control_binding": {
+            "epoch": "control-test",
+            "version": "8"
+          },
+          "automation_continuation": "eligible",
+          "reason_code": null,
+          "retry_policy": null
+        }
+      ],
+      "controls": [
+        {
+          "device_id": "obs-test",
+          "revision": "1",
+          "control_epoch": "control-test",
+          "effective_version": "8",
+          "effective_holder_id": null,
+          "mode": "automatic",
+          "pending_change": null,
+          "gate_state": "ready",
+          "in_flight_command_ids": [],
+          "unresolved_command_ids": []
+        }
+      ],
+      "observations": [
+        {
+          "observation_id": "obs-evidence-test",
+          "device_id": "obs-test",
+          "provider_boot_id": "provider-boot-test",
+          "device_session_id": "device-session-test",
+          "state_revision": "5",
+          "observed_at": "2026-10-17T00:00:00.000Z",
+          "clock": {
+            "status": "synchronized",
+            "source_ref": "clock-test",
+            "sampled_at": "2026-10-17T00:00:00.000Z",
+            "offset_ms": 0,
+            "uncertainty_ms": 5,
+            "sample_age_ms": 1,
+            "policy_revision": "1"
+          },
+          "freshness_ms": 10,
+          "values": {
+            "scene_ref": {
+              "collection_ref": "collection-test",
+              "scene_id": "scene-b",
+              "catalog_revision": "3"
+            }
+          },
+          "integrity": "complete"
+        }
+      ],
+      "next_cursor": null
+    }
+  },
+  {
+    "case_id": "valid-EventReceipt",
+    "model": "EventReceipt",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "event_id": "event-test",
+      "ingest_id": "ingest-test",
+      "received_at": "2026-10-17T00:00:00.000Z",
+      "receive_sequence": "1",
+      "age_at_admission_ms": 10,
+      "validity_basis": "bounded_age",
+      "duplicate": false
+    }
+  },
+  {
+    "case_id": "valid-CompletionEvidence",
+    "model": "CompletionEvidence",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "evidence_id": "evidence-test",
+      "command_id": "command-test",
+      "attempt_id": "attempt-test",
+      "kind": "fresh_query",
+      "worker_boot_id": "worker-test",
+      "device_session_id": "device-session-test",
+      "observation_id": "obs-evidence-test",
+      "protocol_request_id": "query-test",
+      "captured_at": "2026-10-17T00:01:00.000Z",
+      "clock": {
+        "status": "synchronized",
+        "source_ref": "clock-test",
+        "sampled_at": "2026-10-17T00:00:00.000Z",
+        "offset_ms": 0,
+        "uncertainty_ms": 5,
+        "sample_age_ms": 1,
+        "policy_revision": "1"
+      },
+      "predicate_id": "target-scene",
+      "predicate_result": true,
+      "durable": true
+    }
+  },
+  {
+    "case_id": "valid-DispatchPermit",
+    "model": "DispatchPermit",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "permit_id": "permit-test",
+      "command_id": "command-test",
+      "attempt_id": "attempt-test",
+      "dispatch_intent_id": "intent-test",
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "device_session_id": "device-session-test",
+      "control_epoch": "control-test",
+      "control_version": "8",
+      "authorization_revision": "2",
+      "origin": "manual",
+      "grant_revision": null,
+      "arm_generation": null,
+      "gate_revision": "1",
+      "deadline_policy": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "case_id": "valid-StepDefinition",
+    "model": "StepDefinition",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "step_id": "step-test",
+      "action_ref": {
+        "provider_id": "provider-test",
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "required": true,
+      "on_failure": "stop",
+      "depends_on": [],
+      "preconditions": [],
+      "completion": "effect_verified",
+      "deadlines": {
+        "max_queue_ms": 2000,
+        "evidence_timeout_ms": 5000
+      }
+    }
+  },
+  {
+    "case_id": "valid-Definition",
+    "model": "Definition",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "kind": "state_machine",
+      "name": "隔离闭环",
+      "initial_state": "state-a",
+      "states": [
+        "state-a",
+        "state-b"
+      ],
+      "transitions": [
+        {
+          "transition_id": "transition-test",
+          "from_state": "state-a",
+          "to_state": "state-b",
+          "priority": 1,
+          "trigger": {
+            "provider_id": "provider-test",
+            "device_id": "obs-test",
+            "trigger_id": "test.changed",
+            "capability_version": "1.0.0-draft.2",
+            "conditions": []
+          },
+          "guards": [],
+          "exit_steps": [],
+          "transition_steps": [
+            {
+              "step_id": "step-test",
+              "action_ref": {
+                "provider_id": "provider-test",
+                "device_id": "obs-test",
+                "action_id": "obs.program_scene.set",
+                "capability_version": "1.0.0-draft.2"
+              },
+              "parameters": {
+                "scene_ref": {
+                  "collection_ref": "collection-test",
+                  "scene_id": "scene-b",
+                  "catalog_revision": "3"
+                }
+              },
+              "required": true,
+              "on_failure": "stop",
+              "depends_on": [],
+              "preconditions": [],
+              "completion": "effect_verified",
+              "deadlines": {
+                "max_queue_ms": 2000,
+                "evidence_timeout_ms": 5000
+              }
+            }
+          ],
+          "enter_steps": []
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "valid-RunGrant",
+    "model": "RunGrant",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "grant_id": "grant-test",
+      "revision": "2",
+      "run_id": "run-test",
+      "definition_version": "1.0.0-draft.2",
+      "arm_generation": "4",
+      "principal_id": "service-test",
+      "device_actions": [
+        {
+          "device_id": "obs-test",
+          "action_id": "obs.program_scene.set",
+          "capability_version": "1.0.0-draft.2"
+        }
+      ],
+      "parameter_constraints": [],
+      "validity": {
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-17T00:01:00.000Z",
+        "authorization_policy_revision": "1"
+      },
+      "state": "active"
+    }
+  },
+  {
+    "case_id": "valid-RetryPolicy",
+    "model": "RetryPolicy",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "policy_id": "retry-test",
+      "allowed_error_codes": [
+        "TEMPORARY_REJECT"
+      ],
+      "safety_predicate_id": "no-effect",
+      "max_attempts": 2,
+      "backoff_ms": 100,
+      "total_budget_ms": 1000
+    }
+  },
+  {
+    "case_id": "valid-WsFrame",
+    "model": "WsFrame",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "subscription_id": "subscription-test",
+      "stream_id": "stream-test",
+      "cursor": "9",
+      "previous_cursor": "8",
+      "entity_id": "command-test",
+      "entity_revision": "1",
+      "event_type": "command.updated",
+      "payload": {
+        "command_id": "command-test",
+        "revision": "1",
+        "request_identity": {
+          "service_id": "controller-test",
+          "context_epoch": "ctx-epoch-test",
+          "principal_id": "user-test",
+          "operation": "submitCommand",
+          "context_id": "ctx-test",
+          "idempotency_key": "key-test"
+        },
+        "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "target": {
+          "device_id": "obs-test",
+          "action_id": "obs.program_scene.set",
+          "capability_version": "1.0.0-draft.2"
+        },
+        "actor": {
+          "principal_id": "user-test",
+          "session_id": "session-test",
+          "authorization_revision": "2"
+        },
+        "origin": "manual",
+        "accepted_at": "2026-10-17T00:00:00.000Z",
+        "phase": "queued",
+        "outcome": "pending",
+        "effect_status": "not_sent",
+        "resource_status": "held",
+        "resource_evidence_ids": [],
+        "cancellation": {
+          "status": "none",
+          "operation_id": null,
+          "reason_code": null
+        },
+        "completion": {
+          "required": "effect_verified",
+          "achieved": null,
+          "evidence_policy_id": "evidence-test",
+          "evidence_ids": []
+        },
+        "attempts": [],
+        "dispatch": {
+          "mode": "immediate",
+          "max_queue_ms": 2000
+        },
+        "control_binding": {
+          "epoch": "control-test",
+          "version": "8"
+        },
+        "automation_continuation": "eligible",
+        "reason_code": null,
+        "retry_policy": null
+      }
+    }
+  },
+  {
+    "case_id": "valid-MetaResponse",
+    "model": "MetaResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "protocol_version": "1.0.0-draft.2",
+        "component_version": "1.0.0-draft.2",
+        "service_id": "controller-test",
+        "service_boot_id": "controller-boot-test",
+        "features": [
+          "commands-v1"
+        ],
+        "limits_profile": "sim-first-loop"
+      }
+    }
+  },
+  {
+    "case_id": "valid-ClockStatusResponse",
+    "model": "ClockStatusResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "status": "synchronized",
+        "source_ref": "clock-test",
+        "sampled_at": "2026-10-17T00:00:00.000Z",
+        "offset_ms": 0,
+        "uncertainty_ms": 5,
+        "sample_age_ms": 1,
+        "policy_revision": "1"
+      }
+    }
+  },
+  {
+    "case_id": "valid-SessionResponse",
+    "model": "SessionResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "principal_id": "user-test",
+        "authorization_revision": "2",
+        "permissions": [
+          "device.read"
+        ],
+        "validity": {
+          "not_before": "2026-10-17T00:00:00.000Z",
+          "not_after": "2026-10-17T00:01:00.000Z",
+          "authorization_policy_revision": "1"
+        },
+        "session_id": "session-test"
+      }
+    }
+  },
+  {
+    "case_id": "valid-RequestContextResponse",
+    "model": "RequestContextResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "context_id": "ctx-test",
+        "service_id": "controller-test",
+        "principal_id": "user-test",
+        "audience": "controller-test",
+        "operations": [
+          "submitCommand"
+        ],
+        "issued_at": "2026-10-17T00:00:00.000Z",
+        "expires_at": "2026-10-17T00:01:00.000Z",
+        "ttl_ms": 60000,
+        "max_unique_requests": 256,
+        "context_epoch": "ctx-epoch-test"
+      }
+    }
+  },
+  {
+    "case_id": "valid-DevicePageResponse",
+    "model": "DevicePageResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "items": [
+          {
+            "device_id": "obs-test",
+            "device_kind": "obs",
+            "display_name": "隔离测试",
+            "connection_state": "ready",
+            "actions": [
+              {
+                "action_id": "test.set",
+                "capability_version": "1.0.0-draft.2",
+                "parameters_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "result_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "resources": [
+                  "device/test/value"
+                ],
+                "completion": {
+                  "supported": [
+                    "effect_verified"
+                  ],
+                  "default": "effect_verified",
+                  "evidence_policy_id": "evidence-test"
+                },
+                "cancel": {
+                  "mode": "before_dispatch_only"
+                },
+                "retry": {
+                  "mode": "never"
+                },
+                "preconditions_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "read_set": [],
+                "write_set": [
+                  "device/test/value"
+                ],
+                "evidence_timeout_ms": 5000,
+                "limits_profile": "sim-first-loop",
+                "platforms": [
+                  {
+                    "os": "windows",
+                    "arch": "x64",
+                    "status": "untested"
+                  }
+                ],
+                "dependencies": []
+              }
+            ],
+            "triggers": [
+              {
+                "trigger_id": "test.changed",
+                "capability_version": "1.0.0-draft.2",
+                "payload_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "delivery_semantics": "discrete",
+                "time_requirement": "relative_age",
+                "max_age_ms": 2000,
+                "causation_support": "none",
+                "sampling_policy": null
+              }
+            ],
+            "state_schema": {
+              "schema_id": "schema-test",
+              "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+              "dialect": "https://json-schema.org/draft/2020-12/schema",
+              "document": {
+                "type": "object",
+                "properties": {
+                  "scene_ref": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "scene_ref"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "next_cursor": null,
+        "catalog_revision": "3"
+      }
+    }
+  },
+  {
+    "case_id": "valid-CapabilityCatalogResponse",
+    "model": "CapabilityCatalogResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "provider_id": "provider-test",
+        "provider_boot_id": "provider-boot-test",
+        "catalog_revision": "3",
+        "module_id": "module-test",
+        "module_version": "1.0.0-draft.2",
+        "devices": [
+          {
+            "device_id": "obs-test",
+            "device_kind": "obs",
+            "display_name": "隔离测试",
+            "connection_state": "ready",
+            "actions": [
+              {
+                "action_id": "test.set",
+                "capability_version": "1.0.0-draft.2",
+                "parameters_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "result_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "resources": [
+                  "device/test/value"
+                ],
+                "completion": {
+                  "supported": [
+                    "effect_verified"
+                  ],
+                  "default": "effect_verified",
+                  "evidence_policy_id": "evidence-test"
+                },
+                "cancel": {
+                  "mode": "before_dispatch_only"
+                },
+                "retry": {
+                  "mode": "never"
+                },
+                "preconditions_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "read_set": [],
+                "write_set": [
+                  "device/test/value"
+                ],
+                "evidence_timeout_ms": 5000,
+                "limits_profile": "sim-first-loop",
+                "platforms": [
+                  {
+                    "os": "windows",
+                    "arch": "x64",
+                    "status": "untested"
+                  }
+                ],
+                "dependencies": []
+              }
+            ],
+            "triggers": [
+              {
+                "trigger_id": "test.changed",
+                "capability_version": "1.0.0-draft.2",
+                "payload_schema": {
+                  "schema_id": "schema-test",
+                  "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+                  "dialect": "https://json-schema.org/draft/2020-12/schema",
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "scene_ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "scene_ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "delivery_semantics": "discrete",
+                "time_requirement": "relative_age",
+                "max_age_ms": 2000,
+                "causation_support": "none",
+                "sampling_policy": null
+              }
+            ],
+            "state_schema": {
+              "schema_id": "schema-test",
+              "digest": "sha256:2d74c33a9a221c142e4c39865b320fec2ff3acfdb46956b2ed94c16aa1aa9366",
+              "dialect": "https://json-schema.org/draft/2020-12/schema",
+              "document": {
+                "type": "object",
+                "properties": {
+                  "scene_ref": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "scene_ref"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "case_id": "valid-ObservationResponse",
+    "model": "ObservationResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "observation_id": "obs-evidence-test",
+        "device_id": "obs-test",
+        "provider_boot_id": "provider-boot-test",
+        "device_session_id": "device-session-test",
+        "state_revision": "5",
+        "observed_at": "2026-10-17T00:00:00.000Z",
+        "clock": {
+          "status": "synchronized",
+          "source_ref": "clock-test",
+          "sampled_at": "2026-10-17T00:00:00.000Z",
+          "offset_ms": 0,
+          "uncertainty_ms": 5,
+          "sample_age_ms": 1,
+          "policy_revision": "1"
+        },
+        "freshness_ms": 10,
+        "values": {
+          "scene_ref": {
+            "collection_ref": "collection-test",
+            "scene_id": "scene-b",
+            "catalog_revision": "3"
+          }
+        },
+        "integrity": "complete"
+      }
+    }
+  },
+  {
+    "case_id": "valid-CommandRecordResponse",
+    "model": "CommandRecordResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "command_id": "command-test",
+        "revision": "1",
+        "request_identity": {
+          "service_id": "controller-test",
+          "context_epoch": "ctx-epoch-test",
+          "principal_id": "user-test",
+          "operation": "submitCommand",
+          "context_id": "ctx-test",
+          "idempotency_key": "key-test"
+        },
+        "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "target": {
+          "device_id": "obs-test",
+          "action_id": "obs.program_scene.set",
+          "capability_version": "1.0.0-draft.2"
+        },
+        "actor": {
+          "principal_id": "user-test",
+          "session_id": "session-test",
+          "authorization_revision": "2"
+        },
+        "origin": "manual",
+        "accepted_at": "2026-10-17T00:00:00.000Z",
+        "phase": "queued",
+        "outcome": "pending",
+        "effect_status": "not_sent",
+        "resource_status": "held",
+        "resource_evidence_ids": [],
+        "cancellation": {
+          "status": "none",
+          "operation_id": null,
+          "reason_code": null
+        },
+        "completion": {
+          "required": "effect_verified",
+          "achieved": null,
+          "evidence_policy_id": "evidence-test",
+          "evidence_ids": []
+        },
+        "attempts": [],
+        "dispatch": {
+          "mode": "immediate",
+          "max_queue_ms": 2000
+        },
+        "control_binding": {
+          "epoch": "control-test",
+          "version": "8"
+        },
+        "automation_continuation": "eligible",
+        "reason_code": null,
+        "retry_policy": null
+      }
+    }
+  },
+  {
+    "case_id": "valid-CancelOperationResponse",
+    "model": "CancelOperationResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "operation_id": "cancel-test",
+        "command_id": "command-test",
+        "state": "requested",
+        "reason_code": null
+      }
+    }
+  },
+  {
+    "case_id": "valid-ControlRecordResponse",
+    "model": "ControlRecordResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "device_id": "obs-test",
+        "revision": "1",
+        "control_epoch": "control-test",
+        "effective_version": "8",
+        "effective_holder_id": null,
+        "mode": "automatic",
+        "pending_change": null,
+        "gate_state": "ready",
+        "in_flight_command_ids": [],
+        "unresolved_command_ids": []
+      }
+    }
+  },
+  {
+    "case_id": "valid-ControlOperationResponse",
+    "model": "ControlOperationResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "request_identity": {
+          "service_id": "controller-test",
+          "context_epoch": "ctx-epoch-test",
+          "principal_id": "user-test",
+          "operation": "acquireControl",
+          "context_id": "ctx-test",
+          "idempotency_key": "key-test"
+        },
+        "expected_control": {
+          "epoch": "control-test",
+          "version": "8"
+        },
+        "state": "pending",
+        "barrier_id": "barrier-test",
+        "target": {
+          "version": "9",
+          "mode": "manual",
+          "holder_id": "user-test"
+        },
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "in_flight_snapshot": [],
+        "unresolved_snapshot": [],
+        "applied_revision": null,
+        "failure_code": null,
+        "barrier_ack": null,
+        "effective_record_durable": false
+      }
+    }
+  },
+  {
+    "case_id": "valid-TransferOfferResponse",
+    "model": "TransferOfferResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "transfer_id": "transfer-test",
+        "device_id": "obs-test",
+        "from_principal_id": "user-test",
+        "target_principal_id": "user-b",
+        "expected_control": {
+          "epoch": "control-test",
+          "version": "8"
+        },
+        "expires_at": "2026-10-17T00:01:00.000Z",
+        "state": "offered"
+      }
+    }
+  },
+  {
+    "case_id": "valid-MutationReceiptResponse",
+    "model": "MutationReceiptResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "operation_id": "mutation-test",
+        "state": "pending",
+        "entity_id": "run-test",
+        "revision": "1",
+        "targets": [
+          {
+            "service_id": "controller-test",
+            "status": "pending",
+            "applied_revision": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "case_id": "valid-SubscriptionResponse",
+    "model": "SubscriptionResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "subscription_id": "subscription-test",
+        "stream_id": "stream-test",
+        "snapshot_id": "snapshot-test",
+        "snapshot_cursor": "8",
+        "expires_in_ms": 60000
+      }
+    }
+  },
+  {
+    "case_id": "valid-SnapshotResponse",
+    "model": "SnapshotResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "snapshot_id": "snapshot-test",
+        "stream_id": "stream-test",
+        "snapshot_cursor": "8",
+        "commands": [
+          {
+            "command_id": "command-test",
+            "revision": "1",
+            "request_identity": {
+              "service_id": "controller-test",
+              "context_epoch": "ctx-epoch-test",
+              "principal_id": "user-test",
+              "operation": "submitCommand",
+              "context_id": "ctx-test",
+              "idempotency_key": "key-test"
+            },
+            "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "target": {
+              "device_id": "obs-test",
+              "action_id": "obs.program_scene.set",
+              "capability_version": "1.0.0-draft.2"
+            },
+            "actor": {
+              "principal_id": "user-test",
+              "session_id": "session-test",
+              "authorization_revision": "2"
+            },
+            "origin": "manual",
+            "accepted_at": "2026-10-17T00:00:00.000Z",
+            "phase": "queued",
+            "outcome": "pending",
+            "effect_status": "not_sent",
+            "resource_status": "held",
+            "resource_evidence_ids": [],
+            "cancellation": {
+              "status": "none",
+              "operation_id": null,
+              "reason_code": null
+            },
+            "completion": {
+              "required": "effect_verified",
+              "achieved": null,
+              "evidence_policy_id": "evidence-test",
+              "evidence_ids": []
+            },
+            "attempts": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 2000
+            },
+            "control_binding": {
+              "epoch": "control-test",
+              "version": "8"
+            },
+            "automation_continuation": "eligible",
+            "reason_code": null,
+            "retry_policy": null
+          }
+        ],
+        "controls": [
+          {
+            "device_id": "obs-test",
+            "revision": "1",
+            "control_epoch": "control-test",
+            "effective_version": "8",
+            "effective_holder_id": null,
+            "mode": "automatic",
+            "pending_change": null,
+            "gate_state": "ready",
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": []
+          }
+        ],
+        "observations": [
+          {
+            "observation_id": "obs-evidence-test",
+            "device_id": "obs-test",
+            "provider_boot_id": "provider-boot-test",
+            "device_session_id": "device-session-test",
+            "state_revision": "5",
+            "observed_at": "2026-10-17T00:00:00.000Z",
+            "clock": {
+              "status": "synchronized",
+              "source_ref": "clock-test",
+              "sampled_at": "2026-10-17T00:00:00.000Z",
+              "offset_ms": 0,
+              "uncertainty_ms": 5,
+              "sample_age_ms": 1,
+              "policy_revision": "1"
+            },
+            "freshness_ms": 10,
+            "values": {
+              "scene_ref": {
+                "collection_ref": "collection-test",
+                "scene_id": "scene-b",
+                "catalog_revision": "3"
+              }
+            },
+            "integrity": "complete"
+          }
+        ],
+        "next_cursor": null
+      }
+    }
+  },
+  {
+    "case_id": "valid-EventReceiptResponse",
+    "model": "EventReceiptResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "event_id": "event-test",
+        "ingest_id": "ingest-test",
+        "received_at": "2026-10-17T00:00:00.000Z",
+        "receive_sequence": "1",
+        "age_at_admission_ms": 10,
+        "validity_basis": "bounded_age",
+        "duplicate": false
+      }
+    }
+  },
+  {
+    "case_id": "valid-DefinitionRecordResponse",
+    "model": "DefinitionRecordResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "definition_id": "definition-test",
+        "revision": "1",
+        "definition_version": null,
+        "definition": {
+          "kind": "state_machine",
+          "name": "隔离闭环",
+          "initial_state": "state-a",
+          "states": [
+            "state-a",
+            "state-b"
+          ],
+          "transitions": [
+            {
+              "transition_id": "transition-test",
+              "from_state": "state-a",
+              "to_state": "state-b",
+              "priority": 1,
+              "trigger": {
+                "provider_id": "provider-test",
+                "device_id": "obs-test",
+                "trigger_id": "test.changed",
+                "capability_version": "1.0.0-draft.2",
+                "conditions": []
+              },
+              "guards": [],
+              "exit_steps": [],
+              "transition_steps": [
+                {
+                  "step_id": "step-test",
+                  "action_ref": {
+                    "provider_id": "provider-test",
+                    "device_id": "obs-test",
+                    "action_id": "obs.program_scene.set",
+                    "capability_version": "1.0.0-draft.2"
+                  },
+                  "parameters": {
+                    "scene_ref": {
+                      "collection_ref": "collection-test",
+                      "scene_id": "scene-b",
+                      "catalog_revision": "3"
+                    }
+                  },
+                  "required": true,
+                  "on_failure": "stop",
+                  "depends_on": [],
+                  "preconditions": [],
+                  "completion": "effect_verified",
+                  "deadlines": {
+                    "max_queue_ms": 2000,
+                    "evidence_timeout_ms": 5000
+                  }
+                }
+              ],
+              "enter_steps": []
+            }
+          ]
+        },
+        "published": false
+      }
+    }
+  },
+  {
+    "case_id": "valid-RunRecordResponse",
+    "model": "RunRecordResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "run_id": "run-test",
+        "definition_id": "definition-test",
+        "definition_version": "1.0.0-draft.2",
+        "revision": "1",
+        "business_state": "state-a",
+        "transition": null,
+        "lifecycle": "disarmed",
+        "execution_summary": "pending",
+        "arm_generation": "0",
+        "grant_bindings": [],
+        "active_execution_id": null
+      }
+    }
+  },
+  {
+    "case_id": "valid-PreflightResponse",
+    "model": "PreflightResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "preflight_id": "preflight-test",
+        "run_id": "run-test",
+        "run_revision": "1",
+        "passed": true,
+        "checks": [
+          {
+            "code": "storage-ready",
+            "passed": true,
+            "details": "模拟"
+          }
+        ],
+        "observed_at": "2026-10-17T00:00:00.000Z"
+      }
+    }
+  },
+  {
+    "case_id": "valid-RecoveryPreviewResponse",
+    "model": "RecoveryPreviewResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "data": {
+        "preview_id": "preview-test",
+        "preview_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "run_id": "run-test",
+        "run_revision": "1",
+        "proposed_step_ids": [],
+        "unresolved_command_ids": [],
+        "observations": [
+          {
+            "observation_id": "obs-evidence-test",
+            "device_id": "obs-test",
+            "provider_boot_id": "provider-boot-test",
+            "device_session_id": "device-session-test",
+            "state_revision": "5",
+            "observed_at": "2026-10-17T00:00:00.000Z",
+            "clock": {
+              "status": "synchronized",
+              "source_ref": "clock-test",
+              "sampled_at": "2026-10-17T00:00:00.000Z",
+              "offset_ms": 0,
+              "uncertainty_ms": 5,
+              "sample_age_ms": 1,
+              "policy_revision": "1"
+            },
+            "freshness_ms": 10,
+            "values": {
+              "scene_ref": {
+                "collection_ref": "collection-test",
+                "scene_id": "scene-b",
+                "catalog_revision": "3"
+              }
+            },
+            "integrity": "complete"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "case_id": "valid-ErrorResponse",
+    "model": "ErrorResponse",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "request_id": "request-test",
+      "service_id": "controller-test",
+      "service_boot_id": "controller-boot-test",
+      "protocol_version": "1.0.0-draft.2",
+      "error": {
+        "code": "CONTROL_VERSION_MISMATCH",
+        "message_key": "control.version_mismatch",
+        "request_id": "request-test",
+        "details": {
+          "current_version": "9"
+        },
+        "existing_command_id": null,
+        "retry_advice": "query_existing"
+      }
+    }
+  },
+  {
+    "case_id": "valid-automation",
+    "model": "CommandRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "automation",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "run_binding": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "grant_id": "grant-test",
+        "grant_revision": "2",
+        "arm_generation": "4",
+        "step_id": "step-test",
+        "logical_action_id": "action-test"
+      }
+    }
+  },
+  {
+    "case_id": "valid-scheduled",
+    "model": "CommandRequest",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "automation",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "scheduled",
+        "occurrence_id": "occ-test",
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-17T00:01:00.000Z",
+        "clock_policy_revision": "1",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "run_binding": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "grant_id": "grant-test",
+        "grant_revision": "2",
+        "arm_generation": "4",
+        "step_id": "step-test",
+        "logical_action_id": "action-test"
+      }
+    }
+  },
+  {
+    "case_id": "valid-success",
+    "model": "CommandRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "succeeded",
+      "effect_status": "verified",
+      "resource_status": "clear",
+      "resource_evidence_ids": [
+        "evidence-test"
+      ],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": "effect_verified",
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": [
+          "evidence-test"
+        ]
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "succeeded"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "valid-unknown",
+    "model": "CommandRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "unknown",
+      "effect_status": "possible",
+      "resource_status": "unresolved",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "unknown"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "paused_latched",
+      "reason_code": "DEVICE_RESULT_UNKNOWN",
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "valid-late-resolution",
+    "model": "CommandRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "unknown",
+      "effect_status": "possible",
+      "resource_status": "unresolved",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "unknown"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "paused_latched",
+      "reason_code": "DEVICE_RESULT_UNKNOWN",
+      "retry_policy": null,
+      "resolution": {
+        "revision": "2",
+        "resolved_outcome": "succeeded",
+        "evidence_ids": [
+          "evidence-late"
+        ],
+        "resolved_at": "2026-10-17T00:01:00.000Z",
+        "resolver": "worker-test"
+      }
+    }
+  },
+  {
+    "case_id": "valid-retry-queued-history",
+    "model": "CommandRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "queued",
+      "outcome": "pending",
+      "effect_status": "acknowledged",
+      "resource_status": "held",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "failed"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": {
+        "policy_id": "retry-test",
+        "allowed_error_codes": [
+          "TEMPORARY_REJECT"
+        ],
+        "safety_predicate_id": "no-effect",
+        "max_attempts": 2,
+        "backoff_ms": 100,
+        "total_budget_ms": 1000
+      }
+    }
+  },
+  {
+    "case_id": "valid-cancelled-before-send",
+    "model": "CommandRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "cancelled",
+      "effect_status": "not_sent",
+      "resource_status": "clear",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "confirmed",
+        "operation_id": "cancel-test",
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": "USER_CANCELLED",
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "valid-effective-with-inflight",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "valid-control-pending",
+    "model": "ControlRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "device_id": "obs-test",
+      "revision": "1",
+      "control_epoch": "control-test",
+      "effective_version": "8",
+      "effective_holder_id": null,
+      "mode": "automatic",
+      "pending_change": {
+        "operation_id": "control-op-test",
+        "target_version": "9",
+        "target_holder_id": "user-test",
+        "target_mode": "manual",
+        "reason": "接管",
+        "requested_by": "user-test"
+      },
+      "gate_state": "fencing",
+      "in_flight_command_ids": [],
+      "unresolved_command_ids": []
+    }
+  },
+  {
+    "case_id": "valid-optional-step",
+    "model": "StepDefinition",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "step_id": "step-test",
+      "action_ref": {
+        "provider_id": "provider-test",
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "required": false,
+      "on_failure": "continue_if_independent",
+      "depends_on": [],
+      "preconditions": [],
+      "completion": "effect_verified",
+      "deadlines": {
+        "max_queue_ms": 2000,
+        "evidence_timeout_ms": 5000
+      },
+      "independence_proof_revision": "3"
+    }
+  },
+  {
+    "case_id": "valid-rule-optional",
+    "model": "Definition",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "kind": "rule",
+      "name": "独立步骤",
+      "trigger": {
+        "provider_id": "provider-test",
+        "device_id": "obs-test",
+        "trigger_id": "test.changed",
+        "capability_version": "1.0.0-draft.2",
+        "conditions": []
+      },
+      "groups": [
+        {
+          "kind": "sequential",
+          "steps": [
+            {
+              "step_id": "step-test",
+              "action_ref": {
+                "provider_id": "provider-test",
+                "device_id": "obs-test",
+                "action_id": "obs.program_scene.set",
+                "capability_version": "1.0.0-draft.2"
+              },
+              "parameters": {
+                "scene_ref": {
+                  "collection_ref": "collection-test",
+                  "scene_id": "scene-b",
+                  "catalog_revision": "3"
+                }
+              },
+              "required": false,
+              "on_failure": "continue_if_independent",
+              "depends_on": [],
+              "preconditions": [],
+              "completion": "effect_verified",
+              "deadlines": {
+                "max_queue_ms": 2000,
+                "evidence_timeout_ms": 5000
+              },
+              "independence_proof_revision": "3"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "valid-run-armed",
+    "model": "RunRecord",
+    "schema_valid": true,
+    "contract_valid": true,
+    "note": "合成正例",
+    "instance": {
+      "run_id": "run-test",
+      "definition_id": "definition-test",
+      "definition_version": "1.0.0-draft.2",
+      "revision": "1",
+      "business_state": "state-a",
+      "transition": null,
+      "lifecycle": "armed",
+      "execution_summary": "pending",
+      "arm_generation": "4",
+      "grant_bindings": [
+        {
+          "controller_id": "controller-test",
+          "grant_id": "grant-test",
+          "grant_revision": "2",
+          "arm_generation": "4",
+          "application_state": "applied"
+        }
+      ],
+      "active_execution_id": null
+    }
+  },
+  {
+    "case_id": "invalid-unknown-field",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "role": "admin"
+    }
+  },
+  {
+    "case_id": "invalid-server-field",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "principal_id": "admin"
+    }
+  },
+  {
+    "case_id": "invalid-numeric-revision",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": 8
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000
+    }
+  },
+  {
+    "case_id": "invalid-null-id",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": null,
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000
+    }
+  },
+  {
+    "case_id": "invalid-extra-parameter",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        },
+        "unexpected": true
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000
+    }
+  },
+  {
+    "case_id": "invalid-weak-obs-evidence",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "sent",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000
+    }
+  },
+  {
+    "case_id": "invalid-unbounded-queue",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 0
+      },
+      "evidence_timeout_ms": 5000
+    }
+  },
+  {
+    "case_id": "invalid-string-timeout",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": "5000"
+    }
+  },
+  {
+    "case_id": "invalid-float-timeout",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 2.5
+    }
+  },
+  {
+    "case_id": "invalid-manual-run-binding",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "manual",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "run_binding": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "grant_id": "grant-test",
+        "grant_revision": "2",
+        "arm_generation": "4",
+        "step_id": "step-test",
+        "logical_action_id": "action-test"
+      }
+    }
+  },
+  {
+    "case_id": "invalid-missing-automation-binding",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "automation",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000
+    }
+  },
+  {
+    "case_id": "invalid-mixed-time-mode",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "automation",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "occurrence_id": "occ-test",
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-17T00:01:00.000Z",
+        "clock_policy_revision": "1",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "run_binding": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "grant_id": "grant-test",
+        "grant_revision": "2",
+        "arm_generation": "4",
+        "step_id": "step-test",
+        "logical_action_id": "action-test"
+      }
+    }
+  },
+  {
+    "case_id": "invalid-date",
+    "model": "CommandRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "automation",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "scheduled",
+        "occurrence_id": "occ-test",
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-02-30T00:00:00.000Z",
+        "clock_policy_revision": "1",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "run_binding": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "grant_id": "grant-test",
+        "grant_revision": "2",
+        "arm_generation": "4",
+        "step_id": "step-test",
+        "logical_action_id": "action-test"
+      }
+    }
+  },
+  {
+    "case_id": "invalid-reversed-window",
+    "model": "CommandRequest",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "device_id": "obs-test",
+      "action_id": "obs.program_scene.set",
+      "capability_version": "1.0.0-draft.2",
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "origin": "automation",
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "scheduled",
+        "occurrence_id": "occ-test",
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-16T23:59:59.000Z",
+        "clock_policy_revision": "1",
+        "max_queue_ms": 2000
+      },
+      "evidence_timeout_ms": 5000,
+      "run_binding": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "grant_id": "grant-test",
+        "grant_revision": "2",
+        "arm_generation": "4",
+        "step_id": "step-test",
+        "logical_action_id": "action-test"
+      }
+    }
+  },
+  {
+    "case_id": "invalid-finished-pending",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "pending",
+      "effect_status": "not_sent",
+      "resource_status": "held",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-success-queued",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "queued",
+      "outcome": "succeeded",
+      "effect_status": "verified",
+      "resource_status": "clear",
+      "resource_evidence_ids": [
+        "evidence-test"
+      ],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": "effect_verified",
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": [
+          "evidence-test"
+        ]
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "succeeded"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-success-without-evidence",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "succeeded",
+      "effect_status": "verified",
+      "resource_status": "clear",
+      "resource_evidence_ids": [
+        "evidence-test"
+      ],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": "effect_verified",
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "succeeded"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-success-below-standard",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "succeeded",
+      "effect_status": "verified",
+      "resource_status": "clear",
+      "resource_evidence_ids": [
+        "evidence-test"
+      ],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": "sent",
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": [
+          "evidence-test"
+        ]
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "succeeded"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-success-claims-unsent",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "succeeded",
+      "effect_status": "not_sent",
+      "resource_status": "clear",
+      "resource_evidence_ids": [
+        "evidence-test"
+      ],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": "effect_verified",
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": [
+          "evidence-test"
+        ]
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "succeeded"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-release-resource-no-evidence",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "succeeded",
+      "effect_status": "verified",
+      "resource_status": "clear",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": "effect_verified",
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": [
+          "evidence-test"
+        ]
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "succeeded"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-unknown-resource-clear",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "unknown",
+      "effect_status": "possible",
+      "resource_status": "clear",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "unknown"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "paused_latched",
+      "reason_code": "DEVICE_RESULT_UNKNOWN",
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-unknown-without-reason",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "unknown",
+      "effect_status": "possible",
+      "resource_status": "unresolved",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "unknown"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "paused_latched",
+      "reason_code": null,
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-late-resumes",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "unknown",
+      "effect_status": "possible",
+      "resource_status": "unresolved",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "none",
+        "operation_id": null,
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [
+        {
+          "attempt_id": "attempt-test",
+          "worker_boot_id": "worker-test",
+          "device_session_id": "device-session-test",
+          "dispatch_intent_id": "intent-test",
+          "send_started_at": "2026-10-17T00:00:00.000Z",
+          "protocol_request_id": "wire-test",
+          "evidence_ids": [
+            "evidence-test"
+          ],
+          "outcome": "unknown"
+        }
+      ],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": "DEVICE_RESULT_UNKNOWN",
+      "retry_policy": null,
+      "resolution": {
+        "revision": "2",
+        "resolved_outcome": "succeeded",
+        "evidence_ids": [
+          "evidence-late"
+        ],
+        "resolved_at": "2026-10-17T00:01:00.000Z",
+        "resolver": "worker-test"
+      }
+    }
+  },
+  {
+    "case_id": "invalid-requested-is-cancelled",
+    "model": "CommandRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "command_id": "command-test",
+      "revision": "1",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "submitCommand",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": {
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "actor": {
+        "principal_id": "user-test",
+        "session_id": "session-test",
+        "authorization_revision": "2"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-17T00:00:00.000Z",
+      "phase": "finished",
+      "outcome": "cancelled",
+      "effect_status": "not_sent",
+      "resource_status": "clear",
+      "resource_evidence_ids": [],
+      "cancellation": {
+        "status": "requested",
+        "operation_id": "cancel-test",
+        "reason_code": null
+      },
+      "completion": {
+        "required": "effect_verified",
+        "achieved": null,
+        "evidence_policy_id": "evidence-test",
+        "evidence_ids": []
+      },
+      "attempts": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "control_binding": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "automation_continuation": "eligible",
+      "reason_code": "USER_CANCELLED",
+      "retry_policy": null
+    }
+  },
+  {
+    "case_id": "invalid-forged-effective",
+    "model": "ControlOperation",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": false
+    }
+  },
+  {
+    "case_id": "invalid-effective-no-ack",
+    "model": "ControlOperation",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": null,
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-partial-fence",
+    "model": "ControlOperation",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": false
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ack-barrier_id",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "wrong-barrier",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ack-controller_boot_id",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "old-controller",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ack-worker_boot_id",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "old-worker",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ack-installed_version",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "8",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ack-control_epoch",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "old-epoch",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ack-operation_id",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "old-operation",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ack-device_id",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "other-device",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-version-not-advanced",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "pending",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "8",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [],
+      "unresolved_snapshot": [],
+      "applied_revision": null,
+      "failure_code": null,
+      "barrier_ack": null,
+      "effective_record_durable": false
+    }
+  },
+  {
+    "case_id": "invalid-lost-inflight",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-lost-unknown",
+    "model": "ControlOperation",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "control-op-test",
+      "device_id": "obs-test",
+      "request_identity": {
+        "service_id": "controller-test",
+        "context_epoch": "ctx-epoch-test",
+        "principal_id": "user-test",
+        "operation": "acquireControl",
+        "context_id": "ctx-test",
+        "idempotency_key": "key-test"
+      },
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "state": "effective",
+      "barrier_id": "barrier-test",
+      "target": {
+        "version": "9",
+        "mode": "manual",
+        "holder_id": "user-test"
+      },
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "in_flight_snapshot": [
+        "command-test"
+      ],
+      "unresolved_snapshot": [],
+      "applied_revision": "2",
+      "failure_code": null,
+      "barrier_ack": {
+        "barrier_id": "barrier-test",
+        "operation_id": "control-op-test",
+        "device_id": "obs-test",
+        "controller_boot_id": "controller-boot-test",
+        "worker_boot_id": "worker-test",
+        "control_epoch": "control-test",
+        "installed_version": "9",
+        "discarded_permit_ids": [
+          "permit-old"
+        ],
+        "in_flight_command_ids": [
+          "command-test"
+        ],
+        "unresolved_command_ids": [
+          "unknown-test"
+        ],
+        "all_write_exits_fenced": true
+      },
+      "effective_record_durable": true
+    }
+  },
+  {
+    "case_id": "invalid-ready-with-pending",
+    "model": "ControlRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "device_id": "obs-test",
+      "revision": "1",
+      "control_epoch": "control-test",
+      "effective_version": "8",
+      "effective_holder_id": null,
+      "mode": "automatic",
+      "pending_change": {
+        "operation_id": "control-op-test",
+        "target_version": "9",
+        "target_holder_id": "user-test",
+        "target_mode": "manual",
+        "reason": "接管",
+        "requested_by": "user-test"
+      },
+      "gate_state": "ready",
+      "in_flight_command_ids": [],
+      "unresolved_command_ids": []
+    }
+  },
+  {
+    "case_id": "invalid-auto-has-holder",
+    "model": "ControlRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "device_id": "obs-test",
+      "revision": "1",
+      "control_epoch": "control-test",
+      "effective_version": "8",
+      "effective_holder_id": "user-test",
+      "mode": "automatic",
+      "pending_change": null,
+      "gate_state": "ready",
+      "in_flight_command_ids": [],
+      "unresolved_command_ids": []
+    }
+  },
+  {
+    "case_id": "invalid-transition-optional",
+    "model": "Definition",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "kind": "state_machine",
+      "name": "隔离闭环",
+      "initial_state": "state-a",
+      "states": [
+        "state-a",
+        "state-b"
+      ],
+      "transitions": [
+        {
+          "transition_id": "transition-test",
+          "from_state": "state-a",
+          "to_state": "state-b",
+          "priority": 1,
+          "trigger": {
+            "provider_id": "provider-test",
+            "device_id": "obs-test",
+            "trigger_id": "test.changed",
+            "capability_version": "1.0.0-draft.2",
+            "conditions": []
+          },
+          "guards": [],
+          "exit_steps": [],
+          "transition_steps": [
+            {
+              "step_id": "step-test",
+              "action_ref": {
+                "provider_id": "provider-test",
+                "device_id": "obs-test",
+                "action_id": "obs.program_scene.set",
+                "capability_version": "1.0.0-draft.2"
+              },
+              "parameters": {
+                "scene_ref": {
+                  "collection_ref": "collection-test",
+                  "scene_id": "scene-b",
+                  "catalog_revision": "3"
+                }
+              },
+              "required": false,
+              "on_failure": "continue_if_independent",
+              "depends_on": [],
+              "preconditions": [],
+              "completion": "effect_verified",
+              "deadlines": {
+                "max_queue_ms": 2000,
+                "evidence_timeout_ms": 5000
+              },
+              "independence_proof_revision": "3"
+            }
+          ],
+          "enter_steps": []
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "invalid-parallel-optional",
+    "model": "Definition",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "合成正例",
+    "instance": {
+      "kind": "rule",
+      "name": "独立步骤",
+      "trigger": {
+        "provider_id": "provider-test",
+        "device_id": "obs-test",
+        "trigger_id": "test.changed",
+        "capability_version": "1.0.0-draft.2",
+        "conditions": []
+      },
+      "groups": [
+        {
+          "kind": "parallel",
+          "steps": [
+            {
+              "step_id": "step-test",
+              "action_ref": {
+                "provider_id": "provider-test",
+                "device_id": "obs-test",
+                "action_id": "obs.program_scene.set",
+                "capability_version": "1.0.0-draft.2"
+              },
+              "parameters": {
+                "scene_ref": {
+                  "collection_ref": "collection-test",
+                  "scene_id": "scene-b",
+                  "catalog_revision": "3"
+                }
+              },
+              "required": false,
+              "on_failure": "continue_if_independent",
+              "depends_on": [],
+              "preconditions": [],
+              "completion": "effect_verified",
+              "deadlines": {
+                "max_queue_ms": 2000,
+                "evidence_timeout_ms": 5000
+              },
+              "independence_proof_revision": "3"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "invalid-continue-without-proof",
+    "model": "StepDefinition",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "step_id": "step-test",
+      "action_ref": {
+        "provider_id": "provider-test",
+        "device_id": "obs-test",
+        "action_id": "obs.program_scene.set",
+        "capability_version": "1.0.0-draft.2"
+      },
+      "parameters": {
+        "scene_ref": {
+          "collection_ref": "collection-test",
+          "scene_id": "scene-b",
+          "catalog_revision": "3"
+        }
+      },
+      "required": false,
+      "on_failure": "continue_if_independent",
+      "depends_on": [],
+      "preconditions": [],
+      "completion": "effect_verified",
+      "deadlines": {
+        "max_queue_ms": 2000,
+        "evidence_timeout_ms": 5000
+      }
+    }
+  },
+  {
+    "case_id": "invalid-unknown-state-reference",
+    "model": "Definition",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "kind": "state_machine",
+      "name": "隔离闭环",
+      "initial_state": "nonexistent",
+      "states": [
+        "state-a",
+        "state-b"
+      ],
+      "transitions": [
+        {
+          "transition_id": "transition-test",
+          "from_state": "state-a",
+          "to_state": "state-b",
+          "priority": 1,
+          "trigger": {
+            "provider_id": "provider-test",
+            "device_id": "obs-test",
+            "trigger_id": "test.changed",
+            "capability_version": "1.0.0-draft.2",
+            "conditions": []
+          },
+          "guards": [],
+          "exit_steps": [],
+          "transition_steps": [
+            {
+              "step_id": "step-test",
+              "action_ref": {
+                "provider_id": "provider-test",
+                "device_id": "obs-test",
+                "action_id": "obs.program_scene.set",
+                "capability_version": "1.0.0-draft.2"
+              },
+              "parameters": {
+                "scene_ref": {
+                  "collection_ref": "collection-test",
+                  "scene_id": "scene-b",
+                  "catalog_revision": "3"
+                }
+              },
+              "required": true,
+              "on_failure": "stop",
+              "depends_on": [],
+              "preconditions": [],
+              "completion": "effect_verified",
+              "deadlines": {
+                "max_queue_ms": 2000,
+                "evidence_timeout_ms": 5000
+              }
+            }
+          ],
+          "enter_steps": []
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "invalid-duplicate-state",
+    "model": "Definition",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "kind": "state_machine",
+      "name": "隔离闭环",
+      "initial_state": "state-a",
+      "states": [
+        "state-a",
+        "state-a"
+      ],
+      "transitions": [
+        {
+          "transition_id": "transition-test",
+          "from_state": "state-a",
+          "to_state": "state-b",
+          "priority": 1,
+          "trigger": {
+            "provider_id": "provider-test",
+            "device_id": "obs-test",
+            "trigger_id": "test.changed",
+            "capability_version": "1.0.0-draft.2",
+            "conditions": []
+          },
+          "guards": [],
+          "exit_steps": [],
+          "transition_steps": [
+            {
+              "step_id": "step-test",
+              "action_ref": {
+                "provider_id": "provider-test",
+                "device_id": "obs-test",
+                "action_id": "obs.program_scene.set",
+                "capability_version": "1.0.0-draft.2"
+              },
+              "parameters": {
+                "scene_ref": {
+                  "collection_ref": "collection-test",
+                  "scene_id": "scene-b",
+                  "catalog_revision": "3"
+                }
+              },
+              "required": true,
+              "on_failure": "stop",
+              "depends_on": [],
+              "preconditions": [],
+              "completion": "effect_verified",
+              "deadlines": {
+                "max_queue_ms": 2000,
+                "evidence_timeout_ms": 5000
+              }
+            }
+          ],
+          "enter_steps": []
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "invalid-permit-manual-grant",
+    "model": "DispatchPermit",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "permit_id": "permit-test",
+      "command_id": "command-test",
+      "attempt_id": "attempt-test",
+      "dispatch_intent_id": "intent-test",
+      "controller_boot_id": "controller-boot-test",
+      "worker_boot_id": "worker-test",
+      "device_session_id": "device-session-test",
+      "control_epoch": "control-test",
+      "control_version": "8",
+      "authorization_revision": "2",
+      "origin": "manual",
+      "grant_revision": "1",
+      "arm_generation": null,
+      "gate_revision": "1",
+      "deadline_policy": {
+        "mode": "immediate",
+        "max_queue_ms": 2000
+      },
+      "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "case_id": "invalid-sync-without-quality",
+    "model": "ClockStatus",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "status": "synchronized",
+      "source_ref": "clock-test",
+      "sampled_at": "2026-10-17T00:00:00.000Z",
+      "offset_ms": 0,
+      "uncertainty_ms": null,
+      "sample_age_ms": 1,
+      "policy_revision": "1"
+    }
+  },
+  {
+    "case_id": "invalid-context-reversed-time",
+    "model": "RequestContext",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "service_id": "controller-test",
+      "principal_id": "user-test",
+      "audience": "controller-test",
+      "operations": [
+        "submitCommand"
+      ],
+      "issued_at": "2026-10-17T00:00:00.000Z",
+      "expires_at": "2026-10-17T00:00:00.000Z",
+      "ttl_ms": 60000,
+      "max_unique_requests": 256,
+      "context_epoch": "ctx-epoch-test"
+    }
+  },
+  {
+    "case_id": "invalid-catalog-schema-digest",
+    "model": "CapabilityCatalog",
+    "schema_valid": true,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "provider_id": "provider-test",
+      "provider_boot_id": "provider-boot-test",
+      "catalog_revision": "3",
+      "module_id": "module-test",
+      "module_version": "1.0.0-draft.2",
+      "devices": [
+        {
+          "device_id": "obs-test",
+          "device_kind": "obs",
+          "display_name": "隔离测试",
+          "connection_state": "ready",
+          "actions": [
+            {
+              "action_id": "test.set",
+              "capability_version": "1.0.0-draft.2",
+              "parameters_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "result_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "resources": [
+                "device/test/value"
+              ],
+              "completion": {
+                "supported": [
+                  "effect_verified"
+                ],
+                "default": "effect_verified",
+                "evidence_policy_id": "evidence-test"
+              },
+              "cancel": {
+                "mode": "before_dispatch_only"
+              },
+              "retry": {
+                "mode": "never"
+              },
+              "preconditions_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "read_set": [],
+              "write_set": [
+                "device/test/value"
+              ],
+              "evidence_timeout_ms": 5000,
+              "limits_profile": "sim-first-loop",
+              "platforms": [
+                {
+                  "os": "windows",
+                  "arch": "x64",
+                  "status": "untested"
+                }
+              ],
+              "dependencies": []
+            }
+          ],
+          "triggers": [
+            {
+              "trigger_id": "test.changed",
+              "capability_version": "1.0.0-draft.2",
+              "payload_schema": {
+                "schema_id": "schema-test",
+                "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "dialect": "https://json-schema.org/draft/2020-12/schema",
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "scene_ref": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scene_ref"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "delivery_semantics": "discrete",
+              "time_requirement": "relative_age",
+              "max_age_ms": 2000,
+              "causation_support": "none",
+              "sampling_policy": null
+            }
+          ],
+          "state_schema": {
+            "schema_id": "schema-test",
+            "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "dialect": "https://json-schema.org/draft/2020-12/schema",
+            "document": {
+              "type": "object",
+              "properties": {
+                "scene_ref": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "scene_ref"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "invalid-ws-payload",
+    "model": "WsFrame",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "subscription_id": "subscription-test",
+      "stream_id": "stream-test",
+      "cursor": "9",
+      "previous_cursor": "8",
+      "entity_id": "command-test",
+      "entity_revision": "1",
+      "event_type": "command.updated",
+      "payload": {
+        "device_id": "obs-test",
+        "revision": "1",
+        "control_epoch": "control-test",
+        "effective_version": "8",
+        "effective_holder_id": null,
+        "mode": "automatic",
+        "pending_change": null,
+        "gate_state": "ready",
+        "in_flight_command_ids": [],
+        "unresolved_command_ids": []
+      }
+    }
+  },
+  {
+    "case_id": "invalid-body-role",
+    "model": "AcquireRequest",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "隔离验证",
+      "role": "admin"
+    }
+  },
+  {
+    "case_id": "invalid-premature-arm",
+    "model": "RunRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "run_id": "run-test",
+      "definition_id": "definition-test",
+      "definition_version": "1.0.0-draft.2",
+      "revision": "1",
+      "business_state": "state-a",
+      "transition": null,
+      "lifecycle": "armed",
+      "execution_summary": "pending",
+      "arm_generation": "4",
+      "grant_bindings": [
+        {
+          "controller_id": "controller-test",
+          "grant_id": "grant-test",
+          "grant_revision": "2",
+          "arm_generation": "4",
+          "application_state": "pending"
+        }
+      ],
+      "active_execution_id": null
+    }
+  },
+  {
+    "case_id": "invalid-global-applied-before-targets",
+    "model": "MutationReceipt",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "operation_id": "mutation-test",
+      "state": "applied",
+      "entity_id": "run-test",
+      "revision": "1",
+      "targets": [
+        {
+          "service_id": "controller-test",
+          "status": "pending",
+          "applied_revision": null
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "invalid-published-no-version",
+    "model": "DefinitionRecord",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "definition_id": "definition-test",
+      "revision": "1",
+      "definition_version": null,
+      "definition": {
+        "kind": "state_machine",
+        "name": "隔离闭环",
+        "initial_state": "state-a",
+        "states": [
+          "state-a",
+          "state-b"
+        ],
+        "transitions": [
+          {
+            "transition_id": "transition-test",
+            "from_state": "state-a",
+            "to_state": "state-b",
+            "priority": 1,
+            "trigger": {
+              "provider_id": "provider-test",
+              "device_id": "obs-test",
+              "trigger_id": "test.changed",
+              "capability_version": "1.0.0-draft.2",
+              "conditions": []
+            },
+            "guards": [],
+            "exit_steps": [],
+            "transition_steps": [
+              {
+                "step_id": "step-test",
+                "action_ref": {
+                  "provider_id": "provider-test",
+                  "device_id": "obs-test",
+                  "action_id": "obs.program_scene.set",
+                  "capability_version": "1.0.0-draft.2"
+                },
+                "parameters": {
+                  "scene_ref": {
+                    "collection_ref": "collection-test",
+                    "scene_id": "scene-b",
+                    "catalog_revision": "3"
+                  }
+                },
+                "required": true,
+                "on_failure": "stop",
+                "depends_on": [],
+                "preconditions": [],
+                "completion": "effect_verified",
+                "deadlines": {
+                  "max_queue_ms": 2000,
+                  "evidence_timeout_ms": 5000
+                }
+              }
+            ],
+            "enter_steps": []
+          }
+        ]
+      },
+      "published": true
+    }
+  },
+  {
+    "case_id": "invalid-preflight-false-success",
+    "model": "Preflight",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "preflight_id": "preflight-test",
+      "run_id": "run-test",
+      "run_revision": "1",
+      "passed": true,
+      "checks": [
+        {
+          "code": "storage-ready",
+          "passed": false,
+          "details": "模拟"
+        }
+      ],
+      "observed_at": "2026-10-17T00:00:00.000Z"
+    }
+  },
+  {
+    "case_id": "invalid-grant-self-assign-principal",
+    "model": "GrantUpdate",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": null,
+      "grant": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "arm_generation": "4",
+        "device_actions": [
+          {
+            "device_id": "obs-test",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2"
+          }
+        ],
+        "parameter_constraints": [],
+        "validity": {
+          "not_before": "2026-10-17T00:00:00.000Z",
+          "not_after": "2026-10-17T00:01:00.000Z",
+          "authorization_policy_revision": "1"
+        },
+        "approval_id": "approval-test",
+        "principal_id": "admin"
+      }
+    }
+  },
+  {
+    "case_id": "invalid-grant-self-activate",
+    "model": "GrantUpdate",
+    "schema_valid": false,
+    "contract_valid": false,
+    "note": "必须拒绝",
+    "instance": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_revision": null,
+      "grant": {
+        "run_id": "run-test",
+        "definition_version": "1.0.0-draft.2",
+        "arm_generation": "4",
+        "device_actions": [
+          {
+            "device_id": "obs-test",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2"
+          }
+        ],
+        "parameter_constraints": [],
+        "validity": {
+          "not_before": "2026-10-17T00:00:00.000Z",
+          "not_after": "2026-10-17T00:01:00.000Z",
+          "authorization_policy_revision": "1"
+        },
+        "approval_id": "approval-test",
+        "state": "active"
+      }
+    }
+  }
+]

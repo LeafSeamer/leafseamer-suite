@@ -1,0 +1,81 @@
+[
+  {
+    "case_id": "capability-valid",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "scene_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "scene_ref"
+      ],
+      "additionalProperties": false
+    },
+    "parameters": {
+      "scene_ref": "scene-b"
+    },
+    "valid": true
+  },
+  {
+    "case_id": "capability-extra-write",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "scene_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "scene_ref"
+      ],
+      "additionalProperties": false
+    },
+    "parameters": {
+      "scene_ref": "scene-b",
+      "force": true
+    },
+    "valid": false
+  },
+  {
+    "case_id": "capability-wrong-type",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "scene_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "scene_ref"
+      ],
+      "additionalProperties": false
+    },
+    "parameters": {
+      "scene_ref": 8
+    },
+    "valid": false
+  },
+  {
+    "case_id": "capability-missing",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "scene_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "scene_ref"
+      ],
+      "additionalProperties": false
+    },
+    "parameters": {},
+    "valid": false
+  }
+]

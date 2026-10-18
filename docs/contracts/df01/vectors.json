@@ -1,0 +1,72 @@
+{
+  "status": "人工固定预期；仅供DF01参考检查，不是SDK实现",
+  "canonical": [
+    {"id":"J01","raw":"{\"b\":2,\"a\":1}","expected":"{\"a\":1,\"b\":2}"},
+    {"id":"J02","raw":"{\"2\":\"b\",\"10\":\"a\"}","expected":"{\"10\":\"a\",\"2\":\"b\"}"},
+    {"id":"J03","raw":"{\"\uE000\":1,\"\ud800\udc00\":2}","expected":"{\"𐀀\":2,\"\":1}"},
+    {"id":"J04","raw":"{\"b\":[{\"z\":1,\"a\":2},3],\"a\":1}","expected":"{\"a\":1,\"b\":[{\"a\":2,\"z\":1},3]}"},
+    {"id":"J05","raw":"{\"x\":-0.0}","expected":"{\"x\":0}"},
+    {"id":"J06","raw":"{\"x\":\"-0\"}","expected":"{\"x\":\"-0\"}"},
+    {"id":"J07","raw":"{\"x\":\"é\"}","expected":"{\"x\":\"é\"}"},
+    {"id":"J08","raw":"{\"x\":\"é\"}","expected":"{\"x\":\"é\"}"},
+    {"id":"J09","raw":"[1e-6,1e-7,1e20,1e21]","expected":"[0.000001,1e-7,100000000000000000000,1e+21]"},
+    {"id":"J10","raw":"{\"x\":\"9007199254740993\"}","expected":"{\"x\":\"9007199254740993\"}"},
+    {"id":"J11","raw":"{\"x\":\"9007199254740992\"}","expected":"{\"x\":\"9007199254740992\"}"},
+    {"id":"J12","raw":"{\"x\":null}","expected":"{\"x\":null}"},
+    {"id":"J13","raw":"{}","expected":"{}"},
+    {"id":"J14","raw":"[1,2]","expected":"[1,2]"},
+    {"id":"J15","raw":"[2,1]","expected":"[2,1]"}
+  ],
+  "different_digest_pairs": [["J05","J06"],["J07","J08"],["J10","J11"],["J12","J13"],["J14","J15"]],
+  "integers": [
+    {"id":"I01","kind":"revision","text":"0","valid":true,"value":"0"},
+    {"id":"I02","kind":"revision","text":"9007199254740993","valid":true,"value":"9007199254740993"},
+    {"id":"I03","kind":"revision","text":"18446744073709551616","valid":true,"value":"18446744073709551616"},
+    {"id":"I04","kind":"revision","text":"99999999999999999999","valid":true,"value":"99999999999999999999"},
+    {"id":"I05","kind":"revision","text":"100000000000000000000","valid":false},
+    {"id":"I06","kind":"revision","text":"01","valid":false},
+    {"id":"I07","kind":"revision","text":"+1","valid":false},
+    {"id":"I08","kind":"revision","text":"1e3","valid":false},
+    {"id":"I09","kind":"revision","text":"1.0","valid":false},
+    {"id":"I10","kind":"revision","text":" 1","valid":false},
+    {"id":"I11","kind":"revision","text":"１","valid":false},
+    {"id":"I12","kind":"revision","text":"-0","valid":false},
+    {"id":"I13","kind":"unsigned_ns","text":"999999999999999999999999","valid":true,"value":"999999999999999999999999"},
+    {"id":"I14","kind":"unsigned_ns","text":"1000000000000000000000000","valid":false},
+    {"id":"I15","kind":"signed_ns","text":"-0","valid":true,"value":"0","next_revision_recommendation":"拒绝；本轮保持draft4合法且wire原文不改写"},
+    {"id":"I16","kind":"signed_ns","text":"-1","valid":true,"value":"-1"},
+    {"id":"I17","kind":"signed_ns","text":"9999999999999999999999999","valid":true,"value":"9999999999999999999999999"},
+    {"id":"I18","kind":"signed_ns","text":"-999999999999999999999999","valid":true,"value":"-999999999999999999999999"},
+    {"id":"I19","kind":"signed_ns","text":"-9999999999999999999999999","valid":false}
+  ],
+  "division": [
+    {"id":"M01","n":"1000001","d":"1000000","floor":"1","ceil":"2"},
+    {"id":"M02","n":"-1","d":"3","floor":"-1","ceil":"0"},
+    {"id":"M03","n":"-4","d":"3","floor":"-2","ceil":"-1"},
+    {"id":"M04","n":"-6","d":"3","floor":"-2","ceil":"-2"},
+    {"id":"M05","n":"9007199254740993","d":"2","floor":"4503599627370496","ceil":"4503599627370497"},
+    {"id":"M06","n":"0","d":"3","floor":"0","ceil":"0"}
+  ],
+  "raw_integer": [
+    {"id":"R01","raw":"9007199254740991","valid":true},
+    {"id":"R02","raw":"9007199254740993","valid":false},
+    {"id":"R03","raw":"1.0000000000000001","valid":false},
+    {"id":"R04","raw":"1e0","valid":true},
+    {"id":"R05","raw":"1.0","valid":true},
+    {"id":"R06","raw":"1e999","valid":false},
+    {"id":"R07","raw":"-9007199254740992","valid":false},
+    {"id":"R08","raw":"-0","valid":true}
+  ],
+  "baseline_gaps": [
+    {"id":"B01","model":"Revision","value":"1\n","draft4_schema_accepts":true,"recommended_next_accepts":false},
+    {"id":"B02","model":"signed_ns","value":"-0","draft4_schema_accepts":true,"recommended_next_accepts":false}
+  ],
+  "planned_raw_rejections": [
+    {"id":"W01","raw":"{\"a\":1,\"\\u0061\":2}","stage":"重复解码键；SDK原始解析器待实现"},
+    {"id":"W02","raw":"{\"x\":\"\\ud800\"}","stage":"孤立代理项；SDK原始解析器待实现"},
+    {"id":"W03","raw_utf8_hex":"eda080","stage":"严格UTF-8拒绝代理项编码"},
+    {"id":"W04","raw_utf8_hex":"c0af","stage":"严格UTF-8拒绝过长编码"},
+    {"id":"W05","raw":"{\"x\":\"\\ufdd0\"}","stage":"I-JSON非字符拒绝"},
+    {"id":"W06","raw":"{\"x\":NaN}","stage":"非法JSON数值拒绝"}
+  ]
+}

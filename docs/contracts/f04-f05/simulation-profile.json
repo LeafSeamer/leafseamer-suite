@@ -1,0 +1,58 @@
+{
+  "profile_id": "sim-f04-f05-v1",
+  "revision": "1",
+  "purpose": "simulation",
+  "validated_environment": null,
+  "evidence_ref": null,
+  "identity": {
+    "access_token_ms": 60000,
+    "session_absolute_ms": 28800000,
+    "recent_auth_ms": 300000,
+    "refresh_idle_ms": 1800000,
+    "snapshot_fresh_ms": 2000,
+    "snapshot_refresh_ms": 500,
+    "gate_lease_ms": 500,
+    "gate_renew_ms": 100,
+    "local_revoke_alarm_ms": 500,
+    "remote_revoke_alarm_ms": 2000,
+    "ws_ticket_ms": 10000,
+    "pairing_ms": 60000,
+    "bootstrap_ms": 600000
+  },
+  "clock": {
+    "max_sample_age_ms": 10000,
+    "max_uncertainty_ms": 50,
+    "drift_bound_ppm": 100
+  },
+  "capacity": {
+    "http_bytes": 65536,
+    "frame_bytes": 262144,
+    "json_depth": 32,
+    "devices": 8,
+    "workers": 2,
+    "command_queue": 32,
+    "device_command_queue": 8,
+    "writer_queue": 64,
+    "evidence_queue": 64,
+    "protection_queue": 16,
+    "ipc_normal_slots": 64,
+    "ipc_protection_slots": 4,
+    "barrier_intents": 256,
+    "requests_per_second": 10,
+    "request_burst": 20,
+    "login_per_minute": 5,
+    "login_burst": 5,
+    "gui_events": 256,
+    "gui_bytes": 1048576,
+    "source_events": 256,
+    "source_bytes": 1048576,
+    "min_disk_free_bytes": 1073741824,
+    "max_wal_bytes": 268435456,
+    "max_reserved_bytes": 16777216
+  },
+  "retention": {
+    "context_ms": 300000,
+    "terminal_detail_days": 7,
+    "audit_days": 30
+  }
+}

@@ -1,0 +1,1719 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/f04-f05/contracts.schema.json",
+  "title": "F04/F05 候选模型库；按指定 $defs 校验，不替代公共 draft.2",
+  "$defs": {
+    "AuthorizationSnapshot": {
+      "type": "object",
+      "properties": {
+        "snapshot_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "issuer_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "issuer_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "audience": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "principal_kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "principal_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "credential_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "subject_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "session_revision": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "scope_digest": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Digest"
+        },
+        "challenge_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "validity": {
+          "type": "object",
+          "properties": {
+            "not_before": {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Timestamp"
+            },
+            "expires_at": {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Timestamp"
+            }
+          },
+          "required": [
+            "not_before",
+            "expires_at"
+          ],
+          "additionalProperties": false
+        },
+        "fresh_for_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60000
+        },
+        "state": {
+          "enum": [
+            "active",
+            "revoked",
+            "expired"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "issuer_id",
+        "issuer_epoch",
+        "issuer_revision",
+        "audience",
+        "principal_kind",
+        "principal_id",
+        "session_id",
+        "credential_id",
+        "subject_revision",
+        "session_revision",
+        "policy_revision",
+        "permissions",
+        "scope_digest",
+        "challenge_id",
+        "validity",
+        "fresh_for_ms",
+        "state"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "principal_kind": {
+                "const": "human"
+              }
+            },
+            "required": [
+              "principal_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "session_revision": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_id": {
+                "type": "null"
+              },
+              "session_revision": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AuthorizationBinding": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "audience": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "principal_kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "principal_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "credential_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "subject_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "session_revision": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "scope_digest": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Digest"
+        },
+        "grant_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "grant_revision": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arm_generation": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extension_instance_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extension_approval_revision": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "audience",
+        "principal_kind",
+        "principal_id",
+        "origin",
+        "session_id",
+        "credential_id",
+        "subject_revision",
+        "session_revision",
+        "policy_revision",
+        "scope_digest",
+        "grant_id",
+        "grant_revision",
+        "arm_generation",
+        "extension_instance_id",
+        "extension_approval_revision"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "principal_kind": {
+                "const": "human"
+              }
+            },
+            "required": [
+              "principal_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "session_revision": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+              },
+              "origin": {
+                "const": "manual"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_id": {
+                "type": "null"
+              },
+              "session_revision": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "principal_kind": {
+                "const": "service"
+              },
+              "grant_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "grant_revision": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+              },
+              "arm_generation": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "grant_id": {
+                "type": "null"
+              },
+              "grant_revision": {
+                "type": "null"
+              },
+              "arm_generation": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "extension_instance_id": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "extension_instance_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "extension_approval_revision": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "extension_approval_revision": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ExecutionGuard": {
+      "type": "object",
+      "properties": {
+        "guard_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "permit_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "command_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "controller_boot_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "binding": {
+          "$ref": "#/$defs/AuthorizationBinding"
+        },
+        "authorization_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "authorization_deadline_tick_ns": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "clock_domain_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "clock_generation": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_policy_revision": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_required": {
+          "type": "boolean"
+        },
+        "capacity_reservation_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "guard_digest": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "guard_id",
+        "permit_id",
+        "command_id",
+        "device_id",
+        "controller_boot_id",
+        "worker_boot_id",
+        "ipc_session_id",
+        "binding",
+        "authorization_revision",
+        "authorization_deadline_tick_ns",
+        "clock_domain_id",
+        "clock_generation",
+        "time_policy_revision",
+        "time_required",
+        "capacity_reservation_id",
+        "guard_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "time_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "time_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "clock_generation": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "time_policy_revision": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "clock_generation": {
+                "type": "null"
+              },
+              "time_policy_revision": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "RevocationSelector": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "session",
+            "principal",
+            "credential",
+            "grant",
+            "extension",
+            "trust"
+          ]
+        },
+        "issuer_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "target_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "revision_floor": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        }
+      },
+      "required": [
+        "kind",
+        "issuer_id",
+        "issuer_epoch",
+        "target_id",
+        "revision_floor"
+      ],
+      "additionalProperties": false
+    },
+    "RevocationReceipt": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "target_service_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "service_boot_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "selector": {
+          "$ref": "#/$defs/RevocationSelector"
+        },
+        "observed_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "gate_revision": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "applied",
+            "indeterminate"
+          ]
+        },
+        "barrier_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "closed_subscription_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "invalidated_permit_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "in_flight_command_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "unresolved_command_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "durable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation_id",
+        "target_service_id",
+        "service_boot_id",
+        "selector",
+        "observed_revision",
+        "gate_revision",
+        "state",
+        "barrier_id",
+        "closed_subscription_ids",
+        "invalidated_permit_ids",
+        "in_flight_command_ids",
+        "unresolved_command_ids",
+        "durable"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "applied"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "barrier_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "gate_revision": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+              },
+              "durable": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "RevocationRecord": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "selector": {
+          "$ref": "#/$defs/RevocationSelector"
+        },
+        "issuer_commit_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "target_service_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "state": {
+          "enum": [
+            "accepted",
+            "applying",
+            "applied",
+            "indeterminate"
+          ]
+        },
+        "receipts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RevocationReceipt"
+          },
+          "maxItems": 256,
+          "uniqueItems": false
+        },
+        "reason": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "audit_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "operation_id",
+        "selector",
+        "issuer_commit_revision",
+        "target_service_ids",
+        "state",
+        "receipts",
+        "reason",
+        "audit_id"
+      ],
+      "additionalProperties": false
+    },
+    "ClockSample": {
+      "type": "object",
+      "properties": {
+        "sample_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "provider_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "provider_boot_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "host_boot_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "clock_generation": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "policy_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "source_ref": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "source_auth": {
+          "enum": [
+            "nts",
+            "trusted_network",
+            "unverified"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "system_disciplined",
+            "application_offset"
+          ]
+        },
+        "sample_tick_ns": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "estimated_utc_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "uncertainty_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 86400000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "drift_bound_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "max_sample_age_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        },
+        "quality": {
+          "enum": [
+            "synchronized",
+            "degraded",
+            "unsynchronized"
+          ]
+        }
+      },
+      "required": [
+        "sample_id",
+        "provider_id",
+        "provider_boot_id",
+        "host_boot_id",
+        "clock_domain_id",
+        "clock_generation",
+        "policy_revision",
+        "source_ref",
+        "source_auth",
+        "mode",
+        "sample_tick_ns",
+        "estimated_utc_ms",
+        "uncertainty_ms",
+        "drift_bound_ppm",
+        "max_sample_age_ms",
+        "quality"
+      ],
+      "additionalProperties": false
+    },
+    "ClockAssessment": {
+      "type": "object",
+      "properties": {
+        "sample_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "clock_generation": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "policy_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "evaluated_tick_ns": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "sample_age_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uncertainty_now_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "utc_lower_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "utc_upper_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eligible_for_absolute": {
+          "type": "boolean"
+        },
+        "reason_code": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "sample_id",
+        "clock_domain_id",
+        "clock_generation",
+        "policy_revision",
+        "evaluated_tick_ns",
+        "sample_age_ms",
+        "uncertainty_now_ms",
+        "utc_lower_ms",
+        "utc_upper_ms",
+        "eligible_for_absolute",
+        "reason_code"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "eligible_for_absolute": {
+                "const": true
+              }
+            },
+            "required": [
+              "eligible_for_absolute"
+            ]
+          },
+          "then": {
+            "properties": {
+              "sample_age_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "uncertainty_now_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "utc_lower_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "utc_upper_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ScheduleGuard": {
+      "type": "object",
+      "properties": {
+        "occurrence_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "definition_version": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Version"
+        },
+        "clock_generation": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "time_policy_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "not_before": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Timestamp"
+        },
+        "not_after": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Timestamp"
+        },
+        "window_enter_tick_ns": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "queue_deadline_tick_ns": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "health_latched": {
+          "type": "boolean"
+        },
+        "block_reason": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "occurrence_id",
+        "definition_version",
+        "clock_generation",
+        "time_policy_revision",
+        "not_before",
+        "not_after",
+        "window_enter_tick_ns",
+        "queue_deadline_tick_ns",
+        "health_latched",
+        "block_reason"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "health_latched": {
+                "const": true
+              }
+            },
+            "required": [
+              "health_latched"
+            ]
+          },
+          "then": {
+            "properties": {
+              "block_reason": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "block_reason": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "EventAgeProof": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "provider_boot_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "source_sequence": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "basis": {
+          "enum": [
+            "trusted_utc",
+            "causal_capture",
+            "unproven"
+          ]
+        },
+        "capture_sample_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower_age_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upper_age_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "challenge_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope_digest": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "event_id",
+        "provider_boot_id",
+        "source_sequence",
+        "basis",
+        "capture_sample_id",
+        "lower_age_ms",
+        "upper_age_ms",
+        "challenge_id",
+        "scope_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "const": "unproven"
+              }
+            },
+            "required": [
+              "basis"
+            ]
+          },
+          "then": {
+            "properties": {
+              "lower_age_ms": {
+                "type": "null"
+              },
+              "upper_age_ms": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "lower_age_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "upper_age_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "const": "causal_capture"
+              }
+            },
+            "required": [
+              "basis"
+            ]
+          },
+          "then": {
+            "properties": {
+              "challenge_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "const": "trusted_utc"
+              }
+            },
+            "required": [
+              "basis"
+            ]
+          },
+          "then": {
+            "properties": {
+              "capture_sample_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "WsTicketBinding": {
+      "type": "object",
+      "properties": {
+        "binding_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "session_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "audience": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "origin": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "client_instance_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "scope_digest": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Digest"
+        },
+        "expires_at": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Timestamp"
+        },
+        "consumed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "binding_id",
+        "session_id",
+        "audience",
+        "origin",
+        "client_instance_id",
+        "issuer_epoch",
+        "scope_digest",
+        "expires_at",
+        "consumed"
+      ],
+      "additionalProperties": false
+    },
+    "AdmissionDecision": {
+      "type": "object",
+      "properties": {
+        "request_ref": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "decision": {
+          "enum": [
+            "accepted",
+            "rejected"
+          ]
+        },
+        "reason_code": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "profile_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "profile_revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "limited_dimension": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retry_after_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 86400000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reservation_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "command_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "request_ref",
+        "decision",
+        "reason_code",
+        "profile_id",
+        "profile_revision",
+        "limited_dimension",
+        "retry_after_ms",
+        "reservation_id",
+        "command_id"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "accepted"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reservation_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "command_id": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "limited_dimension": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reservation_id": {
+                "type": "null"
+              },
+              "command_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CapacityProfile": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Revision"
+        },
+        "purpose": {
+          "enum": [
+            "simulation",
+            "release_candidate"
+          ]
+        },
+        "validated_environment": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_ref": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identity": {
+          "type": "object",
+          "properties": {
+            "access_token_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "session_absolute_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "recent_auth_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "refresh_idle_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "snapshot_fresh_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "snapshot_refresh_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "gate_lease_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "gate_renew_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "local_revoke_alarm_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "remote_revoke_alarm_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "ws_ticket_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "pairing_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "bootstrap_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "access_token_ms",
+            "session_absolute_ms",
+            "recent_auth_ms",
+            "refresh_idle_ms",
+            "snapshot_fresh_ms",
+            "snapshot_refresh_ms",
+            "gate_lease_ms",
+            "gate_renew_ms",
+            "local_revoke_alarm_ms",
+            "remote_revoke_alarm_ms",
+            "ws_ticket_ms",
+            "pairing_ms",
+            "bootstrap_ms"
+          ],
+          "additionalProperties": false
+        },
+        "clock": {
+          "type": "object",
+          "properties": {
+            "max_sample_age_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "max_uncertainty_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "drift_bound_ppm": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "max_sample_age_ms",
+            "max_uncertainty_ms",
+            "drift_bound_ppm"
+          ],
+          "additionalProperties": false
+        },
+        "capacity": {
+          "type": "object",
+          "properties": {
+            "http_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "frame_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "json_depth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "devices": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "workers": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "command_queue": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "device_command_queue": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "writer_queue": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "evidence_queue": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "protection_queue": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "ipc_normal_slots": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "ipc_protection_slots": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "barrier_intents": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "requests_per_second": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "request_burst": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "login_per_minute": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "login_burst": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "gui_events": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "gui_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "source_events": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "source_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "min_disk_free_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "max_wal_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "max_reserved_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "http_bytes",
+            "frame_bytes",
+            "json_depth",
+            "devices",
+            "workers",
+            "command_queue",
+            "device_command_queue",
+            "writer_queue",
+            "evidence_queue",
+            "protection_queue",
+            "ipc_normal_slots",
+            "ipc_protection_slots",
+            "barrier_intents",
+            "requests_per_second",
+            "request_burst",
+            "login_per_minute",
+            "login_burst",
+            "gui_events",
+            "gui_bytes",
+            "source_events",
+            "source_bytes",
+            "min_disk_free_bytes",
+            "max_wal_bytes",
+            "max_reserved_bytes"
+          ],
+          "additionalProperties": false
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "context_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "terminal_detail_days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "audit_days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "context_ms",
+            "terminal_detail_days",
+            "audit_days"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile_id",
+        "revision",
+        "purpose",
+        "validated_environment",
+        "evidence_ref",
+        "identity",
+        "clock",
+        "capacity",
+        "retention"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "purpose": {
+                "const": "release_candidate"
+              }
+            },
+            "required": [
+              "purpose"
+            ]
+          },
+          "then": {
+            "properties": {
+              "validated_environment": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              },
+              "evidence_ref": {
+                "$ref": "https://leafseamer.invalid/contracts/first-loop.schema.json#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

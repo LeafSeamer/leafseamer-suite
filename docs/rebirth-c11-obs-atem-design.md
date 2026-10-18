@@ -1,6 +1,6 @@
 # C11：OBS／ATEM 全能力契约与完成证据
 
-日期：2026-10-17。状态：**AV01—AV06为待审阅推荐**。本稿覆盖[旧设备映射](rebirth-legacy-device-map.md)的OA01—OA10、AA01—AA08，不替代已确认F06 OBS首闭环；进一步明确全部旧面板功能及协议库边界。未改业务代码或draft.4／IPC 0.3，未安装程序、启动服务或连接设备。
+日期：2026-10-18。状态：**AV01—AV06为待审阅推荐**。本稿覆盖[旧设备映射](rebirth-legacy-device-map.md)的OA01—OA10、AA01—AA08，不替代已确认F06 OBS首闭环；进一步明确全部旧面板功能及协议库边界。未改业务代码或draft.4／IPC 0.3，未安装程序、启动服务或连接设备。
 
 Controller负责模块、设备身份、最终发送及证据；SDK承载目录／参数／观察／错误和证据模型；GUI保留专用操作流；Seamer引用批准的能力和失败政策；Suite固定库、程序／固件及平台夹具。首闭环仅是实施顺序，不能替代本稿的完整能力范围。
 
@@ -178,10 +178,128 @@ GUI保留OBS连接CRUD、场景预选／切换、转场选择、推流目标／�
 
 ## 7. AV06：明确的剩余冻结与推荐
 
-1. **VLC指定条目播放**：保留真实功能目标。推荐评估固定的OBS端辅助接口，以明确的playlist generation＋item identity选择并回报实际当前项；不采用改selected、按猜测index循环NEXT、暗改列表顺序或读私有内存结构。标准接口现有证据不足，辅助接口能否通过受支持扩展实现、是否需修改VLC源及独立许可制品必须先完成设计审阅；尚未冻结，不能默认安装或将其记为已完成旧功能。
-2. **ATEM库边界**：推荐固定受审阅传输适配，显式传播逐项发送失败、提供逐次重传门控和完整待发账本。库tag／tarball一致只证明来源，补丁及原生／线程产物仍须DF05固定；不将3.7.0直接批准上线。
+1. **VLC指定条目播放**：保留真实功能目标。[第9节](#9-av02av06补充vlc源扩展与studio转场)已将辅助接口收敛为VLC源内窄补丁及受限桥候选，定义列表／条目／播放代与独立制品边界；不采用改selected、猜测NEXT、暗改列表顺序或读私有内存。新增成本仍待审阅，不能默认安装或记为已完成旧功能。
+2. **ATEM库边界**：[第8节](#8-av04av06补充可审阅的传输与证据冻结方案)已细化逐传输可靠许可、接收校验与两级账本，显式传播逐项发送失败。库tag／tarball一致只证明来源，补丁及原生／线程产物仍须DF05固定；不将3.7.0直接批准上线。
 3. **ATEM效果与年龄**：逐型号给出设备反馈到命令／执行代的证明路径。普通缓存与时间请求不够；若协议无法提供所需因果证据，需评估厂商受支持控制接口或明确较弱手动政策，不能默认降低自动化要求。该结论是待设计问题，不是删除ATEM范围。
 4. **全量能力机器契约**：将本表每个action、target、错误码、复合计划及证据政策合入下一版SDK；OBS四帧仅保留原适用域，不把通用DeviceActionEvidence存在当作验证器已实现。Media／Transition／Stream／ATEM专属profile须有正反例及独立批准。
 5. **型号及预算**：实际固件、合法range、重传预算、采样年龄／完成期限和解码容差由固定夹具取证。设计必须给字段、选择规则和失败关闭行为，未测试的数字不得包装为生产默认；完整支持矩阵在实现验收后发布。
 
 本稿将旧面板用途落实为候选契约并揭示新的实质缺口，尚未关闭C11。Mixer／DM3完整目录、WING与VB、GUI身份流程、部署恢复及跨项机器归并仍须完成；全部系统方案审阅前继续不进入业务实现。
+
+## 8. AV04／AV06补充：可审阅的传输与证据冻结方案
+
+2026-10-18补充。以下是工程推荐，不表示AV方案已获确认。本节把“需要受控适配”收敛为具体边界；它新增传输层记录和许可，必须与F02、DF04及下一版IPC联合审阅，不能直接写入已确认IPC 0.3。
+
+### 8.1 已核对事实与接收适配边界
+
+固定ATEM源码的`sendPacket`先调用`_sendPacket`再加入`_inFlight`；`_sendPacket`直接调用UDP socket。`_receivePacket`在解析长度前更新接收时间，读来包session后直接赋给`_sessionId`，未在该方法核对`rinfo.address/port`；ACK按循环序号累计覆盖在途项。`_retransmitFrom`从请求位置起逐项重发原payload，设备请求与超时均可进入该路径。这些是第三方库实现事实，不能据此声称设备保证去重或网络对端可信。（来源：[固定接收和发送实现](https://github.com/Sofie-Automation/sofie-atem-connection/blob/3e11369e2937931c88453ce65e44fb6c406ce392/src/lib/atemSocketChild.ts)。）
+
+推荐在受审阅适配内统一接收校验：最小头长度、报文实际长度、允许flags、当前socket实例、固定数值端点及协议session全部匹配后，才更新存活／状态／ACK账本。新session只由当前握手状态接受；已建立连接收到不同session不能直接覆盖。累计ACK必须落在本连接实际已提交的序号窗口内，不得用未来ACK清空账本；未知重传起点进入保护恢复，不自动建立新可写会话。坏包有界计数及丢弃，不能凭来包刷新租期或可信年龄。端点过滤不是密码认证，部署profile须明确可信设备网络前提，不能将UDP来源标签等同mTLS身份。
+
+推荐每个连接世代内不复用控制packet序号；接近协议回绕时在无在途／未知影响、写闸关闭后维护重连，建立新device_session_id并完成恢复屏障。无法清空则保护停止，不跨回绕猜ACK归属。此前原生设备可能仍执行已收命令，连接更新不产生释放证明。该保守选择有周期维护成本，须在长时直播试验中评估；不可将其包装成无中断保证。
+
+### 8.2 两级身份与持久化发送
+
+保留一个业务attempt，新增其下多次传输记录。F02的“一attempt一permit”仍适用于原始派发；新增重传例外只在下一版明示，不能把同一许可消费多次，也不能以新attempt重做CUT/AUTO。
+
+| 候选对象 | 具体字段及约束 |
+| --- | --- |
+| `TransportPacket` | packet_ref、command_id、attempt_id、primitive_id、device_session_id、writer/domain引用、socket_instance_id、protocol_session、wire_packet_id、tracking_ids、immutable_bytes_ref、byte_length、sha256、transport_profile_ref；一个控制primitive独占一个packet，禁止跨command合包；超单包须另设计显式多primitive计划 |
+| `TransmissionIntent` | transmission_id、packet_ref、ordinal、kind=`initial|protocol_resend`、cause=`dispatch|timeout|peer_request`、trigger_observation_ref、parent_dispatch_intent_id、issued_revision、permit_id、send_window、state；ordinal=0绑定原DispatchPermit，后续ordinal严格递增且单独许可，跨重启不复用 |
+| `TransportResendPermit` | transmission_id、packet_ref、packet_sha256、byte_length、ordinal、device_session_id、协议session/packet序号、原command/attempt、当前gate/control/authorization绑定、守卫引用、expires_tick_ns、budget_revision；单次使用，不携带可替换payload；有效期不得超过原命令及许可总截止 |
+| `TransmissionReport` | report_id、transmission_id、gate_io_seq、disposition=`not_sent|in_flight|unknown`、proof、transport_entered_tick、socket_callback_observation_ref；异步socket回调成功只证本地提交，错误通常不证明设备未收 |
+| `PacketAckObservation` | observation_id、socket/session绑定、receive_io_seq、原始ACK引用、wire_ack_id、按当前窗口推导的covered_packet_refs；不生成effect_verified，不能声称ACK对应某次ordinal |
+
+发送路径推荐：worker只编码并提出`PREPARE_PACKET`→Controller核对目录、primitive与内容摘要，原intent及初次传输行在关键事务可靠提交→发`DISPATCH`→worker串行闸核对并消费→socket提交。初次编码准备没有设备写副作用；Controller不持有设备socket。封包变化使准备作废，不在已批准摘要上暗改协议头。
+
+重传路径推荐：worker提出`RESEND_REQUEST(packet_ref,cause,observation_ref)`→Controller在同设备调度锁内核对原尝试、未终结、原截止、当前授权／资源／守卫、预算和未ACK状态→事务预留一个ordinal及可靠intent→发`RESEND_DISPATCH(permit)`→worker在与FENCE共用的仲裁器中再核对→逐次发送。所有超时、peer请求和批量连带重发均走此路，不预发整组重传许可。每packet最多一个未消费重传许可；重复请求只合并待处理原因，不能刷新时限、重置计数或绕预算。ACK在许可投递后到达，worker可丢弃尚未消费许可并报告not_sent；ACK不是强制再发依据。
+
+持久化候选约束：`transport_packets(packet_ref PK, attempt_id FK, session_id, wire_id, hash, bytes_ref)`、`transmission_intents(transmission_id PK, packet_ref FK, ordinal, permit_id UNIQUE, issued_revision, disposition)`，唯一`(packet_ref,ordinal)`和同session的wire_id；证据与报告另存不可变引用。重传预留事务原子增加预算消费及行；未发许可也占预算，取消不返还以免重复请求循环。字节与账本保存按关键资料保留规则处理，不放普通debug日志。这些是DF04候选表映射，不是已完成迁移脚本。
+
+任何关键事务失败都不签发许可；持久intent存在而发送结果丢失，重启后为unknown，不从数据库重放。worker旧报告只能核对历史；新worker不能发送旧packet，即使payload、IP和wire序号相同。底层全部回调、定时器、自动重连和子线程重启纳入监督及出口账本，未能证明已终止则不启动替代writer。
+
+### 8.3 屏障切点与完成分离
+
+下一版`FENCE`除原业务open_intents还携带`open_transmission_intents`，每项含传输及parent身份；两清单分别排序／摘要并由同一持久化issued_cut_revision绑定。它们属于同一个签发切点，不能先截业务清单再允许重传签发。ACK覆盖全部未核销传输；零次未发和原packet曾发必须并存，不能用“最后一次重传未发”覆盖原attempt的在途事实。即使原始DispatchPermit已有发送报告，该packet待发重传／未决影响仍须纳入切点。
+
+`Lresend < Lfence`时本次重传归in_flight；`Lfence < Lresend`时拒绝本次发送。两者均不保证网络线路已静止。屏障后的peer请求只能登记/拒绝；纯ACK维护包仅在固定无控制payload格式和有界维护预算内允许。业务关闭不自动关闭所有接收，迟到ACK／状态可追加resolution；不改变已存unknown终态、不自动清保护、不改持有人。
+
+推荐有限实验profile：每设备最多32个未核销控制packet、64KiB不可变包缓存；每packet最多10次实际重传且最多10次重传许可预留；两条重传入口共享预算；最小60ms间隔、总重传窗口至多600ms且取原截止更早者；普通请求不挤占F02保护槽。数字只供夹具，不能沿用库默认推导可靠性或时限保证。每次持久化增加延迟，超窗口就停止，不能为了赶60ms而越过事务。真实吞吐／丢包／持续接管预算验收后才能批准生产profile。
+
+### 8.4 ATEM效果政策的具体放行条件
+
+推荐分开提供`transport_ack_only`观察与`qualified_state_effect`完成政策。前者只供界面说明已收到协议ACK，不能把命令终态改成succeeded。完整人工控制仍可发出，但结果可能为unknown且冲突资源保持保护；GUI必须在执行前展示该组合的证据限制。自动化required动作仅在后者已批准时可布防，不由调用者临时降低。
+
+`qualified_state_effect`候选必须绑定型号/固件、命令codec、资源与前置快照、当前会话有序反馈、原发送和ACK、期望字段谓词、观察区间及反馈关联规则。接收顺序较晚、同值状态或累计ACK本身都不证明“该命令造成了状态”；不能把本地receive_io_seq伪装成设备因果序号。若固件协议不能提供执行代关联，必须由可验证的独占控制前提及固定协议模型补足；外部控制器／面板可能操作时该前提不成立，自动化完成政策不予批准。需要改走厂商受支持接口时另固定对应接口及制品，不能假定换SDK就自然得到命令ID。
+
+CUT/AUTO需明确background/key选择及转场开始／结束关联；宏需内容身份、运行代与完整影响的结束证据。状态字段足以显示，不一定足以证明本命令完成。配置读取或ACK不能解除设备内程序的后效；没有可靠释放证据保留unresolved。由此得到的是明确的资格判定算法与失败表现，逐型号能否满足仍是实施验证门槛，不能据空白资格记录发布支持声明。
+
+## 9. AV02／AV06补充：VLC源扩展与Studio／转场
+
+### 9.1 VLC公开接口事实与推荐实现位置
+
+OBS32.0.4的`vlcs_create`只注册`get_metadata` proc；媒体callbacks无直接选择列表index的接口。`vlcs_update`会展开目录、shuffle和重建列表；`get_media`还会按路径复用media对象。因此设置数组索引、URL以及原实现media指针均不能天然唯一标识重复条目。LibVLC3公开了`libvlc_media_list_player_play_item_at_index`，但其句柄由VLC源内部持有，现有proc没有导出对应操作。（来源：[固定VLC源码](https://github.com/obsproject/obs-studio/blob/32.0.4/plugins/vlc-video/vlc-video-source.c)、[VideoLAN列表API](https://videolan.videolan.me/vlc-3.0/group__libvlc__media__list__player.html)。）
+
+推荐**固定VLC源最小补丁＋受限vendor桥**，不再将“纯外部插件即可控制现有源”列为默认路径：在`vlc-video`内新增具名、版本化proc和所需LibVLC动态符号；桥经公开`obs_source_get_proc_handler`调用源，不读取私有结构。通过obs-websocket已公开vendor API承载具名请求与事件；禁止任意proc名、函数地址、源指针或vendor透传。（扩展机制来源：[obs.h](https://github.com/obsproject/obs-studio/blob/32.0.4/libobs/obs.h)、[obs-websocket vendor API](https://github.com/obsproject/obs-websocket/blob/5.6.3/lib/obs-websocket-api.h)。）
+
+该选择新增OBS宿主制品维护和安装成本，仍待审阅。补丁、桥、LibVLC及OBS组合单独版本、hash、ABI和源码交付清单；不能在发行目录中同时装两个冲突的VLC源实现，也不能静默替换运行中OBS插件。安装在停止OBS的维护阶段显式选择固定组合；不兼容时保留普通OBS能力及明确的VLC扩展不可用原因，不用selected回退实现按钮。OBS官方许可为GPLv2或以后版本，相关派生制品保留适用许可和源码义务，SDK协议文档沿项目许可；进程／目录分隔本身不构成重新许可依据。（来源：[固定COPYING](https://github.com/obsproject/obs-studio/blob/32.0.4/COPYING)、[README许可说明](https://github.com/obsproject/obs-studio/blob/32.0.4/README.rst)。）
+
+### 9.2 VLC候选接口与执行代
+
+| 候选接口／记录 | 必需字段与行为 |
+| --- | --- |
+| `GetPlaylistSnapshot` | source UUID、source_instance_id、playlist_generation、materialized_list_digest、shuffle/repeat设置、entry_count、entries及完整性状态；generation为十进制串，不随显示名改变；目录展开／顺序／成员／设置改变须换代 |
+| `PlaylistEntryRef` | source_instance_id、playlist_generation、entry_id、occurrence_index、materialized_index；entry_id是不透明的本代条目身份，不用路径/URL作ID；受限显示名称与敏感宿主路径分开 |
+| `SelectPlaylistItem` | bridge_protocol_revision、command_id/attempt_id、单次request_token、source绑定、expected_generation、expected_list_digest、entry_id、mode=`start_from_beginning`、deadline守卫引用；只控制一个条目，不改列表顺序，不支持通过该接口任意seek或设置 |
+| `SelectionReceipt` | request_token、source_instance_id、generation、entry_id、playback_generation、submission_seq、result=`rejected_before_submit|submitted|uncertain`、reason；提交返回不等于playing，未证实无副作用不得填rejected_before_submit |
+| `PlaybackObservation` | source_instance_id、generation、entry_id或null、playback_generation或null、observation_seq、state、cursor/duration、evidence_policy_ref、quality、关联token或null；无法唯一识别时明确unresolved，不按最近请求补身份 |
+| `GetSelectionObservation` | token及上述源绑定；返回已存在记录或明确未知。重复控制请求只查询原收据，不再次调用LibVLC；换源实例后不能用同token重新播放 |
+
+推荐在源内部使用单一有界串行执行通道，接收设置更新、列表选择、现有媒体操作及外部回调的有序记录；不能仅在桥侧加锁。实际列表冻结后生成entry表；每个物化occurrence拥有独立、受引用计数管理的media对象，避免原按路径缓存让重复URL合并身份。销毁或重建先废止旧映射，迟到callback通过source实例及持有的对象生命周期识别，不能复用裸指针值作为身份。
+
+目录展开、shuffle或嵌套媒体改变实际成员后，必须重建完整映射并使待发选择失效。动态嵌套内容若无法提供稳定映射，只返回明确的`playlist_not_materialized`；相关格式支持仍保留实现／夹具任务，不静默截断成可写列表。原生Next/Previous、自动下一项、循环及重新开始都会改变播放代或使关联不确定；调用令牌不自动贴到它们产生的事件上。
+
+源内在线性化点核对源实例、generation、digest和entry，随后调用公开LibVLC选择接口；所有源内列表替换共享该边界，因此该检查可作为**本扩展受控列表操作**的CAS候选，不泛化为OBS所有原生状态的CAS。若底层媒体引擎仍可独立改变列表，profile必须显示该缺口且不得宣称CAS成立。返回0仅记submitted；完成要求同一条目唯一身份、该次播放代的已确认playing状态及连续来源证据，错误/Opening/旧playing不能通过。仍不证明帧已进入节目输出或观众已看到画面。
+
+Controller发出的vendor请求本身经过唯一写闸；源内部已经受理的异步播放是设备端在途效果，不因Controller接管或断连消失。源不保存可跨OBS重启重放的动作队列；回执丢失时保持unknown并只查询。源端期限校验必须使用已协商且有证据的时基，不能比较两主机tick；没有跨端时基时不声称可阻止设备端晚启动，只能采用已批准的最大排队／处理profile并保留在途影响。接管effective不等于该播放已经停止，ready仍遵循冲突资源释放政策。
+
+有限实验预算：每源最多4096个物化条目、控制队列8项、每设备最多32项未决选择、每源256个有界回执缓存；记录到Controller确认及规定保留期前不得挤掉未决回执，满即拒发并保护，不LRU删除unknown。展开超限先报容量错误，不用部分列表作完整快照。扫描／展开在后台取消友好任务执行，不占OBS渲染线程；跨线程回调不得持有锁调用可重入LibVLC函数。具体构建和线程验证后才批准参数，本文未实现补丁。
+
+### 9.3 Studio与转场的动作拆分
+
+已知事实：`TriggerStudioModeTransition`取执行当时preview，接口没有expected preview CAS。`SetCurrentProgramScene`调用前端API，在Studio模式走`TransitionToScene`；场景override影响实际转场，已有转场时可能直接退出而handler仍返回Success。转场事件只有transition name/UUID，无request/attempt/from/to；`obs_transition_force_stop`也会发stop。因此Success、Ended或cursor=1均不独立证明正常完成。（来源：[Scenes](https://github.com/obsproject/obs-websocket/blob/5.6.3/src/requesthandler/RequestHandler_Scenes.cpp)、[Transitions](https://github.com/obsproject/obs-websocket/blob/5.6.3/src/requesthandler/RequestHandler_Transitions.cpp)、[前端实现](https://github.com/obsproject/obs-studio/blob/32.0.4/frontend/widgets/OBSBasic_Transitions.cpp)、[转场信号](https://github.com/obsproject/obs-studio/blob/32.0.4/libobs/obs-source-transition.c)。）
+
+推荐保留三个独立用途：`obs.preview_scene.set`明确写Studio预览；`obs.studio.take_preview`对当前预览执行一次转场；`obs.program_scene.switch_with_transition`指定目标并固定模式/转场profile。GUI本地预选不等于Studio的真实preview。前两个补足模式适配，不能把旧Switch按钮在模式变化后悄悄改义；设置模式为独立、显式配置操作，不作为命令隐含前置步骤。
+
+候选`ObsTransitionExecutionProfile`固定canvas绑定、Studio模式及版本、from/to引用、当前转场UUID/kind、scene override、duration来源、audio/video结束谓词、预检busy判据、允许外部控制前提和全部资源足迹。Studio取预览要求当前预览与请求预期一致；标准接口的读写间隙仍存在，不声称原子CAS。模式/override/preview变动或来源缺口使未发请求失效，发送后变化进入unknown／核对，不重新取新preview补执行。
+
+每次仅一个相关资源的转场attempt；记录实际send、ACK、Started/Ended/VideoEnded观察及后置Program读取。事件允许先ACK，但不能与另一个attempt共享“结束证明”。没有事件关联ID时，profile须证明独占控制与信号连续性；检测到原生控制、force-stop、连接缺口或无法判别的并发，则不批准该次完成。stinger的cut point和视频结束按固定类型分别处理，音频尾部另定义，不把一种Ended语义套所有类型。多画布仅允许写能明确寻址的目标；标准接口无法定位的画布须受控扩展设计，不按显示名猜默认画布。该部分保留全量支持任务，未测组合不列支持矩阵。
+
+## 10. 本轮故障时序、验收及归并门槛
+
+正常ATEM轨迹：准备packet→可靠初次intent→发送→超时请求→可靠重传intent→同packet重传→累计ACK→专属效果证据→持久完成；只有最后两步具备批准证明才可succeeded。接管轨迹：原发送→重传许可已提交→FENCE切点包含两者→worker先安装屏障，后到重传许可not_sent→原发送仍in_flight→接管effective且资源未clear。任何旧包ACK均不能反向开放写闸。
+
+正常VLC轨迹：完整快照g→选择entry E→源内CAS→提交及新播放代p→同E/p的playing证据→Controller可靠完成。冲突轨迹：读g后原生修改列表成g+1→源内拒绝未提交，不改新列表；若提交后OBS崩溃或关联丢失，则unknown，不以重开OBS后同路径正在播放作为原命令证据。转场轨迹：预检空闲→发送→外部force-stop→收到Ended和目标PGM→仍不能据此宣称正常转场完成。
+
+以下为新增**未运行**验收，补充VAT01—VAT32，不以文档检查冒充执行：
+
+| ID | 正反例与通过判据 |
+| --- | --- |
+| VAT33 | 同packet精确原字节重传可准入；改payload、session、ordinal或过原截止拒绝，不能新建CUT attempt |
+| VAT34 | 重传intent事务失败无许可；事务成功但报告丢失，恢复unknown且不自动重发 |
+| VAT35 | FENCE与重传分别先到两种顺序；完整覆盖原发送和每次重传，最后一次not_sent不能释放原影响 |
+| VAT36 | peer与timer并发仅一待消费许可；统一计数，ACK先到丢弃未消费许可，预算耗尽不重置 |
+| VAT37 | 短包、错端点、错session、未来累计ACK不改变连接/账本；合法累计ACK只覆盖本窗口，回绕不误配 |
+| VAT38 | 子线程重启、ACK定时尾部、重连路径均在监督范围；没有控制包可从维护IO绕闸 |
+| VAT39 | 同值旧state和较晚接收的无因果反馈均不通过效果政策；固定型号夹具明确何种证据才可通过 |
+| VAT40 | 两个相同URL条目分别选择并识别occurrence；目录展开／shuffle后旧配置索引不能选择错误项 |
+| VAT41 | 选择与列表更新竞争；源内CAS拒旧代，不能更新后靠重新找同URL继续旧请求 |
+| VAT42 | submitted/Opening/旧playing均不算完成；同条目正确播放代才可核实，画面输出另验 |
+| VAT43 | 自动下一项／循环／原生媒体操作不冒充请求令牌；迟到回调与复用地址不继承新源身份 |
+| VAT44 | 回执丢失只查询；OBS重启更换实例，旧token不重新播放；队列满不挤掉未决记录 |
+| VAT45 | 接管后源端已提交动作仍可晚生效，记录in_flight；不能用Controller worker退出证明OBS排空 |
+| VAT46 | Studio模式／preview变化、已有转场但ACK Success均不误报新动作完成，不自动切模式 |
+| VAT47 | 强制停止产生Ended、stinger cut point、丢VideoEnded分别验证，不能将信号名称等同全部结束 |
+| VAT48 | 同名多画布／不可寻址画布拒绝误写；扩展部署的版本/ABI/许可清单独立记录，未安装时不伪回退 |
+
+本轮已形成明确推荐：VLC源内窄扩展、ATEM逐传输可靠许可及接收校验、Studio／转场独立完成profile。待审阅的实质成本是额外OBS制品、ATEM传输适配与逐次落盘延迟、序号回绕维护，以及缺证据组合的保护表现。接下来合入新版前仍须完成辅助接口Schema、传输IPC/DDL关联、精确制品锁、逐型号证据profile及对应正反例；候选成文不等于产品批准，真实插件/协议/平台/设备用例均未执行。

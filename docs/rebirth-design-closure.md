@@ -26,7 +26,7 @@
 | C08／各服务、Suite | [DF04](rebirth-df04-storage-design.md)完整表/约束/索引/事务规范及SDK字段映射，补场次/授权/安装模型；业务库与installation.db分别拥有者、恢复边界明确 | ST01—ST32、DPT：真实驱动WAL、并发、掉电、备份与整组引用恢复；内存SQL不替代 |
 | C09／Controller、SDK | [ME01—ME07](rebirth-c09-extension-design.md)安装批准、运行身份、目录/足迹、PanelSession及撤销完整关联；逐次协议写许可与外部入口边界进入IPC | MX01—MX40：加载隔离、撤权/卸载、模块全部异步写出口、面板代理及跨实例竞争 |
 | C10／GUI | [UI01—UI07](rebirth-c10-gui-design.md)完整投影、转交/未知/恢复、实时输入及复合中间态；Seamer编辑scope与受控兼容编辑入口；工具链已有精确候选，仍需审阅和闭包锁定方案 | UIT01—UIT40、TL：双语/键盘/浏览器、刷新不重发、推子有界、退出清理和权限撤销 |
-| C11／Controller | [OBS/ATEM](rebirth-c11-obs-atem-design.md)、[音频](rebirth-c11-audio-design.md)、[NodeCG](rebirth-c11-nodecg-design.md)全部能力、型号、参数、资源及证据逐项冻结；下节列出不能挪到“实现时再定”的缺口 | VAT01—VAT32、AUDT01—AUDT40、NGT01—NGT32、A19/A21：各组合实际设备及图文兼容，不借用OBS证明 |
+| C11／Controller | [OBS/ATEM](rebirth-c11-obs-atem-design.md)、[音频](rebirth-c11-audio-design.md)、[NodeCG](rebirth-c11-nodecg-design.md)全部能力、型号、参数、资源及证据逐项冻结；下节列出不能挪到“实现时再定”的缺口 | VAT01—VAT48、AUDT01—AUDT40、NGT01—NGT32、A19/A21：各组合实际设备及图文兼容，不借用OBS证明 |
 | C12／Suite | [DEP01—DEP08](rebirth-c12-deployment-design.md)及[DF05](rebirth-df05-release-design.md)统一安装/恢复模型、信任根保管/恢复及更新时间政策；完整依赖与原生制品锁定规则、两主部署与NodeCG输出profile | RA01—RA28、DPT01—DPT48、PF、A20—A22：签名/重建/安装/恢复/两平台部署及发布支持矩阵 |
 
 ## 3. 必须先解决的具体缺口
@@ -35,7 +35,7 @@
 
 1. **DF01严格解码及完整生成链**：[DF01第8/9节](rebirth-df01-sdk-freeze.md#8-d3d5补充严格入口的具体候选)已给出原bytes扫描/原生构值/Ajv分支内token守卫、有限预算、完整HTTP骨架及源映射方案，附局部描述Schema和独立原始预期。实现路径已有具体候选，仍待审阅、全量机器归并及适配取证；不再笼统列为无方案。源等价提取与后续语义修订分开，不能用描述检查冒充SDK解析器验收。
 2. **DF03两平台授时证据**：[DF03第9节](rebirth-df03-time-profile-design.md#9-p04p05复审具体后端路径与应用参考时钟候选)已核对chrony内部标记及W32公开接口的证明边界，给出后端扩展最低接口与推荐的应用参考时钟路径、区间公式、状态／故障表和TP37—TP48。推荐会改变NF02时间模型，须审阅后才能决定后续Schema分支、原生协议库／NTS引导及平台profile，不自动替换system-bound/1。不把“有推荐方案”当成架构已冻结，也不缩减指定NTP和两平台目标。
-3. **C11设备协议政策**：OBS VLC实际指定项播放辅助接口及其许可/部署；非Cut、Studio、多画布的完成与资源政策；ATEM反馈因果和逐次重传门控；DM3全184项codec/单位、scene/meter；WING patch中间态与UDP关联；VB路由存在性、TEXT年龄/因果。每项提供可执行验证设计和证据不足的表现，不能把selected、旧缓存或同值观察当完成。
+3. **C11设备协议政策**：[OBS/ATEM第8—10节](rebirth-c11-obs-atem-design.md#8-av04av06补充可审阅的传输与证据冻结方案)已有VLC源内窄补丁/桥、条目及播放代、ATEM逐传输许可/事务/接收窗口、Studio与转场独立profile和VAT33—VAT48候选；新增维护、延迟及保护成本仍待审阅，不再笼统列作无方案。专属Schema/IPC/DDL及逐型号证据仍须收敛；DM3全184项codec/单位、scene/meter、WING patch中间态与UDP关联、VB路由存在性/TEXT年龄因果继续推进。不能把selected、旧缓存或同值观察当完成。
 4. **DF05/C12发行信任**：[DF05第8节](rebirth-df05-release-design.md#8-af02af03af05具体冻结候选)已有引导收据、角色保管、独立时间锚点、逐metadata事务和阈值失陷新域恢复具体方案；修正“所有metadata版本永不下降”与合法在线key轮换恢复的冲突。固定tuf-js6.0.0不具备所需时间/持久化接口及缓存恢复路径，窄适配补丁是待审阅新增选择，不宣称已可直接采用。安装记录/工具链manifest内层模型仍需归并，实际渠道/密钥及运行证据后置；业务备份不能降低信任。
 5. **C04—C09跨项机器契约**：收敛DSL/证明容量、source命名空间、日志世代、完整快照、场次/版本、授权与扩展目录绑定；DDL约束、HTTP/WS和IPC同版联校。仅各自Schema合法不能证明关联成立。
 6. **C10/C11/C12完整兼容组合**：明确NodeCG adapter、bridge、旧资产/编辑器的固定组合和许可；受控编辑、外部dashboard、三路只读输出分别有身份、写入口及完成证据。输出只读隔离不能代替桥在途排空或像素验证。

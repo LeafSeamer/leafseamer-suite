@@ -1,0 +1,993 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json",
+  "title": "controller-lifecycle/0.1.0-draft.1",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9._:/-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "PacketRef": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "packet_id",
+        "packet_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "CompletionLevel": {
+      "enum": [
+        "sent",
+        "acknowledged",
+        "effect_verified"
+      ]
+    },
+    "Effect": {
+      "enum": [
+        "not_sent",
+        "possible",
+        "acknowledged",
+        "verified",
+        "partial"
+      ]
+    },
+    "Policy": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "admission_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "required_completion": {
+          "$ref": "#/$defs/CompletionLevel"
+        },
+        "completion_policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "release_policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "retry_policy_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "original_deadline_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "conflict_scope": {
+          "const": "whole_device"
+        }
+      },
+      "required": [
+        "command_id",
+        "scope",
+        "device_id",
+        "admission_ref",
+        "required_completion",
+        "completion_policy_ref",
+        "release_policy_ref",
+        "retry_policy_ref",
+        "max_attempts",
+        "original_deadline_ref",
+        "conflict_scope"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "retry_policy_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "max_attempts": {
+                "const": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "State": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "phase": {
+          "enum": [
+            "queued",
+            "dispatching",
+            "awaiting_evidence",
+            "finished"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "unknown",
+            "cancelled",
+            "expired",
+            "blocked"
+          ]
+        },
+        "effect_status": {
+          "$ref": "#/$defs/Effect"
+        },
+        "resource_status": {
+          "enum": [
+            "held",
+            "clear",
+            "unresolved"
+          ]
+        },
+        "automation_continuation": {
+          "enum": [
+            "eligible",
+            "paused_latched"
+          ]
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PositiveCounter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion_evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "resource_evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "attempt_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "command_id",
+        "scope",
+        "revision",
+        "phase",
+        "outcome",
+        "effect_status",
+        "resource_status",
+        "automation_continuation",
+        "reason_code",
+        "terminal_revision",
+        "resolution_ref",
+        "completion_evidence_refs",
+        "resource_evidence_refs",
+        "attempt_ids"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "const": "finished"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "not": {
+                  "const": "pending"
+                }
+              },
+              "terminal_revision": {
+                "$ref": "#/$defs/PositiveCounter"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "outcome": {
+                "const": "pending"
+              },
+              "terminal_revision": {
+                "type": "null"
+              },
+              "resolution_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "failed",
+                  "unknown",
+                  "cancelled",
+                  "expired",
+                  "blocked"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "unknown",
+                  "blocked",
+                  "expired"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "automation_continuation": {
+                "const": "paused_latched"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "effect_status": {
+                "not": {
+                  "const": "not_sent"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "unknown"
+              },
+              "resource_status": {
+                "const": "clear"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resolution_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "resource_evidence_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Ref"
+                },
+                "minItems": 1,
+                "maxItems": 256
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Transmission": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "transmission_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/PacketRef"
+        },
+        "exit_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "disposition": {
+          "enum": [
+            "not_sent",
+            "in_flight",
+            "unknown"
+          ]
+        },
+        "settlement_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "never_sent",
+                "effect_resolved"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "settlement_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "permit_id",
+        "transmission_id",
+        "attempt_id",
+        "packet_ref",
+        "exit_ref",
+        "issued_revision",
+        "disposition",
+        "settlement_kind",
+        "settlement_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "settlement_kind": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "settlement_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "settlement_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ResourceCut": {
+      "type": "object",
+      "properties": {
+        "cut_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "hold_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issued_cut_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "attempt_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "transmissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Transmission"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "cut_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "cut_id",
+        "command_id",
+        "scope",
+        "device_id",
+        "hold_id",
+        "issued_cut_revision",
+        "attempt_ids",
+        "transmissions",
+        "cut_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReleaseEvidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "hold_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "cut_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "kind": {
+          "enum": [
+            "never_sent",
+            "module_settled",
+            "maintenance_fenced"
+          ]
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "future_writes_closed_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "settlement_proof_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "command_id",
+        "scope",
+        "device_id",
+        "hold_id",
+        "cut_ref",
+        "kind",
+        "policy_ref",
+        "future_writes_closed_ref",
+        "settlement_proof_ref",
+        "evidence_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "never_sent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "settlement_proof_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "settlement_proof_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ProviderReceipt": {
+      "type": "object",
+      "properties": {
+        "receipt_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "subject_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "verdict": {
+          "enum": [
+            "accepted",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "future_writes_closed",
+              "module_settled",
+              "maintenance_settled",
+              "never_sent",
+              "completion_sent",
+              "completion_acknowledged",
+              "completion_verified",
+              "failure_confirmed",
+              "safe_failure",
+              "cancellation_confirmed",
+              "resolution_supported"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "record_revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "scope",
+        "command_id",
+        "subject_digest",
+        "policy_ref",
+        "verdict",
+        "claims",
+        "source_refs",
+        "record_revision"
+      ],
+      "additionalProperties": false
+    },
+    "DecisionEvidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "kind": {
+          "enum": [
+            "completion",
+            "failure",
+            "cancellation",
+            "resolution"
+          ]
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "retry_policy_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempt_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "achieved": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompletionLevel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effect_status": {
+          "$ref": "#/$defs/Effect"
+        },
+        "resolved_outcome": {
+          "anyOf": [
+            {
+              "enum": [
+                "succeeded",
+                "failed",
+                "cancelled",
+                "not_sent"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "command_id",
+        "scope",
+        "kind",
+        "policy_ref",
+        "retry_policy_ref",
+        "attempt_ids",
+        "achieved",
+        "effect_status",
+        "resolved_outcome",
+        "evidence_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "completion"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "achieved": {
+                "$ref": "#/$defs/CompletionLevel"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "achieved": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "resolution"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resolved_outcome": {
+                "enum": [
+                  "succeeded",
+                  "failed",
+                  "cancelled",
+                  "not_sent"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "resolved_outcome": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Resolution": {
+      "type": "object",
+      "properties": {
+        "resolution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "original_terminal_revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "resolved_outcome": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "cancelled",
+            "not_sent"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "resolver_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resolution_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "resolution_id",
+        "command_id",
+        "scope",
+        "original_terminal_revision",
+        "revision",
+        "resolved_outcome",
+        "evidence_refs",
+        "resolver_ref",
+        "resolution_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Transition": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "kind": {
+          "enum": [
+            "dispatch",
+            "transport",
+            "complete",
+            "fail",
+            "timeout",
+            "cancel",
+            "block",
+            "expire",
+            "retry",
+            "reconcile",
+            "release",
+            "protect"
+          ]
+        },
+        "after": {
+          "$ref": "#/$defs/State"
+        },
+        "decision_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DecisionEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "release_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReleaseEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Resolution"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "audit_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "outbox_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "operation_id",
+        "expected_state_ref",
+        "kind",
+        "after",
+        "decision_evidence",
+        "release_evidence",
+        "resolution",
+        "audit_ref",
+        "outbox_ref"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

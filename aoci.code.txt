@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录执行保护候选及系统设计和分轮提交进度 | R:code:docs/contracts/c08-controller/FENCE.md | A:设计历程与每三轮推送计数 | S:当前第2轮未推送；候选不自动批准，设备和业务未实现。第3轮须检查完整目标历史后只推选定分支
+DEVELOPMENT_MEMO.md[SO5L]: F:记录屏障尝试和逐传输候选及分轮交付进度 | R:code:docs/contracts/c08-controller/BARRIER_ATTEMPTS.md | A:设计历程与三轮推送计数 | S:第3轮按授权检查目标历史后只推rebirth；候选不自动批准，业务与设备未实现，推送结果须实时核对
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统设计关闭状态及接口归并和执行保护进展 | R:code:docs/rebirth-readiness.md,code:docs/contracts/c08-controller/FENCE.md | A:C01至C12当前状态及接口替换 | S:当前表优先旧待办；46表补登记P2和逐出口P3，但资源终态与其他屏障及P1/P4仍缺；14处接口替换须显式迁移，DF03模型待选择
+rebirth-design-closure.md[SQ8M]: F:汇总系统设计关闭状态及逐传输尝试和接口归并进度 | R:code:docs/rebirth-readiness.md,code:docs/contracts/c08-controller/BARRIER_ATTEMPTS.md | A:C01至C12关闭表及显式替换清单 | S:51表和三十帧为候选归并输入，非全系统冻结；资源终态其他屏障及P1/P4仍缺。十四接口替换须显式迁移，DF03模型仍待选择
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -417,13 +417,21 @@ check_storage.py[TD8M]: F:在内存核验裁决写集缺失回滚和身份关联
 storage-report.json[SQ5L]: F:记录159项裁决内存SQL检查及四输入摘要 | R:code:docs/contracts/c02-admission/check_storage.py | A:约束和故障切点参考结果 | S:SQLite3.50.4非产品引擎批准；BODY权威为占位，串行回滚不证磁盘并发，未运行HTTP或设备
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c08-controller/===
-README.md[SD9T]: F:规定Controller公共身份拒绝账本并连接执行保护附属候选 | R:code:docs/contracts/c08-controller/common.sql,code:docs/contracts/c08-controller/FENCE.md,code:docs/contracts/c08-controller/build_layout.py | A:29表基础与46表附属入口 | S:原262例仅基础布局，新347例独立；双来源共floor但不伪造对方请求。HTTP目标摘要不等于出口摘要，完整资源与所有屏障仍未归并
+README.md[SD9T]: F:规定Controller公共身份拒绝账本及分层执行保护候选入口 | R:code:docs/contracts/c08-controller/common.sql,code:docs/contracts/c08-controller/FENCE.md,code:docs/contracts/c08-controller/BARRIER_ATTEMPTS.md | A:29表基础及46和51表附属入口 | S:262及347和78项按各自布局验证，155项另验IPC；两来源共floor不伪造请求。目标摘要与出口摘要分开，完整资源终态和其他屏障仍未归并
 build_layout.py[XD8T]: F:按具名替换生成单一scope与deny的Controller组合SQL | R:code:docs/contracts/c08-controller/common.sql,code:docs/contracts/c02-admission/admission.sql,code:docs/contracts/c04-preparation/preparation.sql | A:build与check | S:以SQLite完整语句边界删除旧定义，避免CASE结束截断触发器；每项替换必须精确命中，原候选不改。不是通用转换器或生产迁移
 check_layout.py[TD8M]: F:验证29表组合及双入口共享拒绝账本和故障回滚并绑定报告 | R:code:docs/contracts/c08-controller/controller.sql,code:docs/contracts/c04-preparation/check_storage.py,code:docs/contracts/c02-admission/check_storage.py | A:262项内存检查及staged报告核对 | S:复用合成写集而预期独立，混合切点保留旧floor；来源排他核CHECK码。十输入核字节不重跑，未执行完整P2/P3或真实并发设备
 common.sql[FD9S]: F:定义公共Controller身份和通用保护登记及单调拒绝共享结构 | R:code:docs/contracts/c08-controller/build_layout.py,code:docs/contracts/c08-controller/README.md | A:七表与三视图及来源计数守卫 | S:close和HTTP来源互斥，全局与逐run修订精确增长；视图仅发布已配套提交拒绝，旧操作不可追加floor。目标数不证明全集，BODY另验，须与两子域组合加载
 controller.sql[FD9L]: F:承载裁决准备及通用保护共享身份拒绝账本的29表组合生成物 | R:code:docs/contracts/c08-controller/build_layout.py,code:docs/contracts/c08-controller/common.sql | A:controller-storage候选完整组合 | S:只从固定三源生成，不能另加载旧scope或deny；准备门控读取通用保护，低floor复用已提交更强事实。非完整执行P2/P3布局，不证明设备最终发送门控或生产迁移
-layout-report.json[SQ5L]: F:记录262项Controller基础组合检查及十输入原字节摘要 | R:code:docs/contracts/c08-controller/check_layout.py | A:29表共库与混合保护故障结果 | S:README连接46表不扩大本报告范围；SQLite3.50.4非产品批准，BODY权威为合成，真实服务磁盘IPC设备未执行
-FENCE.md[SD9T]: F:规定执行登记与运行保护的完整切点及逐出口应用事务 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/check_fence.py | A:46表组合及T1和T2与P2和P3 | S:每primitive和每传输独立登记，单出口强证据立即持久；原ACK不改，迟到进入传输可推翻未发核销。applied不清资源，同cut多次尝试及全部屏障和预算提供者仍缺
+layout-report.json[SQ5L]: F:记录262项Controller基础组合回归及十输入摘要 | R:code:docs/contracts/c08-controller/check_layout.py | A:29表共库与混合故障结果 | S:README连接46及51表不扩大本范围；SQLite3.50.4非产品批准，BODY为合成，服务磁盘IPC设备未验
+FENCE.md[SD9T]: F:规定执行登记和运行保护切点及逐出口应用并连接尝试层 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/BARRIER_ATTEMPTS.md | A:46表组合及T1和T2与P2和P3 | S:原347项只验46表；逐出口强证据不等汇总，迟到进入传输推翻未发核销。applied不清资源，五表尝试另加载，完整终态与其他屏障和提供者仍缺
 check_fence.py[TD8M]: F:在46表内存组合核验逐传输登记及完整保护和故障回滚 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/check_layout.py,code:docs/contracts/c08-controller/FENCE.md | A:347项检查及报告与staged绑定 | S:目标期望手写，不查待测视图生成；仅memory主动异常及串行顺序，BODY不证身份预算或效果。单出口强证据先于汇总，最后未发不清原发送；字节检查不重跑
-fence-report.json[SQ5L]: F:记录347项执行保护内存检查及依赖输入摘要 | R:code:docs/contracts/c08-controller/check_fence.py | A:46表参考结果与版本记录 | S:批准为false；SQLite3.50.4不是产品批准引擎，真实鉴权预算IPC磁盘设备未验
+fence-report.json[SQ5L]: F:记录347项执行保护内存回归及十五输入摘要 | R:code:docs/contracts/c08-controller/check_fence.py | A:46表结果与引擎版本 | S:文稿链接五表尝试不扩大本报告范围；批准为false，SQLite3.50.4非产品批准，鉴权预算IPC磁盘设备未验
 fence.sql[FD9M]: F:定义17表执行登记与运行切点覆盖和应用附属布局 | R:code:docs/contracts/c08-controller/controller.sql,code:docs/contracts/c08-controller/FENCE.md | A:STRICT及双向配对与全集和不可变守卫 | S:后加载构成46表，permit按packet递增；seal与来源commit同事务，历史出口和未决许可双向核对。逐出口强证据不等全集，迟到进入传输重开未发核销；BODY真实性及其他屏障另验
+BARRIER_ATTEMPTS.md[SR9S]: F:定义同cut屏障尝试恢复与逐传输IPC及持久映射 | R:code:docs/contracts/c08-controller/barrier-attempt.sql,code:docs/contracts/c08-controller/build_execution_ipc.py | A:IPC0.6三十帧与五表附属候选 | S:编码不发送，重传换许可不换包；查询只回原ACK，缓存丢失不证未发。迟到强证据立即保留而不采用旧尝试，换出口走退役；51表仅运行保护，其他屏障及准备持久提供者未完成
+barrier-attempt-report.json[SQ5M]: F:记录78项屏障尝试内存检查及十八输入摘要 | R:code:docs/contracts/c08-controller/check_barrier_attempt.py | A:51表参考结果与引擎版本 | S:批准为false；BODY为占位，主动异常不是磁盘崩溃，真实身份时钟IPC和设备未验
+barrier-attempt.sql[FD9S]: F:定义运行保护尝试失败与原ACK和采用关系的五表约束 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/BARRIER_ATTEMPTS.md | A:51表组合及双向配对与只增历史 | S:重试须紧邻失败且channel_lost不可复用旧出口；ACK完整封存后独立选择。未采用迟到ACK仍提升在途，原覆盖不改；BODY真实性外验，不是全部屏障或生产迁移
+build_execution_ipc.py[XN8S]: F:从固定IPC0.5生成编码准备逐传输及屏障尝试的三十帧候选 | R:code:docs/contracts/c05-protection/ipc-v05.schema.json,code:docs/contracts/c05-protection/protocol.schema.json | A:build与check及IPC0.6生成 | S:旧文件不改；新增计数严格U20而旧借用词法未统一，三特性必选。ContentRef限可信本机解析，动态字节资格另验，不切SDK权威
+check_barrier_attempt.py[TD8S]: F:在51表内存组合核验尝试历史ACK及采用事务并绑定报告 | R:code:docs/contracts/c08-controller/barrier-attempt.sql,code:docs/contracts/c08-controller/check_fence.py | A:78项检查及report和staged绑定 | S:只连memory且预期手写，缺写和主动异常核对全表；迟到旧ACK不采用但保留强证据。BODY是假定，十八输入核字节不重跑，真实并发耐久与设备未验
+check_execution_ipc.py[TN8L]: F:核验三十帧及编码重传双清单和ACK查询关联并绑定报告 | R:code:docs/contracts/c08-controller/build_execution_ipc.py,code:docs/contracts/c05-protection/check_protocol.py | A:155项检查及report与staged绑定 | S:本地Registry不联网，实际JCS不证明权威；原业务锚与当前守卫分开，旧查询正文固定。持久与时钟为人工前提，十六输入核字节不重跑，未实现真实IPC或完整解码
+execution-ipc-report.json[SQ5L]: F:记录155项逐传输IPC检查及十六输入摘要 | R:code:docs/contracts/c08-controller/check_execution_ipc.py | A:三十帧结构与合成关联结果 | S:批准为false，真实编码身份IPC时钟磁盘设备均未验；报告绑定不扩大旧帧语义覆盖
+execution-ipc.schema.json[FN8L]: F:声明逐传输许可编码准备及四类尝试屏障的三十帧IPC | R:code:docs/contracts/c08-controller/build_execution_ipc.py,code:docs/contracts/c05-protection/protocol.schema.json | A:ipc/0.6.0-transmission-draft.1及76个defs | S:只编码往返与发送分离，累计ACK不归具体ordinal；缓存缺失无覆盖或生效tick。新特性必选，旧借用词法仍在，Schema不证明方向身份或耐久，不修改旧接受集

@@ -1,0 +1,428 @@
+{
+  "all_passed": true,
+  "cases_passed": 78,
+  "approved": false,
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "51表组合",
+      "expected": 51,
+      "observed": 51
+    },
+    {
+      "name": "未冻结不能发屏障",
+      "expected": "cut_uncommitted",
+      "observed": "cut_uncommitted"
+    },
+    {
+      "name": "未冻结不能发屏障全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "原ACK缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "原ACK缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "原ACK故障回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "原ACK缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "原ACK缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "原ACK故障回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "采用ACK缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "采用ACK缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "采用ACK故障回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "采用ACK缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "采用ACK缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "采用ACK故障回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "采用ACK缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "采用ACK缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "采用ACK故障回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "尝试缺必需记录request_body",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "尝试缺必需记录request_body全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "尝试缺必需记录audit_body",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "尝试缺必需记录audit_body全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "尝试缺必需记录outbox_body",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "尝试缺必需记录outbox_body全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "无失败依据不追加尝试",
+      "expected": "retry_basis",
+      "observed": "retry_basis"
+    },
+    {
+      "name": "无失败依据不追加尝试全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "首序号不可跳过",
+      "expected": "barrier_ordinal",
+      "observed": "barrier_ordinal"
+    },
+    {
+      "name": "首序号不可跳过全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "无ACK不得采用",
+      "expected": "ack_not_current",
+      "observed": "ack_not_current"
+    },
+    {
+      "name": "无ACK不得采用全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "晚到旧ACK只补历史",
+      "expected": [
+        [
+          "b1"
+        ]
+      ],
+      "observed": [
+        [
+          "b1"
+        ]
+      ]
+    },
+    {
+      "name": "未采用也保留强证据",
+      "expected": "in_flight",
+      "observed": "in_flight"
+    },
+    {
+      "name": "不能选已替代ACK",
+      "expected": "ack_not_current",
+      "observed": "ack_not_current"
+    },
+    {
+      "name": "不能选已替代ACK全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不能把新ACK原文改写",
+      "expected": "selected_coverage_mismatch",
+      "observed": "selected_coverage_mismatch"
+    },
+    {
+      "name": "不能把新ACK原文改写全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "最终引用只指新尝试",
+      "expected": "b2",
+      "observed": "b2"
+    },
+    {
+      "name": "原覆盖不被迟到证据覆写",
+      "expected": "not_sent",
+      "observed": "not_sent"
+    },
+    {
+      "name": "旧强证据继续保护",
+      "expected": "in_flight",
+      "observed": "in_flight"
+    },
+    {
+      "name": "完成后不再新尝试",
+      "expected": "target_already_applied",
+      "observed": "target_already_applied"
+    },
+    {
+      "name": "完成后不再新尝试全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不能删除旧ACK",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不能删除旧ACK全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "汇总不核销原许可",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "全部FK通过",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "换连接不复用旧出口重试",
+      "expected": "retry_basis",
+      "observed": "retry_basis"
+    },
+    {
+      "name": "换连接不复用旧出口重试全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "退役不重新发屏障",
+      "expected": "exit_retired",
+      "observed": "exit_retired"
+    },
+    {
+      "name": "退役不重新发屏障全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "监督退役不伪造workerACK",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "切点已进入传输不能降级",
+      "expected": "barrier_coverage_downgrade",
+      "observed": "barrier_coverage_downgrade"
+    },
+    {
+      "name": "切点已进入传输不能降级全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已存ACK不制造失败再重试",
+      "expected": "ack_already_stored",
+      "observed": "ack_already_stored"
+    },
+    {
+      "name": "已存ACK不制造失败再重试全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同ACK不可追加coverage",
+      "expected": "barrier_ack_frozen",
+      "observed": "barrier_ack_frozen"
+    },
+    {
+      "name": "同ACK不可追加coverage全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "跨出口不能借上一尝试",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "跨出口不能借上一尝试全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "跨切点不能借上一尝试",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "跨切点不能借上一尝试全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重试只能指紧邻前次",
+      "expected": "retry_basis",
+      "observed": "retry_basis"
+    },
+    {
+      "name": "重试只能指紧邻前次全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "序号只增且历史保留",
+      "expected": 3,
+      "observed": 3
+    },
+    {
+      "name": "ce_barrier_attempt更新",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "ce_barrier_attempt更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_barrier_attempt删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "ce_barrier_attempt删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_barrier_attempt替换",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "ce_barrier_attempt替换全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_barrier_failure更新",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "ce_barrier_failure更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_barrier_failure删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "ce_barrier_failure删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_barrier_failure替换",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "ce_barrier_failure替换全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "尝试提交前异常",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "失败提交前异常",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "BODY仍是合成前提",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "2791be139366f09721978618faf4ba224422547a6598cb615c28e44e6e87fd36",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/check_barrier_attempt.py": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b"
+  }
+}

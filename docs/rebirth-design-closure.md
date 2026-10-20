@@ -1,6 +1,6 @@
 # 全系统设计定稿收敛清单
 
-建立日期：2026-10-18；本次收敛审阅：2026-10-20。本文落实用户“先完成所有系统方案设计后进行业务实现”的阶段决定，是[readiness 6.1](rebirth-readiness.md#61-全系统设计完成门槛)的统一关闭视图，沿用C／DF／T／A编号，不另建待办体系。本文不是全系统已定稿声明，也不改变draft.4／IPC 0.3。
+建立日期：2026-10-18；本次收敛审阅：2026-10-21。本文落实用户“先完成所有系统方案设计后进行业务实现”的阶段决定，是[readiness 6.1](rebirth-readiness.md#61-全系统设计完成门槛)的统一关闭视图，沿用C／DF／T／A编号，不另建待办体系。本文不是全系统已定稿声明，也不改变draft.4／IPC 0.3。
 
 ## 1. 当前事实与推荐分界
 
@@ -19,7 +19,7 @@
 | C01 单源与解码 | 六文件等价提取、完整历史HTTP骨架、导出／主体矩阵、严格解码具体方案及投影定位 | 将全部新增接口和类型纳入唯一SDK源；完成严格数字接受集、逐规则调用点和具名摘要投影；处理1.2的显式替换 | 真实解析器、TS生成／消费、浏览器包隔离及跨语言执行；元数据检查不替代 |
 | C02/C03 命令与接管 | 三命令裁决接口及11表受理子域、三准备接口及14表准备/关闭子域；[51表组合与30帧IPC候选](contracts/c08-controller/BARRIER_ATTEMPTS.md)登记逐primitive/逐传输许可及同cut尝试/ACK/采用关系；[77表命令组合](contracts/c08-controller/COMMAND_STORAGE.md)联接资源、固定终态、Resolution/T6和原报告身份；[七命令HTTP](contracts/c02-command-view/README.md)定义公开修订、取消查原/进度及固定证据分页和503投影错误；[91表公开持久化](contracts/c02-command-view/STORAGE.md)补取消原子受理/拒绝、完整捕获及不可变证据清单；[IPC0.7完整46帧](contracts/c02-cancellation/README.md)增加ordinary/all关闭、独立取消执行及四屏障覆盖；监督控制／bootstrap及15表journal | 转交关联；RequestKey全链映射；取消保护执行物理写集、共享签发分配器与closure/result及证据原件完整FK；prepare/observe及其他三类屏障表；guard/预算和packet准备持久提供者；统一SDK归并 | writer并发、最终发送竞态、进程纳管和重启、磁盘耐久、设备效果 |
 | C04/C05 执行与摄取 | 程序／证明、24操作生命周期、执行记录、40表恢复／提交／摄取组合；保护HTTP、RUN_FENCE和拒绝快照；Controller双入口共享拒绝、P2完整登记集合/queued切点、P3逐出口及汇总应用候选 | 准备回执替换预填grant；P1/P4布局、P3到准备closed的真实引用与资源证据；完整来源依赖、跨source_epoch替换／GC／P0；边沿、预算和依赖边消费写集 | 真实编译器、提供者、事务执行器、跨服务故障、负载与恢复竞争 |
-| C06 时间与排期 | 固定日历、场次身份、激活／受理边界；DF03的reference-bound/1路线于2026-10-20获确认；[参考时钟字段候选](contracts/df03-reference/README.md)定义采样／证据／锚点／评估、发布失效及UTC子守卫与精确算术 | 将现有候选映射到公共时间模型、内部查询、IPC和ScheduleGuard，落实完整时间写集及场次／日历字段约束；冻结协议库、引导信任及误差profile | 两平台采样、休眠／换源、NTP误差前提和日历并发运行 |
+| C06 时间与排期 | 固定日历、场次身份、激活／受理边界；DF03的reference-bound/1路线于2026-10-20获确认；[参考时钟字段候选](contracts/df03-reference/README.md)定义采样／证据／锚点／评估、发布失效及UTC子守卫与精确算术；[时间服务与IPC0.8](contracts/df03-service/README.md)补六查询、完整46帧及逐步排期来源绑定 | 跨服务EventAgeProof及其他公共事件时间字段与SDK统一迁移；完整时间写集、采集器专属协议及场次／日历约束；冻结协议库、引导信任及误差profile | 两平台采样、休眠／换源、NTP误差前提和日历并发运行 |
 | C07 身份 | 主体用途矩阵、配对／注销／服务凭据生命周期、来源与对象授权设计 | 新生命周期接口、订阅owner及槽管理完整HTTP/WS；证书与秘密存储profile、历史身份归属及撤销映射 | TLS、当前权限提供者、秘密落盘、撤销传播及日志隔离 |
 | C08 存储 | 监督journal、Seamer恢复／逐步执行／摄取布局、Controller51表登记与运行保护尝试组合；91表命令/资源/公开修订与取消组合及T1/T2/T6、失效/恢复写集；面板局部探针 | 全业务库、installation.db及监督journal的完整表／索引／事务／字段映射；失效到通用保护outbox、完成原件撤回及其他屏障与预算/准备提供者归并，缺表不能用已有局部SQL代替 | 产品驱动、生产迁移执行、WAL、真实崩溃、备份恢复；不要求先实现才能设计 |
 | C09 扩展 | 19帧面板通道、35方法和21结果、SchemaBundle、14服务及5订阅接口、15安装接口、9帧导入IPC和监督启动关联 | 数据源SourceRuntimeBinding与启动对象范围；审批／运行／目录／撤销的完整字段提供者和DDL；35方法及动态模型更新到统一协议 | ZIP与原生加载、真实审批、浏览器窗口／port、投影过滤和全部写出口 |
@@ -34,7 +34,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 
 ### 1.2 已有HTTP与IPC的归并裁决
 
-已知事实：以下11份OpenAPI当前共147条操作声明；计数含两个HTTP GET形式的WS升级，不等于147项独立运行功能，也不证明全系统接口已齐备。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不是可合并身份空间。另有17处**同服务**旧／新方法路径重合，必须作明确替换。以下处置是下一统一候选的设计规则，尚未生成或部署该候选。
+已知事实：以下13份OpenAPI当前共153条操作声明；计数含两个HTTP GET形式的WS升级，不等于153项独立运行功能，也不证明全系统接口已齐备。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不是可合并身份空间。另有21处**同服务**旧／新方法路径重合（含两authority各自的两个公共时间查询），必须作明确替换。以下处置是下一统一候选的设计规则，尚未生成或部署该候选。
 
 | 当前文件（相对docs/contracts） | 声明数 | 所有者与下一版处置 |
 | --- | ---: | --- |
@@ -49,12 +49,15 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 | [c09-panel-service/service.openapi.json](contracts/c09-panel-service/service.openapi.json) | 14 | 两服务分别拥有会话及writer；同一界面跨服务须两份独立会话 |
 | [c09-panel-subscriptions/subscriptions.openapi.json](contracts/c09-panel-subscriptions/subscriptions.openapi.json) | 5 | 两服务分别拥有订阅／投影／ACK；不合并authority或消费水位 |
 | [c09-installation/installation-v02.openapi.json](contracts/c09-installation/installation-v02.openapi.json) | 15 | 目标扩展宿主拥有实例；安装0.2替代旧安装0.1，不因包相同共享批准；设备与数据源角色按C09区分 |
+| [df03-service/public.openapi.json](contracts/df03-service/public.openapi.json) | 2 | 两authority各自替换getClock/getClockAssessment，展示不授执行权 |
+| [df03-service/internal.openapi.json](contracts/df03-service/internal.openapi.json) | 4 | 两authority各自精确读取历史证据；旧三时间证据端点退役，不双格式回退 |
 
 同服务替换全集如下，不能按文件加载顺序“后者覆盖前者”：
 
 - Controller：`submitCommand`占用`POST /api/v1/commands`；成功响应改为不可变RequestAdjudication。当前Command仍由原command_ref查询，永久拒收不等于取消。
 - Controller读取与取消：`getCommand`、`cancelCommand`、`getCommandEvidence`三个同路径操作切到command-view候选。完整State与公开记录摘要分开，历史显式标识，503不能回旧clear；取消回执不变、取消进度另查，证据绑定固定修订分页。旧裸expected_revision和旧动态证据页不回退接受，操作/导出/面板权限矩阵同步迁移。
 - Seamer生命周期：`createDefinition`、`updateDraft`、`publishDefinition`、`getIndependenceProof`、`createRun`、`getRun`、`preflightRun`、`armRun`、`pauseRun`、`previewRecovery`、`resumeRun`、`getRecoveryOperation`共12项，同方法路径切到生命周期候选；旧请求/响应不得与新模型拼接。
+- 两服务时间查询：`getClock/getClockAssessment`各自切到reference-time-service展示模型；旧time-evidence/time-profiles/clock-samples在统一版本中退役，以四个精确历史查询替代。clock-domain仍独立保留，其他事件时间模型和跨服务年龄证明尚须统一迁移。
 - Seamer摄取：`POST /api/v1/providers/{provider_id}/events`的operationId从`ingestEvent`变为`submitProviderEvent`。现有[主体矩阵](contracts/df01-source/authorization-candidate.json)和[面板策略](contracts/c09-panel/operation-policy.json)仍引用`ingestEvent`，未完成迁移；生成器、SDK导出、权限用途、调用点及用例必须显式同步，不能只重命名HTTP符号。事件自身去重身份继续按摄取契约，不借HTTP名更改原事件身份。
 
 归并执行规则：
@@ -63,7 +66,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 2. 先登记替换清单，再投影所选模型和完整operation元数据；参数、响应状态／header、认证、对象守卫和版本要求一并迁移。未登记重合、失去绑定的operationId、重复模型身份均使生成失败，不能静默丢弃。
 3. 局部候选各自的`X-LeafSeamer-Contract`值保留在历史资料；统一候选必须显式重绑所选接受集及协商元数据。同一路由不得“新版解析失败再试旧版”，也不得以`/api/v1`相同认定模型兼容。最终候选号由实际完整归并产生，本表不代为批准。
 4. 模型先按`($id, JSON Pointer)`定位，不能按`Command`、`Ref`、`RequestIdentity`等短名去重。同形但不同authority或语义的Ref也不能自动别名化；数字词法、摘要前缀、issuer_epoch及初始CommandRef须逐项版本映射。
-5. 执行worker采用[IPC0.7完整46帧候选](contracts/c02-cancellation/README.md)作为下一SDK归并输入，包含编码准备、逐传输、屏障尝试与独立取消执行及ordinary/all关闭；旧0.3/0.4/0.5/0.6保留作历史，不重复拼接旧帧。监督控制9帧、bootstrap4帧、导入9帧及面板19帧仍是不同通道，保持各自端点、身份、方向和握手，不能拼成任意角色可发的通用oneOf；候选采用不等于产品批准。
+5. 执行worker采用[IPC0.8完整46帧候选](contracts/df03-service/README.md)作为下一SDK归并输入，沿用编码准备、逐传输、屏障尝试与独立取消执行及ordinary/all关闭，并归并reference-bound时间与排期绑定；旧0.3/0.4/0.5/0.6/0.7保留作历史，不重复拼接旧帧。监督控制9帧、bootstrap4帧、导入9帧及面板19帧仍是不同通道，保持各自端点、身份、方向和握手，不能拼成任意角色可发的通用oneOf；候选采用不等于产品批准。
 
 归并验收沿用C01/C02/C04/C05/C09及X05/X08，具体断言为：①两authority同路径分别生成，单authority未登记重复必须失败；②新submit返回accepted裁决后查到状态修订2，裁决仍绑定初始修订1且摘要不变，reject不能改写为停止；③摄取替换后任何旧操作引用必须在迁移清单中解决，不能出现有路由无授权或有授权无路由；④旧头、缺头、错服务audience及跨通道帧拒绝，不能回退；⑤重算摘要但换issuer_epoch／scope／grant的请求仍拒绝。这里只完成文件和引用审阅，这些断言尚未在统一生成器及运行服务中执行。
 

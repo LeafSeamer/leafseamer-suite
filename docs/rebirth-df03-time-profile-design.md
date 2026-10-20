@@ -290,3 +290,11 @@ TP39—TP43只是独立算术参考，可离线核算；TP37/38为现有接口�
 本候选明确原始NTP秒／小数／时代的有理数换算、相对观测delta的速率包络、m1起算交换年龄、m4起算样本年龄、上游年龄保守推进、发布时重新判定和发送前重新外推。申请／证据／锚点／当前指针同writer提交；同请求重复只读历史，失效推进代次并关闭新资格，TIME屏障完成与本机失效分开。新合格样本不恢复自动化、旧场次或旧许可。
 
 已执行的检查范围及输入摘要见[独立参考报告](contracts/df03-reference/reference-report.json)。合成上下文不证明真实parser、NTS、上游误差或平台计时，内存字典顺序不证明SQLite／IPC／掉电。剩余实施前设计为：上述字段到公共ClockSample/TimeBoundEvidence/Assessment和内部查询OpenAPI、TimeGuard/IPC特性、C06 ScheduleGuard的同版映射；完整物理写集；精确协议库和制品、冷启动信任与双平台profile资格方法。已有字段不再重复立项为“尚无格式”。
+
+## 11. 时间查询与完整设备IPC归并候选
+
+2026-10-21新增[时间服务候选](contracts/df03-service/README.md)：两个公共展示接口与四个内部精确历史查询，公共及内部OpenAPI引用闭包分开；公共只展示参考UTC区间、中点、误差和来源标签，不授执行权。不可用时清空UTC，历史读取不刷新证据年龄；精确对象权限先于查原，内部固定id/revision/digest。
+
+完整46帧IPC0.8由0.7版本化投影。普通和协作取消Guard统一绑定reference_context与ExecutionTime，TIME_FENCE改为应用参考时钟Invalidation，开闸带不可降低的时间代次下界，ACK回显精确摘要。ScheduleGuard独立绑定场次、定义、激活、受理、步骤窗口和本地执行时钟；需要UTC不自动意味着具有排期。即时操作不依赖UTC，但仍受运行域和单调期限等全部既有保护。
+
+第10节中的公共展示、内部查询及执行IPC/ScheduleGuard格式缺口由本候选推进。跨服务EventAgeProof、其他公共事件时间字段、全SDK统一迁移、时间物理写集及采集器专属通道、精确库和profile仍未完成。新增参考检查只验证结构、合成关联及有限floor快照；真实HTTP/IPC/NTP、权限、并发/磁盘和设备均未验。模型选择不等于上述候选或运行资格已经获准。

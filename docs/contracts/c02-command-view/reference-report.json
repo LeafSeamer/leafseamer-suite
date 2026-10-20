@@ -1,0 +1,990 @@
+{
+  "all_passed": true,
+  "cases_passed": 160,
+  "approved": false,
+  "scope": "七个命令读取取消证据HTTP的结构投影与合成关联",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "checks": [
+    {
+      "name": "新取消受理",
+      "expected": "accepted",
+      "actual": "accepted"
+    },
+    {
+      "name": "回执只单向引用完整初始操作",
+      "expected": {
+        "id": "cancel",
+        "revision": "1",
+        "digest": "sha256:dbb90cd7e51260286d0cbd35d70bb5b1d76073d417cc0d1180684a0629e44ab0"
+      },
+      "actual": {
+        "id": "cancel",
+        "revision": "1",
+        "digest": "sha256:dbb90cd7e51260286d0cbd35d70bb5b1d76073d417cc0d1180684a0629e44ab0"
+      }
+    },
+    {
+      "name": "CommandRecord局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CommandRecordOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CommandRecord拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CommandRecord投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CommandRead局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CommandReadOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CommandRead拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CommandRead投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelRequest局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelRequestOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelRequest拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelRequest投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelIdentity局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelIdentityOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelIdentity拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelIdentity投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelReceipt局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelReceiptOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelReceipt拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelReceipt投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelOperation局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelOperationOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelOperation拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelOperation投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelLookup局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelLookupOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "CancelLookup拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "CancelLookup投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "EvidenceRecord局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "EvidenceRecordOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "EvidenceRecord拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "EvidenceRecord投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "EvidencePage局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "EvidencePageOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "EvidencePage拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "EvidencePage投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "Error局部正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "ErrorOpenAPI投影正例",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "Error拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "Error投影拒额外字段",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "完整命令关联",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "当前读取",
+      "expected": "current",
+      "actual": "current"
+    },
+    {
+      "name": "原受理引用不能变当前版本",
+      "expected": "admission_binding",
+      "actual": "admission_binding"
+    },
+    {
+      "name": "跨库重算摘要仍拒绝",
+      "expected": "record_owner",
+      "actual": "record_owner"
+    },
+    {
+      "name": "旧attempt不能遗漏",
+      "expected": "record_digest",
+      "actual": "record_digest"
+    },
+    {
+      "name": "固定政策不能换",
+      "expected": "authoritative_state",
+      "actual": "authoritative_state"
+    },
+    {
+      "name": "取消状态不能随意投影",
+      "expected": "cancellation_binding",
+      "actual": "cancellation_binding"
+    },
+    {
+      "name": "证据清单不能临时换",
+      "expected": "evidence_snapshot",
+      "actual": "evidence_snapshot"
+    },
+    {
+      "name": "原控制版本不能换当前持有人",
+      "expected": "immutable_metadata",
+      "actual": "immutable_metadata"
+    },
+    {
+      "name": "投影不可发不回旧clear",
+      "expected": [
+        "state_projection_pending",
+        null
+      ],
+      "actual": [
+        "state_projection_pending",
+        null
+      ]
+    },
+    {
+      "name": "历史读取显式historical",
+      "expected": "historical",
+      "actual": "historical"
+    },
+    {
+      "name": "先鉴权不泄漏投影状态{'authenticated': False}",
+      "expected": "unauthenticated",
+      "actual": "unauthenticated"
+    },
+    {
+      "name": "先鉴权不泄漏投影状态{'permissions': []}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "先鉴权不泄漏投影状态{'allowed_devices': []}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "先鉴权不泄漏投影状态{'subject_kind': 'service', 'paired': True, 'origin': 'manual'}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "先鉴权不泄漏投影状态{'subject_kind': 'service', 'paired': False, 'origin': 'automation'}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "已配对服务限自身自动化",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "同组织不同来源不能借权",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "严格修订'01'",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "严格修订'1\\n'",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "unknown无Resolution不能clear",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "取消操作状态不混命令outcome",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "取消身份不借创建命名空间",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "查原先于新期限和CAS{'context_live': False}",
+      "expected": "existing",
+      "actual": "existing"
+    },
+    {
+      "name": "查原不新增{'context_live': False}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "查原先于新期限和CAS{'capacity_available': False}",
+      "expected": "existing",
+      "actual": "existing"
+    },
+    {
+      "name": "查原不新增{'capacity_available': False}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "查原先于新期限和CAS{'state': {'command_id': 'command', 'scope': {'authority_service_id': 'controller', 'database_instance_id': 'database'}, 'revision': '2', 'phase': 'queued', 'outcome': 'pending', 'effect_status': 'not_sent', 'resource_status': 'clear', 'automation_continuation': 'eligible', 'reason_code': None, 'terminal_revision': None, 'resolution_ref': None, 'completion_evidence_refs': [], 'resource_evidence_refs': [], 'attempt_ids': []}}",
+      "expected": "existing",
+      "actual": "existing"
+    },
+    {
+      "name": "查原不新增{'state': {'command_id': 'command', 'scope': {'authority_service_id': 'controller', 'database_instance_id': 'database'}, 'revision': '2', 'phase': 'queued', 'outcome': 'pending', 'effect_status': 'not_sent', 'resource_status': 'clear', 'automation_continuation': 'eligible', 'reason_code': None, 'terminal_revision': None, 'resolution_ref': None, 'completion_evidence_refs': [], 'resource_evidence_refs': [], 'attempt_ids': []}}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "查原先于新期限和CAS{'current_publishable': False}",
+      "expected": "existing",
+      "actual": "existing"
+    },
+    {
+      "name": "查原不新增{'current_publishable': False}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "查原先于新期限和CAS{'permissions': []}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "查原不新增{'permissions': []}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "查原先于新期限和CAS{'csrf_valid': False}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "查原不新增{'csrf_valid': False}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "查原先于新期限和CAS{'namespace_owned': False}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "查原不新增{'namespace_owned': False}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "同键异内容冲突",
+      "expected": "identity_conflict",
+      "actual": "identity_conflict"
+    },
+    {
+      "name": "CAS内容参与请求摘要",
+      "expected": "identity_conflict",
+      "actual": "identity_conflict"
+    },
+    {
+      "name": "新请求门控{'context_live': False}",
+      "expected": "context_expired",
+      "actual": "context_expired"
+    },
+    {
+      "name": "拒绝不占身份{'context_live': False}",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "name": "新请求门控{'capacity_available': False}",
+      "expected": "capacity",
+      "actual": "capacity"
+    },
+    {
+      "name": "拒绝不占身份{'capacity_available': False}",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "name": "新请求门控{'storage_available': False}",
+      "expected": "unavailable",
+      "actual": "unavailable"
+    },
+    {
+      "name": "拒绝不占身份{'storage_available': False}",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "name": "新请求门控{'state': {'command_id': 'command', 'scope': {'authority_service_id': 'controller', 'database_instance_id': 'database'}, 'revision': '2', 'phase': 'queued', 'outcome': 'pending', 'effect_status': 'not_sent', 'resource_status': 'clear', 'automation_continuation': 'eligible', 'reason_code': None, 'terminal_revision': None, 'resolution_ref': None, 'completion_evidence_refs': [], 'resource_evidence_refs': [], 'attempt_ids': []}}",
+      "expected": "state_conflict",
+      "actual": "state_conflict"
+    },
+    {
+      "name": "拒绝不占身份{'state': {'command_id': 'command', 'scope': {'authority_service_id': 'controller', 'database_instance_id': 'database'}, 'revision': '2', 'phase': 'queued', 'outcome': 'pending', 'effect_status': 'not_sent', 'resource_status': 'clear', 'automation_continuation': 'eligible', 'reason_code': None, 'terminal_revision': None, 'resolution_ref': None, 'completion_evidence_refs': [], 'resource_evidence_refs': [], 'attempt_ids': []}}",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "name": "issuer_epoch进入唯一键",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "换身份不重复同命令的物理取消",
+      "expected": "cancellation_exists",
+      "actual": "cancellation_exists"
+    },
+    {
+      "name": "旧请求lookup",
+      "expected": {
+        "state": "found",
+        "receipt": {
+          "identity": {
+            "key": {
+              "target_scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "issuer_id": "issuer",
+              "issuer_epoch": "issuer-epoch",
+              "principal_id": "operator",
+              "request_epoch": "request-epoch",
+              "operation_id": "cancelCommand",
+              "idempotency_key": "cancel-key"
+            },
+            "request_digest": "sha256:0e329a66bba83deb0c0eb869f203b0fd72a94ee60dc9d34c23d789bb3c74c124"
+          },
+          "command_id": "command",
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "cancellation_id": "cancel",
+          "initial_operation_ref": {
+            "id": "cancel",
+            "revision": "1",
+            "digest": "sha256:dbb90cd7e51260286d0cbd35d70bb5b1d76073d417cc0d1180684a0629e44ab0"
+          },
+          "accepted_state_ref": {
+            "id": "command",
+            "revision": "1",
+            "digest": "sha256:4e9bcbaf320fca4df7ff8fe4bd41cd9c597047525300952d34a8baf1018038e4"
+          },
+          "receipt_digest": "sha256:1dc2fe6be47432da62e86f22af9e8af5bebf599bde1510fbd28b6a0b8ee0cc05"
+        }
+      },
+      "actual": {
+        "state": "found",
+        "receipt": {
+          "identity": {
+            "key": {
+              "target_scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "issuer_id": "issuer",
+              "issuer_epoch": "issuer-epoch",
+              "principal_id": "operator",
+              "request_epoch": "request-epoch",
+              "operation_id": "cancelCommand",
+              "idempotency_key": "cancel-key"
+            },
+            "request_digest": "sha256:0e329a66bba83deb0c0eb869f203b0fd72a94ee60dc9d34c23d789bb3c74c124"
+          },
+          "command_id": "command",
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "cancellation_id": "cancel",
+          "initial_operation_ref": {
+            "id": "cancel",
+            "revision": "1",
+            "digest": "sha256:dbb90cd7e51260286d0cbd35d70bb5b1d76073d417cc0d1180684a0629e44ab0"
+          },
+          "accepted_state_ref": {
+            "id": "command",
+            "revision": "1",
+            "digest": "sha256:4e9bcbaf320fca4df7ff8fe4bd41cd9c597047525300952d34a8baf1018038e4"
+          },
+          "receipt_digest": "sha256:1dc2fe6be47432da62e86f22af9e8af5bebf599bde1510fbd28b6a0b8ee0cc05"
+        }
+      }
+    },
+    {
+      "name": "not_found不变更账本",
+      "expected": {
+        "state": "not_found",
+        "receipt": null
+      },
+      "actual": {
+        "state": "not_found",
+        "receipt": null
+      }
+    },
+    {
+      "name": "全部lookup只读",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "知道完整身份不授查原权",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "查原故障为indeterminate",
+      "expected": {
+        "state": "indeterminate",
+        "receipt": null
+      },
+      "actual": {
+        "state": "indeterminate",
+        "receipt": null
+      }
+    },
+    {
+      "name": "取消确认不改原unknown且仍未决",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "取消与终态资源独立{'closure_proven': False}",
+      "expected": "closure_unproven",
+      "actual": "closure_unproven"
+    },
+    {
+      "name": "取消与终态资源独立{'cancellation_proven': False}",
+      "expected": "cancellation_unproven",
+      "actual": "cancellation_unproven"
+    },
+    {
+      "name": "取消与终态资源独立{'after_state': {'command_id': 'command', 'scope': {'authority_service_id': 'controller', 'database_instance_id': 'database'}, 'revision': '6', 'phase': 'finished', 'outcome': 'cancelled', 'effect_status': 'possible', 'resource_status': 'unresolved', 'automation_continuation': 'paused_latched', 'reason_code': 'timeout', 'terminal_revision': '5', 'resolution_ref': None, 'completion_evidence_refs': [], 'resource_evidence_refs': [], 'attempt_ids': []}}",
+      "expected": "terminal_immutable",
+      "actual": "terminal_immutable"
+    },
+    {
+      "name": "取消与终态资源独立{'after_state': {'command_id': 'command', 'scope': {'authority_service_id': 'controller', 'database_instance_id': 'database'}, 'revision': '6', 'phase': 'finished', 'outcome': 'unknown', 'effect_status': 'possible', 'resource_status': 'unresolved', 'automation_continuation': 'eligible', 'reason_code': 'timeout', 'terminal_revision': '5', 'resolution_ref': None, 'completion_evidence_refs': [], 'resource_evidence_refs': [], 'attempt_ids': []}}",
+      "expected": "latch_immutable",
+      "actual": "latch_immutable"
+    },
+    {
+      "name": "取消与终态资源独立{'after_state': {'command_id': 'command', 'scope': {'authority_service_id': 'controller', 'database_instance_id': 'database'}, 'revision': '6', 'phase': 'finished', 'outcome': 'unknown', 'effect_status': 'possible', 'resource_status': 'clear', 'automation_continuation': 'paused_latched', 'reason_code': 'timeout', 'terminal_revision': '5', 'resolution_ref': None, 'completion_evidence_refs': [], 'resource_evidence_refs': [], 'attempt_ids': []}}",
+      "expected": "release_unproven",
+      "actual": "release_unproven"
+    },
+    {
+      "name": "too_late必须已有确定完成",
+      "expected": "completion_unproven",
+      "actual": "completion_unproven"
+    },
+    {
+      "name": "不确定取消可凭新证据确认",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "不确定取消禁止重开requested",
+      "expected": "cancel_reopen",
+      "actual": "cancel_reopen"
+    },
+    {
+      "name": "确定取消禁止重开requested",
+      "expected": "cancel_final",
+      "actual": "cancel_final"
+    },
+    {
+      "name": "可靠关闭不得回退pending",
+      "expected": "closure_rewrite",
+      "actual": "closure_rewrite"
+    },
+    {
+      "name": "固定证据页",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "换快照",
+      "expected": "snapshot_binding",
+      "actual": "snapshot_binding"
+    },
+    {
+      "name": "遗漏最后证据",
+      "expected": "page_members",
+      "actual": "page_members"
+    },
+    {
+      "name": "伪造总数",
+      "expected": "page_members",
+      "actual": "page_members"
+    },
+    {
+      "name": "多发下一页游标",
+      "expected": "page_continuation",
+      "actual": "page_continuation"
+    },
+    {
+      "name": "旧页冒新offset",
+      "expected": "page_members",
+      "actual": "page_members"
+    },
+    {
+      "name": "分页读取边界{'cursor_bound': False}",
+      "expected": "cursor_binding",
+      "actual": "cursor_binding"
+    },
+    {
+      "name": "分页读取边界{'cursor_expired': True}",
+      "expected": "snapshot_gone",
+      "actual": "snapshot_gone"
+    },
+    {
+      "name": "分页读取边界{'permissions': ['command.read']}",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "重算证据摘要不成为权威",
+      "expected": "evidence_source",
+      "actual": "evidence_source"
+    },
+    {
+      "name": "公共证据不接纳权威原件",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "核对not_sent保持",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "未知观察不是确定核对",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "release证据结构",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "release证据投影",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "release原件绑定",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "release正文错所有者",
+      "expected": "evidence_body_owner",
+      "actual": "evidence_body_owner"
+    },
+    {
+      "name": "resolution证据结构",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "resolution证据投影",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "resolution原件绑定",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "resolution正文错所有者",
+      "expected": "evidence_body_owner",
+      "actual": "evidence_body_owner"
+    },
+    {
+      "name": "invalidation证据结构",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "invalidation证据投影",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "invalidation原件绑定",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "invalidation正文错所有者",
+      "expected": "evidence_body_owner",
+      "actual": "evidence_body_owner"
+    },
+    {
+      "name": "未完快照必须有游标",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "后页保留原快照并正确结束",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "空快照不伪造下一页",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "七接口完整",
+      "expected": [
+        "cancelCommand",
+        "getCommand",
+        "getCommandCancellation",
+        "getCommandEvidence",
+        "getCommandEvidenceRevision",
+        "getCommandRevision",
+        "lookupCommandCancellation"
+      ],
+      "actual": [
+        "cancelCommand",
+        "getCommand",
+        "getCommandCancellation",
+        "getCommandEvidence",
+        "getCommandEvidenceRevision",
+        "getCommandRevision",
+        "lookupCommandCancellation"
+      ]
+    },
+    {
+      "name": "取消人类要求CSRF且服务单独分支",
+      "expected": [
+        {
+          "humanBearer": [],
+          "csrfToken": []
+        },
+        {
+          "serviceBearer": []
+        }
+      ],
+      "actual": [
+        {
+          "humanBearer": [],
+          "csrfToken": []
+        },
+        {
+          "serviceBearer": []
+        }
+      ]
+    },
+    {
+      "name": "getCommandno-store",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "getCommand精确版本",
+      "expected": {
+        "const": "command-view/0.1.0-draft.1"
+      },
+      "actual": {
+        "const": "command-view/0.1.0-draft.1"
+      }
+    },
+    {
+      "name": "getCommandRevisionno-store",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "getCommandRevision精确版本",
+      "expected": {
+        "const": "command-view/0.1.0-draft.1"
+      },
+      "actual": {
+        "const": "command-view/0.1.0-draft.1"
+      }
+    },
+    {
+      "name": "cancelCommandno-store",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "cancelCommand精确版本",
+      "expected": {
+        "const": "command-view/0.1.0-draft.1"
+      },
+      "actual": {
+        "const": "command-view/0.1.0-draft.1"
+      }
+    },
+    {
+      "name": "lookupCommandCancellationno-store",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "lookupCommandCancellation精确版本",
+      "expected": {
+        "const": "command-view/0.1.0-draft.1"
+      },
+      "actual": {
+        "const": "command-view/0.1.0-draft.1"
+      }
+    },
+    {
+      "name": "getCommandCancellationno-store",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "getCommandCancellation精确版本",
+      "expected": {
+        "const": "command-view/0.1.0-draft.1"
+      },
+      "actual": {
+        "const": "command-view/0.1.0-draft.1"
+      }
+    },
+    {
+      "name": "getCommandEvidenceno-store",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "getCommandEvidence精确版本",
+      "expected": {
+        "const": "command-view/0.1.0-draft.1"
+      },
+      "actual": {
+        "const": "command-view/0.1.0-draft.1"
+      }
+    },
+    {
+      "name": "getCommandEvidenceRevisionno-store",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "getCommandEvidenceRevision精确版本",
+      "expected": {
+        "const": "command-view/0.1.0-draft.1"
+      },
+      "actual": {
+        "const": "command-view/0.1.0-draft.1"
+      }
+    },
+    {
+      "name": "503显式投影未就绪",
+      "expected": [
+        "unavailable",
+        "state_projection_pending"
+      ],
+      "actual": [
+        "unavailable",
+        "state_projection_pending"
+      ]
+    },
+    {
+      "name": "当前操作接受current",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "当前操作拒history冒充",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "历史操作接受historical",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "历史操作拒current冒充",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "503错误结构",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "503不混403错误",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "投影未就绪明确查询动作",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公开闭包不含权威原件",
+      "expected": true,
+      "actual": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c02-command-view/README.md": "fcb2578ebbf084bc3ab14116797dad279d530aae4227a5a7a73e45ab0582aa60",
+    "docs/contracts/c02-command-view/build_contracts.py": "b6a23bae6b380ec921e2e35fd995e9e2ddcebab4bbb54397bec31ae050750555",
+    "docs/contracts/c02-command-view/reference_model.py": "4aedfebac0c8498e5429a6467a736c4a0a61c6d81876d82ff1c53fe2845a755c",
+    "docs/contracts/c02-command-view/check_contracts.py": "e5b1b471b393f5af1efa93240037206e6a73a02a8600f4d43266a296673c05c9",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c02-command-view/command.openapi.json": "e0adbcf5454324b5eda50b0c98205a71282cd9bce5ba550256038d8cc3172bfa",
+    "docs/contracts/c08-controller/lifecycle.schema.json": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46",
+    "docs/contracts/c02-admission/admission.schema.json": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c05-protection/protection.schema.json": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267"
+  }
+}

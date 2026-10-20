@@ -1,6 +1,8 @@
 # 命令修订、固定终态与资源联接候选
 
-状态：待审阅。`command.sql`在[66表资源组合](RESOURCE_STORAGE.md)之后增加11表，形成77表设计实验。本文件是持久化映射，不是生产迁移或完整公共CommandRecord，不改变已确认draft.4。124项生命周期快照、272项资源实验与本组合316项检查分别记账。
+状态：待审阅。`command.sql`在[66表资源组合](RESOURCE_STORAGE.md)之后增加11表，形成77表设计实验。本文件是持久化映射，不是生产迁移或完整公共CommandRecord，不改变已确认draft.4。124项生命周期快照、272项资源实验与本组合320项检查分别记账。
+
+后续[命令HTTP候选](../c02-command-view/README.md)补齐完整公开投影、取消及证据七接口，并修正本SQL中Resolution枚举：与既有Schema一致采用succeeded/failed/cancelled/not_sent，未知观察不伪装成确定核对。新增4项检查只证明枚举和固定终态；取消/公开修订/证据索引DDL仍未加入77表。
 
 ## 1. 已知约束与本轮补充
 

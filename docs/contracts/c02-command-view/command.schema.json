@@ -1,0 +1,975 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c02-command-view/command.schema.json",
+  "title": "command-view/0.1.0-draft.1",
+  "not": {},
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "$defs": {
+    "Id": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/Id"
+    },
+    "Digest": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/Digest"
+    },
+    "Counter": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/Counter"
+    },
+    "PositiveCounter": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/PositiveCounter"
+    },
+    "Ref": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/Ref"
+    },
+    "Scope": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/Scope"
+    },
+    "State": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/State"
+    },
+    "Policy": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/Policy"
+    },
+    "DecisionEvidence": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/DecisionEvidence"
+    },
+    "ReleaseEvidence": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/ReleaseEvidence"
+    },
+    "Resolution": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/Resolution"
+    },
+    "PacketRef": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/PacketRef"
+    },
+    "CompletionLevel": {
+      "$ref": "https://leafseamer.invalid/design/c08-controller/lifecycle.schema.json#/$defs/CompletionLevel"
+    },
+    "Actor": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/Actor"
+    },
+    "ControlVersion": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/ControlVersion"
+    },
+    "Dispatch": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/Dispatch"
+    },
+    "Timestamp": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/Timestamp"
+    },
+    "Version": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/Version"
+    },
+    "RequestIdentity": {
+      "$ref": "https://leafseamer.invalid/design/c02-admission/admission.schema.json#/$defs/RequestIdentity"
+    },
+    "InitialCommandRef": {
+      "$ref": "https://leafseamer.invalid/design/c02-admission/admission.schema.json#/$defs/CommandRef"
+    },
+    "AutomationOriginBinding": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/AutomationOriginBinding"
+    },
+    "RunBinding": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/RunBinding"
+    },
+    "Observation": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/CompletionEvidence"
+    },
+    "Invalidation": {
+      "type": "object",
+      "properties": {
+        "invalidation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "subject_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "reason_code": {
+          "$ref": "#/$defs/Id"
+        },
+        "protection_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "invalidation_id",
+        "scope",
+        "command_id",
+        "subject_ref",
+        "reason_code",
+        "protection_ref"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceKind": {
+      "enum": [
+        "observation",
+        "decision",
+        "release",
+        "resolution",
+        "invalidation"
+      ]
+    },
+    "EvidenceRecord": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "kind": {
+          "$ref": "#/$defs/EvidenceKind"
+        },
+        "body": {},
+        "view_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "command_id",
+        "source_ref",
+        "kind",
+        "body",
+        "view_digest"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "kind": {
+              "const": "observation"
+            },
+            "body": {
+              "$ref": "#/$defs/Observation"
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "decision"
+            },
+            "body": {
+              "$ref": "#/$defs/DecisionEvidence"
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "release"
+            },
+            "body": {
+              "$ref": "#/$defs/ReleaseEvidence"
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "resolution"
+            },
+            "body": {
+              "$ref": "#/$defs/Resolution"
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "invalidation"
+            },
+            "body": {
+              "$ref": "#/$defs/Invalidation"
+            }
+          }
+        }
+      ]
+    },
+    "EvidenceIndex": {
+      "type": "object",
+      "properties": {
+        "snapshot_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "total": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "snapshot_ref",
+        "state_ref",
+        "total"
+      ],
+      "additionalProperties": false
+    },
+    "AttemptExit": {
+      "type": "object",
+      "properties": {
+        "exit_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "send_started_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "protocol_request_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "exit_ref",
+        "worker_boot_id",
+        "ipc_session_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest",
+        "send_started_at",
+        "protocol_request_ids"
+      ],
+      "additionalProperties": false
+    },
+    "AttemptView": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "prepared_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "packet_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PacketRef"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "exits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AttemptExit"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "unknown",
+            "cancelled",
+            "not_sent"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "attempt_id",
+        "ordinal",
+        "prepared_state_ref",
+        "packet_refs",
+        "exits",
+        "outcome",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "CompletionView": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "$ref": "#/$defs/CompletionLevel"
+        },
+        "achieved": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompletionLevel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "required",
+        "achieved",
+        "policy_ref",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "CancellationState": {
+      "enum": [
+        "requested",
+        "confirmed",
+        "unsupported",
+        "failed",
+        "indeterminate",
+        "too_late"
+      ]
+    },
+    "CancellationView": {
+      "type": "object",
+      "properties": {
+        "operation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "state": {
+          "$ref": "#/$defs/CancellationState"
+        },
+        "future_writes": {
+          "enum": [
+            "pending",
+            "closed",
+            "indeterminate"
+          ]
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation_ref",
+        "state",
+        "future_writes",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    },
+    "CommandRecord": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "initial_command_ref": {
+          "$ref": "#/$defs/InitialCommandRef"
+        },
+        "request_identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "device_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "action_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "capability_version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "device_id",
+            "action_id",
+            "capability_version"
+          ],
+          "additionalProperties": false
+        },
+        "actor": {
+          "$ref": "#/$defs/Actor"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "run_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "accepted_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "dispatch": {
+          "$ref": "#/$defs/Dispatch"
+        },
+        "control_binding": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "policy": {
+          "$ref": "#/$defs/Policy"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "state": {
+          "$ref": "#/$defs/State"
+        },
+        "completion": {
+          "$ref": "#/$defs/CompletionView"
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AttemptView"
+          },
+          "minItems": 0,
+          "maxItems": 16
+        },
+        "cancellation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CancellationView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_index": {
+          "$ref": "#/$defs/EvidenceIndex"
+        },
+        "record_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "command_id",
+        "scope",
+        "revision",
+        "initial_command_ref",
+        "request_identity",
+        "target",
+        "actor",
+        "origin",
+        "run_binding",
+        "automation_binding",
+        "accepted_at",
+        "dispatch",
+        "control_binding",
+        "policy",
+        "state_ref",
+        "state",
+        "completion",
+        "attempts",
+        "cancellation",
+        "evidence_index",
+        "record_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "manual"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "run_binding": {
+                "type": "null"
+              },
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "run_binding": {
+                "$ref": "#/$defs/RunBinding"
+              },
+              "automation_binding": {
+                "$ref": "#/$defs/AutomationOriginBinding"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CommandRead": {
+      "type": "object",
+      "properties": {
+        "view": {
+          "enum": [
+            "current",
+            "historical"
+          ]
+        },
+        "record": {
+          "$ref": "#/$defs/CommandRecord"
+        }
+      },
+      "required": [
+        "view",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "Cursor": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 4096,
+      "pattern": "^[A-Za-z0-9_-]+$(?![\\s\\S])"
+    },
+    "EvidencePage": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "snapshot_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "offset": {
+          "$ref": "#/$defs/Counter"
+        },
+        "total": {
+          "$ref": "#/$defs/Counter"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EvidenceRecord"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Cursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "page_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "command_id",
+        "snapshot_ref",
+        "state_ref",
+        "offset",
+        "total",
+        "items",
+        "next_cursor",
+        "page_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CancelKey": {
+      "type": "object",
+      "properties": {
+        "target_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation_id": {
+          "const": "cancelCommand"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "target_scope",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id",
+        "request_epoch",
+        "operation_id",
+        "idempotency_key"
+      ],
+      "additionalProperties": false
+    },
+    "CancelIdentity": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/CancelKey"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "key",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CancelContent": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "scope",
+        "command_id",
+        "expected_state_ref",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "CancelRequest": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "context_id",
+        "idempotency_key",
+        "expected_state_ref",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "CancelReceipt": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/CancelIdentity"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "cancellation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "initial_operation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "accepted_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "receipt_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "identity",
+        "command_id",
+        "scope",
+        "cancellation_id",
+        "initial_operation_ref",
+        "accepted_state_ref",
+        "receipt_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CancelOperation": {
+      "type": "object",
+      "properties": {
+        "cancellation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "identity": {
+          "$ref": "#/$defs/CancelIdentity"
+        },
+        "state": {
+          "$ref": "#/$defs/CancellationState"
+        },
+        "mode": {
+          "enum": [
+            "before_dispatch_only",
+            "cooperative"
+          ]
+        },
+        "future_writes": {
+          "enum": [
+            "pending",
+            "closed",
+            "indeterminate"
+          ]
+        },
+        "command_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "cancellation_id",
+        "scope",
+        "command_id",
+        "revision",
+        "identity",
+        "state",
+        "mode",
+        "future_writes",
+        "command_state_ref",
+        "evidence_refs",
+        "reason_code",
+        "operation_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CancelLookup": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "found"
+            },
+            "receipt": {
+              "$ref": "#/$defs/CancelReceipt"
+            }
+          },
+          "required": [
+            "state",
+            "receipt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "not_found",
+                "indeterminate"
+              ]
+            },
+            "receipt": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "state",
+            "receipt"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid",
+            "unauthenticated",
+            "forbidden",
+            "not_found",
+            "state_conflict",
+            "identity_conflict",
+            "cancellation_exists",
+            "snapshot_conflict",
+            "snapshot_gone",
+            "context_expired",
+            "payload_too_large",
+            "invalid_semantics",
+            "capacity",
+            "unavailable",
+            "state_projection_pending"
+          ]
+        },
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "retry_action": {
+          "enum": [
+            "none",
+            "read_original",
+            "read_current"
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "request_id",
+        "retry_action"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "state_projection_pending"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_action": {
+                "const": "read_current"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

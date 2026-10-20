@@ -227,6 +227,19 @@ def run():
             7, 'reconcile', phase='finished', outcome='unknown', effect='verified', latched=1,
             terminal=5, resolution='z2', decision='e.z2', attempts=('a',), releases=('r',)))
         check('后续核对不替换最初终态', state(db)[4:], (U(5), 'z2'))
+        db = fresh('sent')
+        F.tx(db, revision(4, 'timeout', phase='finished', outcome='unknown', effect='possible',
+                          resource='unresolved', latched=1, terminal=4, attempts=('a',)))
+        no_send = F.P.mutate(resolution(5, terminal=4), 'cm_decision', 'resolved_outcome', 'not_sent')
+        no_send = F.P.mutate(no_send, 'cm_resolution', 'resolved_outcome', 'not_sent')
+        F.tx(db, no_send+revision(5, 'reconcile', phase='finished', outcome='unknown', effect='possible',
+                                 resource='unresolved', latched=1, terminal=4, resolution='z',
+                                 decision='e.z', attempts=('a',)))
+        check('not_sent核对不改原unknown或自动清理', state(db)[1:3], ('unknown', 'unresolved'))
+        check('核对采用既有not_sent枚举',
+              db.execute('SELECT resolved_outcome FROM cm_resolution').fetchone()[0], 'not_sent')
+        denied('不确定观察不能冒充确定核对', fresh('unknown'),
+               F.P.mutate(resolution(), 'cm_decision', 'resolved_outcome', 'unknown'))
 
         db = fresh('queued')
         F.tx(db, revision(2, 'cancel', phase='finished', outcome='cancelled', terminal=2))

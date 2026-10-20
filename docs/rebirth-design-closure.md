@@ -17,7 +17,7 @@
 | 范围 | 已具备的设计材料，不再重复建立 | 仍须在实施前完成 | 留给实现与验收的证据 |
 | --- | --- | --- | --- |
 | C01 单源与解码 | 六文件等价提取、完整历史HTTP骨架、导出／主体矩阵、严格解码具体方案及投影定位 | 将全部新增接口和类型纳入唯一SDK源；完成严格数字接受集、逐规则调用点和具名摘要投影；处理1.2的显式替换 | 真实解析器、TS生成／消费、浏览器包隔离及跨语言执行；元数据检查不替代 |
-| C02/C03 命令与接管 | 三命令裁决接口及11表受理子域、三准备接口及14表准备/关闭子域；[51表组合与30帧IPC候选](contracts/c08-controller/BARRIER_ATTEMPTS.md)登记逐primitive/逐传输许可及同cut尝试/ACK/采用关系；[终态/资源契约](contracts/c08-controller/LIFECYCLE.md)明确切点、提供者、核对和迟到风险；[77表命令组合](contracts/c08-controller/COMMAND_STORAGE.md)联接资源、固定终态、Resolution/T6和原报告身份；监督控制／bootstrap及15表journal | 其余命令查询／取消／证据与转交关联；RequestKey全链映射；prepare/observe与当前投影错误及其他三类屏障表；guard/预算和packet准备持久提供者；统一SDK归并 | writer并发、最终发送竞态、进程纳管和重启、磁盘耐久、设备效果 |
+| C02/C03 命令与接管 | 三命令裁决接口及11表受理子域、三准备接口及14表准备/关闭子域；[51表组合与30帧IPC候选](contracts/c08-controller/BARRIER_ATTEMPTS.md)登记逐primitive/逐传输许可及同cut尝试/ACK/采用关系；[77表命令组合](contracts/c08-controller/COMMAND_STORAGE.md)联接资源、固定终态、Resolution/T6和原报告身份；[七命令HTTP](contracts/c02-command-view/README.md)定义公开修订、取消查原/进度及固定证据分页和503投影错误；监督控制／bootstrap及15表journal | 转交关联；RequestKey全链映射；公开修订/取消/证据索引DDL与保护取消执行IPC；prepare/observe及其他三类屏障表；guard/预算和packet准备持久提供者；统一SDK归并 | writer并发、最终发送竞态、进程纳管和重启、磁盘耐久、设备效果 |
 | C04/C05 执行与摄取 | 程序／证明、24操作生命周期、执行记录、40表恢复／提交／摄取组合；保护HTTP、RUN_FENCE和拒绝快照；Controller双入口共享拒绝、P2完整登记集合/queued切点、P3逐出口及汇总应用候选 | 准备回执替换预填grant；P1/P4布局、P3到准备closed的真实引用与资源证据；完整来源依赖、跨source_epoch替换／GC／P0；边沿、预算和依赖边消费写集 | 真实编译器、提供者、事务执行器、跨服务故障、负载与恢复竞争 |
 | C06 时间与排期 | 固定日历、场次身份、激活／受理边界；DF03两条时间模型及区间公式 | 明确DF03模型选择，再统一时间证据、ScheduleGuard、场次／日历字段和存储约束；协议库与引导信任边界 | 两平台采样、休眠／换源、NTP误差前提和日历并发运行 |
 | C07 身份 | 主体用途矩阵、配对／注销／服务凭据生命周期、来源与对象授权设计 | 新生命周期接口、订阅owner及槽管理完整HTTP/WS；证书与秘密存储profile、历史身份归属及撤销映射 | TLS、当前权限提供者、秘密落盘、撤销传播及日志隔离 |
@@ -34,7 +34,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 
 ### 1.2 已有HTTP与IPC的归并裁决
 
-已知事实：以下10份OpenAPI当前共140条操作声明；计数含两个HTTP GET形式的WS升级，不等于140项独立运行功能，也不证明全系统接口已齐备。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不是可合并身份空间。另有14处**同服务**旧／新方法路径重合，必须作明确替换。以下处置是下一统一候选的设计规则，尚未生成或部署该候选。
+已知事实：以下11份OpenAPI当前共147条操作声明；计数含两个HTTP GET形式的WS升级，不等于147项独立运行功能，也不证明全系统接口已齐备。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不是可合并身份空间。另有17处**同服务**旧／新方法路径重合，必须作明确替换。以下处置是下一统一候选的设计规则，尚未生成或部署该候选。
 
 | 当前文件（相对docs/contracts） | 声明数 | 所有者与下一版处置 |
 | --- | ---: | --- |
@@ -43,6 +43,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 | [c04-lifecycle/lifecycle.openapi.json](contracts/c04-lifecycle/lifecycle.openapi.json) | 24 | Seamer；12项替换旧操作，12项新增 |
 | [c04-preparation/preparation.openapi.json](contracts/c04-preparation/preparation.openapi.json) | 3 | Controller内部mTLS；准备／查原／关闭，不暴露管理origin |
 | [c02-admission/admission.openapi.json](contracts/c02-admission/admission.openapi.json) | 3 | Controller；替换submitCommand，新增查原与永久拒收 |
+| [c02-command-view/command.openapi.json](contracts/c02-command-view/command.openapi.json) | 7 | Controller；替换getCommand/cancelCommand/getCommandEvidence，新增历史修订、取消查原/状态和单证据历史读取 |
 | [c05-ingress/ingress.openapi.json](contracts/c05-ingress/ingress.openapi.json) | 3 | Seamer；替换摄取，新增查原及内部账本读取 |
 | [c05-protection/protection.openapi.json](contracts/c05-protection/protection.openapi.json) | 2 | Controller内部mTLS；代次保护与查原，不是设备动作重试入口 |
 | [c09-panel-service/service.openapi.json](contracts/c09-panel-service/service.openapi.json) | 14 | 两服务分别拥有会话及writer；同一界面跨服务须两份独立会话 |
@@ -52,6 +53,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 同服务替换全集如下，不能按文件加载顺序“后者覆盖前者”：
 
 - Controller：`submitCommand`占用`POST /api/v1/commands`；成功响应改为不可变RequestAdjudication。当前Command仍由原command_ref查询，永久拒收不等于取消。
+- Controller读取与取消：`getCommand`、`cancelCommand`、`getCommandEvidence`三个同路径操作切到command-view候选。完整State与公开记录摘要分开，历史显式标识，503不能回旧clear；取消回执不变、取消进度另查，证据绑定固定修订分页。旧裸expected_revision和旧动态证据页不回退接受，操作/导出/面板权限矩阵同步迁移。
 - Seamer生命周期：`createDefinition`、`updateDraft`、`publishDefinition`、`getIndependenceProof`、`createRun`、`getRun`、`preflightRun`、`armRun`、`pauseRun`、`previewRecovery`、`resumeRun`、`getRecoveryOperation`共12项，同方法路径切到生命周期候选；旧请求/响应不得与新模型拼接。
 - Seamer摄取：`POST /api/v1/providers/{provider_id}/events`的operationId从`ingestEvent`变为`submitProviderEvent`。现有[主体矩阵](contracts/df01-source/authorization-candidate.json)和[面板策略](contracts/c09-panel/operation-policy.json)仍引用`ingestEvent`，未完成迁移；生成器、SDK导出、权限用途、调用点及用例必须显式同步，不能只重命名HTTP符号。事件自身去重身份继续按摄取契约，不借HTTP名更改原事件身份。
 

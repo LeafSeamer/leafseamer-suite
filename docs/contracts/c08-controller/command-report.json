@@ -1,6 +1,6 @@
 {
   "all_passed": true,
-  "cases_passed": 316,
+  "cases_passed": 320,
   "approved": false,
   "scope": "77表内存组合的命令修订、固定终态、报告身份和资源联接",
   "runtime_tests_executed": 0,
@@ -1111,6 +1111,32 @@
       ]
     },
     {
+      "name": "not_sent核对不改原unknown或自动清理",
+      "expected": [
+        "unknown",
+        "unresolved"
+      ],
+      "observed": [
+        "unknown",
+        "unresolved"
+      ]
+    },
+    {
+      "name": "核对采用既有not_sent枚举",
+      "expected": "not_sent",
+      "observed": "not_sent"
+    },
+    {
+      "name": "不确定观察不能冒充确定核对",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "不确定观察不能冒充确定核对全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
       "name": "纯排队取消无需虚构hold",
       "expected": [
         "finished",
@@ -1704,7 +1730,7 @@
     "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
     "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
     "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
-    "docs/contracts/c08-controller/README.md": "4ae330a01149e3a09822b712f4d54099dbae5337a0b63b61d0338cbf14c55388",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
     "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
     "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
     "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
@@ -1723,8 +1749,8 @@
     "docs/contracts/c08-controller/RESOURCE_STORAGE.md": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa",
     "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
     "docs/contracts/c08-controller/check_resource.py": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849",
-    "docs/contracts/c08-controller/command.sql": "f599a1413c021527a69f1bb060da8d76e0c595797fb711a030fb96c6ca9bb7a7",
-    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "6d68439687c3b7c2286e6f85e8b64d68e488eff20b67f2754b5a166e9e9e3831",
-    "docs/contracts/c08-controller/check_command.py": "8614582e1f8fd03df36955ad8c3714c94a3aebf4cbfc60f089126648d470e97f"
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267",
+    "docs/contracts/c08-controller/check_command.py": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4"
   }
 }

@@ -1,0 +1,795 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "运行代次保护内部接口候选",
+    "version": "protection-service/0.2.0-draft.1"
+  },
+  "paths": {
+    "/internal/automation/protections": {
+      "post": {
+        "operationId": "protectRunGeneration",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "protection-service/0.2.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Protocol_ProtectionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "原持久操作或查询结果；不表示资源已清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ControllerProtectionRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "原持久操作或查询结果；不表示资源已清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ControllerProtectionRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.protect",
+        "x-required-origin-ownership": true,
+        "x-retry-policy": "same-identity-monotonic-denial-only"
+      }
+    },
+    "/internal/automation/protections/lookup": {
+      "post": {
+        "operationId": "lookupRunProtection",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "protection-service/0.2.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Protocol_ProtectionLookup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "原持久操作或查询结果；不表示资源已清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionLookupResult"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或不可确认；不授权设备重试",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Protocol_ProtectionError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "禁止缓存",
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.protect",
+        "x-required-origin-ownership": true,
+        "x-retry-policy": "read-only-lookup"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Protocol_ControllerProtectionRecord": {
+        "$ref": "#/components/schemas/Protection_ControllerProtectionRecord"
+      },
+      "Protection_ControllerProtectionRecord": {
+        "type": "object",
+        "properties": {
+          "controller_scope": {
+            "$ref": "#/components/schemas/Protection_Scope"
+          },
+          "operation_id": {
+            "$ref": "#/components/schemas/Protection_Id"
+          },
+          "selector": {
+            "$ref": "#/components/schemas/Protection_RunGenerationSelector"
+          },
+          "selector_digest": {
+            "$ref": "#/components/schemas/Protection_Digest"
+          },
+          "target_set_digest": {
+            "$ref": "#/components/schemas/Protection_Digest"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/Protection_Counter"
+          },
+          "state": {
+            "enum": [
+              "accepted",
+              "fencing",
+              "applied",
+              "indeterminate"
+            ]
+          },
+          "receipt_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Protection_Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "controller_scope",
+          "operation_id",
+          "selector",
+          "selector_digest",
+          "target_set_digest",
+          "revision",
+          "state",
+          "receipt_ref"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "applied"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "receipt_ref": {
+                  "$ref": "#/components/schemas/Protection_Ref"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Protection_Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "Protection_Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "Protection_RunGenerationSelector": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "run_generation"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/Protection_Scope"
+          },
+          "run_id": {
+            "$ref": "#/components/schemas/Protection_Id"
+          },
+          "deny_through_generation": {
+            "$ref": "#/components/schemas/Protection_Counter"
+          }
+        },
+        "required": [
+          "kind",
+          "origin_scope",
+          "run_id",
+          "deny_through_generation"
+        ],
+        "additionalProperties": false
+      },
+      "Protection_Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "Protection_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+      },
+      "Protection_Ref": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Protection_Scope"
+          },
+          "object_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "Protocol_ProtectionError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid",
+              "unauthenticated",
+              "forbidden",
+              "conflict",
+              "capacity",
+              "unavailable",
+              "version"
+            ]
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/Protocol_Id"
+          }
+        },
+        "required": [
+          "code",
+          "request_id"
+        ],
+        "additionalProperties": false
+      },
+      "Protocol_Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "Protocol_ProtectionRequest": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "protection-service/0.2.0-draft.1"
+          },
+          "operation_id": {
+            "$ref": "#/components/schemas/Protection_Id"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/Protection_Scope"
+          },
+          "selector": {
+            "$ref": "#/components/schemas/Protection_RunGenerationSelector"
+          },
+          "selector_digest": {
+            "$ref": "#/components/schemas/Protection_Digest"
+          },
+          "target_set_digest": {
+            "$ref": "#/components/schemas/Protection_Digest"
+          },
+          "basis": {
+            "enum": [
+              "durable_protection",
+              "emergency_fault"
+            ]
+          },
+          "protection_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Protection_Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "detector_domain_ref": {
+            "$ref": "#/components/schemas/Protection_Ref"
+          }
+        },
+        "required": [
+          "contract_version",
+          "operation_id",
+          "controller_scope",
+          "selector",
+          "selector_digest",
+          "target_set_digest",
+          "basis",
+          "protection_ref",
+          "detector_domain_ref"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "basis": {
+                  "const": "durable_protection"
+                }
+              },
+              "required": [
+                "basis"
+              ]
+            },
+            "then": {
+              "properties": {
+                "protection_ref": {
+                  "$ref": "#/components/schemas/Protection_Ref"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "protection_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Protocol_ProtectionLookupResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "found"
+              },
+              "record": {
+                "$ref": "#/components/schemas/Protocol_ControllerProtectionRecord"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "indeterminate"
+                ]
+              },
+              "record": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "Protocol_ProtectionLookup": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "protection-service/0.2.0-draft.1"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/Protocol_Scope"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/Protocol_Scope"
+          },
+          "operation_id": {
+            "$ref": "#/components/schemas/Protocol_Id"
+          },
+          "selector_digest": {
+            "$ref": "#/components/schemas/Protocol_Digest"
+          },
+          "target_set_digest": {
+            "$ref": "#/components/schemas/Protocol_Digest"
+          }
+        },
+        "required": [
+          "contract_version",
+          "controller_scope",
+          "origin_scope",
+          "operation_id",
+          "selector_digest",
+          "target_set_digest"
+        ],
+        "additionalProperties": false
+      },
+      "Protocol_Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "Protocol_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+      }
+    },
+    "securitySchemes": {
+      "InternalMTLS": {
+        "type": "mutualTLS"
+      }
+    }
+  }
+}

@@ -1,0 +1,1233 @@
+{
+  "format_version": "sdk-authorization/0.1.0-draft.1",
+  "approved": false,
+  "authority_switched": false,
+  "runtime_approved": false,
+  "scope": "draft4_operations_next_policy_candidate",
+  "source_sha256": {
+    "source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "source/http/controller.operations.json": "603e6f3555fd19e76761bbb0dbe808dbd880036dbe119b11f3f98c2009eb72cb",
+    "source/http/seamer.operations.json": "3840cca04f99c00942897a42b08293db8727d93c0c1151d10ff339376a188136",
+    "exports-candidate.json": "995ce363cdb31ee9c3ebe937cbb150d2f37d58f0a9d8c5e04c98fc0a415f4076"
+  },
+  "guard_registry": {
+    "public_projection": "目标服务公开投影且不泄漏其他主体私有用量",
+    "own_session": "仅当前human会话，不自报subject切换",
+    "context_intersection": "当前主体凭据链、audience及操作交集，有界期限且消费时复核",
+    "subscription_owner": "创建时绑定当前人员会话及授权scope；读取时核对订阅owner，快照不能扩权",
+    "ticket_binding": "票据与session/audience/Origin/client/scope匹配、有效且一次消费",
+    "device_scope": "当前授权设备或列表逐项过滤，不以猜中ID授权",
+    "command_scope": "命令所属设备及当前读取范围，证据按可见性投影",
+    "control_scope": "设备控制记录及操作所属设备的当前读取范围",
+    "manual_holder": "当前human为有效holder、控制版本匹配、写闸ready且全部执行守卫成立",
+    "automation_grant": "配对Seamer、当前run/definition/grant/arm及组织批准交集；未被manual接管",
+    "cancel_target": "人员有目标取消权；service仅权威归属本组织run命令，不取消外来manual",
+    "acquire_target": "当前human目标授权，force另需control.emergency，不隐式取得控制",
+    "release_target": "当前holder或有明确目标释放授权；释放不恢复旧自动化",
+    "offer_target": "当前holder发起，目标为本地映射human，固定控制版本与权威期限",
+    "accept_target": "仅固定目标human，邀请未失效、当前权限与版本匹配，屏障后生效",
+    "grant_proposal": "配对Seamer权威、批准范围、run/definition/arm/validity与本地交集",
+    "grant_revoke_target": "human有目标grant撤销权；Seamer仅其权威归属或明确委托范围",
+    "bootstrap_once": "未初始化且一次性部署能力有效；管理员创建与消费同事务",
+    "login_proof": "可信Origin和登录证明、账户状态及有限尝试预算，不泄漏账户存在性",
+    "cookie_binding": "有效Cookie、会话CSRF及精确Origin共同成立",
+    "refresh_rotation": "单次刷新轮换及复用检测，不延长独立组织批准",
+    "token_intersection": "仅当前human目标audience与scope交集，扩展关联不能靠自报ID",
+    "introspection_audience": "当前配对服务仅查询其目标audience及允许使用凭据的最少快照",
+    "revocation_target": "当前签发权威或受保护转交、精确selector及授权目标，固定传播集合",
+    "recent_auth": "可验证近期人员认证、同主体同会话且满足当前管理策略",
+    "revocation_visibility": "当前允许读取的撤销对象；服务仅自身或明确授予的范围",
+    "subject_visibility": "自身或明确授权目标的最少身份投影，不公开完整身份目录",
+    "capacity_profile": "已验证发布profile、预期修订及目标服务管理范围；不淘汰未决记录",
+    "provider_catalog": "权威来源注册与token主体、provider、能力及目录预期修订一致",
+    "provider_event": "权威来源/boot/stream/序号及摄取语义；年龄与因果仍独立验证",
+    "definition_edit": "当前目标定义编辑范围及修订；service只编辑明确授予草稿",
+    "definition_publish": "human明确发布固定草稿修订，证明/范围校验；发布不布防",
+    "run_create_unarmed": "固定已发布定义和目标范围；新run未布防，不复用旧grant",
+    "run_read": "精确run及所属definition的当前可读范围",
+    "preflight_readonly": "当前run修订；只读预检，不以写设备做测试、不生成派发许可",
+    "recovery_readonly": "当前run修订和授权设备观察；预览不执行恢复",
+    "arm_approval": "human明确布防，当前预检/组织批准、全部Controller授权确认",
+    "pause_target": "human目标暂停权；service仅权威归属或明确授予run，逐目标核对",
+    "recovery_confirm": "human明确确认固定预览/摘要/修订，恢复一次消费、不重放成功未知步骤",
+    "recovery_visibility": "恢复operation所属run和当前读取范围",
+    "proof_visibility": "精确definition版本/proof及当前读取范围",
+    "internal_object": "真实mTLS与当前配对用途、原authority、精确对象/修订，响应释放前复核",
+    "ticket_issue": "当前human及请求Origin/client/scope交集，签发有限一次性票据；不要求请求含尚未定义的subscription_id"
+  },
+  "operations": {
+    "controller:acceptTransfer": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1transfers~1{transfer_id}~1accept/post",
+      "permission": "control.accept",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "accept_target"
+          ]
+        }
+      ]
+    },
+    "controller:acquireControl": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1acquire/post",
+      "permission": "control.acquire",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "acquire_target"
+          ]
+        }
+      ]
+    },
+    "controller:bootstrap": {
+      "source_pointer": "/paths/~1auth~1bootstrap/post",
+      "permission": "auth.bootstrap",
+      "branches": [
+        {
+          "profile": "bootstrap",
+          "origin": null,
+          "guards": [
+            "bootstrap_once"
+          ]
+        }
+      ]
+    },
+    "controller:cancelCommand": {
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}~1cancel/post",
+      "permission": "command.cancel",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "cancel_target"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "cancel_target"
+          ]
+        }
+      ]
+    },
+    "controller:createRequestContext": {
+      "source_pointer": "/paths/~1api~1v1~1request-contexts/post",
+      "permission": "request.create",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "context_intersection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "context_intersection"
+          ]
+        }
+      ]
+    },
+    "controller:createSubscription": {
+      "source_pointer": "/paths/~1api~1v1~1subscriptions/post",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "subscription_owner"
+          ]
+        }
+      ]
+    },
+    "controller:getCapabilities": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1capabilities/get",
+      "permission": "device.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        }
+      ]
+    },
+    "controller:getCapacity": {
+      "source_pointer": "/paths/~1api~1v1~1capacity/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "controller:getClock": {
+      "source_pointer": "/paths/~1api~1v1~1clock/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "controller:getClockAssessment": {
+      "source_pointer": "/paths/~1api~1v1~1clock-assessment/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "controller:getClockDomainDescriptor": {
+      "source_pointer": "/paths/~1internal~1clock-domain/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "controller:getClockSample": {
+      "source_pointer": "/paths/~1internal~1clock-samples~1{sample_id}/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "controller:getCommand": {
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}/get",
+      "permission": "device.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "command_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "command_scope"
+          ]
+        }
+      ]
+    },
+    "controller:getCommandEvidence": {
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}~1evidence/get",
+      "permission": "command.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "command_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "command_scope"
+          ]
+        }
+      ]
+    },
+    "controller:getControl": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control/get",
+      "permission": "control.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "control_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "control_scope"
+          ]
+        }
+      ]
+    },
+    "controller:getControlOperation": {
+      "source_pointer": "/paths/~1api~1v1~1control-operations~1{operation_id}/get",
+      "permission": "control.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "control_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "control_scope"
+          ]
+        }
+      ]
+    },
+    "controller:getDeviceState": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1state/get",
+      "permission": "device.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        }
+      ]
+    },
+    "controller:getMeta": {
+      "source_pointer": "/paths/~1api~1v1~1meta/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "controller:getRevocation": {
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations~1{operation_id}/get",
+      "permission": "auth.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "revocation_visibility"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "revocation_visibility"
+          ]
+        }
+      ]
+    },
+    "controller:getSceneCatalog": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1scene-catalog/get",
+      "permission": "device.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        }
+      ]
+    },
+    "controller:getSession": {
+      "source_pointer": "/paths/~1api~1v1~1session/get",
+      "permission": "session.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "own_session"
+          ]
+        }
+      ]
+    },
+    "controller:getSnapshot": {
+      "source_pointer": "/paths/~1api~1v1~1subscriptions~1{subscription_id}~1snapshot/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "subscription_owner"
+          ]
+        }
+      ]
+    },
+    "controller:getSubject": {
+      "source_pointer": "/paths/~1api~1v1~1subjects~1{subject_id}/get",
+      "permission": "identity.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "subject_visibility"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "subject_visibility"
+          ]
+        }
+      ]
+    },
+    "controller:getTimeBoundEvidence": {
+      "source_pointer": "/paths/~1internal~1time-evidence~1{evidence_id}/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "controller:getTimeBoundProfile": {
+      "source_pointer": "/paths/~1internal~1time-profiles~1{profile_id}~1{revision}/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "controller:introspect": {
+      "source_pointer": "/paths/~1internal~1auth~1introspect/post",
+      "permission": "auth.introspect",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "introspection_audience"
+          ]
+        }
+      ]
+    },
+    "controller:issueToken": {
+      "source_pointer": "/paths/~1auth~1service-tokens/post",
+      "permission": "auth.issueToken",
+      "branches": [
+        {
+          "profile": "cookie",
+          "origin": null,
+          "guards": [
+            "cookie_binding",
+            "token_intersection"
+          ]
+        }
+      ]
+    },
+    "controller:issueWsTicket": {
+      "source_pointer": "/paths/~1api~1v1~1ws-tickets/post",
+      "permission": "subscription.create",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "ticket_issue"
+          ]
+        }
+      ]
+    },
+    "controller:listDevices": {
+      "source_pointer": "/paths/~1api~1v1~1devices/get",
+      "permission": "device.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "device_scope"
+          ]
+        }
+      ]
+    },
+    "controller:login": {
+      "source_pointer": "/paths/~1auth~1sessions/post",
+      "permission": "auth.login",
+      "branches": [
+        {
+          "profile": "login",
+          "origin": null,
+          "guards": [
+            "login_proof"
+          ]
+        }
+      ]
+    },
+    "controller:offerTransfer": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1transfers/post",
+      "permission": "control.transfer",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "offer_target"
+          ]
+        }
+      ]
+    },
+    "controller:openEvents": {
+      "source_pointer": "/paths/~1api~1v1~1events/get",
+      "permission": null,
+      "branches": [
+        {
+          "profile": "ticket",
+          "origin": null,
+          "guards": [
+            "subscription_owner",
+            "ticket_binding"
+          ]
+        }
+      ]
+    },
+    "controller:refreshSession": {
+      "source_pointer": "/paths/~1auth~1sessions~1refresh/post",
+      "permission": "auth.refreshSession",
+      "branches": [
+        {
+          "profile": "cookie",
+          "origin": null,
+          "guards": [
+            "cookie_binding",
+            "refresh_rotation"
+          ]
+        }
+      ]
+    },
+    "controller:releaseControl": {
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1release/post",
+      "permission": "control.release",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "release_target"
+          ]
+        }
+      ]
+    },
+    "controller:revokeAuthorization": {
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations/post",
+      "permission": "auth.manage",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "revocation_target",
+            "recent_auth"
+          ]
+        }
+      ]
+    },
+    "controller:revokeRunGrant": {
+      "source_pointer": "/paths/~1api~1v1~1run-grants~1{grant_id}~1revoke/post",
+      "permission": "grant.revoke",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "grant_revoke_target"
+          ]
+        },
+        {
+          "profile": "seamer",
+          "origin": null,
+          "guards": [
+            "grant_revoke_target"
+          ]
+        }
+      ]
+    },
+    "controller:setCapacity": {
+      "source_pointer": "/paths/~1api~1v1~1capacity~1profile/put",
+      "permission": "capacity.manage",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "capacity_profile",
+            "recent_auth"
+          ]
+        }
+      ]
+    },
+    "controller:submitCommand": {
+      "source_pointer": "/paths/~1api~1v1~1commands/post",
+      "permission": "device.command",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": "manual",
+          "guards": [
+            "manual_holder"
+          ]
+        },
+        {
+          "profile": "seamer",
+          "origin": "automation",
+          "guards": [
+            "automation_grant"
+          ]
+        }
+      ]
+    },
+    "controller:updateRunGrant": {
+      "source_pointer": "/paths/~1api~1v1~1run-grants~1{grant_id}/put",
+      "permission": "grant.manage",
+      "branches": [
+        {
+          "profile": "seamer",
+          "origin": null,
+          "guards": [
+            "grant_proposal"
+          ]
+        }
+      ]
+    },
+    "seamer:armRun": {
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1arm/post",
+      "permission": "run.arm",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "arm_approval"
+          ]
+        }
+      ]
+    },
+    "seamer:createDefinition": {
+      "source_pointer": "/paths/~1api~1v1~1definitions/post",
+      "permission": "definition.edit",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "definition_edit"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "definition_edit"
+          ]
+        }
+      ]
+    },
+    "seamer:createRequestContext": {
+      "source_pointer": "/paths/~1api~1v1~1request-contexts/post",
+      "permission": "request.create",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "context_intersection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "context_intersection"
+          ]
+        }
+      ]
+    },
+    "seamer:createRun": {
+      "source_pointer": "/paths/~1api~1v1~1runs/post",
+      "permission": "run.manage",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "run_create_unarmed"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "run_create_unarmed"
+          ]
+        }
+      ]
+    },
+    "seamer:createSubscription": {
+      "source_pointer": "/paths/~1api~1v1~1subscriptions/post",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "subscription_owner"
+          ]
+        }
+      ]
+    },
+    "seamer:getCapacity": {
+      "source_pointer": "/paths/~1api~1v1~1capacity/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "seamer:getClock": {
+      "source_pointer": "/paths/~1api~1v1~1clock/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "seamer:getClockAssessment": {
+      "source_pointer": "/paths/~1api~1v1~1clock-assessment/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "seamer:getClockDomainDescriptor": {
+      "source_pointer": "/paths/~1internal~1clock-domain/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "seamer:getClockSample": {
+      "source_pointer": "/paths/~1internal~1clock-samples~1{sample_id}/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "seamer:getIndependenceProof": {
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1proofs~1{proof_id}/get",
+      "permission": "definition.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "proof_visibility"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "proof_visibility"
+          ]
+        }
+      ]
+    },
+    "seamer:getMeta": {
+      "source_pointer": "/paths/~1api~1v1~1meta/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "public_projection"
+          ]
+        }
+      ]
+    },
+    "seamer:getRecoveryOperation": {
+      "source_pointer": "/paths/~1api~1v1~1recovery-operations~1{operation_id}/get",
+      "permission": "run.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "recovery_visibility"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "recovery_visibility"
+          ]
+        }
+      ]
+    },
+    "seamer:getRevocation": {
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations~1{operation_id}/get",
+      "permission": "auth.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "revocation_visibility"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "revocation_visibility"
+          ]
+        }
+      ]
+    },
+    "seamer:getRun": {
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}/get",
+      "permission": "run.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "run_read"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "run_read"
+          ]
+        }
+      ]
+    },
+    "seamer:getSession": {
+      "source_pointer": "/paths/~1api~1v1~1session/get",
+      "permission": "session.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "own_session"
+          ]
+        }
+      ]
+    },
+    "seamer:getSnapshot": {
+      "source_pointer": "/paths/~1api~1v1~1subscriptions~1{subscription_id}~1snapshot/get",
+      "permission": "status.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "subscription_owner"
+          ]
+        }
+      ]
+    },
+    "seamer:getSubject": {
+      "source_pointer": "/paths/~1api~1v1~1subjects~1{subject_id}/get",
+      "permission": "identity.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "subject_visibility"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "subject_visibility"
+          ]
+        }
+      ]
+    },
+    "seamer:getTimeBoundEvidence": {
+      "source_pointer": "/paths/~1internal~1time-evidence~1{evidence_id}/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "seamer:getTimeBoundProfile": {
+      "source_pointer": "/paths/~1internal~1time-profiles~1{profile_id}~1{revision}/get",
+      "permission": "clock.internal.read",
+      "branches": [
+        {
+          "profile": "internal",
+          "origin": null,
+          "guards": [
+            "internal_object"
+          ]
+        }
+      ]
+    },
+    "seamer:ingestEvent": {
+      "source_pointer": "/paths/~1api~1v1~1providers~1{provider_id}~1events/post",
+      "permission": "provider.publish",
+      "branches": [
+        {
+          "profile": "provider",
+          "origin": null,
+          "guards": [
+            "provider_event"
+          ]
+        }
+      ]
+    },
+    "seamer:issueWsTicket": {
+      "source_pointer": "/paths/~1api~1v1~1ws-tickets/post",
+      "permission": "subscription.create",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "ticket_issue"
+          ]
+        }
+      ]
+    },
+    "seamer:openEvents": {
+      "source_pointer": "/paths/~1api~1v1~1events/get",
+      "permission": null,
+      "branches": [
+        {
+          "profile": "ticket",
+          "origin": null,
+          "guards": [
+            "subscription_owner",
+            "ticket_binding"
+          ]
+        }
+      ]
+    },
+    "seamer:pauseRun": {
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1pause/post",
+      "permission": "run.pause",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "pause_target"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "pause_target"
+          ]
+        }
+      ]
+    },
+    "seamer:preflightRun": {
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1preflight/post",
+      "permission": "run.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "run_read",
+            "preflight_readonly"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "run_read",
+            "preflight_readonly"
+          ]
+        }
+      ]
+    },
+    "seamer:previewRecovery": {
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1recovery-preview/post",
+      "permission": "run.read",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "run_read",
+            "recovery_readonly"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "run_read",
+            "recovery_readonly"
+          ]
+        }
+      ]
+    },
+    "seamer:publishDefinition": {
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1publish/post",
+      "permission": "definition.publish",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "definition_publish"
+          ]
+        }
+      ]
+    },
+    "seamer:resumeRun": {
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1resume/post",
+      "permission": "run.resume",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "recovery_confirm"
+          ]
+        }
+      ]
+    },
+    "seamer:revokeAuthorization": {
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations/post",
+      "permission": "auth.manage",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "revocation_target",
+            "recent_auth"
+          ]
+        }
+      ]
+    },
+    "seamer:setCapacity": {
+      "source_pointer": "/paths/~1api~1v1~1capacity~1profile/put",
+      "permission": "capacity.manage",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "capacity_profile",
+            "recent_auth"
+          ]
+        }
+      ]
+    },
+    "seamer:updateCatalog": {
+      "source_pointer": "/paths/~1api~1v1~1providers~1{provider_id}~1catalog/put",
+      "permission": "provider.publish",
+      "branches": [
+        {
+          "profile": "provider",
+          "origin": null,
+          "guards": [
+            "provider_catalog"
+          ]
+        }
+      ]
+    },
+    "seamer:updateDraft": {
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1draft/put",
+      "permission": "definition.edit",
+      "branches": [
+        {
+          "profile": "human",
+          "origin": null,
+          "guards": [
+            "definition_edit"
+          ]
+        },
+        {
+          "profile": "service",
+          "origin": null,
+          "guards": [
+            "definition_edit"
+          ]
+        }
+      ]
+    }
+  }
+}

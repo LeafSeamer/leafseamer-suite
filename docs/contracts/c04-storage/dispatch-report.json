@@ -1,0 +1,1187 @@
+{
+  "format": "automation-dispatch-storage-reference/1",
+  "approved": false,
+  "checks_passed": 212,
+  "all_passed": true,
+  "versions": {
+    "python": "3.14.0",
+    "sqlite": "3.50.4"
+  },
+  "cases": [
+    {
+      "case": "table_count",
+      "passed": true,
+      "observed": 25
+    },
+    {
+      "case": "anchor",
+      "passed": true,
+      "observed": "anchored"
+    },
+    {
+      "case": "ready",
+      "passed": true,
+      "observed": "ready"
+    },
+    {
+      "case": "submit",
+      "passed": true,
+      "observed": "planned_no_send"
+    },
+    {
+      "case": "attempt",
+      "passed": true,
+      "observed": "live_path_call_once"
+    },
+    {
+      "case": "adjudicate",
+      "passed": true,
+      "observed": "accepted"
+    },
+    {
+      "case": "terminal",
+      "passed": true,
+      "observed": "succeeded"
+    },
+    {
+      "case": "R5_after_evidence",
+      "passed": true,
+      "observed": "committed"
+    },
+    {
+      "case": "old_unknown_preserved",
+      "passed": true,
+      "observed": "unknown"
+    },
+    {
+      "case": "integrity",
+      "passed": true,
+      "observed": "ok"
+    },
+    {
+      "case": "foreign_keys",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "accepted_can_await_evidence",
+      "passed": true,
+      "observed": "awaiting_evidence"
+    },
+    {
+      "case": "awaiting_evidence_can_finish",
+      "passed": true,
+      "observed": "succeeded"
+    },
+    {
+      "case": "awaiting_path_R5",
+      "passed": true,
+      "observed": "committed"
+    },
+    {
+      "case": "qualified_cancel_after_acceptance",
+      "passed": true,
+      "observed": "cancelled"
+    },
+    {
+      "case": "cancel_preserves_accepted_submission",
+      "passed": true,
+      "observed": "accepted"
+    },
+    {
+      "case": "cancel_not_business_success",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "cancel_R5_rollback",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "normal_trigger_anchor",
+      "passed": true,
+      "observed": [
+        "trigger",
+        null
+      ]
+    },
+    {
+      "case": "normal_trigger_origin_bound",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "normal_trigger_step_complete",
+      "passed": true,
+      "observed": "succeeded"
+    },
+    {
+      "case": "normal_trigger_no_fake_recovery",
+      "passed": true,
+      "observed": 0
+    },
+    {
+      "case": "anchor_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "anchor_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "anchor_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "anchor_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "ready_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "ready_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "ready_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "ready_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "ready_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "submit_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "submit_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "submit_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "submit_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "submit_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "attempt_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "attempt_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "attempt_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "attempt_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "attempt_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "adjudicate_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "adjudicate_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "adjudicate_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "adjudicate_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "adjudicate_cut_5",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "adjudicate_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "terminal_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "terminal_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "terminal_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "terminal_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "terminal_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "anchor_repeat",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "anchor_repeat_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "ready_repeat",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "ready_repeat_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "submit_repeat",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "submit_repeat_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "adjudicate_repeat",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "adjudicate_repeat_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "terminal_repeat",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "terminal_repeat_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "orphan_ready",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "orphan_ready_rollback",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "orphan_submission",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "orphan_submission_rollback",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "orphan_attempt",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "orphan_attempt_rollback",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "orphan_adjudication",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "orphan_adjudication_rollback",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "orphan_terminal",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "orphan_terminal_rollback",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "anchor_authorized",
+      "passed": true,
+      "observed": "forbidden"
+    },
+    {
+      "case": "anchor_authorized_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "anchor_storage_healthy",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "anchor_storage_healthy_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "anchor_current_gates",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "anchor_current_gates_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "anchor_runtime_current",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "anchor_runtime_current_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "ready_authorized",
+      "passed": true,
+      "observed": "forbidden"
+    },
+    {
+      "case": "ready_authorized_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "ready_storage_healthy",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "ready_storage_healthy_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "ready_current_gates",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "ready_current_gates_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "ready_runtime_current",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "ready_runtime_current_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "submit_authorized",
+      "passed": true,
+      "observed": "forbidden"
+    },
+    {
+      "case": "submit_authorized_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "submit_storage_healthy",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "submit_storage_healthy_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "submit_current_gates",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "submit_current_gates_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "submit_runtime_current",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "submit_runtime_current_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_authorized",
+      "passed": true,
+      "observed": "forbidden"
+    },
+    {
+      "case": "attempt_authorized_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_storage_healthy",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "attempt_storage_healthy_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_current_gates",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "attempt_current_gates_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_runtime_current",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "attempt_runtime_current_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "anchor_before_origin_commit",
+      "passed": true,
+      "observed": "origin_commit_unconfirmed"
+    },
+    {
+      "case": "anchor_before_origin_commit_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "ready_dependencies_unknown",
+      "passed": true,
+      "observed": "dependencies"
+    },
+    {
+      "case": "ready_dependencies_unknown_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "submission_identity_changed",
+      "passed": true,
+      "observed": "identity_conflict"
+    },
+    {
+      "case": "submission_identity_changed_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_parameters_verified",
+      "passed": true,
+      "observed": "write_gate"
+    },
+    {
+      "case": "attempt_parameters_verified_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_budget_valid",
+      "passed": true,
+      "observed": "write_gate"
+    },
+    {
+      "case": "attempt_budget_valid_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_window_valid",
+      "passed": true,
+      "observed": "write_gate"
+    },
+    {
+      "case": "attempt_window_valid_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_changed_clock",
+      "passed": true,
+      "observed": "clock_domain"
+    },
+    {
+      "case": "attempt_changed_clock_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_after_pause",
+      "passed": true,
+      "observed": "execution_current"
+    },
+    {
+      "case": "attempt_after_pause_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempt_new_latch",
+      "passed": true,
+      "observed": "latch"
+    },
+    {
+      "case": "attempt_new_latch_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reply_untrusted",
+      "passed": true,
+      "observed": "response_binding"
+    },
+    {
+      "case": "reply_untrusted_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reply_wrong_identity",
+      "passed": true,
+      "observed": "response_binding"
+    },
+    {
+      "case": "reply_wrong_identity_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reply_wrong_receipt_scope",
+      "passed": true,
+      "observed": "receipt_scope"
+    },
+    {
+      "case": "reply_wrong_receipt_scope_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reply_wrong_command_scope",
+      "passed": true,
+      "observed": "command_scope"
+    },
+    {
+      "case": "reply_wrong_command_scope_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "complete_without_evidence",
+      "passed": true,
+      "observed": "completion_evidence"
+    },
+    {
+      "case": "complete_without_evidence_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "cancel_request_not_terminal_evidence",
+      "passed": true,
+      "observed": "terminal_evidence"
+    },
+    {
+      "case": "cancel_request_not_terminal_evidence_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "complete_wrong_command",
+      "passed": true,
+      "observed": "completion_command"
+    },
+    {
+      "case": "complete_wrong_command_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "nonfinal_not_found",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_resend_not_found",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_new_marker_not_found",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "restart_not_found",
+      "passed": true,
+      "observed": "query_original_identity_only"
+    },
+    {
+      "case": "nonfinal_timeout",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_resend_timeout",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_new_marker_timeout",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "restart_timeout",
+      "passed": true,
+      "observed": "query_original_identity_only"
+    },
+    {
+      "case": "nonfinal_temporary_rejection",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_resend_temporary_rejection",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_new_marker_temporary_rejection",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "restart_temporary_rejection",
+      "passed": true,
+      "observed": "query_original_identity_only"
+    },
+    {
+      "case": "nonfinal_rejected_final",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_resend_rejected_final",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "no_new_marker_rejected_final",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "restart_rejected_final",
+      "passed": true,
+      "observed": "query_original_identity_only"
+    },
+    {
+      "case": "durable_rejection",
+      "passed": true,
+      "observed": "rejected"
+    },
+    {
+      "case": "rejected_no_command",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "case": "rejected_no_resend",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "unknown_step_terminal",
+      "passed": true,
+      "observed": "unknown"
+    },
+    {
+      "case": "late_accept_recorded",
+      "passed": true,
+      "observed": "accepted"
+    },
+    {
+      "case": "late_accept_does_not_reopen_step",
+      "passed": true,
+      "observed": [
+        "indeterminate",
+        "unknown"
+      ]
+    },
+    {
+      "case": "unknown_never_rewritten",
+      "passed": true,
+      "observed": "terminal_conflict"
+    },
+    {
+      "case": "crash_after_marker_before_call",
+      "passed": true,
+      "observed": "query_only"
+    },
+    {
+      "case": "crash_lookup_no_writes",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_anchor",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_anchor_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_plan",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_plan_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_ready",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_ready_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_parameters",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_parameters_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_identity",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_identity_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_attempt",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_attempt_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_marker_reset",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_marker_reset_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_adjudication",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_adjudication_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_terminal",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_terminal_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_step_reopen",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_step_reopen_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_accepted_rewrite",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_accepted_rewrite_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "marker_without_attempt",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "marker_without_attempt_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "accepted_without_receipt",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "accepted_without_receipt_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "step_cannot_invent_acceptance",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "step_cannot_invent_acceptance_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "attempted_is_not_accepted",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "attempted_is_not_accepted_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "ready_without_record",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "ready_without_record_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "step_terminal_without_record",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "step_terminal_without_record_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "revision_lexeme_'01'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "revision_lexeme_'01'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "revision_lexeme_'1\\n'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "revision_lexeme_'1\\n'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "revision_lexeme_'1\\x00'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "revision_lexeme_'1\\x00'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "revision_lexeme_'100000000000000000000'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "revision_lexeme_'100000000000000000000'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R5_ACK_is_not_completion",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "R5_pending_rollback_all_tables",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "delay_no_submission",
+      "passed": true,
+      "observed": "not_action"
+    },
+    {
+      "case": "retain_success_no_submission",
+      "passed": true,
+      "observed": "not_action"
+    },
+    {
+      "case": "reconcile_commit_no_submission",
+      "passed": true,
+      "observed": "not_action"
+    },
+    {
+      "case": "reconcile_plan_rejects_action",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "reconcile_step_evidence",
+      "passed": true,
+      "observed": "succeeded"
+    },
+    {
+      "case": "reconcile_R5",
+      "passed": true,
+      "observed": "committed"
+    },
+    {
+      "case": "reconcile_zero_submissions",
+      "passed": true,
+      "observed": 0
+    }
+  ],
+  "artifact_sha256": {
+    "docs/contracts/c04-storage/DISPATCH.md": "d22d90782d7bc929f36b8b42f8e1be7968407b73880e38bd1364fa2a6a76399e",
+    "docs/contracts/c04-storage/dispatch.sql": "8f1548fa1fdf1ded95319273deac429c0be5942bb33c304bf26474d5a2c6e9bc",
+    "docs/contracts/c04-storage/check_dispatch.py": "621cd7ef4e78b2a9578f91e90710a05fa7ea24aace9988f97ecb6f2c9229e03c",
+    "docs/contracts/c04-storage/recovery.sql": "2ab514e81719f0d96642bd6a848f3dedfe7bdffbc2d7b77f3b0b18c2826df613",
+    "docs/contracts/c04-storage/check_recovery.py": "d6fcf79ffcfc2697aad739f17498eeac540e0fc0a25569799f4b6f5cc55dc98a",
+    "docs/contracts/c04-execution/execution.schema.json": "76a31f3d2786f216f3b93efac69ec64a71395b30b1378ae400bbfc5189ed5e89",
+    "docs/rebirth-c04-automation-design.md": "8dd3f4dcd15d3ec66a086e892229339992735c5ea74c3b737aa670d1635eb7da",
+    "docs/rebirth-df04-storage-design.md": "fb40713adf9fb9dd0ec6cb1b40eba2ae0f895db5b2390ad827ec34de048d4bc4"
+  },
+  "runtime_validation": {
+    "http": 0,
+    "ipc": 0,
+    "network_sends": 0,
+    "production_writer": 0,
+    "concurrency": 0,
+    "disk_crash": 0,
+    "devices": 0
+  }
+}

@@ -1,0 +1,3724 @@
+{
+  "all_passed": true,
+  "purpose": "historical_trace_and_gap_reproduction",
+  "source_commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+  "coverage_unit": "function_entry_not_branch_or_rule_proof",
+  "case_counts": {
+    "public": 160,
+    "ipc": 24,
+    "linked": 48,
+    "public_structural_negative": 11,
+    "public_semantic_negative": 6
+  },
+  "source_symbols": [
+    {
+      "id": "SR01",
+      "source": "docs/contracts/validate_contracts.py",
+      "symbol": "contract_errors",
+      "line": 42,
+      "end_line": 87
+    },
+    {
+      "id": "SR02",
+      "source": "docs/contracts/f04-f05/validate_contracts.py",
+      "symbol": "semantic_error",
+      "line": 25,
+      "end_line": 47
+    },
+    {
+      "id": "SR03",
+      "source": "docs/contracts/f04-f05/validate_contracts.py",
+      "symbol": "time_decision",
+      "line": 65,
+      "end_line": 78
+    },
+    {
+      "id": "SR04",
+      "source": "docs/contracts/f06-f07/validate_contracts.py",
+      "symbol": "obs_decision",
+      "line": 21,
+      "end_line": 37
+    },
+    {
+      "id": "SR05",
+      "source": "docs/contracts/f06-f07/validate_contracts.py",
+      "symbol": "proof_decision",
+      "line": 43,
+      "end_line": 50
+    },
+    {
+      "id": "SR06",
+      "source": "docs/contracts/f06-f07/validate_contracts.py",
+      "symbol": "semantic_error",
+      "line": 59,
+      "end_line": 71
+    },
+    {
+      "id": "SR07",
+      "source": "docs/contracts/draft3/validate_contracts.py",
+      "symbol": "semantics",
+      "line": 32,
+      "end_line": 110
+    },
+    {
+      "id": "SR08",
+      "source": "docs/contracts/draft3/validate_contracts.py",
+      "symbol": "definition_digest",
+      "line": 25,
+      "end_line": 29
+    },
+    {
+      "id": "SR09",
+      "source": "docs/contracts/draft3/validate_contracts.py",
+      "symbol": "linked",
+      "line": 113,
+      "end_line": 176
+    },
+    {
+      "id": "SR10",
+      "source": "docs/contracts/draft4/validate_contracts.py",
+      "symbol": "semantics",
+      "line": 45,
+      "end_line": 72
+    },
+    {
+      "id": "SR11",
+      "source": "docs/contracts/draft4/validate_contracts.py",
+      "symbol": "initial_bound",
+      "line": 40,
+      "end_line": 43
+    },
+    {
+      "id": "SR12",
+      "source": "docs/contracts/draft4/validate_contracts.py",
+      "symbol": "time_interval",
+      "line": 74,
+      "end_line": 99
+    },
+    {
+      "id": "SR13",
+      "source": "docs/contracts/draft4/validate_contracts.py",
+      "symbol": "linked",
+      "line": 101,
+      "end_line": 158
+    }
+  ],
+  "cases_entering_group": {
+    "SR01": 177,
+    "SR02": 34,
+    "SR03": 5,
+    "SR04": 3,
+    "SR05": 3,
+    "SR06": 9,
+    "SR07": 177,
+    "SR08": 1,
+    "SR09": 25,
+    "SR10": 177,
+    "SR11": 27,
+    "SR12": 22,
+    "SR13": 48
+  },
+  "case_observations": [
+    {
+      "case_id": "positive-Meta",
+      "group": "public",
+      "model": "Meta",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ClockStatus",
+      "group": "public",
+      "model": "ClockStatus",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-Session",
+      "group": "public",
+      "model": "Session",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RequestContextRequest",
+      "group": "public",
+      "model": "RequestContextRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RequestContext",
+      "group": "public",
+      "model": "RequestContext",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-DevicePage",
+      "group": "public",
+      "model": "DevicePage",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CapabilityCatalog",
+      "group": "public",
+      "model": "CapabilityCatalog",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CatalogUpdate",
+      "group": "public",
+      "model": "CatalogUpdate",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-Observation",
+      "group": "public",
+      "model": "Observation",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-EventEnvelope",
+      "group": "public",
+      "model": "EventEnvelope",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CommandRequest",
+      "group": "public",
+      "model": "CommandRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CommandRecord",
+      "group": "public",
+      "model": "CommandRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CancelRequest",
+      "group": "public",
+      "model": "CancelRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CancelOperation",
+      "group": "public",
+      "model": "CancelOperation",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-AcquireRequest",
+      "group": "public",
+      "model": "AcquireRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ReleaseRequest",
+      "group": "public",
+      "model": "ReleaseRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-TransferRequest",
+      "group": "public",
+      "model": "TransferRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-TransferAcceptRequest",
+      "group": "public",
+      "model": "TransferAcceptRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-TransferOffer",
+      "group": "public",
+      "model": "TransferOffer",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ControlRecord",
+      "group": "public",
+      "model": "ControlRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ControlOperation",
+      "group": "public",
+      "model": "ControlOperation",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-BarrierAck",
+      "group": "public",
+      "model": "BarrierAck",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-GrantUpdate",
+      "group": "public",
+      "model": "GrantUpdate",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RevokeRequest",
+      "group": "public",
+      "model": "RevokeRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-MutationReceipt",
+      "group": "public",
+      "model": "MutationReceipt",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-DefinitionCreate",
+      "group": "public",
+      "model": "DefinitionCreate",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-DraftUpdate",
+      "group": "public",
+      "model": "DraftUpdate",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-PublishRequest",
+      "group": "public",
+      "model": "PublishRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-DefinitionRecord",
+      "group": "public",
+      "model": "DefinitionRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RunCreate",
+      "group": "public",
+      "model": "RunCreate",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RunRecord",
+      "group": "public",
+      "model": "RunRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RunRevisionRequest",
+      "group": "public",
+      "model": "RunRevisionRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RunMutationRequest",
+      "group": "public",
+      "model": "RunMutationRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ArmRequest",
+      "group": "public",
+      "model": "ArmRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ResumeRequest",
+      "group": "public",
+      "model": "ResumeRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-Preflight",
+      "group": "public",
+      "model": "Preflight",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoveryPreview",
+      "group": "public",
+      "model": "RecoveryPreview",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-SubscriptionRequest",
+      "group": "public",
+      "model": "SubscriptionRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-Subscription",
+      "group": "public",
+      "model": "Subscription",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-Snapshot",
+      "group": "public",
+      "model": "Snapshot",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-EventReceipt",
+      "group": "public",
+      "model": "EventReceipt",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CompletionEvidence",
+      "group": "public",
+      "model": "CompletionEvidence",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-DispatchPermit",
+      "group": "public",
+      "model": "DispatchPermit",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-StepDefinition",
+      "group": "public",
+      "model": "StepDefinition",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-Definition",
+      "group": "public",
+      "model": "Definition",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RunGrant",
+      "group": "public",
+      "model": "RunGrant",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RetryPolicy",
+      "group": "public",
+      "model": "RetryPolicy",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-WsFrame",
+      "group": "public",
+      "model": "WsFrame",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-MetaResponse",
+      "group": "public",
+      "model": "MetaResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ClockStatusResponse",
+      "group": "public",
+      "model": "ClockStatusResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-SessionResponse",
+      "group": "public",
+      "model": "SessionResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RequestContextResponse",
+      "group": "public",
+      "model": "RequestContextResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-DevicePageResponse",
+      "group": "public",
+      "model": "DevicePageResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CapabilityCatalogResponse",
+      "group": "public",
+      "model": "CapabilityCatalogResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ObservationResponse",
+      "group": "public",
+      "model": "ObservationResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CommandRecordResponse",
+      "group": "public",
+      "model": "CommandRecordResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CancelOperationResponse",
+      "group": "public",
+      "model": "CancelOperationResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ControlRecordResponse",
+      "group": "public",
+      "model": "ControlRecordResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ControlOperationResponse",
+      "group": "public",
+      "model": "ControlOperationResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-TransferOfferResponse",
+      "group": "public",
+      "model": "TransferOfferResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-MutationReceiptResponse",
+      "group": "public",
+      "model": "MutationReceiptResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-SubscriptionResponse",
+      "group": "public",
+      "model": "SubscriptionResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-SnapshotResponse",
+      "group": "public",
+      "model": "SnapshotResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-EventReceiptResponse",
+      "group": "public",
+      "model": "EventReceiptResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-DefinitionRecordResponse",
+      "group": "public",
+      "model": "DefinitionRecordResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RunRecordResponse",
+      "group": "public",
+      "model": "RunRecordResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-PreflightResponse",
+      "group": "public",
+      "model": "PreflightResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoveryPreviewResponse",
+      "group": "public",
+      "model": "RecoveryPreviewResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ErrorResponse",
+      "group": "public",
+      "model": "ErrorResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-AuthorizationSnapshot",
+      "group": "public",
+      "model": "AuthorizationSnapshot",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-AuthorizationBinding",
+      "group": "public",
+      "model": "AuthorizationBinding",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ExecutionGuard",
+      "group": "public",
+      "model": "ExecutionGuard",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RevocationSelector",
+      "group": "public",
+      "model": "RevocationSelector",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RevocationReceipt",
+      "group": "public",
+      "model": "RevocationReceipt",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RevocationRecord",
+      "group": "public",
+      "model": "RevocationRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ClockSample",
+      "group": "public",
+      "model": "ClockSample",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ClockAssessment",
+      "group": "public",
+      "model": "ClockAssessment",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ScheduleGuard",
+      "group": "public",
+      "model": "ScheduleGuard",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-EventAgeProof",
+      "group": "public",
+      "model": "EventAgeProof",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-WsTicketBinding",
+      "group": "public",
+      "model": "WsTicketBinding",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-AdmissionDecision",
+      "group": "public",
+      "model": "AdmissionDecision",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CapacityProfile",
+      "group": "public",
+      "model": "CapacityProfile",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CatalogBinding",
+      "group": "public",
+      "model": "CatalogBinding",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ObsEvidenceFrame",
+      "group": "public",
+      "model": "ObsEvidenceFrame",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ObsCompletionBundle",
+      "group": "public",
+      "model": "ObsCompletionBundle",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR04",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-EffectFootprint",
+      "group": "public",
+      "model": "EffectFootprint",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-IndependenceProof",
+      "group": "public",
+      "model": "IndependenceProof",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR05",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoverySnapshot",
+      "group": "public",
+      "model": "RecoverySnapshot",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoveryOperation",
+      "group": "public",
+      "model": "RecoveryOperation",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ObsSceneParameters",
+      "group": "public",
+      "model": "ObsSceneParameters",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-PrincipalRef",
+      "group": "public",
+      "model": "PrincipalRef",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-SubjectRecord",
+      "group": "public",
+      "model": "SubjectRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ProofRef",
+      "group": "public",
+      "model": "ProofRef",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ProofActionBinding",
+      "group": "public",
+      "model": "ProofActionBinding",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-BootstrapRequest",
+      "group": "public",
+      "model": "BootstrapRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-LoginRequest",
+      "group": "public",
+      "model": "LoginRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RefreshRequest",
+      "group": "public",
+      "model": "RefreshRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-TokenRequest",
+      "group": "public",
+      "model": "TokenRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-TokenResult",
+      "group": "public",
+      "model": "TokenResult",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-IntrospectRequest",
+      "group": "public",
+      "model": "IntrospectRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-IntrospectResult",
+      "group": "public",
+      "model": "IntrospectResult",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RevocationRequest",
+      "group": "public",
+      "model": "RevocationRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-WsTicketRequest",
+      "group": "public",
+      "model": "WsTicketRequest",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-WsTicketResult",
+      "group": "public",
+      "model": "WsTicketResult",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CapacityStatus",
+      "group": "public",
+      "model": "CapacityStatus",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CapacityUpdate",
+      "group": "public",
+      "model": "CapacityUpdate",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoveryPlanItem",
+      "group": "public",
+      "model": "RecoveryPlanItem",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoveryPlan",
+      "group": "public",
+      "model": "RecoveryPlan",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoveryTarget",
+      "group": "public",
+      "model": "RecoveryTarget",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ResourceReleaseEvidence",
+      "group": "public",
+      "model": "ResourceReleaseEvidence",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-EvidencePage",
+      "group": "public",
+      "model": "EvidencePage",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-SubjectRecordResponse",
+      "group": "public",
+      "model": "SubjectRecordResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-AuthorizationSnapshotResponse",
+      "group": "public",
+      "model": "AuthorizationSnapshotResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-ClockAssessmentResponse",
+      "group": "public",
+      "model": "ClockAssessmentResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RevocationRecordResponse",
+      "group": "public",
+      "model": "RevocationRecordResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-WsTicketResultResponse",
+      "group": "public",
+      "model": "WsTicketResultResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-WsTicketBindingResponse",
+      "group": "public",
+      "model": "WsTicketBindingResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CapacityStatusResponse",
+      "group": "public",
+      "model": "CapacityStatusResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-RecoveryOperationResponse",
+      "group": "public",
+      "model": "RecoveryOperationResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-CatalogBindingResponse",
+      "group": "public",
+      "model": "CatalogBindingResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-EvidencePageResponse",
+      "group": "public",
+      "model": "EvidencePageResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-IndependenceProofResponse",
+      "group": "public",
+      "model": "IndependenceProofResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR05",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-TokenResultResponse",
+      "group": "public",
+      "model": "TokenResultResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "positive-IntrospectResultResponse",
+      "group": "public",
+      "model": "IntrospectResultResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "unknown-cleared-still-paused",
+      "group": "public",
+      "model": "CommandRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "obs-succeeded-linked",
+      "group": "public",
+      "model": "CommandRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR04",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "recovery-all-targets-ready",
+      "group": "public",
+      "model": "RecoveryOperation",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "published-independent-step",
+      "group": "public",
+      "model": "DefinitionRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR05",
+        "SR07",
+        "SR08",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-ClockDomainRef",
+      "group": "public",
+      "model": "ClockDomainRef",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-ClockDomainDescriptor",
+      "group": "public",
+      "model": "ClockDomainDescriptor",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-OsBootIdentity",
+      "group": "public",
+      "model": "OsBootIdentity",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-EvidenceRef",
+      "group": "public",
+      "model": "EvidenceRef",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-ClockSampleRef",
+      "group": "public",
+      "model": "ClockSampleRef",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-TimeProfileRef",
+      "group": "public",
+      "model": "TimeProfileRef",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-TimeBoundProfile",
+      "group": "public",
+      "model": "TimeBoundProfile",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-TimeBoundEvidence",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-UtcAgeBasis",
+      "group": "public",
+      "model": "UtcAgeBasis",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "new-CausalAgeBasis",
+      "group": "public",
+      "model": "CausalAgeBasis",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "response-ClockDomainDescriptor",
+      "group": "public",
+      "model": "ClockDomainDescriptorResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "response-TimeBoundProfile",
+      "group": "public",
+      "model": "TimeBoundProfileResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "response-TimeBoundEvidence",
+      "group": "public",
+      "model": "TimeBoundEvidenceResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "response-ClockSample",
+      "group": "public",
+      "model": "ClockSampleResponse",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "boot-unavailable-with-value",
+      "group": "public",
+      "model": "OsBootIdentity",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "descriptor-unknown-version",
+      "group": "public",
+      "model": "ClockDomainDescriptor",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "descriptor-mutated-runtime",
+      "group": "public",
+      "model": "ClockDomainDescriptor",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": [
+        "descriptor_digest"
+      ]
+    },
+    {
+      "case_id": "descriptor-domain-not-derived",
+      "group": "public",
+      "model": "ClockDomainDescriptor",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": [
+        "descriptor_digest"
+      ]
+    },
+    {
+      "case_id": "old-host-boot-on-sample",
+      "group": "public",
+      "model": "ClockSample",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "sample-sync-no-proof",
+      "group": "public",
+      "model": "ClockSample",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "sample-missing-domain-digest",
+      "group": "public",
+      "model": "ClockSample",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "evidence-negative-delay",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "evidence-utc-as-monotonic",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11"
+      ],
+      "observed_errors": [
+        "time_evidence_digest",
+        "capture_order",
+        "time_bound"
+      ]
+    },
+    {
+      "case_id": "evidence-modified-budget",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11"
+      ],
+      "observed_errors": [
+        "time_evidence_digest",
+        "time_bound"
+      ]
+    },
+    {
+      "case_id": "evidence-zero-underbound-rehashed",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11"
+      ],
+      "observed_errors": [
+        "time_bound"
+      ]
+    },
+    {
+      "case_id": "evidence-unproven-numeric-bound",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "evidence-unproved-source-age",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "evidence-leap-insert",
+      "group": "public",
+      "model": "TimeBoundEvidence",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "profile-tampered",
+      "group": "public",
+      "model": "TimeBoundProfile",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": [
+        "profile_digest"
+      ]
+    },
+    {
+      "case_id": "guard-immediate-with-proof",
+      "group": "public",
+      "model": "ExecutionGuard",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "recovery-no-domain",
+      "group": "public",
+      "model": "RecoverySnapshot",
+      "stage": "structural_rejection",
+      "entered_groups": [],
+      "observed_errors": null
+    },
+    {
+      "case_id": "historical-other-domain-readable",
+      "group": "public",
+      "model": "CommandRecord",
+      "stage": "semantic",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10"
+      ],
+      "observed_errors": []
+    },
+    {
+      "case_id": "ipc-positive-HELLO",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-HELLO_ACK",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-OPEN_GATE",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-OPEN_GATE_ACK",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-DISPATCH",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-SEND_REPORT",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-EVIDENCE_CANDIDATE",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-REPORT_STORED",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-FENCE",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-FENCE_ACK",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-QUERY_BARRIER",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-CLOSE_GATE",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-CLOSE_GATE_ACK",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-GUARD_INSTALL",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-GUARD_ACK",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-AUTH_FENCE",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-AUTH_FENCE_ACK",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-TIME_FENCE",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-positive-TIME_FENCE_ACK",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-obs-candidate",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": true
+    },
+    {
+      "case_id": "ipc-old-version",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": false
+    },
+    {
+      "case_id": "ipc-no-domain",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": false
+    },
+    {
+      "case_id": "ipc-no-new-feature",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": false
+    },
+    {
+      "case_id": "ipc-missing-bootstrap-descriptor",
+      "group": "ipc",
+      "stage": "structural_only",
+      "entered_groups": [],
+      "observed_valid": false
+    },
+    {
+      "case_id": "guard-linked",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "automation-guard-linked",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "scheduled-guard-current",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR03",
+        "SR07",
+        "SR09",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "AUTH_FENCE-complete",
+      "group": "linked",
+      "kind": "fence",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "TIME_FENCE-complete",
+      "group": "linked",
+      "kind": "fence",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "obs-candidate-linked",
+      "group": "linked",
+      "kind": "obs_candidate",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR04",
+        "SR07",
+        "SR09",
+        "SR10",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "recovery-linked",
+      "group": "linked",
+      "kind": "recovery",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR09",
+        "SR10",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "wrong-domain-install",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "wrong-domain-ack",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "wrong-domain-dispatch",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "untrusted-bootstrap",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "old-runtime-new-supervisor",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "scheduled-sample-other-domain",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "scheduled-window-other-domain",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "scheduled-schedule-other-domain",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR03",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "scheduled-profile-not-approved",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR03",
+        "SR07",
+        "SR09",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "scheduled-proof-substituted",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR03",
+        "SR07",
+        "SR09",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "scheduled-sample-substituted",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR03",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "scheduled-evidence-expired",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR02",
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "AUTH_FENCE-complete-old-domain",
+      "group": "linked",
+      "kind": "fence",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "AUTH_FENCE-complete-missing-coverage",
+      "group": "linked",
+      "kind": "fence",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "TIME_FENCE-complete-old-domain",
+      "group": "linked",
+      "kind": "fence",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "TIME_FENCE-complete-missing-coverage",
+      "group": "linked",
+      "kind": "fence",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "recovery-other-runtime",
+      "group": "linked",
+      "kind": "recovery",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR09",
+        "SR10",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "recovery-expired-preview",
+      "group": "linked",
+      "kind": "recovery",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR06",
+        "SR07",
+        "SR09",
+        "SR10",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-bound-linked",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "time-profile-unapproved",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-source-identity-mismatch",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-age-at-limit",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-source-age-at-limit",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-source-age-rehashed-rebound",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-provider-restarted",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-policy-changed",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-tick-backwards",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-offset-needs-own-model",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "time-rational-capture-bound",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "time-outward-rounding-one-ns",
+      "group": "linked",
+      "kind": "time",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "handshake-trusted-domain",
+      "group": "linked",
+      "kind": "handshake",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "handshake-self-signed-not-authorized",
+      "group": "linked",
+      "kind": "handshake",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "handshake-other-supervisor",
+      "group": "linked",
+      "kind": "handshake",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "guard-new-worker-old-permit",
+      "group": "linked",
+      "kind": "guard",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR09",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "cross-service-utc-age",
+      "group": "linked",
+      "kind": "age",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "cross-service-domain-substitution",
+      "group": "linked",
+      "kind": "age",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "cross-service-age-underestimated",
+      "group": "linked",
+      "kind": "age",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "cross-service-stale-evaluation",
+      "group": "linked",
+      "kind": "age",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "assessment-linked-evidence",
+      "group": "linked",
+      "kind": "assessment",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": true
+    },
+    {
+      "case_id": "assessment-narrowed-interval",
+      "group": "linked",
+      "kind": "assessment",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR02",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    },
+    {
+      "case_id": "assessment-other-domain",
+      "group": "linked",
+      "kind": "assessment",
+      "stage": "linked_boolean",
+      "entered_groups": [
+        "SR01",
+        "SR07",
+        "SR10",
+        "SR11",
+        "SR12",
+        "SR13"
+      ],
+      "observed_valid": false
+    }
+  ],
+  "not_in_232": [
+    {
+      "module": "base",
+      "symbol": "strict_loads",
+      "consequence": "232例加载不复验原始wire重复键与字节入口",
+      "entered": false
+    },
+    {
+      "module": "base",
+      "symbol": "validate_trace",
+      "consequence": "接管/命令轨迹不在232计数内",
+      "entered": false
+    },
+    {
+      "module": "f4",
+      "symbol": "denied",
+      "consequence": "精确撤销范围需保留独立历史用例和未来SDK适配",
+      "entered": false
+    },
+    {
+      "module": "f4",
+      "symbol": "fresh",
+      "consequence": "challenge起算的新鲜度模型未被232直接执行",
+      "entered": false
+    },
+    {
+      "module": "f4",
+      "symbol": "age_decision",
+      "consequence": "旧独立年龄向量未执行；draft4另有age关联",
+      "entered": false
+    },
+    {
+      "module": "f4",
+      "symbol": "capacity_decision",
+      "consequence": "容量拒绝决策不等于CapacityProfile结构/预算检查",
+      "entered": false
+    },
+    {
+      "module": "f6",
+      "symbol": "can_continue",
+      "consequence": "失败继续安全类别与门控决策未执行",
+      "entered": false
+    },
+    {
+      "module": "f6",
+      "symbol": "consume_sequence",
+      "consequence": "恢复单次消费串行竞争模型未执行",
+      "entered": false
+    }
+  ],
+  "probes": [
+    {
+      "id": "SP01",
+      "schema_valid": true,
+      "result": "exception",
+      "detail": "KeyError",
+      "fixed": false,
+      "capability_schema_checked": false
+    },
+    {
+      "id": "SP02",
+      "schema_valid": true,
+      "result": "rejected",
+      "detail": [
+        "非空时间窗口反转"
+      ],
+      "fixed": false,
+      "capability_schema_checked": false
+    },
+    {
+      "id": "SP03",
+      "schema_valid": true,
+      "result": "accepted",
+      "detail": null,
+      "fixed": false,
+      "capability_schema_checked": false
+    },
+    {
+      "id": "SP04",
+      "schema_valid": true,
+      "result": "exception",
+      "detail": "KeyError",
+      "fixed": false,
+      "capability_schema_checked": false
+    }
+  ],
+  "exposure": {
+    "counts": {
+      "public_http_roots": 60,
+      "public_with_ws_roots": 62,
+      "public_closure": 166,
+      "internal_roots": 9,
+      "internal_closure": 24,
+      "ipc_external_roots": 15,
+      "ipc_external_closure": 31,
+      "internal_or_ipc_only": 17,
+      "unreferenced": [
+        "AuthorizationSnapshotResponse",
+        "RunGrant"
+      ]
+    },
+    "services": {
+      "controller": {
+        "roots": [
+          "AcquireRequest",
+          "BootstrapRequest",
+          "CancelOperationResponse",
+          "CancelRequest",
+          "CapabilityCatalogResponse",
+          "CapacityStatusResponse",
+          "CapacityUpdate",
+          "CatalogBindingResponse",
+          "ClockAssessmentResponse",
+          "ClockStatusResponse",
+          "CommandRecordResponse",
+          "CommandRequest",
+          "ControlOperationResponse",
+          "ControlRecordResponse",
+          "DevicePageResponse",
+          "ErrorResponse",
+          "EvidencePageResponse",
+          "GrantUpdate",
+          "Id",
+          "LoginRequest",
+          "MetaResponse",
+          "MutationReceiptResponse",
+          "ObservationResponse",
+          "RefreshRequest",
+          "ReleaseRequest",
+          "RequestContextRequest",
+          "RequestContextResponse",
+          "RevocationRecordResponse",
+          "RevocationRequest",
+          "RevokeRequest",
+          "SessionResponse",
+          "SnapshotResponse",
+          "SubjectRecordResponse",
+          "SubscriptionRequest",
+          "SubscriptionResponse",
+          "TokenRequest",
+          "TokenResultResponse",
+          "TransferAcceptRequest",
+          "TransferOfferResponse",
+          "TransferRequest",
+          "WsFrame",
+          "WsTicketBinding",
+          "WsTicketBindingResponse",
+          "WsTicketRequest",
+          "WsTicketResultResponse"
+        ],
+        "closure": [
+          "AcquireRequest",
+          "ActionDescriptor",
+          "Actor",
+          "AdmissionDecision",
+          "Attempt",
+          "BarrierAck",
+          "BootstrapRequest",
+          "CancelDescriptor",
+          "CancelOperation",
+          "CancelOperationResponse",
+          "CancelRequest",
+          "Cancellation",
+          "CapabilityCatalog",
+          "CapabilityCatalogResponse",
+          "CapacityProfile",
+          "CapacityStatus",
+          "CapacityStatusResponse",
+          "CapacityUpdate",
+          "CatalogBinding",
+          "CatalogBindingResponse",
+          "CausalAgeBasis",
+          "ClockAssessment",
+          "ClockAssessmentResponse",
+          "ClockDomainRef",
+          "ClockSampleRef",
+          "ClockStatus",
+          "ClockStatusResponse",
+          "CommandRecord",
+          "CommandRecordResponse",
+          "CommandRequest",
+          "Completion",
+          "CompletionEvidence",
+          "CompletionLevel",
+          "ControlOperation",
+          "ControlOperationResponse",
+          "ControlRecord",
+          "ControlRecordResponse",
+          "ControlTarget",
+          "ControlVersion",
+          "DeviceActionScope",
+          "DeviceDescriptor",
+          "DevicePage",
+          "DevicePageResponse",
+          "Digest",
+          "Dispatch",
+          "Duration",
+          "EffectFootprint",
+          "Error",
+          "ErrorCode",
+          "ErrorResponse",
+          "EventAgeProof",
+          "EventEnvelope",
+          "EvidencePage",
+          "EvidencePageResponse",
+          "EvidenceRef",
+          "GrantBinding",
+          "GrantProposal",
+          "GrantUpdate",
+          "Id",
+          "JsonValue",
+          "LoginRequest",
+          "Meta",
+          "MetaResponse",
+          "MutationReceipt",
+          "MutationReceiptResponse",
+          "ObsCompletionBundle",
+          "ObsEvidenceFrame",
+          "ObsSceneParameters",
+          "Observation",
+          "ObservationResponse",
+          "Payload",
+          "PendingChange",
+          "Platform",
+          "Predicate",
+          "PrincipalRef",
+          "RefreshRequest",
+          "ReleaseRequest",
+          "RequestContext",
+          "RequestContextRequest",
+          "RequestContextResponse",
+          "RequestIdentity",
+          "Resolution",
+          "ResourceReleaseEvidence",
+          "ResourceSet",
+          "RetryDescriptor",
+          "RetryPolicy",
+          "Revision",
+          "RevocationReceipt",
+          "RevocationRecord",
+          "RevocationRecordResponse",
+          "RevocationRequest",
+          "RevocationSelector",
+          "RevokeRequest",
+          "RunBinding",
+          "RunRecord",
+          "SceneRef",
+          "SchemaDescriptor",
+          "Session",
+          "SessionResponse",
+          "Snapshot",
+          "SnapshotResponse",
+          "StepResult",
+          "SubjectRecord",
+          "SubjectRecordResponse",
+          "Subscription",
+          "SubscriptionRequest",
+          "SubscriptionResponse",
+          "TargetApplication",
+          "TimeProfileRef",
+          "Timestamp",
+          "TokenRequest",
+          "TokenResult",
+          "TokenResultResponse",
+          "TransferAcceptRequest",
+          "TransferOffer",
+          "TransferOfferResponse",
+          "TransferRequest",
+          "TransitionRecord",
+          "TriggerDescriptor",
+          "UtcAgeBasis",
+          "Validity",
+          "Version",
+          "WsEvent",
+          "WsFrame",
+          "WsResync",
+          "WsTicketBinding",
+          "WsTicketBindingResponse",
+          "WsTicketRequest",
+          "WsTicketResult",
+          "WsTicketResultResponse"
+        ]
+      },
+      "seamer": {
+        "roots": [
+          "ArmRequest",
+          "CapabilityCatalogResponse",
+          "CapacityStatusResponse",
+          "CapacityUpdate",
+          "CatalogUpdate",
+          "ClockAssessmentResponse",
+          "ClockStatusResponse",
+          "DefinitionCreate",
+          "DefinitionRecordResponse",
+          "DraftUpdate",
+          "ErrorResponse",
+          "EventEnvelope",
+          "EventReceiptResponse",
+          "Id",
+          "IndependenceProofResponse",
+          "MetaResponse",
+          "MutationReceiptResponse",
+          "PreflightResponse",
+          "PublishRequest",
+          "RecoveryOperationResponse",
+          "RecoveryPreviewResponse",
+          "RequestContextRequest",
+          "RequestContextResponse",
+          "ResumeRequest",
+          "RevocationRecordResponse",
+          "RevocationRequest",
+          "RunCreate",
+          "RunMutationRequest",
+          "RunRecordResponse",
+          "RunRevisionRequest",
+          "SessionResponse",
+          "SnapshotResponse",
+          "SubjectRecordResponse",
+          "SubscriptionRequest",
+          "SubscriptionResponse",
+          "WsFrame",
+          "WsTicketBinding",
+          "WsTicketBindingResponse",
+          "WsTicketRequest",
+          "WsTicketResultResponse"
+        ],
+        "closure": [
+          "ActionDescriptor",
+          "ActionRef",
+          "Actor",
+          "AdmissionDecision",
+          "ArmRequest",
+          "Attempt",
+          "CancelDescriptor",
+          "Cancellation",
+          "CapabilityCatalog",
+          "CapabilityCatalogResponse",
+          "CapacityProfile",
+          "CapacityStatus",
+          "CapacityStatusResponse",
+          "CapacityUpdate",
+          "CatalogUpdate",
+          "CausalAgeBasis",
+          "CheckResult",
+          "ClockAssessment",
+          "ClockAssessmentResponse",
+          "ClockDomainRef",
+          "ClockSampleRef",
+          "ClockStatus",
+          "ClockStatusResponse",
+          "CommandRecord",
+          "Completion",
+          "CompletionEvidence",
+          "CompletionLevel",
+          "ControlRecord",
+          "ControlVersion",
+          "Definition",
+          "DefinitionCreate",
+          "DefinitionRecord",
+          "DefinitionRecordResponse",
+          "DeviceDescriptor",
+          "Digest",
+          "Dispatch",
+          "DraftUpdate",
+          "Duration",
+          "EffectFootprint",
+          "Error",
+          "ErrorCode",
+          "ErrorResponse",
+          "EventAgeProof",
+          "EventEnvelope",
+          "EventReceipt",
+          "EventReceiptResponse",
+          "EvidenceRef",
+          "GrantBinding",
+          "Id",
+          "IndependenceProof",
+          "IndependenceProofResponse",
+          "JsonValue",
+          "Meta",
+          "MetaResponse",
+          "MutationReceipt",
+          "MutationReceiptResponse",
+          "ObsCompletionBundle",
+          "ObsEvidenceFrame",
+          "Observation",
+          "Payload",
+          "PendingChange",
+          "Platform",
+          "Predicate",
+          "Preflight",
+          "PreflightResponse",
+          "PrincipalRef",
+          "ProofActionBinding",
+          "ProofRef",
+          "PublishRequest",
+          "RecoveryOperation",
+          "RecoveryOperationResponse",
+          "RecoveryPlan",
+          "RecoveryPlanItem",
+          "RecoveryPreview",
+          "RecoveryPreviewResponse",
+          "RecoverySnapshot",
+          "RecoveryTarget",
+          "RequestContext",
+          "RequestContextRequest",
+          "RequestContextResponse",
+          "RequestIdentity",
+          "RequiredStep",
+          "Resolution",
+          "ResourceReleaseEvidence",
+          "ResourceSet",
+          "ResumeRequest",
+          "RetryDescriptor",
+          "RetryPolicy",
+          "Revision",
+          "RevocationReceipt",
+          "RevocationRecord",
+          "RevocationRecordResponse",
+          "RevocationRequest",
+          "RevocationSelector",
+          "RunBinding",
+          "RunCreate",
+          "RunMutationRequest",
+          "RunRecord",
+          "RunRecordResponse",
+          "RunRevisionRequest",
+          "SchemaDescriptor",
+          "Session",
+          "SessionResponse",
+          "Snapshot",
+          "SnapshotResponse",
+          "StepDefinition",
+          "StepGroup",
+          "StepResult",
+          "SubjectRecord",
+          "SubjectRecordResponse",
+          "Subscription",
+          "SubscriptionRequest",
+          "SubscriptionResponse",
+          "TargetApplication",
+          "TimeProfileRef",
+          "Timestamp",
+          "TransitionDefinition",
+          "TransitionRecord",
+          "TriggerBinding",
+          "TriggerDescriptor",
+          "UtcAgeBasis",
+          "Validity",
+          "Version",
+          "WsEvent",
+          "WsFrame",
+          "WsResync",
+          "WsTicketBinding",
+          "WsTicketBindingResponse",
+          "WsTicketRequest",
+          "WsTicketResult",
+          "WsTicketResultResponse"
+        ]
+      }
+    },
+    "public_roots": [
+      "AcquireRequest",
+      "ArmRequest",
+      "BootstrapRequest",
+      "CancelOperationResponse",
+      "CancelRequest",
+      "CapabilityCatalogResponse",
+      "CapacityStatusResponse",
+      "CapacityUpdate",
+      "CatalogBindingResponse",
+      "CatalogUpdate",
+      "ClockAssessmentResponse",
+      "ClockStatusResponse",
+      "CommandRecordResponse",
+      "CommandRequest",
+      "ControlOperationResponse",
+      "ControlRecordResponse",
+      "DefinitionCreate",
+      "DefinitionRecordResponse",
+      "DevicePageResponse",
+      "DraftUpdate",
+      "ErrorResponse",
+      "EventEnvelope",
+      "EventReceiptResponse",
+      "EvidencePageResponse",
+      "GrantUpdate",
+      "Id",
+      "IndependenceProofResponse",
+      "LoginRequest",
+      "MetaResponse",
+      "MutationReceiptResponse",
+      "ObservationResponse",
+      "PreflightResponse",
+      "PublishRequest",
+      "RecoveryOperationResponse",
+      "RecoveryPreviewResponse",
+      "RefreshRequest",
+      "ReleaseRequest",
+      "RequestContextRequest",
+      "RequestContextResponse",
+      "ResumeRequest",
+      "RevocationRecordResponse",
+      "RevocationRequest",
+      "RevokeRequest",
+      "RunCreate",
+      "RunMutationRequest",
+      "RunRecordResponse",
+      "RunRevisionRequest",
+      "SessionResponse",
+      "SnapshotResponse",
+      "SubjectRecordResponse",
+      "SubscriptionRequest",
+      "SubscriptionResponse",
+      "TokenRequest",
+      "TokenResultResponse",
+      "TransferAcceptRequest",
+      "TransferOfferResponse",
+      "TransferRequest",
+      "WsFrame",
+      "WsTicketBinding",
+      "WsTicketBindingResponse",
+      "WsTicketRequest",
+      "WsTicketResultResponse"
+    ],
+    "internal_roots": [
+      "ClockDomainDescriptorResponse",
+      "ClockSampleResponse",
+      "ErrorResponse",
+      "Id",
+      "IntrospectRequest",
+      "IntrospectResultResponse",
+      "Revision",
+      "TimeBoundEvidenceResponse",
+      "TimeBoundProfileResponse"
+    ],
+    "ipc_external_roots": [
+      "BarrierAck",
+      "ClockDomainDescriptor",
+      "ClockSample",
+      "CommandRequest",
+      "Digest",
+      "DispatchPermit",
+      "ExecutionGuard",
+      "Id",
+      "ObsEvidenceFrame",
+      "Payload",
+      "Revision",
+      "RevocationSelector",
+      "ScheduleGuard",
+      "TimeBoundEvidence",
+      "TimeBoundProfile"
+    ],
+    "public_closure": [
+      "AcquireRequest",
+      "ActionDescriptor",
+      "ActionRef",
+      "Actor",
+      "AdmissionDecision",
+      "ArmRequest",
+      "Attempt",
+      "BarrierAck",
+      "BootstrapRequest",
+      "CancelDescriptor",
+      "CancelOperation",
+      "CancelOperationResponse",
+      "CancelRequest",
+      "Cancellation",
+      "CapabilityCatalog",
+      "CapabilityCatalogResponse",
+      "CapacityProfile",
+      "CapacityStatus",
+      "CapacityStatusResponse",
+      "CapacityUpdate",
+      "CatalogBinding",
+      "CatalogBindingResponse",
+      "CatalogUpdate",
+      "CausalAgeBasis",
+      "CheckResult",
+      "ClockAssessment",
+      "ClockAssessmentResponse",
+      "ClockDomainRef",
+      "ClockSampleRef",
+      "ClockStatus",
+      "ClockStatusResponse",
+      "CommandRecord",
+      "CommandRecordResponse",
+      "CommandRequest",
+      "Completion",
+      "CompletionEvidence",
+      "CompletionLevel",
+      "ControlOperation",
+      "ControlOperationResponse",
+      "ControlRecord",
+      "ControlRecordResponse",
+      "ControlTarget",
+      "ControlVersion",
+      "Definition",
+      "DefinitionCreate",
+      "DefinitionRecord",
+      "DefinitionRecordResponse",
+      "DeviceActionScope",
+      "DeviceDescriptor",
+      "DevicePage",
+      "DevicePageResponse",
+      "Digest",
+      "Dispatch",
+      "DraftUpdate",
+      "Duration",
+      "EffectFootprint",
+      "Error",
+      "ErrorCode",
+      "ErrorResponse",
+      "EventAgeProof",
+      "EventEnvelope",
+      "EventReceipt",
+      "EventReceiptResponse",
+      "EvidencePage",
+      "EvidencePageResponse",
+      "EvidenceRef",
+      "GrantBinding",
+      "GrantProposal",
+      "GrantUpdate",
+      "Id",
+      "IndependenceProof",
+      "IndependenceProofResponse",
+      "JsonValue",
+      "LoginRequest",
+      "Meta",
+      "MetaResponse",
+      "MutationReceipt",
+      "MutationReceiptResponse",
+      "ObsCompletionBundle",
+      "ObsEvidenceFrame",
+      "ObsSceneParameters",
+      "Observation",
+      "ObservationResponse",
+      "Payload",
+      "PendingChange",
+      "Platform",
+      "Predicate",
+      "Preflight",
+      "PreflightResponse",
+      "PrincipalRef",
+      "ProofActionBinding",
+      "ProofRef",
+      "PublishRequest",
+      "RecoveryOperation",
+      "RecoveryOperationResponse",
+      "RecoveryPlan",
+      "RecoveryPlanItem",
+      "RecoveryPreview",
+      "RecoveryPreviewResponse",
+      "RecoverySnapshot",
+      "RecoveryTarget",
+      "RefreshRequest",
+      "ReleaseRequest",
+      "RequestContext",
+      "RequestContextRequest",
+      "RequestContextResponse",
+      "RequestIdentity",
+      "RequiredStep",
+      "Resolution",
+      "ResourceReleaseEvidence",
+      "ResourceSet",
+      "ResumeRequest",
+      "RetryDescriptor",
+      "RetryPolicy",
+      "Revision",
+      "RevocationReceipt",
+      "RevocationRecord",
+      "RevocationRecordResponse",
+      "RevocationRequest",
+      "RevocationSelector",
+      "RevokeRequest",
+      "RunBinding",
+      "RunCreate",
+      "RunMutationRequest",
+      "RunRecord",
+      "RunRecordResponse",
+      "RunRevisionRequest",
+      "SceneRef",
+      "SchemaDescriptor",
+      "Session",
+      "SessionResponse",
+      "Snapshot",
+      "SnapshotResponse",
+      "StepDefinition",
+      "StepGroup",
+      "StepResult",
+      "SubjectRecord",
+      "SubjectRecordResponse",
+      "Subscription",
+      "SubscriptionRequest",
+      "SubscriptionResponse",
+      "TargetApplication",
+      "TimeProfileRef",
+      "Timestamp",
+      "TokenRequest",
+      "TokenResult",
+      "TokenResultResponse",
+      "TransferAcceptRequest",
+      "TransferOffer",
+      "TransferOfferResponse",
+      "TransferRequest",
+      "TransitionDefinition",
+      "TransitionRecord",
+      "TriggerBinding",
+      "TriggerDescriptor",
+      "UtcAgeBasis",
+      "Validity",
+      "Version",
+      "WsEvent",
+      "WsFrame",
+      "WsResync",
+      "WsTicketBinding",
+      "WsTicketBindingResponse",
+      "WsTicketRequest",
+      "WsTicketResult",
+      "WsTicketResultResponse"
+    ],
+    "internal_closure": [
+      "AuthorizationSnapshot",
+      "ClockDomainDescriptor",
+      "ClockDomainDescriptorResponse",
+      "ClockSample",
+      "ClockSampleResponse",
+      "Digest",
+      "Error",
+      "ErrorCode",
+      "ErrorResponse",
+      "EvidenceRef",
+      "Id",
+      "IntrospectRequest",
+      "IntrospectResult",
+      "IntrospectResultResponse",
+      "JsonValue",
+      "OsBootIdentity",
+      "Payload",
+      "Revision",
+      "TimeBoundEvidence",
+      "TimeBoundEvidenceResponse",
+      "TimeBoundProfile",
+      "TimeBoundProfileResponse",
+      "TimeProfileRef",
+      "Timestamp"
+    ],
+    "ipc_external_closure": [
+      "AuthorizationBinding",
+      "BarrierAck",
+      "ClockDomainDescriptor",
+      "ClockSample",
+      "ClockSampleRef",
+      "CommandRequest",
+      "CompletionLevel",
+      "ControlVersion",
+      "Digest",
+      "Dispatch",
+      "DispatchPermit",
+      "Duration",
+      "EvidenceRef",
+      "ExecutionGuard",
+      "Id",
+      "JsonValue",
+      "ObsEvidenceFrame",
+      "ObsSceneParameters",
+      "OsBootIdentity",
+      "Payload",
+      "Predicate",
+      "Revision",
+      "RevocationSelector",
+      "RunBinding",
+      "SceneRef",
+      "ScheduleGuard",
+      "TimeBoundEvidence",
+      "TimeBoundProfile",
+      "TimeProfileRef",
+      "Timestamp",
+      "Version"
+    ],
+    "internal_or_ipc_only": [
+      "AuthorizationBinding",
+      "AuthorizationSnapshot",
+      "ClockDomainDescriptor",
+      "ClockDomainDescriptorResponse",
+      "ClockSample",
+      "ClockSampleResponse",
+      "DispatchPermit",
+      "ExecutionGuard",
+      "IntrospectRequest",
+      "IntrospectResult",
+      "IntrospectResultResponse",
+      "OsBootIdentity",
+      "ScheduleGuard",
+      "TimeBoundEvidence",
+      "TimeBoundEvidenceResponse",
+      "TimeBoundProfile",
+      "TimeBoundProfileResponse"
+    ],
+    "unreferenced": [
+      "AuthorizationSnapshotResponse",
+      "RunGrant"
+    ],
+    "exports_approved": false,
+    "open_payload_content_inspected": false
+  },
+  "projection_references_checked": 13,
+  "projection_algorithms_executed_from_map": false,
+  "runtime_tests_executed": 0,
+  "sdk_semantics_implemented": false,
+  "input_sha256": {
+    "docs/contracts/build_contracts.py": "7a29c0f764455394711cac6d598185418c15e11563f55812ed41b7c0fec8d21a",
+    "docs/contracts/build_examples.py": "ea525e24705cf71b7ac4181f566e5d6108df32384376019218e837890dd26423",
+    "docs/contracts/df01-source/audit_semantic_trace.py": "37ef4b3720da491d8cd54bb6f94d7f23a5b4c88a47cb1eee11d0ebeb95038f8d",
+    "docs/contracts/df01-source/digest-projection-map.json": "97d61bef89513bff3dde0d1f069fcf3247c251c721a46123bf2143030fd729f8",
+    "docs/contracts/df01-source/semantic-trace-map.json": "d45977b048adac84f34d6f7d412aef0378fa0a7f399d7cb5a63e1b053a46cd91",
+    "docs/contracts/draft3/build_contracts.py": "5dcaa5d118a1b38bfdbf309da99789cae780fca85010ca267176875617edef3d",
+    "docs/contracts/draft3/build_examples.py": "837f6fb31f9c8899a3d8af58ac88f85e0c79317e9ec4e9d077c6ebb39b67562d",
+    "docs/contracts/draft3/controller.openapi.json": "521ac7a8e4e99ea36bf5a22b253cb992d43ddd5f9681b09d560d42264326da1c",
+    "docs/contracts/draft3/examples.json": "b0024a140d375f6b2bd52e9173230298a7a566fc0197f9c7b9ad12d65409dbf0",
+    "docs/contracts/draft3/first-loop.schema.json": "3fc907e803938b1763d4ebfbd3b3c76f4efdd2450466f92c49eb205f8ef8a35c",
+    "docs/contracts/draft3/ipc.schema.json": "95b254bbb804cf451a9bbb857e1f09a62b3c0d47d51b5f4de2313be8670ac498",
+    "docs/contracts/draft3/routes.json": "87279131a1d2df5392cb96e2ef9850dceea0f692909bf51adc68d494632f317c",
+    "docs/contracts/draft3/seamer.openapi.json": "724f5cd8dfe39f0e4ef3dc84b2c2bca25772643cbaa6a003250fe6ce2c4c6442",
+    "docs/contracts/draft3/validate_contracts.py": "92ffcad6708576b11b688a2528684558d5727663a83a9b7af20ff4379b583fec",
+    "docs/contracts/draft4/README.md": "b9ee6de86e28e20e477505bd93677d2aaffba5690e8f0e48db777e2b00e3f33f",
+    "docs/contracts/draft4/build_contracts.py": "8054a84318d99d01321ab50dee3ee905ed24c8003fc9d4f781b2ddfe40586e19",
+    "docs/contracts/draft4/build_examples.py": "37372922fc487ab65817dc3f325fbbf805872ec3cda162f267c4d5a759951482",
+    "docs/contracts/draft4/controller.openapi.json": "a417617c7a88e4c8d7ac1af1b8abae1656db16f72590a8c4b5a46edfe2abe868",
+    "docs/contracts/draft4/examples.json": "8f08c2bf8fca80db323b3a5017e8d950a3a97f9611127bf08e1088a7f4d20f1c",
+    "docs/contracts/draft4/first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/draft4/ipc.schema.json": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705",
+    "docs/contracts/draft4/routes.json": "151ce96b802c9f4163e1fe91e62b21320fa0752fab1715a2e42794d3cf966d67",
+    "docs/contracts/draft4/seamer.openapi.json": "9aa33dfe3245c4eb8ec66f6d8418d421c90fbe0136e0d98d2c5c996b7f83afbe",
+    "docs/contracts/draft4/validate_contracts.py": "a867a11e959fdddd44b7918339e303aaaaa772fde0b2bcc73afa12ca30620b27",
+    "docs/contracts/draft4/validation-report.json": "12f171a1de651078cd73404b5a7caf7eda9ea4f24a19144b7ac3c474bf643d6c",
+    "docs/contracts/f02-f03/build_cases.py": "3f54512ec77f91ae0fa580fe77be628712fb9931c652176c1f635470101d9c1a",
+    "docs/contracts/f02-f03/build_ipc.py": "47c06d25fb3f9d54dab5f454f7d742d285d42e3d8a832fd78b377e6434d715d9",
+    "docs/contracts/f02-f03/validate_ipc.py": "1e77fe74bb75cf0ae8e273ea1a41a4ae7138e448906a532229c40b6061ea54dd",
+    "docs/contracts/f04-f05/build_cases.py": "3433cb017f8b7f74c17e12443b32024cc027765239a7959789865bfeeacf9e5b",
+    "docs/contracts/f04-f05/build_contracts.py": "5109792f07f212a80c84619c15678dc2532ddc832faf726ce7313981a32d1e98",
+    "docs/contracts/f04-f05/simulation-profile.json": "633d082e12ff250e766bd04b4bdbf7f6c85511c18640fc4bae45f02c9679dd61",
+    "docs/contracts/f04-f05/validate_contracts.py": "9c2aba6c1c1f63bbfe3ff192c45826d916a437002358a3370ae22087a55114fd",
+    "docs/contracts/f06-f07/build_cases.py": "690a312d855cfbeb6fd63c269c59dde2a9212b05cf2f7278e43d1e33f4aa59cd",
+    "docs/contracts/f06-f07/build_contracts.py": "f74991aac53bd4d933cb94042cad3fa25eda02ce9c35028279c30e75ee7c4c98",
+    "docs/contracts/f06-f07/validate_contracts.py": "4a7b932d11750375fc6ff65e56e128123e986593ac24fbebc1d879deedd7e6a9",
+    "docs/contracts/validate_contracts.py": "353a2063a784558ecdb61a482d5659e5a6580a1bba52b0da03a568ab121ec56b",
+    "docs/rebirth-draft4-review.md": "b16519a15e16a4c239957efb9a3c83e7f42dd50470190d88c1006b99261e0656"
+  }
+}

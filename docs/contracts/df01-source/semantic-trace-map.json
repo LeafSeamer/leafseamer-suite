@@ -1,0 +1,242 @@
+{
+  "version": "df01-semantic-trace/1",
+  "purpose": "design_reference_only",
+  "authority_switched": false,
+  "source_commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+  "coverage_unit": "function_entry_not_branch_or_rule_proof",
+  "modules": {
+    "base": "docs/contracts/validate_contracts.py",
+    "f4": "docs/contracts/f04-f05/validate_contracts.py",
+    "f6": "docs/contracts/f06-f07/validate_contracts.py",
+    "d3": "docs/contracts/draft3/validate_contracts.py",
+    "d4": "docs/contracts/draft4/validate_contracts.py"
+  },
+  "groups": [
+    {
+      "id": "SR01",
+      "module": "base",
+      "symbol": "contract_errors",
+      "responsibility": "窗口、上下文TTL、动态Schema/摘要、完成等级、接管、状态机和命令基本一致性",
+      "boundary": "递归按字段形状识别；不是模型路径分派"
+    },
+    {
+      "id": "SR02",
+      "module": "f4",
+      "symbol": "semantic_error",
+      "responsibility": "授权期限、时间区间、年龄、守卫摘要、容量预算及撤销回执一致性",
+      "boundary": "由draft3字段集合转派；函数进入不能证明每个model分支覆盖"
+    },
+    {
+      "id": "SR03",
+      "module": "f4",
+      "symbol": "time_decision",
+      "responsibility": "旧排期门控的锁存、域、代、新鲜度及UTC区间",
+      "boundary": "draft3 guard路径仍先执行；与draft4新时间链共同限制"
+    },
+    {
+      "id": "SR04",
+      "module": "f6",
+      "symbol": "obs_decision",
+      "responsibility": "OBS四帧身份、顺序、请求、ACK、谓词、期限、目录与耐久前提",
+      "boundary": "信任标志来自夹具，不证明设备或数据库"
+    },
+    {
+      "id": "SR05",
+      "module": "f6",
+      "symbol": "proof_decision",
+      "responsibility": "完整足迹、控制依赖及资源路径重叠判定",
+      "boundary": "图与足迹是输入前提，不生成真实完整依赖图"
+    },
+    {
+      "id": "SR06",
+      "module": "f6",
+      "symbol": "semantic_error",
+      "responsibility": "目录唯一性、预览摘要/期限、恢复revision及OBS/证明的分派",
+      "boundary": "当前draft3只转派RecoverySnapshot与RecoveryOperation；目录分支未接入"
+    },
+    {
+      "id": "SR07",
+      "module": "d3",
+      "symbol": "semantics",
+      "responsibility": "七个F04模型及事件、足迹、OBS、证明、恢复、命令和发布对象一致性",
+      "boundary": "先复制并清理null窗口再调base；递归键集合可能误识别开放数据"
+    },
+    {
+      "id": "SR08",
+      "module": "d3",
+      "symbol": "definition_digest",
+      "responsibility": "旧定义摘要排除含step_id对象的independence_proof",
+      "boundary": "递归删除会误伤开放参数同名字段，下一版须按步骤路径修订"
+    },
+    {
+      "id": "SR09",
+      "module": "d3",
+      "symbol": "linked",
+      "responsibility": "恢复、OBS候选、授权守卫与完整屏障账本关联",
+      "boundary": "未匹配kind走屏障分支；这是离线夹具分派，不是外部API入口"
+    },
+    {
+      "id": "SR10",
+      "module": "d4",
+      "symbol": "semantics",
+      "responsibility": "运行域摘要、时间profile/evidence、屏障、OBS/attempt及事件年龄绑定",
+      "boundary": "继承旧规则并递归扫描；Schema合法不保证此函数不会因误识别抛异常"
+    },
+    {
+      "id": "SR11",
+      "module": "d4",
+      "symbol": "initial_bound",
+      "responsibility": "条件误差界使用精确有理数且向外舍入",
+      "boundary": "计算正确性依赖输入证据和批准profile，不建立授时权威"
+    },
+    {
+      "id": "SR12",
+      "module": "d4",
+      "symbol": "time_interval",
+      "responsibility": "完整时间链、来源年龄、采样跨度、批准域及误差界",
+      "boundary": "trusted_domain/active_time_state/approved_profile_digests由夹具提供"
+    },
+    {
+      "id": "SR13",
+      "module": "d4",
+      "symbol": "linked",
+      "responsibility": "时间、评估、跨服务年龄、握手和旧关联的运行域扩展",
+      "boundary": "除时间分支外要求bootstrap_authenticated；布尔值不是认证实现"
+    }
+  ],
+  "helpers": {
+    "base": [
+      "walk"
+    ],
+    "f4": [
+      "timestamp"
+    ],
+    "f6": [
+      "digest",
+      "overlaps"
+    ],
+    "d3": [
+      "digest",
+      "walk"
+    ],
+    "d4": [
+      "domain",
+      "same",
+      "unsigned",
+      "profile_ref",
+      "evidence_ref",
+      "sample_ref"
+    ]
+  },
+  "not_in_232": [
+    {
+      "module": "base",
+      "symbol": "strict_loads",
+      "consequence": "232例加载不复验原始wire重复键与字节入口"
+    },
+    {
+      "module": "base",
+      "symbol": "validate_trace",
+      "consequence": "接管/命令轨迹不在232计数内"
+    },
+    {
+      "module": "f4",
+      "symbol": "denied",
+      "consequence": "精确撤销范围需保留独立历史用例和未来SDK适配"
+    },
+    {
+      "module": "f4",
+      "symbol": "fresh",
+      "consequence": "challenge起算的新鲜度模型未被232直接执行"
+    },
+    {
+      "module": "f4",
+      "symbol": "age_decision",
+      "consequence": "旧独立年龄向量未执行；draft4另有age关联"
+    },
+    {
+      "module": "f4",
+      "symbol": "capacity_decision",
+      "consequence": "容量拒绝决策不等于CapacityProfile结构/预算检查"
+    },
+    {
+      "module": "f6",
+      "symbol": "can_continue",
+      "consequence": "失败继续安全类别与门控决策未执行"
+    },
+    {
+      "module": "f6",
+      "symbol": "consume_sequence",
+      "consequence": "恢复单次消费串行竞争模型未执行"
+    }
+  ],
+  "historical_case_counts": {
+    "public": 160,
+    "ipc": 24,
+    "linked": 48,
+    "public_structural_negative": 11,
+    "public_semantic_negative": 6
+  },
+  "exposure_expected": {
+    "public_http_roots": 60,
+    "public_with_ws_roots": 62,
+    "public_closure": 166,
+    "internal_roots": 9,
+    "internal_closure": 24,
+    "ipc_external_roots": 15,
+    "ipc_external_closure": 31,
+    "internal_or_ipc_only": 17,
+    "unreferenced": [
+      "AuthorizationSnapshotResponse",
+      "RunGrant"
+    ]
+  },
+  "probes": [
+    {
+      "id": "SP01",
+      "model": "CommandRequest",
+      "fixture_id": "positive-CommandRequest",
+      "mutation": "descriptor_shaped_payload",
+      "expected_schema_valid": true,
+      "expected_result": "exception",
+      "expected_detail": "KeyError",
+      "planned_next_policy": "开放参数仅由绑定能力Schema校验，不作为运行域对象"
+    },
+    {
+      "id": "SP02",
+      "model": "CommandRequest",
+      "fixture_id": "positive-CommandRequest",
+      "mutation": "window_shaped_payload",
+      "expected_schema_valid": true,
+      "expected_result": "rejected",
+      "expected_detail": "非空时间窗口反转",
+      "planned_next_policy": "普通业务同名字段不触发协议窗口规则"
+    },
+    {
+      "id": "SP03",
+      "model": "CatalogBinding",
+      "fixture_id": "positive-CatalogBinding",
+      "mutation": "duplicate_scene_identity",
+      "expected_schema_valid": true,
+      "expected_result": "accepted",
+      "expected_detail": null,
+      "planned_next_policy": "显式挂接目录身份唯一性规则；接受集合收窄另版修订"
+    },
+    {
+      "id": "SP04",
+      "model": "CommandRequest",
+      "fixture_id": "positive-CommandRequest",
+      "mutation": "state_machine_shaped_payload",
+      "expected_schema_valid": true,
+      "expected_result": "exception",
+      "expected_detail": "KeyError",
+      "planned_next_policy": "模型分派不以任意嵌套kind触发"
+    }
+  ],
+  "limitations": [
+    "函数进入不证明分支、拒绝原因或安全语义已完整覆盖",
+    "本表不包含生产语义实现，不批准SDK切换",
+    "公开模型闭包是静态形状可达性，不意味着匿名权限或运行访问许可",
+    "原232用例及draft4字节不改；新探针独立计数"
+  ]
+}

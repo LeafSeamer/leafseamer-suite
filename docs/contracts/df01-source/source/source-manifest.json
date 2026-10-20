@@ -1,0 +1,60 @@
+{
+  "purpose": "draft4-equivalence-candidate",
+  "authority_switched": false,
+  "source_repository": "leafseamer-suite",
+  "source_commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+  "source_directory": "docs/contracts/draft4",
+  "public_protocol": "1.0.0-draft.4",
+  "ipc_protocol": "ipc/0.3.0-draft.1",
+  "license_provenance_paths": [
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSES/legacy-MIT.txt"
+  ],
+  "files": [
+    {
+      "path": "public.schema.json",
+      "sha256": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+    },
+    {
+      "path": "ipc.schema.json",
+      "sha256": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705"
+    },
+    {
+      "path": "fixtures.json",
+      "sha256": "8f08c2bf8fca80db323b3a5017e8d950a3a97f9611127bf08e1088a7f4d20f1c"
+    },
+    {
+      "path": "http/controller.operations.json",
+      "sha256": "603e6f3555fd19e76761bbb0dbe808dbd880036dbe119b11f3f98c2009eb72cb"
+    },
+    {
+      "path": "http/seamer.operations.json",
+      "sha256": "3840cca04f99c00942897a42b08293db8727d93c0c1151d10ff339376a188136"
+    },
+    {
+      "path": "route-projection.json",
+      "sha256": "c2502e277535ec3d03e737328997559b8dc7a8ce7f10555ff8b3bd4c0c4dd221"
+    },
+    {
+      "path": "schema-registry.json",
+      "sha256": "2cf3310a339b47e5285f35dc75fd0bc2bb58098dca295dee23746e56478e67bc"
+    }
+  ],
+  "expected_outputs": {
+    "first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "ipc.schema.json": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705",
+    "controller.openapi.json": "a417617c7a88e4c8d7ac1af1b8abae1656db16f72590a8c4b5a46edfe2abe868",
+    "seamer.openapi.json": "9aa33dfe3245c4eb8ec66f6d8418d421c90fbe0136e0d98d2c5c996b7f83afbe",
+    "routes.json": "151ce96b802c9f4163e1fe91e62b21320fa0752fab1715a2e42794d3cf966d67",
+    "examples.json": "8f08c2bf8fca80db323b3a5017e8d950a3a97f9611127bf08e1088a7f4d20f1c"
+  },
+  "not_extracted": [
+    "semantic_rule_implementations",
+    "digest_projections",
+    "wire_profiles",
+    "public_internal_export_policy",
+    "typescript_sdk",
+    "production_toolchain_lock"
+  ]
+}

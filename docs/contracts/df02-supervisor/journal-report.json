@@ -1,0 +1,525 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "runtime_approved": false,
+  "checks": [
+    {
+      "name": "完整15表",
+      "expected": [
+        "admission_receipt",
+        "bootstrap_challenge",
+        "control_scope",
+        "creation_attempt",
+        "current_fence",
+        "fence_item",
+        "fence_snapshot",
+        "journal_meta",
+        "launch_deny",
+        "launch_intent",
+        "launch_state",
+        "os_observation",
+        "retirement_evidence",
+        "retirement_target",
+        "runtime"
+      ],
+      "observed": [
+        "admission_receipt",
+        "bootstrap_challenge",
+        "control_scope",
+        "creation_attempt",
+        "current_fence",
+        "fence_item",
+        "fence_snapshot",
+        "journal_meta",
+        "launch_deny",
+        "launch_intent",
+        "launch_state",
+        "os_observation",
+        "retirement_evidence",
+        "retirement_target",
+        "runtime"
+      ]
+    },
+    {
+      "name": "FK已启用",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "REPLACE删除触发已启用",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "保护配置启动计数",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "fence不能接管core分支",
+      "expected": "known_intent",
+      "observed": "known_intent"
+    },
+    {
+      "name": "遗漏registered",
+      "expected": "live_coverage",
+      "observed": "live_coverage"
+    },
+    {
+      "name": "同ID换摘要",
+      "expected": "live_coverage",
+      "observed": "live_coverage"
+    },
+    {
+      "name": "重复身份",
+      "expected": "UNIQUE constraint failed: fence_item.supervisor_id, fence_item.revision, fence_item.launch_id",
+      "observed": "UNIQUE constraint failed: fence_item.supervisor_id, fence_item.revision, fence_item.launch_id"
+    },
+    {
+      "name": "乱序",
+      "expected": "item_order",
+      "observed": "item_order"
+    },
+    {
+      "name": "声明数量不符",
+      "expected": "item_count",
+      "observed": "item_count"
+    },
+    {
+      "name": "不以字符串排序revision",
+      "expected": "fence_not_increasing",
+      "observed": "fence_not_increasing"
+    },
+    {
+      "name": "十进制10大于1",
+      "expected": "10",
+      "observed": "10"
+    },
+    {
+      "name": "十进制9小于10",
+      "expected": "fence_not_increasing",
+      "observed": "fence_not_increasing"
+    },
+    {
+      "name": "U20拒绝:'01'",
+      "expected": 275,
+      "observed": 275
+    },
+    {
+      "name": "U20拒绝:'1\\n'",
+      "expected": 275,
+      "observed": 275
+    },
+    {
+      "name": "U20拒绝:'1\\x00'",
+      "expected": 275,
+      "observed": 275
+    },
+    {
+      "name": "U20拒绝:'-1'",
+      "expected": 275,
+      "observed": 275
+    },
+    {
+      "name": "U20拒绝:'100000000000000000000'",
+      "expected": 275,
+      "observed": 275
+    },
+    {
+      "name": "冻结后追加",
+      "expected": "snapshot_not_draft",
+      "observed": "snapshot_not_draft"
+    },
+    {
+      "name": "手动回退当前指针",
+      "expected": "pointer_not_increasing",
+      "observed": "pointer_not_increasing"
+    },
+    {
+      "name": "伪造deny来源",
+      "expected": "deny_source",
+      "observed": "deny_source"
+    },
+    {
+      "name": "deny和指针同发布",
+      "expected": [
+        [
+          "one"
+        ],
+        [
+          "two"
+        ]
+      ],
+      "observed": [
+        [
+          "one"
+        ],
+        [
+          "two"
+        ]
+      ]
+    },
+    {
+      "name": "永久deny不复活",
+      "expected": "permanent_deny",
+      "observed": "permanent_deny"
+    },
+    {
+      "name": "未知deny换摘要",
+      "expected": "permanent_deny",
+      "observed": "permanent_deny"
+    },
+    {
+      "name": "deny后创建",
+      "expected": "attempt_authority",
+      "observed": "attempt_authority"
+    },
+    {
+      "name": "deny目标不能REGISTER",
+      "expected": "no_current_allow",
+      "observed": "no_current_allow"
+    },
+    {
+      "name": "fence提交前故障还原指针",
+      "expected": "1",
+      "observed": "1"
+    },
+    {
+      "name": "fence提交前故障不留deny",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "孤立intent不能提交",
+      "expected": "FOREIGN KEY constraint failed",
+      "observed": "FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "孤立state不能提交",
+      "expected": "FOREIGN KEY constraint failed",
+      "observed": "FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "未配state的intent也不能遗漏",
+      "expected": "live_coverage",
+      "observed": "live_coverage"
+    },
+    {
+      "name": "孤立attempt不能提交",
+      "expected": "FOREIGN KEY constraint failed",
+      "observed": "FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "孤立attempt整体回滚",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "只有attempt标志不能提交",
+      "expected": "FOREIGN KEY constraint failed",
+      "observed": "FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "attempt与预算同提交",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "重复创建尝试",
+      "expected": "attempt_not_registered",
+      "observed": "attempt_not_registered"
+    },
+    {
+      "name": "清除attempt",
+      "expected": "immutable_state_identity",
+      "observed": "immutable_state_identity"
+    },
+    {
+      "name": "已尝试拒绝不能变未创建",
+      "expected": "state_edge",
+      "observed": "state_edge"
+    },
+    {
+      "name": "receipt不可单独提交",
+      "expected": "FOREIGN KEY constraint failed",
+      "observed": "FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "receipt未提交不消费",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "只有准入状态不能提交",
+      "expected": "FOREIGN KEY constraint failed",
+      "observed": "FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "到期等号拒绝",
+      "expected": "admission_window",
+      "observed": "admission_window"
+    },
+    {
+      "name": "早于原起点拒绝",
+      "expected": "admission_window",
+      "observed": "admission_window"
+    },
+    {
+      "name": "物化观测不能证进程身份",
+      "expected": "admission_observation",
+      "observed": "admission_observation"
+    },
+    {
+      "name": "准入与receipt同提交",
+      "expected": [
+        "admitted_closed",
+        "receipt.old.one"
+      ],
+      "observed": [
+        "admitted_closed",
+        "receipt.old.one"
+      ]
+    },
+    {
+      "name": "重复消费proof",
+      "expected": "admission_state",
+      "observed": "admission_state"
+    },
+    {
+      "name": "同组观测不能换目标",
+      "expected": "member_retirement",
+      "observed": "member_retirement"
+    },
+    {
+      "name": "unproven不能退休",
+      "expected": "retirement_unproven",
+      "observed": "retirement_unproven"
+    },
+    {
+      "name": "新观察域tick2可证旧域退出",
+      "expected": "2",
+      "observed": "2"
+    },
+    {
+      "name": "退休仍不能重建",
+      "expected": "state_edge",
+      "observed": "state_edge"
+    },
+    {
+      "name": "终态可退出现行集合且历史保留",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "域未关闭不能证空",
+      "expected": "domain_retirement",
+      "observed": "domain_retirement"
+    },
+    {
+      "name": "关闭域拒绝新REGISTER",
+      "expected": "runtime_closed",
+      "observed": "runtime_closed"
+    },
+    {
+      "name": "域证明遗漏已退出成员",
+      "expected": "domain_retirement",
+      "observed": "domain_retirement"
+    },
+    {
+      "name": "仍有非终态不能登记域退休",
+      "expected": "domain_not_retired",
+      "observed": "domain_not_retired"
+    },
+    {
+      "name": "全域最终登记",
+      "expected": "retired",
+      "observed": "retired"
+    },
+    {
+      "name": "域不复活",
+      "expected": "runtime_edge",
+      "observed": "runtime_edge"
+    },
+    {
+      "name": "旧恢复计数未清",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "不可变:journal_meta",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:control_scope",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:fence_item",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:launch_deny",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:launch_intent",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:creation_attempt",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:bootstrap_challenge",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:os_observation",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:admission_receipt",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可变:retirement_target",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "不可删除:admission_receipt",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:bootstrap_challenge",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:control_scope",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:creation_attempt",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:current_fence",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:fence_item",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:fence_snapshot",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:journal_meta",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:launch_deny",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:launch_intent",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:launch_state",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:os_observation",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:retirement_evidence",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:retirement_target",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "不可删除:runtime",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "运行域原绑定不能修改",
+      "expected": "immutable_runtime",
+      "observed": "immutable_runtime"
+    },
+    {
+      "name": "封存快照不可改写",
+      "expected": "immutable_snapshot",
+      "observed": "immutable_snapshot"
+    },
+    {
+      "name": "封存退出证据不可改写",
+      "expected": "immutable_retirement",
+      "observed": "immutable_retirement"
+    },
+    {
+      "name": "REPLACE不绕墓碑",
+      "expected": "tombstone",
+      "observed": "tombstone"
+    },
+    {
+      "name": "全部连接外键一致",
+      "expected": [
+        [],
+        []
+      ],
+      "observed": [
+        [],
+        []
+      ]
+    }
+  ],
+  "sqlite_version": "3.50.4",
+  "runtime_validation": {
+    "supervisor": 0,
+    "ipc": 0,
+    "filesystem_durability": 0,
+    "device": 0
+  },
+  "limitations": [
+    "只运行内存SQLite；主动异常及串行顺序不证明真实崩溃并发",
+    "BODY和digest用合成占位，不在SQL内执行Schema/JCS/HMAC或OS权威提供者",
+    "没有执行实际journal初始化、升级、归档或磁盘恢复",
+    "冻结候选不是已发布生产迁移或完整业务DDL"
+  ],
+  "input_sha256": {
+    "docs/contracts/df02-supervisor/JOURNAL.md": "2a7fd7f8203bd79fb02337ecdab033a3864ffa76ecc48f2428101dac5e58ae58",
+    "docs/contracts/df02-supervisor/journal.sql": "ef8b8a9a1137551169cca9d2c83d226912d2bc4975e8da32975de1394c4b7104",
+    "docs/contracts/df02-supervisor/check_journal.py": "dcfa02dac7634918081a2d555b5552916c19aff5248fb591e680552e2d3ba300",
+    "docs/contracts/df02-supervisor/supervisor.schema.json": "ba848f2245140294fa20fbcc7cae9f4f18a8afb7a96aee809522ed70556a7091",
+    "docs/rebirth-df04-storage-design.md": "fb40713adf9fb9dd0ec6cb1b40eba2ae0f895db5b2390ad827ec34de048d4bc4"
+  }
+}

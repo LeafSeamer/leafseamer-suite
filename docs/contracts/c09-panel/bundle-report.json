@@ -1,0 +1,891 @@
+{
+  "format_version": "panel-bundle-reference/1",
+  "approved": false,
+  "runtime_approved": false,
+  "all_passed": true,
+  "case_count": 109,
+  "results": [
+    {
+      "id": "B-basic",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-single",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-multi",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-pointer",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-boolean",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-descending-recursion",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-data-ref",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-property-ref-name",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-escaped-pointer",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-percent-pointer",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-pattern-approved",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-format-approved",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-string-limit-counterexample",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "B-ref-external",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-file",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-relative",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-missing",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-bad-pointer",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-bad-percent",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-bad-utf8",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-missing-anchor",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-ref-self",
+      "passed": true,
+      "errors": [
+        "same_instance_cycle"
+      ]
+    },
+    {
+      "id": "B-ref-instance-data",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-same-instance-logical-cycle",
+      "passed": true,
+      "errors": [
+        "same_instance_cycle"
+      ]
+    },
+    {
+      "id": "B-dependent-cycle",
+      "passed": true,
+      "errors": [
+        "same_instance_cycle"
+      ]
+    },
+    {
+      "id": "B-unused-def-ref-checked",
+      "passed": true,
+      "errors": [
+        "reference"
+      ]
+    },
+    {
+      "id": "B-anchor-duplicate",
+      "passed": true,
+      "errors": [
+        "anchor"
+      ]
+    },
+    {
+      "id": "B-root-id-mismatch",
+      "passed": true,
+      "errors": [
+        "resource_identity"
+      ]
+    },
+    {
+      "id": "B-nested-id",
+      "passed": true,
+      "errors": [
+        "resource_identity"
+      ]
+    },
+    {
+      "id": "B-nested-dialect",
+      "passed": true,
+      "errors": [
+        "resource_identity"
+      ]
+    },
+    {
+      "id": "B-wrong-dialect",
+      "passed": true,
+      "errors": [
+        "resource_identity"
+      ]
+    },
+    {
+      "id": "B-forbidden-$dynamicRef",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-forbidden-$dynamicAnchor",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-forbidden-$vocabulary",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-forbidden-$comment",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-forbidden-default",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-forbidden-examples",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-forbidden-x-execute",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-forbidden-contentEncoding",
+      "passed": true,
+      "errors": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "B-pattern-unapproved",
+      "passed": true,
+      "errors": [
+        "pattern"
+      ]
+    },
+    {
+      "id": "B-format-unapproved",
+      "passed": true,
+      "errors": [
+        "format"
+      ]
+    },
+    {
+      "id": "B-unrelated-resource",
+      "passed": true,
+      "errors": [
+        "resource_closure"
+      ]
+    },
+    {
+      "id": "B-missing-export",
+      "passed": true,
+      "errors": [
+        "export_definition"
+      ]
+    },
+    {
+      "id": "B-rehashed-without-approval",
+      "passed": true,
+      "errors": [
+        "authority_exports",
+        "authority_manifest_digest"
+      ]
+    },
+    {
+      "id": "B-invalid-schema",
+      "passed": true,
+      "errors": [
+        "export_definition",
+        "schema_invalid"
+      ]
+    },
+    {
+      "id": "B-authority-authorized",
+      "passed": true,
+      "errors": [
+        "authority"
+      ]
+    },
+    {
+      "id": "B-authority-approval_active",
+      "passed": true,
+      "errors": [
+        "authority"
+      ]
+    },
+    {
+      "id": "B-authority-scope_revision",
+      "passed": true,
+      "errors": [
+        "authority_scope_revision"
+      ]
+    },
+    {
+      "id": "B-authority-registry_ref",
+      "passed": true,
+      "errors": [
+        "authority_registry_ref"
+      ]
+    },
+    {
+      "id": "B-authority-profile_ref",
+      "passed": true,
+      "errors": [
+        "authority_profile_ref"
+      ]
+    },
+    {
+      "id": "B-authority-exports",
+      "passed": true,
+      "errors": [
+        "authority_exports"
+      ]
+    },
+    {
+      "id": "B-manifest-digest",
+      "passed": true,
+      "errors": [
+        "authority_manifest_digest",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-document-digest",
+      "passed": true,
+      "errors": [
+        "document_digest",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-chunk-digest",
+      "passed": true,
+      "errors": [
+        "chunk_digest",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-export-digest",
+      "passed": true,
+      "errors": [
+        "authority_exports",
+        "export_digest",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-chunk-index",
+      "passed": true,
+      "errors": [
+        "chunk_digest",
+        "chunk_layout",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-scope-number",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "B-scope-newline",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "B-extra-field",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "B-resource-order",
+      "passed": true,
+      "errors": [
+        "identity_order",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-duplicate-export",
+      "passed": true,
+      "errors": [
+        "authority_exports",
+        "identity_order",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-missing-document",
+      "passed": true,
+      "errors": [
+        "document_set"
+      ]
+    },
+    {
+      "id": "B-raw-noncanonical",
+      "passed": true,
+      "errors": [
+        "chunk_digest",
+        "document_digest",
+        "export_digest",
+        "noncanonical_document"
+      ]
+    },
+    {
+      "id": "B-raw-duplicate",
+      "passed": true,
+      "errors": [
+        "chunk_digest",
+        "document_digest",
+        "document_json"
+      ]
+    },
+    {
+      "id": "B-raw-nan",
+      "passed": true,
+      "errors": [
+        "chunk_digest",
+        "document_digest",
+        "document_json"
+      ]
+    },
+    {
+      "id": "B-raw-unsafe",
+      "passed": true,
+      "errors": [
+        "chunk_digest",
+        "document_digest",
+        "document_json"
+      ]
+    },
+    {
+      "id": "B-raw-surrogate",
+      "passed": true,
+      "errors": [
+        "chunk_digest",
+        "document_digest",
+        "document_json"
+      ]
+    },
+    {
+      "id": "B-depth-budget",
+      "passed": true,
+      "errors": [
+        "document_json"
+      ]
+    },
+    {
+      "id": "B-schema-node-budget",
+      "passed": true,
+      "errors": [
+        "schema_capacity"
+      ]
+    },
+    {
+      "id": "B-resource-count-budget",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "B-export-count-budget",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "B-bundle-byte-budget",
+      "passed": true,
+      "errors": [
+        "bundle_capacity",
+        "document_set",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "B-bundle-chunk-budget",
+      "passed": true,
+      "errors": [
+        "bundle_capacity",
+        "document_set",
+        "identity_order",
+        "manifest_digest"
+      ]
+    },
+    {
+      "id": "F-offer",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "F-ready",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "F-revoke",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "F-chunk0",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "F-chunk1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "id": "F-extra",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "F-version",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "F-counter",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "F-numeric-counter",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "F-zero",
+      "passed": true,
+      "errors": [
+        "structure"
+      ]
+    },
+    {
+      "id": "F-direction",
+      "passed": true,
+      "errors": [
+        "direction"
+      ]
+    },
+    {
+      "id": "F-replay",
+      "passed": true,
+      "errors": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "F-generation",
+      "passed": true,
+      "errors": [
+        "binding"
+      ]
+    },
+    {
+      "id": "F-full-frame-budget",
+      "passed": true,
+      "errors": [
+        "frame_capacity"
+      ]
+    },
+    {
+      "id": "T-normal",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "state": "active"
+    },
+    {
+      "id": "T-reordered",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "state": "active"
+    },
+    {
+      "id": "T-duplicate-new-sequence",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "state": "active"
+    },
+    {
+      "id": "T-missing",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-ready-before-verified",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-activate-before-ready",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-sequence-replay",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-conflicting-chunk",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-noncanonical-base64",
+      "passed": true,
+      "decisions": [
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-wrong-bundle",
+      "passed": true,
+      "decisions": [
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-unknown-index",
+      "passed": true,
+      "decisions": [
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-wrong-generation",
+      "passed": true,
+      "decisions": [
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-wrong-direction",
+      "passed": true,
+      "decisions": [
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-second-offer",
+      "passed": true,
+      "decisions": [
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-ready-wrong-registry",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-revoked-before-activate",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "revoked"
+    },
+    {
+      "id": "T-revoked-after-active",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "revoked"
+    },
+    {
+      "id": "T-authority-before-activate",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-scope-after-active",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-port-after-active",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-generation-after-active",
+      "passed": true,
+      "decisions": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "state": "failed"
+    },
+    {
+      "id": "T-cache-no-activation",
+      "passed": true,
+      "decisions": [
+        false,
+        false
+      ],
+      "state": "failed"
+    }
+  ],
+  "tools": {
+    "python": "3.14.0",
+    "jsonschema": "4.25.1",
+    "rfc8785": "0.1.4"
+  },
+  "runtime_validation": {
+    "browser": 0,
+    "authority_provider": 0,
+    "worker": 0,
+    "device": 0
+  },
+  "artifact_sha256": {
+    "docs/contracts/c09-panel/BUNDLE.md": "6587f47ca1bdbe7896f64308c30326b0963fa9dc4dffed5210fc1a95581b6470",
+    "docs/contracts/c09-panel/bundle.schema.json": "b6fd30c08babcd3adddb48d347253541c9607b2db36008cb15f448524b3bef3d",
+    "docs/contracts/c09-panel/bundle-cases.json": "e86c8c9cb7bac63aac36e5bfa161bd12869ca5011d6f8b1b495772097c3e1750",
+    "docs/contracts/c09-panel/check_bundle.py": "2646547149865dcc20397f878f41f20746dac999c6d12d6f33ff11be7bd8d05f"
+  }
+}

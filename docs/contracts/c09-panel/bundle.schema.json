@@ -1,0 +1,425 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:leafseamer:design:panel-schema-bundle/0.1.0-draft.1",
+  "description": "四种Bundle局部消息候选，不是完整channel0.2；文档内容经分块和批准闭包另验。",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Offer"
+    },
+    {
+      "$ref": "#/$defs/Chunk"
+    },
+    {
+      "$ref": "#/$defs/Ready"
+    },
+    {
+      "$ref": "#/$defs/Revoke"
+    }
+  ],
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,128}(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])"
+    },
+    "PositiveCounter": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^[1-9][0-9]*(?![\\s\\S])"
+    },
+    "SchemaId": {
+      "type": "string",
+      "pattern": "^urn:leafseamer:panel-schema:[A-Za-z0-9._-]{1,128}(?![\\s\\S])"
+    },
+    "SchemaRef": {
+      "type": "object",
+      "properties": {
+        "schema_id": {
+          "$ref": "#/$defs/SchemaId"
+        },
+        "definition": {
+          "$ref": "#/$defs/Id"
+        },
+        "schema_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "schema_id",
+        "definition",
+        "schema_digest"
+      ],
+      "additionalProperties": false
+    },
+    "RevisionRef": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ProfileRef": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "const": "panel-form-jsonschema-1"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "profile_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Export": {
+      "type": "object",
+      "properties": {
+        "binding_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "purpose": {
+          "enum": [
+            "parameters",
+            "action_result",
+            "state",
+            "trigger",
+            "definition"
+          ]
+        },
+        "schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        }
+      },
+      "required": [
+        "binding_key",
+        "purpose",
+        "schema_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ChunkDescriptor": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16384
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "index",
+        "byte_count",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceDescriptor": {
+      "type": "object",
+      "properties": {
+        "schema_id": {
+          "$ref": "#/$defs/SchemaId"
+        },
+        "document_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "canonical_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 262144
+        },
+        "chunks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ChunkDescriptor"
+          },
+          "maxItems": 16,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "schema_id",
+        "document_digest",
+        "canonical_bytes",
+        "chunks"
+      ],
+      "additionalProperties": false
+    },
+    "Manifest": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "panel-schema-bundle/0.1.0-draft.1"
+        },
+        "bundle_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "bundle_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "registry_ref": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "scope_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/ProfileRef"
+        },
+        "dialect": {
+          "const": "https://json-schema.org/draft/2020-12/schema"
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResourceDescriptor"
+          },
+          "maxItems": 32,
+          "minItems": 1
+        },
+        "exports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Export"
+          },
+          "maxItems": 128,
+          "minItems": 1
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "bundle_id",
+        "bundle_revision",
+        "registry_ref",
+        "scope_revision",
+        "profile_ref",
+        "dialect",
+        "resources",
+        "exports",
+        "manifest_digest"
+      ],
+      "additionalProperties": false
+    },
+    "PublicBinding": {
+      "type": "object",
+      "properties": {
+        "panel_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "panel_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "protocol_version": {
+          "const": "panel-channel/0.2.0-draft.1"
+        }
+      },
+      "required": [
+        "panel_session_id",
+        "panel_instance_id",
+        "document_generation",
+        "channel_id",
+        "protocol_version"
+      ],
+      "additionalProperties": false
+    },
+    "Offer": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.2.0-draft.1"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "type": {
+          "const": "host.bundle_offer"
+        },
+        "manifest": {
+          "$ref": "#/$defs/Manifest"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "public_binding",
+        "channel_sequence",
+        "type",
+        "manifest"
+      ],
+      "additionalProperties": false
+    },
+    "Chunk": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.2.0-draft.1"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "type": {
+          "const": "host.bundle_chunk"
+        },
+        "bundle_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "schema_id": {
+          "$ref": "#/$defs/SchemaId"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "content_base64": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 21848,
+          "pattern": "^[A-Za-z0-9+/]*={0,2}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "public_binding",
+        "channel_sequence",
+        "type",
+        "bundle_id",
+        "manifest_digest",
+        "schema_id",
+        "index",
+        "content_base64"
+      ],
+      "additionalProperties": false
+    },
+    "Ready": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.2.0-draft.1"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "type": {
+          "const": "panel.bundle_ready"
+        },
+        "bundle_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "registry_ref": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "scope_revision": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "public_binding",
+        "channel_sequence",
+        "type",
+        "bundle_id",
+        "manifest_digest",
+        "registry_ref",
+        "scope_revision"
+      ],
+      "additionalProperties": false
+    },
+    "Revoke": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.2.0-draft.1"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "type": {
+          "const": "host.bundle_revoke"
+        },
+        "bundle_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "reason_code": {
+          "enum": [
+            "scope_changed",
+            "approval_revoked",
+            "session_closed",
+            "bundle_invalid",
+            "capacity_exceeded"
+          ]
+        }
+      },
+      "required": [
+        "protocol_version",
+        "public_binding",
+        "channel_sequence",
+        "type",
+        "bundle_id",
+        "manifest_digest",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

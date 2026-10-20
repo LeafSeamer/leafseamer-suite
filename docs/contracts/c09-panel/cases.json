@@ -1,0 +1,1610 @@
+{
+  "purpose": "design_fixture_only",
+  "runtime_approved": false,
+  "cases": [
+    {
+      "id": "PM01",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "PM02",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:listDevices"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM03",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:invented"
+          ],
+          "value": {
+            "mode": "panel_read",
+            "method_name": "controller.listDevices",
+            "permission": "device.read",
+            "source_pointer": "/paths/~1api~1v1~1devices/get",
+            "forward_raw_response": false
+          }
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM04",
+      "changes": [
+        {
+          "path": [
+            "source_sha256",
+            "docs/contracts/df01-source/source/http/controller.operations.json"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM05",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "permission"
+          ],
+          "value": "status.read"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM06",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "source_pointer"
+          ],
+          "value": "/paths/incorrect/post"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM07",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "seamer:armRun",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:armRun",
+            "method_name"
+          ],
+          "value": "seamer.armRun"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM08",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "seamer:resumeRun",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:resumeRun",
+            "method_name"
+          ],
+          "value": "seamer.resumeRun"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM09",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "seamer:publishDefinition",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:publishDefinition",
+            "method_name"
+          ],
+          "value": "seamer.publishDefinition"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM10",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:acquireControl",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:acquireControl",
+            "method_name"
+          ],
+          "value": "controller.acquireControl"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM11",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:revokeRunGrant",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:revokeRunGrant",
+            "method_name"
+          ],
+          "value": "controller.revokeRunGrant"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM12",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:issueToken",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:issueToken",
+            "method_name"
+          ],
+          "value": "controller.issueToken"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM13",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "seamer:ingestEvent",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:ingestEvent",
+            "method_name"
+          ],
+          "value": "seamer.ingestEvent"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM14",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:updateRunGrant",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:updateRunGrant",
+            "method_name"
+          ],
+          "value": "controller.updateRunGrant"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM15",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:setCapacity",
+            "mode"
+          ],
+          "value": "panel_write"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:setCapacity",
+            "method_name"
+          ],
+          "value": "controller.setCapacity"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM16",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:introspect",
+            "mode"
+          ],
+          "value": "panel_read"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:introspect",
+            "method_name"
+          ],
+          "value": "controller.introspect"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM17",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:getSubject",
+            "mode"
+          ],
+          "value": "panel_read"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSubject",
+            "method_name"
+          ],
+          "value": "controller.getSubject"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM18",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:openEvents",
+            "mode"
+          ],
+          "value": "panel_read"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:openEvents",
+            "method_name"
+          ],
+          "value": "controller.openEvents"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM19",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:getCommand",
+            "method_name"
+          ],
+          "value": "controller.getDeviceState"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM20",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:getCommand",
+            "forward_raw_response"
+          ],
+          "value": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM21",
+      "changes": [
+        {
+          "path": [
+            "approved"
+          ],
+          "value": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM22",
+      "changes": [
+        {
+          "path": [
+            "runtime_approved"
+          ],
+          "value": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM23",
+      "changes": [
+        {
+          "path": [
+            "authority_switched"
+          ],
+          "value": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM24",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "mode"
+          ],
+          "value": "direct_socket"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM25",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "method_name"
+          ],
+          "value": null
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM26",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:createSubscription",
+            "method_name"
+          ],
+          "value": "controller.createSubscription"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM27",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "mode"
+          ],
+          "value": "panel_read"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "PM28",
+      "changes": [
+        {
+          "path": [
+            "operations",
+            "controller:getCapabilities",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getCapacity",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClock",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClockAssessment",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getCommand",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getCommandEvidence",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getControl",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getControlOperation",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getDeviceState",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSceneCatalog",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:listDevices",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getCapacity",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClock",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClockAssessment",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getIndependenceProof",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getMeta",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getRecoveryOperation",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getRun",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:preflightRun",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:previewRecovery",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:cancelCommand",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createDefinition",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createRun",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:pauseRun",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:updateDraft",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:acceptTransfer",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:acquireControl",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:offerTransfer",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:releaseControl",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:revokeRunGrant",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:armRun",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:publishDefinition",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:resumeRun",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:createRequestContext",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:createSubscription",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSnapshot",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:issueWsTicket",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:openEvents",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createRequestContext",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createSubscription",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getSnapshot",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:issueWsTicket",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:openEvents",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getRevocation",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSession",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSubject",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:issueToken",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:login",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:refreshSession",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getRevocation",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getSession",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getSubject",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:bootstrap",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClockDomainDescriptor",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClockSample",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getTimeBoundEvidence",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getTimeBoundProfile",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:introspect",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:revokeAuthorization",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:setCapacity",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:updateRunGrant",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClockDomainDescriptor",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClockSample",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getTimeBoundEvidence",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getTimeBoundProfile",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:ingestEvent",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:updateCatalog",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:revokeAuthorization",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:setCapacity",
+            "mode"
+          ],
+          "value": "unavailable"
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getCapabilities",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getCapacity",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClock",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClockAssessment",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getCommand",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getCommandEvidence",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getControl",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getControlOperation",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getDeviceState",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSceneCatalog",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:listDevices",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getCapacity",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClock",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClockAssessment",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getIndependenceProof",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getMeta",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getRecoveryOperation",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getRun",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:preflightRun",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:previewRecovery",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:cancelCommand",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createDefinition",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createRun",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:pauseRun",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:updateDraft",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:acceptTransfer",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:acquireControl",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:offerTransfer",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:releaseControl",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:revokeRunGrant",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:armRun",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:publishDefinition",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:resumeRun",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:createRequestContext",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:createSubscription",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSnapshot",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:issueWsTicket",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:openEvents",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createRequestContext",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:createSubscription",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getSnapshot",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:issueWsTicket",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:openEvents",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getRevocation",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSession",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getSubject",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:issueToken",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:login",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:refreshSession",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getRevocation",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getSession",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getSubject",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:bootstrap",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClockDomainDescriptor",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getClockSample",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getTimeBoundEvidence",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:getTimeBoundProfile",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:introspect",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:revokeAuthorization",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:setCapacity",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "controller:updateRunGrant",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClockDomainDescriptor",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getClockSample",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getTimeBoundEvidence",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:getTimeBoundProfile",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:ingestEvent",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:updateCatalog",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:revokeAuthorization",
+            "method_name"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "operations",
+            "seamer:setCapacity",
+            "method_name"
+          ],
+          "value": null
+        }
+      ],
+      "expected_valid": false
+    }
+  ]
+}

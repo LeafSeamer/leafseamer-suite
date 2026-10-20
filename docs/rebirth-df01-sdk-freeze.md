@@ -215,3 +215,57 @@ WS text只在完整消息重组后校验；服务端库必须在重组中限制�
 附[候选输入描述Schema与正反例](contracts/df01/decoder-design.schema.json)用于校验预算、HTTP/WS绑定的**局部格式和关联规则**；不是完整OpenAPI替代物、完整source-manifest或产品解码器。原始报文用例独立登记，当前只核验夹具格式/数学预期及描述元数据，不声称报文已被SDK正确拒绝。
 
 本轮新增放行细项仍归SV02/SV07/SV10/SV14/SV16/SV18：无效UTF-8不能被text模式修复；分片代理对/UTF-8截断/BOM；重复转义键；integer条件及oneOf分支保留；ref/嵌套数组token定位；两并发上下文互不污染；number下溢；预算等号/超1；缺/错操作绑定和双向WS遗漏；源节点映射覆盖；错误响应不重发。实际SDK/Ajv/CSP/并发及压测均未运行，新推荐审阅和完整机器归并仍是实施前设计门槛。
+
+## 10. 完整机器数据的等价提取实验
+
+2026-10-18补充：[df01-source候选资料](contracts/df01-source/README.md)将已确认draft.4的完整机器数据拆为公共Schema、IPC、两份完整HTTP骨架、历史route投影配方、Schema注册表及原始fixtures。数据源中的公共模型只保存一次；重组时映射到两份OpenAPI components。SDK当前存在既有未提交治理文件，本轮实验放在Suite，不移动或提交那些改动，也不切换权威源。
+
+**本轮事实**：候选重组与固定Suite提交的六份原文件逐节点相等且原字节相等；185个公共模型、19类IPC消息、52条逻辑route展开69个HTTP操作，另含两个WS升级。完整HTTP骨架保留WS两个普通字符串Schema引用、Origin、票据子协议、空security及同一对象内cookie/CSRF组合、响应headers和非统一错误集合；没有自动补x-permission或路径前缀。原232例经原历史验证器复验通过。报告逐文件记录节点计数、字节摘要和空差异列表，不用数量相等替代逐项比较。（依据：[检查器](contracts/df01-source/check_candidate.py)、[实际报告](contracts/df01-source/extraction-report.json)。）
+
+**设计收敛**：HTTP操作骨架是请求/响应/安全/描述等元数据的唯一来源；历史routes只是兼容投影。配方保留`service/method/path/primary_success_status/legacy_security_label`，其余operation_id/request/response/permission取骨架。bootstrap/login均为空security，不能从空数组推断两者等同；旧安全类别作为独立投影元数据保留并与真实声明交叉检查。所有共用操作在两服务分别派生再比对；WS显式另查，不强塞进没有对应字段的旧routes。
+
+两个全新临时副本只带标准库重组器与候选source，以Python `-I`各生成六份相同输出。它证明当前机器上的独立数据重组，不证明SDK独立clone后完成生成/校验，也不证明跨Windows/Linux可复现。16项变异覆盖遗漏WS、cookie安全、描述/响应头/Origin变化、模型约束与$id漂移、未知引用、重复route、第二份手写模型、未消费元数据、错误公开导出标记及改写fixture预期；另有5项路径拒绝。全部期待保持历史摘要，不按变异输入重算预期凑通过。
+
+尚未迁出的部分在source-manifest显式列出：语义规则实现及符号映射、完整具名摘要投影、HTTP/WS/IPC wire profiles、公开/内部导出政策、TS/standalone生成及产品工具锁。现有232例中的语义部分仍依赖Suite历史Python。185个历史components不等于185个公开SDK类型，SchemaRegistry中的legacy投影表不得成为exports批准。当前引用遍历仅针对核对过的历史结构；未来带任意Schema数据的开放字段不能未经审批套用该参考转换器。
+
+因此SV02的历史机器数据对账已取得具体证据；SV01、SV03的独立语义验收、SV04跨平台及其余产品放行项仍未通过。下一步按同一固定提交整理规则/投影的完整追踪并划分公开/内部根，再迁入SDK独立仓库作受控切换；后续词法、时间模型和业务契约修订仍需另版审阅。源提取不改变已确认协议或替代用户对新方案的确认。
+
+## 11. 语义迁移与导出边界的证据
+
+2026-10-18补充：[语义追踪资料](contracts/df01-source/SEMANTIC_TRACE.md)登记13个历史判定入口、12种摘要及1种身份规范化投影，并将232例逐case_id追踪到实际进入的函数。实际计数为160公共、24仅结构IPC、48关联；公共6个语义反例全部集中于descriptor/profile/evidence。撤权匹配、容量决策、恢复单次消费等8个历史入口未被此批调用，相关历史独立用例不能因文件hash已绑定就视为执行。（依据：[实际报告](contracts/df01-source/semantic-trace-report.json)、[规则入口表](contracts/df01-source/semantic-trace-map.json)、[投影表](contracts/df01-source/digest-projection-map.json)。）
+
+新增4个独立探针证实：开放parameters的descriptor_version或kind可令旧语义抛KeyError，同名窗口可误触发拒绝；CatalogBinding重复scene_id且UUID不同可通过当前归并入口。报告的通过仅表示复现历史行为，未修复缺口。推荐新版以具名模型/声明路径绑定规则，停止在开放参数或动态Schema正文中猜测首方对象；显式接入目录唯一性，定义投影也改按步骤路径，均登记接受集合或摘要变化而不暗改draft.4。
+
+公开HTTP/WS联合62个根可达166模型，内部9根可达24、IPC外部15根可达31；仅内部/IPC可达17个，另有AuthorizationSnapshotResponse、RunGrant未被入口引用。WS扩展是普通字符串，不能仅扫$ref。推荐据逐项名单建立public/internal/ipc独立exports；未引用类型不自动删除或导出，公开类型不等于匿名权限，开放Payload内容须另作输出控制。当前报告只证明静态引用关系，未批准最终导出清单。
+
+生产语义注册项与四类结果边界、实施绑定、可信上下文和错误脱敏方案详见追踪资料末节。13个函数入口不是完整原子规则表，相关夹具也不是13种投影各自的完整差分向量；本轮只检查其定位且保持原232预期。D1的语义实现迁出、D4的独立投影向量、全部历史安全集向新协议适配仍未完成；新推荐须审阅，C01不因本报告通过而关闭。
+
+## 12. 语义注册、选择器与评估结果候选
+
+[局部格式设计](contracts/df01-source/SEMANTIC_REGISTRY.md)与[Schema](contracts/df01-source/semantic-registry.schema.json)将第11节推荐落实为可校验元数据。规则固定具名根、修订、有限selector、阶段、可信provider/policy、reason/location和计划实现/向量。生产制品尚不存在，绑定显式标planned，不使用虚构hash冒充可执行实现。
+
+**新增设计收敛**：Schema路径与实例位置同时限制开放参数；CommandRequest.allOf/then对parameters的具名约束不能绕过动态能力校验。选择器保留if真假、anyOf/oneOf分支及它们所在数组实例位置，完整根验证仍先于语义。可选字段缺省或分支不适用表示不调用规则，不伪造valid；多个成功分支按规则/修订/实例去重。可信上下文缺失不补默认许可，校验异常不变成设备failed或写重试；结果只返回登记的reason/location，禁止回显动态键或原始异常。
+
+**实际证据**：[报告](contracts/df01-source/semantic-registry-report.json)记录47项注册、23项结果及8项合成选择器检查，共78项。四条示例规则的八个业务向量仅列计划，实际生产规则执行数为零；检查器没有执行目录唯一性或完成SP缺口修复。参考检查器只处理显式支持的Schema结构和列明的开放边界，未证明全部导出根/别名的覆盖，也未实现分支求值、跨语言生成或上下文取证。
+
+完整原子规则及调用点、开放边界全覆盖、投影独立向量、生产实现与新版本接受集仍是C01/SV01/SV03/SV16的剩余门槛。候选推荐保持待审阅；全系统设计完成前不进入业务实现。
+
+## 13. 完整导出清单与客户端用途
+
+[导出候选设计](contracts/df01-source/EXPORTS.md)及[逐项清单](contracts/df01-source/exports-candidate.json)覆盖当前71个HTTP／WS操作和227个具名模型（185公共、42IPC）。推荐显式8子路径：seamer、controller、provider、seamer-controller、internal/controller、internal/seamer、ipc、models；没有根通配导出。Seamer与Controller普通入口分别26/33操作，provider两项、Seamer到Controller授权一项、内部九项；IPC包含19消息根及73个依赖模型，models纯类型入口为166项。两个无入口公共模型保留但不导出，所有共享模型仍来自同一源。
+
+**主体边界**：非/internal和bearer并不证明可供任意浏览器主体调用。updateRunGrant已有配对Seamer提交语义，provider发布须绑定登记来源；revokeRunGrant不能被推定为service-only。issueToken仍是人员会话换取目标服务短期令牌，不能创建组织服务身份。当前WS票据只适用于人员会话，Node消费环境不让service伪造session；第三方面板继续使用具名委托桥。候选的入口划分不修改服务器权限，也不把缺失的逐操作主体约束视为已冻结。
+
+**实际验证**：[导出报告](contracts/df01-source/exports-report.json)逐项核对操作、安全声明、源Pointer、入口与模型闭包；46个正反资料例覆盖漏项/内部暴露、cookie与CSRF误拆、WS漏根、Schema数据中的伪ref、共享参数覆盖与封闭component引用。引用提取按Schema关键字，而非递归搜所有字典的$ref；公共/内部/IPC公共依赖与前一独立追踪报告集合对账。另一次只读源解析核对71个操作和227个模型无缺项，不借调用本检查器生成期望。
+
+剩余放行项是批准用途策略、完整主体/委托与语义规则绑定、实际生成声明/校验器/JS后的传递依赖及负向导入、浏览器CSP和平台测试。当前sdk_builds/browser_import/authorization运行检查均为零，不因完整静态清单通过宣布SDK可用或全系统设计关闭。
+
+## 14. 逐操作主体、凭据与目标守卫
+
+[授权候选](contracts/df01-source/AUTHORIZATION.md)、[Schema](contracts/df01-source/authorization.schema.json)及[完整矩阵](contracts/df01-source/authorization-candidate.json)将当前71操作细分为105分支、43个具名目标/用途守卫。每条保存精确源位置和权限，分支认证与HTTP骨架核对；SDK可导入不再被误作服务可调用。新增策略待审阅，原draft.4和exports源不改。
+
+推荐manual/接管/转交仅human，service设备写经配对Seamer＋automation＋当前RunGrant；后台KEY通过provider事件触发。服务可按明确目标授权编辑草稿、创建未布防run、只读预检及有限暂停，定义发布/布防/恢复需人员明确操作。Schema旧接受集允许service＋manual，因此此项须另版显式收紧，不能称旧方案早已禁止。provider.publish仍保留服务来源输入，不能混同publishDefinition。
+
+当前Session/人员票据链不伪造service会话；createRequestContext仍可供service，但绑定权威主体凭据链、audience、操作交集及委托。普通退出不应要求auth.manage，候选单独给出自身会话注销边界；新主体视图、组织服务凭据、配对、服务订阅、面板委托六类缺口列入下一版归并，未伪造现有端点或宣布完整身份生命周期已交付。
+
+[离线报告](contracts/df01-source/authorization-report.json)包含36项元数据正反例及九输入绑定；真实认证、权限取证、并发撤销、接管与设备执行均为零。文中18条运行轨迹仅作实施验收计划。完整API/IPC/DDL及新接受集仍需联合归并和审阅；此批只关闭“现有操作没有逐项主体候选”的资料缺口，不关闭C01/C07或全系统设计。

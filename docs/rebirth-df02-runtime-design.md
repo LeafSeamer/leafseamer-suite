@@ -76,7 +76,7 @@ Linux容器也是独立profile：明确由容器运行时管理根组、谁能�
 
 ## 5. 内部bootstrap候选契约
 
-建议独立版本`bootstrap/0.1.0-draft.1`，不是第20类业务IPC消息。本稿只冻结候选字段与状态；尚未生成其Schema或并入SDK。最终归并时按DF01单一来源规则管理，draft.4／IPC 0.3机器文件本轮不改。所有对象封闭，整数词法按DF01的新版本修订另审，不从旧正则漏洞导出新允许值。
+建议独立版本`bootstrap/0.1.0-draft.1`，不是第20类业务IPC消息。后续[监督器机器候选](contracts/df02-supervisor/README.md)已生成其Schema及独立控制通道格式，尚未并入SDK或批准。最终归并时按DF01单一来源规则管理，draft.4／IPC 0.3机器文件不改。所有对象封闭，整数词法按DF01的新版本修订另审，不从旧正则漏洞导出新允许值。
 
 公共标识／digest沿用SDK类型；纳秒为无符号十进制字符串，不能转Number。OS句柄值、FD、原始PID／创建时间留本地受保护观测，不作为可序列化授权凭证。可公开审计仅使用不含秘密的引用。
 
@@ -101,6 +101,8 @@ HMAC输入精确为ASCII前缀`leafseamer-bootstrap-proof/v1`加一个NUL字节�
 预算作为platform_profile的必填字段：bootstrap_timeout_ms、graceful_stop_timeout_ms、forced_exit_observation_timeout_ms、restart_backoff_ms、restart_window_ms为正整数毫秒；max_restart_attempts为正整数次数。自动恢复在滚动restart_window_ms中每发起一次恢复启动就计数，创建失败、bootstrap失败也计入；正常首次启动不计。计数在创建前可靠登记，不能通过反复重启监督器清零；跨域后无法可信计算剩余窗口时保守锁存，明确的维护恢复另记授权和审计。所有超时从原起点计算，失败不会顺延。生产数值需按有限队列和保护预算实测批准；设计不能用无限值、0表示无限或“系统默认”。尚无实测profile，不能宣称DF02已经获得生产参数。
 
 ## 6. 持久化、恢复与屏障衔接
+
+2026-10-18后续候选：[安装0.2](contracts/c09-installation/LIFECYCLE_V02.md)为扩展worker的LaunchIntent增加完整extension_binding，审批／解析及收窄权限摘要进入原完整意图摘要；BootstrapAssignment／Proof／AdmissionReceipt必须绑定扩展后摘要，不能剥离新字段。新增短期LaunchAuthorization及启动fence、一次创建LaunchRecord和监督器本机journal方案；core/time_provider引导不套扩展审批，纯panel不虚构worker。该候选未改本稿既有机器协议；完整bootstrap／fence消息及平台耐久仍待归并和验证，LACT用例未运行。
 
 以下是DF04逐表设计必须保留的事务责任，不另建第二个业务库或让监督器绕过核心写SQLite。监督器可以在存储完全失败时先关闸／停止进程；这不意味着已经产生可靠审计记录。
 
@@ -179,4 +181,10 @@ NF01的“睡眠计入tick”只证明经过时间语义，不证明恢复后第
 | C09扩展 | 经批准模块也须纳管；不能借可信后台定位宣称任意第三方安全隔离 |
 | C12部署 | 原生、容器分别提交平台证据；不能因一种启动路径难验证而删除原定支持目标 |
 
-本轮明确了创建时纳管、局部与整域恢复、bootstrap字段／密码投影及事务顺序，尚未关闭DF02。剩余设计归并包括：bootstrap候选Schema与正反例、DF04逐表约束、DF05精确原生构建及profile清单、容器平台具体运行时组合；运行阶段再执行RT01—RT35。全系统设计前置条件继续有效，不因本稿完成而开始业务实现。
+本稿明确了创建时纳管、局部与整域恢复、bootstrap字段／密码投影及事务顺序，尚未关闭DF02。后续[监督器机器候选](contracts/df02-supervisor/README.md)已补bootstrap四帧、控制九帧、完整fence集合、创建前持久attempt、journal布局与正反例；运行阶段执行RT01—RT35及SRT01—SRT12。剩余设计归并包括DF04完整生产DDL、DF05精确原生构建及profile清单、容器平台具体运行时组合。全系统设计前置条件继续有效，不因本稿完成而开始业务实现。
+
+## 10. 监督器机器候选与核心准入边界
+
+2026-10-18新增[独立候选包](contracts/df02-supervisor/README.md)。监督器返回JournalView／AdmissionReceipt，核心核当前审批并持久化后才生成安装0.2的RuntimeBindingRef；监督器不持业务库，不提前伪造核心Ref。bootstrap秘密不落盘，监督器崩溃不能恢复挑战；重复CREATE只查询原attempt。fence ACK仅证明准入切断，退役仍须完整组证据，unknown及设备资源不自动释放。
+
+完整fence覆盖registered与全部非终态成员，历史deny不可复活；快照、拒绝集合与current指针同日志事务，OS创建在确认attempt提交后最多调用一次。推荐独立监督journal采用SQLite单writer、DELETE／EXTRA，业务库WAL不变；这是新增待审阅的原生依赖和存储取舍，不是已批准制品。局部内存SQL和合成消息检查只证候选约束，真实平台／设备／磁盘故障仍未验。

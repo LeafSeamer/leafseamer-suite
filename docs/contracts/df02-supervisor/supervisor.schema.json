@@ -1,0 +1,1049 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json",
+  "$defs": {
+    "Id": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json#/$defs/Id"
+    },
+    "U20": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json#/$defs/U20"
+    },
+    "Digest": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json#/$defs/Digest"
+    },
+    "RuntimeManifestRef": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json#/$defs/RuntimeManifestRef"
+    },
+    "ContainmentRef": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json#/$defs/ContainmentRef"
+    },
+    "ExtensionLaunchIntent": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json#/$defs/ExtensionLaunchIntent"
+    },
+    "LaunchAuthorization": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json#/$defs/LaunchAuthorization"
+    },
+    "ClockDomainRef": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/ClockDomainRef"
+    },
+    "ClockDomainDescriptor": {
+      "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/ClockDomainDescriptor"
+    },
+    "Secret32": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$(?![\\s\\S])"
+    },
+    "ProtectedLaunchIntent": {
+      "type": "object",
+      "properties": {
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "supervisor_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "runtime_generation": {
+          "$ref": "#/$defs/Id"
+        },
+        "member_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "role": {
+          "enum": [
+            "core",
+            "time_provider"
+          ]
+        },
+        "artifact_manifest_ref": {
+          "$ref": "#/$defs/RuntimeManifestRef"
+        },
+        "containment_ref": {
+          "$ref": "#/$defs/ContainmentRef"
+        },
+        "device_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 0,
+          "uniqueItems": true
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/U20"
+        }
+      },
+      "required": [
+        "launch_id",
+        "service_id",
+        "supervisor_instance_id",
+        "runtime_generation",
+        "member_id",
+        "role",
+        "artifact_manifest_ref",
+        "containment_ref",
+        "device_ids",
+        "policy_revision"
+      ],
+      "additionalProperties": false
+    },
+    "LaunchIntent": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ExtensionLaunchIntent"
+        },
+        {
+          "$ref": "#/$defs/ProtectedLaunchIntent"
+        }
+      ]
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "supervisor_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "domain_ref": {
+          "$ref": "#/$defs/ClockDomainRef"
+        }
+      },
+      "required": [
+        "service_id",
+        "database_instance_id",
+        "supervisor_instance_id",
+        "domain_ref"
+      ],
+      "additionalProperties": false
+    },
+    "LaunchKey": {
+      "type": "object",
+      "properties": {
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "launch_id",
+        "launch_intent_digest"
+      ],
+      "additionalProperties": false
+    },
+    "FenceItem": {
+      "type": "object",
+      "properties": {
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "disposition": {
+          "enum": [
+            "allow",
+            "deny"
+          ]
+        }
+      },
+      "required": [
+        "launch_id",
+        "launch_intent_digest",
+        "disposition"
+      ],
+      "additionalProperties": false
+    },
+    "FenceSnapshot": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FenceItem"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "revision",
+        "items",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "FenceResult": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "snapshot_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "journal_committed": {
+          "const": true
+        }
+      },
+      "required": [
+        "revision",
+        "snapshot_digest",
+        "journal_committed"
+      ],
+      "additionalProperties": false
+    },
+    "Register": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "$ref": "#/$defs/ExtensionLaunchIntent"
+        },
+        "authorization": {
+          "$ref": "#/$defs/LaunchAuthorization"
+        }
+      },
+      "required": [
+        "intent",
+        "authorization"
+      ],
+      "additionalProperties": false
+    },
+    "Create": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/LaunchKey"
+        },
+        "authorization": {
+          "$ref": "#/$defs/LaunchAuthorization"
+        },
+        "materialization_evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "materialization_challenge_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "key",
+        "authorization",
+        "materialization_evidence_id",
+        "materialization_challenge_id"
+      ],
+      "additionalProperties": false
+    },
+    "BootstrapAssignment": {
+      "type": "object",
+      "properties": {
+        "bootstrap_version": {
+          "const": "bootstrap/0.1.0-draft.1"
+        },
+        "bootstrap_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "member_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "member_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "role": {
+          "enum": [
+            "core",
+            "worker",
+            "time_provider"
+          ]
+        },
+        "artifact_manifest_ref": {
+          "$ref": "#/$defs/RuntimeManifestRef"
+        },
+        "channel_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "challenge_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_descriptor": {
+          "$ref": "#/$defs/ClockDomainDescriptor"
+        },
+        "challenge_nonce": {
+          "$ref": "#/$defs/Secret32"
+        },
+        "issued_tick_ns": {
+          "$ref": "#/$defs/U20"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/U20"
+        },
+        "secret": {
+          "$ref": "#/$defs/Secret32"
+        }
+      },
+      "required": [
+        "bootstrap_version",
+        "bootstrap_id",
+        "launch_id",
+        "launch_intent_digest",
+        "member_id",
+        "member_boot_id",
+        "role",
+        "artifact_manifest_ref",
+        "channel_binding_id",
+        "challenge_id",
+        "clock_domain_descriptor",
+        "challenge_nonce",
+        "issued_tick_ns",
+        "expires_tick_ns",
+        "secret"
+      ],
+      "additionalProperties": false
+    },
+    "BootstrapProof": {
+      "type": "object",
+      "properties": {
+        "bootstrap_version": {
+          "const": "bootstrap/0.1.0-draft.1"
+        },
+        "bootstrap_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "member_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "member_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "role": {
+          "enum": [
+            "core",
+            "worker",
+            "time_provider"
+          ]
+        },
+        "artifact_manifest_ref": {
+          "$ref": "#/$defs/RuntimeManifestRef"
+        },
+        "channel_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "challenge_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "proof": {
+          "$ref": "#/$defs/Secret32"
+        }
+      },
+      "required": [
+        "bootstrap_version",
+        "bootstrap_id",
+        "launch_id",
+        "launch_intent_digest",
+        "member_id",
+        "member_boot_id",
+        "role",
+        "artifact_manifest_ref",
+        "channel_binding_id",
+        "challenge_id",
+        "clock_domain_id",
+        "descriptor_digest",
+        "proof"
+      ],
+      "additionalProperties": false
+    },
+    "AdmissionReceipt": {
+      "type": "object",
+      "properties": {
+        "bootstrap_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "member_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "member_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "role": {
+          "enum": [
+            "core",
+            "worker",
+            "time_provider"
+          ]
+        },
+        "artifact_manifest_ref": {
+          "$ref": "#/$defs/RuntimeManifestRef"
+        },
+        "channel_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "receipt_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "domain_ref": {
+          "$ref": "#/$defs/ClockDomainRef"
+        },
+        "containment_ref": {
+          "$ref": "#/$defs/ContainmentRef"
+        },
+        "os_observation_ref": {
+          "$ref": "#/$defs/Id"
+        },
+        "admitted_tick_ns": {
+          "$ref": "#/$defs/U20"
+        },
+        "gate_state": {
+          "const": "closed"
+        }
+      },
+      "required": [
+        "bootstrap_id",
+        "launch_id",
+        "launch_intent_digest",
+        "member_id",
+        "member_boot_id",
+        "role",
+        "artifact_manifest_ref",
+        "channel_binding_id",
+        "receipt_id",
+        "domain_ref",
+        "containment_ref",
+        "os_observation_ref",
+        "admitted_tick_ns",
+        "gate_state"
+      ],
+      "additionalProperties": false
+    },
+    "RetirementEvidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "old_domain_ref": {
+          "$ref": "#/$defs/ClockDomainRef"
+        },
+        "target_scope": {
+          "enum": [
+            "member_group",
+            "runtime_domain"
+          ]
+        },
+        "target_member_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "containment_ref": {
+          "$ref": "#/$defs/ContainmentRef"
+        },
+        "launch_intake_closed": {
+          "type": "boolean"
+        },
+        "os_observation_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "result": {
+          "enum": [
+            "confirmed_empty",
+            "unproven"
+          ]
+        },
+        "evaluator_domain_ref": {
+          "$ref": "#/$defs/ClockDomainRef"
+        },
+        "observed_tick_ns": {
+          "$ref": "#/$defs/U20"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "service_id",
+        "old_domain_ref",
+        "target_scope",
+        "target_member_ids",
+        "containment_ref",
+        "launch_intake_closed",
+        "os_observation_refs",
+        "result",
+        "evaluator_domain_ref",
+        "observed_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "JournalView": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/LaunchKey"
+        },
+        "supervisor_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "enum": [
+            "registered",
+            "creating",
+            "awaiting_bootstrap",
+            "admitted_closed",
+            "retiring",
+            "retired",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "creation_attempted": {
+          "type": "boolean"
+        },
+        "admission_receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AdmissionReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retirement_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RetirementEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_state": {
+          "const": "closed"
+        }
+      },
+      "required": [
+        "key",
+        "supervisor_instance_id",
+        "state",
+        "creation_attempted",
+        "admission_receipt",
+        "retirement_evidence",
+        "gate_state"
+      ],
+      "additionalProperties": false
+    },
+    "LaunchResult": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/LaunchKey"
+        },
+        "record": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JournalView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "key",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "RetireRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/LaunchKey"
+        },
+        "containment_ref": {
+          "$ref": "#/$defs/ContainmentRef"
+        },
+        "reason": {
+          "enum": [
+            "revoked",
+            "shutdown",
+            "bootstrap_failed",
+            "recovery"
+          ]
+        }
+      },
+      "required": [
+        "key",
+        "containment_ref",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "identity_conflict",
+            "stale_fence",
+            "unauthorized",
+            "invalid_binding",
+            "expired",
+            "capacity",
+            "journal_unavailable",
+            "indeterminate",
+            "not_found"
+          ]
+        },
+        "retry_action": {
+          "const": "query_only"
+        }
+      },
+      "required": [
+        "code",
+        "retry_action"
+      ],
+      "additionalProperties": false
+    },
+    "FENCE_PUT": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "FENCE_PUT"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "#/$defs/FenceSnapshot"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "LAUNCH_REGISTER": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "LAUNCH_REGISTER"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "#/$defs/Register"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "LAUNCH_CREATE": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "LAUNCH_CREATE"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "#/$defs/Create"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "LAUNCH_QUERY": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "LAUNCH_QUERY"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "#/$defs/LaunchKey"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "RETIRE_REQUEST": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "RETIRE_REQUEST"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "#/$defs/RetireRequest"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "FENCE_RESULT": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "FENCE_RESULT"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "#/$defs/FenceResult"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "LAUNCH_RESULT": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "LAUNCH_RESULT"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "#/$defs/LaunchResult"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "RETIRE_RESULT": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "RETIRE_RESULT"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "#/$defs/RetirementEvidence"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "ERROR": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "supervisor-control/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "ERROR"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "#/$defs/Error"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "scope",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/FENCE_PUT"
+    },
+    {
+      "$ref": "#/$defs/LAUNCH_REGISTER"
+    },
+    {
+      "$ref": "#/$defs/LAUNCH_CREATE"
+    },
+    {
+      "$ref": "#/$defs/LAUNCH_QUERY"
+    },
+    {
+      "$ref": "#/$defs/RETIRE_REQUEST"
+    },
+    {
+      "$ref": "#/$defs/FENCE_RESULT"
+    },
+    {
+      "$ref": "#/$defs/LAUNCH_RESULT"
+    },
+    {
+      "$ref": "#/$defs/RETIRE_RESULT"
+    },
+    {
+      "$ref": "#/$defs/ERROR"
+    }
+  ]
+}

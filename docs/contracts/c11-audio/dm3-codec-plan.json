@@ -1,0 +1,80 @@
+{
+  "format_version": "dm3-codec-review/1",
+  "status": "candidate_only",
+  "runtime_approved": false,
+  "source_inventory_sha256": "42065cdbdd77c616468b4f3cce00d9cdf4f5a5db7598be09fc12eab905add98f",
+  "groups": [
+    {
+      "id": "raw-integer",
+      "family": "integer_decimal",
+      "source_indices": [0,1,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,68,69,70,71,72,73,74,77,78,79,80,81,82,83,84,86,87,93,94,95,96,97,98,99,100,102,103,108,109,110,111,112,113,114,120,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,158,159,160,161,162,163,164,165,166,167,168],
+      "value_projection": "raw_integer",
+      "units": "unqualified",
+      "redaction": "standard",
+      "runtime_approved": false
+    },
+    {
+      "id": "label-text",
+      "family": "text_bytes_candidate",
+      "source_indices": [5,30,48,67,91,107,118],
+      "value_projection": "unresolved",
+      "units": "not_applicable",
+      "redaction": "standard",
+      "runtime_approved": false
+    },
+    {
+      "id": "binary-unresolved",
+      "family": "binary_unresolved",
+      "source_indices": [2,3,4,27,28,29,46,47,64,65,66,75,88,89,90,92,104,105,106,115,116,117,169,170,171,173],
+      "value_projection": "unresolved",
+      "units": "not_applicable",
+      "redaction": "standard",
+      "runtime_approved": false
+    },
+    {
+      "id": "secret",
+      "family": "secret_ref_candidate",
+      "source_indices": [119],
+      "value_projection": "secret_ref_only",
+      "units": "not_applicable",
+      "redaction": "no_value_capture",
+      "runtime_approved": false
+    },
+    {
+      "id": "string-unresolved",
+      "family": "text_or_enum_unresolved",
+      "source_indices": [76,85,101,121,154,155,156,157,172],
+      "value_projection": "unresolved",
+      "units": "not_applicable",
+      "redaction": "standard",
+      "runtime_approved": false
+    },
+    {
+      "id": "scene-absolute",
+      "family": "scene_absolute",
+      "source_indices": [1000,1001],
+      "value_projection": "scene_reference",
+      "units": "not_applicable",
+      "redaction": "standard",
+      "runtime_approved": false
+    },
+    {
+      "id": "scene-relative",
+      "family": "scene_relative",
+      "source_indices": [1010,1011],
+      "value_projection": "direction",
+      "units": "not_applicable",
+      "redaction": "standard",
+      "runtime_approved": false
+    },
+    {
+      "id": "meter-stream",
+      "family": "meter_hex_candidate",
+      "source_indices": [2000,2001,2002,2100,2101,2102],
+      "value_projection": "raw_meter",
+      "units": "unqualified",
+      "redaction": "standard",
+      "runtime_approved": false
+    }
+  ]
+}

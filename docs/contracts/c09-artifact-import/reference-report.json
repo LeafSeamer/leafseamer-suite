@@ -1,0 +1,1270 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "runtime_approved": false,
+  "checks": [
+    {
+      "name": "Manifest正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Manifest拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "FileInventory正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "FileInventory拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "RoleResolution正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "RoleResolution拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ResolvedReview正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ResolvedReview拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ImportBegin正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ImportBegin拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ImportIdentity正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ImportIdentity拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ImportStatus正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ImportStatus拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IntakeQuery正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "IntakeQuery拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IntakeResult正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "IntakeResult拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "VerifyMaterialization正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "VerifyMaterialization拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "MaterializationResult正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "MaterializationResult拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Error正常结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Error拒绝额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "U20:'0'",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "U20:'99999999999999999999'",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "U20:'01'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "U20:'1\\n'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "U20:1",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "U20:'100000000000000000000'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a/b.bin",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "路径:../x",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:/x",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a//b",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a/CON.txt",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a/x.",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a:b",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a\\b",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a/设备",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "路径:a/.. /x",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "完整清单与原字节",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "未声明payload",
+      "expected": "closure",
+      "observed": "closure"
+    },
+    {
+      "name": "缺失payload",
+      "expected": "closure",
+      "observed": "closure"
+    },
+    {
+      "name": "字节变化",
+      "expected": "bytes",
+      "observed": "bytes"
+    },
+    {
+      "name": "重复file_id",
+      "expected": "identity",
+      "observed": "identity"
+    },
+    {
+      "name": "控制文件重占",
+      "expected": "path",
+      "observed": "path"
+    },
+    {
+      "name": "文件目录冲突",
+      "expected": "path_prefix",
+      "observed": "path_prefix"
+    },
+    {
+      "name": "清单hash失配",
+      "expected": "inventory_digest",
+      "observed": "inventory_digest"
+    },
+    {
+      "name": "入口loader错配",
+      "expected": "entry_role",
+      "observed": "entry_role"
+    },
+    {
+      "name": "policy缺失",
+      "expected": "io_policy",
+      "observed": "io_policy"
+    },
+    {
+      "name": "lock角色错配",
+      "expected": "file_role",
+      "observed": "file_role"
+    },
+    {
+      "name": "八类权限独立预期",
+      "expected": [
+        {
+          "request_id": "data_scope",
+          "kind": "data_scope",
+          "purpose": "合成用途",
+          "scope": {
+            "objects": [
+              {
+                "kind": "data_object",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "data_object.test",
+                "revision": "1",
+                "digest": "sha256:554af4d156918de97bc3c43ac83c4bf359f571fd380aa6606c5c2403d86f2392"
+              }
+            ],
+            "access": "read"
+          }
+        },
+        {
+          "request_id": "device_scope",
+          "kind": "device_scope",
+          "purpose": "合成用途",
+          "scope": {
+            "devices": [
+              {
+                "kind": "device",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "device.test",
+                "revision": "1",
+                "digest": "sha256:320e21f3ce6874e513375f72bb0e3f50bc2f8018b713ee7eb8b56ffc04f8d443"
+              }
+            ],
+            "action_ids": [
+              "fader.set"
+            ],
+            "trigger_ids": [
+              "fader.changed"
+            ]
+          }
+        },
+        {
+          "request_id": "filesystem_root_role",
+          "kind": "filesystem_root_role",
+          "purpose": "合成用途",
+          "scope": {
+            "role_ref": {
+              "kind": "filesystem_role",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "filesystem_role.test",
+              "revision": "1",
+              "digest": "sha256:68390bfeee0f6e7ea312fd7f72e687ee57934044788a21ffba7df8e20370917b"
+            },
+            "access": "cache_write",
+            "quota_bytes": "1024"
+          }
+        },
+        {
+          "request_id": "helper_artifact",
+          "kind": "helper_artifact",
+          "purpose": "合成用途",
+          "scope": {
+            "artifact_ref": {
+              "kind": "helper_artifact",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "helper_artifact.test",
+              "revision": "1",
+              "digest": "sha256:cd38fc079606d9706d7f3c1e3923d5c911f4d8b2dc1512b64ab91e2a1913e78c"
+            },
+            "launch_profile_ref": {
+              "kind": "validation_policy",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "validation_policy.test",
+              "revision": "1",
+              "digest": "sha256:bc88a96506b03aa4ff50622abc092a237f4226a3ffd19181029c971500660f45"
+            }
+          }
+        },
+        {
+          "request_id": "network_endpoint",
+          "kind": "network_endpoint",
+          "purpose": "合成用途",
+          "scope": {
+            "transport": "tcp",
+            "host": "192.0.2.10",
+            "port": 49280,
+            "profile_ref": {
+              "kind": "protocol_profile",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "protocol_profile.test",
+              "revision": "1",
+              "digest": "sha256:fd402ea5d8b51f990adc042990096bbcf6555c881b4f4ef9ce2d072911b6c6f6"
+            }
+          }
+        },
+        {
+          "request_id": "panel_method",
+          "kind": "panel_method",
+          "purpose": "合成用途",
+          "scope": {
+            "authority": "controller",
+            "method_ids": [
+              "controller.listDevices"
+            ],
+            "object_refs": [
+              {
+                "kind": "device",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "device.test",
+                "revision": "1",
+                "digest": "sha256:320e21f3ce6874e513375f72bb0e3f50bc2f8018b713ee7eb8b56ffc04f8d443"
+              }
+            ]
+          }
+        },
+        {
+          "request_id": "protocol_io",
+          "kind": "protocol_io",
+          "purpose": "合成用途",
+          "scope": {
+            "profile_ref": {
+              "kind": "protocol_profile",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "protocol_profile.test",
+              "revision": "1",
+              "digest": "sha256:fd402ea5d8b51f990adc042990096bbcf6555c881b4f4ef9ce2d072911b6c6f6"
+            },
+            "endpoint_request_id": "network_endpoint",
+            "frame_classes": [
+              "query"
+            ]
+          }
+        },
+        {
+          "request_id": "secret_role",
+          "kind": "secret_role",
+          "purpose": "合成用途",
+          "scope": {
+            "role_ref": {
+              "kind": "secret_role",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "secret_role.test",
+              "revision": "1",
+              "digest": "sha256:05fda1f0b49453dabbedea793e37b50473d0ca750789d20b0ec3ea98f40f679a"
+            },
+            "devices": [
+              {
+                "kind": "device",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "device.test",
+                "revision": "1",
+                "digest": "sha256:320e21f3ce6874e513375f72bb0e3f50bc2f8018b713ee7eb8b56ffc04f8d443"
+              }
+            ],
+            "sources": []
+          }
+        }
+      ],
+      "observed": [
+        {
+          "request_id": "data_scope",
+          "kind": "data_scope",
+          "purpose": "合成用途",
+          "scope": {
+            "objects": [
+              {
+                "kind": "data_object",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "data_object.test",
+                "revision": "1",
+                "digest": "sha256:554af4d156918de97bc3c43ac83c4bf359f571fd380aa6606c5c2403d86f2392"
+              }
+            ],
+            "access": "read"
+          }
+        },
+        {
+          "request_id": "device_scope",
+          "kind": "device_scope",
+          "purpose": "合成用途",
+          "scope": {
+            "devices": [
+              {
+                "kind": "device",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "device.test",
+                "revision": "1",
+                "digest": "sha256:320e21f3ce6874e513375f72bb0e3f50bc2f8018b713ee7eb8b56ffc04f8d443"
+              }
+            ],
+            "action_ids": [
+              "fader.set"
+            ],
+            "trigger_ids": [
+              "fader.changed"
+            ]
+          }
+        },
+        {
+          "request_id": "filesystem_root_role",
+          "kind": "filesystem_root_role",
+          "purpose": "合成用途",
+          "scope": {
+            "role_ref": {
+              "kind": "filesystem_role",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "filesystem_role.test",
+              "revision": "1",
+              "digest": "sha256:68390bfeee0f6e7ea312fd7f72e687ee57934044788a21ffba7df8e20370917b"
+            },
+            "access": "cache_write",
+            "quota_bytes": "1024"
+          }
+        },
+        {
+          "request_id": "helper_artifact",
+          "kind": "helper_artifact",
+          "purpose": "合成用途",
+          "scope": {
+            "artifact_ref": {
+              "kind": "helper_artifact",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "helper_artifact.test",
+              "revision": "1",
+              "digest": "sha256:cd38fc079606d9706d7f3c1e3923d5c911f4d8b2dc1512b64ab91e2a1913e78c"
+            },
+            "launch_profile_ref": {
+              "kind": "validation_policy",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "validation_policy.test",
+              "revision": "1",
+              "digest": "sha256:bc88a96506b03aa4ff50622abc092a237f4226a3ffd19181029c971500660f45"
+            }
+          }
+        },
+        {
+          "request_id": "network_endpoint",
+          "kind": "network_endpoint",
+          "purpose": "合成用途",
+          "scope": {
+            "transport": "tcp",
+            "host": "192.0.2.10",
+            "port": 49280,
+            "profile_ref": {
+              "kind": "protocol_profile",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "protocol_profile.test",
+              "revision": "1",
+              "digest": "sha256:fd402ea5d8b51f990adc042990096bbcf6555c881b4f4ef9ce2d072911b6c6f6"
+            }
+          }
+        },
+        {
+          "request_id": "panel_method",
+          "kind": "panel_method",
+          "purpose": "合成用途",
+          "scope": {
+            "authority": "controller",
+            "method_ids": [
+              "controller.listDevices"
+            ],
+            "object_refs": [
+              {
+                "kind": "device",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "device.test",
+                "revision": "1",
+                "digest": "sha256:320e21f3ce6874e513375f72bb0e3f50bc2f8018b713ee7eb8b56ffc04f8d443"
+              }
+            ]
+          }
+        },
+        {
+          "request_id": "protocol_io",
+          "kind": "protocol_io",
+          "purpose": "合成用途",
+          "scope": {
+            "profile_ref": {
+              "kind": "protocol_profile",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "protocol_profile.test",
+              "revision": "1",
+              "digest": "sha256:fd402ea5d8b51f990adc042990096bbcf6555c881b4f4ef9ce2d072911b6c6f6"
+            },
+            "endpoint_request_id": "network_endpoint",
+            "frame_classes": [
+              "query"
+            ]
+          }
+        },
+        {
+          "request_id": "secret_role",
+          "kind": "secret_role",
+          "purpose": "合成用途",
+          "scope": {
+            "role_ref": {
+              "kind": "secret_role",
+              "authority_service_id": "controller.test",
+              "database_instance_id": "db.test",
+              "object_id": "secret_role.test",
+              "revision": "1",
+              "digest": "sha256:05fda1f0b49453dabbedea793e37b50473d0ca750789d20b0ec3ea98f40f679a"
+            },
+            "devices": [
+              {
+                "kind": "device",
+                "authority_service_id": "controller.test",
+                "database_instance_id": "db.test",
+                "object_id": "device.test",
+                "revision": "1",
+                "digest": "sha256:320e21f3ce6874e513375f72bb0e3f50bc2f8018b713ee7eb8b56ffc04f8d443"
+              }
+            ],
+            "sources": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "解析记录完整绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "跨authority重新摘要",
+      "expected": "role_authority",
+      "observed": "role_authority"
+    },
+    {
+      "name": "错配置重新摘要",
+      "expected": "configuration",
+      "observed": "configuration"
+    },
+    {
+      "name": "端口越界",
+      "expected": "endpoint",
+      "observed": "endpoint"
+    },
+    {
+      "name": "URL不是host",
+      "expected": "endpoint",
+      "observed": "endpoint"
+    },
+    {
+      "name": "缺角色",
+      "expected": "role_set",
+      "observed": "role_set"
+    },
+    {
+      "name": "错kind",
+      "expected": "role_kind_count",
+      "observed": "role_kind_count"
+    },
+    {
+      "name": "重复role",
+      "expected": "role_set",
+      "observed": "role_set"
+    },
+    {
+      "name": "空多值",
+      "expected": "role_kind_count",
+      "observed": "role_kind_count"
+    },
+    {
+      "name": "篡改权限后重算摘要",
+      "expected": "projection",
+      "observed": "projection"
+    },
+    {
+      "name": "换installation后重算摘要",
+      "expected": "authority_binding",
+      "observed": "authority_binding"
+    },
+    {
+      "name": "helper跨包错绑",
+      "expected": "helper_binding",
+      "observed": "helper_binding"
+    },
+    {
+      "name": "面板目标服务错配",
+      "expected": "service_kind",
+      "observed": "service_kind"
+    },
+    {
+      "name": "secret无精确目标",
+      "expected": "secret_scope",
+      "observed": "secret_scope"
+    },
+    {
+      "name": "protocol引用不存在端点",
+      "expected": "protocol_binding",
+      "observed": "protocol_binding"
+    },
+    {
+      "name": "device模板错角色",
+      "expected": "role_reference",
+      "observed": "role_reference"
+    },
+    {
+      "name": "device空用途",
+      "expected": "empty_device",
+      "observed": "empty_device"
+    },
+    {
+      "name": "panel引用秘密",
+      "expected": "panel_role",
+      "observed": "panel_role"
+    },
+    {
+      "name": "模板Id重复",
+      "expected": "template_identity",
+      "observed": "template_identity"
+    },
+    {
+      "name": "角色下界倒置",
+      "expected": "role_kind_count",
+      "observed": "role_kind_count"
+    },
+    {
+      "name": "单值角色不可多值展开",
+      "expected": "single_role",
+      "observed": "single_role"
+    },
+    {
+      "name": "同对象不同revision重复绑定",
+      "expected": "duplicate_object",
+      "observed": "duplicate_object"
+    },
+    {
+      "name": "resolution摘要失配",
+      "expected": "digest",
+      "observed": "digest"
+    },
+    {
+      "name": "review绑定解析",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "review跨解析",
+      "expected": "resolution_binding",
+      "observed": "resolution_binding"
+    },
+    {
+      "name": "review回到宽权限",
+      "expected": "review_projection",
+      "observed": "review_projection"
+    },
+    {
+      "name": "sealed收据关联",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "操作身份错绑",
+      "expected": "operation_binding",
+      "observed": "operation_binding"
+    },
+    {
+      "name": "包错绑",
+      "expected": "package_binding",
+      "observed": "package_binding"
+    },
+    {
+      "name": "收据导入身份错绑",
+      "expected": "receipt_identity",
+      "observed": "receipt_identity"
+    },
+    {
+      "name": "收据目标错绑",
+      "expected": "receipt_binding",
+      "observed": "receipt_binding"
+    },
+    {
+      "name": "收据manifest错绑",
+      "expected": "receipt_binding",
+      "observed": "receipt_binding"
+    },
+    {
+      "name": "收据inventory错绑",
+      "expected": "inventory_binding",
+      "observed": "inventory_binding"
+    },
+    {
+      "name": "新导入",
+      "expected": "accept",
+      "observed": "accept"
+    },
+    {
+      "name": "重复请求",
+      "expected": "existing",
+      "observed": "existing"
+    },
+    {
+      "name": "新attachment同内容",
+      "expected": "existing",
+      "observed": "existing"
+    },
+    {
+      "name": "同identity换包",
+      "expected": "identity_conflict",
+      "observed": "identity_conflict"
+    },
+    {
+      "name": "同identity换trust",
+      "expected": "identity_conflict",
+      "observed": "identity_conflict"
+    },
+    {
+      "name": "当前权限优先",
+      "expected": "unauthorized_peer",
+      "observed": "unauthorized_peer"
+    },
+    {
+      "name": "历史结果不新占容量",
+      "expected": "existing",
+      "observed": "existing"
+    },
+    {
+      "name": "新导入容量拒绝",
+      "expected": "capacity",
+      "observed": "capacity"
+    },
+    {
+      "name": "新导入旧trust",
+      "expected": "trust_denied",
+      "observed": "trust_denied"
+    },
+    {
+      "name": "跨目标",
+      "expected": "unauthorized_peer",
+      "observed": "unauthorized_peer"
+    },
+    {
+      "name": "accepted正常推进",
+      "expected": "copying",
+      "observed": "copying"
+    },
+    {
+      "name": "copying正常推进",
+      "expected": "validating",
+      "observed": "validating"
+    },
+    {
+      "name": "validating正常推进",
+      "expected": "sealing",
+      "observed": "sealing"
+    },
+    {
+      "name": "sealing正常推进",
+      "expected": "sealed",
+      "observed": "sealed"
+    },
+    {
+      "name": "源变化",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未核全部文件",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "耐久未证",
+      "expected": "indeterminate",
+      "observed": "indeterminate"
+    },
+    {
+      "name": "信任撤销",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "提交未知",
+      "expected": "indeterminate",
+      "observed": "indeterminate"
+    },
+    {
+      "name": "取消先提交",
+      "expected": "cancelled",
+      "observed": "cancelled"
+    },
+    {
+      "name": "sealed先提交",
+      "expected": "sealed",
+      "observed": "sealed"
+    },
+    {
+      "name": "未知不能直接取消",
+      "expected": "indeterminate",
+      "observed": "indeterminate"
+    },
+    {
+      "name": "恢复spool",
+      "expected": "validating",
+      "observed": "validating"
+    },
+    {
+      "name": "恢复未知账本",
+      "expected": "indeterminate",
+      "observed": "indeterminate"
+    },
+    {
+      "name": "恢复原sealed",
+      "expected": "sealed",
+      "observed": "sealed"
+    },
+    {
+      "name": "sealed后丢实物保留历史",
+      "expected": "sealed",
+      "observed": "sealed"
+    },
+    {
+      "name": "恢复无材料",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "当前实物可用",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "历史sealed不掩盖文件丢失",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "历史sealed不掩盖撤销",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_BEGIN结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "IMPORT_BEGIN拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_BEGIN拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_BEGIN通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "IMPORT_BEGIN拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "IMPORT_QUERY结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "IMPORT_QUERY拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_QUERY拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_QUERY通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "IMPORT_QUERY拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "IMPORT_CANCEL结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "IMPORT_CANCEL拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_CANCEL拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_CANCEL通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "IMPORT_CANCEL拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "IMPORT_STATUS结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "IMPORT_STATUS拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_STATUS拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "IMPORT_STATUS通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "IMPORT_STATUS拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "INTAKE_QUERY结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "INTAKE_QUERY拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "INTAKE_QUERY拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "INTAKE_QUERY通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "INTAKE_QUERY拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "INTAKE_RESULT结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "INTAKE_RESULT拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "INTAKE_RESULT拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "INTAKE_RESULT通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "INTAKE_RESULT拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "VERIFY_MATERIALIZATION结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "VERIFY_MATERIALIZATION拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "VERIFY_MATERIALIZATION拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "VERIFY_MATERIALIZATION通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "VERIFY_MATERIALIZATION拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "MATERIALIZATION_RESULT结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "MATERIALIZATION_RESULT拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "MATERIALIZATION_RESULT拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "MATERIALIZATION_RESULT通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "MATERIALIZATION_RESULT拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "ERROR结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ERROR拒绝错版本",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ERROR拒绝错reply形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ERROR通道绑定",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "ERROR拒绝旧channel",
+      "expected": "channel",
+      "observed": "channel"
+    },
+    {
+      "name": "accepted状态结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted拒绝错误收据",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "cancelled状态结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cancelled拒绝错误收据",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "rejected状态结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected拒绝错误收据",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "indeterminate状态结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "indeterminate拒绝错误收据",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "sealed状态结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "sealed拒绝错误收据",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "物化核验关联",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "物化错绑:intake_id",
+      "expected": "request_binding",
+      "observed": "request_binding"
+    },
+    {
+      "name": "物化错绑:target_authority_service_id",
+      "expected": "request_binding",
+      "observed": "request_binding"
+    },
+    {
+      "name": "物化错绑:manifest_digest",
+      "expected": "request_binding",
+      "observed": "request_binding"
+    },
+    {
+      "name": "物化错绑:artifact_set_digest",
+      "expected": "request_binding",
+      "observed": "request_binding"
+    },
+    {
+      "name": "物化错绑:host_trust_epoch",
+      "expected": "request_binding",
+      "observed": "request_binding"
+    },
+    {
+      "name": "物化错绑:challenge_id",
+      "expected": "request_binding",
+      "observed": "request_binding"
+    },
+    {
+      "name": "物化错绑:launch_intent_digest",
+      "expected": "request_binding",
+      "observed": "request_binding"
+    },
+    {
+      "name": "物化截止等号",
+      "expected": "freshness",
+      "observed": "freshness"
+    },
+    {
+      "name": "物化本地域变化",
+      "expected": "freshness",
+      "observed": "freshness"
+    },
+    {
+      "name": "物化远端域变化",
+      "expected": "freshness",
+      "observed": "freshness"
+    }
+  ],
+  "versions": {
+    "jsonschema": "4.25.1",
+    "rfc8785": "0.1.4"
+  },
+  "limitations": [
+    "仅合成清单和有限状态快照，不执行ZIP/FD/IPC/进程或数据库",
+    "权威对象、helper与信任前提人工提供",
+    "不验证完整依赖锁、能力模板、实际路径和加载竞态",
+    "未并入SDK或安装HTTP；运行验收未执行"
+  ],
+  "runtime_validation": {
+    "zip": 0,
+    "ipc": 0,
+    "installer": 0,
+    "database": 0,
+    "device": 0
+  },
+  "input_sha256": {
+    "docs/contracts/c09-artifact-import/README.md": "794ce64613a93a2d68efa4df988a0e16124ac9c1774fa3e75e14b14335f64975",
+    "docs/contracts/c09-artifact-import/build_contracts.py": "1221c4451c3d90aa9f9d1dece99324b380c2ee4a16727f9521d597de2029a671",
+    "docs/contracts/c09-artifact-import/check_contracts.py": "0d54f76799ed8ae0916e4b861a9b92761e61f2a27b3329b24295bc48e37da80f",
+    "docs/contracts/c09-artifact-import/artifact.schema.json": "53fd5ca631fed1cd1b5537f2263588aabd086191080d6960340e7e6ab41050ef",
+    "docs/contracts/c09-artifact-import/ipc.schema.json": "2201af7840bc683bb0c7f59cc8dabb21242d8ed6836236ca9ca2d43ee7c219e4",
+    "docs/contracts/c09-installation/installation.schema.json": "42e45bb314f83326d30bb4e2174da2b7a521460b05c229c3419f409338fbce3d",
+    "docs/rebirth-c09-extension-design.md": "73f9b6d6103746de009deff08f466f6a09ddcbe2897f3289d9e2bafac273318f"
+  }
+}

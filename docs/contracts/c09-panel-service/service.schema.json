@@ -1,0 +1,3577 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c09-panel-service/service.schema.json",
+  "title": "panel-service/0.1.0-draft.1",
+  "$defs": {
+    "Id": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/Id"
+    },
+    "Counter": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/Counter"
+    },
+    "Digest": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/Digest"
+    },
+    "RequestIdentity": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/RequestIdentity"
+    },
+    "DelegationRef": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/DelegationRef"
+    },
+    "ActivationRef": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/ActivationRef"
+    },
+    "ObjectRef": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/ObjectRef"
+    },
+    "ConfirmationCommit": {
+      "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/ConfirmationCommit"
+    },
+    "CreateSession": {
+      "type": "object",
+      "properties": {
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "panel_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/PositiveCounter"
+        },
+        "installation_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "artifact_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "mount_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "requested_scope_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        }
+      },
+      "required": [
+        "host_operation_id",
+        "gui_instance_id",
+        "panel_instance_id",
+        "document_generation",
+        "installation_ref",
+        "approval_ref",
+        "artifact_digest",
+        "mount_ref",
+        "requested_scope_ref",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Handshake": {
+      "type": "object",
+      "properties": {
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "handshake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "host_operation_id",
+        "gui_instance_id",
+        "expected_revision",
+        "handshake_id",
+        "channel_id"
+      ],
+      "additionalProperties": false
+    },
+    "PrepareActivation": {
+      "type": "object",
+      "properties": {
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "handshake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_registry_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/RevisionRef"
+        },
+        "expected_bundle_ref": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/BundleRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "host_operation_id",
+        "gui_instance_id",
+        "expected_revision",
+        "handshake_id",
+        "expected_registry_ref",
+        "expected_bundle_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Activate": {
+      "type": "object",
+      "properties": {
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "handshake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "activation_ref": {
+          "$ref": "#/$defs/ActivationRef"
+        },
+        "ready_manifest_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "host_operation_id",
+        "gui_instance_id",
+        "expected_revision",
+        "handshake_id",
+        "channel_id",
+        "activation_ref",
+        "ready_manifest_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Renew": {
+      "type": "object",
+      "properties": {
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_lease_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "activation_ref": {
+          "$ref": "#/$defs/ActivationRef"
+        }
+      },
+      "required": [
+        "host_operation_id",
+        "gui_instance_id",
+        "expected_lease_revision",
+        "activation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "CloseSession": {
+      "type": "object",
+      "properties": {
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reason_code": {
+          "enum": [
+            "user_closed",
+            "navigation",
+            "channel_failed",
+            "host_shutdown"
+          ]
+        }
+      },
+      "required": [
+        "host_operation_id",
+        "gui_instance_id",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    },
+    "HostSession": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/Session"
+        },
+        "lifetime": {
+          "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/Lifetime"
+        },
+        "delegation_ref": {
+          "$ref": "#/$defs/DelegationRef"
+        },
+        "handshake_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "channel_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "close_operation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "session",
+        "lifetime",
+        "delegation_ref",
+        "handshake_id",
+        "channel_id",
+        "close_operation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "BoundIntent": {
+      "allOf": [
+        {
+          "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/Intent"
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.acceptTransfer"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_acceptTransfer",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_acceptTransfer"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.acquireControl"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_acquireControl",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_acquireControl"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.cancelCommand"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_cancelCommand",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_cancelCommand"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCapabilities"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getCapabilities",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getCapabilities"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCapacity"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getCapacity",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getCapacity"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getClock"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getClock",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getClock"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getClockAssessment"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getClockAssessment",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getClockAssessment"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCommand"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getCommand",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getCommand"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCommandEvidence"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getCommandEvidence",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getCommandEvidence"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getControl"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getControl",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getControl"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getControlOperation"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getControlOperation",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getControlOperation"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getDeviceState"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getDeviceState",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getDeviceState"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getMeta"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getMeta",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getMeta"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getSceneCatalog"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_getSceneCatalog",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_getSceneCatalog"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.listDevices"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_listDevices",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_listDevices"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.offerTransfer"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_offerTransfer",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_offerTransfer"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.releaseControl"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_releaseControl",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_releaseControl"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.revokeRunGrant"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_revokeRunGrant",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_revokeRunGrant"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.submitCommand"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "controller_submitCommand",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/controller_submitCommand"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.armRun"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_armRun",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_armRun"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.createDefinition"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_createDefinition",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_createDefinition"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.createRun"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_createRun",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_createRun"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getCapacity"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_getCapacity",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_getCapacity"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getClock"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_getClock",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_getClock"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getClockAssessment"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_getClockAssessment",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_getClockAssessment"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getIndependenceProof"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_getIndependenceProof",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_getIndependenceProof"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getMeta"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_getMeta",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_getMeta"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getRecoveryOperation"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_getRecoveryOperation",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_getRecoveryOperation"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getRun"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_getRun",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_getRun"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.pauseRun"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_pauseRun",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_pauseRun"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.preflightRun"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_preflightRun",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_preflightRun"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.previewRecovery"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_previewRecovery",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_previewRecovery"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.publishDefinition"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_publishDefinition",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_publishDefinition"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.resumeRun"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_resumeRun",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_resumeRun"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.updateDraft"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_arguments": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+                      "definition": "seamer_updateDraft",
+                      "schema_digest": "9d3f02434680351e213bb38a2b88a9e61c9e1cda6f18884dd889880feeb6d27c"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json#/$defs/seamer_updateDraft"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "controller.acceptTransfer",
+            "controller.acquireControl",
+            "controller.cancelCommand",
+            "controller.getCapabilities",
+            "controller.getCapacity",
+            "controller.getClock",
+            "controller.getClockAssessment",
+            "controller.getCommand",
+            "controller.getCommandEvidence",
+            "controller.getControl",
+            "controller.getControlOperation",
+            "controller.getDeviceState",
+            "controller.getMeta",
+            "controller.getSceneCatalog",
+            "controller.listDevices",
+            "controller.offerTransfer",
+            "controller.releaseControl",
+            "controller.revokeRunGrant",
+            "controller.submitCommand",
+            "seamer.armRun",
+            "seamer.createDefinition",
+            "seamer.createRun",
+            "seamer.getCapacity",
+            "seamer.getClock",
+            "seamer.getClockAssessment",
+            "seamer.getIndependenceProof",
+            "seamer.getMeta",
+            "seamer.getRecoveryOperation",
+            "seamer.getRun",
+            "seamer.pauseRun",
+            "seamer.preflightRun",
+            "seamer.previewRecovery",
+            "seamer.publishDefinition",
+            "seamer.resumeRun",
+            "seamer.updateDraft"
+          ]
+        }
+      }
+    },
+    "Invocation": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "$ref": "#/$defs/BoundIntent"
+        }
+      },
+      "required": [
+        "intent"
+      ],
+      "additionalProperties": false
+    },
+    "ConfirmInvocation": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BoundIntent"
+            },
+            {
+              "properties": {
+                "method": {
+                  "enum": [
+                    "controller.acceptTransfer",
+                    "controller.acquireControl",
+                    "controller.offerTransfer",
+                    "controller.releaseControl",
+                    "controller.revokeRunGrant",
+                    "seamer.armRun",
+                    "seamer.publishDefinition",
+                    "seamer.resumeRun"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "intent"
+      ],
+      "additionalProperties": false
+    },
+    "ConfirmationCancel": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        },
+        "delegation_ref": {
+          "$ref": "#/$defs/DelegationRef"
+        },
+        "preview_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "preview_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "identity",
+        "delegation_ref",
+        "preview_ref",
+        "preview_digest"
+      ],
+      "additionalProperties": false
+    },
+    "RequestReceipt": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        },
+        "intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "method": {
+          "enum": [
+            "controller.acceptTransfer",
+            "controller.acquireControl",
+            "controller.cancelCommand",
+            "controller.getCapabilities",
+            "controller.getCapacity",
+            "controller.getClock",
+            "controller.getClockAssessment",
+            "controller.getCommand",
+            "controller.getCommandEvidence",
+            "controller.getControl",
+            "controller.getControlOperation",
+            "controller.getDeviceState",
+            "controller.getMeta",
+            "controller.getSceneCatalog",
+            "controller.listDevices",
+            "controller.offerTransfer",
+            "controller.releaseControl",
+            "controller.revokeRunGrant",
+            "controller.submitCommand",
+            "seamer.armRun",
+            "seamer.createDefinition",
+            "seamer.createRun",
+            "seamer.getCapacity",
+            "seamer.getClock",
+            "seamer.getClockAssessment",
+            "seamer.getIndependenceProof",
+            "seamer.getMeta",
+            "seamer.getRecoveryOperation",
+            "seamer.getRun",
+            "seamer.pauseRun",
+            "seamer.preflightRun",
+            "seamer.previewRecovery",
+            "seamer.publishDefinition",
+            "seamer.resumeRun",
+            "seamer.updateDraft"
+          ]
+        },
+        "activation_ref": {
+          "$ref": "#/$defs/ActivationRef"
+        },
+        "state": {
+          "enum": [
+            "accepted",
+            "pending_confirmation",
+            "rejected",
+            "cancelled"
+          ]
+        },
+        "reason_code": {
+          "enum": [
+            "ok",
+            "needs_host_confirmation",
+            "authority_denied",
+            "schema_invalid",
+            "target_changed",
+            "expired",
+            "user_cancelled",
+            "activation_stale"
+          ]
+        },
+        "accepted_result_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projection_state": {
+          "enum": [
+            "available",
+            "unavailable",
+            "not_applicable"
+          ]
+        },
+        "projection": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/TypedValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "identity",
+        "intent_digest",
+        "method",
+        "activation_ref",
+        "state",
+        "reason_code",
+        "accepted_result_ref",
+        "projection_state",
+        "projection"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "accepted"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "const": "ok"
+              },
+              "accepted_result_ref": {
+                "$ref": "#/$defs/ObjectRef"
+              },
+              "projection_state": {
+                "enum": [
+                  "available",
+                  "unavailable"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "pending_confirmation"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "const": "needs_host_confirmation"
+              },
+              "method": {
+                "enum": [
+                  "controller.acceptTransfer",
+                  "controller.acquireControl",
+                  "controller.offerTransfer",
+                  "controller.releaseControl",
+                  "controller.revokeRunGrant",
+                  "seamer.armRun",
+                  "seamer.publishDefinition",
+                  "seamer.resumeRun"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "cancelled"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "const": "user_cancelled"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "rejected"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "enum": [
+                  "authority_denied",
+                  "schema_invalid",
+                  "target_changed",
+                  "expired",
+                  "activation_stale"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "not": {
+                  "const": "accepted"
+                }
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "accepted_result_ref": {
+                "type": "null"
+              },
+              "projection": {
+                "type": "null"
+              },
+              "projection_state": {
+                "const": "not_applicable"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "state": {
+                "const": "accepted"
+              },
+              "projection": {
+                "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/TypedValue"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "projection_state": {
+                "not": {
+                  "const": "available"
+                }
+              }
+            },
+            "required": [
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.acceptTransfer"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ControlOperationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ControlOperationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.acquireControl"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ControlOperationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ControlOperationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.cancelCommand"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "CancelView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/CancelView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCapabilities"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "CapabilityView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/CapabilityView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCapacity"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "CapacityView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/CapacityView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getClock"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ClockView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ClockView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getClockAssessment"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ClockAssessmentView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ClockAssessmentView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCommand"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "CommandView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/CommandView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getCommandEvidence"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "EvidencePageView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/EvidencePageView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getControl"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ControlView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ControlView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getControlOperation"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ControlOperationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ControlOperationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getDeviceState"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ObservationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ObservationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getMeta"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "MetaView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/MetaView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.getSceneCatalog"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "SceneCatalogView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/SceneCatalogView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.listDevices"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "DevicePageView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/DevicePageView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.offerTransfer"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "TransferView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/TransferView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.releaseControl"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ControlOperationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ControlOperationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.revokeRunGrant"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "MutationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/MutationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "controller.submitCommand"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "CommandView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/CommandView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.armRun"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "MutationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/MutationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.createDefinition"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "DefinitionView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/DefinitionView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.createRun"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "RunView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/RunView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getCapacity"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "CapacityView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/CapacityView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getClock"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ClockView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ClockView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getClockAssessment"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "ClockAssessmentView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/ClockAssessmentView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getIndependenceProof"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "IndependenceView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/IndependenceView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getMeta"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "MetaView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/MetaView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getRecoveryOperation"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "RecoveryOperationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/RecoveryOperationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.getRun"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "RunView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/RunView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.pauseRun"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "MutationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/MutationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.preflightRun"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "PreflightView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/PreflightView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.previewRecovery"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "RecoveryPlanView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/RecoveryPlanView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.publishDefinition"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "DefinitionView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/DefinitionView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.resumeRun"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "RecoveryOperationView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/RecoveryOperationView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "seamer.updateDraft"
+              },
+              "projection_state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "method",
+              "projection_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "projection": {
+                "type": "object",
+                "properties": {
+                  "schema_ref": {
+                    "const": {
+                      "schema_id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+                      "definition": "DefinitionView",
+                      "schema_digest": "9c4e6039a19097947c17b4d26fa8ef2bffc6bba594482ef4e6b4a667d2895648"
+                    }
+                  },
+                  "value": {
+                    "$ref": "https://leafseamer.invalid/design/c09-panel/result.schema.json#/$defs/DefinitionView"
+                  }
+                },
+                "required": [
+                  "schema_ref",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ConfirmationRecord": {
+      "type": "object",
+      "properties": {
+        "preview": {
+          "$ref": "https://leafseamer.invalid/design/c09-panel/channel-v02.schema.json#/$defs/Preview"
+        },
+        "request": {
+          "$ref": "#/$defs/RequestReceipt"
+        }
+      },
+      "required": [
+        "preview",
+        "request"
+      ],
+      "additionalProperties": false
+    },
+    "CloseTarget": {
+      "type": "object",
+      "properties": {
+        "target_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "selector_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "acknowledged",
+            "indeterminate"
+          ]
+        },
+        "evidence_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "target_ref",
+        "selector_digest",
+        "state",
+        "evidence_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "acknowledged"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_ref": {
+                "$ref": "#/$defs/ObjectRef"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "not": {
+                  "const": "acknowledged"
+                }
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "LifecycleReceipt": {
+      "type": "object",
+      "properties": {
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation": {
+          "enum": [
+            "createPanelSession",
+            "beginPanelHandshake",
+            "preparePanelActivation",
+            "activatePanelSession",
+            "renewPanelSession",
+            "closePanelSession"
+          ]
+        },
+        "content_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "session_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "phase": {
+          "enum": [
+            "committed",
+            "propagating",
+            "acknowledged",
+            "indeterminate"
+          ]
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CloseTarget"
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "host_operation_id",
+        "gui_instance_id",
+        "operation",
+        "content_digest",
+        "session_ref",
+        "phase",
+        "targets"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "not": {
+                  "const": "closePanelSession"
+                }
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          },
+          "then": {
+            "properties": {
+              "phase": {
+                "const": "committed"
+              },
+              "targets": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "closePanelSession"
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          },
+          "then": {
+            "properties": {
+              "phase": {
+                "enum": [
+                  "propagating",
+                  "acknowledged",
+                  "indeterminate"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_request",
+            "authentication_required",
+            "authority_denied",
+            "not_found_or_invisible",
+            "conflict",
+            "expired",
+            "payload_too_large",
+            "capacity_exceeded",
+            "source_unavailable",
+            "unknown_outcome"
+          ]
+        },
+        "correlation_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "code",
+        "correlation_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-approved": false,
+  "x-runtime-approved": false
+}

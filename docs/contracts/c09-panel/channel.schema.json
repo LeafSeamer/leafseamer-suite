@@ -1,0 +1,1066 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:leafseamer:design:panel-channel/0.1.0-draft.1",
+  "title": "面板会话与调用信封候选；权威模型不能作为面板帧发送",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/WindowFrame"
+    },
+    {
+      "$ref": "#/$defs/PanelFrame"
+    },
+    {
+      "$ref": "#/$defs/HostFrame"
+    }
+  ],
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+      "maxLength": 20
+    },
+    "PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*(?![\\s\\S])",
+      "maxLength": 20
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "Nonce": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "Origin": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "Method": {
+      "type": "string",
+      "pattern": "^(controller|seamer)\\.[A-Za-z][A-Za-z0-9]*(?![\\s\\S])",
+      "maxLength": 128
+    },
+    "DomainRef": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ObjectRef": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "entity_kind": {
+          "$ref": "#/$defs/Id"
+        },
+        "entity_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "entity_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "content_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "entity_kind",
+        "entity_id",
+        "entity_epoch",
+        "revision",
+        "content_digest"
+      ],
+      "additionalProperties": false
+    },
+    "SchemaRef": {
+      "type": "object",
+      "properties": {
+        "schema_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "definition": {
+          "$ref": "#/$defs/Id"
+        },
+        "schema_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "schema_id",
+        "definition",
+        "schema_digest"
+      ],
+      "additionalProperties": false
+    },
+    "TypedValue": {
+      "type": "object",
+      "properties": {
+        "schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "value": {}
+      },
+      "required": [
+        "schema_ref",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "PublicBinding": {
+      "type": "object",
+      "properties": {
+        "panel_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "panel_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        }
+      },
+      "required": [
+        "panel_session_id",
+        "panel_instance_id",
+        "document_generation",
+        "channel_id",
+        "protocol_version"
+      ],
+      "additionalProperties": false
+    },
+    "DelegationRef": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "delegation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "delegation_id",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "RequestIdentity": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "auth_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "panel_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "issuer_id",
+        "issuer_epoch",
+        "auth_session_id",
+        "panel_session_id",
+        "document_generation",
+        "request_id"
+      ],
+      "additionalProperties": false
+    },
+    "Session": {
+      "type": "object",
+      "properties": {
+        "panel_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "installation_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "artifact_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "auth_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "panel_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "gui_origin": {
+          "$ref": "#/$defs/Origin"
+        },
+        "panel_origin": {
+          "$ref": "#/$defs/Origin"
+        },
+        "scope_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "lease_expires_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "lease_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "state": {
+          "enum": [
+            "created",
+            "handshaking",
+            "active",
+            "closing",
+            "closed",
+            "revoked",
+            "expired"
+          ]
+        }
+      },
+      "required": [
+        "panel_session_id",
+        "revision",
+        "authority_service_id",
+        "database_instance_id",
+        "installation_ref",
+        "approval_ref",
+        "artifact_digest",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id",
+        "auth_session_id",
+        "gui_instance_id",
+        "panel_instance_id",
+        "document_generation",
+        "gui_origin",
+        "panel_origin",
+        "scope_ref",
+        "policy_ref",
+        "created_at",
+        "expires_at",
+        "lease_expires_at",
+        "lease_revision",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "Lifetime": {
+      "type": "object",
+      "properties": {
+        "domain_ref": {
+          "$ref": "#/$defs/DomainRef"
+        },
+        "hard_deadline_tick": {
+          "$ref": "#/$defs/Counter"
+        },
+        "lease_deadline_tick": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "domain_ref",
+        "hard_deadline_tick",
+        "lease_deadline_tick"
+      ],
+      "additionalProperties": false
+    },
+    "MethodDescriptor": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "$ref": "#/$defs/Method"
+        },
+        "mode": {
+          "enum": [
+            "panel_read",
+            "panel_write",
+            "host_confirm"
+          ]
+        },
+        "input_schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "result_schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        }
+      },
+      "required": [
+        "method",
+        "mode",
+        "input_schema_ref",
+        "result_schema_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Ready": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "panel.ready"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "Challenge": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "host.challenge"
+        },
+        "handshake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "nonce": {
+          "$ref": "#/$defs/Nonce"
+        },
+        "panel_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "handshake_id",
+        "nonce",
+        "panel_instance_id",
+        "document_generation"
+      ],
+      "additionalProperties": false
+    },
+    "Reply": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "panel.reply"
+        },
+        "handshake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "nonce": {
+          "$ref": "#/$defs/Nonce"
+        },
+        "panel_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "artifact_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "handshake_id",
+        "nonce",
+        "panel_instance_id",
+        "document_generation",
+        "artifact_digest"
+      ],
+      "additionalProperties": false
+    },
+    "PortOffer": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "host.port"
+        },
+        "handshake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "target_handle": {
+          "$ref": "#/$defs/Id"
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MethodDescriptor"
+          },
+          "maxItems": 35
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "handshake_id",
+        "public_binding",
+        "target_handle",
+        "methods"
+      ],
+      "additionalProperties": false
+    },
+    "Request": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "panel.request"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "method": {
+          "$ref": "#/$defs/Method"
+        },
+        "target_handle": {
+          "$ref": "#/$defs/Id"
+        },
+        "resource_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload": {
+          "$ref": "#/$defs/TypedValue"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "public_binding",
+        "channel_sequence",
+        "request_id",
+        "method",
+        "target_handle",
+        "resource_ref",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "Query": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "panel.query_request"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "public_binding",
+        "channel_sequence",
+        "request_id"
+      ],
+      "additionalProperties": false
+    },
+    "Close": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "panel.close"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "reason_code": {
+          "enum": [
+            "user_close",
+            "panel_error"
+          ]
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "public_binding",
+        "channel_sequence",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    },
+    "Active": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "host.active"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "target_handle": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "public_binding",
+        "channel_sequence",
+        "target_handle"
+      ],
+      "additionalProperties": false
+    },
+    "Result": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "host.result"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "pending_confirmation",
+            "rejected",
+            "cancelled",
+            "unavailable"
+          ]
+        },
+        "reason_code": {
+          "$ref": "#/$defs/Id"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TypedValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "public_binding",
+        "channel_sequence",
+        "request_id",
+        "status",
+        "reason_code",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "Closed": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "host.closed"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "reason_code": {
+          "enum": [
+            "user_close",
+            "navigation_detected",
+            "revoked",
+            "expired",
+            "protocol_error",
+            "host_shutdown"
+          ]
+        },
+        "closure_state": {
+          "enum": [
+            "local_closed",
+            "closing",
+            "closed",
+            "revoked",
+            "expired"
+          ]
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "public_binding",
+        "channel_sequence",
+        "reason_code",
+        "closure_state"
+      ],
+      "additionalProperties": false
+    },
+    "Intent": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        },
+        "delegation_ref": {
+          "$ref": "#/$defs/DelegationRef"
+        },
+        "method": {
+          "$ref": "#/$defs/Method"
+        },
+        "target_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "normalized_arguments": {
+          "$ref": "#/$defs/TypedValue"
+        },
+        "capability_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        }
+      },
+      "required": [
+        "identity",
+        "delegation_ref",
+        "method",
+        "target_ref",
+        "normalized_arguments",
+        "capability_ref",
+        "policy_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ExpectedRevision": {
+      "type": "object",
+      "properties": {
+        "object_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        }
+      },
+      "required": [
+        "object_ref"
+      ],
+      "additionalProperties": false
+    },
+    "DisplayField": {
+      "type": "object",
+      "properties": {
+        "label_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "label_key",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "Preview": {
+      "type": "object",
+      "properties": {
+        "preview_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "intent": {
+          "$ref": "#/$defs/Intent"
+        },
+        "intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "expected_object_revisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExpectedRevision"
+          },
+          "maxItems": 64
+        },
+        "recovery_preview_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "domain_ref": {
+          "$ref": "#/$defs/DomainRef"
+        },
+        "deadline_tick": {
+          "$ref": "#/$defs/Counter"
+        },
+        "lease_revision_at_creation": {
+          "$ref": "#/$defs/Counter"
+        },
+        "lease_deadline_at_creation": {
+          "$ref": "#/$defs/Counter"
+        },
+        "state": {
+          "enum": [
+            "offered",
+            "consumed",
+            "cancelled",
+            "expired",
+            "revoked"
+          ]
+        },
+        "display_projection": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DisplayField"
+          },
+          "maxItems": 32
+        },
+        "accepted_result_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preview_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "preview_ref",
+        "intent",
+        "intent_digest",
+        "expected_object_revisions",
+        "recovery_preview_ref",
+        "created_at",
+        "expires_at",
+        "domain_ref",
+        "deadline_tick",
+        "lease_revision_at_creation",
+        "lease_deadline_at_creation",
+        "state",
+        "display_projection",
+        "accepted_result_ref",
+        "preview_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ConfirmationCommit": {
+      "type": "object",
+      "properties": {
+        "preview_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        },
+        "delegation_ref": {
+          "$ref": "#/$defs/DelegationRef"
+        },
+        "intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "preview_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "preview_ref",
+        "identity",
+        "delegation_ref",
+        "intent_digest",
+        "preview_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Guard": {
+      "type": "object",
+      "properties": {
+        "panel_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "panel_delegation_ref": {
+          "$ref": "#/$defs/DelegationRef"
+        },
+        "installation_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "auth_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        }
+      },
+      "required": [
+        "panel_session_id",
+        "document_generation",
+        "panel_delegation_ref",
+        "installation_ref",
+        "approval_ref",
+        "auth_session_id",
+        "request_identity"
+      ],
+      "additionalProperties": false
+    },
+    "Ack": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "panel-channel/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "panel.ack"
+        },
+        "public_binding": {
+          "$ref": "#/$defs/PublicBinding"
+        },
+        "channel_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "last_host_sequence": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "host_frame_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "protocol_version",
+        "type",
+        "public_binding",
+        "channel_sequence",
+        "last_host_sequence",
+        "host_frame_digest"
+      ],
+      "additionalProperties": false
+    },
+    "WindowFrame": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Ready"
+        },
+        {
+          "$ref": "#/$defs/Challenge"
+        },
+        {
+          "$ref": "#/$defs/Reply"
+        },
+        {
+          "$ref": "#/$defs/PortOffer"
+        }
+      ]
+    },
+    "PanelFrame": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Request"
+        },
+        {
+          "$ref": "#/$defs/Query"
+        },
+        {
+          "$ref": "#/$defs/Close"
+        },
+        {
+          "$ref": "#/$defs/Ack"
+        }
+      ]
+    },
+    "HostFrame": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Active"
+        },
+        {
+          "$ref": "#/$defs/Result"
+        },
+        {
+          "$ref": "#/$defs/Closed"
+        }
+      ]
+    }
+  }
+}

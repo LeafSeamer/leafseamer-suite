@@ -91,6 +91,8 @@ preflight到期、域／能力／授权／接管／来源／程序／运行修�
 
 ## 5. AR04：边沿、稳定窗、延迟与反馈
 
+本节保留原候选的执行起点延迟解释；第11节提出显式两种锚、提交后锚记录及direct_successor窗口的新版本推荐。尚未批准，不静默改变program旧候选；正式冻结以统一审阅后的版本为准。
+
 阈值检测候选固定`enter_threshold,reset_threshold,comparison_direction,stable_for_ms,max_sample_gap_ms,rearm_policy`，单位／范围来自能力Schema；上升触发必须reset<enter，下降相反。初次布防、重连或来源变更的快照只建立baseline，要求先观察到reset区域再接受新的enter边沿。稳定窗要求起点合格、持续收到间隔不超限的新鲜样本、末样本合格且当前仍新鲜；计时器到期不证明两次采样间设备从未变化。无法提供足够采样证据的能力不得宣称连续稳定保证，显示实际采样保证范围。
 
 候选延迟节点为`delay_ms,max_lateness_ms`，以本执行触发决策提交后的本地单调起点计算due及deadline；0延迟立即就绪。delay>=0，max_lateness>0；允许派发区间为[due,deadline)，等于deadline过期。等待本身不占设备资源许可，但占执行活动槽；每步派发才申请新许可。延迟是已批准执行的一部分，入窗时原事件须有效，后来不能机械地用原event TTL取消合法延迟；派发时重新核对当前前提、全门控及自身deadline。参数引用event仍取固定原值。
@@ -167,4 +169,110 @@ preflight到期、域／能力／授权／接管／来源／程序／运行修�
 - AR01—AR06需审阅，依赖的DF候选不视为自动接受；全旧能力盘点决定有限DSL是否还需具名运算，未盘点不宣布全功能覆盖。
 - [C05候选设计](rebirth-c05-event-sync-design.md)已细化完整事件同步、失步／去重／保留、观测快照和全局容量；[C06候选设计](rebirth-c06-schedule-design.md)已细化导入、日历、跨版场次、激活受理及逐步窗口。ES／SCH推荐待审阅，需联合归并受理、来源观察、资格锁存及总预算；候选文档不代表依赖已冻结。
 - 下一版SDK源须同时修订投影、proof路径、命名空间、容量及运行绑定，提供新旧版本差分与拒绝混投用例；DF01等价提取不能掩盖语义修复。
-- 本轮仅设计文档与来源核对；EX01—EX32未执行，未创建新Schema或引擎，未启动服务、数据库或设备，未提交／推送。
+- 最初一轮仅设计文档与来源核对；后续机器资料见第9节。EX01—EX32的完整运行验收仍未执行，未启动服务、数据库或设备。
+
+## 9. 程序、依赖图和证明的机器候选
+
+2026-10-18补充，仍待审阅。[C04程序候选](contracts/c04-program/README.md)给出唯一格式源及Schema，覆盖有限Condition／Value、InputBinding／ActionBinding、Rule／平坦StateMachine、Action／DelayStep、AliasTable、CompiledProgram／Graph／IndependenceProof／PublishedArtifact与CompileDiagnostic。版本为`automation-program/0.1.0-draft.1`，不改旧公共格式，不切SDK权威，不实现业务引擎。
+
+与AR01—AR02的具体衔接如下：
+
+- compare的`value_type`是编译后显式类型及单位，必须与已批准输入projection一致；不是按字符串内容推断类型。参数槽的类型与路径同样经批准，最终替换后的参数仍须完整能力Schema验证；参考模型不冒充通用Schema类型推导器。
+- 图只从程序的具名步骤路径派生，literal及parameters不参与AST／Proof识别。sequence次序与requires_success分开；结果参数及谓词产生data／guard边。全部后继由完整图遍历，模块不能提供一个缩水集合绕过失败依赖。
+- 资源别名采用固定的一次路径段替换，重叠逻辑前缀及递归映射拒绝；完整绑定必须覆盖所有允许参数的最坏情况足迹。除后继正常写外也核对failure_writes，属于保守新增候选；未批准或不完整足迹为unknown。
+- program摘要覆盖完整CompiledProgram，保留所有业务同名键；proof绑定program／bindings／graph，manifest只排顶层自身摘要。发布产物准确覆盖全部optional继续步骤，并行成员必须完整合格且两两独立；新摘要不能继承旧批准或混投旧proof。
+- 全定义4096步和后继4096容量保持；候选增加16MiB程序JCS字节、131072边、1048576资源比较及每类足迹256上限。Delay候选为至多24小时、迟到窗1—60000ms；均待与总容量profile统一审阅，超限拒绝、不截断，不承诺所有上限组合可发布。
+
+人工正反例实际检查三值／类型、Pointer、全图与后继、合法状态循环／非法动作依赖、并行约束、绑定变化、业务键摘要差异、失败继续及发布证明覆盖；包括4096步以及第301步才出现依赖。来源、批准和完成证据仍是合成前提，报告与六份输入原字节绑定。这些只推进EX01—EX09、EX26和EX32的离线子条件，不能将EX完整用例标为已执行。
+
+剩余归并明确为：ActivationSlot／TriggerDecision／EvaluationSnapshot／ExecutionBinding及preflight／delay／预算的机器记录，创建／发布／arm／查询／恢复的HTTP与IPC绑定、完整Seamer DDL和旧功能逐项DSL表达覆盖；全部设计候选还需统一审阅。真实参数赋值／Schema二次验证、可信提供者、产品编译执行器和故障验收属于后续实现及验证，不以本轮参考模型代替。
+
+## 10. 活动槽、触发与恢复生命周期机器候选
+
+2026-10-18补充，仍待审阅。[生命周期候选](contracts/c04-lifecycle/README.md)新增独立Schema／24操作OpenAPI，给出草稿与metadata分离、不可变发布版本、活动槽、run、preflight、逐Controller准备、decision／snapshot／execution以及恢复预览／操作。版本为`automation-lifecycle/0.1.0-draft.1`，不修改已确认公共基线；第9节的对应机器记录与HTTP缺口由本批推进，不再笼统列作尚无格式。
+
+发布请求选择可由草稿直接取得的content／selection摘要，服务端解析真实绑定并重新编译；不要求GUI提交尚未存在的完整bindings_digest，也不接受客户端编译产物来批准自身。arm受理先占跨版本活动槽但保持disarmed，全部新代次／目标grant的可靠回执完成才armed。恢复R2仍paused且一次消费，R3只到ready；失败、提交未知和迟到回执不使旧操作自动重启。相同操作预期产生的grant变化与独立接管／组织撤权分开核对。
+
+新候选明确disarm完成后保留本run活动槽，retire完整核对后才释放；服务只获本组织暂停权限，disarm／retire／resume由具名人员权限承担。纯无设备动作允许零Controller目标准备，但来源、组织授权、存储和执行状态门控仍必须成立，不伪造grant填旧最小数组。这些是待审阅的具体衔接，不等于旧API已经支持。
+
+Decision按服务／数据库／run与inbox身份唯一；busy、inactive及序号不高于高水位的旧事件都记录抑制且不补执行。snapshot→decision（预分配execution_id）→execution绑定消除摘要环，并核对版本、源状态及选中转换的目标。R5以当前执行／源状态／arm代及成功证据提交业务状态和固定outbox事件；重复确认只返回原结果，不重放设备动作。
+
+独立参考检查只覆盖格式、关联和有限串行原子步，未执行真实HTTP、身份提供者、SQLite并发或设备。仍须完成发布实际编译事务／完整目标与转换集提供者、R4逐步命令和延迟／边沿／预算机器记录、全部Seamer DDL、C05/C06来源／时窗及公共SDK/IPC同版归并；EX／AU完整运行验收未执行，C04与阶段0不关闭。
+
+## 11. R4、逐步提交与延迟／边沿／预算机器候选
+
+2026-10-18补充，仍待审阅。[执行候选](contracts/c04-execution/README.md)提供ExecutionStart、PauseLatch、StepPlan／StepRecord、CommandSubmission、ExecutionAnchor／StepReady／DelayRecord、WindowTranslation、EdgePolicy／State／Sample／Decision、BudgetPolicy／Charge和ExecutionRuntimePolicy的独立Schema。R4以精确run/slot/operation修订、准备回执和已核对latch集合开始；reconcile_commit始终无设备派发资格。先持久化提交标记再允许一次发送路径，标记后崩溃和lookup未发现均不得重发。
+
+新增延迟语义是显式版本修订：保留execution_admitted偏移，新增step_ready顺序等待。普通触发／恢复统一用提交返回后的ExecutionAnchor，不伪造数据库提交瞬间或恢复operation。direct_successor窗口对直接动作持续约束到Controller出口，对后继等待则在其StepReady事务内消费依赖边；不会永久叠加所有旧截止。跨域挑战和批准速率界只产生保守窗口，网络耗尽／无法证明采样因果时拒绝，不直接比较两机tick。
+
+边沿须先有合格live reset，稳定窗只由新鲜采样推进；busy／inactive边沿也消费，持续高值不补发。预算按稳定definition／可信链或组织无因果桶／物理设备分层，profile变化和重启不清账，已扣不退款，超限锁存。摘要分离运行策略与独立BudgetLimit，阈值policy亦按完整摘要绑定。上述是候选规则，权威采样、因果来源、完整图调度、各类账本及跨服务预算尚未实际实现。
+
+XRT01—XRT12补足崩溃切点、两种等待、边沿与预算绕过等待运行验收。局部参考检查不证明物理时钟、网络、SQLite并发或设备。剩余设计聚焦完整Seamer DDL与依赖边消费、内部窗口／预算／拒收协议、C05/C06及公共SDK同版关联和全部数值codec覆盖；不再把R4／延迟／边沿／预算笼统列为没有记录格式，但C04及阶段0仍未关闭。
+
+## 12. 恢复核心的SQLite布局与原子提交
+
+2026-10-18补充[16表恢复核心候选](contracts/c04-storage/README.md)，具体映射R2消费预览、持久恢复锁、R3逐目标准备、R4开始及精确latch清除、R5状态／执行结果／固定事件。普通触发的旧执行可被恢复预览引用；新execution不会覆盖旧unknown。SQL同时记录固定scope、不可变发布版本、跨版本活动槽、远端证据身份和不可复用事务／事件。
+
+预览和operation、新execution和operation、start和两侧引用、commit和execution、事务和event分别配对提交；paused／indeterminate不自动释放锁，release须独立核验证据。所有U20都保留十进制TEXT，精确+1由可信writer核验。外键仍不能证明完整语义，因此本批同时给出FK合法但run投影不一致的恢复保护反例，而不是用建表成功宣告原子执行已经实现。
+
+本批为候选布局及实际内存SQLite验证，不是生产迁移。命令提交与执行锚由第13节继续补齐；普通触发受理、发布编译、delay依赖消费、edge/budget完整账本和跨项机器协议仍需归并；C04、阶段0及项目均未完成，业务实现仍未开始。
+
+## 13. 执行锚与单次命令提交的持久化
+
+2026-10-18新增[执行层字段与故障时序](contracts/c04-storage/DISPATCH.md)及9表SQL，与第12节基础16表组合为`automation-storage/0.1.0-draft.2`。计划集合、StepPlan、ExecutionAnchor、StepReady、StepRecord、CommandSubmission、attempt、最终裁决、步骤终态分别持久化；不是公共契约升级或生产迁移。普通触发与恢复各自绑定真实来源，只有原受理/R4提交明确返回后才采样并保存锚，重启不能补锚续跑。
+
+PLAN封存先于running；READY固定一次就绪时间；SUBMISSION固定完整原请求身份；ATTEMPT提交后只允许当前活路径尝试一次调用。唯一键不含request_digest，因此同key换内容冲突；标记后的崩溃、响应丢失与not_found均仅查原身份。永久拒收须由Controller在原受理账本内排他裁决并保留墓碑，其完整远端接口/事务尚未归并，不能用普通HTTP错误或context撤销代替。
+
+新增SQL要求ready/submission/attempt/裁决/终态两侧引用成对提交，步骤不能自造accepted；accepted也不能直接通过R5。迟到accepted可以补原command归属，但已unknown步骤不可重开。接管或取消请求不构成取消完成证据；合格取消终态可以保存，R5仍拒绝取消步骤。所有required成功、无未决只是R5结构门槛，optional failed还须Q72证明及资源释放；BODY与权威来源由writer验证。
+
+独立212项内存/合成检查覆盖两种锚、正常等待证据路径、六阶段逐写回滚、半边关系COMMIT拒绝、保护与原身份冲突、未知不重发及R5阻止假完成。普通触发前态为人工构造，未实现inbox/TriggerDecision受理；未运行网络、真实并发、磁盘或设备。下一步仍为普通触发/发布事务、delay依赖边和edge/budget账本、Controller裁决接口以及C05/C06/SDK同版归并，候选与阶段0保持未关闭。
+
+## 14. 普通触发批次、世代水位与执行发布
+
+2026-10-20补充，待审阅。以[C05第12节](rebirth-c05-event-sync-design.md#12-规范摄取的完整扇出与原子受理)作为规范摄取与扇出全集的唯一设计入口。**当前事实：**生命周期候选仅有数字last_receive_seq，纯参考模型把单run原子性作为前提；恢复／执行25表未持久普通inbox、完整TriggerDecision或run接收水位。下面是下一版修订，不用新语义重新解释旧记录。
+
+| 候选修订 | 精确约束 |
+| --- | --- |
+| RunRecord.last_receive_cursor | 替换裸last_receive_seq；绑定本地scope／ingest_epoch／sequence。新建run取得当前epoch基线，初始可为0；换代只能在显式重建基线事务改绑定 |
+| RunIngestBaseline | `run_id,revision,receive_cursor,source_baseline_refs,established_by_operation_ref,baseline_digest`；固定布防／恢复时不补历史的下界，与arm_generation和预检绑定 |
+| EvaluationSnapshot.receive_cursor | 替换receive_seq；附`match_set_ref,run_revision_before,ingest_revision_before,slot_revision,source_revision_refs`；完整rule结果或当前state全部转换，不接受客户端给定缩水集合 |
+| TriggerDecision.receive_cursor | 同snapshot和IngressCommit；保存`ingest_revision_before/after,run_revision_before/after`及match_set_ref。suppressed允许无求值snapshot，但仍记录前态、游标与明确原因 |
+| RunIngestProgress | 独立`ingest_revision,last_receive_cursor,baseline_ref`；每个新规范事件的目标决定均精确+1，duplicate不变。生命周期run.revision仅按既有运行语义变化，避免把无匹配遥测变成每次都作废预检的隐式规则 |
+| ExecutionBinding／TriggerDecisionRef | 原origin_kind=trigger保持；绑定精确decision身份／digest及完整摄取游标，source_state、artifact、arm_generation与固定input_snapshot必须相等；恢复来源仍用operation/start，不伪造trigger |
+
+独立ingest_revision意味着所有使用事件水位的预检、布防／恢复基线、snapshot及CAS必须显式绑定它；不能只检查run.revision。普通无匹配事件不必使管理元数据编辑失败，但旧布防／恢复预检依赖水位时必须失效。该字段是新增候选，不在原RunRecord塞入未定义属性。
+
+完整fanout中的每run至多一个决定；同事件可对不同定义的run各自产生execution，跨定义设备互斥仍由Controller管理。判定顺序保留当前契约：原身份查旧 → 同epoch水位检查 → busy → inactive → 保护 → 固定快照及槽核对 → 全部转换三值选择。epoch不符先走基线失效／保护，不能当suppressed_obsolete比较数值；观察到更高水位但无法找到原决定时先查GC下界，不能以max(seq)补一条新accepted。
+
+对accepted执行，先预分配execution_id，再固定snapshot与decision摘要，然后产生ExecutionBinding、完整选中路径和全部StepPlan／waiting StepRecord。第13节PLAN在普通触发路径中并入同一摄取事务，封存完整计划后才能提交running及active_execution_id；不得先提交accepted再异步补计划。恢复路径仍按原R2—R4，不因这一归并改变ready与running边界。空动作计划若被定义允许，也必须显式封存空集合，不能把漏计划误作空执行。
+
+COMMIT返回后当前活路径才取得并保存ExecutionAnchor；它不在trigger决定事务内伪造提交后时间。锚保存前再次核对run／execution／domain及保护；失败不否认原事件受理，也不能把失败锚任务放入可自动重试的设备队列。新进程看到accepted但无锚，按恢复库存进入保护和显式核对，不重采当前时间续跑旧执行。
+
+epoch换代不能通过给所有run的sequence写0完成。短事务关闭旧epoch、发布新epoch及失效门控，使旧绑定run均不具备派发资格；完整依赖集合进入保护账本，已有execution及提交保持原origin。随后显式预检／恢复在writer内取新epoch当前水位和来源baseline，建立RunIngestBaseline及新arm_generation；新快照、旧epoch事件或同事件重投均不得执行。远端许可关闭确认和本地epoch关闭仍分别取证。
+
+EN01—EN24覆盖正常、busy、空匹配、多run回滚、世代与提交未知；其中EN11/12保留现有优先级三值语义，EN17验证执行锚，EN21验证回滚后不得升级旧事件。已有299／225／118项生命周期／执行／程序检查本轮只回归旧范围，不包含这些新事务或字段。机器Schema、完整DDL、边沿／预算消费和最终SDK/IPC归并继续推进，C04及阶段0未关闭。
+
+
+## 15. 普通触发摄取候选的存储衔接
+
+2026-10-20补充。**已知事实：**[C05候选](contracts/c05-ingress/README.md)为第14节增加独立摄取进度、复合游标、完整匹配集和决定的机器格式，且以ingress_execution将普通trigger执行双向绑定到实际决定。40表组合中的合成检查证明本写集可保存完整决定及PLAN，并在任意受测写语句后回滚全部表；不再仅靠伪造trigger_ref前态测试执行层。
+
+**推荐衔接：**INGRESS_RUN使用独立ingress_run_audit，保持旧transaction_record.phase枚举不变；每个accepted的旧PLAN审计/outbox仍在同次COMMIT。执行锚另开事务的兼容检查通过，但SQL不证明采样实际发生在COMMIT后。受理不授设备许可，合成保护结果仅检查paused投影，完整pause_latch及来源依赖保护仍需下一版设计和检查。
+
+本轮三值选择与完整转换集合的关联检查使用人工求值结果，不实现AST、权威读取或完整调度。run与进度精确加一由参考语义检查验证，SQL只验证词法、前态及单调和必要投影。旧299／225／118项各自继续作为历史范围回归，不能计入新的EN运行验收。延迟依赖消费、edge/budget、发布/布防全集、真实接管并发和最终SDK/IPC归并仍未完成。
+
+## 16. 来源暂停的代次绑定与恢复消费
+
+2026-10-20补充。**已知事实：**当前RunGrant绑定run_id/arm_generation，CommandRequest带RunBinding，但进入ExecutionGuard的AuthorizationBinding只保留grant及arm_generation，未携带完整Seamer scope/run/execution。旧撤销selector也没有run范围。来源保护若只停止新触发，已提交给Controller的queued命令仍缺少统一精确拒绝依据。（来源：[draft.4模型](contracts/draft4/first-loop.schema.json)、[C05第14节](rebirth-c05-event-sync-design.md#14-来源失效完整依赖保护与恢复门槛)。）
+
+**推荐衔接：**新版本从可信ExecutionBinding派生AutomationOriginBinding，贯穿CommandRequest、Controller持久准入、ExecutionGuard、DispatchPermit和IntentRef；不能由客户端独立选择origin、run或generation。Controller核对当前配对Seamer、固定准备记录、RunGrant和请求绑定一致，字段缺失或旧worker未协商新能力则拒绝自动化准入。manual为null，不因该字段新增而继承自动化服务权限。
+
+SourcePauseLatch绑定保护plan及被拒绝的代次；暂停不增加arm_generation，而是保存单调deny_through_generation。prepare和command及最终Lsend都拒绝≤下界的代次。此前prepared/queued但未越出口的工作须精确取消/屏障；在途和unknown继续保留，不能将暂停、worker退出或保护applied改写成动作失败/资源已清理。已completed的历史run不倒改状态，其未清执行只能进入完整性核对。
+
+依赖登记不仅是trigger集合，还包括guard/parameter/edge/schedule和旧execution/recovery的输入pin；新Controller准备意图发送前必须先登记目标。先登记的prepare即使响应丢失也要被屏障覆盖；只保存收到的grant会遗漏晚到资格。重基线后旧事件、延迟、边沿及busy抑制仍不能复活。
+
+恢复预检增加SourcePauseResolution：精确未清latch、新来源baseline/floor、完整Controller回执和实际资源证据、依赖索引与source修订、run/ingest/slot前态及拟用新代次。R2锁住恢复，R3安装新代次，R4在同writer复核当前完整latch集合后清理并开始新execution；新fault或新target使旧预检失效。SourcePauseResolution不塞进旧只接受ReleaseEvidenceRef的字段，须在下一版以具名恢复证据分支归并；旧格式不暗改。
+
+局部字段与有限判定见[保护候选](contracts/c05-protection/README.md)。它不实现AST/真实Controller授权、R2—R4或物理事务；PFT01—PFT18与EN对应的运行验收仍待后续实现。活动槽、手动接管、其他来源/授权latch继续独立生效，本轮不批准新候选或关闭C04。
+
+2026-10-20后续[IPC0.5归并候选](contracts/c05-protection/PROTOCOL.md)已给出CommandRequest/RunBinding/RunGrant及Guard/Permit/IntentRef的来源字段和21帧格式。定义版本使用正十进制计数，不再把旧RunBinding的Version与新程序计数拼接；保护HTTP仅两个内部操作，公共准入与准备账本的完整归并仍待交付。开闸完整拒绝快照不能清旧下界，RUN_FENCE只拒原代次，不恢复运行或释放资源。141项新参考检查非真实执行、权限或并发证明。

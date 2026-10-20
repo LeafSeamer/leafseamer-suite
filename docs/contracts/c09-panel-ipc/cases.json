@@ -1,0 +1,1813 @@
+{
+  "purpose": "synthetic_panel_ipc_design_only",
+  "runtime_approved": false,
+  "base": {
+    "guard": {
+      "guard_id": "guard-demo",
+      "permit_id": "permit-1",
+      "command_id": "cmd-1",
+      "device_id": "device-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "ipc_session_id": "ipc-demo",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": "extension-a",
+        "extension_approval_revision": "5"
+      },
+      "authorization_revision": "3",
+      "authorization_deadline_tick_ns": "2000000000",
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "clock_generation": null,
+      "time_policy_revision": null,
+      "time_required": false,
+      "capacity_reservation_id": "reserve-a",
+      "guard_digest": "sha256:293d6c7986cea40e58f9668add48fdd0ee11b38567d942d29d3f81cf3df35bd8",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "clock_sample_ref": null,
+      "time_evidence_ref": null,
+      "time_profile_ref": null,
+      "admission_origin": "panel",
+      "panel_binding": {
+        "context": {
+          "panel_session_id": "panel-a",
+          "document_generation": "1",
+          "auth_session_id": "session-a",
+          "request_identity": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "issuer_id": "issuer-demo",
+            "issuer_epoch": "issuer-epoch",
+            "auth_session_id": "session-a",
+            "panel_session_id": "panel-a",
+            "document_generation": "1",
+            "request_id": "request-a"
+          },
+          "panel_delegation_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "delegation_id": "delegation-a",
+            "revision": "1"
+          },
+          "installation_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "entity_kind": "installation",
+            "entity_id": "installation-a",
+            "entity_epoch": "entity-epoch",
+            "revision": "1",
+            "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "approval_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "entity_kind": "approval",
+            "entity_id": "approval-a",
+            "entity_epoch": "entity-epoch",
+            "revision": "5",
+            "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "activation_ref": {
+            "activation_id": "activation-a",
+            "registry_ref": {
+              "revision": "1",
+              "digest": "3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "scope_revision": "1",
+            "bundle_ref": null
+          }
+        },
+        "principal_id": "human-a",
+        "extension_instance_id": "extension-a",
+        "artifact_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+        "scope_ref": {
+          "authority_service_id": "controller-a",
+          "database_instance_id": "db-a",
+          "entity_kind": "scope",
+          "entity_id": "scope-a",
+          "entity_epoch": "entity-epoch",
+          "revision": "1",
+          "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "policy_ref": {
+          "authority_service_id": "controller-a",
+          "database_instance_id": "db-a",
+          "entity_kind": "policy",
+          "entity_id": "policy-a",
+          "entity_epoch": "entity-epoch",
+          "revision": "4",
+          "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "lease_revision": "1",
+        "lifetime": {
+          "domain_ref": {
+            "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+          },
+          "hard_deadline_tick": "3000000000",
+          "lease_deadline_tick": "2000000000"
+        }
+      }
+    },
+    "permit": {
+      "permit_id": "permit-1",
+      "command_id": "cmd-1",
+      "attempt_id": "attempt-1",
+      "dispatch_intent_id": "intent-1",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "device_session_id": "ds-demo",
+      "control_epoch": "epoch-demo",
+      "control_version": "7",
+      "authorization_revision": "3",
+      "origin": "manual",
+      "grant_revision": null,
+      "arm_generation": null,
+      "gate_revision": "5",
+      "deadline_policy": {
+        "mode": "immediate",
+        "max_queue_ms": 1000
+      },
+      "content_digest": "sha256:25cde5b5f9902fcb0bee7787e83c02c0fa427489d2f82bb168e63cbdeeabce83",
+      "guard_id": "guard-demo",
+      "guard_digest": "sha256:293d6c7986cea40e58f9668add48fdd0ee11b38567d942d29d3f81cf3df35bd8",
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "admission_origin": "panel",
+      "panel_binding_digest": "sha256:2159ae273a3b63742de35761963b2c1f4c4071b257be59bfe511cfae1ec19ab0"
+    },
+    "fence": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "AUTH_FENCE",
+      "message_id": "m-auth_fence",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "operation_id": "op-auth",
+        "barrier_id": "barrier-auth",
+        "issued_cut_revision": "2",
+        "ledger_digest": "sha256:fe8e07963fa2cdce180f4b927c083748e227f63012adf2497cc252d0cbc21fd5",
+        "open_intents": [
+          {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "guard_id": "guard-demo",
+            "guard_digest": "sha256:293d6c7986cea40e58f9668add48fdd0ee11b38567d942d29d3f81cf3df35bd8",
+            "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "controller_boot_id": "cb-demo",
+            "admission_origin": "panel",
+            "panel_binding_digest": "sha256:2159ae273a3b63742de35761963b2c1f4c4071b257be59bfe511cfae1ec19ab0",
+            "ipc_session_id": "ipc-demo",
+            "device_id": "device-demo"
+          }
+        ],
+        "selector": {
+          "authority_service_id": "controller-a",
+          "database_instance_id": "db-a",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "auth_session_id": "session-a",
+          "panel_session_id": "panel-a",
+          "document_generation": "1",
+          "kind": "panel_session"
+        },
+        "target_authorization_revision": "10",
+        "selector_digest": "sha256:b0cbc9eebd9846ad4080b67fdd81c1b7a3ae57dc5bc6f923e8ebcf0e4d1ad6e6"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "ack": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "AUTH_FENCE_ACK",
+      "message_id": "m-auth_fence_ack",
+      "reply_to": "m-auth_fence",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "operation_id": "op-auth",
+        "barrier_id": "barrier-auth",
+        "issued_cut_revision": "2",
+        "ledger_digest": "sha256:fe8e07963fa2cdce180f4b927c083748e227f63012adf2497cc252d0cbc21fd5",
+        "selector": {
+          "authority_service_id": "controller-a",
+          "database_instance_id": "db-a",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "auth_session_id": "session-a",
+          "panel_session_id": "panel-a",
+          "document_generation": "1",
+          "kind": "panel_session"
+        },
+        "target_authorization_revision": "10",
+        "coverage": [
+          {
+            "intent": {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo",
+              "guard_id": "guard-demo",
+              "guard_digest": "sha256:293d6c7986cea40e58f9668add48fdd0ee11b38567d942d29d3f81cf3df35bd8",
+              "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "controller_boot_id": "cb-demo",
+              "admission_origin": "panel",
+              "panel_binding_digest": "sha256:2159ae273a3b63742de35761963b2c1f4c4071b257be59bfe511cfae1ec19ab0",
+              "ipc_session_id": "ipc-demo",
+              "device_id": "device-demo"
+            },
+            "disposition": "not_sent",
+            "proof": "discarded_unconsumed"
+          }
+        ],
+        "invalidated_permit_ids": [
+          "permit-1"
+        ],
+        "in_flight_command_ids": [],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true,
+        "applied_authorization_revision": "10",
+        "selector_digest": "sha256:b0cbc9eebd9846ad4080b67fdd81c1b7a3ae57dc5bc6f923e8ebcf0e4d1ad6e6"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "authority": {
+      "current": {
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "ipc_session_id": "ipc-demo",
+        "device_id": "device-demo",
+        "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+        "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+        "device_session_id": "ds-demo"
+      },
+      "admission_origin": "panel",
+      "panel_binding": {
+        "context": {
+          "panel_session_id": "panel-a",
+          "document_generation": "1",
+          "auth_session_id": "session-a",
+          "request_identity": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "issuer_id": "issuer-demo",
+            "issuer_epoch": "issuer-epoch",
+            "auth_session_id": "session-a",
+            "panel_session_id": "panel-a",
+            "document_generation": "1",
+            "request_id": "request-a"
+          },
+          "panel_delegation_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "delegation_id": "delegation-a",
+            "revision": "1"
+          },
+          "installation_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "entity_kind": "installation",
+            "entity_id": "installation-a",
+            "entity_epoch": "entity-epoch",
+            "revision": "1",
+            "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "approval_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "entity_kind": "approval",
+            "entity_id": "approval-a",
+            "entity_epoch": "entity-epoch",
+            "revision": "5",
+            "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "activation_ref": {
+            "activation_id": "activation-a",
+            "registry_ref": {
+              "revision": "1",
+              "digest": "3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "scope_revision": "1",
+            "bundle_ref": null
+          }
+        },
+        "principal_id": "human-a",
+        "extension_instance_id": "extension-a",
+        "artifact_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+        "scope_ref": {
+          "authority_service_id": "controller-a",
+          "database_instance_id": "db-a",
+          "entity_kind": "scope",
+          "entity_id": "scope-a",
+          "entity_epoch": "entity-epoch",
+          "revision": "1",
+          "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "policy_ref": {
+          "authority_service_id": "controller-a",
+          "database_instance_id": "db-a",
+          "entity_kind": "policy",
+          "entity_id": "policy-a",
+          "entity_epoch": "entity-epoch",
+          "revision": "4",
+          "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "lease_revision": "1",
+        "lifetime": {
+          "domain_ref": {
+            "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+          },
+          "hard_deadline_tick": "3000000000",
+          "lease_deadline_tick": "2000000000"
+        }
+      },
+      "now": "1000000000",
+      "active_session": true,
+      "approval_current": true,
+      "scope_current": true,
+      "storage_healthy": true,
+      "selectors": [],
+      "open_intents": [
+        {
+          "permit_id": "permit-1",
+          "command_id": "cmd-1",
+          "attempt_id": "attempt-1",
+          "dispatch_intent_id": "intent-1",
+          "worker_boot_id": "wb-demo",
+          "device_session_id": "ds-demo",
+          "guard_id": "guard-demo",
+          "guard_digest": "sha256:293d6c7986cea40e58f9668add48fdd0ee11b38567d942d29d3f81cf3df35bd8",
+          "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "controller_boot_id": "cb-demo",
+          "admission_origin": "panel",
+          "panel_binding_digest": "sha256:2159ae273a3b63742de35761963b2c1f4c4071b257be59bfe511cfae1ec19ab0",
+          "ipc_session_id": "ipc-demo",
+          "device_id": "device-demo"
+        }
+      ],
+      "bindings": {
+        "sha256:2159ae273a3b63742de35761963b2c1f4c4071b257be59bfe511cfae1ec19ab0": {
+          "context": {
+            "panel_session_id": "panel-a",
+            "document_generation": "1",
+            "auth_session_id": "session-a",
+            "request_identity": {
+              "authority_service_id": "controller-a",
+              "database_instance_id": "db-a",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "auth_session_id": "session-a",
+              "panel_session_id": "panel-a",
+              "document_generation": "1",
+              "request_id": "request-a"
+            },
+            "panel_delegation_ref": {
+              "authority_service_id": "controller-a",
+              "database_instance_id": "db-a",
+              "delegation_id": "delegation-a",
+              "revision": "1"
+            },
+            "installation_ref": {
+              "authority_service_id": "controller-a",
+              "database_instance_id": "db-a",
+              "entity_kind": "installation",
+              "entity_id": "installation-a",
+              "entity_epoch": "entity-epoch",
+              "revision": "1",
+              "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            "approval_ref": {
+              "authority_service_id": "controller-a",
+              "database_instance_id": "db-a",
+              "entity_kind": "approval",
+              "entity_id": "approval-a",
+              "entity_epoch": "entity-epoch",
+              "revision": "5",
+              "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            "activation_ref": {
+              "activation_id": "activation-a",
+              "registry_ref": {
+                "revision": "1",
+                "digest": "3333333333333333333333333333333333333333333333333333333333333333"
+              },
+              "scope_revision": "1",
+              "bundle_ref": null
+            }
+          },
+          "principal_id": "human-a",
+          "extension_instance_id": "extension-a",
+          "artifact_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+          "scope_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "entity_kind": "scope",
+            "entity_id": "scope-a",
+            "entity_epoch": "entity-epoch",
+            "revision": "1",
+            "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "policy_ref": {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "entity_kind": "policy",
+            "entity_id": "policy-a",
+            "entity_epoch": "entity-epoch",
+            "revision": "4",
+            "content_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "lease_revision": "1",
+          "lifetime": {
+            "domain_ref": {
+              "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+            },
+            "hard_deadline_tick": "3000000000",
+            "lease_deadline_tick": "2000000000"
+          }
+        }
+      },
+      "transport_entered": []
+    }
+  },
+  "frames": {
+    "HELLO": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "HELLO",
+      "message_id": "m-hello",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": null,
+      "body": {
+        "module_id": "obs-demo",
+        "module_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+        "supported_ipc_versions": [
+          "ipc/0.4.0-panel-draft.1"
+        ],
+        "supported_features": [
+          "execution_guard",
+          "scoped_authorization_fence",
+          "clock_generation_guard",
+          "typed_obs_evidence",
+          "recovery_single_consume",
+          "supervised_runtime_domain",
+          "time_bound_evidence",
+          "panel_execution_binding",
+          "panel_scoped_fence"
+        ],
+        "clock_domain_descriptor": {
+          "descriptor_version": "clock-domain/1",
+          "domain_kind": "supervised_runtime",
+          "authority_service_id": "controller-test",
+          "runtime_generation": "runtime-synthetic-1",
+          "supervisor_instance_id": "supervisor-synthetic",
+          "clock_backend_id": "windows_interrupt_precise",
+          "clock_backend_revision": "adapter-synthetic-1",
+          "tick_unit": "ns",
+          "suspend_accounting": "included",
+          "namespace_identity": "windows-kernel-runtime",
+          "os_boot_identity": {
+            "status": "unavailable"
+          },
+          "platform_profile_id": "synthetic-platform-not-approved",
+          "platform_profile_revision": "1",
+          "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+        },
+        "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "HELLO_ACK": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "HELLO_ACK",
+      "message_id": "m-hello_ack",
+      "reply_to": "m-request",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": null,
+      "body": {
+        "selected_ipc_version": "ipc/0.4.0-panel-draft.1",
+        "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+        "gate_state": "closed",
+        "selected_features": [
+          "execution_guard",
+          "scoped_authorization_fence",
+          "clock_generation_guard",
+          "typed_obs_evidence",
+          "recovery_single_consume",
+          "supervised_runtime_domain",
+          "time_bound_evidence",
+          "panel_execution_binding",
+          "panel_scoped_fence"
+        ],
+        "clock_domain_descriptor": {
+          "descriptor_version": "clock-domain/1",
+          "domain_kind": "supervised_runtime",
+          "authority_service_id": "controller-test",
+          "runtime_generation": "runtime-synthetic-1",
+          "supervisor_instance_id": "supervisor-synthetic",
+          "clock_backend_id": "windows_interrupt_precise",
+          "clock_backend_revision": "adapter-synthetic-1",
+          "tick_unit": "ns",
+          "suspend_accounting": "included",
+          "namespace_identity": "windows-kernel-runtime",
+          "os_boot_identity": {
+            "status": "unavailable"
+          },
+          "platform_profile_id": "synthetic-platform-not-approved",
+          "platform_profile_revision": "1",
+          "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+        },
+        "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "OPEN_GATE": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "OPEN_GATE",
+      "message_id": "m-open_gate",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+        "lease_until_tick_ns": "1000000000",
+        "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "OPEN_GATE_ACK": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "OPEN_GATE_ACK",
+      "message_id": "m-open_gate_ack",
+      "reply_to": "m-request",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "gate_token": "gate-demo",
+        "gate_revision": "5",
+        "state": "open"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "DISPATCH": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "DISPATCH",
+      "message_id": "m-dispatch",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "permit": {
+          "permit_id": "permit-1",
+          "command_id": "cmd-1",
+          "attempt_id": "attempt-1",
+          "dispatch_intent_id": "intent-1",
+          "controller_boot_id": "cb-demo",
+          "worker_boot_id": "wb-demo",
+          "device_session_id": "ds-demo",
+          "control_epoch": "epoch-demo",
+          "control_version": "7",
+          "authorization_revision": "3",
+          "origin": "manual",
+          "grant_revision": null,
+          "arm_generation": null,
+          "gate_revision": "5",
+          "deadline_policy": {
+            "mode": "immediate",
+            "max_queue_ms": 1000
+          },
+          "content_digest": "sha256:25cde5b5f9902fcb0bee7787e83c02c0fa427489d2f82bb168e63cbdeeabce83",
+          "guard_id": "guard-demo",
+          "guard_digest": "sha256:d40e8b829454ea4bcdcaa5f5eb9d745e998d523999233e4118bcd3a11d41ef23",
+          "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "admission_origin": "non_panel",
+          "panel_binding_digest": null
+        },
+        "gate_token": "gate-demo",
+        "send_window": {
+          "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "earliest_tick_ns": "100",
+          "latest_tick_ns": "900",
+          "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+        },
+        "request": {
+          "context_id": "context-demo",
+          "idempotency_key": "key-demo",
+          "device_id": "device-demo",
+          "action_id": "obs.program_scene.set",
+          "capability_version": "1.0.0-draft.2",
+          "parameters": {
+            "scene_ref": {
+              "collection_ref": "collection-demo",
+              "scene_id": "scene-demo",
+              "catalog_revision": "2",
+              "collection_generation": "1",
+              "binding_revision": "1"
+            }
+          },
+          "expected_control": {
+            "epoch": "epoch-demo",
+            "version": "7"
+          },
+          "origin": "manual",
+          "required_completion": "effect_verified",
+          "preconditions": [],
+          "dispatch": {
+            "mode": "immediate",
+            "max_queue_ms": 1000
+          },
+          "evidence_timeout_ms": 2000
+        },
+        "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "guard_id": "guard-demo",
+        "guard_digest": "sha256:d40e8b829454ea4bcdcaa5f5eb9d745e998d523999233e4118bcd3a11d41ef23"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "SEND_REPORT": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "SEND_REPORT",
+      "message_id": "m-send_report",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "report_id": "report-demo",
+        "permit_id": "permit-1",
+        "attempt_id": "attempt-1",
+        "dispatch_intent_id": "intent-1",
+        "device_session_id": "ds-demo",
+        "disposition": "in_flight",
+        "proof": "transport_entered",
+        "protocol_request_id": "protocol-demo"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "EVIDENCE_CANDIDATE": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "EVIDENCE_CANDIDATE",
+      "message_id": "m-evidence_candidate",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "report_id": "report-evidence",
+        "command_id": "cmd-1",
+        "attempt_id": "attempt-1",
+        "device_session_id": "ds-demo",
+        "evidence_kind": "fresh_query",
+        "observation_id": "obs-1",
+        "payload": {
+          "scene_uuid": "scene-demo"
+        }
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "REPORT_STORED": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "REPORT_STORED",
+      "message_id": "m-report_stored",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "report_id": "report-evidence",
+        "record_revision": "11"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "FENCE": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "FENCE",
+      "message_id": "m-fence",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "barrier_id": "barrier-demo",
+        "operation_id": "op-demo",
+        "control_epoch": "epoch-demo",
+        "target_version": "8",
+        "target_gate_revision": "6",
+        "issued_cut_revision": "12",
+        "ledger_digest": "sha256:2f4949716f045f6d2922a8e2174b139cad4b8bfac322421587d62330f1bc9b56",
+        "open_intents": [
+          {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "guard_id": "guard-demo",
+            "guard_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "admission_origin": "non_panel",
+            "panel_binding_digest": null,
+            "controller_boot_id": "cb-demo",
+            "ipc_session_id": "ipc-demo",
+            "device_id": "device-demo"
+          },
+          {
+            "permit_id": "permit-2",
+            "command_id": "cmd-2",
+            "attempt_id": "attempt-2",
+            "dispatch_intent_id": "intent-2",
+            "worker_boot_id": "wb-old",
+            "device_session_id": "ds-old",
+            "guard_id": "guard-demo",
+            "guard_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "admission_origin": "non_panel",
+            "panel_binding_digest": null,
+            "controller_boot_id": "cb-demo",
+            "ipc_session_id": "ipc-demo",
+            "device_id": "device-demo"
+          }
+        ]
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "FENCE_ACK": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "FENCE_ACK",
+      "message_id": "m-fence_ack",
+      "reply_to": "m-fence",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "ack": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "device_id": "device-demo",
+          "controller_boot_id": "cb-demo",
+          "worker_boot_id": "wb-demo",
+          "control_epoch": "epoch-demo",
+          "installed_version": "8",
+          "discarded_permit_ids": [
+            "permit-1"
+          ],
+          "in_flight_command_ids": [],
+          "unresolved_command_ids": [
+            "cmd-2"
+          ],
+          "all_write_exits_fenced": true,
+          "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+        },
+        "issued_cut_revision": "12",
+        "ledger_digest": "sha256:5ca2f62913cfadb14baf45484d4662628c75fdf280f2937c6f5d75300d5ee2bd",
+        "gate_revision": "6",
+        "coverage": [
+          {
+            "intent": {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo",
+              "guard_id": "guard-demo",
+              "guard_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "admission_origin": "non_panel",
+              "panel_binding_digest": null,
+              "controller_boot_id": "cb-demo",
+              "ipc_session_id": "ipc-demo",
+              "device_id": "device-demo"
+            },
+            "disposition": "not_sent",
+            "proof": "never_received"
+          },
+          {
+            "intent": {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old",
+              "guard_id": "guard-demo",
+              "guard_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "admission_origin": "non_panel",
+              "panel_binding_digest": null,
+              "controller_boot_id": "cb-demo",
+              "ipc_session_id": "ipc-demo",
+              "device_id": "device-demo"
+            },
+            "disposition": "unknown",
+            "proof": "send_uncertain"
+          }
+        ]
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "QUERY_BARRIER": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "QUERY_BARRIER",
+      "message_id": "m-query_barrier",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "barrier_id": "barrier-demo",
+        "operation_id": "op-demo"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "CLOSE_GATE": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "CLOSE_GATE",
+      "message_id": "m-close_gate",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": null,
+      "body": {
+        "close_id": "close-demo",
+        "reason": "storage_fault",
+        "scope": "controller"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "CLOSE_GATE_ACK": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "CLOSE_GATE_ACK",
+      "message_id": "m-close_gate_ack",
+      "reply_to": "m-request",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": null,
+      "body": {
+        "close_id": "close-demo",
+        "closed_device_ids": [
+          "device-demo"
+        ]
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "GUARD_INSTALL": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "GUARD_INSTALL",
+      "message_id": "m-guard_install",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "guard": {
+          "guard_id": "guard-demo",
+          "permit_id": "permit-1",
+          "command_id": "cmd-1",
+          "device_id": "device-demo",
+          "controller_boot_id": "cb-demo",
+          "worker_boot_id": "wb-demo",
+          "ipc_session_id": "ipc-demo",
+          "binding": {
+            "issuer_id": "issuer-demo",
+            "issuer_epoch": "issuer-epoch",
+            "audience": "controller-a",
+            "principal_kind": "human",
+            "principal_id": "human-a",
+            "session_id": "session-a",
+            "credential_id": "credential-a",
+            "subject_revision": "3",
+            "session_revision": "2",
+            "policy_revision": "4",
+            "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "origin": "manual",
+            "grant_id": null,
+            "grant_revision": null,
+            "arm_generation": null,
+            "extension_instance_id": null,
+            "extension_approval_revision": null
+          },
+          "authorization_revision": "3",
+          "authorization_deadline_tick_ns": "2000000000",
+          "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "clock_generation": null,
+          "time_policy_revision": null,
+          "time_required": false,
+          "capacity_reservation_id": "reserve-a",
+          "guard_digest": "sha256:6e8f5e13835544e08581d142520db729fb87709f7f6d94cc85c01bccf9d8f61b",
+          "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+          "clock_sample_ref": null,
+          "time_evidence_ref": null,
+          "time_profile_ref": null,
+          "admission_origin": "non_panel",
+          "panel_binding": null
+        },
+        "content_digest": "sha256:25cde5b5f9902fcb0bee7787e83c02c0fa427489d2f82bb168e63cbdeeabce83",
+        "clock_sample": null,
+        "schedule_guard": null,
+        "time_evidence": null,
+        "time_profile": null
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "GUARD_ACK": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "GUARD_ACK",
+      "message_id": "m-guard_ack",
+      "reply_to": "m-guard_install",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "guard_id": "guard-demo",
+        "guard_digest": "sha256:d40e8b829454ea4bcdcaa5f5eb9d745e998d523999233e4118bcd3a11d41ef23",
+        "content_digest": "sha256:25cde5b5f9902fcb0bee7787e83c02c0fa427489d2f82bb168e63cbdeeabce83",
+        "permit_id": "permit-1",
+        "command_id": "cmd-1",
+        "installed_authorization_revision": "3",
+        "state": "installed",
+        "panel_binding_digest": null
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "AUTH_FENCE": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "AUTH_FENCE",
+      "message_id": "m-auth_fence",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "operation_id": "op-auth",
+        "barrier_id": "barrier-auth",
+        "issued_cut_revision": "2",
+        "ledger_digest": "sha256:698baddbcc69993c28986c74f30d4586a350b6cd73c30dd1d9903287fc5654cc",
+        "open_intents": [
+          {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "guard_id": "guard-demo",
+            "guard_digest": "sha256:d40e8b829454ea4bcdcaa5f5eb9d745e998d523999233e4118bcd3a11d41ef23",
+            "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "admission_origin": "non_panel",
+            "panel_binding_digest": null,
+            "controller_boot_id": "cb-demo",
+            "ipc_session_id": "ipc-demo",
+            "device_id": "device-demo"
+          }
+        ],
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "target_authorization_revision": "10",
+        "selector_digest": "sha256:232e39ecf6fc5696db0ac938e8eca19ee51d17fdcf1bb7088e8872d3ab8e3a22"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "AUTH_FENCE_ACK": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "AUTH_FENCE_ACK",
+      "message_id": "m-auth_fence_ack",
+      "reply_to": "m-auth_fence",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "operation_id": "op-auth",
+        "barrier_id": "barrier-auth",
+        "issued_cut_revision": "2",
+        "ledger_digest": "sha256:51a9a5c16a91d95f8b720eccf7752afba53c10b28fbba8e8a103c645edd6c185",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "target_authorization_revision": "10",
+        "coverage": [
+          {
+            "intent": {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo",
+              "guard_id": "guard-demo",
+              "guard_digest": "sha256:d40e8b829454ea4bcdcaa5f5eb9d745e998d523999233e4118bcd3a11d41ef23",
+              "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "admission_origin": "non_panel",
+              "panel_binding_digest": null,
+              "controller_boot_id": "cb-demo",
+              "ipc_session_id": "ipc-demo",
+              "device_id": "device-demo"
+            },
+            "disposition": "not_sent",
+            "proof": "discarded_unconsumed"
+          }
+        ],
+        "invalidated_permit_ids": [
+          "permit-1"
+        ],
+        "in_flight_command_ids": [],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true,
+        "applied_authorization_revision": "10",
+        "selector_digest": "sha256:232e39ecf6fc5696db0ac938e8eca19ee51d17fdcf1bb7088e8872d3ab8e3a22"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "TIME_FENCE": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "TIME_FENCE",
+      "message_id": "m-time_fence",
+      "reply_to": null,
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "operation_id": "op-time",
+        "barrier_id": "barrier-time",
+        "issued_cut_revision": "2",
+        "ledger_digest": "sha256:698baddbcc69993c28986c74f30d4586a350b6cd73c30dd1d9903287fc5654cc",
+        "open_intents": [
+          {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "guard_id": "guard-demo",
+            "guard_digest": "sha256:d40e8b829454ea4bcdcaa5f5eb9d745e998d523999233e4118bcd3a11d41ef23",
+            "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+            "admission_origin": "non_panel",
+            "panel_binding_digest": null,
+            "controller_boot_id": "cb-demo",
+            "ipc_session_id": "ipc-demo",
+            "device_id": "device-demo"
+          }
+        ],
+        "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+        "time_policy_revision": "2",
+        "old_clock_generation": "generation-a",
+        "new_clock_generation": "generation-a",
+        "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    },
+    "TIME_FENCE_ACK": {
+      "ipc_version": "ipc/0.4.0-panel-draft.1",
+      "type": "TIME_FENCE_ACK",
+      "message_id": "m-time_fence_ack",
+      "reply_to": "m-time_fence",
+      "ipc_session_id": "ipc-demo",
+      "controller_boot_id": "cb-demo",
+      "worker_boot_id": "wb-demo",
+      "seq": "1",
+      "device_id": "device-demo",
+      "body": {
+        "operation_id": "op-time",
+        "barrier_id": "barrier-time",
+        "issued_cut_revision": "2",
+        "ledger_digest": "sha256:51a9a5c16a91d95f8b720eccf7752afba53c10b28fbba8e8a103c645edd6c185",
+        "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+        "time_policy_revision": "2",
+        "old_clock_generation": "generation-a",
+        "new_clock_generation": "generation-a",
+        "coverage": [
+          {
+            "intent": {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo",
+              "guard_id": "guard-demo",
+              "guard_digest": "sha256:d40e8b829454ea4bcdcaa5f5eb9d745e998d523999233e4118bcd3a11d41ef23",
+              "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+              "admission_origin": "non_panel",
+              "panel_binding_digest": null,
+              "controller_boot_id": "cb-demo",
+              "ipc_session_id": "ipc-demo",
+              "device_id": "device-demo"
+            },
+            "disposition": "not_sent",
+            "proof": "discarded_unconsumed"
+          }
+        ],
+        "invalidated_permit_ids": [
+          "permit-1"
+        ],
+        "in_flight_command_ids": [],
+        "unresolved_command_ids": [],
+        "all_write_exits_fenced": true,
+        "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+      },
+      "clock_domain_id": "clock_4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a",
+      "descriptor_digest": "sha256:4f252b8f3a7da2892985d4d1ddc37eb1f3d14f54ea0d7fa9bf90897e77769e6a"
+    }
+  },
+  "guard_cases": [
+    {
+      "id": "PG01",
+      "changes": {},
+      "valid": true,
+      "rehash": true
+    },
+    {
+      "id": "PG02",
+      "changes": {
+        "guard.panel_binding.context.request_identity.database_instance_id": "other"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG03",
+      "changes": {
+        "guard.panel_binding.context.auth_session_id": "other"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG04",
+      "changes": {
+        "guard.panel_binding.context.panel_session_id": "other"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG05",
+      "changes": {
+        "guard.panel_binding.context.document_generation": "2"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG06",
+      "changes": {
+        "guard.panel_binding.extension_instance_id": "other"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG07",
+      "changes": {
+        "guard.panel_binding.context.approval_ref.revision": "6"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG08",
+      "changes": {
+        "guard.panel_binding.context.activation_ref.scope_revision": "2"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG09",
+      "changes": {
+        "guard.panel_binding.lifetime.domain_ref.descriptor_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG10",
+      "changes": {
+        "authority.now": "2000000000"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG11",
+      "changes": {
+        "authority.now": "1999999999"
+      },
+      "valid": true,
+      "rehash": true
+    },
+    {
+      "id": "PG12",
+      "changes": {
+        "authority.active_session": false
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG13",
+      "changes": {
+        "authority.approval_current": false
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG14",
+      "changes": {
+        "authority.scope_current": false
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG15",
+      "changes": {
+        "authority.storage_healthy": false
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG16",
+      "changes": {
+        "guard.admission_origin": "non_panel",
+        "guard.panel_binding": null,
+        "permit.admission_origin": "non_panel",
+        "permit.panel_binding_digest": null
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG17",
+      "changes": {
+        "guard.panel_binding.lifetime.lease_deadline_tick": "2500000000"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG18",
+      "changes": {
+        "permit.guard_id": "other"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG19",
+      "changes": {
+        "authority.current.ipc_session_id": "new-ipc"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG20",
+      "changes": {
+        "guard.binding.principal_id": "other"
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG21",
+      "changes": {
+        "authority.selectors": [
+          {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "issuer_id": "issuer-demo",
+            "issuer_epoch": "issuer-epoch",
+            "auth_session_id": "session-a",
+            "panel_session_id": "panel-a",
+            "document_generation": "1",
+            "kind": "panel_session"
+          }
+        ]
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG22",
+      "changes": {
+        "authority.selectors": [
+          {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "issuer_id": "issuer-demo",
+            "issuer_epoch": "issuer-epoch",
+            "auth_session_id": "session-a",
+            "panel_session_id": "panel-b",
+            "document_generation": "1",
+            "kind": "panel_session"
+          }
+        ]
+      },
+      "valid": true,
+      "rehash": true
+    },
+    {
+      "id": "PG23",
+      "changes": {
+        "authority.selectors": [
+          {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "issuer_id": "issuer-demo",
+            "issuer_epoch": "issuer-epoch",
+            "auth_session_id": "session-a",
+            "panel_session_id": "panel-a",
+            "document_generation": "1",
+            "kind": "panel_delegation",
+            "delegation_id": "delegation-a",
+            "revision_floor": "2"
+          }
+        ]
+      },
+      "valid": false,
+      "rehash": true
+    },
+    {
+      "id": "PG24",
+      "changes": {
+        "authority.selectors": [
+          {
+            "authority_service_id": "controller-a",
+            "database_instance_id": "db-a",
+            "issuer_id": "issuer-demo",
+            "issuer_epoch": "issuer-epoch",
+            "auth_session_id": "session-a",
+            "panel_session_id": "panel-a",
+            "document_generation": "1",
+            "kind": "panel_delegation",
+            "delegation_id": "delegation-a",
+            "revision_floor": "1"
+          }
+        ]
+      },
+      "valid": true,
+      "rehash": true
+    },
+    {
+      "id": "PG25",
+      "changes": {
+        "guard.binding.scope_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "valid": false,
+      "rehash": true
+    }
+  ],
+  "barrier_cases": [
+    {
+      "id": "PB01",
+      "changes": {},
+      "valid": true
+    },
+    {
+      "id": "PB02",
+      "changes": {
+        "ack.reply_to": "other"
+      },
+      "valid": false
+    },
+    {
+      "id": "PB03",
+      "changes": {
+        "ack.body.issued_cut_revision": "999"
+      },
+      "valid": false
+    },
+    {
+      "id": "PB04",
+      "changes": {
+        "ack.body.coverage": []
+      },
+      "valid": false
+    },
+    {
+      "id": "PB05",
+      "changes": {
+        "ack.body.invalidated_permit_ids": []
+      },
+      "valid": false
+    },
+    {
+      "id": "PB06",
+      "changes": {
+        "ack.body.selector.database_instance_id": "other"
+      },
+      "valid": false
+    },
+    {
+      "id": "PB07",
+      "changes": {
+        "ack.body.ledger_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "valid": false
+    },
+    {
+      "id": "PB08",
+      "changes": {
+        "authority.current.ipc_session_id": "new-ipc"
+      },
+      "valid": false
+    },
+    {
+      "id": "PB09",
+      "changes": {
+        "authority.transport_entered": [
+          "permit-1"
+        ]
+      },
+      "valid": false
+    },
+    {
+      "id": "PB10",
+      "changes": {
+        "ack.body.applied_authorization_revision": "0"
+      },
+      "valid": false
+    },
+    {
+      "id": "PB11",
+      "changes": {
+        "ack.body.applied_authorization_revision": "999"
+      },
+      "valid": true
+    },
+    {
+      "id": "PB12",
+      "changes": {
+        "ack.body.unresolved_command_ids": [
+          "cmd-1"
+        ]
+      },
+      "valid": false
+    },
+    {
+      "id": "PB13",
+      "changes": {
+        "ack.body.coverage.0.intent.panel_binding_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "valid": false
+    },
+    {
+      "id": "PB14",
+      "changes": {
+        "fence.body.open_intents": [],
+        "ack.body.coverage": [],
+        "ack.body.invalidated_permit_ids": []
+      },
+      "valid": false
+    }
+  ],
+  "selection_cases": [
+    {
+      "id": "PS01",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_session"
+      },
+      "binding_changes": {},
+      "match": true
+    },
+    {
+      "id": "PS02",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_session"
+      },
+      "binding_changes": {
+        "context.panel_session_id": "panel-b",
+        "context.request_identity.panel_session_id": "panel-b"
+      },
+      "match": false
+    },
+    {
+      "id": "PS03",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_session"
+      },
+      "binding_changes": {
+        "context.request_identity.database_instance_id": "db-b"
+      },
+      "match": false
+    },
+    {
+      "id": "PS04",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_session"
+      },
+      "binding_changes": {
+        "context.request_identity.issuer_epoch": "other"
+      },
+      "match": false
+    },
+    {
+      "id": "PS05",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_delegation",
+        "delegation_id": "delegation-a",
+        "revision_floor": "2"
+      },
+      "binding_changes": {},
+      "match": true
+    },
+    {
+      "id": "PS06",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_delegation",
+        "delegation_id": "delegation-a",
+        "revision_floor": "1"
+      },
+      "binding_changes": {},
+      "match": false
+    },
+    {
+      "id": "PS07",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_delegation",
+        "delegation_id": "other",
+        "revision_floor": "2"
+      },
+      "binding_changes": {},
+      "match": false
+    },
+    {
+      "id": "PS08",
+      "selector": {
+        "authority_service_id": "controller-a",
+        "database_instance_id": "db-a",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "auth_session_id": "session-a",
+        "panel_session_id": "panel-a",
+        "document_generation": "1",
+        "kind": "panel_session"
+      },
+      "binding_changes": {
+        "context.panel_delegation_ref.revision": "999"
+      },
+      "match": true
+    }
+  ],
+  "traces": [
+    {
+      "id": "PT01",
+      "steps": [
+        "send",
+        "fence",
+        "ack",
+        "store"
+      ],
+      "sent": 1,
+      "unknown": false,
+      "applied": true
+    },
+    {
+      "id": "PT02",
+      "steps": [
+        "fence",
+        "send",
+        "ack",
+        "store"
+      ],
+      "sent": 0,
+      "unknown": false,
+      "applied": true
+    },
+    {
+      "id": "PT03",
+      "steps": [
+        "fence",
+        "ack",
+        "store_fail",
+        "send"
+      ],
+      "sent": 0,
+      "unknown": false,
+      "applied": false
+    },
+    {
+      "id": "PT04",
+      "steps": [
+        "send",
+        "reconnect",
+        "send"
+      ],
+      "sent": 1,
+      "unknown": true,
+      "applied": false
+    },
+    {
+      "id": "PT05",
+      "steps": [
+        "fence",
+        "reconnect",
+        "ack",
+        "store"
+      ],
+      "sent": 0,
+      "unknown": true,
+      "applied": false
+    },
+    {
+      "id": "PT06",
+      "steps": [
+        "fence",
+        "fence",
+        "send",
+        "ack",
+        "store"
+      ],
+      "sent": 0,
+      "unknown": false,
+      "applied": true
+    },
+    {
+      "id": "PT07",
+      "steps": [
+        "send",
+        "send",
+        "fence",
+        "ack",
+        "store"
+      ],
+      "sent": 1,
+      "unknown": false,
+      "applied": true
+    }
+  ]
+}

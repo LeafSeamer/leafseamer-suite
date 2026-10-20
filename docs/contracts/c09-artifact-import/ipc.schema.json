@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c09-artifact-import/ipc.schema.json",
+  "x-approved": false,
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "IMPORT_BEGIN"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/ImportBegin"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "IMPORT_QUERY"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/ImportIdentity"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "IMPORT_CANCEL"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/ImportIdentity"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "IMPORT_STATUS"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/ImportStatus"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "INTAKE_QUERY"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/IntakeQuery"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "INTAKE_RESULT"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/IntakeResult"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "VERIFY_MATERIALIZATION"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/VerifyMaterialization"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "MATERIALIZATION_RESULT"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/MaterializationResult"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ipc_version": {
+          "const": "extension-import/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "ERROR"
+        },
+        "channel_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+        },
+        "message_id": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "reply_to": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json#/$defs/Error"
+        }
+      },
+      "required": [
+        "ipc_version",
+        "type",
+        "channel_id",
+        "sequence",
+        "message_id",
+        "reply_to",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

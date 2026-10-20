@@ -1,0 +1,647 @@
+{
+  "all_passed": true,
+  "scope": "完整导出清单静态对账与引用图参考检查",
+  "counts": {
+    "operations": 71,
+    "entrypoints": 8,
+    "public_models": 185,
+    "ipc_models": 42,
+    "mutations": 24,
+    "schema_probes": 10,
+    "operation_probes": 12
+  },
+  "graph_observation": {
+    "public_closure": [
+      "public/AcquireRequest",
+      "public/ActionDescriptor",
+      "public/ActionRef",
+      "public/Actor",
+      "public/AdmissionDecision",
+      "public/ArmRequest",
+      "public/Attempt",
+      "public/BarrierAck",
+      "public/BootstrapRequest",
+      "public/CancelDescriptor",
+      "public/CancelOperation",
+      "public/CancelOperationResponse",
+      "public/CancelRequest",
+      "public/Cancellation",
+      "public/CapabilityCatalog",
+      "public/CapabilityCatalogResponse",
+      "public/CapacityProfile",
+      "public/CapacityStatus",
+      "public/CapacityStatusResponse",
+      "public/CapacityUpdate",
+      "public/CatalogBinding",
+      "public/CatalogBindingResponse",
+      "public/CatalogUpdate",
+      "public/CausalAgeBasis",
+      "public/CheckResult",
+      "public/ClockAssessment",
+      "public/ClockAssessmentResponse",
+      "public/ClockDomainRef",
+      "public/ClockSampleRef",
+      "public/ClockStatus",
+      "public/ClockStatusResponse",
+      "public/CommandRecord",
+      "public/CommandRecordResponse",
+      "public/CommandRequest",
+      "public/Completion",
+      "public/CompletionEvidence",
+      "public/CompletionLevel",
+      "public/ControlOperation",
+      "public/ControlOperationResponse",
+      "public/ControlRecord",
+      "public/ControlRecordResponse",
+      "public/ControlTarget",
+      "public/ControlVersion",
+      "public/Definition",
+      "public/DefinitionCreate",
+      "public/DefinitionRecord",
+      "public/DefinitionRecordResponse",
+      "public/DeviceActionScope",
+      "public/DeviceDescriptor",
+      "public/DevicePage",
+      "public/DevicePageResponse",
+      "public/Digest",
+      "public/Dispatch",
+      "public/DraftUpdate",
+      "public/Duration",
+      "public/EffectFootprint",
+      "public/Error",
+      "public/ErrorCode",
+      "public/ErrorResponse",
+      "public/EventAgeProof",
+      "public/EventEnvelope",
+      "public/EventReceipt",
+      "public/EventReceiptResponse",
+      "public/EvidencePage",
+      "public/EvidencePageResponse",
+      "public/EvidenceRef",
+      "public/GrantBinding",
+      "public/GrantProposal",
+      "public/GrantUpdate",
+      "public/Id",
+      "public/IndependenceProof",
+      "public/IndependenceProofResponse",
+      "public/JsonValue",
+      "public/LoginRequest",
+      "public/Meta",
+      "public/MetaResponse",
+      "public/MutationReceipt",
+      "public/MutationReceiptResponse",
+      "public/ObsCompletionBundle",
+      "public/ObsEvidenceFrame",
+      "public/ObsSceneParameters",
+      "public/Observation",
+      "public/ObservationResponse",
+      "public/Payload",
+      "public/PendingChange",
+      "public/Platform",
+      "public/Predicate",
+      "public/Preflight",
+      "public/PreflightResponse",
+      "public/PrincipalRef",
+      "public/ProofActionBinding",
+      "public/ProofRef",
+      "public/PublishRequest",
+      "public/RecoveryOperation",
+      "public/RecoveryOperationResponse",
+      "public/RecoveryPlan",
+      "public/RecoveryPlanItem",
+      "public/RecoveryPreview",
+      "public/RecoveryPreviewResponse",
+      "public/RecoverySnapshot",
+      "public/RecoveryTarget",
+      "public/RefreshRequest",
+      "public/ReleaseRequest",
+      "public/RequestContext",
+      "public/RequestContextRequest",
+      "public/RequestContextResponse",
+      "public/RequestIdentity",
+      "public/RequiredStep",
+      "public/Resolution",
+      "public/ResourceReleaseEvidence",
+      "public/ResourceSet",
+      "public/ResumeRequest",
+      "public/RetryDescriptor",
+      "public/RetryPolicy",
+      "public/Revision",
+      "public/RevocationReceipt",
+      "public/RevocationRecord",
+      "public/RevocationRecordResponse",
+      "public/RevocationRequest",
+      "public/RevocationSelector",
+      "public/RevokeRequest",
+      "public/RunBinding",
+      "public/RunCreate",
+      "public/RunMutationRequest",
+      "public/RunRecord",
+      "public/RunRecordResponse",
+      "public/RunRevisionRequest",
+      "public/SceneRef",
+      "public/SchemaDescriptor",
+      "public/Session",
+      "public/SessionResponse",
+      "public/Snapshot",
+      "public/SnapshotResponse",
+      "public/StepDefinition",
+      "public/StepGroup",
+      "public/StepResult",
+      "public/SubjectRecord",
+      "public/SubjectRecordResponse",
+      "public/Subscription",
+      "public/SubscriptionRequest",
+      "public/SubscriptionResponse",
+      "public/TargetApplication",
+      "public/TimeProfileRef",
+      "public/Timestamp",
+      "public/TokenRequest",
+      "public/TokenResult",
+      "public/TokenResultResponse",
+      "public/TransferAcceptRequest",
+      "public/TransferOffer",
+      "public/TransferOfferResponse",
+      "public/TransferRequest",
+      "public/TransitionDefinition",
+      "public/TransitionRecord",
+      "public/TriggerBinding",
+      "public/TriggerDescriptor",
+      "public/UtcAgeBasis",
+      "public/Validity",
+      "public/Version",
+      "public/WsEvent",
+      "public/WsFrame",
+      "public/WsResync",
+      "public/WsTicketBinding",
+      "public/WsTicketBindingResponse",
+      "public/WsTicketRequest",
+      "public/WsTicketResult",
+      "public/WsTicketResultResponse"
+    ],
+    "internal_closure": [
+      "public/AuthorizationSnapshot",
+      "public/ClockDomainDescriptor",
+      "public/ClockDomainDescriptorResponse",
+      "public/ClockSample",
+      "public/ClockSampleResponse",
+      "public/Digest",
+      "public/Error",
+      "public/ErrorCode",
+      "public/ErrorResponse",
+      "public/EvidenceRef",
+      "public/Id",
+      "public/IntrospectRequest",
+      "public/IntrospectResult",
+      "public/IntrospectResultResponse",
+      "public/JsonValue",
+      "public/OsBootIdentity",
+      "public/Payload",
+      "public/Revision",
+      "public/TimeBoundEvidence",
+      "public/TimeBoundEvidenceResponse",
+      "public/TimeBoundProfile",
+      "public/TimeBoundProfileResponse",
+      "public/TimeProfileRef",
+      "public/Timestamp"
+    ],
+    "ipc_public_closure": [
+      "public/AuthorizationBinding",
+      "public/BarrierAck",
+      "public/ClockDomainDescriptor",
+      "public/ClockSample",
+      "public/ClockSampleRef",
+      "public/CommandRequest",
+      "public/CompletionLevel",
+      "public/ControlVersion",
+      "public/Digest",
+      "public/Dispatch",
+      "public/DispatchPermit",
+      "public/Duration",
+      "public/EvidenceRef",
+      "public/ExecutionGuard",
+      "public/Id",
+      "public/JsonValue",
+      "public/ObsEvidenceFrame",
+      "public/ObsSceneParameters",
+      "public/OsBootIdentity",
+      "public/Payload",
+      "public/Predicate",
+      "public/Revision",
+      "public/RevocationSelector",
+      "public/RunBinding",
+      "public/SceneRef",
+      "public/ScheduleGuard",
+      "public/TimeBoundEvidence",
+      "public/TimeBoundProfile",
+      "public/TimeProfileRef",
+      "public/Timestamp",
+      "public/Version"
+    ],
+    "ipc_local_closure": [
+      "ipc/AUTH_FENCE",
+      "ipc/AUTH_FENCEBody",
+      "ipc/AUTH_FENCE_ACK",
+      "ipc/AUTH_FENCE_ACKBody",
+      "ipc/CLOSE_GATE",
+      "ipc/CLOSE_GATEBody",
+      "ipc/CLOSE_GATE_ACK",
+      "ipc/CLOSE_GATE_ACKBody",
+      "ipc/Coverage",
+      "ipc/DISPATCH",
+      "ipc/DISPATCHBody",
+      "ipc/EVIDENCE_CANDIDATE",
+      "ipc/EVIDENCE_CANDIDATEBody",
+      "ipc/FENCE",
+      "ipc/FENCEBody",
+      "ipc/FENCE_ACK",
+      "ipc/FENCE_ACKBody",
+      "ipc/GUARD_ACK",
+      "ipc/GUARD_ACKBody",
+      "ipc/GUARD_INSTALL",
+      "ipc/GUARD_INSTALLBody",
+      "ipc/HELLO",
+      "ipc/HELLOBody",
+      "ipc/HELLO_ACK",
+      "ipc/HELLO_ACKBody",
+      "ipc/IntentRef",
+      "ipc/OPEN_GATE",
+      "ipc/OPEN_GATEBody",
+      "ipc/OPEN_GATE_ACK",
+      "ipc/OPEN_GATE_ACKBody",
+      "ipc/ObsCompletionCandidate",
+      "ipc/QUERY_BARRIER",
+      "ipc/QUERY_BARRIERBody",
+      "ipc/REPORT_STORED",
+      "ipc/REPORT_STOREDBody",
+      "ipc/SEND_REPORT",
+      "ipc/SEND_REPORTBody",
+      "ipc/SendWindow",
+      "ipc/TIME_FENCE",
+      "ipc/TIME_FENCEBody",
+      "ipc/TIME_FENCE_ACK",
+      "ipc/TIME_FENCE_ACKBody"
+    ],
+    "retained_unexported": [
+      "public/AuthorizationSnapshotResponse",
+      "public/RunGrant"
+    ]
+  },
+  "entrypoint_counts": {
+    "./seamer": {
+      "operations": 26,
+      "roots": 36,
+      "models": 118
+    },
+    "./controller": {
+      "operations": 33,
+      "roots": 44,
+      "models": 127
+    },
+    "./provider": {
+      "operations": 2,
+      "roots": 6,
+      "models": 35
+    },
+    "./seamer-controller": {
+      "operations": 1,
+      "roots": 4,
+      "models": 18
+    },
+    "./internal/controller": {
+      "operations": 5,
+      "roots": 9,
+      "models": 24
+    },
+    "./internal/seamer": {
+      "operations": 4,
+      "roots": 7,
+      "models": 19
+    },
+    "./ipc": {
+      "operations": 0,
+      "roots": 19,
+      "models": 73
+    },
+    "./models": {
+      "operations": 0,
+      "roots": 62,
+      "models": 166
+    }
+  },
+  "cases": [
+    {
+      "id": "EX01",
+      "errors": []
+    },
+    {
+      "id": "EX02",
+      "errors": [
+        "plan_status"
+      ]
+    },
+    {
+      "id": "EX03",
+      "errors": [
+        "plan_status"
+      ]
+    },
+    {
+      "id": "EX04",
+      "errors": [
+        "plan_status"
+      ]
+    },
+    {
+      "id": "EX05",
+      "errors": [
+        "source_binding"
+      ]
+    },
+    {
+      "id": "EX06",
+      "errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX07",
+      "errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX08",
+      "errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX09",
+      "errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX10",
+      "errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX11",
+      "errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX12",
+      "errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX13",
+      "errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX14",
+      "errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX15",
+      "errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX16",
+      "errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX17",
+      "errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX18",
+      "errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX19",
+      "errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX20",
+      "errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX21",
+      "errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX22",
+      "errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX23",
+      "errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX24",
+      "errors": [
+        "plan_fields"
+      ]
+    },
+    {
+      "id": "EG01",
+      "error": null,
+      "refs": []
+    },
+    {
+      "id": "EG02",
+      "error": null,
+      "refs": [
+        "#/components/schemas/A",
+        "#/components/schemas/B",
+        "#/components/schemas/C",
+        "#/components/schemas/D"
+      ]
+    },
+    {
+      "id": "EG03",
+      "error": null,
+      "refs": [
+        "#/components/schemas/A",
+        "#/components/schemas/B"
+      ]
+    },
+    {
+      "id": "EG04",
+      "error": null,
+      "refs": [
+        "#/components/schemas/A"
+      ]
+    },
+    {
+      "id": "EG05",
+      "error": "unsupported_schema_scope",
+      "refs": null
+    },
+    {
+      "id": "EG06",
+      "error": "unsupported_schema_scope",
+      "refs": null
+    },
+    {
+      "id": "EG07",
+      "error": "unsupported_schema_keyword",
+      "refs": null
+    },
+    {
+      "id": "EG08",
+      "error": null,
+      "refs": []
+    },
+    {
+      "id": "EG09",
+      "error": null,
+      "refs": [
+        "#/components/schemas/A",
+        "#/components/schemas/B"
+      ]
+    },
+    {
+      "id": "EG10",
+      "error": "invalid_ref",
+      "refs": null
+    },
+    {
+      "id": "EO01",
+      "error": null,
+      "actual": {
+        "refs": [
+          "#/components/schemas/New"
+        ],
+        "websocket": false
+      }
+    },
+    {
+      "id": "EO02",
+      "error": null,
+      "actual": {
+        "refs": [
+          "#/components/schemas/A",
+          "#/components/schemas/B"
+        ],
+        "websocket": false
+      }
+    },
+    {
+      "id": "EO03",
+      "error": null,
+      "actual": {
+        "refs": [
+          "#/components/schemas/A"
+        ],
+        "websocket": false
+      }
+    },
+    {
+      "id": "EO04",
+      "error": "component_cycle",
+      "actual": null
+    },
+    {
+      "id": "EO05",
+      "error": "unknown_component_ref",
+      "actual": null
+    },
+    {
+      "id": "EO06",
+      "error": null,
+      "actual": {
+        "refs": [
+          "#/components/schemas/A",
+          "#/components/schemas/B"
+        ],
+        "websocket": false
+      }
+    },
+    {
+      "id": "EO07",
+      "error": null,
+      "actual": {
+        "refs": [
+          "#/components/schemas/Frame",
+          "#/components/schemas/Ticket"
+        ],
+        "websocket": true
+      }
+    },
+    {
+      "id": "EO08",
+      "error": "missing_ws_model",
+      "actual": null
+    },
+    {
+      "id": "EO09",
+      "error": "unexpected_ws_model",
+      "actual": null
+    },
+    {
+      "id": "EO10",
+      "error": "duplicate_parameter",
+      "actual": null
+    },
+    {
+      "id": "EO11",
+      "error": "unsupported_callbacks",
+      "actual": null
+    },
+    {
+      "id": "EO12",
+      "error": null,
+      "actual": {
+        "refs": [
+          "#/components/schemas/A",
+          "#/components/schemas/B"
+        ],
+        "websocket": false
+      }
+    }
+  ],
+  "sdk_builds_executed": 0,
+  "browser_import_tests_executed": 0,
+  "authorization_tests_executed": 0,
+  "input_sha256": {
+    "docs/contracts/df01-source/EXPORTS.md": "db232c141b74aea493bca83c8e8b83be684cb07e45c67377f9054b6c69a88882",
+    "docs/contracts/df01-source/check_exports.py": "ffd2ca038543d3a8491574e612cc1fe596bbb5c986cb12a3cdfd1fd3ffb45110",
+    "docs/contracts/df01-source/exports-candidate.json": "995ce363cdb31ee9c3ebe937cbb150d2f37d58f0a9d8c5e04c98fc0a415f4076",
+    "docs/contracts/df01-source/exports-cases.json": "974bb6a74fc14160f9d8aed9df8bdad64854d5dd520ce506560b112fee220110",
+    "docs/contracts/df01-source/semantic-trace-report.json": "77f391801bd4d91dcfff6e2f5957286e6a0408aabd4bba980279870247da4950",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/df01-source/source/ipc.schema.json": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705",
+    "docs/contracts/df01-source/source/http/controller.operations.json": "603e6f3555fd19e76761bbb0dbe808dbd880036dbe119b11f3f98c2009eb72cb",
+    "docs/contracts/df01-source/source/http/seamer.operations.json": "3840cca04f99c00942897a42b08293db8727d93c0c1151d10ff339376a188136"
+  }
+}

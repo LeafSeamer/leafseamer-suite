@@ -1,0 +1,3036 @@
+{
+  "purpose": "synthetic-design-fixtures-no-network-no-runtime-authorization",
+  "bases": {
+    "parameter": {
+      "definition": {
+        "kind": "parameter_definition_candidate",
+        "definition_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-parameter",
+          "revision": "1",
+          "digest": "6390361dfdff141a9223d632accf61242133a92d83f2a71be7233bb1cdbacca2"
+        },
+        "protocol_family": "yamaha_rcp",
+        "address": "MIXER:Current/InCh/Fader/On",
+        "parameter_set_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-parameter-set",
+          "revision": "1",
+          "digest": "02d7da1bae3fd0767a5544e2fea76eaf5fa5ae73697edd181388c2acc7e1c87b"
+        },
+        "legacy_source_ref": {
+          "inventory_sha256": "42065cdbdd77c616468b4f3cce00d9cdf4f5a5db7598be09fc12eab905add98f",
+          "index": 1,
+          "address": "MIXER:Current/InCh/Fader/On"
+        },
+        "protocol_evidence_refs": [
+          {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-protocol-evidence",
+            "revision": "1",
+            "digest": "cb672745ed9bc3e47ea6866160f5c831e085712d7a951505cc02245ed9601550"
+          }
+        ],
+        "advertised_access": [
+          "read",
+          "write"
+        ],
+        "approved_access": [
+          "read"
+        ],
+        "read_codec_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-read-codec",
+          "revision": "1",
+          "digest": "998c6dc4d60f18776993f334576e7573f4f5f3cdc30bed659c2018166bf6c2e2"
+        },
+        "write_codec_ref": null,
+        "coordinate_schema_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-coordinates",
+          "revision": "1",
+          "digest": "29abdbc9220e4beef0fce228ddf9f2c5ed0a5fc13f21549ece6b47fd833c7d06"
+        },
+        "raw_domain_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-raw-domain",
+          "revision": "1",
+          "digest": "4cbbfd8369f7b7ad928943e50690c7c6ae9f0635486833f149d2c4e19d98b969"
+        },
+        "semantic_projection_ref": null,
+        "sensitivity": "ordinary",
+        "value_mode": "typed",
+        "ordinary_exposure": [
+          "query"
+        ],
+        "footprint_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-footprint",
+          "revision": "1",
+          "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+        },
+        "response_policy_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-response",
+          "revision": "1",
+          "digest": "a9f4b3d22a523fdada41c85c175425bcd15b32b4cd0f54d9433accd52d7195a1"
+        },
+        "completion_policy_ref": null,
+        "release_policy_ref": null,
+        "qualification_refs": []
+      },
+      "access": {
+        "kind": "parameter_session_access",
+        "context": {
+          "authority_service_id": "fixture-controller",
+          "device_id": "fixture-device",
+          "device_session_id": "fixture-session",
+          "profile_ref": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-profile",
+            "revision": "1",
+            "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+          },
+          "topology_revision": "1",
+          "catalog_revision": "1"
+        },
+        "definition_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-parameter",
+          "revision": "1",
+          "digest": "6390361dfdff141a9223d632accf61242133a92d83f2a71be7233bb1cdbacca2"
+        },
+        "access_revision": "1",
+        "session_access": [
+          "read",
+          "write"
+        ],
+        "effective_access": [
+          "read"
+        ]
+      },
+      "trusted_context": {
+        "authority_service_id": "fixture-controller",
+        "device_id": "fixture-device",
+        "device_session_id": "fixture-session",
+        "profile_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-profile",
+          "revision": "1",
+          "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+        },
+        "topology_revision": "1",
+        "catalog_revision": "1"
+      },
+      "trusted_definition_ref": {
+        "authority_service_id": "fixture-controller",
+        "object_id": "fixture-parameter",
+        "revision": "1",
+        "digest": "6390361dfdff141a9223d632accf61242133a92d83f2a71be7233bb1cdbacca2"
+      }
+    },
+    "vban": {
+      "request": {
+        "kind": "vban_request_binding",
+        "request_id": "fixture-request",
+        "context": {
+          "authority_service_id": "fixture-controller",
+          "device_id": "fixture-device",
+          "device_session_id": "fixture-session",
+          "profile_ref": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-profile",
+            "revision": "1",
+            "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+          },
+          "topology_revision": "1",
+          "catalog_revision": "1"
+        },
+        "clock_domain": {
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "transport_namespace": "fixture-namespace",
+        "local_socket_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-socket",
+          "revision": "1",
+          "digest": "47dd56c2c7a7f7aac789ff6a0190ecc9f7508548c7e4f5118bef1622b478fbeb"
+        },
+        "remote_endpoint_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-endpoint",
+          "revision": "1",
+          "digest": "b6bf7bc8d96f3ea9d132c83b3da8e7760e420138485657372db4d6a981d3fd9e"
+        },
+        "stream_binding_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-stream",
+          "revision": "1",
+          "digest": "dca83e717b1f64eb141057a7415a330ad1361f51703efa2e4776f40047898a04"
+        },
+        "wire_counter": "41",
+        "target": {
+          "endpoint_binding_ref": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-endpoint",
+            "revision": "1",
+            "digest": "b6bf7bc8d96f3ea9d132c83b3da8e7760e420138485657372db4d6a981d3fd9e"
+          },
+          "slot_catalog_revision": "1",
+          "input_suid": "fixture-input",
+          "input_channel": 1,
+          "output_suid": "fixture-output",
+          "output_channel": 2
+        },
+        "property": "gain",
+        "issued_tick_ns": "1000000000",
+        "deadline_tick_ns": "3000000000",
+        "task_deadline_tick_ns": "4000000000",
+        "request_digest": "0fe8fe827024aa87634087e373ffe221ee5948a6751101aff8ea6e71ca740142"
+      },
+      "reply": {
+        "request_id": "fixture-request",
+        "request_digest": "0fe8fe827024aa87634087e373ffe221ee5948a6751101aff8ea6e71ca740142",
+        "context": {
+          "authority_service_id": "fixture-controller",
+          "device_id": "fixture-device",
+          "device_session_id": "fixture-session",
+          "profile_ref": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-profile",
+            "revision": "1",
+            "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+          },
+          "topology_revision": "1",
+          "catalog_revision": "1"
+        },
+        "clock_domain": {
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "transport_namespace": "fixture-namespace",
+        "local_socket_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-socket",
+          "revision": "1",
+          "digest": "47dd56c2c7a7f7aac789ff6a0190ecc9f7508548c7e4f5118bef1622b478fbeb"
+        },
+        "remote_endpoint_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-endpoint",
+          "revision": "1",
+          "digest": "b6bf7bc8d96f3ea9d132c83b3da8e7760e420138485657372db4d6a981d3fd9e"
+        },
+        "stream_binding_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-stream",
+          "revision": "1",
+          "digest": "dca83e717b1f64eb141057a7415a330ad1361f51703efa2e4776f40047898a04"
+        },
+        "wire_counter": "41",
+        "target": {
+          "endpoint_binding_ref": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-endpoint",
+            "revision": "1",
+            "digest": "b6bf7bc8d96f3ea9d132c83b3da8e7760e420138485657372db4d6a981d3fd9e"
+          },
+          "slot_catalog_revision": "1",
+          "input_suid": "fixture-input",
+          "input_channel": 1,
+          "output_suid": "fixture-output",
+          "output_channel": 2
+        },
+        "property": "gain",
+        "kind": "vban_reply_candidate",
+        "service_id": 2,
+        "function": 128,
+        "received_tick_ns": "1500000000",
+        "packet_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+        "codec_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-reply-codec",
+          "revision": "1",
+          "digest": "8404c68805abe193e4d7f42689528c06039f8af47a127574c669bcb6737a5760"
+        },
+        "result": {
+          "kind": "value",
+          "value": {
+            "kind": "finite_level",
+            "centi_db": 0
+          }
+        }
+      },
+      "trusted_context": {
+        "authority_service_id": "fixture-controller",
+        "device_id": "fixture-device",
+        "device_session_id": "fixture-session",
+        "profile_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-profile",
+          "revision": "1",
+          "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+        },
+        "topology_revision": "1",
+        "catalog_revision": "1"
+      },
+      "trusted_clock_domain": {
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "pending_state": "submitted",
+      "namespace_high_water": "42",
+      "sample_policy": "sample_after_request_qualified_fixture",
+      "now_tick_ns": "1600000000",
+      "max_age_ns": "1000000000"
+    },
+    "wing": {
+      "plan": {
+        "kind": "wing_patch_plan_candidate",
+        "plan_id": "fixture-plan",
+        "context": {
+          "authority_service_id": "fixture-controller",
+          "device_id": "fixture-device",
+          "device_session_id": "fixture-session",
+          "profile_ref": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-profile",
+            "revision": "1",
+            "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+          },
+          "topology_revision": "1",
+          "catalog_revision": "1"
+        },
+        "channel": 1,
+        "initial_observation_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-initial-observation",
+          "revision": "1",
+          "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+        },
+        "branch": "primary",
+        "activate": false,
+        "before": {
+          "primary": {
+            "group": "fixture-local",
+            "index": 1
+          },
+          "alternate": {
+            "group": "fixture-usb",
+            "index": 1
+          },
+          "altsrc": "primary",
+          "srcauto": false
+        },
+        "target": {
+          "primary": {
+            "group": "fixture-usb",
+            "index": 2
+          },
+          "alternate": {
+            "group": "fixture-usb",
+            "index": 1
+          },
+          "altsrc": "primary",
+          "srcauto": false
+        },
+        "ordered_primitives": [
+          {
+            "primitive_id": "primitive-1",
+            "property": "primary.group",
+            "value": "fixture-usb",
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "after": {
+              "primary": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "precondition_slot": "initial",
+            "observation_slot": "observed-1",
+            "permit_slot": "permit-1"
+          },
+          {
+            "primitive_id": "primitive-2",
+            "property": "primary.index",
+            "value": 2,
+            "before": {
+              "primary": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "after": {
+              "primary": {
+                "group": "fixture-usb",
+                "index": 2
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "precondition_slot": "observed-1",
+            "observation_slot": "observed-2",
+            "permit_slot": "permit-2"
+          }
+        ],
+        "affected_sources": [
+          {
+            "group": "fixture-local",
+            "index": 1
+          },
+          {
+            "group": "fixture-usb",
+            "index": 1
+          },
+          {
+            "group": "fixture-usb",
+            "index": 2
+          }
+        ],
+        "footprint_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-footprint",
+          "revision": "1",
+          "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+        },
+        "completion_policy_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-completion",
+          "revision": "1",
+          "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+        },
+        "release_policy_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-release",
+          "revision": "1",
+          "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+        },
+        "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+      },
+      "trusted_context": {
+        "authority_service_id": "fixture-controller",
+        "device_id": "fixture-device",
+        "device_session_id": "fixture-session",
+        "profile_ref": {
+          "authority_service_id": "fixture-controller",
+          "object_id": "fixture-profile",
+          "revision": "1",
+          "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+        },
+        "topology_revision": "1",
+        "catalog_revision": "1"
+      },
+      "current_observation_ref": {
+        "authority_service_id": "fixture-controller",
+        "object_id": "fixture-initial-observation",
+        "revision": "1",
+        "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+      },
+      "current_observation_channel": 1,
+      "coherent": true,
+      "topology_sources": [
+        {
+          "group": "fixture-local",
+          "index": 1
+        },
+        {
+          "group": "fixture-usb",
+          "index": 1
+        },
+        {
+          "group": "fixture-usb",
+          "index": 2
+        }
+      ],
+      "approved_intermediates": [
+        {
+          "primary": {
+            "group": "fixture-usb",
+            "index": 1
+          },
+          "alternate": {
+            "group": "fixture-usb",
+            "index": 1
+          },
+          "altsrc": "primary",
+          "srcauto": false
+        }
+      ],
+      "expected_footprint_ref": {
+        "authority_service_id": "fixture-controller",
+        "object_id": "fixture-footprint",
+        "revision": "1",
+        "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "AC01",
+      "kind": "parameter",
+      "changes": [],
+      "reseal": false,
+      "expect": "definition_consistent"
+    },
+    {
+      "id": "AC02",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "legacy_source_ref",
+            "inventory_sha256"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "reseal": false,
+      "expect": "source_binding"
+    },
+    {
+      "id": "AC03",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "legacy_source_ref",
+            "index"
+          ],
+          "value": 0
+        }
+      ],
+      "reseal": false,
+      "expect": "source_binding"
+    },
+    {
+      "id": "AC04",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "approved_access"
+          ],
+          "value": [
+            "write"
+          ]
+        }
+      ],
+      "reseal": false,
+      "expect": "access_codec"
+    },
+    {
+      "id": "AC05",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "access",
+            "effective_access"
+          ],
+          "value": [
+            "read",
+            "write"
+          ]
+        }
+      ],
+      "reseal": false,
+      "expect": "access_intersection"
+    },
+    {
+      "id": "AC06",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "access",
+            "definition_ref",
+            "revision"
+          ],
+          "value": "2"
+        }
+      ],
+      "reseal": false,
+      "expect": "definition_binding"
+    },
+    {
+      "id": "AC07",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "access",
+            "context",
+            "device_session_id"
+          ],
+          "value": "fixture-old"
+        }
+      ],
+      "reseal": false,
+      "expect": "context_binding"
+    },
+    {
+      "id": "AC08",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "session_access_state"
+          ],
+          "value": "active"
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC09",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "approved_access"
+          ],
+          "value": []
+        },
+        {
+          "path": [
+            "definition",
+            "read_codec_ref"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "definition",
+            "ordinary_exposure"
+          ],
+          "value": []
+        },
+        {
+          "path": [
+            "access",
+            "effective_access"
+          ],
+          "value": []
+        }
+      ],
+      "reseal": false,
+      "expect": "definition_consistent"
+    },
+    {
+      "id": "AC10",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition"
+          ],
+          "value": {
+            "kind": "parameter_definition_candidate",
+            "definition_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-parameter",
+              "revision": "1",
+              "digest": "6390361dfdff141a9223d632accf61242133a92d83f2a71be7233bb1cdbacca2"
+            },
+            "protocol_family": "yamaha_rcp",
+            "address": "MIXER:Setup/MonitorMix/Password",
+            "parameter_set_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-parameter-set",
+              "revision": "1",
+              "digest": "02d7da1bae3fd0767a5544e2fea76eaf5fa5ae73697edd181388c2acc7e1c87b"
+            },
+            "legacy_source_ref": {
+              "inventory_sha256": "42065cdbdd77c616468b4f3cce00d9cdf4f5a5db7598be09fc12eab905add98f",
+              "index": 119,
+              "address": "MIXER:Setup/MonitorMix/Password"
+            },
+            "protocol_evidence_refs": [
+              {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-protocol-evidence",
+                "revision": "1",
+                "digest": "cb672745ed9bc3e47ea6866160f5c831e085712d7a951505cc02245ed9601550"
+              }
+            ],
+            "advertised_access": [
+              "read",
+              "write"
+            ],
+            "approved_access": [],
+            "read_codec_ref": null,
+            "write_codec_ref": null,
+            "coordinate_schema_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-coordinates",
+              "revision": "1",
+              "digest": "29abdbc9220e4beef0fce228ddf9f2c5ed0a5fc13f21549ece6b47fd833c7d06"
+            },
+            "raw_domain_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-raw-domain",
+              "revision": "1",
+              "digest": "4cbbfd8369f7b7ad928943e50690c7c6ae9f0635486833f149d2c4e19d98b969"
+            },
+            "semantic_projection_ref": null,
+            "sensitivity": "secret",
+            "value_mode": "secret_ref_only",
+            "ordinary_exposure": [],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "response_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-response",
+              "revision": "1",
+              "digest": "a9f4b3d22a523fdada41c85c175425bcd15b32b4cd0f54d9433accd52d7195a1"
+            },
+            "completion_policy_ref": null,
+            "release_policy_ref": null,
+            "qualification_refs": []
+          }
+        },
+        {
+          "path": [
+            "access",
+            "effective_access"
+          ],
+          "value": []
+        }
+      ],
+      "reseal": false,
+      "expect": "definition_consistent"
+    },
+    {
+      "id": "AC11",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition"
+          ],
+          "value": {
+            "kind": "parameter_definition_candidate",
+            "definition_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-parameter",
+              "revision": "1",
+              "digest": "6390361dfdff141a9223d632accf61242133a92d83f2a71be7233bb1cdbacca2"
+            },
+            "protocol_family": "yamaha_rcp",
+            "address": "MIXER:Setup/MonitorMix/Password",
+            "parameter_set_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-parameter-set",
+              "revision": "1",
+              "digest": "02d7da1bae3fd0767a5544e2fea76eaf5fa5ae73697edd181388c2acc7e1c87b"
+            },
+            "legacy_source_ref": {
+              "inventory_sha256": "42065cdbdd77c616468b4f3cce00d9cdf4f5a5db7598be09fc12eab905add98f",
+              "index": 119,
+              "address": "MIXER:Setup/MonitorMix/Password"
+            },
+            "protocol_evidence_refs": [
+              {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-protocol-evidence",
+                "revision": "1",
+                "digest": "cb672745ed9bc3e47ea6866160f5c831e085712d7a951505cc02245ed9601550"
+              }
+            ],
+            "advertised_access": [
+              "read",
+              "write"
+            ],
+            "approved_access": [],
+            "read_codec_ref": null,
+            "write_codec_ref": null,
+            "coordinate_schema_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-coordinates",
+              "revision": "1",
+              "digest": "29abdbc9220e4beef0fce228ddf9f2c5ed0a5fc13f21549ece6b47fd833c7d06"
+            },
+            "raw_domain_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-raw-domain",
+              "revision": "1",
+              "digest": "4cbbfd8369f7b7ad928943e50690c7c6ae9f0635486833f149d2c4e19d98b969"
+            },
+            "semantic_projection_ref": null,
+            "sensitivity": "secret",
+            "value_mode": "secret_ref_only",
+            "ordinary_exposure": [
+              "snapshot"
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "response_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-response",
+              "revision": "1",
+              "digest": "a9f4b3d22a523fdada41c85c175425bcd15b32b4cd0f54d9433accd52d7195a1"
+            },
+            "completion_policy_ref": null,
+            "release_policy_ref": null,
+            "qualification_refs": []
+          }
+        },
+        {
+          "path": [
+            "access",
+            "effective_access"
+          ],
+          "value": []
+        }
+      ],
+      "reseal": false,
+      "expect": "secret_exposure"
+    },
+    {
+      "id": "AC12",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition"
+          ],
+          "value": {
+            "kind": "parameter_definition_candidate",
+            "definition_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-parameter",
+              "revision": "1",
+              "digest": "6390361dfdff141a9223d632accf61242133a92d83f2a71be7233bb1cdbacca2"
+            },
+            "protocol_family": "yamaha_rcp",
+            "address": "MIXER:Setup/MonitorMix/Password",
+            "parameter_set_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-parameter-set",
+              "revision": "1",
+              "digest": "02d7da1bae3fd0767a5544e2fea76eaf5fa5ae73697edd181388c2acc7e1c87b"
+            },
+            "legacy_source_ref": {
+              "inventory_sha256": "42065cdbdd77c616468b4f3cce00d9cdf4f5a5db7598be09fc12eab905add98f",
+              "index": 119,
+              "address": "MIXER:Setup/MonitorMix/Password"
+            },
+            "protocol_evidence_refs": [
+              {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-protocol-evidence",
+                "revision": "1",
+                "digest": "cb672745ed9bc3e47ea6866160f5c831e085712d7a951505cc02245ed9601550"
+              }
+            ],
+            "advertised_access": [
+              "read",
+              "write"
+            ],
+            "approved_access": [],
+            "read_codec_ref": null,
+            "write_codec_ref": null,
+            "coordinate_schema_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-coordinates",
+              "revision": "1",
+              "digest": "29abdbc9220e4beef0fce228ddf9f2c5ed0a5fc13f21549ece6b47fd833c7d06"
+            },
+            "raw_domain_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-raw-domain",
+              "revision": "1",
+              "digest": "4cbbfd8369f7b7ad928943e50690c7c6ae9f0635486833f149d2c4e19d98b969"
+            },
+            "semantic_projection_ref": null,
+            "sensitivity": "secret",
+            "value_mode": "typed",
+            "ordinary_exposure": [],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "response_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-response",
+              "revision": "1",
+              "digest": "a9f4b3d22a523fdada41c85c175425bcd15b32b4cd0f54d9433accd52d7195a1"
+            },
+            "completion_policy_ref": null,
+            "release_policy_ref": null,
+            "qualification_refs": []
+          }
+        },
+        {
+          "path": [
+            "access",
+            "effective_access"
+          ],
+          "value": []
+        }
+      ],
+      "reseal": false,
+      "expect": "secret_exposure"
+    },
+    {
+      "id": "AC13",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "value"
+          ],
+          "value": "fixture-secret"
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC14",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "plaintext_digest"
+          ],
+          "value": "4444444444444444444444444444444444444444444444444444444444444444"
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC15",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "advertised_access"
+          ],
+          "value": []
+        },
+        {
+          "path": [
+            "definition",
+            "approved_access"
+          ],
+          "value": [
+            "read"
+          ]
+        }
+      ],
+      "reseal": false,
+      "expect": "access_expansion"
+    },
+    {
+      "id": "AC16",
+      "kind": "vban",
+      "changes": [],
+      "reseal": false,
+      "expect": "fresh_observation"
+    },
+    {
+      "id": "AC17",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "service_id"
+          ],
+          "value": 0
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC18",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "matched"
+          ],
+          "value": true
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC19",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "wire_counter"
+          ],
+          "value": "4294967296"
+        }
+      ],
+      "reseal": true,
+      "expect": "counter_range"
+    },
+    {
+      "id": "AC20",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "wire_counter"
+          ],
+          "value": "041"
+        }
+      ],
+      "reseal": true,
+      "expect": "schema"
+    },
+    {
+      "id": "AC21",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "request_digest"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "reseal": false,
+      "expect": "request_binding"
+    },
+    {
+      "id": "AC22",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "remote_endpoint_ref",
+            "object_id"
+          ],
+          "value": "fixture-other"
+        }
+      ],
+      "reseal": false,
+      "expect": "reply_binding"
+    },
+    {
+      "id": "AC23",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "clock_domain",
+            "descriptor_digest"
+          ],
+          "value": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+        }
+      ],
+      "reseal": false,
+      "expect": "clock_binding"
+    },
+    {
+      "id": "AC24",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "pending_state"
+          ],
+          "value": "expired"
+        }
+      ],
+      "reseal": false,
+      "expect": "retired_request"
+    },
+    {
+      "id": "AC25",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "received_tick_ns"
+          ],
+          "value": "3000000000"
+        },
+        {
+          "path": [
+            "now_tick_ns"
+          ],
+          "value": "3000000000"
+        }
+      ],
+      "reseal": false,
+      "expect": "expired"
+    },
+    {
+      "id": "AC26",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "received_tick_ns"
+          ],
+          "value": "999999999"
+        }
+      ],
+      "reseal": false,
+      "expect": "time_order"
+    },
+    {
+      "id": "AC27",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "task_deadline_tick_ns"
+          ],
+          "value": "2000000000"
+        }
+      ],
+      "reseal": true,
+      "expect": "deadline_order"
+    },
+    {
+      "id": "AC28",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "now_tick_ns"
+          ],
+          "value": "2000000000"
+        }
+      ],
+      "reseal": false,
+      "expect": "stale_observation"
+    },
+    {
+      "id": "AC29",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "sample_policy"
+          ],
+          "value": "unverified"
+        }
+      ],
+      "reseal": false,
+      "expect": "unqualified_observation"
+    },
+    {
+      "id": "AC30",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "result"
+          ],
+          "value": {
+            "kind": "error",
+            "error_code": "fixture-query-error"
+          }
+        }
+      ],
+      "reseal": false,
+      "expect": "query_error"
+    },
+    {
+      "id": "AC31",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "result"
+          ],
+          "value": {
+            "kind": "value",
+            "value": {
+              "kind": "boolean",
+              "value": true
+            }
+          }
+        }
+      ],
+      "reseal": false,
+      "expect": "value_type"
+    },
+    {
+      "id": "AC32",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "result"
+          ],
+          "value": {
+            "kind": "value",
+            "value": {
+              "kind": "negative_infinity"
+            }
+          }
+        }
+      ],
+      "reseal": false,
+      "expect": "fresh_observation"
+    },
+    {
+      "id": "AC33",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "issued_tick_ns"
+          ],
+          "value": "18446744073709551616"
+        }
+      ],
+      "reseal": true,
+      "expect": "integer_range"
+    },
+    {
+      "id": "AC34",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "namespace_high_water"
+          ],
+          "value": "41"
+        }
+      ],
+      "reseal": false,
+      "expect": "counter_not_reserved"
+    },
+    {
+      "id": "AC35",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "result",
+            "error_code"
+          ],
+          "value": "fixture-error"
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC36",
+      "kind": "wing",
+      "changes": [],
+      "reseal": false,
+      "expect": "plan_consistent"
+    },
+    {
+      "id": "AC37",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "plan_digest"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "reseal": false,
+      "expect": "plan_digest"
+    },
+    {
+      "id": "AC38",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "ordered_primitives",
+            "1",
+            "before",
+            "primary",
+            "index"
+          ],
+          "value": 2
+        }
+      ],
+      "reseal": true,
+      "expect": "step_chain"
+    },
+    {
+      "id": "AC39",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "ordered_primitives",
+            "1",
+            "permit_slot"
+          ],
+          "value": "permit-1"
+        }
+      ],
+      "reseal": true,
+      "expect": "duplicate_slot"
+    },
+    {
+      "id": "AC40",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "ordered_primitives",
+            "1",
+            "precondition_slot"
+          ],
+          "value": "initial"
+        }
+      ],
+      "reseal": true,
+      "expect": "step_precondition"
+    },
+    {
+      "id": "AC41",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "approved_intermediates"
+          ],
+          "value": []
+        }
+      ],
+      "reseal": false,
+      "expect": "intermediate_policy"
+    },
+    {
+      "id": "AC42",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "coherent"
+          ],
+          "value": false
+        }
+      ],
+      "reseal": false,
+      "expect": "incoherent"
+    },
+    {
+      "id": "AC43",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "target",
+            "alternate",
+            "index"
+          ],
+          "value": 2
+        }
+      ],
+      "reseal": true,
+      "expect": "unrequested_branch_change"
+    },
+    {
+      "id": "AC44",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "target",
+            "altsrc"
+          ],
+          "value": "alternate"
+        }
+      ],
+      "reseal": true,
+      "expect": "activation"
+    },
+    {
+      "id": "AC45",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "target",
+            "srcauto"
+          ],
+          "value": true
+        }
+      ],
+      "reseal": true,
+      "expect": "srcauto_change"
+    },
+    {
+      "id": "AC46",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "affected_sources"
+          ],
+          "value": [
+            {
+              "group": "fixture-usb",
+              "index": 2
+            }
+          ]
+        }
+      ],
+      "reseal": true,
+      "expect": "footprint_sources"
+    },
+    {
+      "id": "AC47",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "ordered_primitives",
+            "0",
+            "after",
+            "primary",
+            "index"
+          ],
+          "value": 2
+        }
+      ],
+      "reseal": true,
+      "expect": "step_projection"
+    },
+    {
+      "id": "AC48",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "current_observation_ref",
+            "revision"
+          ],
+          "value": "2"
+        }
+      ],
+      "reseal": false,
+      "expect": "observation_binding"
+    },
+    {
+      "id": "AC49",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "ordered_primitives",
+            "0",
+            "intent_id"
+          ],
+          "value": "fixture-intent"
+        }
+      ],
+      "reseal": true,
+      "expect": "schema"
+    },
+    {
+      "id": "AC50",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "context",
+            "profile_ref",
+            "revision"
+          ],
+          "value": "2"
+        }
+      ],
+      "reseal": true,
+      "expect": "context_binding"
+    },
+    {
+      "id": "AC51",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan"
+          ],
+          "value": {
+            "kind": "wing_patch_plan_candidate",
+            "plan_id": "fixture-plan",
+            "context": {
+              "authority_service_id": "fixture-controller",
+              "device_id": "fixture-device",
+              "device_session_id": "fixture-session",
+              "profile_ref": {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-profile",
+                "revision": "1",
+                "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+              },
+              "topology_revision": "1",
+              "catalog_revision": "1"
+            },
+            "channel": 1,
+            "initial_observation_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-initial-observation",
+              "revision": "1",
+              "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+            },
+            "branch": "primary",
+            "activate": false,
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "target": {
+              "primary": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "ordered_primitives": [
+              {
+                "primitive_id": "primitive-1",
+                "property": "primary.group",
+                "value": "fixture-usb",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "initial",
+                "observation_slot": "observed-1",
+                "permit_slot": "permit-1"
+              }
+            ],
+            "affected_sources": [
+              {
+                "group": "fixture-local",
+                "index": 1
+              },
+              {
+                "group": "fixture-usb",
+                "index": 1
+              }
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "completion_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-completion",
+              "revision": "1",
+              "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+            },
+            "release_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-release",
+              "revision": "1",
+              "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+            },
+            "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+          }
+        }
+      ],
+      "reseal": true,
+      "expect": "plan_consistent"
+    },
+    {
+      "id": "AC52",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan"
+          ],
+          "value": {
+            "kind": "wing_patch_plan_candidate",
+            "plan_id": "fixture-plan",
+            "context": {
+              "authority_service_id": "fixture-controller",
+              "device_id": "fixture-device",
+              "device_session_id": "fixture-session",
+              "profile_ref": {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-profile",
+                "revision": "1",
+                "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+              },
+              "topology_revision": "1",
+              "catalog_revision": "1"
+            },
+            "channel": 1,
+            "initial_observation_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-initial-observation",
+              "revision": "1",
+              "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+            },
+            "branch": "primary",
+            "activate": false,
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "target": {
+              "primary": {
+                "group": "fixture-usb",
+                "index": 2
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "ordered_primitives": [
+              {
+                "primitive_id": "primitive-1",
+                "property": "primary.index",
+                "value": 2,
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "initial",
+                "observation_slot": "observed-1",
+                "permit_slot": "permit-1"
+              },
+              {
+                "primitive_id": "primitive-2",
+                "property": "primary.group",
+                "value": "fixture-usb",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-usb",
+                    "index": 2
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "observed-1",
+                "observation_slot": "observed-2",
+                "permit_slot": "permit-2"
+              }
+            ],
+            "affected_sources": [
+              {
+                "group": "fixture-local",
+                "index": 1
+              },
+              {
+                "group": "fixture-local",
+                "index": 2
+              },
+              {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              {
+                "group": "fixture-usb",
+                "index": 2
+              }
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "completion_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-completion",
+              "revision": "1",
+              "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+            },
+            "release_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-release",
+              "revision": "1",
+              "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+            },
+            "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+          }
+        },
+        {
+          "path": [
+            "topology_sources"
+          ],
+          "value": [
+            {
+              "group": "fixture-local",
+              "index": 1
+            },
+            {
+              "group": "fixture-local",
+              "index": 2
+            },
+            {
+              "group": "fixture-usb",
+              "index": 1
+            },
+            {
+              "group": "fixture-usb",
+              "index": 2
+            }
+          ]
+        },
+        {
+          "path": [
+            "approved_intermediates"
+          ],
+          "value": [
+            {
+              "primary": {
+                "group": "fixture-local",
+                "index": 2
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            }
+          ]
+        }
+      ],
+      "reseal": true,
+      "expect": "plan_consistent"
+    },
+    {
+      "id": "AC53",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan"
+          ],
+          "value": {
+            "kind": "wing_patch_plan_candidate",
+            "plan_id": "fixture-plan",
+            "context": {
+              "authority_service_id": "fixture-controller",
+              "device_id": "fixture-device",
+              "device_session_id": "fixture-session",
+              "profile_ref": {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-profile",
+                "revision": "1",
+                "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+              },
+              "topology_revision": "1",
+              "catalog_revision": "1"
+            },
+            "channel": 1,
+            "initial_observation_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-initial-observation",
+              "revision": "1",
+              "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+            },
+            "branch": "alternate",
+            "activate": true,
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "target": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "alternate",
+              "srcauto": false
+            },
+            "ordered_primitives": [
+              {
+                "primitive_id": "primitive-1",
+                "property": "altsrc",
+                "value": "alternate",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "alternate",
+                  "srcauto": false
+                },
+                "precondition_slot": "initial",
+                "observation_slot": "observed-1",
+                "permit_slot": "permit-1"
+              }
+            ],
+            "affected_sources": [
+              {
+                "group": "fixture-local",
+                "index": 1
+              },
+              {
+                "group": "fixture-usb",
+                "index": 1
+              }
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "completion_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-completion",
+              "revision": "1",
+              "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+            },
+            "release_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-release",
+              "revision": "1",
+              "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+            },
+            "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+          }
+        }
+      ],
+      "reseal": true,
+      "expect": "plan_consistent"
+    },
+    {
+      "id": "AC54",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "topology_sources"
+          ],
+          "value": [
+            {
+              "group": "fixture-local",
+              "index": 1
+            }
+          ]
+        }
+      ],
+      "reseal": false,
+      "expect": "topology"
+    },
+    {
+      "id": "AC55",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "request_digest"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "reseal": false,
+      "expect": "request_digest"
+    },
+    {
+      "id": "AC56",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "issued_tick_ns"
+          ],
+          "value": "1\n"
+        }
+      ],
+      "reseal": true,
+      "expect": "schema"
+    },
+    {
+      "id": "AC57",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "footprint_ref",
+            "digest"
+          ],
+          "value": "6666666666666666666666666666666666666666666666666666666666666666"
+        }
+      ],
+      "reseal": true,
+      "expect": "footprint_binding"
+    },
+    {
+      "id": "AC58",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "access",
+            "session_access"
+          ],
+          "value": []
+        },
+        {
+          "path": [
+            "access",
+            "effective_access"
+          ],
+          "value": []
+        }
+      ],
+      "reseal": false,
+      "expect": "definition_consistent"
+    },
+    {
+      "id": "AC59",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "write_codec_ref"
+          ],
+          "value": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-write-codec",
+            "revision": "1",
+            "digest": "7b73252ede10d5cb3d7b434cc70faacdbfbf0388ba004f2a537b35d5dfa77ea7"
+          }
+        }
+      ],
+      "reseal": false,
+      "expect": "access_codec"
+    },
+    {
+      "id": "AC60",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "approved_access"
+          ],
+          "value": []
+        },
+        {
+          "path": [
+            "definition",
+            "read_codec_ref"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "access",
+            "effective_access"
+          ],
+          "value": []
+        }
+      ],
+      "reseal": false,
+      "expect": "exposure_access"
+    },
+    {
+      "id": "AC61",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "target",
+            "output_channel"
+          ],
+          "value": 3
+        }
+      ],
+      "reseal": false,
+      "expect": "reply_binding"
+    },
+    {
+      "id": "AC62",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "context",
+            "device_session_id"
+          ],
+          "value": "fixture-other"
+        }
+      ],
+      "reseal": false,
+      "expect": "context_binding"
+    },
+    {
+      "id": "AC63",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "wire_counter"
+          ],
+          "value": "4294967295"
+        },
+        {
+          "path": [
+            "reply",
+            "wire_counter"
+          ],
+          "value": "4294967295"
+        },
+        {
+          "path": [
+            "namespace_high_water"
+          ],
+          "value": "4294967296"
+        }
+      ],
+      "reseal": true,
+      "expect": "fresh_observation"
+    },
+    {
+      "id": "AC64",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "received_tick_ns"
+          ],
+          "value": "1700000000"
+        }
+      ],
+      "reseal": false,
+      "expect": "time_order"
+    },
+    {
+      "id": "AC65",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "reply",
+            "durable"
+          ],
+          "value": true
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC66",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan"
+          ],
+          "value": {
+            "kind": "wing_patch_plan_candidate",
+            "plan_id": "fixture-plan",
+            "context": {
+              "authority_service_id": "fixture-controller",
+              "device_id": "fixture-device",
+              "device_session_id": "fixture-session",
+              "profile_ref": {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-profile",
+                "revision": "1",
+                "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+              },
+              "topology_revision": "1",
+              "catalog_revision": "1"
+            },
+            "channel": 1,
+            "initial_observation_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-initial-observation",
+              "revision": "1",
+              "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+            },
+            "branch": "primary",
+            "activate": false,
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "target": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "ordered_primitives": [],
+            "affected_sources": [
+              {
+                "group": "fixture-local",
+                "index": 1
+              },
+              {
+                "group": "fixture-usb",
+                "index": 1
+              }
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "completion_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-completion",
+              "revision": "1",
+              "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+            },
+            "release_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-release",
+              "revision": "1",
+              "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+            },
+            "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+          }
+        }
+      ],
+      "reseal": true,
+      "expect": "plan_consistent"
+    },
+    {
+      "id": "AC67",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan"
+          ],
+          "value": {
+            "kind": "wing_patch_plan_candidate",
+            "plan_id": "fixture-plan",
+            "context": {
+              "authority_service_id": "fixture-controller",
+              "device_id": "fixture-device",
+              "device_session_id": "fixture-session",
+              "profile_ref": {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-profile",
+                "revision": "1",
+                "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+              },
+              "topology_revision": "1",
+              "catalog_revision": "1"
+            },
+            "channel": 1,
+            "initial_observation_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-initial-observation",
+              "revision": "1",
+              "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+            },
+            "branch": "alternate",
+            "activate": true,
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "target": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-local",
+                "index": 2
+              },
+              "altsrc": "alternate",
+              "srcauto": false
+            },
+            "ordered_primitives": [
+              {
+                "primitive_id": "primitive-1",
+                "property": "alternate.group",
+                "value": "fixture-local",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "initial",
+                "observation_slot": "observed-1",
+                "permit_slot": "permit-1"
+              },
+              {
+                "primitive_id": "primitive-2",
+                "property": "alternate.index",
+                "value": 2,
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "observed-1",
+                "observation_slot": "observed-2",
+                "permit_slot": "permit-2"
+              },
+              {
+                "primitive_id": "primitive-3",
+                "property": "altsrc",
+                "value": "alternate",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "altsrc": "alternate",
+                  "srcauto": false
+                },
+                "precondition_slot": "observed-2",
+                "observation_slot": "observed-3",
+                "permit_slot": "permit-3"
+              }
+            ],
+            "affected_sources": [
+              {
+                "group": "fixture-local",
+                "index": 1
+              },
+              {
+                "group": "fixture-local",
+                "index": 2
+              },
+              {
+                "group": "fixture-usb",
+                "index": 1
+              }
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "completion_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-completion",
+              "revision": "1",
+              "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+            },
+            "release_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-release",
+              "revision": "1",
+              "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+            },
+            "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+          }
+        },
+        {
+          "path": [
+            "topology_sources"
+          ],
+          "value": [
+            {
+              "group": "fixture-local",
+              "index": 1
+            },
+            {
+              "group": "fixture-local",
+              "index": 2
+            },
+            {
+              "group": "fixture-usb",
+              "index": 1
+            }
+          ]
+        },
+        {
+          "path": [
+            "approved_intermediates"
+          ],
+          "value": [
+            {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-local",
+                "index": 2
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            }
+          ]
+        }
+      ],
+      "reseal": true,
+      "expect": "plan_consistent"
+    },
+    {
+      "id": "AC68",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan"
+          ],
+          "value": {
+            "kind": "wing_patch_plan_candidate",
+            "plan_id": "fixture-plan",
+            "context": {
+              "authority_service_id": "fixture-controller",
+              "device_id": "fixture-device",
+              "device_session_id": "fixture-session",
+              "profile_ref": {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-profile",
+                "revision": "1",
+                "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+              },
+              "topology_revision": "1",
+              "catalog_revision": "1"
+            },
+            "channel": 1,
+            "initial_observation_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-initial-observation",
+              "revision": "1",
+              "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+            },
+            "branch": "alternate",
+            "activate": true,
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "target": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-local",
+                "index": 2
+              },
+              "altsrc": "alternate",
+              "srcauto": false
+            },
+            "ordered_primitives": [
+              {
+                "primitive_id": "primitive-3",
+                "property": "altsrc",
+                "value": "alternate",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "altsrc": "alternate",
+                  "srcauto": false
+                },
+                "precondition_slot": "observed-2",
+                "observation_slot": "observed-3",
+                "permit_slot": "permit-3"
+              },
+              {
+                "primitive_id": "primitive-1",
+                "property": "alternate.group",
+                "value": "fixture-local",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "initial",
+                "observation_slot": "observed-1",
+                "permit_slot": "permit-1"
+              },
+              {
+                "primitive_id": "primitive-2",
+                "property": "alternate.index",
+                "value": 2,
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-local",
+                    "index": 2
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "observed-1",
+                "observation_slot": "observed-2",
+                "permit_slot": "permit-2"
+              }
+            ],
+            "affected_sources": [
+              {
+                "group": "fixture-local",
+                "index": 1
+              },
+              {
+                "group": "fixture-local",
+                "index": 2
+              },
+              {
+                "group": "fixture-usb",
+                "index": 1
+              }
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "completion_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-completion",
+              "revision": "1",
+              "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+            },
+            "release_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-release",
+              "revision": "1",
+              "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+            },
+            "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+          }
+        }
+      ],
+      "reseal": true,
+      "expect": "activation_order"
+    },
+    {
+      "id": "AC69",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "ordered_primitives",
+            "1",
+            "observation_slot"
+          ],
+          "value": "observed-1"
+        }
+      ],
+      "reseal": true,
+      "expect": "duplicate_slot"
+    },
+    {
+      "id": "AC70",
+      "kind": "parameter",
+      "changes": [
+        {
+          "path": [
+            "definition",
+            "protocol_family"
+          ],
+          "value": "yamaha_osc"
+        }
+      ],
+      "reseal": false,
+      "expect": "schema"
+    },
+    {
+      "id": "AC71",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "clock_domain"
+          ],
+          "value": {
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          }
+        },
+        {
+          "path": [
+            "reply",
+            "clock_domain"
+          ],
+          "value": {
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          }
+        },
+        {
+          "path": [
+            "trusted_clock_domain"
+          ],
+          "value": {
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          }
+        }
+      ],
+      "reseal": true,
+      "expect": "clock_identity"
+    },
+    {
+      "id": "AC72",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "channel"
+          ],
+          "value": 2
+        }
+      ],
+      "reseal": true,
+      "expect": "channel_binding"
+    },
+    {
+      "id": "AC73",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan",
+            "channel"
+          ],
+          "value": 41
+        }
+      ],
+      "reseal": true,
+      "expect": "schema"
+    },
+    {
+      "id": "AC74",
+      "kind": "wing",
+      "changes": [
+        {
+          "path": [
+            "plan"
+          ],
+          "value": {
+            "kind": "wing_patch_plan_candidate",
+            "plan_id": "fixture-plan",
+            "context": {
+              "authority_service_id": "fixture-controller",
+              "device_id": "fixture-device",
+              "device_session_id": "fixture-session",
+              "profile_ref": {
+                "authority_service_id": "fixture-controller",
+                "object_id": "fixture-profile",
+                "revision": "1",
+                "digest": "1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0"
+              },
+              "topology_revision": "1",
+              "catalog_revision": "1"
+            },
+            "initial_observation_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-initial-observation",
+              "revision": "1",
+              "digest": "1cd4b614e4fa4cf936b40b978cd43ff00057d9c08d029814f4547544876445f6"
+            },
+            "branch": "primary",
+            "activate": false,
+            "before": {
+              "primary": {
+                "group": "fixture-local",
+                "index": 1
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "target": {
+              "primary": {
+                "group": "fixture-usb",
+                "index": 2
+              },
+              "alternate": {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              "altsrc": "primary",
+              "srcauto": false
+            },
+            "ordered_primitives": [
+              {
+                "primitive_id": "primitive-1",
+                "property": "primary.group",
+                "value": "fixture-usb",
+                "before": {
+                  "primary": {
+                    "group": "fixture-local",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "initial",
+                "observation_slot": "observed-1",
+                "permit_slot": "permit-1"
+              },
+              {
+                "primitive_id": "primitive-2",
+                "property": "primary.index",
+                "value": 2,
+                "before": {
+                  "primary": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "after": {
+                  "primary": {
+                    "group": "fixture-usb",
+                    "index": 2
+                  },
+                  "alternate": {
+                    "group": "fixture-usb",
+                    "index": 1
+                  },
+                  "altsrc": "primary",
+                  "srcauto": false
+                },
+                "precondition_slot": "observed-1",
+                "observation_slot": "observed-2",
+                "permit_slot": "permit-2"
+              }
+            ],
+            "affected_sources": [
+              {
+                "group": "fixture-local",
+                "index": 1
+              },
+              {
+                "group": "fixture-usb",
+                "index": 1
+              },
+              {
+                "group": "fixture-usb",
+                "index": 2
+              }
+            ],
+            "footprint_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-footprint",
+              "revision": "1",
+              "digest": "4ba8deed0050e28b54b2f236489fa5c7644c19a02fee75a726a8447c4f21a856"
+            },
+            "completion_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-completion",
+              "revision": "1",
+              "digest": "21606b5837ee49171e56cff2afe21083fb4dfe5c15c79b54695c2dc335181c89"
+            },
+            "release_policy_ref": {
+              "authority_service_id": "fixture-controller",
+              "object_id": "fixture-release",
+              "revision": "1",
+              "digest": "a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829"
+            },
+            "plan_digest": "539804a68d55ee3a761bbf8c4f5e8196d804deceee5f4bb38b00843083511d0a"
+          }
+        }
+      ],
+      "reseal": true,
+      "expect": "schema"
+    },
+    {
+      "id": "AC75",
+      "kind": "vban",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "target",
+            "endpoint_binding_ref"
+          ],
+          "value": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-different-endpoint",
+            "revision": "1",
+            "digest": "0053e8cb89768d16d8eb5763df15a8735914e296f4d9376d9a6502eabd73cf5c"
+          }
+        },
+        {
+          "path": [
+            "reply",
+            "target",
+            "endpoint_binding_ref"
+          ],
+          "value": {
+            "authority_service_id": "fixture-controller",
+            "object_id": "fixture-different-endpoint",
+            "revision": "1",
+            "digest": "0053e8cb89768d16d8eb5763df15a8735914e296f4d9376d9a6502eabd73cf5c"
+          }
+        }
+      ],
+      "reseal": true,
+      "expect": "target_endpoint_binding"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/df02-supervisor/bootstrap.schema.json",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "bootstrap/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "ASSIGNMENT"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/BootstrapAssignment"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "bootstrap/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "PROOF"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/BootstrapProof"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "bootstrap/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "ADMISSION"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/AdmissionReceipt"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "bootstrap/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "REJECT"
+        },
+        "payload": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Error"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

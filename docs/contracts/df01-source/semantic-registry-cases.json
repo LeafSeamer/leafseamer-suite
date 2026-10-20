@@ -1,0 +1,2051 @@
+{
+  "base": {
+    "format_version": "semantic-registry/0.1.0-draft.1",
+    "purpose": "design_fixture_only",
+    "runtime_approved": false,
+    "schema_source": {
+      "path": "source/public.schema.json",
+      "sha256": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+    },
+    "providers": [
+      {
+        "provider_id": "control_snapshot",
+        "source": "trusted_runtime",
+        "model_refs": [
+          "#/$defs/ControlVersion"
+        ],
+        "policy_refs": [
+          "current_domain"
+        ]
+      },
+      {
+        "provider_id": "approved_registry",
+        "source": "trusted_runtime",
+        "model_refs": [
+          "#/$defs/SchemaDescriptor"
+        ],
+        "policy_refs": [
+          "exact_capability",
+          "exact_schema"
+        ]
+      }
+    ],
+    "rules": [
+      {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "input_model_ref": "#/$defs/CatalogBinding",
+        "instance_selector": [],
+        "validator_kind": "first_party",
+        "phase": "content",
+        "context_requirements": [],
+        "locations": [
+          {
+            "location_id": "entries",
+            "selector": [
+              {
+                "kind": "property",
+                "name": "entries"
+              }
+            ]
+          }
+        ],
+        "reason_codes": [
+          {
+            "reason_code": "duplicate_scene_id",
+            "location_ids": [
+              "entries"
+            ]
+          },
+          {
+            "reason_code": "duplicate_obs_uuid",
+            "location_ids": [
+              "entries"
+            ]
+          }
+        ],
+        "implementation_bindings": [
+          {
+            "language": "typescript",
+            "module_path": "planned/catalog/identity_unique.ts",
+            "symbol": "evaluate",
+            "status": "planned"
+          }
+        ],
+        "fixture_refs": [
+          "catalog.identity_unique.positive",
+          "catalog.identity_unique.negative"
+        ]
+      },
+      {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "input_model_ref": "#/$defs/CommandRequest",
+        "instance_selector": [
+          {
+            "kind": "property",
+            "name": "expected_control"
+          },
+          {
+            "kind": "ref"
+          }
+        ],
+        "validator_kind": "first_party",
+        "phase": "linked",
+        "context_requirements": [
+          {
+            "context_id": "current_control",
+            "model_ref": "#/$defs/ControlVersion",
+            "provider_id": "control_snapshot",
+            "policy_ref": "current_domain"
+          }
+        ],
+        "locations": [
+          {
+            "location_id": "control",
+            "selector": []
+          }
+        ],
+        "reason_codes": [
+          {
+            "reason_code": "control_mismatch",
+            "location_ids": [
+              "control"
+            ]
+          }
+        ],
+        "implementation_bindings": [
+          {
+            "language": "typescript",
+            "module_path": "planned/control/binding_match.ts",
+            "symbol": "evaluate",
+            "status": "planned"
+          }
+        ],
+        "fixture_refs": [
+          "control.binding_match.positive",
+          "control.binding_match.negative"
+        ]
+      },
+      {
+        "rule_id": "parameters.capability_valid",
+        "revision": "1",
+        "input_model_ref": "#/$defs/CommandRequest",
+        "instance_selector": [
+          {
+            "kind": "property",
+            "name": "parameters"
+          }
+        ],
+        "validator_kind": "dynamic_payload",
+        "phase": "linked",
+        "context_requirements": [
+          {
+            "context_id": "capability_schema",
+            "model_ref": "#/$defs/SchemaDescriptor",
+            "provider_id": "approved_registry",
+            "policy_ref": "exact_capability"
+          }
+        ],
+        "locations": [
+          {
+            "location_id": "parameters",
+            "selector": []
+          }
+        ],
+        "reason_codes": [
+          {
+            "reason_code": "capability_invalid",
+            "location_ids": [
+              "parameters"
+            ]
+          }
+        ],
+        "implementation_bindings": [
+          {
+            "language": "typescript",
+            "module_path": "planned/parameters/capability_valid.ts",
+            "symbol": "evaluate",
+            "status": "planned"
+          }
+        ],
+        "fixture_refs": [
+          "parameters.capability_valid.positive",
+          "parameters.capability_valid.negative"
+        ]
+      },
+      {
+        "rule_id": "schema.document_approved",
+        "revision": "1",
+        "input_model_ref": "#/$defs/SchemaDescriptor",
+        "instance_selector": [
+          {
+            "kind": "property",
+            "name": "document"
+          }
+        ],
+        "validator_kind": "schema_document",
+        "phase": "linked",
+        "context_requirements": [
+          {
+            "context_id": "schema_policy",
+            "model_ref": "#/$defs/SchemaDescriptor",
+            "provider_id": "approved_registry",
+            "policy_ref": "exact_schema"
+          }
+        ],
+        "locations": [
+          {
+            "location_id": "document",
+            "selector": []
+          }
+        ],
+        "reason_codes": [
+          {
+            "reason_code": "schema_unapproved",
+            "location_ids": [
+              "document"
+            ]
+          }
+        ],
+        "implementation_bindings": [
+          {
+            "language": "typescript",
+            "module_path": "planned/schema/document_approved.ts",
+            "symbol": "evaluate",
+            "status": "planned"
+          }
+        ],
+        "fixture_refs": [
+          "schema.document_approved.positive",
+          "schema.document_approved.negative"
+        ]
+      }
+    ],
+    "vector_plans": [
+      {
+        "fixture_id": "catalog.identity_unique.positive",
+        "rule_id": "catalog.identity_unique",
+        "expected_status": "valid",
+        "description": "全部规则前提成立时应通过",
+        "status": "planned_not_executed"
+      },
+      {
+        "fixture_id": "catalog.identity_unique.negative",
+        "rule_id": "catalog.identity_unique",
+        "expected_status": "invalid",
+        "description": "输入违反本规则登记约束时应拒绝",
+        "status": "planned_not_executed"
+      },
+      {
+        "fixture_id": "control.binding_match.positive",
+        "rule_id": "control.binding_match",
+        "expected_status": "valid",
+        "description": "全部规则前提成立时应通过",
+        "status": "planned_not_executed"
+      },
+      {
+        "fixture_id": "control.binding_match.negative",
+        "rule_id": "control.binding_match",
+        "expected_status": "invalid",
+        "description": "输入违反本规则登记约束时应拒绝",
+        "status": "planned_not_executed"
+      },
+      {
+        "fixture_id": "parameters.capability_valid.positive",
+        "rule_id": "parameters.capability_valid",
+        "expected_status": "valid",
+        "description": "全部规则前提成立时应通过",
+        "status": "planned_not_executed"
+      },
+      {
+        "fixture_id": "parameters.capability_valid.negative",
+        "rule_id": "parameters.capability_valid",
+        "expected_status": "invalid",
+        "description": "输入违反本规则登记约束时应拒绝",
+        "status": "planned_not_executed"
+      },
+      {
+        "fixture_id": "schema.document_approved.positive",
+        "rule_id": "schema.document_approved",
+        "expected_status": "valid",
+        "description": "全部规则前提成立时应通过",
+        "status": "planned_not_executed"
+      },
+      {
+        "fixture_id": "schema.document_approved.negative",
+        "rule_id": "schema.document_approved",
+        "expected_status": "invalid",
+        "description": "输入违反本规则登记约束时应拒绝",
+        "status": "planned_not_executed"
+      }
+    ]
+  },
+  "registry_cases": [
+    {
+      "id": "SM01",
+      "set": [],
+      "expected_errors": []
+    },
+    {
+      "id": "SM02",
+      "set": [
+        [
+          [
+            "runtime_approved"
+          ],
+          true
+        ]
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SM03",
+      "set": [
+        [
+          [
+            "schema_source",
+            "sha256"
+          ],
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ]
+      ],
+      "expected_errors": [
+        "source_digest"
+      ]
+    },
+    {
+      "id": "SM04",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "input_model_ref"
+          ],
+          "#/$defs/Missing"
+        ]
+      ],
+      "expected_errors": [
+        "model_ref"
+      ]
+    },
+    {
+      "id": "SM05",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "revision"
+          ],
+          "1\n"
+        ]
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SM06",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "rule_id"
+          ],
+          "catalog.identity_unique"
+        ]
+      ],
+      "expected_errors": [
+        "duplicate_rule",
+        "fixture_binding"
+      ]
+    },
+    {
+      "id": "SM07",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "missing"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "selector_property"
+      ]
+    },
+    {
+      "id": "SM08",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "items"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "selector_items"
+      ]
+    },
+    {
+      "id": "SM09",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "ref"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "selector_ref"
+      ]
+    },
+    {
+      "id": "SM10",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "expected_control"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": []
+    },
+    {
+      "id": "SM11",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "phase"
+          ],
+          "linked"
+        ]
+      ],
+      "expected_errors": [
+        "phase_context"
+      ]
+    },
+    {
+      "id": "SM12",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "phase"
+          ],
+          "content"
+        ]
+      ],
+      "expected_errors": [
+        "phase_context"
+      ]
+    },
+    {
+      "id": "SM13",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "context_requirements",
+            0,
+            "provider_id"
+          ],
+          "missing"
+        ]
+      ],
+      "expected_errors": [
+        "context_provider"
+      ]
+    },
+    {
+      "id": "SM14",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "context_requirements",
+            0,
+            "policy_ref"
+          ],
+          "expired"
+        ]
+      ],
+      "expected_errors": [
+        "context_policy"
+      ]
+    },
+    {
+      "id": "SM15",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "context_requirements",
+            0,
+            "model_ref"
+          ],
+          "#/$defs/ClockSample"
+        ]
+      ],
+      "expected_errors": [
+        "context_model"
+      ]
+    },
+    {
+      "id": "SM16",
+      "set": [
+        [
+          [
+            "providers",
+            0,
+            "source"
+          ],
+          "client_assertion"
+        ]
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SM17",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "validator_kind"
+          ],
+          "first_party"
+        ]
+      ],
+      "expected_errors": [
+        "opaque_boundary"
+      ]
+    },
+    {
+      "id": "SM18",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "parameters"
+            },
+            {
+              "kind": "ref"
+            },
+            {
+              "kind": "property",
+              "name": "descriptor_version"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "opaque_boundary"
+      ]
+    },
+    {
+      "id": "SM19",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "branch",
+              "keyword": "allOf",
+              "index": 1
+            },
+            {
+              "kind": "conditional",
+              "arm": "then"
+            },
+            {
+              "kind": "property",
+              "name": "parameters"
+            }
+          ]
+        ],
+        [
+          [
+            "rules",
+            2,
+            "validator_kind"
+          ],
+          "first_party"
+        ]
+      ],
+      "expected_errors": [
+        "opaque_boundary"
+      ]
+    },
+    {
+      "id": "SM20",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "branch",
+              "keyword": "allOf",
+              "index": 1
+            },
+            {
+              "kind": "conditional",
+              "arm": "then"
+            },
+            {
+              "kind": "property",
+              "name": "parameters"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [],
+      "expected_compilation": {
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/allOf/1/then/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "if",
+              "schema_pointer": "#/$defs/CommandRequest/allOf/1/if",
+              "instance_pattern": [],
+              "expected": true
+            }
+          ],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/allOf/1/then/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": [
+                {
+                  "kind": "if",
+                  "schema_pointer": "#/$defs/CommandRequest/allOf/1/if",
+                  "instance_pattern": [],
+                  "expected": true
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM21",
+      "set": [
+        [
+          [
+            "rules",
+            3,
+            "validator_kind"
+          ],
+          "first_party"
+        ]
+      ],
+      "expected_errors": [
+        "opaque_boundary"
+      ]
+    },
+    {
+      "id": "SM22",
+      "set": [
+        [
+          [
+            "rules",
+            3,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "document"
+            },
+            {
+              "kind": "property",
+              "name": "properties"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "opaque_boundary"
+      ]
+    },
+    {
+      "id": "SM23",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "input_model_ref"
+          ],
+          "#/$defs/Payload"
+        ],
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          []
+        ]
+      ],
+      "expected_errors": []
+    },
+    {
+      "id": "SM24",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "input_model_ref"
+          ],
+          "#/$defs/Payload"
+        ],
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "ref"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "opaque_boundary"
+      ]
+    },
+    {
+      "id": "SM25",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "expected_control"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "specialized_boundary"
+      ]
+    },
+    {
+      "id": "SM26",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "branch",
+              "keyword": "allOf",
+              "index": 99
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "selector_branch"
+      ]
+    },
+    {
+      "id": "SM27",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "conditional",
+              "arm": "then"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "selector_conditional"
+      ]
+    },
+    {
+      "id": "SM28",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "recursive"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SM29",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "locations",
+            0,
+            "selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "entries"
+            },
+            {
+              "kind": "items"
+            },
+            {
+              "kind": "property",
+              "name": "scene_id"
+            },
+            {
+              "kind": "ref"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [],
+      "expected_compilation": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/Id",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                },
+                {
+                  "items": true
+                },
+                {
+                  "property": "scene_id"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM30",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "reason_codes",
+            0,
+            "location_ids"
+          ],
+          [
+            "secret_name"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "reason_location"
+      ]
+    },
+    {
+      "id": "SM31",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "fixture_refs"
+          ],
+          [
+            "catalog.identity_unique.positive",
+            "missing"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "fixture_binding",
+        "fixture_coverage",
+        "orphan_fixture"
+      ]
+    },
+    {
+      "id": "SM32",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "implementation_bindings",
+            0,
+            "status"
+          ],
+          "implemented"
+        ]
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SM33",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "implementation_bindings",
+            0,
+            "module_path"
+          ],
+          "../outside.ts"
+        ]
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SM34",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "implementation_bindings",
+            0,
+            "module_path"
+          ],
+          "planned//catalog.ts"
+        ]
+      ],
+      "expected_errors": [
+        "binding_path"
+      ]
+    },
+    {
+      "id": "SM35",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "context_requirements"
+          ],
+          [
+            {
+              "context_id": "current_control",
+              "model_ref": "#/$defs/ControlVersion",
+              "provider_id": "control_snapshot",
+              "policy_ref": "current_domain"
+            },
+            {
+              "context_id": "current_control",
+              "model_ref": "#/$defs/ControlVersion",
+              "provider_id": "control_snapshot",
+              "policy_ref": "current_domain"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "duplicate_context"
+      ]
+    },
+    {
+      "id": "SM36",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "locations"
+          ],
+          [
+            {
+              "location_id": "entries",
+              "selector": [
+                {
+                  "kind": "property",
+                  "name": "entries"
+                }
+              ]
+            },
+            {
+              "location_id": "entries",
+              "selector": [
+                {
+                  "kind": "property",
+                  "name": "entries"
+                }
+              ]
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "duplicate_location"
+      ]
+    },
+    {
+      "id": "SM37",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "reason_codes"
+          ],
+          [
+            {
+              "reason_code": "duplicate_scene_id",
+              "location_ids": [
+                "entries"
+              ]
+            },
+            {
+              "reason_code": "duplicate_scene_id",
+              "location_ids": [
+                "entries"
+              ]
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "duplicate_reason"
+      ]
+    },
+    {
+      "id": "SM38",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "implementation_bindings"
+          ],
+          [
+            {
+              "language": "typescript",
+              "module_path": "planned/catalog/identity_unique.ts",
+              "symbol": "evaluate",
+              "status": "planned"
+            },
+            {
+              "language": "typescript",
+              "module_path": "planned/catalog/identity_unique.ts",
+              "symbol": "evaluate",
+              "status": "planned"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "duplicate_binding"
+      ]
+    },
+    {
+      "id": "SM39",
+      "set": [
+        [
+          [
+            "rules",
+            2,
+            "phase"
+          ],
+          "content"
+        ],
+        [
+          [
+            "rules",
+            2,
+            "context_requirements"
+          ],
+          []
+        ]
+      ],
+      "expected_errors": [
+        "specialized_context"
+      ]
+    },
+    {
+      "id": "SM40",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "locations",
+            0,
+            "selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "missing"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "selector_property"
+      ]
+    },
+    {
+      "id": "SM41",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "input_model_ref"
+          ],
+          "#/$defs/ClockSample"
+        ],
+        [
+          [
+            "rules",
+            0,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "uncertainty_ms"
+            },
+            {
+              "kind": "branch",
+              "keyword": "anyOf",
+              "index": 0
+            }
+          ]
+        ],
+        [
+          [
+            "rules",
+            0,
+            "locations",
+            0,
+            "selector"
+          ],
+          []
+        ]
+      ],
+      "expected_errors": [],
+      "expected_compilation": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms/anyOf/0",
+          "instance_pattern": [
+            {
+              "property": "uncertainty_ms"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "anyOf",
+              "parent_schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms",
+              "instance_pattern": [
+                {
+                  "property": "uncertainty_ms"
+                }
+              ],
+              "branch_index": 0
+            }
+          ],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms/anyOf/0",
+              "instance_pattern": [
+                {
+                  "property": "uncertainty_ms"
+                }
+              ],
+              "guards": [
+                {
+                  "kind": "anyOf",
+                  "parent_schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms",
+                  "instance_pattern": [
+                    {
+                      "property": "uncertainty_ms"
+                    }
+                  ],
+                  "branch_index": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM42",
+      "set": [
+        [
+          [
+            "rules",
+            1,
+            "instance_selector"
+          ],
+          [
+            {
+              "kind": "branch",
+              "keyword": "allOf",
+              "index": 0
+            },
+            {
+              "kind": "conditional",
+              "arm": "else"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [],
+      "expected_compilation": {
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/CommandRequest/allOf/0/else",
+          "instance_pattern": [],
+          "guards": [
+            {
+              "kind": "if",
+              "schema_pointer": "#/$defs/CommandRequest/allOf/0/if",
+              "instance_pattern": [],
+              "expected": false
+            }
+          ],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/CommandRequest/allOf/0/else",
+              "instance_pattern": [],
+              "guards": [
+                {
+                  "kind": "if",
+                  "schema_pointer": "#/$defs/CommandRequest/allOf/0/if",
+                  "instance_pattern": [],
+                  "expected": false
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM43",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "locations",
+            0,
+            "selector"
+          ],
+          [
+            {
+              "kind": "property",
+              "name": "entries"
+            },
+            {
+              "kind": "items"
+            },
+            {
+              "kind": "property",
+              "name": "display_name"
+            }
+          ]
+        ]
+      ],
+      "expected_errors": []
+    },
+    {
+      "id": "SM44",
+      "set": [
+        [
+          [
+            "rules",
+            3,
+            "validator_kind"
+          ],
+          "dynamic_payload"
+        ]
+      ],
+      "expected_errors": [
+        "specialized_boundary"
+      ]
+    },
+    {
+      "id": "SM45",
+      "set": [
+        [
+          [
+            "rules",
+            0,
+            "input_model_ref"
+          ],
+          "#/$defs/Payload"
+        ],
+        [
+          [
+            "rules",
+            0,
+            "locations",
+            0,
+            "selector"
+          ],
+          []
+        ]
+      ],
+      "expected_errors": [
+        "opaque_boundary"
+      ]
+    },
+    {
+      "id": "SM46",
+      "set": [
+        [
+          [
+            "providers"
+          ],
+          [
+            {
+              "provider_id": "control_snapshot",
+              "source": "trusted_runtime",
+              "model_refs": [
+                "#/$defs/ControlVersion"
+              ],
+              "policy_refs": [
+                "current_domain"
+              ]
+            },
+            {
+              "provider_id": "approved_registry",
+              "source": "trusted_runtime",
+              "model_refs": [
+                "#/$defs/SchemaDescriptor"
+              ],
+              "policy_refs": [
+                "exact_capability",
+                "exact_schema"
+              ]
+            },
+            {
+              "provider_id": "control_snapshot",
+              "source": "trusted_runtime",
+              "model_refs": [
+                "#/$defs/ControlVersion"
+              ],
+              "policy_refs": [
+                "current_domain"
+              ]
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "duplicate_provider"
+      ]
+    },
+    {
+      "id": "SM47",
+      "set": [
+        [
+          [
+            "vector_plans",
+            0,
+            "expected_status"
+          ],
+          "invalid"
+        ]
+      ],
+      "expected_errors": [
+        "fixture_coverage"
+      ]
+    }
+  ],
+  "result_cases": [
+    {
+      "id": "SR01",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "valid"
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR02",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "invalid",
+        "violations": [
+          {
+            "reason_code": "duplicate_scene_id",
+            "location_id": "entries"
+          }
+        ]
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR03",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "context_unavailable",
+        "context_ids": [
+          "current_control"
+        ]
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR04",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "validator_fault",
+        "fault_code": "internal_error"
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR05",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "validator_fault",
+        "fault_code": "budget_exhausted"
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR06",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "validator_fault",
+        "fault_code": "cancelled"
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR07",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "valid",
+        "violations": []
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR08",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "invalid",
+        "violations": []
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR09",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "invalid",
+        "violations": [
+          {
+            "reason_code": "control_mismatch",
+            "location_id": "entries"
+          }
+        ]
+      },
+      "expected_errors": [
+        "result_reason"
+      ]
+    },
+    {
+      "id": "SR10",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "invalid",
+        "violations": [
+          {
+            "reason_code": "duplicate_scene_id",
+            "location_id": "control"
+          }
+        ]
+      },
+      "expected_errors": [
+        "result_location"
+      ]
+    },
+    {
+      "id": "SR11",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "context_unavailable",
+        "context_ids": [
+          "current_control"
+        ]
+      },
+      "expected_errors": [
+        "result_context"
+      ]
+    },
+    {
+      "id": "SR12",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "context_unavailable",
+        "context_ids": []
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR13",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "validator_fault",
+        "fault_code": "internal_error",
+        "message": "secret"
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR14",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "validator_fault",
+        "fault_code": "device_failed"
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR15",
+      "value": {
+        "rule_id": "missing",
+        "revision": "1",
+        "status": "valid"
+      },
+      "expected_errors": [
+        "result_rule"
+      ]
+    },
+    {
+      "id": "SR16",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "2",
+        "status": "valid"
+      },
+      "expected_errors": [
+        "result_revision"
+      ]
+    },
+    {
+      "id": "SR17",
+      "value": {
+        "rule_id": "control.binding_match",
+        "revision": "1",
+        "status": "context_unavailable",
+        "context_ids": [
+          "current_control",
+          "current_control"
+        ]
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR18",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "invalid",
+        "violations": [
+          {
+            "reason_code": "duplicate_scene_id",
+            "location_id": "entries",
+            "instance_pointer": "/secret"
+          }
+        ]
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR19",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "failed"
+      },
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR20",
+      "value": {
+        "rule_id": "parameters.capability_valid",
+        "revision": "1",
+        "status": "invalid",
+        "violations": [
+          {
+            "reason_code": "capability_invalid",
+            "location_id": "parameters"
+          }
+        ]
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR21",
+      "value": {
+        "rule_id": "schema.document_approved",
+        "revision": "1",
+        "status": "context_unavailable",
+        "context_ids": [
+          "schema_policy"
+        ]
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR22",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "invalid",
+        "violations": [
+          {
+            "reason_code": "duplicate_scene_id",
+            "location_id": "entries"
+          },
+          {
+            "reason_code": "duplicate_obs_uuid",
+            "location_id": "entries"
+          }
+        ]
+      },
+      "expected_errors": []
+    },
+    {
+      "id": "SR23",
+      "value": {
+        "rule_id": "catalog.identity_unique",
+        "revision": "1",
+        "status": "invalid",
+        "violations": [
+          {
+            "reason_code": "duplicate_obs_uuid",
+            "location_id": "entries"
+          },
+          {
+            "reason_code": "duplicate_scene_id",
+            "location_id": "entries"
+          }
+        ]
+      },
+      "expected_errors": [
+        "result_order"
+      ]
+    }
+  ],
+  "selector_source": {
+    "$defs": {
+      "Root": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/Row"
+            }
+          }
+        }
+      },
+      "Row": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "a/b~c": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "boolean"
+          }
+        ],
+        "if": {
+          "type": "object"
+        },
+        "then": {
+          "type": "object"
+        },
+        "else": {
+          "type": "boolean"
+        }
+      },
+      "Payload": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "Alias": {
+        "$ref": "#/$defs/Payload"
+      },
+      "External": {
+        "$ref": "https://invalid.example/schema"
+      },
+      "Missing": {
+        "$ref": "#/$defs/Unknown"
+      },
+      "Stop": false
+    }
+  },
+  "selector_cases": [
+    {
+      "id": "SS01",
+      "root": "#/$defs/Root",
+      "steps": [
+        {
+          "kind": "property",
+          "name": "rows"
+        },
+        {
+          "kind": "items"
+        },
+        {
+          "kind": "ref"
+        },
+        {
+          "kind": "branch",
+          "keyword": "oneOf",
+          "index": 0
+        },
+        {
+          "kind": "property",
+          "name": "a/b~c"
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": null,
+      "expected_compilation": {
+        "schema_pointer": "#/$defs/Row/oneOf/0/properties/a~1b~0c",
+        "instance_pattern": [
+          {
+            "property": "rows"
+          },
+          {
+            "items": true
+          },
+          {
+            "property": "a/b~c"
+          }
+        ],
+        "guards": [
+          {
+            "kind": "oneOf",
+            "parent_schema_pointer": "#/$defs/Row",
+            "instance_pattern": [
+              {
+                "property": "rows"
+              },
+              {
+                "items": true
+              }
+            ],
+            "branch_index": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "SS02",
+      "root": "#/$defs/Root",
+      "steps": [
+        {
+          "kind": "property",
+          "name": "rows"
+        },
+        {
+          "kind": "items"
+        },
+        {
+          "kind": "ref"
+        },
+        {
+          "kind": "conditional",
+          "arm": "then"
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": null,
+      "expected_compilation": {
+        "schema_pointer": "#/$defs/Row/then",
+        "instance_pattern": [
+          {
+            "property": "rows"
+          },
+          {
+            "items": true
+          }
+        ],
+        "guards": [
+          {
+            "kind": "if",
+            "schema_pointer": "#/$defs/Row/if",
+            "instance_pattern": [
+              {
+                "property": "rows"
+              },
+              {
+                "items": true
+              }
+            ],
+            "expected": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "SS03",
+      "root": "#/$defs/Alias",
+      "steps": [
+        {
+          "kind": "ref"
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": "opaque_boundary",
+      "expected_compilation": null
+    },
+    {
+      "id": "SS04",
+      "root": "#/$defs/External",
+      "steps": [
+        {
+          "kind": "ref"
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": "selector_ref",
+      "expected_compilation": null
+    },
+    {
+      "id": "SS05",
+      "root": "#/$defs/Missing",
+      "steps": [
+        {
+          "kind": "ref"
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": "model_ref",
+      "expected_compilation": null
+    },
+    {
+      "id": "SS06",
+      "root": "#/$defs/Stop",
+      "steps": [
+        {
+          "kind": "property",
+          "name": "x"
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": "selector_node",
+      "expected_compilation": null
+    },
+    {
+      "id": "SS07",
+      "root": "#/$defs/Root",
+      "steps": [
+        {
+          "kind": "property",
+          "name": "rows"
+        },
+        {
+          "kind": "items"
+        },
+        {
+          "kind": "ref"
+        },
+        {
+          "kind": "branch",
+          "keyword": "oneOf",
+          "index": 2
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": "selector_branch",
+      "expected_compilation": null
+    },
+    {
+      "id": "SS08",
+      "root": "#/$defs/Root",
+      "steps": [
+        {
+          "kind": "property",
+          "name": "rows"
+        },
+        {
+          "kind": "items"
+        },
+        {
+          "kind": "ref"
+        },
+        {
+          "kind": "conditional",
+          "arm": "else"
+        }
+      ],
+      "validator_kind": "first_party",
+      "expected_error": null,
+      "expected_compilation": {
+        "schema_pointer": "#/$defs/Row/else",
+        "instance_pattern": [
+          {
+            "property": "rows"
+          },
+          {
+            "items": true
+          }
+        ],
+        "guards": [
+          {
+            "kind": "if",
+            "schema_pointer": "#/$defs/Row/if",
+            "instance_pattern": [
+              {
+                "property": "rows"
+              },
+              {
+                "items": true
+              }
+            ],
+            "expected": false
+          }
+        ]
+      }
+    }
+  ]
+}

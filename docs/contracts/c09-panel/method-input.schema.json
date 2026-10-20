@@ -1,0 +1,1126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/panel-methods/0.1.0-draft.1/input.schema.json",
+  "description": "面板具名输入候选；只校验结构，动态参数、权限及绑定另验。旧公共模型作为候选来源，不代表新版完整解码已实现。",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getMeta"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getMeta"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getClock"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getClock"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.listDevices"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_listDevices"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCapabilities"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getCapabilities"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getDeviceState"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getDeviceState"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.submitCommand"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_submitCommand"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCommand"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getCommand"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.cancelCommand"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_cancelCommand"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getControlOperation"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getControlOperation"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getControl"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getControl"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.acquireControl"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_acquireControl"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.releaseControl"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_releaseControl"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.offerTransfer"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_offerTransfer"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.acceptTransfer"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_acceptTransfer"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.revokeRunGrant"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_revokeRunGrant"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getClockAssessment"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getClockAssessment"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCapacity"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getCapacity"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getSceneCatalog"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getSceneCatalog"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCommandEvidence"
+        },
+        "arguments": {
+          "$ref": "#/$defs/controller_getCommandEvidence"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getMeta"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_getMeta"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getClock"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_getClock"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.createDefinition"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_createDefinition"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.updateDraft"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_updateDraft"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.publishDefinition"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_publishDefinition"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.createRun"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_createRun"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getRun"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_getRun"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.preflightRun"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_preflightRun"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.armRun"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_armRun"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.pauseRun"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_pauseRun"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.previewRecovery"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_previewRecovery"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.resumeRun"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_resumeRun"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getClockAssessment"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_getClockAssessment"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getCapacity"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_getCapacity"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getRecoveryOperation"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_getRecoveryOperation"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getIndependenceProof"
+        },
+        "arguments": {
+          "$ref": "#/$defs/seamer_getIndependenceProof"
+        }
+      },
+      "required": [
+        "method",
+        "arguments"
+      ],
+      "additionalProperties": false
+    }
+  ],
+  "$defs": {
+    "controller_getMeta": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "controller_getClock": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "controller_listDevices": {
+      "type": "object",
+      "properties": {
+        "page_handle": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "controller_getCapabilities": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "device_id"
+      ],
+      "additionalProperties": false
+    },
+    "controller_getDeviceState": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "device_id"
+      ],
+      "additionalProperties": false
+    },
+    "controller_submitCommand": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "action_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "capability_version": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Version"
+        },
+        "parameters": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Payload"
+        },
+        "expected_control": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/ControlVersion"
+        },
+        "required_completion": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/CompletionLevel"
+        },
+        "preconditions": {
+          "type": "array",
+          "items": {
+            "$ref": "../df01-source/source/public.schema.json#/$defs/Predicate"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "dispatch": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Dispatch"
+        },
+        "evidence_timeout_ms": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Duration"
+        }
+      },
+      "required": [
+        "device_id",
+        "action_id",
+        "capability_version",
+        "parameters",
+        "expected_control",
+        "required_completion",
+        "preconditions",
+        "dispatch",
+        "evidence_timeout_ms"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action_id": {
+                "const": "obs.program_scene.set"
+              }
+            },
+            "required": [
+              "action_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "../df01-source/source/public.schema.json#/$defs/ObsSceneParameters"
+              },
+              "required_completion": {
+                "const": "effect_verified"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "controller_getCommand": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "command_id"
+      ],
+      "additionalProperties": false
+    },
+    "controller_cancelCommand": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "command_id",
+        "expected_revision",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "controller_getControlOperation": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "operation_id"
+      ],
+      "additionalProperties": false
+    },
+    "controller_getControl": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "device_id"
+      ],
+      "additionalProperties": false
+    },
+    "controller_acquireControl": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/ControlVersion"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "force": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "device_id",
+        "expected_control",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "controller_releaseControl": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/ControlVersion"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "device_id",
+        "expected_control",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "controller_offerTransfer": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/ControlVersion"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "target_principal_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "offer_ttl_ms": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Duration"
+        }
+      },
+      "required": [
+        "device_id",
+        "expected_control",
+        "reason",
+        "target_principal_id",
+        "offer_ttl_ms"
+      ],
+      "additionalProperties": false
+    },
+    "controller_acceptTransfer": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "transfer_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/ControlVersion"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "device_id",
+        "transfer_id",
+        "expected_control",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "controller_revokeRunGrant": {
+      "type": "object",
+      "properties": {
+        "grant_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "grant_id",
+        "expected_revision",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "controller_getClockAssessment": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "controller_getCapacity": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "controller_getSceneCatalog": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "device_id"
+      ],
+      "additionalProperties": false
+    },
+    "controller_getCommandEvidence": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "page_handle": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "command_id"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_getMeta": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "seamer_getClock": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "seamer_createDefinition": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Definition"
+        }
+      },
+      "required": [
+        "definition"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_updateDraft": {
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        },
+        "definition": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Definition"
+        }
+      },
+      "required": [
+        "definition_id",
+        "expected_revision",
+        "definition"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_publishDefinition": {
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        }
+      },
+      "required": [
+        "definition_id",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_createRun": {
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "definition_version": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Version"
+        }
+      },
+      "required": [
+        "definition_id",
+        "definition_version"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_getRun": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "run_id"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_preflightRun": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        }
+      },
+      "required": [
+        "run_id",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_armRun": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        },
+        "assessment_handle": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "run_id",
+        "expected_revision",
+        "assessment_handle"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_pauseRun": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "run_id",
+        "expected_revision",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_previewRecovery": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        }
+      },
+      "required": [
+        "run_id",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_resumeRun": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "expected_revision": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Revision"
+        },
+        "recovery_handle": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "run_id",
+        "expected_revision",
+        "recovery_handle"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_getClockAssessment": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "seamer_getCapacity": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "seamer_getRecoveryOperation": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "operation_id"
+      ],
+      "additionalProperties": false
+    },
+    "seamer_getIndependenceProof": {
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        },
+        "proof_id": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "definition_id",
+        "proof_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

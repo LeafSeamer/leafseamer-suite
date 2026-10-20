@@ -1,0 +1,158 @@
+{
+  "format_version": "dm3-parameter-profile-check/1",
+  "runtime_approved": false,
+  "device_tests_executed": 0,
+  "all_passed": true,
+  "checks_passed": 24,
+  "results": [
+    {
+      "id": "P00",
+      "passed": true,
+      "expected": "valid"
+    },
+    {
+      "id": "P01",
+      "passed": true,
+      "expected": "profile_identity"
+    },
+    {
+      "id": "P02",
+      "passed": true,
+      "expected": "runtime_approval"
+    },
+    {
+      "id": "P03",
+      "passed": true,
+      "expected": "runtime_approval"
+    },
+    {
+      "id": "P04",
+      "passed": true,
+      "expected": "entry_count"
+    },
+    {
+      "id": "P05",
+      "passed": true,
+      "expected": "entry_count"
+    },
+    {
+      "id": "P06",
+      "passed": true,
+      "expected": "entries"
+    },
+    {
+      "id": "P07",
+      "passed": true,
+      "expected": "indices"
+    },
+    {
+      "id": "P08",
+      "passed": true,
+      "expected": "integer"
+    },
+    {
+      "id": "P09",
+      "passed": true,
+      "expected": "integer"
+    },
+    {
+      "id": "P10",
+      "passed": true,
+      "expected": "range"
+    },
+    {
+      "id": "P11",
+      "passed": true,
+      "expected": "dimensions"
+    },
+    {
+      "id": "P12",
+      "passed": true,
+      "expected": "dimensions"
+    },
+    {
+      "id": "P13",
+      "passed": true,
+      "expected": "access"
+    },
+    {
+      "id": "P14",
+      "passed": true,
+      "expected": "value_type"
+    },
+    {
+      "id": "P15",
+      "passed": true,
+      "expected": "qualifier"
+    },
+    {
+      "id": "P16",
+      "passed": true,
+      "expected": "text"
+    },
+    {
+      "id": "P17",
+      "passed": true,
+      "expected": "text"
+    },
+    {
+      "id": "P18",
+      "passed": true,
+      "expected": "address"
+    },
+    {
+      "id": "P19",
+      "passed": true,
+      "expected": "duplicate_address"
+    },
+    {
+      "id": "P20",
+      "passed": true,
+      "expected": "profile_shape"
+    },
+    {
+      "id": "P21",
+      "passed": true,
+      "expected": "entry_shape"
+    },
+    {
+      "id": "P22",
+      "passed": true,
+      "expected": "profile_identity"
+    },
+    {
+      "id": "P23",
+      "passed": true,
+      "expected": "fixed_compatibility"
+    }
+  ],
+  "compatibility": {
+    "parameter_count": 177,
+    "legacy_parameter_count": 174,
+    "shared_address_count": 174,
+    "changed_index_count": 154,
+    "access_counts": {
+      "r": 16,
+      "rw": 161
+    },
+    "added_addresses": [
+      "IO:Current/PortToPort/48VOn",
+      "IO:Current/PortToPort/HAAvailability",
+      "IO:Current/PortToPort/HAGain"
+    ],
+    "removed_addresses": [],
+    "definition_changes": [
+      {
+        "address": "MIXER:Current/MuteGrpCtrl/On",
+        "field": "access",
+        "legacy": "rw",
+        "candidate": "r"
+      }
+    ]
+  },
+  "artifact_sha256": {
+    "dm3-parameter-profile.json": "86426f9a19e8c61e14c04daae9fd59601844309c2b54cabe1eaf533e4dd70db9",
+    "dm3-legacy-catalog.json": "42065cdbdd77c616468b4f3cce00d9cdf4f5a5db7598be09fc12eab905add98f",
+    "check_parameter_profile.py": "988df4e548987d73503d38c7b9cb46e76a44f381616a1ea83e9d0c67dce8f78b"
+  }
+}

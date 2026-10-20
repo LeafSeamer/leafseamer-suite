@@ -1,0 +1,2112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-execution/execution.schema.json",
+  "title": "automation-execution/0.1.0-draft.1 待审阅",
+  "not": {},
+  "$defs": {
+    "Id": {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/lifecycle.schema.json#/$defs/Id"
+    },
+    "Revision": {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/lifecycle.schema.json#/$defs/Revision"
+    },
+    "Digest": {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/lifecycle.schema.json#/$defs/Digest"
+    },
+    "Scope": {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/lifecycle.schema.json#/$defs/Scope"
+    },
+    "ClockRef": {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/lifecycle.schema.json#/$defs/ClockRef"
+    },
+    "ExecutionBindingRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "execution_binding"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionPlanRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "execution_plan"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionStartRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "execution_start"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "PauseLatchRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "pause_latch"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ActionBindingRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "action_binding"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ParametersRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "parameters"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ParameterSchemaRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "parameter_schema"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CompletionPolicyRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "completion_policy"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CompletionEvidenceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "completion_evidence"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReleaseEvidenceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "release_evidence"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CommandRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "command"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CommandSubmissionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "command_submission"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "StepPlanRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "step_plan"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "StepResultRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "step_result"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "BudgetChargeRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "budget_charge"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleWindowRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "schedule_window"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ObservationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "observation"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "AgeEvidenceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "age_evidence"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "EdgePolicyRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "edge_policy"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "RuntimePolicyRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "runtime_policy"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "DelayRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "delay"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ClockRateProfileRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "clock_rate_profile"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "WindowChallengeRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "window_challenge"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "BudgetLimitRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "budget_limit"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionAnchorRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "execution_anchor"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "StepReadyRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "step_ready"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "TriggerDecisionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "trigger_decision"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "RequestAdjudicationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "request_adjudication"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "PauseLatch": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "latch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reason_code": {
+          "$ref": "#/$defs/Id"
+        },
+        "created_run_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "resolution_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ReleaseEvidenceRef"
+          },
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "latch_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "latch_id",
+        "run_id",
+        "reason_code",
+        "created_run_revision",
+        "resolution_refs",
+        "latch_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionStart": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "start_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "execution_binding_ref": {
+          "$ref": "#/$defs/ExecutionBindingRef"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/ExecutionPlanRef"
+        },
+        "expected_operation_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "run_revision_before": {
+          "$ref": "#/$defs/Revision"
+        },
+        "run_revision_after": {
+          "$ref": "#/$defs/Revision"
+        },
+        "slot_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "prepared_targets_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "cleared_latch_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PauseLatchRef"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "start_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "mode": {
+          "enum": [
+            "execute",
+            "reconcile_commit"
+          ]
+        },
+        "start_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "start_id",
+        "operation_id",
+        "run_id",
+        "execution_binding_ref",
+        "plan_ref",
+        "expected_operation_revision",
+        "run_revision_before",
+        "run_revision_after",
+        "slot_revision",
+        "prepared_targets_digest",
+        "cleared_latch_refs",
+        "clock",
+        "start_tick_ns",
+        "mode",
+        "start_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionAnchor": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "anchor_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "origin_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/TriggerDecisionRef"
+            },
+            {
+              "$ref": "#/$defs/ExecutionStartRef"
+            }
+          ]
+        },
+        "clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "anchor_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "anchor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "anchor_id",
+        "revision",
+        "execution_id",
+        "origin_ref",
+        "clock",
+        "anchor_tick_ns",
+        "anchor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "StepReady": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "ready_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_plan_ref": {
+          "$ref": "#/$defs/StepPlanRef"
+        },
+        "clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "ready_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "dependencies_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "ready_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "ready_id",
+        "revision",
+        "execution_id",
+        "step_id",
+        "step_plan_ref",
+        "clock",
+        "ready_tick_ns",
+        "dependencies_digest",
+        "ready_digest"
+      ],
+      "additionalProperties": false
+    },
+    "DelayPolicy": {
+      "type": "object",
+      "properties": {
+        "anchor_kind": {
+          "enum": [
+            "execution_admitted",
+            "step_ready"
+          ]
+        },
+        "window_scope": {
+          "const": "direct_successor"
+        },
+        "delay_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "max_lateness_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60000
+        }
+      },
+      "required": [
+        "anchor_kind",
+        "window_scope",
+        "delay_ms",
+        "max_lateness_ms"
+      ],
+      "additionalProperties": false
+    },
+    "ActionPlan": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "action"
+        },
+        "action_binding_ref": {
+          "$ref": "#/$defs/ActionBindingRef"
+        },
+        "controller_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "parameters_ref": {
+          "$ref": "#/$defs/ParametersRef"
+        },
+        "parameter_schema_ref": {
+          "$ref": "#/$defs/ParameterSchemaRef"
+        },
+        "completion_policy_ref": {
+          "$ref": "#/$defs/CompletionPolicyRef"
+        },
+        "supersedes_command_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budget_charge_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BudgetChargeRef"
+          },
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "delay_window_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DelayRef"
+          },
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "schedule_window_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ScheduleWindowRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "action_binding_ref",
+        "controller_id",
+        "device_id",
+        "parameters_ref",
+        "parameter_schema_ref",
+        "completion_policy_ref",
+        "supersedes_command_ref",
+        "budget_charge_refs",
+        "delay_window_refs",
+        "schedule_window_ref"
+      ],
+      "additionalProperties": false
+    },
+    "RetainPlan": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "retain_success"
+        },
+        "command_ref": {
+          "$ref": "#/$defs/CommandRef"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompletionEvidenceRef"
+          },
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "kind",
+        "command_ref",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "DelayPlan": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "delay"
+        },
+        "policy": {
+          "$ref": "#/$defs/DelayPolicy"
+        }
+      },
+      "required": [
+        "kind",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    "CommitPlan": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "reconcile_commit"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompletionEvidenceRef"
+          },
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "kind",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "StepPlan": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "phase": {
+          "enum": [
+            "exit",
+            "transition",
+            "enter",
+            "sequence",
+            "commit"
+          ]
+        },
+        "group_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "group_mode": {
+          "enum": [
+            "sequence",
+            "parallel"
+          ]
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4095
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "execution_binding_ref": {
+          "$ref": "#/$defs/ExecutionBindingRef"
+        },
+        "runtime_policy_ref": {
+          "$ref": "#/$defs/RuntimePolicyRef"
+        },
+        "payload": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ActionPlan"
+            },
+            {
+              "$ref": "#/$defs/RetainPlan"
+            },
+            {
+              "$ref": "#/$defs/DelayPlan"
+            },
+            {
+              "$ref": "#/$defs/CommitPlan"
+            }
+          ]
+        },
+        "plan_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "execution_id",
+        "step_id",
+        "phase",
+        "group_id",
+        "group_mode",
+        "ordinal",
+        "required",
+        "execution_binding_ref",
+        "runtime_policy_ref",
+        "payload",
+        "plan_digest"
+      ],
+      "additionalProperties": false
+    },
+    "StepRecord": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/StepPlanRef"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "state": {
+          "enum": [
+            "waiting",
+            "ready",
+            "submission_pending",
+            "accepted",
+            "awaiting_evidence",
+            "finished",
+            "retained",
+            "cancelled",
+            "indeterminate"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "unknown",
+            "blocked",
+            "expired",
+            "cancelled"
+          ]
+        },
+        "submission_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandSubmissionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "command_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompletionEvidenceRef"
+          },
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "result_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StepResultRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "execution_id",
+        "step_id",
+        "plan_ref",
+        "revision",
+        "state",
+        "outcome",
+        "submission_ref",
+        "command_ref",
+        "evidence_refs",
+        "result_ref"
+      ],
+      "additionalProperties": false
+    },
+    "RequestIdentity": {
+      "type": "object",
+      "properties": {
+        "target_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation_id": {
+          "const": "createCommand"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "target_scope",
+        "issuer_id",
+        "principal_id",
+        "request_epoch",
+        "operation_id",
+        "idempotency_key",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CommandSubmission": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "submission_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_plan_ref": {
+          "$ref": "#/$defs/StepPlanRef"
+        },
+        "identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        },
+        "parameters_ref": {
+          "$ref": "#/$defs/ParametersRef"
+        },
+        "state": {
+          "enum": [
+            "planned",
+            "attempt_recorded",
+            "accepted",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "attempt_clock": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClockRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempt_tick_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "command_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "adjudication_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RequestAdjudicationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submission_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "submission_id",
+        "execution_id",
+        "step_id",
+        "step_plan_ref",
+        "identity",
+        "parameters_ref",
+        "state",
+        "attempt_clock",
+        "attempt_tick_ns",
+        "command_ref",
+        "adjudication_ref",
+        "submission_digest"
+      ],
+      "additionalProperties": false
+    },
+    "DelayRecord": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "execution_anchor_ref": {
+          "$ref": "#/$defs/ExecutionAnchorRef"
+        },
+        "anchor_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ExecutionAnchorRef"
+            },
+            {
+              "$ref": "#/$defs/StepReadyRef"
+            }
+          ]
+        },
+        "policy": {
+          "$ref": "#/$defs/DelayPolicy"
+        },
+        "clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "anchor_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "due_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "deadline_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "state": {
+          "enum": [
+            "waiting",
+            "elapsed",
+            "expired",
+            "cancelled"
+          ]
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "delay_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "execution_id",
+        "step_id",
+        "execution_anchor_ref",
+        "anchor_ref",
+        "policy",
+        "clock",
+        "anchor_tick_ns",
+        "due_tick_ns",
+        "deadline_tick_ns",
+        "state",
+        "revision",
+        "delay_digest"
+      ],
+      "additionalProperties": false
+    },
+    "WindowTranslation": {
+      "type": "object",
+      "properties": {
+        "delay_ref": {
+          "$ref": "#/$defs/DelayRef"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "target_clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "challenge_ref": {
+          "$ref": "#/$defs/WindowChallengeRef"
+        },
+        "source_rate_profile_ref": {
+          "$ref": "#/$defs/ClockRateProfileRef"
+        },
+        "target_rate_profile_ref": {
+          "$ref": "#/$defs/ClockRateProfileRef"
+        },
+        "source_rate_error_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999999
+        },
+        "target_rate_error_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999999
+        },
+        "target_challenge_sent_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "target_response_received_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "source_sample_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "source_due_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "source_deadline_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "target_not_before_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "target_deadline_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "translation_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "delay_ref",
+        "execution_id",
+        "step_id",
+        "source_clock",
+        "target_clock",
+        "challenge_ref",
+        "source_rate_profile_ref",
+        "target_rate_profile_ref",
+        "source_rate_error_ppm",
+        "target_rate_error_ppm",
+        "target_challenge_sent_tick_ns",
+        "target_response_received_tick_ns",
+        "source_sample_tick_ns",
+        "source_due_tick_ns",
+        "source_deadline_tick_ns",
+        "target_not_before_tick_ns",
+        "target_deadline_tick_ns",
+        "translation_digest"
+      ],
+      "additionalProperties": false
+    },
+    "EdgePolicy": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "enum": [
+            "rising",
+            "falling"
+          ]
+        },
+        "enter_raw": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+        },
+        "reset_raw": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+        },
+        "unit": {
+          "$ref": "#/$defs/Id"
+        },
+        "stable_for_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "max_sample_gap_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60000
+        },
+        "rearm_policy": {
+          "const": "reset_required"
+        }
+      },
+      "required": [
+        "direction",
+        "enter_raw",
+        "reset_raw",
+        "unit",
+        "stable_for_ms",
+        "max_sample_gap_ms",
+        "rearm_policy"
+      ],
+      "additionalProperties": false
+    },
+    "EdgeBinding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/Revision"
+        },
+        "source_registration_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "source_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/EdgePolicyRef"
+        }
+      },
+      "required": [
+        "scope",
+        "definition_id",
+        "run_id",
+        "arm_generation",
+        "source_registration_id",
+        "source_revision",
+        "source_epoch",
+        "clock",
+        "policy_ref"
+      ],
+      "additionalProperties": false
+    },
+    "EdgeSample": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/EdgeBinding"
+        },
+        "observation_ref": {
+          "$ref": "#/$defs/ObservationRef"
+        },
+        "age_evidence_ref": {
+          "$ref": "#/$defs/AgeEvidenceRef"
+        },
+        "sequence": {
+          "$ref": "#/$defs/Revision"
+        },
+        "sample_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "raw": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+        },
+        "unit": {
+          "$ref": "#/$defs/Id"
+        },
+        "delivery": {
+          "enum": [
+            "live",
+            "baseline",
+            "reconcile"
+          ]
+        },
+        "sample_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "binding",
+        "observation_ref",
+        "age_evidence_ref",
+        "sequence",
+        "sample_tick_ns",
+        "raw",
+        "unit",
+        "delivery",
+        "sample_digest"
+      ],
+      "additionalProperties": false
+    },
+    "EdgeState": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/EdgeBinding"
+        },
+        "revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "phase": {
+          "enum": [
+            "needs_reset",
+            "armed",
+            "tracking"
+          ]
+        },
+        "last_sequence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_sample_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_sample_tick_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_since_tick_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_decision_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "binding",
+        "revision",
+        "phase",
+        "last_sequence",
+        "last_sample_digest",
+        "last_sample_tick_ns",
+        "candidate_since_tick_ns",
+        "last_decision_id"
+      ],
+      "additionalProperties": false
+    },
+    "EdgeDecision": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/EdgeBinding"
+        },
+        "decision_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/Revision"
+        },
+        "sample_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "result": {
+          "enum": [
+            "baseline",
+            "reset_observed",
+            "tracking",
+            "idle",
+            "edge",
+            "suppressed_busy",
+            "suppressed_inactive",
+            "invalid"
+          ]
+        },
+        "state_revision_before": {
+          "$ref": "#/$defs/Revision"
+        },
+        "state_revision_after": {
+          "$ref": "#/$defs/Revision"
+        },
+        "decision_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "binding",
+        "decision_id",
+        "sequence",
+        "sample_digest",
+        "result",
+        "state_revision_before",
+        "state_revision_after",
+        "decision_digest"
+      ],
+      "additionalProperties": false
+    },
+    "BudgetKey": {
+      "type": "object",
+      "properties": {
+        "owner_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "organization_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "namespace": {
+          "enum": [
+            "definition",
+            "verified_chain",
+            "unattributed_chain",
+            "device"
+          ]
+        },
+        "stable_subject_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "unit": {
+          "enum": [
+            "execution",
+            "command"
+          ]
+        }
+      },
+      "required": [
+        "owner_scope",
+        "organization_id",
+        "namespace",
+        "stable_subject_id",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "BudgetPolicy": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/BudgetKey"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/BudgetLimitRef"
+        },
+        "window_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "max_live_charges": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        }
+      },
+      "required": [
+        "key",
+        "policy_ref",
+        "window_ms",
+        "limit",
+        "max_live_charges"
+      ],
+      "additionalProperties": false
+    },
+    "BudgetCharge": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/BudgetKey"
+        },
+        "charge_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/BudgetLimitRef"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "amount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "charged_tick_ns": {
+          "$ref": "#/$defs/Revision"
+        },
+        "charge_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "key",
+        "charge_id",
+        "policy_ref",
+        "execution_id",
+        "step_id",
+        "amount",
+        "clock",
+        "charged_tick_ns",
+        "charge_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionRuntimePolicy": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "automation-execution/0.1.0-draft.1"
+        },
+        "delay_policies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "policy": {
+                "$ref": "#/$defs/DelayPolicy"
+              }
+            },
+            "required": [
+              "step_id",
+              "policy"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "edge_policies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "binding_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "policy": {
+                "$ref": "#/$defs/EdgePolicy"
+              }
+            },
+            "required": [
+              "binding_id",
+              "policy"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "budget_policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BudgetPolicy"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "version",
+        "delay_policies",
+        "edge_policies",
+        "budget_policies",
+        "policy_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

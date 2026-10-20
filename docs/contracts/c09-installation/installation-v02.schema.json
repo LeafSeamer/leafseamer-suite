@@ -1,0 +1,3977 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c09-installation/installation-v02.schema.json",
+  "title": "安装管理候选：须选择具体defs校验",
+  "x-approved": false,
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*(?![\\s\\S])"
+    },
+    "U20": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "SlotRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "slot"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "InstallationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "installation"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ApprovalRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "approval"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReviewRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "review"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ConfigurationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "configuration"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ContentRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "content"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "DependencyPlanRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "dependency_plan"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "InstallationOperationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "installation_operation"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "IntakeRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "intake"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformProfileRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "platform_profile"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ValidationPolicyRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "validation_policy"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReleaseAuthorizationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "release_authorization"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "VerificationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "verification"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "RuntimeBindingRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "runtime_binding"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "DenyRecordRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "deny_record"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CloseBatchRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "close_batch"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "RetirementRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "retirement"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReconciliationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "reconciliation"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "device"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "SourceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "source"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "PanelSessionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "panel_session"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "DefinitionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "definition"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "RunRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "run"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "schedule"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "resource"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CommandRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "command"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ProtocolProfileRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "protocol_profile"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "FilesystemRoleRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "filesystem_role"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "HelperArtifactRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "helper_artifact"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "SecretRoleRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "secret_role"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "DataObjectRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "data_object"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "BlockerSnapshotRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "blocker_snapshot"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Context": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "identity_issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "identity_epoch": {
+          "$ref": "#/$defs/U20"
+        },
+        "auth_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "gui_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "host_operation_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "identity_issuer_id",
+        "identity_epoch",
+        "auth_session_id",
+        "gui_instance_id",
+        "host_operation_id"
+      ],
+      "additionalProperties": false
+    },
+    "ClockRef": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Lifetime": {
+      "type": "object",
+      "properties": {
+        "clock": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "issued_tick": {
+          "$ref": "#/$defs/U20"
+        },
+        "deadline_tick": {
+          "$ref": "#/$defs/U20"
+        }
+      },
+      "required": [
+        "clock",
+        "issued_tick",
+        "deadline_tick"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_device_scope": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "device_scope"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "devices": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/DeviceRef"
+              },
+              "maxItems": 64,
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "action_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 128,
+              "minItems": 0,
+              "uniqueItems": true
+            },
+            "trigger_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 128,
+              "minItems": 0,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "devices",
+            "action_ids",
+            "trigger_ids"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_data_scope": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "data_scope"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "objects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/DataObjectRef"
+              },
+              "maxItems": 128,
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "access": {
+              "enum": [
+                "read",
+                "propose"
+              ]
+            }
+          },
+          "required": [
+            "objects",
+            "access"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_network_endpoint": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "network_endpoint"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "transport": {
+              "enum": [
+                "tcp",
+                "udp",
+                "https",
+                "wss"
+              ]
+            },
+            "host": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "profile_ref": {
+              "$ref": "#/$defs/ProtocolProfileRef"
+            }
+          },
+          "required": [
+            "transport",
+            "host",
+            "port",
+            "profile_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_secret_role": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "secret_role"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "role_ref": {
+              "$ref": "#/$defs/SecretRoleRef"
+            },
+            "devices": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/DeviceRef"
+              },
+              "maxItems": 64,
+              "minItems": 0,
+              "uniqueItems": true
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "maxItems": 64,
+              "minItems": 0,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "role_ref",
+            "devices",
+            "sources"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_filesystem_root_role": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "filesystem_root_role"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "role_ref": {
+              "$ref": "#/$defs/FilesystemRoleRef"
+            },
+            "access": {
+              "enum": [
+                "read",
+                "cache_write"
+              ]
+            },
+            "quota_bytes": {
+              "$ref": "#/$defs/U20"
+            }
+          },
+          "required": [
+            "role_ref",
+            "access",
+            "quota_bytes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_helper_artifact": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "helper_artifact"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "artifact_ref": {
+              "$ref": "#/$defs/HelperArtifactRef"
+            },
+            "launch_profile_ref": {
+              "$ref": "#/$defs/ValidationPolicyRef"
+            }
+          },
+          "required": [
+            "artifact_ref",
+            "launch_profile_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_panel_method": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "panel_method"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "authority": {
+              "enum": [
+                "controller",
+                "seamer"
+              ]
+            },
+            "method_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 35,
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "object_refs": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/DeviceRef"
+                  },
+                  {
+                    "$ref": "#/$defs/DataObjectRef"
+                  },
+                  {
+                    "$ref": "#/$defs/RunRef"
+                  }
+                ]
+              },
+              "maxItems": 128,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "authority",
+            "method_ids",
+            "object_refs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission_protocol_io": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "protocol_io"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "profile_ref": {
+              "$ref": "#/$defs/ProtocolProfileRef"
+            },
+            "endpoint_request_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "frame_classes": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "authentication",
+                  "query",
+                  "subscription",
+                  "keepalive",
+                  "ack",
+                  "control"
+                ]
+              },
+              "maxItems": 6,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "profile_ref",
+            "endpoint_request_id",
+            "frame_classes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Permission": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Permission_device_scope"
+        },
+        {
+          "$ref": "#/$defs/Permission_data_scope"
+        },
+        {
+          "$ref": "#/$defs/Permission_network_endpoint"
+        },
+        {
+          "$ref": "#/$defs/Permission_secret_role"
+        },
+        {
+          "$ref": "#/$defs/Permission_filesystem_root_role"
+        },
+        {
+          "$ref": "#/$defs/Permission_helper_artifact"
+        },
+        {
+          "$ref": "#/$defs/Permission_panel_method"
+        },
+        {
+          "$ref": "#/$defs/Permission_protocol_io"
+        }
+      ]
+    },
+    "PermissionReview": {
+      "type": "object",
+      "properties": {
+        "review_ref": {
+          "$ref": "#/$defs/ReviewRef"
+        },
+        "installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        },
+        "requested_permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Permission"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "proposed_permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Permission"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/ValidationPolicyRef"
+        },
+        "content_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "role_resolution_ref": {
+          "$ref": "#/$defs/RoleResolutionRef"
+        }
+      },
+      "required": [
+        "review_ref",
+        "installation_ref",
+        "manifest_digest",
+        "artifact_set_digest",
+        "configuration_ref",
+        "requested_permissions",
+        "proposed_permissions",
+        "policy_ref",
+        "content_digest",
+        "role_resolution_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Approval": {
+      "type": "object",
+      "properties": {
+        "approval_ref": {
+          "$ref": "#/$defs/ApprovalRef"
+        },
+        "installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "review_ref": {
+          "$ref": "#/$defs/ReviewRef"
+        },
+        "approved_permission_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "platform_profile_ref": {
+          "$ref": "#/$defs/PlatformProfileRef"
+        },
+        "approval_operation_ref": {
+          "$ref": "#/$defs/InstallationOperationRef"
+        },
+        "revoked_by": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DenyRecordRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role_resolution_ref": {
+          "$ref": "#/$defs/RoleResolutionRef"
+        },
+        "permissions_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "approval_ref",
+        "installation_ref",
+        "review_ref",
+        "approved_permission_ids",
+        "configuration_ref",
+        "manifest_digest",
+        "artifact_set_digest",
+        "platform_profile_ref",
+        "approval_operation_ref",
+        "revoked_by",
+        "role_resolution_ref",
+        "permissions_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactIntakeReceipt": {
+      "type": "object",
+      "properties": {
+        "host_installation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "host_trust_epoch": {
+          "$ref": "#/$defs/U20"
+        },
+        "import_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "intake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "target_authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "package_bytes": {
+          "$ref": "#/$defs/U20"
+        },
+        "file_inventory_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "dependency_lock_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "platform_profile_ref": {
+          "$ref": "#/$defs/PlatformProfileRef"
+        },
+        "validation_policy_ref": {
+          "$ref": "#/$defs/ValidationPolicyRef"
+        },
+        "release_authorization_ref": {
+          "$ref": "#/$defs/ReleaseAuthorizationRef"
+        },
+        "verification_record_ref": {
+          "$ref": "#/$defs/VerificationRef"
+        }
+      },
+      "required": [
+        "host_installation_id",
+        "host_trust_epoch",
+        "import_operation_id",
+        "intake_id",
+        "target_authority_service_id",
+        "manifest_digest",
+        "artifact_set_digest",
+        "package_bytes",
+        "file_inventory_digest",
+        "dependency_lock_digest",
+        "platform_profile_ref",
+        "validation_policy_ref",
+        "release_authorization_ref",
+        "verification_record_ref"
+      ],
+      "additionalProperties": false
+    },
+    "PlanSelection": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "activate",
+            "enable",
+            "upgrade",
+            "uninstall"
+          ]
+        },
+        "source_installation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_installation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reuse_content_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "kind",
+        "source_installation_ref",
+        "target_installation_ref",
+        "reuse_content_ref",
+        "configuration_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "activate"
+                ]
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "source_installation_ref": {
+                "type": "null"
+              },
+              "target_installation_ref": {
+                "$ref": "#/$defs/InstallationRef"
+              },
+              "reuse_content_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "enable"
+                ]
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "source_installation_ref": {
+                "type": "null"
+              },
+              "target_installation_ref": {
+                "$ref": "#/$defs/InstallationRef"
+              },
+              "reuse_content_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "upgrade"
+                ]
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "source_installation_ref": {
+                "$ref": "#/$defs/InstallationRef"
+              },
+              "target_installation_ref": {
+                "$ref": "#/$defs/InstallationRef"
+              },
+              "reuse_content_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "uninstall"
+                ]
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "source_installation_ref": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/InstallationRef"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "target_installation_ref": {
+                "type": "null"
+              },
+              "reuse_content_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Impact": {
+      "type": "object",
+      "properties": {
+        "object_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DeviceRef"
+            },
+            {
+              "$ref": "#/$defs/SourceRef"
+            },
+            {
+              "$ref": "#/$defs/PanelSessionRef"
+            },
+            {
+              "$ref": "#/$defs/DefinitionRef"
+            },
+            {
+              "$ref": "#/$defs/RunRef"
+            },
+            {
+              "$ref": "#/$defs/ScheduleRef"
+            },
+            {
+              "$ref": "#/$defs/ResourceRef"
+            },
+            {
+              "$ref": "#/$defs/CommandRef"
+            }
+          ]
+        },
+        "consequence": {
+          "enum": [
+            "close",
+            "pause",
+            "reconcile",
+            "preserve_history"
+          ]
+        },
+        "reason_code": {
+          "enum": [
+            "installation_dependency",
+            "unresolved_effect",
+            "active_runtime"
+          ]
+        }
+      },
+      "required": [
+        "object_ref",
+        "consequence",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    },
+    "DependencyPlan": {
+      "type": "object",
+      "properties": {
+        "plan_ref": {
+          "$ref": "#/$defs/DependencyPlanRef"
+        },
+        "slot_ref": {
+          "$ref": "#/$defs/SlotRef"
+        },
+        "dependency_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "selection": {
+          "$ref": "#/$defs/PlanSelection"
+        },
+        "configuration_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "impacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Impact"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "platform_profile_ref": {
+          "$ref": "#/$defs/PlatformProfileRef"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/ValidationPolicyRef"
+        },
+        "lifetime": {
+          "$ref": "#/$defs/Lifetime"
+        },
+        "content_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "plan_ref",
+        "slot_ref",
+        "dependency_revision",
+        "selection",
+        "configuration_digest",
+        "impacts",
+        "platform_profile_ref",
+        "policy_ref",
+        "lifetime",
+        "content_digest"
+      ],
+      "additionalProperties": false
+    },
+    "SlotView": {
+      "type": "object",
+      "properties": {
+        "slot_ref": {
+          "$ref": "#/$defs/SlotRef"
+        },
+        "extension_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "device_module",
+            "data_source",
+            "panel",
+            "nodecg_bridge"
+          ]
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "desired_state": {
+          "enum": [
+            "enabled",
+            "disabled",
+            "removed"
+          ]
+        },
+        "current_installation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_operation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationOperationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "configuration_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfigurationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependency_revision": {
+          "$ref": "#/$defs/U20"
+        }
+      },
+      "required": [
+        "slot_ref",
+        "extension_id",
+        "kind",
+        "display_name",
+        "desired_state",
+        "current_installation_ref",
+        "pending_operation_ref",
+        "configuration_ref",
+        "dependency_revision"
+      ],
+      "additionalProperties": false
+    },
+    "InstanceView": {
+      "type": "object",
+      "properties": {
+        "installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "slot_ref": {
+          "$ref": "#/$defs/SlotRef"
+        },
+        "state": {
+          "enum": [
+            "staged",
+            "verified",
+            "approved",
+            "installed_disabled",
+            "activating",
+            "active",
+            "revoking",
+            "disabled",
+            "rejected",
+            "removed"
+          ]
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "intake_ref": {
+          "$ref": "#/$defs/IntakeRef"
+        },
+        "approval_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApprovalRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "review_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReviewRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deny_record_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DenyRecordRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "predecessor_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runtime_binding_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RuntimeBindingRef"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "role_resolution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RoleResolutionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "installation_ref",
+        "slot_ref",
+        "state",
+        "manifest_digest",
+        "artifact_set_digest",
+        "intake_ref",
+        "approval_ref",
+        "review_ref",
+        "deny_record_ref",
+        "predecessor_ref",
+        "runtime_binding_refs",
+        "role_resolution_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "revoking",
+                  "disabled"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "deny_record_ref": {
+                "$ref": "#/$defs/DenyRecordRef"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "approved",
+                  "installed_disabled",
+                  "activating",
+                  "active"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "approval_ref": {
+                "$ref": "#/$defs/ApprovalRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Blocker": {
+      "type": "object",
+      "properties": {
+        "blocker_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "code": {
+          "enum": [
+            "pending_exit",
+            "unknown_effect",
+            "runtime_not_retired",
+            "authorization_revoked",
+            "artifact_unavailable",
+            "storage_unknown",
+            "capacity_protection"
+          ]
+        },
+        "object_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DeviceRef"
+            },
+            {
+              "$ref": "#/$defs/SourceRef"
+            },
+            {
+              "$ref": "#/$defs/PanelSessionRef"
+            },
+            {
+              "$ref": "#/$defs/DefinitionRef"
+            },
+            {
+              "$ref": "#/$defs/RunRef"
+            },
+            {
+              "$ref": "#/$defs/ScheduleRef"
+            },
+            {
+              "$ref": "#/$defs/ResourceRef"
+            },
+            {
+              "$ref": "#/$defs/CommandRef"
+            },
+            {
+              "$ref": "#/$defs/InstallationRef"
+            }
+          ]
+        }
+      },
+      "required": [
+        "blocker_id",
+        "code",
+        "object_ref"
+      ],
+      "additionalProperties": false
+    },
+    "BlockerPage": {
+      "type": "object",
+      "properties": {
+        "snapshot_ref": {
+          "$ref": "#/$defs/BlockerSnapshotRef"
+        },
+        "total": {
+          "$ref": "#/$defs/U20"
+        },
+        "offset": {
+          "$ref": "#/$defs/U20"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Blocker"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "snapshot_ref",
+        "total",
+        "offset",
+        "items",
+        "has_more",
+        "next_cursor"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "has_more": {
+                "enum": [
+                  true
+                ]
+              }
+            },
+            "required": [
+              "has_more"
+            ]
+          },
+          "then": {
+            "properties": {
+              "next_cursor": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "items": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "has_more": {
+                "enum": [
+                  false
+                ]
+              }
+            },
+            "required": [
+              "has_more"
+            ]
+          },
+          "then": {
+            "properties": {
+              "next_cursor": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "OperationView": {
+      "type": "object",
+      "properties": {
+        "operation_ref": {
+          "$ref": "#/$defs/InstallationOperationRef"
+        },
+        "identity": {
+          "$ref": "#/$defs/Context"
+        },
+        "intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "kind": {
+          "enum": [
+            "stage",
+            "approve",
+            "activate",
+            "enable",
+            "disable",
+            "upgrade",
+            "uninstall"
+          ]
+        },
+        "slot_ref": {
+          "$ref": "#/$defs/SlotRef"
+        },
+        "source_installation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_installation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "phase": {
+          "enum": [
+            "accepted",
+            "verifying",
+            "awaiting_approval",
+            "closing",
+            "awaiting_retirement",
+            "reconciling",
+            "launching_closed",
+            "completed",
+            "rejected",
+            "failed_closed",
+            "indeterminate"
+          ]
+        },
+        "dependency_plan_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DependencyPlanRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "close_batch_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CloseBatchRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "retirement_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RetirementRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "reconciliation_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ReconciliationRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "result": {
+          "anyOf": [
+            {
+              "enum": [
+                "verified",
+                "approved",
+                "active_closed",
+                "disabled",
+                "removed",
+                "no_change"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "blockers": {
+          "$ref": "#/$defs/BlockerPage"
+        },
+        "runtime_readiness": {
+          "enum": [
+            "not_applicable",
+            "closed",
+            "reconciliation_required",
+            "ready_for_manual"
+          ]
+        }
+      },
+      "required": [
+        "operation_ref",
+        "identity",
+        "intent_digest",
+        "kind",
+        "slot_ref",
+        "source_installation_ref",
+        "target_installation_ref",
+        "phase",
+        "dependency_plan_ref",
+        "close_batch_refs",
+        "retirement_refs",
+        "reconciliation_refs",
+        "result",
+        "blockers",
+        "runtime_readiness"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "enum": [
+                  "completed"
+                ]
+              }
+            },
+            "required": [
+              "phase"
+            ]
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "enum": [
+                  "accepted",
+                  "verifying",
+                  "awaiting_approval",
+                  "closing",
+                  "awaiting_retirement",
+                  "reconciling",
+                  "launching_closed",
+                  "rejected",
+                  "failed_closed",
+                  "indeterminate"
+                ]
+              }
+            },
+            "required": [
+              "phase"
+            ]
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CreateSlot": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "extension_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "device_module",
+            "data_source",
+            "panel",
+            "nodecg_bridge"
+          ]
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        }
+      },
+      "required": [
+        "context",
+        "extension_id",
+        "kind",
+        "display_name"
+      ],
+      "additionalProperties": false
+    },
+    "Stage": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "slot_ref": {
+          "$ref": "#/$defs/SlotRef"
+        },
+        "expected_slot_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "source": {
+          "$ref": "#/$defs/StageSource"
+        }
+      },
+      "required": [
+        "context",
+        "slot_ref",
+        "expected_slot_revision",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "Review": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_installation_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "proposed_permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Permission"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        },
+        "role_resolution_ref": {
+          "$ref": "#/$defs/RoleResolutionRef"
+        }
+      },
+      "required": [
+        "context",
+        "expected_installation_revision",
+        "proposed_permissions",
+        "configuration_ref",
+        "role_resolution_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Approve": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_installation_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "permission_review_ref": {
+          "$ref": "#/$defs/ReviewRef"
+        },
+        "approved_permission_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "context",
+        "expected_installation_revision",
+        "permission_review_ref",
+        "approved_permission_ids",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Activate": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_slot_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "target_installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ApprovalRef"
+        },
+        "dependency_plan_ref": {
+          "$ref": "#/$defs/DependencyPlanRef"
+        }
+      },
+      "required": [
+        "context",
+        "expected_slot_revision",
+        "target_installation_ref",
+        "approval_ref",
+        "dependency_plan_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Enable": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_slot_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "target_installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ApprovalRef"
+        },
+        "dependency_plan_ref": {
+          "$ref": "#/$defs/DependencyPlanRef"
+        }
+      },
+      "required": [
+        "context",
+        "expected_slot_revision",
+        "target_installation_ref",
+        "approval_ref",
+        "dependency_plan_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Disable": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_slot_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "source_installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "reason": {
+          "enum": [
+            "operator_request",
+            "maintenance",
+            "security_response"
+          ]
+        }
+      },
+      "required": [
+        "context",
+        "expected_slot_revision",
+        "source_installation_ref",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "Upgrade": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_slot_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "source_installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "target_installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ApprovalRef"
+        },
+        "dependency_plan_ref": {
+          "$ref": "#/$defs/DependencyPlanRef"
+        }
+      },
+      "required": [
+        "context",
+        "expected_slot_revision",
+        "source_installation_ref",
+        "target_installation_ref",
+        "approval_ref",
+        "dependency_plan_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Uninstall": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_slot_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "source_installation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependency_plan_ref": {
+          "$ref": "#/$defs/DependencyPlanRef"
+        },
+        "reason": {
+          "enum": [
+            "operator_request",
+            "maintenance",
+            "security_response"
+          ]
+        }
+      },
+      "required": [
+        "context",
+        "expected_slot_revision",
+        "source_installation_ref",
+        "dependency_plan_ref",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "PlanRequest": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_slot_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "selection": {
+          "$ref": "#/$defs/PlanSelection"
+        }
+      },
+      "required": [
+        "context",
+        "expected_slot_revision",
+        "selection"
+      ],
+      "additionalProperties": false
+    },
+    "LookupRequest": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/Context"
+        }
+      },
+      "required": [
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "LookupResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "identity": {
+              "$ref": "#/$defs/Context"
+            },
+            "intent_digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "result_kind": {
+              "const": "SlotView"
+            },
+            "original_result": {
+              "$ref": "#/$defs/SlotView"
+            }
+          },
+          "required": [
+            "identity",
+            "intent_digest",
+            "result_kind",
+            "original_result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "identity": {
+              "$ref": "#/$defs/Context"
+            },
+            "intent_digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "result_kind": {
+              "const": "OperationView"
+            },
+            "original_result": {
+              "$ref": "#/$defs/OperationView"
+            }
+          },
+          "required": [
+            "identity",
+            "intent_digest",
+            "result_kind",
+            "original_result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "identity": {
+              "$ref": "#/$defs/Context"
+            },
+            "intent_digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "result_kind": {
+              "const": "DependencyPlan"
+            },
+            "original_result": {
+              "$ref": "#/$defs/DependencyPlan"
+            }
+          },
+          "required": [
+            "identity",
+            "intent_digest",
+            "result_kind",
+            "original_result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "identity": {
+              "$ref": "#/$defs/Context"
+            },
+            "intent_digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "result_kind": {
+              "const": "PermissionReview"
+            },
+            "original_result": {
+              "$ref": "#/$defs/PermissionReview"
+            }
+          },
+          "required": [
+            "identity",
+            "intent_digest",
+            "result_kind",
+            "original_result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "identity": {
+              "$ref": "#/$defs/Context"
+            },
+            "intent_digest": {
+              "$ref": "#/$defs/Digest"
+            },
+            "result_kind": {
+              "const": "ResolutionView"
+            },
+            "original_result": {
+              "$ref": "#/$defs/ResolutionView"
+            }
+          },
+          "required": [
+            "identity",
+            "intent_digest",
+            "result_kind",
+            "original_result"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_request",
+            "authentication_required",
+            "authority_denied",
+            "not_found_or_invisible",
+            "conflict",
+            "payload_too_large",
+            "unsupported_candidate",
+            "capacity_exceeded",
+            "source_unavailable",
+            "unknown_outcome"
+          ]
+        },
+        "correlation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstallationOperationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "correlation_id",
+        "operation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Id": {
+      "$ref": "#/$defs/Id"
+    },
+    "Artifact_Digest": {
+      "$ref": "#/$defs/Digest"
+    },
+    "Artifact_RoleBinding": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Artifact_Binding_device"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_source"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_data_object"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_secret_role"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_filesystem_role"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_helper_artifact"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_protocol_profile"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_validation_policy"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_run"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_endpoint"
+        }
+      ]
+    },
+    "Artifact_Binding_device": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "device"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DeviceRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_source": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "source"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_data_object": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "data_object"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DataObjectRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_secret_role": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "secret_role"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SecretRoleRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_filesystem_role": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "filesystem_role"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FilesystemRoleRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_helper_artifact": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "helper_artifact"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HelperArtifactRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_protocol_profile": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "protocol_profile"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProtocolProfileRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_validation_policy": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "validation_policy"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ValidationPolicyRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_run": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "run"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RunRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Binding_endpoint": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "kind": {
+          "const": "endpoint"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 253
+              },
+              "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65535
+              }
+            },
+            "required": [
+              "host",
+              "port"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Artifact_Permission": {
+      "$ref": "#/$defs/Permission"
+    },
+    "RoleResolution": {
+      "type": "object",
+      "properties": {
+        "resolution_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "installation_id": {
+          "$ref": "#/$defs/Artifact_Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Artifact_Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Artifact_Digest"
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Artifact_RoleBinding"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Artifact_Permission"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "resolution_digest": {
+          "$ref": "#/$defs/Artifact_Digest"
+        }
+      },
+      "required": [
+        "resolution_id",
+        "authority_service_id",
+        "database_instance_id",
+        "installation_id",
+        "manifest_digest",
+        "artifact_set_digest",
+        "configuration_ref",
+        "bindings",
+        "permissions",
+        "resolution_digest"
+      ],
+      "additionalProperties": false
+    },
+    "RoleBinding": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Artifact_Binding_device"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_source"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_data_object"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_secret_role"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_filesystem_role"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_helper_artifact"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_protocol_profile"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_validation_policy"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_run"
+        },
+        {
+          "$ref": "#/$defs/Artifact_Binding_endpoint"
+        }
+      ]
+    },
+    "RoleResolutionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "role_resolution"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "LaunchAuthorizationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "launch_authorization"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "authority_service_id",
+        "database_instance_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ResolutionView": {
+      "type": "object",
+      "properties": {
+        "resolution_ref": {
+          "$ref": "#/$defs/RoleResolutionRef"
+        },
+        "record": {
+          "$ref": "#/$defs/RoleResolution"
+        }
+      },
+      "required": [
+        "resolution_ref",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "ResolveRoles": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "expected_installation_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RoleBinding"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "context",
+        "expected_installation_revision",
+        "configuration_ref",
+        "bindings"
+      ],
+      "additionalProperties": false
+    },
+    "StageSource": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "intake"
+            },
+            "intake_ref": {
+              "$ref": "#/$defs/IntakeRef"
+            }
+          },
+          "required": [
+            "kind",
+            "intake_ref"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "retained"
+            },
+            "content_ref": {
+              "$ref": "#/$defs/ContentRef"
+            }
+          },
+          "required": [
+            "kind",
+            "content_ref"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "RuntimeManifestRef": {
+      "type": "object",
+      "properties": {
+        "manifest_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "manifest_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ContainmentRef": {
+      "type": "object",
+      "properties": {
+        "group_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "generation": {
+          "$ref": "#/$defs/Id"
+        },
+        "backend": {
+          "enum": [
+            "windows_job",
+            "linux_cgroup_v2",
+            "container_runtime"
+          ]
+        }
+      },
+      "required": [
+        "group_id",
+        "generation",
+        "backend"
+      ],
+      "additionalProperties": false
+    },
+    "ExtensionLaunchBinding": {
+      "type": "object",
+      "properties": {
+        "installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ApprovalRef"
+        },
+        "review_ref": {
+          "$ref": "#/$defs/ReviewRef"
+        },
+        "role_resolution_ref": {
+          "$ref": "#/$defs/RoleResolutionRef"
+        },
+        "configuration_ref": {
+          "$ref": "#/$defs/ConfigurationRef"
+        },
+        "intake_ref": {
+          "$ref": "#/$defs/IntakeRef"
+        },
+        "platform_profile_ref": {
+          "$ref": "#/$defs/PlatformProfileRef"
+        },
+        "host_installation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "host_trust_epoch": {
+          "$ref": "#/$defs/U20"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "entry_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "permissions_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "installation_ref",
+        "approval_ref",
+        "review_ref",
+        "role_resolution_ref",
+        "configuration_ref",
+        "intake_ref",
+        "platform_profile_ref",
+        "host_installation_id",
+        "host_trust_epoch",
+        "manifest_digest",
+        "artifact_set_digest",
+        "entry_id",
+        "permissions_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExtensionLaunchIntent": {
+      "type": "object",
+      "properties": {
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "supervisor_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "runtime_generation": {
+          "$ref": "#/$defs/Id"
+        },
+        "member_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "role": {
+          "const": "worker"
+        },
+        "artifact_manifest_ref": {
+          "$ref": "#/$defs/RuntimeManifestRef"
+        },
+        "containment_ref": {
+          "$ref": "#/$defs/ContainmentRef"
+        },
+        "device_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "extension_binding": {
+          "$ref": "#/$defs/ExtensionLaunchBinding"
+        }
+      },
+      "required": [
+        "launch_id",
+        "service_id",
+        "supervisor_instance_id",
+        "runtime_generation",
+        "member_id",
+        "role",
+        "artifact_manifest_ref",
+        "containment_ref",
+        "device_ids",
+        "policy_revision",
+        "extension_binding"
+      ],
+      "additionalProperties": false
+    },
+    "LaunchAuthorization": {
+      "type": "object",
+      "properties": {
+        "authorization_ref": {
+          "$ref": "#/$defs/LaunchAuthorizationRef"
+        },
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "installation_ref": {
+          "$ref": "#/$defs/InstallationRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ApprovalRef"
+        },
+        "role_resolution_ref": {
+          "$ref": "#/$defs/RoleResolutionRef"
+        },
+        "permissions_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "supervisor_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "fence_revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "lifetime": {
+          "$ref": "#/$defs/Lifetime"
+        }
+      },
+      "required": [
+        "authorization_ref",
+        "launch_id",
+        "launch_intent_digest",
+        "installation_ref",
+        "approval_ref",
+        "role_resolution_ref",
+        "permissions_digest",
+        "supervisor_instance_id",
+        "fence_revision",
+        "lifetime"
+      ],
+      "additionalProperties": false
+    },
+    "LaunchRecord": {
+      "type": "object",
+      "properties": {
+        "launch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "supervisor_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "enum": [
+            "registered",
+            "creating",
+            "awaiting_bootstrap",
+            "admitted_closed",
+            "retiring",
+            "retired",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "creation_attempted": {
+          "type": "boolean"
+        },
+        "runtime_binding_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RuntimeBindingRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retirement_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RetirementRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_state": {
+          "const": "closed"
+        }
+      },
+      "required": [
+        "launch_id",
+        "launch_intent_digest",
+        "supervisor_instance_id",
+        "state",
+        "creation_attempted",
+        "runtime_binding_ref",
+        "retirement_ref",
+        "gate_state"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "not": {}
+}

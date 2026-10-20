@@ -1,0 +1,937 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "runtime_approved": false,
+  "checks": [
+    {
+      "name": "结构:ExtensionLaunchIntent",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:LaunchAuthorization",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:FenceSnapshot",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:BootstrapAssignment",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:BootstrapProof",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:AdmissionReceipt",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:RetirementEvidence",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:JournalView",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护配置启动core",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护配置不能绕审批启动worker",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "扩展不能冒充core",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "core不能带设备",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "不能注入argv",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "拒绝tick:'01'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "拒绝tick:'-1'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "拒绝tick:'1\\n'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "拒绝tick:1",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "拒绝tick:'100000000000000000000'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "秘密非规范尾位",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "秘密带padding",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "控制帧:FENCE_PUT",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:FENCE_PUT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:FENCE_PUT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:FENCE_PUT",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:FENCE_PUT",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:FENCE_PUT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:FENCE_PUT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "控制帧:FENCE_RESULT",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:FENCE_RESULT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:FENCE_RESULT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:FENCE_RESULT",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:FENCE_RESULT",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:FENCE_RESULT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:FENCE_RESULT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "非空但无请求:FENCE_RESULT",
+      "expected": "reply",
+      "observed": "reply"
+    },
+    {
+      "name": "控制帧:LAUNCH_REGISTER",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:LAUNCH_REGISTER",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:LAUNCH_REGISTER",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:LAUNCH_REGISTER",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:LAUNCH_REGISTER",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:LAUNCH_REGISTER",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:LAUNCH_REGISTER",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "控制帧:LAUNCH_CREATE",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:LAUNCH_CREATE",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:LAUNCH_CREATE",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:LAUNCH_CREATE",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:LAUNCH_CREATE",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:LAUNCH_CREATE",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:LAUNCH_CREATE",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "控制帧:LAUNCH_QUERY",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:LAUNCH_QUERY",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:LAUNCH_QUERY",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:LAUNCH_QUERY",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:LAUNCH_QUERY",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:LAUNCH_QUERY",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:LAUNCH_QUERY",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "控制帧:LAUNCH_RESULT",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:LAUNCH_RESULT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:LAUNCH_RESULT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:LAUNCH_RESULT",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:LAUNCH_RESULT",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:LAUNCH_RESULT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:LAUNCH_RESULT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "非空但无请求:LAUNCH_RESULT",
+      "expected": "reply",
+      "observed": "reply"
+    },
+    {
+      "name": "返回别的意图",
+      "expected": "result_binding",
+      "observed": "result_binding"
+    },
+    {
+      "name": "控制帧:RETIRE_REQUEST",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:RETIRE_REQUEST",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:RETIRE_REQUEST",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:RETIRE_REQUEST",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:RETIRE_REQUEST",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:RETIRE_REQUEST",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:RETIRE_REQUEST",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "控制帧:RETIRE_RESULT",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:RETIRE_RESULT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:RETIRE_RESULT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:RETIRE_RESULT",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:RETIRE_RESULT",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:RETIRE_RESULT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:RETIRE_RESULT",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "非空但无请求:RETIRE_RESULT",
+      "expected": "reply",
+      "observed": "reply"
+    },
+    {
+      "name": "控制帧:ERROR",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "版本隔离:ERROR",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "回复关联形状:ERROR",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "方向序号:ERROR",
+      "expected": "receive",
+      "observed": "receive"
+    },
+    {
+      "name": "错方向:ERROR",
+      "expected": "direction",
+      "observed": "direction"
+    },
+    {
+      "name": "重复帧:ERROR",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "旧连接:ERROR",
+      "expected": "channel_sequence",
+      "observed": "channel_sequence"
+    },
+    {
+      "name": "非空但无请求:ERROR",
+      "expected": "reply",
+      "observed": "reply"
+    },
+    {
+      "name": "bootstrap帧:ASSIGNMENT",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "bootstrap不混入控制帧:ASSIGNMENT",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "bootstrap帧:PROOF",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "bootstrap不混入控制帧:PROOF",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "bootstrap帧:ADMISSION",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "bootstrap不混入控制帧:ADMISSION",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "proof正常",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "proof前提:peer_instance_validFalse",
+      "expected": "peer_or_artifact",
+      "observed": "peer_or_artifact"
+    },
+    {
+      "name": "proof前提:artifact_validFalse",
+      "expected": "peer_or_artifact",
+      "observed": "peer_or_artifact"
+    },
+    {
+      "name": "proof前提:usedTrue",
+      "expected": "already_consumed",
+      "observed": "already_consumed"
+    },
+    {
+      "name": "proof前提:now20",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "proof前提:now9",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "proof前提:max_age9",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "proof前提:channelother",
+      "expected": "instance",
+      "observed": "instance"
+    },
+    {
+      "name": "proof前提:member_boot_idother",
+      "expected": "instance",
+      "observed": "instance"
+    },
+    {
+      "name": "proof错配:role",
+      "expected": "proof_binding",
+      "observed": "proof_binding"
+    },
+    {
+      "name": "proof错配:member_id",
+      "expected": "proof_binding",
+      "observed": "proof_binding"
+    },
+    {
+      "name": "proof错配:launch_intent_digest",
+      "expected": "proof_binding",
+      "observed": "proof_binding"
+    },
+    {
+      "name": "proof错配:channel_binding_id",
+      "expected": "proof_binding",
+      "observed": "proof_binding"
+    },
+    {
+      "name": "proof错配:challenge_id",
+      "expected": "proof_binding",
+      "observed": "proof_binding"
+    },
+    {
+      "name": "proof错误MAC",
+      "expected": "hmac",
+      "observed": "hmac"
+    },
+    {
+      "name": "转录绑定:challenge_nonce",
+      "expected": "hmac",
+      "observed": "hmac"
+    },
+    {
+      "name": "转录绑定:issued_tick_ns",
+      "expected": "hmac",
+      "observed": "hmac"
+    },
+    {
+      "name": "转录绑定:secret",
+      "expected": "hmac",
+      "observed": "hmac"
+    },
+    {
+      "name": "不剥离扩展绑定",
+      "expected": "intent",
+      "observed": "intent"
+    },
+    {
+      "name": "JCS不受键插入顺序影响",
+      "expected": "H7pkI_DGB7QD1-I8bUQYEp62R6uSxqryZKrZclDfNQM",
+      "observed": "H7pkI_DGB7QD1-I8bUQYEp62R6uSxqryZKrZclDfNQM"
+    },
+    {
+      "name": "准入后核心登记",
+      "expected": "persist_core_binding_closed",
+      "observed": "persist_core_binding_closed"
+    },
+    {
+      "name": "准入回执幂等",
+      "expected": "existing",
+      "observed": "existing"
+    },
+    {
+      "name": "回执权威:supervisor_authenticated",
+      "expected": "authority",
+      "observed": "authority"
+    },
+    {
+      "name": "回执权威:journal_committed",
+      "expected": "authority",
+      "observed": "authority"
+    },
+    {
+      "name": "回执权威:approval_current",
+      "expected": "authority",
+      "observed": "authority"
+    },
+    {
+      "name": "回执错配:bootstrap_id",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "回执错配:member_boot_id",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "回执错配:channel_binding_id",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "回执不可信观测",
+      "expected": "observation",
+      "observed": "observation"
+    },
+    {
+      "name": "回执到期等号",
+      "expected": "observation",
+      "observed": "observation"
+    },
+    {
+      "name": "回执身份不可替换",
+      "expected": "receipt_conflict",
+      "observed": "receipt_conflict"
+    },
+    {
+      "name": "首次完整fence",
+      "expected": "apply",
+      "observed": "apply"
+    },
+    {
+      "name": "相同fence查询",
+      "expected": "existing",
+      "observed": "existing"
+    },
+    {
+      "name": "fence:遗漏live",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "fence:重复launch",
+      "expected": "order_or_duplicate",
+      "observed": "order_or_duplicate"
+    },
+    {
+      "name": "fence:换意图",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "fence:跨库",
+      "expected": "scope",
+      "observed": "scope"
+    },
+    {
+      "name": "fence:同版异内容",
+      "expected": "revision_conflict",
+      "observed": "revision_conflict"
+    },
+    {
+      "name": "历史deny不复活",
+      "expected": "denied",
+      "observed": "denied"
+    },
+    {
+      "name": "合法递增deny",
+      "expected": "apply",
+      "observed": "apply"
+    },
+    {
+      "name": "旧fence回退",
+      "expected": "stale",
+      "observed": "stale"
+    },
+    {
+      "name": "合法准备一次create",
+      "expected": "mark_before_os_call",
+      "observed": "mark_before_os_call"
+    },
+    {
+      "name": "create:authenticated_core",
+      "expected": "closed",
+      "observed": "closed"
+    },
+    {
+      "name": "create:journal_healthy",
+      "expected": "closed",
+      "observed": "closed"
+    },
+    {
+      "name": "create:synchronized",
+      "expected": "fence",
+      "observed": "fence"
+    },
+    {
+      "name": "create:fence",
+      "expected": "fence",
+      "observed": "fence"
+    },
+    {
+      "name": "create:now",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "create:current_authority_valid",
+      "expected": "authority",
+      "observed": "authority"
+    },
+    {
+      "name": "create:materialization_valid",
+      "expected": "materialization",
+      "observed": "materialization"
+    },
+    {
+      "name": "回执丢失:creating",
+      "expected": "query_only",
+      "observed": "query_only"
+    },
+    {
+      "name": "回执丢失:awaiting_bootstrap",
+      "expected": "query_only",
+      "observed": "query_only"
+    },
+    {
+      "name": "回执丢失:admitted_closed",
+      "expected": "query_only",
+      "observed": "query_only"
+    },
+    {
+      "name": "回执丢失:indeterminate",
+      "expected": "query_only",
+      "observed": "query_only"
+    },
+    {
+      "name": "回执丢失:retiring",
+      "expected": "query_only",
+      "observed": "query_only"
+    },
+    {
+      "name": "回执丢失:retired",
+      "expected": "query_only",
+      "observed": "query_only"
+    },
+    {
+      "name": "回执丢失:rejected",
+      "expected": "query_only",
+      "observed": "query_only"
+    },
+    {
+      "name": "退出只准退役",
+      "expected": "retire_only",
+      "observed": "retire_only"
+    },
+    {
+      "name": "退役缺证据:intake_closed",
+      "expected": "unproven",
+      "observed": "unproven"
+    },
+    {
+      "name": "退役缺证据:group_owned",
+      "expected": "unproven",
+      "observed": "unproven"
+    },
+    {
+      "name": "退役缺证据:all_exited",
+      "expected": "unproven",
+      "observed": "unproven"
+    },
+    {
+      "name": "退役缺证据:endpoints_disposed",
+      "expected": "unproven",
+      "observed": "unproven"
+    },
+    {
+      "name": "退役缺证据:members_complete",
+      "expected": "unproven",
+      "observed": "unproven"
+    },
+    {
+      "name": "明确未知保持保护",
+      "expected": "retain_protection",
+      "observed": "retain_protection"
+    },
+    {
+      "name": "遗漏成员",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "SQL:改变意图",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:缺少attempt",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:跳过bootstrap",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:同成员重建",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:同组重建",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:创建前提交失败还原",
+      "expected": [
+        "registered",
+        0
+      ],
+      "observed": [
+        "registered",
+        0
+      ]
+    },
+    {
+      "name": "SQL:恢复预算同回滚",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "SQL:重投不再次进入creating",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "SQL:禁止清attempt",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:禁止已尝试变rejected",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:禁止清恢复计数",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:重复proof消费为零",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "SQL:换bootstrap",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:改回执",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:直接变retired",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:无证据退役",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:退役复活",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:删除墓碑",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:未知改未创建",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "SQL:跨域恢复保留原计数",
+      "expected": "10",
+      "observed": "10"
+    },
+    {
+      "name": "SQL:外键一致",
+      "expected": [],
+      "observed": []
+    }
+  ],
+  "versions": {
+    "jsonschema": "4.25.1",
+    "rfc8785": "0.1.4",
+    "sqlite": "3.50.4"
+  },
+  "runtime_validation": {
+    "supervisor": 0,
+    "ipc": 0,
+    "disk_crash": 0,
+    "device": 0
+  },
+  "limitations": [
+    "OS实例、权限、实物与完整成员来源为人工前提",
+    "fence和启动及消息方向序号为局部快照，未运行实际IPC及保护队列",
+    "SQL仅内存局部约束与串行故障切点，不证明磁盘或并发",
+    "未执行原生平台加载、监督器、设备或完整SDK归并"
+  ],
+  "input_sha256": {
+    "docs/contracts/df02-supervisor/README.md": "bcccb35b90196c88090c53d9b1909dbef895f6ddf8e1394356bdd8f3f9f21501",
+    "docs/contracts/df02-supervisor/build_contracts.py": "ec663d8a9f7df8edf02e56dbe46c305f16672564f345a5b724cc9ec44ae71e84",
+    "docs/contracts/df02-supervisor/check_contracts.py": "05d551ebc2fc02e89321918bab45bbc059e4bb315c6b3a12ef39c309a0bde43d",
+    "docs/contracts/df02-supervisor/journal-probes.sql": "90691b9c76259df29b479669f048a3355772cdfad237090490fd7e7b3f28005f",
+    "docs/contracts/df02-supervisor/supervisor.schema.json": "ba848f2245140294fa20fbcc7cae9f4f18a8afb7a96aee809522ed70556a7091",
+    "docs/contracts/df02-supervisor/bootstrap.schema.json": "fedc394c0262a99bd5aed2b88881b1101f50f4545c586d3f60d09afe770455bb",
+    "docs/contracts/c09-installation/installation-v02.schema.json": "2520c2a279260f144228d5e9c415b2c5d928cb960587ff0a0297e2e3c77a9b78",
+    "docs/contracts/draft4/first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/rebirth-df02-runtime-design.md": "0e4d8df7965e6e0faafbd8731406161fd6517ca5693a9d040af49d5eb47a1d5f",
+    "docs/contracts/c09-installation/LIFECYCLE_V02.md": "90baf4d08f2ec549445d4212af4a92f5581a7094f10073d3db8b8839836309df"
+  }
+}

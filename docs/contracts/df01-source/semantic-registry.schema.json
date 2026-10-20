@@ -1,0 +1,578 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:leafseamer:design:semantic-registry:0.1.0-draft.1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Registry"
+    },
+    {
+      "$ref": "#/$defs/Result"
+    }
+  ],
+  "$defs": {
+    "Step": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "property"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "kind",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "items"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "ref"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "branch"
+            },
+            "keyword": {
+              "enum": [
+                "allOf",
+                "anyOf",
+                "oneOf"
+              ]
+            },
+            "index": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 127
+            }
+          },
+          "required": [
+            "kind",
+            "keyword",
+            "index"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "conditional"
+            },
+            "arm": {
+              "enum": [
+                "then",
+                "else"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "arm"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Selector": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "minItems": 0,
+      "maxItems": 32
+    },
+    "Context": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "model_ref": {
+          "type": "string",
+          "pattern": "^#/\\$defs/[A-Za-z][A-Za-z0-9_]{0,95}(?![\\s\\S])"
+        },
+        "provider_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "policy_ref": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "context_id",
+        "model_ref",
+        "provider_id",
+        "policy_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "location_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "selector": {
+          "$ref": "#/$defs/Selector"
+        }
+      },
+      "required": [
+        "location_id",
+        "selector"
+      ],
+      "additionalProperties": false
+    },
+    "Reason": {
+      "type": "object",
+      "properties": {
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "location_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "reason_code",
+        "location_ids"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "enum": [
+            "typescript",
+            "python"
+          ]
+        },
+        "module_path": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_/-]*\\.(ts|py)(?![\\s\\S])",
+          "maxLength": 256
+        },
+        "symbol": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "status": {
+          "const": "planned"
+        }
+      },
+      "required": [
+        "language",
+        "module_path",
+        "symbol",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "input_model_ref": {
+          "type": "string",
+          "pattern": "^#/\\$defs/[A-Za-z][A-Za-z0-9_]{0,95}(?![\\s\\S])"
+        },
+        "instance_selector": {
+          "$ref": "#/$defs/Selector"
+        },
+        "validator_kind": {
+          "enum": [
+            "first_party",
+            "dynamic_payload",
+            "schema_document"
+          ]
+        },
+        "phase": {
+          "enum": [
+            "content",
+            "linked"
+          ]
+        },
+        "context_requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Context"
+          },
+          "minItems": 0,
+          "maxItems": 16
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Location"
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Reason"
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "implementation_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Binding"
+          },
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "fixture_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+          },
+          "minItems": 2,
+          "maxItems": 128,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "rule_id",
+        "revision",
+        "input_model_ref",
+        "instance_selector",
+        "validator_kind",
+        "phase",
+        "context_requirements",
+        "locations",
+        "reason_codes",
+        "implementation_bindings",
+        "fixture_refs"
+      ],
+      "additionalProperties": false
+    },
+    "Provider": {
+      "type": "object",
+      "properties": {
+        "provider_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "source": {
+          "const": "trusted_runtime"
+        },
+        "model_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#/\\$defs/[A-Za-z][A-Za-z0-9_]{0,95}(?![\\s\\S])"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "policy_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "provider_id",
+        "source",
+        "model_refs",
+        "policy_refs"
+      ],
+      "additionalProperties": false
+    },
+    "VectorPlan": {
+      "type": "object",
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "rule_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+        },
+        "expected_status": {
+          "enum": [
+            "valid",
+            "invalid",
+            "context_unavailable",
+            "validator_fault"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "status": {
+          "const": "planned_not_executed"
+        }
+      },
+      "required": [
+        "fixture_id",
+        "rule_id",
+        "expected_status",
+        "description",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "Registry": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "semantic-registry/0.1.0-draft.1"
+        },
+        "purpose": {
+          "const": "design_fixture_only"
+        },
+        "runtime_approved": {
+          "const": false
+        },
+        "schema_source": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "const": "source/public.schema.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "providers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Provider"
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rule"
+          },
+          "minItems": 1,
+          "maxItems": 128
+        },
+        "vector_plans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VectorPlan"
+          },
+          "minItems": 2,
+          "maxItems": 512
+        }
+      },
+      "required": [
+        "format_version",
+        "purpose",
+        "runtime_approved",
+        "schema_source",
+        "providers",
+        "rules",
+        "vector_plans"
+      ],
+      "additionalProperties": false
+    },
+    "Result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "rule_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            },
+            "status": {
+              "const": "valid"
+            }
+          },
+          "required": [
+            "rule_id",
+            "revision",
+            "status"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rule_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            },
+            "status": {
+              "const": "invalid"
+            },
+            "violations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "reason_code": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+                  },
+                  "location_id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+                  }
+                },
+                "required": [
+                  "reason_code",
+                  "location_id"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "rule_id",
+            "revision",
+            "status",
+            "violations"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rule_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            },
+            "status": {
+              "const": "context_unavailable"
+            },
+            "context_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+              },
+              "minItems": 1,
+              "maxItems": 16,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "rule_id",
+            "revision",
+            "status",
+            "context_ids"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rule_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]{0,95}(?![\\s\\S])"
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            },
+            "status": {
+              "const": "validator_fault"
+            },
+            "fault_code": {
+              "enum": [
+                "internal_error",
+                "budget_exhausted",
+                "cancelled"
+              ]
+            }
+          },
+          "required": [
+            "rule_id",
+            "revision",
+            "status",
+            "fault_code"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

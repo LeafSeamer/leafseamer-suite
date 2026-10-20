@@ -1,0 +1,1088 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c05-ingress/ingress.schema.json",
+  "title": "event-ingress/0.1.0-draft.1 候选；根禁止直接校验，须选择具名defs",
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+    },
+    "PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "SourceBindingRef": {
+      "type": "object",
+      "properties": {
+        "registration_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 20
+        },
+        "owner_service_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "database_instance_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "provider_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "provider_boot_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "device_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "trigger_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capability_version": {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z.+-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capture_policy_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+          "maxLength": 128
+        },
+        "capture_policy_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+          "maxLength": 20
+        },
+        "delivery_semantics": {
+          "enum": [
+            "sampled",
+            "discrete"
+          ]
+        }
+      },
+      "required": [
+        "registration_id",
+        "revision",
+        "owner_service_id",
+        "database_instance_id",
+        "provider_id",
+        "provider_boot_id",
+        "device_id",
+        "trigger_id",
+        "capability_version",
+        "capture_policy_id",
+        "capture_policy_revision",
+        "delivery_semantics"
+      ],
+      "additionalProperties": false
+    },
+    "SourceKey": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "registration_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "source_stream_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "source_epoch": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "registration_id",
+        "source_stream_id",
+        "source_epoch"
+      ],
+      "additionalProperties": false
+    },
+    "ReceiveCursor": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "ingest_epoch": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "receive_sequence": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "ingest_epoch",
+        "receive_sequence"
+      ],
+      "additionalProperties": false
+    },
+    "QualifiedValue": {
+      "type": "object",
+      "properties": {
+        "schema_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "value": {}
+      },
+      "required": [
+        "schema_ref",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Origin": {
+      "type": "object",
+      "properties": {
+        "source_key": {
+          "$ref": "#/$defs/SourceKey"
+        },
+        "binding_ref": {
+          "$ref": "#/$defs/SourceBindingRef"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "source_sequence": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "payload": {
+          "$ref": "#/$defs/QualifiedValue"
+        }
+      },
+      "required": [
+        "source_key",
+        "binding_ref",
+        "event_id",
+        "source_sequence",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "SubmitEvent": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "event-ingress/0.1.0-draft.1"
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
+        },
+        "origin_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "delivery_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "age_evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "contract_version",
+        "origin",
+        "origin_digest",
+        "delivery_binding_ref",
+        "age_evidence_ref"
+      ],
+      "additionalProperties": false
+    },
+    "LookupEvent": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "event-ingress/0.1.0-draft.1"
+        },
+        "source_key": {
+          "$ref": "#/$defs/SourceKey"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "origin_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "source_key",
+        "event_id",
+        "origin_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ProviderReceipt": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "event-ingress/0.1.0-draft.1"
+        },
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "receipt_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "source_key": {
+          "$ref": "#/$defs/SourceKey"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "origin_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "ingest_state": {
+          "const": "committed"
+        },
+        "duplicate": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "contract_version",
+        "receipt_id",
+        "receipt_revision",
+        "source_key",
+        "event_id",
+        "origin_digest",
+        "ingest_state",
+        "duplicate"
+      ],
+      "additionalProperties": false
+    },
+    "LookupResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "committed"
+            },
+            "receipt": {
+              "$ref": "#/$defs/ProviderReceipt"
+            }
+          },
+          "required": [
+            "state",
+            "receipt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "not_found",
+                "historically_closed",
+                "indeterminate"
+              ]
+            },
+            "receipt": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "state",
+            "receipt"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "forbidden",
+            "invalid",
+            "conflict",
+            "closed",
+            "capacity",
+            "unavailable",
+            "version"
+          ]
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "code",
+        "request_id"
+      ],
+      "additionalProperties": false
+    },
+    "FirstObservation": {
+      "type": "object",
+      "properties": {
+        "clock_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "receive_tick_ns": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "delivery_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "age_evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "clock_ref",
+        "receive_tick_ns",
+        "delivery_binding_ref",
+        "age_evidence_ref"
+      ],
+      "additionalProperties": false
+    },
+    "InboxContent": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "inbox_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
+        },
+        "origin_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "first_observation": {
+          "$ref": "#/$defs/FirstObservation"
+        },
+        "content_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "inbox_id",
+        "revision",
+        "origin",
+        "origin_digest",
+        "first_observation",
+        "content_digest"
+      ],
+      "additionalProperties": false
+    },
+    "MatchTarget": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "definition_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "definition_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "artifact_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "trigger_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "run_id",
+        "definition_id",
+        "definition_version",
+        "artifact_ref",
+        "trigger_binding_ref"
+      ],
+      "additionalProperties": false
+    },
+    "MatchSet": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "match_set_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "source_key": {
+          "$ref": "#/$defs/SourceKey"
+        },
+        "registry_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MatchTarget"
+          },
+          "maxItems": 256
+        },
+        "targets_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "match_set_id",
+        "source_key",
+        "registry_revision",
+        "targets",
+        "targets_digest"
+      ],
+      "additionalProperties": false
+    },
+    "RunProgress": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "ingest_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "last_receive_cursor": {
+          "$ref": "#/$defs/ReceiveCursor"
+        },
+        "baseline_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "scope",
+        "run_id",
+        "ingest_revision",
+        "last_receive_cursor",
+        "baseline_ref"
+      ],
+      "additionalProperties": false
+    },
+    "TransitionEvaluation": {
+      "type": "object",
+      "properties": {
+        "transition_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "result": {
+          "enum": [
+            "true",
+            "false",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "transition_id",
+        "priority",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "EvaluationSnapshot": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "run_revision_before": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "ingest_revision_before": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "slot_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "artifact_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "inbox_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "match_set_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "receive_cursor": {
+          "$ref": "#/$defs/ReceiveCursor"
+        },
+        "source_revision_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "maxItems": 256
+        },
+        "observation_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "maxItems": 256
+        },
+        "input_snapshot_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "business_state_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rule_result": {
+          "anyOf": [
+            {
+              "enum": [
+                "true",
+                "false",
+                "unknown"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TransitionEvaluation"
+          },
+          "maxItems": 256
+        },
+        "snapshot_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "snapshot_id",
+        "run_id",
+        "run_revision_before",
+        "ingest_revision_before",
+        "slot_revision",
+        "artifact_ref",
+        "inbox_ref",
+        "match_set_ref",
+        "receive_cursor",
+        "source_revision_refs",
+        "observation_refs",
+        "input_snapshot_ref",
+        "business_state_ref",
+        "rule_result",
+        "transitions",
+        "snapshot_digest"
+      ],
+      "additionalProperties": false
+    },
+    "TriggerDecision": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "definition_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "artifact_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "inbox_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "match_set_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "receive_cursor": {
+          "$ref": "#/$defs/ReceiveCursor"
+        },
+        "run_revision_before": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "run_revision_after": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "ingest_revision_before": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "ingest_revision_after": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "result": {
+          "enum": [
+            "accepted",
+            "no_match",
+            "suppressed_busy",
+            "suppressed_inactive",
+            "suppressed_obsolete",
+            "evaluation_unknown",
+            "ambiguous",
+            "protected"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "snapshot_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selected_transition_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "execution_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "decision_id",
+        "run_id",
+        "definition_version",
+        "artifact_ref",
+        "inbox_ref",
+        "match_set_ref",
+        "receive_cursor",
+        "run_revision_before",
+        "run_revision_after",
+        "ingest_revision_before",
+        "ingest_revision_after",
+        "result",
+        "reason_code",
+        "snapshot_ref",
+        "selected_transition_id",
+        "execution_id",
+        "decision_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionPlanBinding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "execution_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "decision_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "artifact_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "receive_cursor": {
+          "$ref": "#/$defs/ReceiveCursor"
+        },
+        "execution_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "expected_steps": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "sealed": {
+          "const": true
+        }
+      },
+      "required": [
+        "scope",
+        "run_id",
+        "execution_id",
+        "decision_ref",
+        "artifact_ref",
+        "receive_cursor",
+        "execution_binding_ref",
+        "plan_ref",
+        "expected_steps",
+        "sealed"
+      ],
+      "additionalProperties": false
+    },
+    "DecisionRef": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "decision_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "run_id",
+        "decision_id",
+        "decision_digest"
+      ],
+      "additionalProperties": false
+    },
+    "IngressCommit": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "commit_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "inbox_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "receive_cursor": {
+          "$ref": "#/$defs/ReceiveCursor"
+        },
+        "source_revision_before": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "source_revision_after": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "match_set_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "decision_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DecisionRef"
+          },
+          "maxItems": 256
+        },
+        "decision_set_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "trigger_disposition": {
+          "enum": [
+            "eligible_decision_recorded",
+            "observed_only",
+            "suppressed",
+            "rejected"
+          ]
+        },
+        "notification_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "commit_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "commit_id",
+        "inbox_ref",
+        "receive_cursor",
+        "source_revision_before",
+        "source_revision_after",
+        "match_set_ref",
+        "decision_refs",
+        "decision_set_digest",
+        "trigger_disposition",
+        "notification_id",
+        "commit_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CommittedBatch": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "event-ingress/0.1.0-draft.1"
+        },
+        "inbox": {
+          "$ref": "#/$defs/InboxContent"
+        },
+        "match_set": {
+          "$ref": "#/$defs/MatchSet"
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EvaluationSnapshot"
+          },
+          "maxItems": 256
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TriggerDecision"
+          },
+          "maxItems": 256
+        },
+        "executions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExecutionPlanBinding"
+          },
+          "maxItems": 256
+        },
+        "commit": {
+          "$ref": "#/$defs/IngressCommit"
+        }
+      },
+      "required": [
+        "contract_version",
+        "inbox",
+        "match_set",
+        "snapshots",
+        "decisions",
+        "executions",
+        "commit"
+      ],
+      "additionalProperties": false
+    },
+    "DesignProfile": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+        },
+        "purpose": {
+          "const": "simulation"
+        },
+        "runtime_approved": {
+          "const": false
+        },
+        "max_target_runs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        },
+        "max_total_ast_nodes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "max_total_plan_steps": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "max_total_snapshot_bytes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "max_total_outbox_bytes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "writer_deadline_ms": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "profile_id",
+        "purpose",
+        "runtime_approved",
+        "max_target_runs",
+        "max_total_ast_nodes",
+        "max_total_plan_steps",
+        "max_total_snapshot_bytes",
+        "max_total_outbox_bytes",
+        "writer_deadline_ms"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

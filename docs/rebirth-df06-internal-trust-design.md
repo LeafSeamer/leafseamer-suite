@@ -165,3 +165,122 @@ IN01—IN32为待执行运行验收；参考夹具不替代TLS、数据库并发
 需归并下一版：来源绑定与origin摘要、trigger_inbox命名空间、sample-challenges请求／回执、内部GET用途及历史descriptor接口、配对字段和权限表、日志DTO与预算profile。当前draft.4／IPC 0.3保持原字节；附属Schema与[参考资料](contracts/df06/README.md)仅校验本轮有限结构／决策，不是完整下一版SDK。
 
 设计未决：IA01—IA06审阅；证书发行／寿命profile、SDK完整投影与源迁移、C05全事件快照与订阅语义、各模块fresh-query证据、Suite内部监听和安装证书配置。实现后取证：IN01—IN32、F04撤销窗口及TLS／OS／数据库／设备实证。DF06形成具体方案不等于全系统设计已经完成，其他C01—C12和旧功能映射继续按实施前清单推进。
+
+## 9. 身份生命周期细化：注销、组织服务与配对
+
+2026-10-18补充。以下IL01—IL06是IA01／IA05的**待审阅细化**，与[逐操作主体矩阵](contracts/df01-source/AUTHORIZATION.md)共同审阅；没有新增已批准权限。路径、DTO和状态均为下一版候选，尚未生成对应OpenAPI／Schema，不计入现有71操作。服务订阅、面板委托继续由C05／C09归并，不能由本节的凭据发放代替。
+
+**已知项目事实。** F04规定指定Controller签发身份，其他服务显式配对并自行授权；当前RunGrant绑定issuer三元组和principal，没有credential_id，而AuthorizationBinding及ExecutionGuard绑定credential_id。现有issueToken只是人员会话换定向token，不能据路径名称把它当组织服务登记。（依据：[F04第2节](rebirth-f04-f05-design.md#2-f04-身份登录与信任)、[当前模型](contracts/df01-source/source/public.schema.json)、[HTTP骨架](contracts/df01-source/source/http/controller.operations.json)。）
+
+**设计分析。** 分开四种记录：主体的持续身份、组织批准、可轮换凭据、单次请求资格。轮换可保留仍有效的组织批准，但不得迁移旧context、permit或未决命令；只有轮换导致的资格变化与明确撤销、暂停、恢复分开，才能避免把正常轮换变成自动重新布防。
+
+### 9.1 IL01：共同字段、权威及错误
+
+本节候选引用`IdentityObjectRef={authority_service_id,database_instance_id,kind,id,revision}`；revision按DF04的规范U20字符串精确CAS。主体另含`issuer_id,issuer_epoch,principal_id`，本地映射到subject_id，显示名不参与身份匹配。请求携带expected_revision；创建使用调用者原有RequestContext／幂等键，没有历史revision时不虚构0号对象。所有管理写均由当前human、auth.manage、精确对象范围和近期认证共同授权。近期认证只证明本次管理意愿，不使管理员成为新service的运行主体。
+
+只读`GET /api/v1/principal`在两服务提供`PrincipalView`：`subject_ref,principal_kind,issuer_id,issuer_epoch,principal_id,audience,session_ref|null,credential_ref,authorization_ref,effective_permissions,scope_digest,auth_valid_until`。human必须有session；service必须为null。服务端从当前权威上下文投影，不接收body自报角色；只返回自身，敏感配置和原始凭据无字段。旧getSession继续仅human。scope_digest不取代对象级检查，view也不能回传作为授权快照。
+
+指定签发Controller拥有ServicePrincipal／ServiceApproval／opaque Credential／AccessToken；接收方持本地subject、配对及本地批准交集，不能修改远端权威记录。这里“组织”沿用F04的独立服务授权语义，不新增未设计的多租户组织管理产品。`ServiceApproval`包含`approval_id,revision,subject_ref,audiences[],permissions[],object_scope,validity,state,approved_by_ref,approval_operation_id`；增权创建新revision并重新批准，减权先进入F04撤销传播，旧revision不能因高版本重新active。已有RunGrant不会因批准更新自动扩大。
+
+ServicePrincipal状态为disabled／active／revoked；初次批准可disabled→active，revoked永久拒绝，不靠修改display_name复活。批准revision是不可变范围快照，生命周期为pending／active／superseded／revoked／expired；修改写新revision，不覆盖旧BODY。纯增权经管理员批准形成新active，但仍不扩旧grant；含减权或混合变更先阻止受影响旧范围，并可靠登记撤销floor和固定目标，完成相关确认后新revision才active，期间不签发使用新范围的token。变更失败保留保护及原操作，不回退成旧范围全开。
+
+已有token中的approval_ref保留签发来源，不能据superseded快照单独授权。每次重新取权威快照时取原token范围与当前active批准及本地批准的交集，并核对撤销floor；没有当前有效批准则拒绝。纯增权不使旧token变宽；减权待确认期间，受影响范围继续关闭，不用旧approval_ref跨越传播屏障。
+
+错误映射：401无有效凭据；403有身份但缺用途；404未知或不可见对象；409状态／幂等异内容冲突；412预期revision不符；413超预算；422结构或具名约束不符；429容量拒绝；503权威、认证时间或关键存储不可证明。所有响应no-store，秘密响应及错误正文禁止回显请求。以下202只代表可靠受理，200／201也不表示远端已撤销、配对双方已可用或设备ready。
+
+### 9.2 IL02：普通注销及响应丢失
+
+`DELETE /auth/sessions/current`仅在签发方提供，使用Cookie＋会话CSRF＋精确Origin，无body目标选择器，不需auth.manage或近期认证；只能撤销认证得出的当前session。原子受理生成唯一`(issuer_epoch,session_id,logout)`操作，写session不可用、session撤销floor、固定目标集、RevocationRecord及通知outbox。刷新／issueToken／注销受理在同一身份writer排序：刷新先提交的后代凭据仍属于同session；注销先提交则刷新拒绝。刷新轮换不得创建一条脱离原session的授权链。
+
+目标集取本session已签发audience与仍有执行／订阅关联的服务并集，包含签发方；离线目标不删除。签发／登记audience与注销捕获目标集同writer排序，不能在捕获后再凭旧session增加新目标。`202`返回`{operation_ref,local_session_state:"revoked",propagation:RevocationRecord}`并清Cookie；零待确认目标也须沿实际receipt判定applied。事务结果未知返回503而不是伪造202；本地立即禁用本session新工作并保留保护状态，按原操作身份核对提交结果。
+
+注销会撤销该session的access token、context、票据及委托资格，目标按F04精确AUTH_FENCE处理未发送和在途命令。它不撤独立ServiceApproval／RunGrant，不自动释放manual holder，不清除unknown或恢复自动化；新登录同人仍需当前holder与ready等原有检查。停止操作者资格与移交设备控制是两个动作。
+
+请求在注销前通过认证而重复到达时，唯一键返回同操作；注销后旧Cookie不再能访问普通API。首响应丢失后的旧Cookie重试可返回401并清Cookie，不开设“已撤凭据继续鉴权”的通道。GUI显示“本地已退出，远端撤销状态未确认”，不得将401或清Cookie解释为applied。重新登录的有权用户／管理员可经现有撤销查询核对原操作；原操作无权限则不泄漏其详情。过期／无Cookie只能清本地状态，不能猜session并代撤他人。
+
+### 9.3 IL03：服务身份、一次交付与定向令牌
+
+服务不通过普通登录密码或虚构人员session取得资格。首期候选保留F04不透明凭据路线：签发方用密码库生成32字节随机秘密、以无填充base64url首次交付；只存不可逆验证值及算法版本，验证值不进入公开DTO。具体库与保存密钥／验证profile沿技术锁定审阅，不将本节格式推荐冒充已完成密码实现验证。凭据原文只经受保护管理响应交给受权部署者，消费服务放入Suite秘密存储，普通模块和GUI持久存储不持有它。
+
+| 候选入口（签发Controller） | 输入与结果 |
+| --- | --- |
+| `POST /api/v1/auth/service-principals` | 管理context、display_name、purpose；201返回ServicePrincipal，初态disabled，无默认权限或credential |
+| `GET /api/v1/auth/service-principals/{id}` | 当前管理读取范围；200返回脱敏主体与批准／凭据引用，不返回secret／verifier |
+| `PUT /api/v1/auth/service-principals/{id}/approval` | expected_revision、明确audiences／permissions／object_scope／validity；202返回批准变更操作。新主体的首次有效批准可启用主体，减少范围须逐目标传播后才宣告完成 |
+| `POST /api/v1/auth/service-principals/{id}/credentials` | context、主体／批准expected_revision、expires_at、replaces_credential_ref或null；201仅首次返回`credential_ref,secret,stage_deadline`，持久状态staged |
+| `POST /auth/service-credential-proofs` | credential_id、secret、proof_request_id；只允许staged凭据证明持有，成功可靠记录proven并返回非秘密proof_ref；不能顺便签token或调用业务API |
+| `POST /api/v1/auth/service-credentials/{id}/activation` | 管理context、expected_revision、proof_ref、approval_ref、重叠截止（首次为null）；202返回CredentialActivationOperation，不以proven自动active |
+| `POST /auth/service-access-tokens` | active／retiring的credential_id及secret、单audience、requested_permissions／scope、request_id；200首次交付短期opaque token及非秘密binding_ref，无refresh_token |
+
+上述两个`/auth/service-*`证明／换token入口以凭据证明自身，不要求先有access token，也不兼容旧人员Cookie签发入口；无浏览器CORS放行，仍有入口级和credential级预算。不使用body自报principal_id／service_kind决定身份；Seamer角色还需配对中登记的服务身份及本地用途批准，任意服务不能申请一个叫seamer的名字获得设备写权。
+
+`ServiceCredentialView`固定`credential_ref,subject_ref,kind="opaque_service",approval_ref,state,created_at,not_before,expires_at,stage_deadline,proof_ref|null,replaces_ref|null,retire_at|null,activation_operation_ref|null`。允许状态`staged→proven→active→retiring→revoked/expired`；staged/proven可过期或撤销，active也可直接撤销，所有终态不可返回活跃。activation采用当前批准交集，不照搬staging时的旧权限。首期每主体至多一个未完成轮换、最多两个尚可换token的凭据；第三个须先完成前次退役，防止靠连续轮换叠加过渡窗口。
+
+证明不延长stage_deadline，激活时同时核对原stage截止、proof绑定及credential有效期；已过期proven不能激活。重复proof只返回原非秘密记录，不能换proof_request_id刷新证明年龄。受理、证明和激活的管理权限及当前批准均从权威表取，不信任客户端写入state或proof_ref所声称的结果。
+
+首次交付的秘密不保存在幂等响应、audit或outbox。credential创建提交成功但响应丢失：同request identity返回200非秘密创建结果和`secret_delivery="unavailable"`，不再生成／重发秘密；受权管理员撤销该staged凭据，再以新请求创建。只有赢得首次创建事务的处理器可交付它生成的原文，重复处理器丢弃自身临时值。因为staged不能签token，未知交付不会留下无人掌握却已active的权限。数据库提交结果不明时按原identity核对，禁止生成第二个credential；临时原文尽快释放，不声称运行时内存必定归零。
+
+token换取取credential、主体、批准、目标本地授权及所请求范围的交集；audience不在批准内直接拒绝，其他请求范围不完整可授权时整项拒绝，不静默授予另一个范围。`AccessTokenBinding`保存`token_id,credential_ref,subject_ref,approval_ref,audience,permissions,scope_ref,issued_at,expires_at,request_id,state`；授权评估同时检查token与父credential，撤credential不能只禁下一次换token。TTL取profile上限、credential／批准／认证期限最小值；后续回包不续TTL。
+
+换token以`(credential_id,request_id)`唯一且绑定请求摘要；响应丢失后同ID只返回非秘密结果，不重发token。调用者可用新request_id取新token，但旧token保持原有限截止、同父撤销链，并计入每credential活跃token上限；不能利用响应丢失无限签发。proof响应丢失可重取同proof_ref，证明接口只返回最小状态，不因正确secret扩大成管理会话。
+
+### 9.4 IL04：轮换、撤销与运行授权连续性
+
+正常轮换：旧credential active→新credential staged→消费服务证明新secret→管理员批准activation→同事务新active、旧retiring、固定retire_at及操作记录。activation须确认新旧同一subject／issuer_epoch、旧尚可轮换、当前批准仍覆盖新请求；proof与credential revision精确绑定。重复activation返回原操作，不能重新计算重叠期限。默认建议部署profile给有限重叠；精确生产时长待平台／运维profile审阅，实验值不直接上线。
+
+retiring只允许在原范围及固定retire_at之前换取token；token截止不晚于retire_at。认证区间上界到截止即拒绝，时间失信也拒绝，不能等待后台计时任务才停权。到期／显式撤销写永久拒绝floor并创建F04传播操作。旧token、context、permit始终绑定旧credential，不能改字段迁到新凭据；在途操作依原证据结案，不能把撤销改写成not_sent。
+
+新credential可为同一仍有效组织批准和未撤销RunGrant建立**新**context／快照／permit；因为RunGrant绑定主体而非credential，这不自动修改grant_id、revision、arm_generation、validity或设备范围。若运行已因失信、保护或失败暂停，则仍需既有恢复流程；不得因新token可用而自动resume。配对、来源、模块批准及本地自动模式仍需成立。此连续性只允许健康运行正常换凭据，不给任何旧命令重试或重新布防授权。
+
+撤销继续统一走`POST /api/v1/auth/revocations`：credential只撤该链，principal覆盖该主体全部凭据／授权，trust覆盖配对相关用途，grant只撤该grant。批准减权必须将关联grant缩小或撤销并阻断旧快照，不能仅让下一次token变窄。目标集按权威发放／配对登记和未决关联固定；两端断线保留applying／indeterminate，完整receipt之前不显示applied。秘密疑似泄漏可立即撤旧，不强求“先激活新凭据”而延误保护。
+
+### 9.5 IL05：配对引导、双向证明和证书轮换
+
+初次没有配对时，不能要求先拥有active binding才能完成引导，也不能把pending当一般内部权限。推荐部署者经两端可信管理入口，分别导入相同`pair_attempt_id`及双方service／issuer身份、两端固定endpoint引用、信任包摘要、证书DER／SPKI指纹、拟批准用途／范围和有限期限。材料从部署者已认证渠道核对，禁止首次连接自动接受指纹。缺初始信任时保持未配对；普通远端请求不能写入CA或动态指定回调URL。
+
+`PairingAttempt`包含`attempt_ref,pair_attempt_id,local_service_ref,peer_service_ref,local_binding_id,peer_binding_id,local_credential_ref,peer_certificate_ref,local_trust_bundle_digest,peer_trust_bundle_digest,endpoint_config_refs,local_scope,peer_scope,transcript_digest,validity,runtime_domain_ref,proof_refs[],approval_ref|null,state`。引用及身份由stage验证，证书指纹必须与真实TLS字节相符。transcript的具名投影按service_id排序双方完整身份／证书／scope／binding／endpoint配置摘要／有效窗口，包含schema_version和pair_attempt_id，排除本地可变revision、proof、approval及state；不能直接对整个对象删若干常见字段。任一固定字段变化须新attempt，禁止复用旧proof。
+
+| 候选入口（各服务本地权威） | 认证与语义 |
+| --- | --- |
+| `POST /api/v1/auth/peer-pairings` | human管理＋近期认证；建立staged attempt和pending binding，返回脱敏引用及transcript预览 |
+| `POST /internal/pairings/{binding_id}/challenges` | 专用pending-proof档案，精确预登记TLS证书＋CA／SAN检查；输入pair_attempt_id／transcript_digest；返回challenge_id、challenge及本地固定期限 |
+| `POST /internal/pairings/{binding_id}/proofs` | 同一精确证书及attempt；提交challenge_id、challenge、transcript_digest；事务消费后返回非秘密proof_ref |
+| `GET /internal/pairings/{binding_id}/status` | 精确pending或active对端；仅该attempt的state、transcript_digest、proof及binding引用，无设备／token／来源数据；用于双向证明和激活确认，不需预先普通内部权限 |
+| `POST /api/v1/auth/peer-pairings/{id}/activation` | human管理＋近期认证；expected_revision、固定transcript及两向验证记录；只提交本端binding active和批准引用 |
+
+pending-proof是专用服务端认证用途，不能由HTTP头选择；无条件签发CA、普通时钟查询、introspect、事件摄取均不对pending放行。双向各执行一轮challenge/proof，challenge使用32字节随机值；只保存验证值，返回丢失可创建新challenge，但同attempt每方向最多一个未消费值，新建必须原子失效旧值且不延长attempt截止。proof是本地认证通道的验证记录，不是可在别处离线信任的签名票据；两向记录由服务实际发起的受信连接和本地消费记录形成，用户粘贴proof_id不能替代。
+
+本地attempt状态`staged→proving→proved→activated`，非终态可进入expired/rejected；activation结果引用独立binding。binding保持`pending→active→revoked/expired`，撤销不可回到pending。双方分别可靠提交，无跨服务事务；A active而B pending时，只能继续专用配对状态查询，普通业务必须等待双方当前active证据及用途交集。查询双方状态的控制通道不依赖普通业务权限，避免激活死锁；缓存使用F04有界新鲜度，不能宣称零窗口远端撤销。
+
+attempt截止取两端批准窗口交集；每端按自己的认证区间保守验证，并绑定本地运行域内单调截止，不比较跨机tick。任一端重启使本端未完成attempt及challenge失效，重新stage新attempt；已active绑定可以保留配置身份，但新域须重新核对当前对端状态，不能恢复旧快照／permit。凭据／CA／scope改变使旧未完成attempt无效。active配对证书轮换使用新attempt绑定`replaces_credential_ref`和原scope，双向新证书证明及两端批准分别完成，旧证书只在固定重叠内有效；新增CA或scope仍单独管理批准。不会因为SPKI相同自动登记新DER。
+
+对端先撤销或本端activation提交不明：不基于网络重试创建新binding，不把对端active响应当本端提交证明，按原操作查询。最终无法完成时只关闭候选attempt／未投入使用的新credential，不自动撤掉仍合法的旧配对，也不延长旧期限。明确安全撤销优先，不因轮换未完成推迟拒绝floor。
+
+### 9.6 IL06：故障轨迹、预算及冻结出口
+
+实验profile候选`sim-identity-lifecycle-v1`：近期认证最长5分钟；staged credential／pairing attempt最长10分钟；challenge最长60秒；opaque token最长60秒；轮换重叠最长5分钟；每credential最多8个未过期token；每服务最多16个pending配对；每身份管理请求64KiB、响应256KiB，范围集合沿具名能力预算。验证失败每身份每分钟5次、入口全局每分钟60次，超过预算429；未认证ID不得产生无限独立桶。撤销及核对使用独立保护额度，不因普通登录失败额度耗尽而被阻塞。均为有限故障夹具值，实际发布需两平台负载、认证时间及运维流程验证；未批准profile不得取这些值作为生产默认。
+
+正常服务接入：管理员建disabled主体→明确批准→创建staged凭据→消费服务prove→管理员activate→定向换token→接收方核对当前权威和本地交集→按原用途工作。正常配对：两端stage相同transcript→双向证书验证及一次proof→两端分别批准／提交→当前双方状态确认→才开放批准用途。没有任何一步隐含设备ready、布防或动作派发。
+
+| 新验收ID（均待运行） | 正反轨迹与通过判据 |
+| --- | --- |
+| ILT01 | 普通human无auth.manage仍能注销自身；body指定另一session、错Origin／CSRF拒绝 |
+| ILT02 | 刷新先于／后于注销两种排序；先发后代归原session，后发拒绝，无遗漏audience |
+| ILT03 | 注销提交成功响应丢失／提交未知；旧Cookie不恢复一般权限，GUI不伪报全局applied |
+| ILT04 | 一目标离线；固定目标不删除，独立组织run不混撤，holder不自动释放 |
+| ILT05 | service PrincipalView的session必须null；伪造human或Seamer显示名不提升用途 |
+| ILT06 | staged秘密首次丢失；同幂等键无新秘密／新credential，撤销后新请求才能重建 |
+| ILT07 | secret证明正确但未批准、批准已撤或audience错；不发可用token，proof不当管理权 |
+| ILT08 | token首响应丢失、同ID异范围、反复新ID；只一次签发原身份，达到活跃预算拒绝 |
+| ILT09 | 轮换提交成功／失败／结果未知；新旧状态同事务，重试不移动retire_at或产生第三活跃链 |
+| ILT10 | 旧credential撤销后已有token／context／permit；逐目标屏障拒旧，已发效果仍按原证据结案 |
+| ILT11 | 新credential取得仍有效grant；只能新context／permit，原期限及arm不变；paused run不自动恢复 |
+| ILT12 | 待配对证书正确但访问introspect／clock／events；拒绝，pending-proof仅限具名引导接口 |
+| ILT13 | 同attempt改scope／CA／端点／证书、重算digest；旧proof无效，不能跳过管理员预登记 |
+| ILT14 | 双向challenge重复／错证书／交叉方向／重启／截止等号；一次消费或拒绝，无二次激活 |
+| ILT15 | A提交active而B失败或撤销；状态查询可核对但普通业务不可用，不伪造分布式原子成功 |
+| ILT16 | 同SPKI新DER、双端轮换不同步、旧证书已撤；新证书需新批准，旧永久拒绝不因revision复活 |
+| ILT17 | 认证时间失信／回跳及库恢复；期限不续，旧epoch／域与拒绝floor不能回退 |
+| ILT18 | 普通配对／登录洪泛和大scope；有限预算拒绝，撤销／屏障独立额度可用，日志无秘密 |
+
+以上扩充IN07／IN21／IN31、FA及ST相关验收，不替代原用例；本轮只进行文档与跨项契约审阅，真实身份／TLS／数据库并发／设备执行数为零。下一版机器归并须包含本节DTO、状态、认证档案、具名transcript投影、错误集合与[DF04第10节](rebirth-df04-storage-design.md#10-身份生命周期事务补充)；生产验证器不得只检查枚举而遗漏权威及事务来源。剩余证书发行／寿命与秘密存储profile、服务订阅、面板委托和完整生成源仍按各专题冻结；本轮不宣告C07或全系统关闭。

@@ -1,0 +1,808 @@
+{
+  "purpose": "design_fixture_only",
+  "runtime_approved": false,
+  "fixtures": {
+    "controller.getMeta": {},
+    "controller.getClock": {},
+    "controller.listDevices": {},
+    "controller.getCapabilities": {
+      "device_id": "device.1"
+    },
+    "controller.getDeviceState": {
+      "device_id": "device.1"
+    },
+    "controller.submitCommand": {
+      "device_id": "device.1",
+      "action_id": "synthetic.set",
+      "capability_version": "1.0.0",
+      "parameters": {
+        "value": 1
+      },
+      "expected_control": {
+        "epoch": "control.1",
+        "version": "4"
+      },
+      "required_completion": "effect_verified",
+      "preconditions": [],
+      "dispatch": {
+        "mode": "immediate",
+        "max_queue_ms": 1000
+      },
+      "evidence_timeout_ms": 2000
+    },
+    "controller.getCommand": {
+      "command_id": "command.1"
+    },
+    "controller.cancelCommand": {
+      "command_id": "command.1",
+      "expected_revision": "4",
+      "reason": "操作取消"
+    },
+    "controller.getControlOperation": {
+      "operation_id": "operation.1"
+    },
+    "controller.getControl": {
+      "device_id": "device.1"
+    },
+    "controller.acquireControl": {
+      "device_id": "device.1",
+      "expected_control": {
+        "epoch": "control.1",
+        "version": "4"
+      },
+      "reason": "手动接管"
+    },
+    "controller.releaseControl": {
+      "device_id": "device.1",
+      "expected_control": {
+        "epoch": "control.1",
+        "version": "4"
+      },
+      "reason": "释放"
+    },
+    "controller.offerTransfer": {
+      "device_id": "device.1",
+      "expected_control": {
+        "epoch": "control.1",
+        "version": "4"
+      },
+      "reason": "转交",
+      "target_principal_id": "operator.2",
+      "offer_ttl_ms": 10000
+    },
+    "controller.acceptTransfer": {
+      "device_id": "device.1",
+      "transfer_id": "transfer.1",
+      "expected_control": {
+        "epoch": "control.1",
+        "version": "4"
+      },
+      "reason": "接受转交"
+    },
+    "controller.revokeRunGrant": {
+      "grant_id": "grant.1",
+      "expected_revision": "4",
+      "reason": "撤销"
+    },
+    "controller.getClockAssessment": {},
+    "controller.getCapacity": {},
+    "controller.getSceneCatalog": {
+      "device_id": "device.1"
+    },
+    "controller.getCommandEvidence": {
+      "command_id": "command.1"
+    },
+    "seamer.getMeta": {},
+    "seamer.getClock": {},
+    "seamer.createDefinition": {
+      "definition": {
+        "kind": "rule",
+        "name": "合成规则",
+        "trigger": {
+          "provider_id": "provider.1",
+          "device_id": "device.1",
+          "trigger_id": "synthetic.changed",
+          "capability_version": "1.0.0",
+          "conditions": []
+        },
+        "groups": [
+          {
+            "kind": "sequential",
+            "steps": [
+              {
+                "step_id": "step.1",
+                "action_ref": {
+                  "provider_id": "provider.1",
+                  "device_id": "device.1",
+                  "action_id": "synthetic.set",
+                  "capability_version": "1.0.0"
+                },
+                "parameters": {
+                  "value": 1
+                },
+                "required": true,
+                "on_failure": "stop",
+                "depends_on": [],
+                "preconditions": [],
+                "completion": "effect_verified",
+                "deadlines": {
+                  "max_queue_ms": 1000,
+                  "evidence_timeout_ms": 2000
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "seamer.updateDraft": {
+      "definition_id": "definition.1",
+      "expected_revision": "4",
+      "definition": {
+        "kind": "rule",
+        "name": "合成规则",
+        "trigger": {
+          "provider_id": "provider.1",
+          "device_id": "device.1",
+          "trigger_id": "synthetic.changed",
+          "capability_version": "1.0.0",
+          "conditions": []
+        },
+        "groups": [
+          {
+            "kind": "sequential",
+            "steps": [
+              {
+                "step_id": "step.1",
+                "action_ref": {
+                  "provider_id": "provider.1",
+                  "device_id": "device.1",
+                  "action_id": "synthetic.set",
+                  "capability_version": "1.0.0"
+                },
+                "parameters": {
+                  "value": 1
+                },
+                "required": true,
+                "on_failure": "stop",
+                "depends_on": [],
+                "preconditions": [],
+                "completion": "effect_verified",
+                "deadlines": {
+                  "max_queue_ms": 1000,
+                  "evidence_timeout_ms": 2000
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "seamer.publishDefinition": {
+      "definition_id": "definition.1",
+      "expected_revision": "4"
+    },
+    "seamer.createRun": {
+      "definition_id": "definition.1",
+      "definition_version": "1.0.0"
+    },
+    "seamer.getRun": {
+      "run_id": "run.1"
+    },
+    "seamer.preflightRun": {
+      "run_id": "run.1",
+      "expected_revision": "4"
+    },
+    "seamer.armRun": {
+      "run_id": "run.1",
+      "expected_revision": "4",
+      "assessment_handle": "assessment.synthetic"
+    },
+    "seamer.pauseRun": {
+      "run_id": "run.1",
+      "expected_revision": "4",
+      "reason": "暂停"
+    },
+    "seamer.previewRecovery": {
+      "run_id": "run.1",
+      "expected_revision": "4"
+    },
+    "seamer.resumeRun": {
+      "run_id": "run.1",
+      "expected_revision": "4",
+      "recovery_handle": "recovery.synthetic"
+    },
+    "seamer.getClockAssessment": {},
+    "seamer.getCapacity": {},
+    "seamer.getRecoveryOperation": {
+      "operation_id": "operation.1"
+    },
+    "seamer.getIndependenceProof": {
+      "definition_id": "definition.1",
+      "proof_id": "proof.1"
+    }
+  },
+  "structure_cases": [
+    {
+      "id": "MIF01",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "context_id"
+          ],
+          "value": "fake"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF02",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "idempotency_key"
+          ],
+          "value": "fake"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF03",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "origin"
+          ],
+          "value": "automation"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF04",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "run_binding"
+          ],
+          "value": {}
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF05",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "correlation_id"
+          ],
+          "value": "fake"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF06",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "token"
+          ],
+          "value": "fake"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF07",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "confirmed"
+          ],
+          "value": true
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF08",
+      "method": "seamer.armRun",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "preflight_id"
+          ],
+          "value": "fake"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF09",
+      "method": "seamer.armRun",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "approval_id"
+          ],
+          "value": "fake"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF10",
+      "method": "seamer.resumeRun",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "preview_id"
+          ],
+          "value": "fake"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF11",
+      "method": "seamer.resumeRun",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "preview_digest"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF12",
+      "method": "seamer.armRun",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "assessment_handle"
+          ],
+          "delete": true
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF13",
+      "method": "seamer.resumeRun",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "recovery_handle"
+          ],
+          "delete": true
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF14",
+      "method": "controller.listDevices",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "cursor"
+          ],
+          "value": "raw"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF15",
+      "method": "controller.listDevices",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "page_handle"
+          ],
+          "value": "page.synthetic"
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "MIF16",
+      "method": "controller.acceptTransfer",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "device_id"
+          ],
+          "delete": true
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF17",
+      "method": "controller.acquireControl",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "force"
+          ],
+          "value": "true"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF18",
+      "method": "controller.acquireControl",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "force"
+          ],
+          "value": true
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "MIF19",
+      "method": "seamer.updateDraft",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "expected_revision"
+          ],
+          "value": 4
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF20",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "dispatch"
+          ],
+          "value": {
+            "mode": "immediate",
+            "max_queue_ms": 0
+          }
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF21",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "parameters"
+          ],
+          "value": {
+            "token": "synthetic_business_field"
+          }
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "MIF22",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "action_id"
+          ],
+          "value": "obs.program_scene.set"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF23",
+      "method": "controller.getMeta",
+      "changes": [
+        {
+          "path": [
+            "method"
+          ],
+          "value": "controller.login"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF24",
+      "method": "seamer.createDefinition",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "definition",
+            "groups",
+            0,
+            "steps",
+            0,
+            "on_failure"
+          ],
+          "value": "continue_if_independent"
+        }
+      ],
+      "valid": false
+    },
+    {
+      "id": "MIF25",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "arguments",
+            "dispatch"
+          ],
+          "value": {
+            "mode": "scheduled",
+            "occurrence_id": "occurrence.1",
+            "not_before": "2026-10-18T10:00:00.000Z",
+            "not_after": "2026-10-18T10:00:01.000Z",
+            "clock_policy_revision": "1",
+            "max_queue_ms": 1000
+          }
+        }
+      ],
+      "valid": true
+    }
+  ],
+  "metadata_cases": [
+    {
+      "id": "MIM01",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "controller.getMeta"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_error": "method_coverage"
+    },
+    {
+      "id": "MIM02",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "approved"
+          ],
+          "value": true
+        }
+      ],
+      "expected_error": "approval"
+    },
+    {
+      "id": "MIM03",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "seamer.armRun",
+            "mode"
+          ],
+          "value": "panel_write"
+        }
+      ],
+      "expected_error": "policy"
+    },
+    {
+      "id": "MIM04",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "seamer.resumeRun",
+            "source_fields",
+            "body.preview_id"
+          ],
+          "value": "panel"
+        }
+      ],
+      "expected_error": "field_ownership"
+    },
+    {
+      "id": "MIM05",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "controller.submitCommand",
+            "source_fields",
+            "body.origin"
+          ],
+          "value": "panel"
+        }
+      ],
+      "expected_error": "field_ownership"
+    },
+    {
+      "id": "MIM06",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "controller.listDevices",
+            "source_fields",
+            "query.cursor"
+          ],
+          "value": "panel"
+        }
+      ],
+      "expected_error": "field_ownership"
+    },
+    {
+      "id": "MIM07",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "controller.getCommand",
+            "raw_response_allowed"
+          ],
+          "value": true
+        }
+      ],
+      "expected_error": "raw_response"
+    },
+    {
+      "id": "MIM08",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "seamer.armRun",
+            "request_model"
+          ],
+          "value": "RunRevisionRequest"
+        }
+      ],
+      "expected_error": "request_model"
+    },
+    {
+      "id": "MIM09",
+      "changes": [
+        {
+          "path": [
+            "schema",
+            "$defs",
+            "controller_getMeta",
+            "additionalProperties"
+          ],
+          "value": true
+        }
+      ],
+      "expected_error": "input_open"
+    },
+    {
+      "id": "MIM10",
+      "changes": [
+        {
+          "path": [
+            "schema",
+            "$defs",
+            "seamer_armRun",
+            "properties",
+            "approval_id"
+          ],
+          "value": {
+            "type": "string"
+          }
+        }
+      ],
+      "expected_error": "input_fields"
+    },
+    {
+      "id": "MIM11",
+      "changes": [
+        {
+          "path": [
+            "schema",
+            "$defs",
+            "controller_getCommand",
+            "required"
+          ],
+          "value": []
+        }
+      ],
+      "expected_error": "input_fields"
+    },
+    {
+      "id": "MIM12",
+      "changes": [
+        {
+          "path": [
+            "schema",
+            "oneOf",
+            0,
+            "additionalProperties"
+          ],
+          "value": true
+        }
+      ],
+      "expected_error": "dispatch_union"
+    },
+    {
+      "id": "MIM13",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "controller.getCommand",
+            "result_view"
+          ],
+          "value": "RawResponse"
+        }
+      ],
+      "expected_error": "result_view"
+    },
+    {
+      "id": "MIM14",
+      "changes": [
+        {
+          "path": [
+            "bindings",
+            "methods",
+            "controller.getCommand",
+            "result_view"
+          ],
+          "value": "MetaView"
+        }
+      ],
+      "expected_error": "result_view"
+    }
+  ]
+}

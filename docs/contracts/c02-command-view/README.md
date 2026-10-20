@@ -8,7 +8,7 @@
 
 本轮修正SQL的Decision/Resolution枚举，恢复既有四个值。未知观察保留为证据/observe，不生成确定Resolution。`not_sent`仅由提供者证明全部历史尝试未发送后产生，不能由最后一个attempt未发、杀进程或JSON字段推断；其持久化不改变原unknown，也不自动clear。新增SQL检查只证明枚举与持久关系，真实证明仍由提供者负责。
 
-推荐将公开命令记录定义为**不可变完整修订**：metadata、State、attempt视图、取消摘要及证据索引在同一writer切点封存。任何可见字段变化都产生新State/record修订，取消受理也必须同事务发布observe修订。GET不得把历史State与当前取消状态临时JOIN成伪快照。cm_revision只存领域State；完整公共投影、取消账本和证据索引仍需增加明确持久映射，不宣称77表已实现本HTTP。
+推荐将公开命令记录定义为**不可变完整修订**：metadata、State、attempt视图、取消摘要及证据索引在同一writer切点封存。任何可见字段变化都产生新State/record修订，取消受理也必须同事务发布observe修订。GET不得把历史State与当前取消状态临时JOIN成伪快照。cm_revision只存领域State；后续[持久化候选](STORAGE.md)新增14表，与77表组合为91表，分别保存公开投影、取消账本和证据索引；不是已实现HTTP服务。
 
 ## 2. 操作与身份
 
@@ -101,7 +101,7 @@ EvidenceRecord公开五类：原结构化observation、命令级decision、relea
 
 [check_contracts.py](check_contracts.py)执行生成字节、Schema、OpenAPI、公开投影和合成关联；[reference_model.py](reference_model.py)用字典模拟串行原子受理，可信授权、时钟、closure与证据均为人工前提。它不执行真实HTTP、CSRF/TLS、签名游标、SQLite、完整取消IPC、并发或设备。
 
-后续仍需：完整公开修订/取消Key及receipt/证据索引DDL与77表联接；取消保护执行IPC/一次性许可；统一SDK/权限矩阵/面板方法及GUI迁移；严格数字和时间模型统一。已有七接口及固定投影规则不再作为“完全没有格式”的缺口。
+公开修订/取消Key及receipt/证据索引已有[91表组合候选](STORAGE.md)，396项内存检查另记于storage-report，不扩大本HTTP的160项覆盖。后续仍需取消保护执行IPC/一次性许可、closure及证据原件完整FK；统一SDK/权限矩阵/面板方法及GUI迁移；严格数字和时间模型统一。已有七接口及固定投影规则不再作为“完全没有格式”的缺口。
 
 ```powershell
 & docs/contracts/.venv/Scripts/python.exe docs/contracts/c02-command-view/build_contracts.py --check

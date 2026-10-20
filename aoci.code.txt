@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录命令HTTP取消与证据候选及新周期首轮交付 | R:code:docs/contracts/c02-command-view/README.md | A:设计历程与三轮提交计数 | S:本轮仅本地提交；160项合成及320项内存非运行证明，取消未知不重开，候选未批准，全系统设计未关闭
+DEVELOPMENT_MEMO.md[SO5L]: F:记录公开修订取消持久化及当前周期第二轮交付 | R:code:docs/contracts/c02-command-view/STORAGE.md | A:设计历程与三轮提交计数 | S:本轮仅本地提交；396项内存及160项HTTP合成非运行证明，保护取消IPC仍缺，候选未批准，全系统设计未关闭
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总全系统定稿缺口与七命令HTTP及接口归并裁决 | R:code:docs/rebirth-readiness.md,code:docs/contracts/c02-command-view/README.md | A:C01至C12关闭表与147声明17处替换 | S:公开修订取消证据已有格式而DDL和保护取消IPC仍缺；77表非完整Controller，其他屏障和P1/P4待归并。DF03模型待选择，候选和离线通过不关闭全系统设计
+rebirth-design-closure.md[SQ8M]: F:汇总全系统冻结缺口与命令公开持久化及接口归并裁决 | R:code:docs/rebirth-readiness.md,code:docs/contracts/c02-command-view/STORAGE.md | A:C01至C12关闭表与147声明17处替换 | S:91表非完整Controller，取消保护IPC及原件FK和其他屏障仍待归并；DF03模型待选择，候选和离线通过不关闭全系统设计
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -451,10 +451,14 @@ command-report.json[SQ5L]: F:记录320项命令资源组合内存检查及二十
 command.sql[FD9L]: F:定义命令政策修订核对与报告接收的十一表附属约束 | R:code:docs/contracts/c08-controller/resource.sql,code:docs/contracts/c08-controller/COMMAND_STORAGE.md | A:77表双向延迟配对与当前投影视图 | S:终态和锁存不可改，Resolution须同修订选择且拒unknown；T2绑定新hold，终态禁止普通许可。资源释放不替代命令核对；报告同状态提交，迟到保护遮蔽旧clear。SQL不计算JCS或核可信BODY，非生产迁移
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
-README.md[SN9S]: F:设计命令公开修订取消幂等与固定证据分页的七接口 | R:code:docs/contracts/c02-command-view/build_contracts.py,code:docs/contracts/c08-controller/COMMAND_STORAGE.md | A:command-view候选与取消及证据故障边界 | S:完整投影须同writer封存，旧clear不可当前发布；每父命令一条取消且未知不重开，回执单向引用避免摘要循环。confirmed不改原终态或释放资源；保护取消IPC和投影DDL仍缺，未批准运行
+README.md[SN9S]: F:设计七个命令读取取消证据接口并连接公开持久布局 | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-command-view/build_contracts.py | A:command-view候选与取消及证据边界 | S:完整投影同writer封存，每父命令一条取消且未知不重开；回执单向引用避免摘要循环。confirmed不改终态或释放资源；91表另验，保护取消IPC仍缺，未批准运行
 build_contracts.py[XN8M]: F:生成命令查询取消与证据模型及七操作自包含OpenAPI | R:code:docs/contracts/c02-command-view/README.md,code:docs/contracts/c08-controller/lifecycle.schema.json | A:build及check与command-view0.1 | S:只投影固定本地闭包且常量不改写；human取消同时要求CSRF，service独立分支。State与record摘要分离，借旧类型的词法未统一，不改旧源或切SDK权威
 check_contracts.py[TN8M]: F:核验命令HTTP结构投影及合成取消证据关联并绑定报告 | R:code:docs/contracts/c02-command-view/reference_model.py,code:docs/contracts/c02-command-view/build_contracts.py | A:160项参考检查及report和staged绑定 | S:权威和游标签名均为夹具；重算摘要仍核原件，取消未知不得重开。只验证有限状态快照，不执行HTTP或SQL，十三输入字节核对不重跑
 command.openapi.json[SN8L]: F:声明命令当前历史查询取消与证据七个HTTP候选操作 | R:code:docs/contracts/c02-command-view/build_contracts.py | A:OpenAPI3.1.1及精确版本头 | S:全部no-store，202仅取消受理；当前不可发布明确503且只能重查，历史标识固定。human取消须CSRF，证据权限独立；内联闭包不含内部原件，声明不实现鉴权或服务
 command.schema.json[FN8L]: F:定义完整公开命令记录及取消身份回执进度和证据快照 | R:code:docs/contracts/c02-command-view/build_contracts.py,code:docs/contracts/c02-command-view/README.md | A:command-view0.1具名defs | S:根拒直接校验，版本独立且固定未批准；取消与命令终态分开，回执单向引用初始操作。动态关联和快照完整性另验，借旧类型词法未全修，非持久布局
-reference-report.json[SQ5L]: F:记录160项命令HTTP参考检查及十三输入字节摘要 | R:code:docs/contracts/c02-command-view/check_contracts.py | A:结构投影与合成关联结果 | S:批准为false；HTTP鉴权游标签名SQLite及设备未执行，人工权威不证明实际提供者
+reference-report.json[SQ5L]: F:记录160项命令HTTP参考检查及十三输入字节摘要 | R:code:docs/contracts/c02-command-view/check_contracts.py | A:结构投影与合成关联结果 | S:README连接91表不扩大本覆盖；批准为false，HTTP鉴权游标签名SQLite及设备未执行
 reference_model.py[TN8M]: F:在合成上下文判定命令投影取消查原及证据分页关联 | R:code:docs/contracts/c02-command-view/README.md,code:docs/contracts/c02-command-view/check_contracts.py | A:record_error及cancel_step和cancellation_error与page_error | S:字典模拟原子受理；当前权限先于历史身份，原结果先于新CAS期限。未知取消不重开且关闭不回退，确认不改固定终态；完整集和可信标志由夹具提供，无I/O或实际事务
+STORAGE.md[SD9T]: F:规定公开修订取消与固定证据的十四表映射和原子恢复边界 | R:code:docs/contracts/c02-command-view/storage.sql,code:docs/contracts/c02-command-view/README.md | A:91表组合与五类写集 | S:取消先持久deny而非证明设备关闭；cut含全部出口与历史许可，后续确认不改原unknown。旧clear失效隐藏当前但保留历史；closure原件和保护IPC仍缺，BODY及磁盘运行未验
+check_storage.py[TD8M]: F:在91表内存组合核验公开修订取消及证据封存并绑定报告 | R:code:docs/contracts/c02-command-view/storage.sql,code:docs/contracts/c08-controller/check_command.py | A:396项检查及report和staged绑定 | S:预期成员手写；缺写与主动异常比全库，未提交取消前序不能绕单调约束。BODY为合成，原件撤回只验投影遮蔽；29输入核字节不重跑，不证明真实权限并发或磁盘设备
+storage-report.json[SQ5L]: F:记录396项公开修订取消存储检查及二十九输入摘要 | R:code:docs/contracts/c02-command-view/check_storage.py | A:91表内存约束及故障切点结果 | S:批准为false且SQLite非产品批准；BODY与权威为合成，主动异常不证磁盘崩溃，真实HTTP和IPC及设备未验
+storage.sql[FD9M]: F:声明公开命令修订取消账本及完整证据索引的十四表约束 | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c08-controller/command.sql | A:91表组合与延迟配对封存及三个视图 | S:每State必须完整record和snapshot；证据双向全集固定排序，取消永久禁普通许可但允许迟到报告。前序提交及进展单调，原回执不变；闭包BODY不证设备关闭，非生产迁移

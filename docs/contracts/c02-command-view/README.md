@@ -65,7 +65,7 @@ CancelOperation携带原CancelIdentity，不回指完整CancelReceipt摘要，�
 
 状态含requested、confirmed、unsupported、failed、indeterminate、too_late：
 
-- requested仅表示可靠受理；future_writes=pending表示完整关闭仍在处理。
+- requested仅表示可靠受理；future_writes=pending表示完整关闭仍在处理。后续[取消保护候选](../c02-cancellation/README.md)明确ordinary/all两阶段：仅all证据才可公开closed，ordinary关闭后可能仍需协作取消发送。
 - confirmed须可靠后续写关闭和模块声明的取消标准证据；未发路径须覆盖全部历史，不能只看最后一次许可。
 - unsupported表示固定能力只支持发送前取消而原命令已发送；仍保留观察及资源，不能把unknown改成failed。
 - failed是明确取消操作失败；indeterminate是取消效果不确定，保持保护并查原。后续有可靠证据可从indeterminate追加确定状态，不得回到requested或重发设备动作。
@@ -74,7 +74,7 @@ CancelOperation携带原CancelIdentity，不回指完整CancelReceipt摘要，�
 
 原命令尚未终结时可按确认标准转cancelled；已经finished则phase/outcome/terminal_revision不变，必要时追加Resolution。取消确认和资源释放分开；原unknown可以在取消confirmed后仍unresolved、paused_latched。接管effective也不能替代取消确认。
 
-协作式取消是可能改变设备的控制动作，必须使用固定取消政策、完整父命令绑定及独立的一次性许可。不能复用旧动作permit，也不能绕过77表“终态禁止普通许可”触发器。**本批未定义这个保护执行分支的完整IPC/DDL**：下一统一执行契约须明确cancellation_id、parent command/hold、guard、单次发送意图及取消完成证据映射；在它完成并验收前不得启用cooperative。此处是待完成全功能设计，不是将原有协作取消范围删除。OBS首闭环仅before_dispatch_only。
+协作式取消是可能改变设备的控制动作，必须使用固定取消政策、完整父命令绑定及独立的一次性许可。不能复用旧动作permit，也不能绕过77表“终态禁止普通许可”触发器。后续[IPC0.7候选](../c02-cancellation/README.md)已定义独立取消执行、ordinary/all关闭、专属许可及四类屏障完整覆盖。新增物理表、共享签发水位及closure/result原件FK仍需归并；完成并验收前不得启用cooperative。此处是待完成全功能设计，不是将原有协作取消范围删除。OBS首闭环仅before_dispatch_only。
 
 ## 5. 证据快照和游标
 
@@ -101,7 +101,7 @@ EvidenceRecord公开五类：原结构化observation、命令级decision、relea
 
 [check_contracts.py](check_contracts.py)执行生成字节、Schema、OpenAPI、公开投影和合成关联；[reference_model.py](reference_model.py)用字典模拟串行原子受理，可信授权、时钟、closure与证据均为人工前提。它不执行真实HTTP、CSRF/TLS、签名游标、SQLite、完整取消IPC、并发或设备。
 
-公开修订/取消Key及receipt/证据索引已有[91表组合候选](STORAGE.md)，396项内存检查另记于storage-report，不扩大本HTTP的160项覆盖。后续仍需取消保护执行IPC/一次性许可、closure及证据原件完整FK；统一SDK/权限矩阵/面板方法及GUI迁移；严格数字和时间模型统一。已有七接口及固定投影规则不再作为“完全没有格式”的缺口。
+公开修订/取消Key及receipt/证据索引已有[91表组合候选](STORAGE.md)，396项内存检查另记于storage-report，不扩大本HTTP的160项覆盖。取消保护IPC及一次性许可已有0.7候选，后续仍需保护执行物理写集、共享签发分配器、closure及证据原件完整FK；统一SDK/权限矩阵/面板方法及GUI迁移；严格数字和时间模型统一。已有七接口及固定投影规则不再作为“完全没有格式”的缺口。
 
 ```powershell
 & docs/contracts/.venv/Scripts/python.exe docs/contracts/c02-command-view/build_contracts.py --check

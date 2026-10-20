@@ -62,7 +62,7 @@
 
 SQL已对decision、release及resolution建立物理来源关联；invalidation验证同命令subject，observation与保护Ref仍由BODY承载。来源Ref与view_digest分开保存，不把白名单投影摘要当作原件摘要。合法JSON字符串也可能含秘密，真实过滤必须另验。
 
-剩余设计冻结项：取消cut/outbox与完整保护IPC的类型化绑定、closure/result验证记录的原件FK、cooperative独立单次许可与完成证据；observation/失效保护原件的完整持久映射；其他三类屏障与通用保护outbox；统一SDK及权限/面板迁移、容量/留存/归档规则。该91表组合推进公开持久化缺口，不代表Controller所有表或全系统已关闭。BODY提供者的设计和实现状态分开，未定义来源链的部分仍是设计缺口。
+后续[IPC0.7候选](../c02-cancellation/README.md)已提供取消cut、ordinary/all关闭、协作执行/许可和完成证据格式；仅all关闭映射公开future_writes=closed。91表保持原普通许可布局，未假称已运行新增保护分支。剩余设计冻结项：普通/保护共享签发分配器、保护执行物理写集与closure/result原件FK；observation/失效保护原件的完整持久映射；其他三类屏障与通用保护outbox；统一SDK及权限/面板迁移、容量/留存/归档规则。该91表组合推进公开持久化缺口，不代表Controller所有表或全系统已关闭。BODY提供者的设计和实现状态分开，未定义来源链的部分仍是设计缺口。
 
 ## 5. 故障验收与复验
 

@@ -1,0 +1,1321 @@
+{
+  "all_passed": true,
+  "cases_passed": 256,
+  "approved": false,
+  "scope": "46帧取消保护格式及合成关联与有限消费模型",
+  "runtime_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "cancellation.schema.json生成字节",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ipc.schema.json生成字节",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整46帧",
+      "expected": 46,
+      "observed": 46
+    },
+    {
+      "name": "HELLO结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "HELLO拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "HELLO_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "HELLO_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "OPEN_GATE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "OPEN_GATE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "OPEN_GATE_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "OPEN_GATE_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "DISPATCH结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "DISPATCH拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "SEND_REPORT结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "SEND_REPORT拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "EVIDENCE_CANDIDATE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "EVIDENCE_CANDIDATE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "REPORT_STORED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "REPORT_STORED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "FENCE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "FENCE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "FENCE_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "FENCE_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "QUERY_BARRIER结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "QUERY_BARRIER拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CLOSE_GATE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CLOSE_GATE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CLOSE_GATE_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CLOSE_GATE_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "GUARD_INSTALL结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "GUARD_INSTALL拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "GUARD_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "GUARD_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "AUTH_FENCE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "AUTH_FENCE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "AUTH_FENCE_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "AUTH_FENCE_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "TIME_FENCE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "TIME_FENCE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "TIME_FENCE_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "TIME_FENCE_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "RUN_FENCE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "RUN_FENCE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "RUN_FENCE_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "RUN_FENCE_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ENCODE_PACKET结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "ENCODE_PACKET拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "PACKET_ENCODING_FAILED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "PACKET_ENCODING_FAILED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "PREPARE_PACKET结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "PREPARE_PACKET拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "PREPARE_PACKET_REJECTED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "PREPARE_PACKET_REJECTED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "RESEND_REQUEST结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "RESEND_REQUEST拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "RESEND_DISPATCH结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "RESEND_DISPATCH拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "RESEND_REJECTED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "RESEND_REJECTED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "BARRIER_UNAVAILABLE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "BARRIER_UNAVAILABLE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "BARRIER_STORED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "BARRIER_STORED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_FENCE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_FENCE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_FENCE_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_FENCE_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_GUARD结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_GUARD拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_GUARD_ACK结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_GUARD_ACK拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ENCODE_CANCEL_PACKET结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "ENCODE_CANCEL_PACKET拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "PREPARE_CANCEL_PACKET结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "PREPARE_CANCEL_PACKET拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_ENCODING_FAILED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_ENCODING_FAILED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_PREPARE_REJECTED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_PREPARE_REJECTED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "DISPATCH_CANCEL结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "DISPATCH_CANCEL拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_RESEND_REQUEST结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_RESEND_REQUEST拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_RESEND_REJECTED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_RESEND_REJECTED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_SEND_REPORT结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_SEND_REPORT拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_REPORT_STORED结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_REPORT_STORED拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_EVIDENCE_CANDIDATE结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_EVIDENCE_CANDIDATE拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "QUERY_CANCEL_EXECUTION结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "QUERY_CANCEL_EXECUTION拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_EXECUTION_STATUS结构",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "CANCEL_EXECUTION_STATUS拒绝降级",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_FENCE封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_FENCE响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_FENCE_ACK封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_FENCE_ACK响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_GUARD封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_GUARD响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_GUARD_ACK封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_GUARD_ACK响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ENCODE_CANCEL_PACKET封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ENCODE_CANCEL_PACKET响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "PREPARE_CANCEL_PACKET封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "PREPARE_CANCEL_PACKET响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_ENCODING_FAILED封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_ENCODING_FAILED响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_PREPARE_REJECTED封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_PREPARE_REJECTED响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "DISPATCH_CANCEL封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "DISPATCH_CANCEL响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_RESEND_REQUEST封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_RESEND_REQUEST响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_RESEND_REJECTED封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_RESEND_REJECTED响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_SEND_REPORT封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_SEND_REPORT响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_REPORT_STORED封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_REPORT_STORED响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_EVIDENCE_CANDIDATE封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_EVIDENCE_CANDIDATE响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "QUERY_CANCEL_EXECUTION封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "QUERY_CANCEL_EXECUTION响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_EXECUTION_STATUS封闭正文",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CANCEL_EXECUTION_STATUS响应关联形状",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "HELLO必选command_cancel_deny",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "HELLO必选separate_cancel_execution",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "HELLO必选complete_cancel_transmission_fence",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "HELLO_ACK必选command_cancel_deny",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "HELLO_ACK必选separate_cancel_execution",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "HELLO_ACK必选complete_cancel_transmission_fence",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Policy结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ExecutionPlan结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Guard结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Packet结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Transmission结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Cut结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "DenySnapshot结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "计数拒绝'01'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'-1'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'1\\n'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'1.0'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'100000000000000000000'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "完整deny快照",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "错库",
+      "expected": "owner",
+      "observed": "owner"
+    },
+    {
+      "name": "漏项",
+      "expected": "incomplete",
+      "observed": "incomplete"
+    },
+    {
+      "name": "重复",
+      "expected": "order",
+      "observed": "order"
+    },
+    {
+      "name": "旧修订",
+      "expected": "incomplete",
+      "observed": "incomplete"
+    },
+    {
+      "name": "不得降all为ordinary",
+      "expected": "regression",
+      "observed": "regression"
+    },
+    {
+      "name": "较旧快照不开闸",
+      "expected": "stale",
+      "observed": "stale"
+    },
+    {
+      "name": "完整普通cut",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "漏出口",
+      "expected": "incomplete",
+      "observed": "incomplete"
+    },
+    {
+      "name": "错水位",
+      "expected": "cut",
+      "observed": "cut"
+    },
+    {
+      "name": "重复出口",
+      "expected": "order",
+      "observed": "order"
+    },
+    {
+      "name": "精确取消ACK",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "遗漏准备",
+      "expected": "preparation",
+      "observed": "preparation"
+    },
+    {
+      "name": "遗漏许可",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "过早生效",
+      "expected": "time",
+      "observed": "time"
+    },
+    {
+      "name": "过晚生效",
+      "expected": "time",
+      "observed": "time"
+    },
+    {
+      "name": "未串行关闭",
+      "expected": "gate_order",
+      "observed": "gate_order"
+    },
+    {
+      "name": "错target",
+      "expected": "target",
+      "observed": "target"
+    },
+    {
+      "name": "新worker不能回复旧出口",
+      "expected": "exit",
+      "observed": "exit"
+    },
+    {
+      "name": "不能降已发送为未发",
+      "expected": "downgrade",
+      "observed": "downgrade"
+    },
+    {
+      "name": "无已知发送仍须未消费证明",
+      "expected": "no_unconsumed_proof",
+      "observed": "no_unconsumed_proof"
+    },
+    {
+      "name": "完整all切点",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "all取消屏障结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭允许效果未知",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "all不能漏保护许可",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "all不能漏编码准备",
+      "expected": "preparation",
+      "observed": "preparation"
+    },
+    {
+      "name": "all不得替换原cut",
+      "expected": "predecessor",
+      "observed": "predecessor"
+    },
+    {
+      "name": "关闭证据结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "all完整关闭",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "仍可签取消许可不能报all关闭",
+      "expected": "issuance_open",
+      "observed": "issuance_open"
+    },
+    {
+      "name": "关闭证据不能漏出口",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "保护计划",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "不能再建第二执行",
+      "expected": "one_execution",
+      "observed": "one_execution"
+    },
+    {
+      "name": "普通出口未关闭不能执行取消",
+      "expected": "ordinary_open",
+      "observed": "ordinary_open"
+    },
+    {
+      "name": "动态参数未验证拒绝",
+      "expected": "parameters",
+      "observed": "parameters"
+    },
+    {
+      "name": "取消计划禁止自环",
+      "expected": "graph",
+      "observed": "graph"
+    },
+    {
+      "name": "取消计划不能重复primitive",
+      "expected": "graph",
+      "observed": "graph"
+    },
+    {
+      "name": "独立许可允许一次发送",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "持久标志不能授权伪造许可",
+      "expected": "intent",
+      "observed": "intent"
+    },
+    {
+      "name": "发送拒绝durable_intent",
+      "expected": "gate",
+      "observed": "gate"
+    },
+    {
+      "name": "发送拒绝gate_open",
+      "expected": "gate",
+      "observed": "gate"
+    },
+    {
+      "name": "发送拒绝authorization_current",
+      "expected": "authorization",
+      "observed": "authorization"
+    },
+    {
+      "name": "发送拒绝time_qualified",
+      "expected": "time",
+      "observed": "time"
+    },
+    {
+      "name": "发送拒绝ordinary_closure_valid",
+      "expected": "ordinary_open",
+      "observed": "ordinary_open"
+    },
+    {
+      "name": "发送拒绝deny_stage",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "发送拒绝issuance_closed",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "发送拒绝execution_status",
+      "expected": "execution",
+      "observed": "execution"
+    },
+    {
+      "name": "发送拒绝hold_valid",
+      "expected": "resources",
+      "observed": "resources"
+    },
+    {
+      "name": "发送拒绝now",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "发送拒绝now",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "发送拒绝transmissions_issued",
+      "expected": "budget",
+      "observed": "budget"
+    },
+    {
+      "name": "发送拒绝next_issued_revision",
+      "expected": "ordinal",
+      "observed": "ordinal"
+    },
+    {
+      "name": "发送拒绝pending_permit",
+      "expected": "pending",
+      "observed": "pending"
+    },
+    {
+      "name": "发送拒绝initial_sent_primitives",
+      "expected": "replay",
+      "observed": "replay"
+    },
+    {
+      "name": "发送拒绝bytes",
+      "expected": "bytes",
+      "observed": "bytes"
+    },
+    {
+      "name": "接管优先于旧取消许可",
+      "expected": "guard",
+      "observed": "guard"
+    },
+    {
+      "name": "期限起点可发送",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "即时保护无UTC资格仍有合法结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "即时保护不因NTP不可用拒绝",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "即时保护仍要求有效单调运行域",
+      "expected": "runtime_clock",
+      "observed": "runtime_clock"
+    },
+    {
+      "name": "即时保护仍受期限约束",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "不能自行关闭批准时间要求",
+      "expected": "time_policy",
+      "observed": "time_policy"
+    },
+    {
+      "name": "即时guard不能夹带旧UTC证据",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "要求UTC时不能缺批准政策",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "先消费再I/O",
+      "expected": "consume_before_io",
+      "observed": "consume_before_io"
+    },
+    {
+      "name": "消费后崩溃保持未知",
+      "expected": "unknown",
+      "observed": "unknown"
+    },
+    {
+      "name": "原消息重投只读原消费",
+      "expected": "cached",
+      "observed": "cached"
+    },
+    {
+      "name": "同许可异内容拒绝",
+      "expected": "identity_conflict",
+      "observed": "identity_conflict"
+    },
+    {
+      "name": "账本只有一次消费",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "协议重传结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同包新许可协议重传",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "消费未知不能协议重传",
+      "expected": "resend",
+      "observed": "resend"
+    },
+    {
+      "name": "收到ACK不能继续重传",
+      "expected": "resend",
+      "observed": "resend"
+    },
+    {
+      "name": "保护关闭不能重传",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "只编码关联",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "编码字节错配",
+      "expected": "bytes",
+      "observed": "bytes"
+    },
+    {
+      "name": "编码到期不临时重做",
+      "expected": "expired_or_exit",
+      "observed": "expired_or_exit"
+    },
+    {
+      "name": "未证明纯编码不放行",
+      "expected": "encoder",
+      "observed": "encoder"
+    },
+    {
+      "name": "FENCE新增完整取消覆盖结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "FENCE取消传输覆盖",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "FENCE拒漏取消许可",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "FENCE不得假匹配selector",
+      "expected": "selector",
+      "observed": "selector"
+    },
+    {
+      "name": "AUTH_FENCE新增完整取消覆盖结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "AUTH_FENCE取消传输覆盖",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "AUTH_FENCE拒漏取消许可",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "AUTH_FENCE不得假匹配selector",
+      "expected": "selector",
+      "observed": "selector"
+    },
+    {
+      "name": "TIME_FENCE新增完整取消覆盖结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "TIME_FENCE取消传输覆盖",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "TIME_FENCE拒漏取消许可",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "TIME_FENCE不得假匹配selector",
+      "expected": "selector",
+      "observed": "selector"
+    },
+    {
+      "name": "RUN_FENCE新增完整取消覆盖结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "RUN_FENCE取消传输覆盖",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "RUN_FENCE拒漏取消许可",
+      "expected": "coverage",
+      "observed": "coverage"
+    },
+    {
+      "name": "RUN_FENCE不得假匹配selector",
+      "expected": "selector",
+      "observed": "selector"
+    },
+    {
+      "name": "查询原记录",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "缓存丢失只有未知无重发许可",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "新进程不回答旧执行",
+      "expected": "exit",
+      "observed": "exit"
+    },
+    {
+      "name": "原报告提交后确认",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "未提交不得释放报告缓存",
+      "expected": "not_stored",
+      "observed": "not_stored"
+    },
+    {
+      "name": "报告确认不能换原正文",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "取消裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消效果确认",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "只有关闭无效果不确认",
+      "expected": "effect",
+      "observed": "effect"
+    },
+    {
+      "name": "只有ordinary关闭不确认",
+      "expected": "closure",
+      "observed": "closure"
+    },
+    {
+      "name": "父unknown不能判too_late",
+      "expected": "not_definite",
+      "observed": "not_definite"
+    },
+    {
+      "name": "父确定完成可判too_late",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "发送前取消完整未发可确认",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "发送前取消最后未发不足",
+      "expected": "not_sent_unproven",
+      "observed": "not_sent_unproven"
+    },
+    {
+      "name": "仅发送前模式可判不支持已发取消",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "旧出口退休可封闭后续写",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "开放证据必须另验Schema与来源",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c05-protection/PROTOCOL.md": "07f3b408b39e54acd90c3925b7bc8d55fa6de33db62f0c87d43460cb6f0f3afe",
+    "docs/contracts/c05-protection/build_protocol.py": "da6c252af3e6fcb580f892fce2b2051fadea1d368ca93994f8992c81e61aeae7",
+    "docs/contracts/c05-protection/check_protocol.py": "3c51df2d386c50cae17364fa3c139deb3f9caa062e826e535203e7206ca596d2",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c05-protection/ipc-v05.schema.json": "c4822441ecbdc034a50bc1fac1fb969551594240634a2e0d6ac2f42ea2da2277",
+    "docs/contracts/c05-protection/protection.openapi.json": "a1e9d53cd9dd4a2ac8ef5b291d23f76a5932e542651408ffe1c6c0911860f089",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c09-panel-ipc/binding.schema.json": "1a46eb10b421a98c4a971b21b57cf17400e829277de5963b77b2b47b3986b2ed",
+    "docs/contracts/c09-panel-ipc/ipc.schema.json": "48e8a646655ccf3367026bebdc8e9d599225954e9fcad67f73465dd2ef88a740",
+    "docs/contracts/c05-protection/protection.schema.json": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72",
+    "docs/contracts/c09-panel-ipc/cases.json": "8a6ff69620cefa99c2e1e92427d166f8e1918ce647373e76668d667b748bf391",
+    "docs/contracts/c09-panel/channel-v02.schema.json": "f6e71178af8ffc8a8d784aab1416a0a4e30fedbc589e2032171f9a9581b64a1f",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/build_execution_ipc.py": "ae36c783e0ce39fb1b86275b3578f474e6f8eaad4080dd2f9eef3207a7daf3ae",
+    "docs/contracts/c08-controller/execution-ipc.schema.json": "23c8603fd6f05fc4c445f318a99f609c776f1fc79b5df2262d62d2591514b98b",
+    "docs/contracts/c08-controller/check_execution_ipc.py": "183943863074507eb10778cd8d90345d8927821293442090616de8b038ee021d",
+    "docs/contracts/draft4/first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c08-controller/lifecycle.schema.json": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c02-admission/admission.schema.json": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7",
+    "docs/contracts/c02-cancellation/cancellation.schema.json": "5a2c462a3a50d23077d16818751f4d990aa3c833d19ef5548ec3c7ccb9e8cbf3",
+    "docs/contracts/c02-cancellation/ipc.schema.json": "d71b04fec2004ed351b0fb8aa43fb95db7ffc147d98741f3d266f196b7be07ad",
+    "docs/contracts/c02-command-view/README.md": "7ba6bb9790701ef2690f2a0c4882a151b99255507c7d360c8caa349350e740c1",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-cancellation/README.md": "19c0c2df545ac42fbdd62b7045dc812e0f8fd62a98cbc55c387742142cc5b8fa",
+    "docs/contracts/c02-cancellation/build_contracts.py": "137ae07e8603252998745dd6ed818f3287060541abce077301007079a145278f",
+    "docs/contracts/c02-cancellation/reference_model.py": "48926177faee6991c2dfad02099f33661f6574cfb92014d7f7c4a03ea17dea50",
+    "docs/contracts/c02-cancellation/check_contracts.py": "42d7360f87936bfebb915f23176843101d50e0f4002d2c96805ea3ea4683617e"
+  }
+}

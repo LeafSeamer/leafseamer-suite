@@ -31,7 +31,7 @@ C05细化：[事件与同步设计](rebirth-c05-event-sync-design.md)给出ES01�
 
 C04细化：[自动化执行设计](rebirth-c04-automation-design.md)将条件／参数语义、发布摘要与完整证明、跨版本单活动槽、延迟及恢复边界列为AR01—AR06候选，附EX01—EX32（均未运行）。当前Schema容量与proof容量错位、递归投影误删业务键及proof误识别列入下一版修订。C04设计已有具体稿，尚不代表全部旧能力可表达；C05／C06依赖及候选审阅仍为设计门槛。
 
-DF基础细化进展：[DF02](rebirth-df02-runtime-design.md)、[DF03](rebirth-df03-time-profile-design.md)、[DF04](rebirth-df04-storage-design.md)、[DF05](rebirth-df05-release-design.md)、[DF06](rebirth-df06-internal-trust-design.md)均已给出具体候选及故障验收。D／R／P／DB／AF／IA新推荐仍待审阅，参考检查不关闭运行门槛。DF06发现跨Controller同名provider的inbox命名空间缺口，并明确内部429等错误映射及因果采样协议需要下一版显式归并；不暗改draft.4。
+DF基础细化进展：[DF02](rebirth-df02-runtime-design.md)、[DF03](rebirth-df03-time-profile-design.md)、[DF04](rebirth-df04-storage-design.md)、[DF05](rebirth-df05-release-design.md)、[DF06](rebirth-df06-internal-trust-design.md)均已给出具体候选及故障验收。2026-10-20用户已确认DF03应用参考时钟reference-bound/1路线，其精确profile及字段仍待冻结；其他D／R／P／DB／AF／IA新推荐的批准状态以当前收敛清单为准，参考检查不关闭运行门槛。DF06发现跨Controller同名provider的inbox命名空间缺口，并明确内部429等错误映射及因果采样协议需要下一版显式归并；不暗改draft.4。
 
 | ID | 关联决策 | 结论与处理 | 验收定位 |
 | --- | --- | --- | --- |
@@ -170,7 +170,7 @@ Q72已确认，首闭环草案已开始细化；全系统设计完成条件、�
 
 当前统一关闭视图见[设计定稿收敛清单](rebirth-design-closure.md)：按C01—C12列出设计缺口和实现后证据，汇总待审阅推荐及合并顺序。GUI、日历和TUF已有精确候选，尚非完整依赖锁或制品验收；历史“待选择/待盘点”记录不能覆盖最新状态。本清单仍未关闭阶段0。
 
-2026-10-20收敛审阅以该清单1.1的当前状态表及1.2的HTTP/IPC归并裁决为准：已有局部格式不再重复立项；真实提供者未实现与提供者契约未定义分开。10份OpenAPI的140条声明中有14处同服务旧/新替换，不能直接拼接为统一SDK；双authority共用路径不共享权限空间。DF03时间模型仍待明确选择，其余独立设计继续推进；本次没有批准新基线或开始业务实现。
+2026-10-20收敛审阅以该清单1.1的当前状态表及1.2的HTTP/IPC归并裁决为准：已有局部格式不再重复立项；真实提供者未实现与提供者契约未定义分开。历史盘点的10份OpenAPI有140条声明、14处同服务旧/新替换，后续增量以该清单当前统计为准，不能直接拼接为统一SDK；双authority共用路径不共享权限空间。DF03已明确采用reference-bound/1，后续归并按此路线推进；模型批准不代表新机器基线或运行profile已获批准，业务实现未开始。
 
 2026-10-18补充：[工具链收敛](rebirth-toolchain-lock-design.md)记录精确候选及18包官方元数据。尚未解析完整传递锁、核验tarball或运行构建，不能据此关闭设计/制品门槛。用户新增每轮完成后本地commit要求；推送、发布、部署和真实设备操作仍分别授权。
 

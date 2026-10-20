@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录终态资源候选及上周期推送与本周期交付进度 | R:code:docs/contracts/c08-controller/LIFECYCLE.md | A:系统设计历程和三轮提交计数 | S:上周期f6ed708已推rebirth；当前新周期第1轮仅本地提交，候选非批准，生命周期SQL及业务运行未完成
+DEVELOPMENT_MEMO.md[SO5L]: F:记录资源持久化候选及本周期第二轮交付进度 | R:code:docs/contracts/c08-controller/RESOURCE_STORAGE.md | A:系统设计历程和三轮提交计数 | S:前轮295e28e仅本地；本轮第2轮不推送。272项内存与120项快照分别记账，命令修订联接和运行仍缺，候选非批准
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总设计关闭状态及终态资源和接口归并缺口 | R:code:docs/rebirth-readiness.md,code:docs/contracts/c08-controller/LIFECYCLE.md | A:C01至C12关闭表及接口替换清单 | S:终态资源已有模型和写集但DDL未落实；51表及三十帧仍为候选，其他屏障和P1/P4未完成。DF03待选择，资料存在非全系统冻结
+rebirth-design-closure.md[SQ8M]: F:汇总全系统关闭状态及资源存储与接口归并缺口 | R:code:docs/rebirth-readiness.md,code:docs/contracts/c08-controller/RESOURCE_STORAGE.md | A:C01至C12关闭表及接口替换清单 | S:66表已含资源失效恢复，命令修订与Resolution联接和保护outbox仍缺；其他屏障及P1/P4未完成。DF03待选择，资料存在非全系统冻结
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -435,9 +435,13 @@ check_barrier_attempt.py[TD8S]: F:在51表内存组合核验尝试历史ACK及�
 check_execution_ipc.py[TN8L]: F:核验三十帧及编码重传双清单和ACK查询关联并绑定报告 | R:code:docs/contracts/c08-controller/build_execution_ipc.py,code:docs/contracts/c05-protection/check_protocol.py | A:155项检查及report与staged绑定 | S:本地Registry不联网，实际JCS不证明权威；原业务锚与当前守卫分开，旧查询正文固定。持久与时钟为人工前提，十六输入核字节不重跑，未实现真实IPC或完整解码
 execution-ipc-report.json[SQ5L]: F:记录155项逐传输IPC检查及十六输入摘要 | R:code:docs/contracts/c08-controller/check_execution_ipc.py | A:三十帧结构与合成关联结果 | S:批准为false，真实编码身份IPC时钟磁盘设备均未验；报告绑定不扩大旧帧语义覆盖
 execution-ipc.schema.json[FN8L]: F:声明逐传输许可编码准备及四类尝试屏障的三十帧IPC | R:code:docs/contracts/c08-controller/build_execution_ipc.py,code:docs/contracts/c05-protection/protocol.schema.json | A:ipc/0.6.0-transmission-draft.1及76个defs | S:只编码往返与发送分离，累计ACK不归具体ordinal；缓存缺失无覆盖或生效tick。新特性必选，旧借用词法仍在，Schema不证明方向身份或耐久，不修改旧接受集
-LIFECYCLE.md[SR9S]: F:设计命令终态资源释放与迟到证据的机器字段和持久写集 | R:code:docs/contracts/c08-controller/lifecycle.schema.json,code:docs/contracts/c08-controller/lifecycle_model.py,code:docs/contracts/c08-controller/fence.sql | A:提供者及转换和T1/T2/T6归并约定 | S:自动化open_permit非全局资源全集；迟到事实可产生双风险占用，不能以唯一约束丢弃。unknown清理需核对且终态不改；回执不接受调用方自报，120项仅快照，生命周期DDL仍待落实
+LIFECYCLE.md[SR9S]: F:设计命令终态资源释放字段写集并连接资源存储候选 | R:code:docs/contracts/c08-controller/RESOURCE_STORAGE.md,code:docs/contracts/c08-controller/lifecycle_model.py | A:提供者与转换和T1/T2/T6归并约定 | S:unknown核对不改终态或锁存，自动化许可视图非全资源。66表落实资源而非command_revision及Resolution；120项仅快照，资源视图不可直接当公共clear或READY
 build_lifecycle.py[XN8S]: F:生成终态资源及提供者回执的十八模型局部Schema | R:code:docs/contracts/c08-controller/LIFECYCLE.md | A:build及check与生命周期0.1候选 | S:根拒直接实例而按defs验证；PacketRef保留原双字段，计数严格U20。未知clear需核对，局部State不是完整公共CommandRecord，生成不切SDK权威
 check_lifecycle.py[TR8M]: F:以人工预期核验终态释放重试和迟到风险并绑定报告 | R:code:docs/contracts/c08-controller/lifecycle_model.py,code:docs/contracts/c08-controller/build_lifecycle.py | A:120项检查与report和staged绑定 | S:提供者回执和期限为合成上下文，重算摘要仍核可信原件；未运行SQL或真实提供者。十一输入字节核对不重跑，不能代替持久化和并发验收
-lifecycle-report.json[SQ5L]: F:记录120项终态资源快照检查和十一输入摘要 | R:code:docs/contracts/c08-controller/check_lifecycle.py | A:Schema及有限关联和风险投影结果 | S:批准为false；SQLite及真实服务设备均未执行，引用SQL只绑定来源字节不证明执行
+lifecycle-report.json[SQ5L]: F:记录120项终态资源快照回归和十一输入摘要 | R:code:docs/contracts/c08-controller/check_lifecycle.py | A:Schema及有限关联和风险投影结果 | S:批准为false；文稿新增存储入口不扩大本报告范围，SQLite及真实服务设备均未执行
 lifecycle.schema.json[FN8L]: F:声明终态状态资源切点释放证据与转换的十八个局部模型 | R:code:docs/contracts/c08-controller/build_lifecycle.py | A:controller-lifecycle0.1具名defs | S:根拒直接实例且对象封闭；unknown清理须Resolution，Policy无retry时尝试仅一。合法ProviderReceipt不取得真实权威，非完整公共GET响应或数据库DDL
 lifecycle_model.py[TR8M]: F:判定合成生命周期转换完整资源切点和迟到占用风险 | R:code:docs/contracts/c08-controller/build_lifecycle.py,code:docs/contracts/c08-controller/check_lifecycle.py | A:transition_error及release_error和hold_blockers | S:只读有限上下文无I/O；核对固定终态且不清锁存，safe_failure另绑retry政策。旧释放重新核当前cut，迟到in_flight只推翻never_sent，不自动推翻效果核销；不实现权威提供者或事务
+RESOURCE_STORAGE.md[SD9T]: F:规定整设备资源占用释放失效与恢复的十五表写集 | R:code:docs/contracts/c08-controller/resource.sql,code:docs/contracts/c08-controller/LIFECYCLE.md | A:66表组合与T1/T2和释放恢复边界 | S:新attempt不追溯推翻旧正确释放，旧强事实仍影响全部依赖。锁住本机新许可不等worker屏障生效；恢复不续跑，命令修订和通用保护outbox仍缺，提供者及运行未验
+check_resource.py[TD8M]: F:在66表内存组合核验资源写集迟到双占用及恢复保护 | R:code:docs/contracts/c08-controller/resource.sql,code:docs/contracts/c08-controller/check_barrier_attempt.py | A:272项参考检查及report和staged绑定 | S:预期手写且仅memory，缺写及主动异常比较全部表；原件权威仍为夹具，SQL合法不证时效或JCS。二十二输入核字节不重跑，未运行磁盘并发IPC或设备
+resource-report.json[SQ5L]: F:记录272项资源存储参考结果及二十二输入摘要 | R:code:docs/contracts/c08-controller/check_resource.py | A:66表内存组合与实际引擎版本 | S:批准为false，SQLite3.50.4非产品引擎批准；原件为合成，主动异常不证掉电，真实提供者并发IPC磁盘设备未验
+resource.sql[FD9M]: F:声明资源占用释放验证失效及保护恢复十五表附属布局 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/barrier-attempt.sql,code:docs/contracts/c08-controller/RESOURCE_STORAGE.md | A:STRICT双向配对与完整集合封存及风险视图 | S:两来源共用风险，迟到事实原子锁存但保留双hold；关闭不可再发，完整历史含已核销项。恢复覆盖全部旧失效且不覆盖后来新项，证明撤回重开保护；BODY权威与命令终态外验，非生产迁移

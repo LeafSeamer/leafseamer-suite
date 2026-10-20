@@ -2,6 +2,8 @@
 
 状态：待审阅，`controller-lifecycle/0.1.0-draft.1`。本候选明确终态与资源裁决的字段、可信输入、转换及持久写集，供下一统一SDK和Controller存储归并。局部模型由[build_lifecycle.py](build_lifecycle.py)生成；不修改已确认draft.4，不新增可运行服务。
 
+后续持久化：[资源存储候选](RESOURCE_STORAGE.md)已落实15表附属层及66表内存组合，涵盖整设备占用、完整释放、迟到失效和保护恢复；下文“下一DDL”中资源子域已有此具体成果。command_revision、Resolution/T6及公共状态投影仍待联接，不能将资源视图直接当作公共clear或READY。
+
 ## 1. 已知约束与本轮推荐
 
 已确认约束：finished后不改phase/outcome；unknown可以追加resolution，只有独立释放证据齐备后才clear；接管effective、命令完成与资源可写分开；条件重试只允许尚未终结的命令。OBS完成四帧只适用于已批准的Cut场景；当前值相同、连接重建和监督退出均不是通用释放证明。（来源：[F02/F03](../../rebirth-f02-f03-design.md)、[F06/F07第3节](../../rebirth-f06-f07-design.md)、[DF04第4节](../../rebirth-df04-storage-design.md)。）

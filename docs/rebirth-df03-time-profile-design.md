@@ -282,3 +282,11 @@ U4 = T2 + E2 + Dplus
 TP39—TP43只是独立算术参考，可离线核算；TP37/38为现有接口资格反例，其余需未来采集器及平台故障测试。本轮不执行真实NTP、修改系统时间或注入宿主故障。
 
 冻结顺序：9.2模型选择已完成；接着冻结原生协议库及双平台制品、NTS启动信任、时代／闰秒／上游E包络与计时profile，完成候选Schema和正反例归并。system-bound仅保留历史／诊断用途，不作运行时回退路线。指定NTP、两平台与完整功能目标不变；完成模型选择不提前开启业务实现。
+
+## 10. 已选路线的可校验字段候选
+
+2026-10-20新增[reference-time/0.1.0-draft.1](contracts/df03-reference/README.md)，将第9节落实为独立Schema和离线参考模型。Source/Profile/Approval/Policy及运行域形成完整Binding；Request、认证／时代／误差原件、Exchange、Anchor、Assessment、Failure、AuthorityState、Invalidation和UtcGuard均有封闭字段及独立摘要投影。此为已选模型的字段细化，尚未替换公共draft.4／IPC0.3，也未批准精确profile。
+
+本候选明确原始NTP秒／小数／时代的有理数换算、相对观测delta的速率包络、m1起算交换年龄、m4起算样本年龄、上游年龄保守推进、发布时重新判定和发送前重新外推。申请／证据／锚点／当前指针同writer提交；同请求重复只读历史，失效推进代次并关闭新资格，TIME屏障完成与本机失效分开。新合格样本不恢复自动化、旧场次或旧许可。
+
+已执行的检查范围及输入摘要见[独立参考报告](contracts/df03-reference/reference-report.json)。合成上下文不证明真实parser、NTS、上游误差或平台计时，内存字典顺序不证明SQLite／IPC／掉电。剩余实施前设计为：上述字段到公共ClockSample/TimeBoundEvidence/Assessment和内部查询OpenAPI、TimeGuard/IPC特性、C06 ScheduleGuard的同版映射；完整物理写集；精确协议库和制品、冷启动信任与双平台profile资格方法。已有字段不再重复立项为“尚无格式”。

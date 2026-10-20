@@ -1,0 +1,1197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/df03-reference/reference.schema.json",
+  "title": "reference-time/0.1.0-draft.1",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "UInt": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Positive": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "Signed": {
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]{0,29})$(?![\\s\\S])"
+    },
+    "Word": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,9})$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Interval": {
+      "type": "object",
+      "properties": {
+        "lower_ns": {
+          "$ref": "#/$defs/Signed"
+        },
+        "upper_ns": {
+          "$ref": "#/$defs/Signed"
+        }
+      },
+      "required": [
+        "lower_ns",
+        "upper_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Stamp": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "$ref": "#/$defs/Word"
+        },
+        "fraction": {
+          "$ref": "#/$defs/Word"
+        },
+        "era": {
+          "$ref": "#/$defs/Signed"
+        }
+      },
+      "required": [
+        "seconds",
+        "fraction",
+        "era"
+      ],
+      "additionalProperties": false
+    },
+    "Domain": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "provider_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "provider_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "runtime_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "clock_generation": {
+          "$ref": "#/$defs/Positive"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "provider_id",
+        "provider_boot_id",
+        "runtime_binding_ref",
+        "clock_domain_id",
+        "descriptor_digest",
+        "clock_generation"
+      ],
+      "additionalProperties": false
+    },
+    "Source": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "configured_server_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "endpoint_set_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "effective_config_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authentication": {
+          "enum": [
+            "nts",
+            "trusted_network"
+          ]
+        },
+        "trust_policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "source_id",
+        "revision",
+        "configured_server_ref",
+        "endpoint_set_ref",
+        "effective_config_ref",
+        "authentication",
+        "trust_policy_ref",
+        "source_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "collector_artifact_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "protocol_artifact_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "platform_qualification_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "clock_method_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "error_method_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "era_method_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "elapsed_model": {
+          "const": "observed-delta-relative/1"
+        },
+        "elapsed_error_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999999
+        },
+        "span_quantization_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "max_packet_bytes": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "time_scale": {
+          "const": "posix-utc"
+        },
+        "leap_policy": {
+          "const": "normal-only"
+        },
+        "smear_policy": {
+          "const": "forbidden"
+        },
+        "profile_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "profile_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "collector_artifact_ref",
+        "protocol_artifact_ref",
+        "platform_qualification_ref",
+        "clock_method_ref",
+        "error_method_ref",
+        "era_method_ref",
+        "elapsed_model",
+        "elapsed_error_ppm",
+        "span_quantization_ns",
+        "max_packet_bytes",
+        "time_scale",
+        "leap_policy",
+        "smear_policy",
+        "profile_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Policy": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "max_exchange_span_ns": {
+          "$ref": "#/$defs/Positive"
+        },
+        "max_exchange_age_ns": {
+          "$ref": "#/$defs/Positive"
+        },
+        "max_anchor_age_ns": {
+          "$ref": "#/$defs/Positive"
+        },
+        "max_upstream_age_ns": {
+          "$ref": "#/$defs/Positive"
+        },
+        "max_half_width_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "policy_id",
+        "revision",
+        "max_exchange_span_ns",
+        "max_exchange_age_ns",
+        "max_anchor_age_ns",
+        "max_upstream_age_ns",
+        "max_half_width_ns",
+        "policy_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Approval": {
+      "type": "object",
+      "properties": {
+        "approval_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "qualification_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "status": {
+          "enum": [
+            "approved",
+            "revoked"
+          ]
+        },
+        "approval_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "approval_id",
+        "revision",
+        "profile_ref",
+        "source_ref",
+        "qualification_ref",
+        "authority_service_id",
+        "status",
+        "approval_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "$ref": "#/$defs/Domain"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "time_generation": {
+          "$ref": "#/$defs/Positive"
+        }
+      },
+      "required": [
+        "domain",
+        "source_ref",
+        "profile_ref",
+        "approval_ref",
+        "policy_ref",
+        "time_generation"
+      ],
+      "additionalProperties": false
+    },
+    "Request": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "correlation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "endpoint_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "send_before_tick_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "response_deadline_tick_ns": {
+          "$ref": "#/$defs/Positive"
+        },
+        "request_bytes_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "request_size": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "request_id",
+        "revision",
+        "binding",
+        "correlation_ref",
+        "endpoint_ref",
+        "send_before_tick_ns",
+        "response_deadline_tick_ns",
+        "request_bytes_ref",
+        "request_size",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "AuthEvidence": {
+      "type": "object",
+      "properties": {
+        "auth_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "mode": {
+          "enum": [
+            "nts",
+            "trusted_network"
+          ]
+        },
+        "verification_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "bootstrap_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peer_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authentication_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "auth_id",
+        "revision",
+        "request_ref",
+        "response_bytes_ref",
+        "source_ref",
+        "mode",
+        "verification_ref",
+        "bootstrap_ref",
+        "peer_binding_ref",
+        "authentication_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "nts"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "bootstrap_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "bootstrap_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ErrorEvidence": {
+      "type": "object",
+      "properties": {
+        "error_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "error_method_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "qualification_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "t2_error_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "t3_error_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "upstream_age_upper_at_m1_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "provenance_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "error_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "error_id",
+        "revision",
+        "binding",
+        "request_ref",
+        "response_bytes_ref",
+        "error_method_ref",
+        "qualification_ref",
+        "t2_error_ns",
+        "t3_error_ns",
+        "upstream_age_upper_at_m1_ns",
+        "provenance_ref",
+        "error_digest"
+      ],
+      "additionalProperties": false
+    },
+    "EraEvidence": {
+      "type": "object",
+      "properties": {
+        "era_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "method_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "independent_time_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "allowed_utc": {
+          "$ref": "#/$defs/Interval"
+        },
+        "era_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "era_id",
+        "revision",
+        "request_ref",
+        "response_bytes_ref",
+        "method_ref",
+        "independent_time_ref",
+        "allowed_utc",
+        "era_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Exchange": {
+      "type": "object",
+      "properties": {
+        "exchange_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "correlation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "endpoint_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_size": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "receive_after_tick_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "ntp_version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "ntp_mode": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "leap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "stratum": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "precision": {
+          "type": "integer",
+          "minimum": -128,
+          "maximum": 127
+        },
+        "root_delay_word": {
+          "$ref": "#/$defs/Word"
+        },
+        "root_dispersion_word": {
+          "$ref": "#/$defs/Word"
+        },
+        "t2": {
+          "$ref": "#/$defs/Stamp"
+        },
+        "t3": {
+          "$ref": "#/$defs/Stamp"
+        },
+        "authentication_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "error_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "era_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "parser_receipt_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "exchange_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "exchange_id",
+        "revision",
+        "binding",
+        "request_ref",
+        "correlation_ref",
+        "endpoint_ref",
+        "response_bytes_ref",
+        "response_size",
+        "receive_after_tick_ns",
+        "ntp_version",
+        "ntp_mode",
+        "leap",
+        "stratum",
+        "precision",
+        "root_delay_word",
+        "root_dispersion_word",
+        "t2",
+        "t3",
+        "authentication_ref",
+        "error_ref",
+        "era_ref",
+        "parser_receipt_ref",
+        "exchange_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Anchor": {
+      "type": "object",
+      "properties": {
+        "anchor_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "exchange_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "anchor_tick_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "exchange_start_tick_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "utc_at_anchor": {
+          "$ref": "#/$defs/Interval"
+        },
+        "derivation_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "anchor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "anchor_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "binding",
+        "exchange_ref",
+        "anchor_tick_ns",
+        "exchange_start_tick_ns",
+        "utc_at_anchor",
+        "derivation_digest",
+        "anchor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Assessment": {
+      "type": "object",
+      "properties": {
+        "assessment_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "anchor_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "assessed_tick_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "utc": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Interval"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exchange_age_upper_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "anchor_age_upper_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstream_age_upper_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision": {
+          "enum": [
+            "conditional",
+            "unavailable"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "binding",
+              "approval",
+              "runtime_clock",
+              "source",
+              "evidence",
+              "expired",
+              "uncertainty",
+              "generation",
+              "storage",
+              "bootstrap",
+              "invalid_interval"
+            ]
+          },
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "assessment_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "binding",
+        "anchor_ref",
+        "assessed_tick_ns",
+        "utc",
+        "exchange_age_upper_ns",
+        "anchor_age_upper_ns",
+        "upstream_age_upper_ns",
+        "decision",
+        "reasons",
+        "assessment_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "conditional"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "utc": {
+                "$ref": "#/$defs/Interval"
+              },
+              "exchange_age_upper_ns": {
+                "$ref": "#/$defs/UInt"
+              },
+              "anchor_age_upper_ns": {
+                "$ref": "#/$defs/UInt"
+              },
+              "upstream_age_upper_ns": {
+                "$ref": "#/$defs/UInt"
+              },
+              "reasons": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "utc": {
+                "type": "null"
+              },
+              "exchange_age_upper_ns": {
+                "type": "null"
+              },
+              "anchor_age_upper_ns": {
+                "type": "null"
+              },
+              "upstream_age_upper_ns": {
+                "type": "null"
+              },
+              "reasons": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Failure": {
+      "type": "object",
+      "properties": {
+        "failure_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "domain": {
+          "$ref": "#/$defs/Domain"
+        },
+        "request_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observed_tick_ns": {
+          "$ref": "#/$defs/UInt"
+        },
+        "reason": {
+          "enum": [
+            "timeout",
+            "authentication",
+            "kod",
+            "packet",
+            "source",
+            "era",
+            "leap",
+            "smear",
+            "upstream",
+            "capacity",
+            "storage",
+            "runtime_clock",
+            "revoked"
+          ]
+        },
+        "diagnostic_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "failure_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "failure_id",
+        "revision",
+        "domain",
+        "request_ref",
+        "observed_tick_ns",
+        "reason",
+        "diagnostic_ref",
+        "failure_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Invalidation": {
+      "type": "object",
+      "properties": {
+        "invalidation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "old_binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "next_time_generation": {
+          "$ref": "#/$defs/Positive"
+        },
+        "cause_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "deny_new_utc_permits": {
+          "const": true
+        },
+        "protection_operation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "invalidation_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "invalidation_id",
+        "revision",
+        "old_binding",
+        "next_time_generation",
+        "cause_ref",
+        "deny_new_utc_permits",
+        "protection_operation_ref",
+        "invalidation_digest"
+      ],
+      "additionalProperties": false
+    },
+    "AuthorityState": {
+      "type": "object",
+      "properties": {
+        "state_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "status": {
+          "enum": [
+            "cold",
+            "collecting",
+            "qualified",
+            "unavailable"
+          ]
+        },
+        "current_anchor_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "invalidation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "state_id",
+        "revision",
+        "binding",
+        "status",
+        "current_anchor_ref",
+        "invalidation_ref",
+        "state_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "qualified"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "current_anchor_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "current_anchor_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "unavailable"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "invalidation_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Window": {
+      "type": "object",
+      "properties": {
+        "not_before_utc_ns": {
+          "$ref": "#/$defs/Signed"
+        },
+        "not_after_utc_ns": {
+          "$ref": "#/$defs/Signed"
+        }
+      },
+      "required": [
+        "not_before_utc_ns",
+        "not_after_utc_ns"
+      ],
+      "additionalProperties": false
+    },
+    "UtcGuard": {
+      "type": "object",
+      "properties": {
+        "guard_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "anchor_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "assessment_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "window": {
+          "$ref": "#/$defs/Window"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Positive"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "guard_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "binding",
+        "anchor_ref",
+        "assessment_ref",
+        "window",
+        "expires_tick_ns",
+        "guard_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

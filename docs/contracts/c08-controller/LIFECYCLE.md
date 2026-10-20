@@ -2,7 +2,7 @@
 
 状态：待审阅，`controller-lifecycle/0.1.0-draft.1`。本候选明确终态与资源裁决的字段、可信输入、转换及持久写集，供下一统一SDK和Controller存储归并。局部模型由[build_lifecycle.py](build_lifecycle.py)生成；不修改已确认draft.4，不新增可运行服务。
 
-后续持久化：[资源存储候选](RESOURCE_STORAGE.md)已落实15表附属层及66表内存组合，涵盖整设备占用、完整释放、迟到失效和保护恢复；下文“下一DDL”中资源子域已有此具体成果。command_revision、Resolution/T6及公共状态投影仍待联接，不能将资源视图直接当作公共clear或READY。
+后续持久化：[资源存储候选](RESOURCE_STORAGE.md)落实15表附属层及66表组合；[命令修订候选](COMMAND_STORAGE.md)再增加11表形成77表，联接command_revision、固定终态、Resolution/T6与资源准入。下文“下一DDL”中的这些物理关系已有具体成果。prepare/observe内部操作及当前投影暂不可发布的错误处理仍须纳入下一统一SDK，不能将资源视图直接当作公共clear或READY。
 
 ## 1. 已知约束与本轮推荐
 
@@ -54,7 +54,7 @@ ProviderReceipt没有“公共输入自报durable=true即可授权”的路径�
 | 转换 | 必需条件与结果 |
 | --- | --- |
 | dispatch | 原queued、未锁存、无冲突、当前门控及原截止通过；T2持久许可后dispatching/pending/possible |
-| transport | dispatching且存在同命令可靠in_flight事实；进入awaiting_evidence，不能仅凭IPC投递成功 |
+| transport | dispatching且存在当前attempt的可靠in_flight事实；进入awaiting_evidence，不能借旧attempt已释放的发送事实或仅凭IPC投递成功 |
 | complete | dispatching或awaiting_evidence，固定政策确认达到required_completion；finished/succeeded，但无释放证据仍unresolved |
 | fail | 有明确failure_confirmed；finished/failed，保留partial/possible等效果；不要求假装无副作用 |
 | timeout | 派发后证据期限到且无确定结论；finished/unknown，锁存；queued超时走expire |

@@ -2,6 +2,8 @@
 
 状态：待审阅。`resource.sql`在现有51表之后增加15表，构成66表内存组合；不修改已批准公共协议，不是产品迁移，也不实现业务writer。语义依据是[LIFECYCLE.md](LIFECYCLE.md)；本轮落实其中资源关系，命令修订、Resolution/T6完整写集仍需继续归并。
 
+后续成果：[77表命令组合](COMMAND_STORAGE.md)已联接命令修订与Resolution/T6；本文件及272项报告继续限于66表资源子域。以下“命令修订层尚未联接”是该子域独立使用的边界，完整组合以新入口为准，公共HTTP/SDK和保护outbox仍待归并。
+
 ## 1. 已知事实与本轮设计
 
 既有`ce_current_disposition`汇总原报告、逐出口覆盖与尝试ACK，迟到in_flight优先；`ce_open_permit`仅用于自动化运行保护。原表中的非空BODY不证明提供者事实。（来源：[fence.sql](fence.sql)、[barrier-attempt.sql](barrier-attempt.sql)。）

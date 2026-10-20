@@ -107,6 +107,22 @@ def run():
         check(name+'结构',valid('State',b) and valid('Transition',t) and valid('Policy',c['policy']),True)
         check(name,M.transition_error(b,t,c),expected)
     b,t,c=fixture();evaluate('超时保留未知',b,t,c)
+    b,t,c=fixture();b.update(phase='dispatching',attempt_ids=['attempt','attempt.new'])
+    c['current_state']=copy.deepcopy(b);c['attempt_ids']=list(b['attempt_ids'])
+    c['policy'].update(max_attempts=2,retry_policy_ref=ref('retry-policy'))
+    c['cut']['attempt_ids']=list(b['attempt_ids']);c['cut']['issued_cut_revision']='2'
+    newer=copy.deepcopy(c['cut']['transmissions'][0])
+    newer.update(permit_id='permit.new',transmission_id='tx.new',attempt_id='attempt.new',
+                 issued_revision='2',disposition='unknown')
+    c['cut']['transmissions'].append(newer);M.seal(c['cut'],'cut_digest')
+    c['authoritative_cut']=copy.deepcopy(c['cut'])
+    t.update(kind='transport',expected_state_ref=M.state_ref(b),after=copy.deepcopy(b))
+    t['after'].update(revision='4',phase='awaiting_evidence')
+    evaluate('新尝试不借旧尝试进入传输',b,t,c,'transport_unproven')
+    c['cut']['transmissions'][-1]['disposition']='in_flight';M.seal(c['cut'],'cut_digest')
+    c['authoritative_cut']=copy.deepcopy(c['cut'])
+    evaluate('当前尝试有独立进入证据',b,t,c)
+    b,t,c=fixture()
     for model,value in [('State',b),('Transition',t),('Policy',c['policy']),('ResourceCut',c['cut']),
                         ('Transmission',c['cut']['transmissions'][0])]:
         bad=copy.deepcopy(value);bad['extra']=True;check('封闭字段'+model,valid(model,bad),False)

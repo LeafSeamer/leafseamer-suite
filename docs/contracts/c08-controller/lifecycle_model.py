@@ -120,7 +120,9 @@ def transition_error(before,t,c):
            or not c['dispatch_committed'] or c['now_tick']>=c['original_deadline_tick']:return 'dispatch_gate'
     elif k=='transport':
         if before['phase']!='dispatching' or (phase,outcome)!=('awaiting_evidence','pending'):return 'transport_state'
-        if not any(x['disposition']=='in_flight' for x in c['cut']['transmissions']):return 'transport_unproven'
+        current=c['attempt_ids'][-1] if c['attempt_ids'] else None
+        if not any(x['disposition']=='in_flight' and x['attempt_id']==current
+                   for x in c['cut']['transmissions']):return 'transport_unproven'
     elif k in ('complete','fail','cancel'):
         target={'complete':'succeeded','fail':'failed','cancel':'cancelled'}[k]
         if before['phase']=='finished' or (phase,outcome)!=('finished',target):return 'finish_state'

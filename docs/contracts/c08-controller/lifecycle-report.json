@@ -1,6 +1,6 @@
 {
   "all_passed": true,
-  "cases_passed": 120,
+  "cases_passed": 124,
   "approved": false,
   "runtime_tests_executed": 0,
   "device_tests_executed": 0,
@@ -13,6 +13,26 @@
     },
     {
       "name": "超时保留未知",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "新尝试不借旧尝试进入传输结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "新尝试不借旧尝试进入传输",
+      "expected": "transport_unproven",
+      "observed": "transport_unproven"
+    },
+    {
+      "name": "当前尝试有独立进入证据结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "当前尝试有独立进入证据",
       "expected": null,
       "observed": null
     },
@@ -622,10 +642,10 @@
     }
   ],
   "inputs": {
-    "docs/contracts/c08-controller/LIFECYCLE.md": "7a1d1d72e50aebd5cadfe75367c51427d3c9f1b97a65ad6ec03169784b9e11dc",
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
     "docs/contracts/c08-controller/build_lifecycle.py": "88f13652607987ec79a23f8d57f1a02dd9360787da93c7ed2752da4f1ae98810",
-    "docs/contracts/c08-controller/lifecycle_model.py": "18cab9fb9a7273f05c7e36977389d73d9b6f66dc5373cdc620bec7e0237e2448",
-    "docs/contracts/c08-controller/check_lifecycle.py": "5795402a271d58378527642aaff25b449293ebf18a3c987481674cf94fb94ecf",
+    "docs/contracts/c08-controller/lifecycle_model.py": "fa0a3393e40688ceee052130874b054d73f9576fab41683603150c948e08a84b",
+    "docs/contracts/c08-controller/check_lifecycle.py": "441aa8d2996cb6dda968c456321c98a1c48afe32cf13c009a2967804decd165b",
     "docs/contracts/c08-controller/lifecycle.schema.json": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46",
     "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
     "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",

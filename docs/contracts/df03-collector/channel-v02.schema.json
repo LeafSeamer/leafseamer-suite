@@ -1,0 +1,2400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/df03-collector/channel-v02.schema.json",
+  "title": "time-collector/0.2.0-draft.1",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "oneOf": [
+    {
+      "$ref": "#/$defs/S1__HELLO"
+    },
+    {
+      "$ref": "#/$defs/S1__ACCEPT"
+    },
+    {
+      "$ref": "#/$defs/S1__CONFIGURE"
+    },
+    {
+      "$ref": "#/$defs/S1__CONFIG_ACK"
+    },
+    {
+      "$ref": "#/$defs/S1__POLL"
+    },
+    {
+      "$ref": "#/$defs/S1__POLL_ACK"
+    },
+    {
+      "$ref": "#/$defs/S1__CAPTURE_REPORT"
+    },
+    {
+      "$ref": "#/$defs/S1__REPORT_STORED"
+    },
+    {
+      "$ref": "#/$defs/S1__QUERY_CAPTURE"
+    },
+    {
+      "$ref": "#/$defs/S1__CAPTURE_STATUS"
+    },
+    {
+      "$ref": "#/$defs/S1__QUERY_COMMIT"
+    },
+    {
+      "$ref": "#/$defs/S1__COMMIT_STATUS"
+    },
+    {
+      "$ref": "#/$defs/S1__STOP"
+    },
+    {
+      "$ref": "#/$defs/S1__STOP_ACK"
+    }
+  ],
+  "$defs": {
+    "S1__HELLO": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "HELLO"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "collector_to_core"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__HELLOBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Channel": {
+      "type": "object",
+      "properties": {
+        "channel_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "domain": {
+          "$ref": "#/$defs/S1__Domain"
+        },
+        "core_boot_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "core_runtime_binding_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "bootstrap_receipt_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "role": {
+          "const": "time_provider"
+        }
+      },
+      "required": [
+        "channel_id",
+        "domain",
+        "core_boot_id",
+        "core_runtime_binding_ref",
+        "bootstrap_receipt_ref",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Id": {
+      "$ref": "#/$defs/S0__Id"
+    },
+    "S0__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "S1__Domain": {
+      "$ref": "#/$defs/S0__Domain"
+    },
+    "S0__Domain": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "provider_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "provider_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "runtime_binding_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "clock_generation": {
+          "$ref": "#/$defs/S0__Positive"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "provider_id",
+        "provider_boot_id",
+        "runtime_binding_ref",
+        "clock_domain_id",
+        "descriptor_digest",
+        "clock_generation"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Positive": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S0__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "S1__Ref": {
+      "$ref": "#/$defs/S0__Ref"
+    },
+    "S1__Positive": {
+      "$ref": "#/$defs/S0__Positive"
+    },
+    "S1__HELLOBody": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S1__Id"
+          },
+          "maxItems": 8,
+          "uniqueItems": true,
+          "allOf": [
+            {
+              "contains": {
+                "const": "one_shot_poll"
+              }
+            },
+            {
+              "contains": {
+                "const": "candidate_only"
+              }
+            },
+            {
+              "contains": {
+                "const": "monotonic_stop"
+              }
+            },
+            {
+              "contains": {
+                "const": "ordered_stop_cut"
+              }
+            },
+            {
+              "contains": {
+                "const": "poll_ordinal_retention"
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "features"
+      ],
+      "additionalProperties": false
+    },
+    "S1__ACCEPT": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "ACCEPT"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "core_to_collector"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__ACCEPTBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__ACCEPTBody": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S1__Id"
+          },
+          "maxItems": 8,
+          "uniqueItems": true,
+          "allOf": [
+            {
+              "contains": {
+                "const": "one_shot_poll"
+              }
+            },
+            {
+              "contains": {
+                "const": "candidate_only"
+              }
+            },
+            {
+              "contains": {
+                "const": "monotonic_stop"
+              }
+            },
+            {
+              "contains": {
+                "const": "ordered_stop_cut"
+              }
+            },
+            {
+              "contains": {
+                "const": "poll_ordinal_retention"
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "features"
+      ],
+      "additionalProperties": false
+    },
+    "S1__CONFIGURE": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "CONFIGURE"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "core_to_collector"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__CONFIGUREBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__CONFIGUREBody": {
+      "type": "object",
+      "properties": {
+        "configuration": {
+          "$ref": "#/$defs/S1__Configuration"
+        }
+      },
+      "required": [
+        "configuration"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Configuration": {
+      "type": "object",
+      "properties": {
+        "config_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/S1__Binding"
+        },
+        "source": {
+          "$ref": "#/$defs/S0__Source"
+        },
+        "profile": {
+          "$ref": "#/$defs/S0__Profile"
+        },
+        "policy": {
+          "$ref": "#/$defs/S0__Policy"
+        },
+        "approval": {
+          "$ref": "#/$defs/S0__Approval"
+        },
+        "collector_artifact_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "bootstrap_receipt_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "stop_generation": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "limits": {
+          "$ref": "#/$defs/S1__Limits"
+        },
+        "config_digest": {
+          "$ref": "#/$defs/S1__Digest"
+        }
+      },
+      "required": [
+        "config_id",
+        "revision",
+        "binding",
+        "source",
+        "profile",
+        "policy",
+        "approval",
+        "collector_artifact_ref",
+        "bootstrap_receipt_ref",
+        "stop_generation",
+        "limits",
+        "config_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Binding": {
+      "$ref": "#/$defs/S0__Binding"
+    },
+    "S0__Binding": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "$ref": "#/$defs/S0__Domain"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "time_generation": {
+          "$ref": "#/$defs/S0__Positive"
+        }
+      },
+      "required": [
+        "domain",
+        "source_ref",
+        "profile_ref",
+        "approval_ref",
+        "policy_ref",
+        "time_generation"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Source": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "configured_server_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "endpoint_set_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "effective_config_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "authentication": {
+          "enum": [
+            "nts",
+            "trusted_network"
+          ]
+        },
+        "trust_policy_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "source_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "source_id",
+        "revision",
+        "configured_server_ref",
+        "endpoint_set_ref",
+        "effective_config_ref",
+        "authentication",
+        "trust_policy_ref",
+        "source_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Profile": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "collector_artifact_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "protocol_artifact_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "platform_qualification_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "clock_method_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "error_method_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "era_method_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "elapsed_model": {
+          "const": "observed-delta-relative/1"
+        },
+        "elapsed_error_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999999
+        },
+        "span_quantization_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "max_packet_bytes": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "time_scale": {
+          "const": "posix-utc"
+        },
+        "leap_policy": {
+          "const": "normal-only"
+        },
+        "smear_policy": {
+          "const": "forbidden"
+        },
+        "profile_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "profile_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "collector_artifact_ref",
+        "protocol_artifact_ref",
+        "platform_qualification_ref",
+        "clock_method_ref",
+        "error_method_ref",
+        "era_method_ref",
+        "elapsed_model",
+        "elapsed_error_ppm",
+        "span_quantization_ns",
+        "max_packet_bytes",
+        "time_scale",
+        "leap_policy",
+        "smear_policy",
+        "profile_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__UInt": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "S0__Policy": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "max_exchange_span_ns": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "max_exchange_age_ns": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "max_anchor_age_ns": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "max_upstream_age_ns": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "max_half_width_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "policy_id",
+        "revision",
+        "max_exchange_span_ns",
+        "max_exchange_age_ns",
+        "max_anchor_age_ns",
+        "max_upstream_age_ns",
+        "max_half_width_ns",
+        "policy_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Approval": {
+      "type": "object",
+      "properties": {
+        "approval_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "qualification_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "status": {
+          "enum": [
+            "approved",
+            "revoked"
+          ]
+        },
+        "approval_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "approval_id",
+        "revision",
+        "profile_ref",
+        "source_ref",
+        "qualification_ref",
+        "authority_service_id",
+        "status",
+        "approval_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Limits": {
+      "type": "object",
+      "properties": {
+        "max_sources": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "max_outstanding": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "max_frame_bytes": {
+          "type": "integer",
+          "minimum": 4096,
+          "maximum": 262144
+        },
+        "max_blob_bytes": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "minimum_poll_interval_ns": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "poll_lease_ns": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "capacity_profile_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        }
+      },
+      "required": [
+        "max_sources",
+        "max_outstanding",
+        "max_frame_bytes",
+        "max_blob_bytes",
+        "minimum_poll_interval_ns",
+        "poll_lease_ns",
+        "capacity_profile_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Digest": {
+      "$ref": "#/$defs/S0__Digest"
+    },
+    "S1__CONFIG_ACK": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "CONFIG_ACK"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "collector_to_core"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__CONFIG_ACKBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__CONFIG_ACKBody": {
+      "type": "object",
+      "properties": {
+        "config_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "result": {
+          "enum": [
+            "configured",
+            "rejected"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "binding",
+                "authority",
+                "capacity",
+                "stopped"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "config_ref",
+        "result",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "const": "configured"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S1__POLL": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "POLL"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "core_to_collector"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__POLLBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__POLLBody": {
+      "type": "object",
+      "properties": {
+        "poll": {
+          "$ref": "#/$defs/S1__PollIntent"
+        }
+      },
+      "required": [
+        "poll"
+      ],
+      "additionalProperties": false
+    },
+    "S1__PollIntent": {
+      "type": "object",
+      "properties": {
+        "poll_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/S1__Binding"
+        },
+        "config_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "correlation_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "endpoint_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "issued_tick_ns": {
+          "$ref": "#/$defs/S1__UInt"
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/S1__UInt"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "stop_generation": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "poll_digest": {
+          "$ref": "#/$defs/S1__Digest"
+        },
+        "poll_ordinal": {
+          "$ref": "#/$defs/S1__Positive"
+        }
+      },
+      "required": [
+        "poll_id",
+        "revision",
+        "binding",
+        "config_ref",
+        "correlation_ref",
+        "endpoint_ref",
+        "issued_tick_ns",
+        "not_before_tick_ns",
+        "expires_tick_ns",
+        "stop_generation",
+        "poll_digest",
+        "poll_ordinal"
+      ],
+      "additionalProperties": false
+    },
+    "S1__UInt": {
+      "$ref": "#/$defs/S0__UInt"
+    },
+    "S1__POLL_ACK": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "POLL_ACK"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "collector_to_core"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__POLL_ACKBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__POLL_ACKBody": {
+      "type": "object",
+      "properties": {
+        "poll_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "result": {
+          "enum": [
+            "reserved",
+            "rejected"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "binding",
+                "expired",
+                "capacity",
+                "interval",
+                "stopped",
+                "identity_conflict"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "poll_ref",
+        "result",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "const": "reserved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S1__CAPTURE_REPORT": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "CAPTURE_REPORT"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "collector_to_core"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__CAPTURE_REPORTBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__CAPTURE_REPORTBody": {
+      "type": "object",
+      "properties": {
+        "capture": {
+          "$ref": "#/$defs/S1__Capture"
+        }
+      },
+      "required": [
+        "capture"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Capture": {
+      "type": "object",
+      "properties": {
+        "capture_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "poll_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "binding": {
+          "$ref": "#/$defs/S1__Binding"
+        },
+        "reported_tick_ns": {
+          "$ref": "#/$defs/S1__UInt"
+        },
+        "status": {
+          "enum": [
+            "candidate",
+            "failed",
+            "indeterminate"
+          ]
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Request"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exchange": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Exchange"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authentication": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__AuthEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__ErrorEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "era": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__EraEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Failure"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "blobs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S1__BlobDescriptor"
+          },
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "capture_digest": {
+          "$ref": "#/$defs/S1__Digest"
+        }
+      },
+      "required": [
+        "capture_id",
+        "revision",
+        "poll_ref",
+        "binding",
+        "reported_tick_ns",
+        "status",
+        "request",
+        "exchange",
+        "authentication",
+        "error",
+        "era",
+        "failure",
+        "blobs",
+        "capture_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "candidate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "request": {
+                "$ref": "#/$defs/S0__Request"
+              },
+              "exchange": {
+                "$ref": "#/$defs/S0__Exchange"
+              },
+              "authentication": {
+                "$ref": "#/$defs/S0__AuthEvidence"
+              },
+              "error": {
+                "$ref": "#/$defs/S0__ErrorEvidence"
+              },
+              "era": {
+                "$ref": "#/$defs/S0__EraEvidence"
+              },
+              "failure": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "exchange": {
+                "type": "null"
+              },
+              "authentication": {
+                "type": "null"
+              },
+              "error": {
+                "type": "null"
+              },
+              "era": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "failed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "failure": {
+                "$ref": "#/$defs/S0__Failure"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "failure": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S0__Request": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/S0__Binding"
+        },
+        "correlation_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "endpoint_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "send_before_tick_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "response_deadline_tick_ns": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "request_bytes_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "request_size": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "request_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "request_id",
+        "revision",
+        "binding",
+        "correlation_ref",
+        "endpoint_ref",
+        "send_before_tick_ns",
+        "response_deadline_tick_ns",
+        "request_bytes_ref",
+        "request_size",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Exchange": {
+      "type": "object",
+      "properties": {
+        "exchange_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/S0__Binding"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "correlation_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "endpoint_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "response_size": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "receive_after_tick_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "ntp_version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "ntp_mode": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "leap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "stratum": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "precision": {
+          "type": "integer",
+          "minimum": -128,
+          "maximum": 127
+        },
+        "root_delay_word": {
+          "$ref": "#/$defs/S0__Word"
+        },
+        "root_dispersion_word": {
+          "$ref": "#/$defs/S0__Word"
+        },
+        "t2": {
+          "$ref": "#/$defs/S0__Stamp"
+        },
+        "t3": {
+          "$ref": "#/$defs/S0__Stamp"
+        },
+        "authentication_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "error_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "era_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "parser_receipt_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "exchange_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "exchange_id",
+        "revision",
+        "binding",
+        "request_ref",
+        "correlation_ref",
+        "endpoint_ref",
+        "response_bytes_ref",
+        "response_size",
+        "receive_after_tick_ns",
+        "ntp_version",
+        "ntp_mode",
+        "leap",
+        "stratum",
+        "precision",
+        "root_delay_word",
+        "root_dispersion_word",
+        "t2",
+        "t3",
+        "authentication_ref",
+        "error_ref",
+        "era_ref",
+        "parser_receipt_ref",
+        "exchange_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Word": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,9})$(?![\\s\\S])"
+    },
+    "S0__Stamp": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "$ref": "#/$defs/S0__Word"
+        },
+        "fraction": {
+          "$ref": "#/$defs/S0__Word"
+        },
+        "era": {
+          "$ref": "#/$defs/S0__Signed"
+        }
+      },
+      "required": [
+        "seconds",
+        "fraction",
+        "era"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Signed": {
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]{0,29})$(?![\\s\\S])"
+    },
+    "S0__AuthEvidence": {
+      "type": "object",
+      "properties": {
+        "auth_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "mode": {
+          "enum": [
+            "nts",
+            "trusted_network"
+          ]
+        },
+        "verification_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "bootstrap_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peer_binding_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "authentication_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "auth_id",
+        "revision",
+        "request_ref",
+        "response_bytes_ref",
+        "source_ref",
+        "mode",
+        "verification_ref",
+        "bootstrap_ref",
+        "peer_binding_ref",
+        "authentication_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "nts"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "bootstrap_ref": {
+                "$ref": "#/$defs/S0__Ref"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "bootstrap_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S0__ErrorEvidence": {
+      "type": "object",
+      "properties": {
+        "error_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/S0__Binding"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "error_method_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "qualification_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "t2_error_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "t3_error_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "upstream_age_upper_at_m1_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "provenance_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "error_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "error_id",
+        "revision",
+        "binding",
+        "request_ref",
+        "response_bytes_ref",
+        "error_method_ref",
+        "qualification_ref",
+        "t2_error_ns",
+        "t3_error_ns",
+        "upstream_age_upper_at_m1_ns",
+        "provenance_ref",
+        "error_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__EraEvidence": {
+      "type": "object",
+      "properties": {
+        "era_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S0__Positive"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "method_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "independent_time_ref": {
+          "$ref": "#/$defs/S0__Ref"
+        },
+        "allowed_utc": {
+          "$ref": "#/$defs/S0__Interval"
+        },
+        "era_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "era_id",
+        "revision",
+        "request_ref",
+        "response_bytes_ref",
+        "method_ref",
+        "independent_time_ref",
+        "allowed_utc",
+        "era_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Interval": {
+      "type": "object",
+      "properties": {
+        "lower_ns": {
+          "$ref": "#/$defs/S0__Signed"
+        },
+        "upper_ns": {
+          "$ref": "#/$defs/S0__Signed"
+        }
+      },
+      "required": [
+        "lower_ns",
+        "upper_ns"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Failure": {
+      "type": "object",
+      "properties": {
+        "failure_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "domain": {
+          "$ref": "#/$defs/S0__Domain"
+        },
+        "request_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observed_tick_ns": {
+          "$ref": "#/$defs/S0__UInt"
+        },
+        "reason": {
+          "enum": [
+            "timeout",
+            "authentication",
+            "kod",
+            "packet",
+            "source",
+            "era",
+            "leap",
+            "smear",
+            "upstream",
+            "capacity",
+            "storage",
+            "runtime_clock",
+            "revoked"
+          ]
+        },
+        "diagnostic_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "failure_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "failure_id",
+        "revision",
+        "domain",
+        "request_ref",
+        "observed_tick_ns",
+        "reason",
+        "diagnostic_ref",
+        "failure_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S1__BlobDescriptor": {
+      "type": "object",
+      "properties": {
+        "content_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "purpose": {
+          "enum": [
+            "request",
+            "response",
+            "diagnostic"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/S1__Domain"
+        },
+        "sensitive": {
+          "const": true
+        },
+        "sealed_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        }
+      },
+      "required": [
+        "content_ref",
+        "size",
+        "purpose",
+        "owner",
+        "sensitive",
+        "sealed_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S1__REPORT_STORED": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "REPORT_STORED"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "core_to_collector"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__REPORT_STOREDBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__REPORT_STOREDBody": {
+      "type": "object",
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/S1__CommitReceipt"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "S1__CommitReceipt": {
+      "type": "object",
+      "properties": {
+        "receipt_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "capture_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "poll_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "result": {
+          "enum": [
+            "published",
+            "rejected",
+            "failure_recorded"
+          ]
+        },
+        "record_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "anchor_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S1__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receipt_digest": {
+          "$ref": "#/$defs/S1__Digest"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "revision",
+        "capture_ref",
+        "poll_ref",
+        "result",
+        "record_ref",
+        "anchor_ref",
+        "receipt_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "const": "published"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "anchor_ref": {
+                "$ref": "#/$defs/S1__Ref"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "anchor_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S1__QUERY_CAPTURE": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "QUERY_CAPTURE"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "core_to_collector"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__QUERY_CAPTUREBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__QUERY_CAPTUREBody": {
+      "type": "object",
+      "properties": {
+        "poll_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        }
+      },
+      "required": [
+        "poll_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S1__CAPTURE_STATUS": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "CAPTURE_STATUS"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "collector_to_core"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__CAPTURE_STATUSBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__CAPTURE_STATUSBody": {
+      "type": "object",
+      "properties": {
+        "poll_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "state": {
+          "enum": [
+            "reserved",
+            "consumed",
+            "reported",
+            "cache_missing"
+          ]
+        },
+        "capture": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S1__Capture"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "poll_ref",
+        "state",
+        "capture"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "reported"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "capture": {
+                "$ref": "#/$defs/S1__Capture"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "capture": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S1__QUERY_COMMIT": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "QUERY_COMMIT"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "collector_to_core"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__QUERY_COMMITBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__QUERY_COMMITBody": {
+      "type": "object",
+      "properties": {
+        "capture_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        }
+      },
+      "required": [
+        "capture_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S1__COMMIT_STATUS": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "COMMIT_STATUS"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "core_to_collector"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__COMMIT_STATUSBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__COMMIT_STATUSBody": {
+      "type": "object",
+      "properties": {
+        "capture_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "state": {
+          "enum": [
+            "known",
+            "not_found",
+            "unavailable"
+          ]
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S1__CommitReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "capture_ref",
+        "state",
+        "receipt"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "receipt": {
+                "$ref": "#/$defs/S1__CommitReceipt"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "receipt": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S1__STOP": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "STOP"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "core_to_collector"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__STOPBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__STOPBody": {
+      "type": "object",
+      "properties": {
+        "stop": {
+          "$ref": "#/$defs/S1__Stop"
+        }
+      },
+      "required": [
+        "stop"
+      ],
+      "additionalProperties": false
+    },
+    "S1__Stop": {
+      "type": "object",
+      "properties": {
+        "stop_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "config_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "stop_generation": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "stop_digest": {
+          "$ref": "#/$defs/S1__Digest"
+        },
+        "cut_sequence": {
+          "$ref": "#/$defs/S1__UInt"
+        },
+        "last_poll_ordinal": {
+          "$ref": "#/$defs/S1__UInt"
+        }
+      },
+      "required": [
+        "stop_id",
+        "revision",
+        "config_ref",
+        "stop_generation",
+        "stop_digest",
+        "cut_sequence",
+        "last_poll_ordinal"
+      ],
+      "additionalProperties": false
+    },
+    "S1__STOP_ACK": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "time-collector/0.2.0-draft.1"
+        },
+        "type": {
+          "const": "STOP_ACK"
+        },
+        "channel": {
+          "$ref": "#/$defs/S1__Channel"
+        },
+        "direction": {
+          "const": "collector_to_core"
+        },
+        "message_id": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "reply_to": {
+          "$ref": "#/$defs/S1__Id"
+        },
+        "body": {
+          "$ref": "#/$defs/S1__STOP_ACKBody"
+        }
+      },
+      "required": [
+        "version",
+        "type",
+        "channel",
+        "direction",
+        "message_id",
+        "sequence",
+        "reply_to",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "S1__STOP_ACKBody": {
+      "type": "object",
+      "properties": {
+        "stop_ref": {
+          "$ref": "#/$defs/S1__Ref"
+        },
+        "closed_tick_ns": {
+          "$ref": "#/$defs/S1__UInt"
+        },
+        "received_through_sequence": {
+          "$ref": "#/$defs/S1__Positive"
+        },
+        "last_poll_ordinal": {
+          "$ref": "#/$defs/S1__UInt"
+        },
+        "gate_closed": {
+          "const": true
+        }
+      },
+      "required": [
+        "stop_ref",
+        "closed_tick_ns",
+        "received_through_sequence",
+        "last_poll_ordinal",
+        "gate_closed"
+      ],
+      "additionalProperties": false
+    },
+    "Channel": {
+      "$ref": "#/$defs/S1__Channel"
+    },
+    "Limits": {
+      "$ref": "#/$defs/S1__Limits"
+    },
+    "Configuration": {
+      "$ref": "#/$defs/S1__Configuration"
+    },
+    "PollIntent": {
+      "$ref": "#/$defs/S1__PollIntent"
+    },
+    "BlobDescriptor": {
+      "$ref": "#/$defs/S1__BlobDescriptor"
+    },
+    "Capture": {
+      "$ref": "#/$defs/S1__Capture"
+    },
+    "CommitReceipt": {
+      "$ref": "#/$defs/S1__CommitReceipt"
+    },
+    "Stop": {
+      "$ref": "#/$defs/S1__Stop"
+    }
+  }
+}

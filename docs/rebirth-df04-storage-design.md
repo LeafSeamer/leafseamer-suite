@@ -1,5 +1,7 @@
 # DF04：SQLite 表契约、事务与恢复设计
 
+2026-10-21时间子域更新：[十四表存储候选](contracts/df03-collector/STORAGE.md)落实reference-bound/1原件、采样裁决、锚点/State及失效通知的同库写集和恢复规则，215项内存检查通过。它覆盖本机时间发布/失效，不替代既有业务库或TIME设备屏障布局；精确加密提供者、完整库组合、STOP/容量/GC及真实耐久验收仍未完成。后文历史时间字段以该新候选的显式映射为准，旧机器文件不改。
+
 日期：2026-10-17。本稿细化已确认的 F02/F03、F04/F05、F06/F07 与 draft.4，DB01—DB06为待审阅推荐，不视为用户已同意。当前继续完成全系统设计，不迁移业务库、不启动服务、不修改业务实现。
 
 范围为首闭环及其安全依赖的存储契约；完整厂商配置、排期导入和GUI模型随各专题补齐。下列逻辑表不是已发布迁移脚本，SQL参考资料只验证若干约束行为，不能代替完整建库、驱动、WAL或故障验收。关联：[F02/F03](rebirth-f02-f03-design.md)、[F04/F05](rebirth-f04-f05-design.md)、[F06/F07](rebirth-f06-f07-design.md)、[DF01](rebirth-df01-sdk-freeze.md)、[DF02](rebirth-df02-runtime-design.md)、[DF03](rebirth-df03-time-profile-design.md)。

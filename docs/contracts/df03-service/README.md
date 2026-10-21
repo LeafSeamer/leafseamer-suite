@@ -70,3 +70,5 @@ TIME_FENCE只切断其捕获范围内依赖UTC的普通/保护传输；运行域
 运行`python docs/contracts/df03-service/build_contracts.py --check`及`python docs/contracts/df03-service/check_contracts.py --report`；`--check-report [--staged]`只核输入字节。报告分别记录46帧结构、公共/内部引用闭包、合成关联和floor快照，旧帧升级正例仅证明形状，不自动证明全部旧语义。
 
 尚需完成：时间权威和失效/屏障的物理写集及保护outbox；采集器专属协议；逐permit当前时间提供者与各源批准/撤销持久映射；跨服务年龄与完整公共时间模型迁移；精确协议库、引导信任及双平台误差profile；统一SDK和完整排期API。真实HTTP/鉴权/IPC/NTP、并发/磁盘、系统时钟及设备均未运行。
+
+2026-10-21后续：[独立采集器14帧候选](../df03-collector/README.md)已补启动绑定、单次采样、上报查原和停止。它与设备IPC0.8属于不同通道，不能混合版本或角色；上述“采集器专属协议”格式缺口由该候选推进，物理写集、提供者及真实运行仍未完成。本文件原199项检查不扩大为采集器验收。

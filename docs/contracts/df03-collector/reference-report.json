@@ -1,0 +1,631 @@
+{
+  "all_passed": true,
+  "cases_passed": 121,
+  "approved": false,
+  "runtime_tests_executed": 0,
+  "ntp_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "device_tests_executed": 0,
+  "scope": "14帧结构与合成身份和有限单次采样停止模型",
+  "checks": [
+    {
+      "name": "生成字节",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "完整帧数",
+      "actual": 14,
+      "expected": 14
+    },
+    {
+      "name": "正例:HELLO",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:HELLO",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:HELLO",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:ACCEPT",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:ACCEPT",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:ACCEPT",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:CONFIGURE",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:CONFIGURE",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:CONFIGURE",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:CONFIG_ACK",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:CONFIG_ACK",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:CONFIG_ACK",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:POLL",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:POLL",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:POLL",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:POLL_ACK",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:POLL_ACK",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:POLL_ACK",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:CAPTURE_REPORT",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:CAPTURE_REPORT",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:CAPTURE_REPORT",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:REPORT_STORED",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:REPORT_STORED",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:REPORT_STORED",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:QUERY_CAPTURE",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:QUERY_CAPTURE",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:QUERY_CAPTURE",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:CAPTURE_STATUS",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:CAPTURE_STATUS",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:CAPTURE_STATUS",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:QUERY_COMMIT",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:QUERY_COMMIT",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:QUERY_COMMIT",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:COMMIT_STATUS",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:COMMIT_STATUS",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:COMMIT_STATUS",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:STOP",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:STOP",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:STOP",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "正例:STOP_ACK",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒设备协议:STOP_ACK",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "拒错方向:STOP_ACK",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "缺特性:HELLOone_shot_poll",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "缺特性:HELLOcandidate_only",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "缺特性:HELLOmonotonic_stop",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "缺特性:ACCEPTone_shot_poll",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "缺特性:ACCEPTcandidate_only",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "缺特性:ACCEPTmonotonic_stop",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:Capture",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:Capture",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:PollIntent",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:PollIntent",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:Configuration",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:Configuration",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:Channel",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:Channel",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:Limits",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:Limits",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:CommitReceipt",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:CommitReceipt",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:Stop",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:Stop",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "具名正例:BlobDescriptor",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "拒额外字段:BlobDescriptor",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "候选不可缺:request",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "候选不可缺:exchange",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "候选不可缺:authentication",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "候选不可缺:error",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "候选不可缺:era",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "失败可无Request",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "失败不可夹带合格交换",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "配置关联",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "name": "启动身份错配:core_boot_id",
+      "actual": "peer",
+      "expected": "peer"
+    },
+    {
+      "name": "启动身份错配:role",
+      "actual": "peer",
+      "expected": "peer"
+    },
+    {
+      "name": "重新摘要仍核配置:bootstrap_receipt_ref",
+      "actual": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "重新摘要仍核配置:collector_artifact_ref",
+      "actual": "artifact",
+      "expected": "artifact"
+    },
+    {
+      "name": "首次保留",
+      "actual": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "POLL重复只查原",
+      "actual": "historical",
+      "expected": "historical"
+    },
+    {
+      "name": "重复账本不变",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "消费后IO前故障",
+      "actual": "unknown",
+      "expected": "unknown"
+    },
+    {
+      "name": "消费不可再发",
+      "actual": "no_resend",
+      "expected": "no_resend"
+    },
+    {
+      "name": "崩溃缓存丢失不可发",
+      "actual": "cache_missing",
+      "expected": "cache_missing"
+    },
+    {
+      "name": "候选证据关联",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "name": "保存候选",
+      "actual": "reported",
+      "expected": "reported"
+    },
+    {
+      "name": "候选重投查原",
+      "actual": "historical",
+      "expected": "historical"
+    },
+    {
+      "name": "重投不改账本",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "报告后可保留新poll",
+      "actual": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "新poll不能绕最小间隔",
+      "actual": "interval",
+      "expected": "interval"
+    },
+    {
+      "name": "间隔等号允许继续门控",
+      "actual": "io_allowed_once",
+      "expected": "io_allowed_once"
+    },
+    {
+      "name": "未知捕获可表达",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "未知捕获不能作候选",
+      "actual": "not_candidate",
+      "expected": "not_candidate"
+    },
+    {
+      "name": "重算摘要仍拒报告:binding",
+      "actual": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "重算摘要仍拒报告:poll_ref",
+      "actual": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "重算摘要仍拒报告:request",
+      "actual": "request",
+      "expected": "request"
+    },
+    {
+      "name": "重算摘要仍拒报告:blobs",
+      "actual": "blobs",
+      "expected": "blobs"
+    },
+    {
+      "name": "字节未取证拒绝",
+      "actual": "blobs",
+      "expected": "blobs"
+    },
+    {
+      "name": "m4截止等号拒绝",
+      "actual": "expired",
+      "expected": "expired"
+    },
+    {
+      "name": "消费截止等号拒绝",
+      "actual": "expired",
+      "expected": "expired"
+    },
+    {
+      "name": "源单飞与容量拒绝",
+      "actual": "capacity",
+      "expected": "capacity"
+    },
+    {
+      "name": "STOP关闭未消费",
+      "actual": "closed",
+      "expected": "closed"
+    },
+    {
+      "name": "STOP后原poll不可发",
+      "actual": "no_resend",
+      "expected": "no_resend"
+    },
+    {
+      "name": "迟到新poll不可开闸",
+      "actual": "stopped",
+      "expected": "stopped"
+    },
+    {
+      "name": "STOP重复不二次推进",
+      "actual": "historical",
+      "expected": "historical"
+    },
+    {
+      "name": "停止下界保持",
+      "actual": "2",
+      "expected": "2"
+    },
+    {
+      "name": "STOP漏捕获拒绝",
+      "actual": "coverage",
+      "expected": "coverage"
+    },
+    {
+      "name": "STOP不清消费未知",
+      "actual": "closed",
+      "expected": "closed"
+    },
+    {
+      "name": "已消费状态保持",
+      "actual": "consumed",
+      "expected": "consumed"
+    },
+    {
+      "name": "停止ACK完整覆盖",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "name": "ACK不能假报未消费",
+      "actual": "coverage",
+      "expected": "coverage"
+    },
+    {
+      "name": "ACK不能加入无关poll",
+      "actual": "coverage",
+      "expected": "coverage"
+    },
+    {
+      "name": "ACK时刻不能早于消费",
+      "actual": "order",
+      "expected": "order"
+    },
+    {
+      "name": "未知commit不授重发",
+      "actual": "not_found",
+      "expected": "not_found"
+    },
+    {
+      "name": "回执原文可查",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "当前权优先历史",
+      "actual": "forbidden",
+      "expected": "forbidden"
+    },
+    {
+      "name": "首序号",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "同帧不重复执行",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "同id换内容",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "序号缺口",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "合成未验证引用可过结构",
+      "actual": true,
+      "expected": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/df03-collector/README.md": "304b41ee7b41da287e61d6ee4d045bfed5e6ac968a2d17f944de31a359791819",
+    "docs/contracts/df03-collector/build_contracts.py": "9c7d60b1738a0587b5b142112eee4d7e316250773e89565ae6d6d4d5e2f446f4",
+    "docs/contracts/df03-collector/collector.schema.json": "ba93e191f991257e90533da553acd783886c3ccb5f9356083c8539334100f049",
+    "docs/contracts/df03-collector/reference_model.py": "2d7189670b9b01cad8de7776f1e889f5688f570439ab21ceb7f5c146e9684bb8",
+    "docs/contracts/df03-collector/check_contracts.py": "68b96ec8aa694280c282dd9412e9860790ec4bd9e0814bfb6f9f06ba52b8f3a8",
+    "docs/contracts/df03-reference/build_contracts.py": "9e5801a567d8cd5f5181ccbcb68cc3be082cdac4010ff9fd737e3d0125bebb8b",
+    "docs/contracts/df03-reference/reference.schema.json": "a5265f970647ab31a2289339b3c4dac17873e17dbf74b7dc2b4f115d02946a40",
+    "docs/contracts/df03-reference/reference_model.py": "40d0dd9295c65499072a1c9fdc993d27f10b497a456334f48a8171bf59c32a2f",
+    "docs/contracts/df03-reference/check_contracts.py": "33ff456fecc9301da66d9d05bc5fad616ce58e1df1a6a7c037b2734607e9c872",
+    "docs/contracts/df03-service/build_contracts.py": "f5d03021aad382e08fe5d2939d33032d3d49db69dca86570245f05f14f014c08",
+    "docs/contracts/df02-supervisor/supervisor.schema.json": "ba848f2245140294fa20fbcc7cae9f4f18a8afb7a96aee809522ed70556a7091",
+    "docs/rebirth-df03-time-profile-design.md": "0ed707750fd461f876da846944f10bfff838dcfabc8df08c386ead9159f8af94"
+  }
+}

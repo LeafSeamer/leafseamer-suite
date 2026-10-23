@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录R2原子准备登记及本周期第二轮验证 | R:code:docs/contracts/c05-protection/REGISTRATION.md | A:设计历程与周期提交 | S:本轮仅本地提交，105项内存检查不关闭阶段0；历史准备回执不等于当前有效grant
+DEVELOPMENT_MEMO.md[SO5L]: F:记录准备资格保护及本周期第三轮验证与交付 | R:code:docs/contracts/c05-protection/QUALIFICATION.md | A:设计历程与周期提交 | S:112项内存检查及105项回归不关闭阶段0；受监督闭锁与实时资格提供者仍未联接
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总恢复准备原子登记后的全系统设计剩余门槛 | R:code:docs/contracts/c05-protection/REGISTRATION.md | A:C01至C12关闭状态 | S:R2登记窗口已有66表候选；回执撤回和当前资格、正常arm/P0、来源恢复、完整准入及SDK未齐，105项检查不关闭阶段0
+rebirth-design-closure.md[SQ8M]: F:汇总准备资格保护后的全系统设计收敛门槛 | R:code:docs/contracts/c05-protection/QUALIFICATION.md | A:C01至C12关闭状态 | S:72表已补持久首失效与保护传播；观察合格不等于实时授权，正常arm/P0、来源恢复、AUTH/TIME、最终准入及SDK仍未齐
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -400,11 +400,19 @@ storage.sql[PR9M]: F:声明P1登记、完整成员集合、暂停投影及拒绝
 storage_model.py[AR8S]: F:在同一写事务读取P1全量目标并封存固定写集 | R:code:docs/contracts/c05-protection/storage.sql,code:docs/contracts/c05-protection/check_storage.py | A:plan_steps、protect | S:规划必须持有BEGIN IMMEDIATE；精确fault重复只查原，同检测键换正文拒绝；outbox仅内部拒绝操作候选，不含HTTP认证或设备调用
 REGISTRATION.md[SR8T]: F:规定R2准备原子配对、尝试和回执采用的故障边界 | R:code:docs/contracts/c05-protection/registration.sql,code:docs/contracts/c05-protection/registration_model.py | A:66表候选与105项验收 | S:尝试记录不是发送许可，已尝试重启只查原；回执撤回与当前grant仍未完整联接，不能据历史applied启动真实设备
 build_registration.py[XV8T]: F:在P1组合上生成恢复准备反向外键与66表布局 | R:code:docs/contracts/c05-protection/build_storage.py,code:docs/contracts/c05-protection/registration.sql | A:build、--check | S:原恢复操作和目标分别延迟引用新seal及登记，完整提交才有效；替换点必须唯一，不修改旧候选或执行产品迁移
-check_registration.py[TR8M]: F:验证R2至R4准备登记、采用和P1故障保护的同库链路 | R:code:docs/contracts/c05-protection/registration_model.py,code:docs/contracts/c05-ingress/check_storage.py | A:105项检查、报告及暂存输入核验 | S:新库从起点安装全部守卫，再执行既有摄取形成旧unknown；覆盖rule和零设备reconcile，不冒领所有状态机分支或真实运行
-registration-report.json[TR7L]: F:保存105项准备登记检查与31个输入摘要 | R:code:docs/contracts/c05-protection/check_registration.py | A:可重验离线证据 | S:approved为false；并发、运行、磁盘崩溃及设备计数均为0，摘要匹配只证明报告输入未变
+check_registration.py[TR8M]: F:验证R2至R4准备登记、采用和P1故障保护的同库链路 | R:code:docs/contracts/c05-protection/registration_model.py,code:docs/contracts/c05-ingress/check_storage.py | A:105项检查、可选layout夹具与暂存输入核验 | S:layout从建库起安装全部守卫，再执行既有摄取形成旧unknown；默认66表，覆盖rule与零设备reconcile，不冒领全部状态机分支
+registration-report.json[TR7L]: F:保存夹具扩展后105项准备登记回归及31个输入摘要 | R:code:docs/contracts/c05-protection/check_registration.py | A:可重验离线证据 | S:默认66表的证据范围保持；运行、并发、磁盘崩溃和设备计数为0，不能据此批准新72表或产品运行
 registration.sql[PR9S]: F:声明恢复准备封存、原请求尝试和回执采用的三表约束 | R:code:docs/contracts/c05-protection/storage.sql,code:docs/contracts/c05-protection/build_registration.py | A:pr_commit、pr_attempt、pr_receipt及R4守卫 | S:别名和完整scope分离核对，目标/登记/manifest必须全等；无原尝试不得采用，采用与目标receipt反向配对；已封存目标不扩充，历史回执不自动消除P1拒绝
 registration_model.py[AR8S]: F:构造R2完整登记和准备回执采用至R4的离线写集 | R:code:docs/contracts/c05-protection/registration.sql,code:docs/contracts/c08-controller/preparation_delivery_model.py | A:reserve、apply、receipt_steps、start_steps | S:重复R2仍核身份；已有同字节原件而未采用时继续封存；认证域由正文外传入，gate与内部请求均为合成前提，模型不发网络
 seamer-registration.sql[PR9L]: F:提供P1及R2原子准备登记的66表新库候选 | R:code:docs/contracts/c05-protection/build_registration.py,code:docs/contracts/c05-protection/registration.sql | A:SQLite STRICT组合布局 | S:只能由生成器重建；原R2不能先提交再补准备，旧unknown和P1历史保留；正文权威、当前grant及物理掉电安全不由该DDL证明
+QUALIFICATION.md[SR8T]: F:定义准备资格失效的独立保护契约与原子故障时序 | R:code:docs/contracts/c05-protection/qualification.sql,code:docs/contracts/c05-protection/qualification_model.py | A:字段、代次隔离、验收边界 | S:observed_applied仅是观察结果；磁盘失败回滚可能保留旧资格，实际发送须受监督闭锁；新代次释放证据为合成前提
+build_qualification.py[XV8T]: F:组合72表准备资格布局及具名撤回Schema | R:code:docs/contracts/c05-protection/build_registration.py,code:docs/contracts/c05-protection/qualification.sql | A:build、schema、生成字节检查 | S:仅sp计划外键改为共享注册表，po仍绑定来源P1；旧代次拒绝下界合并两种保护，不改原公共基线
+check_qualification.py[TR8S]: F:验证准备失效、独立保护与恢复代次隔离的112项内存约束 | R:code:docs/contracts/c05-protection/qualification_model.py,code:docs/contracts/c05-protection/check_registration.py | A:run、报告与38输入绑定校验 | S:关闭和冲突逐写故障检查全库回滚；第三Controller由未知提交加入；新代次释放为合成，R5只验拒绝守卫
+preparation-qualification.schema.json[DR8M]: F:规定准备资格撤回的版本、完整绑定、原因与证据引用 | R:code:docs/contracts/c05-protection/build_qualification.py | A:Withdrawal与Binding具名定义 | S:根not禁止直接实例化；Schema不证明摘要正确或提供者授权，proof_ref修订采用正U20字符串
+qualification-report.json[TR7L]: F:保存112项准备资格检查及38个输入摘要 | R:code:docs/contracts/c05-protection/check_qualification.py | A:可重验离线证据 | S:approved为false；真实运行、并发、磁盘崩溃与设备计数为0，输入一致不代表生产系统通过
+qualification.sql[PR9S]: F:持久约束准备观察、首失效及完整保护集合的原子封存 | R:code:docs/contracts/c05-protection/registration.sql,code:docs/contracts/c08-controller/protection-receiver.sql | A:六表、当前资格及待保护投影 | S:失效反向引用计划与seal；同代次暂停并锁存，较新代次保持run；完整集合包含未知历史提交；首失效优先于最高applied观察
+qualification_model.py[AR8T]: F:构造准备观察采用、首冲突与可信撤回的独立保护写集 | R:code:docs/contracts/c05-protection/registration_model.py,code:docs/contracts/c08-controller/preparation_delivery_model.py | A:receive、withdraw、invalidate_steps | S:重复首失效零写；关闭先到不补历史采用；提供者scope比较不等于授信，派发正文仅内部候选且不执行网络
+seamer-qualification.sql[PR9L]: F:提供72表准备资格与共享保护接收的完整生成布局 | R:code:docs/contracts/c05-protection/build_qualification.py,code:docs/contracts/c05-protection/qualification.sql | A:新库建模、不可变事实及动作守卫 | S:从建库起生效而非生产迁移；ready及动作检查已观察资格和旧代次拒绝；真实提供者与完整P0仍未联接
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-preparation/===
 README.md[SW9T]: F:设计准备签发无环衔接并连接关闭持久布局 | R:code:docs/contracts/c04-preparation/STORAGE.md,code:docs/contracts/c05-protection/PROTOCOL.md | A:三内部HTTP与PRE01至PRE12 | S:arm绑定代次而恢复绑定单执行；关闭先到阻签发，历史回执不恢复资格。102项协议与430项SQL分开，公共scope和deny须归并，运行未验

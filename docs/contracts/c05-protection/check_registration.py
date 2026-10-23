@@ -14,9 +14,9 @@ I=P.row;B=b'synthetic-evidence';H=P.digest(B)
 INPUTS=list(dict.fromkeys(C.INPUTS+G.SOURCES+[HERE/n for n in ('REGISTRATION.md','registration_model.py','check_registration.py','seamer-registration.sql')]+[Path(ING.__file__)]))
 
 
-def fixture(**limits):
+def fixture(*,layout=None,**limits):
     db=sqlite3.connect(':memory:',isolation_level=None);db.row_factory=sqlite3.Row
-    db.executescript(G.build().decode())
+    db.executescript((G.build() if layout is None else layout).decode())
     seeds=[I('storage_scope',singleton=1,authority_id='seamer',database_id='db',format_version='automation-storage/0.1.0-draft.2'),
       I('ingress_storage_profile',singleton=1,version='ingress-storage/0.1.0-draft.1'),I('ingest_epoch',epoch='epoch',state='open',last_sequence='0'),
       I('ingress_source',source_id='source',source_key=B,revision='0',contiguous_sequence='0',reject_floor='0',state='synchronized'),

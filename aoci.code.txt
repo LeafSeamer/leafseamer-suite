@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录编码释放同库验证及新周期第二轮提交安排 | R:code:docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md | A:设计历程与新周期第2轮 | S:188项内存检查及172输入绑定；完整seal与共享日志仍缺，四阻断保持，阶段0未关闭
+DEVELOPMENT_MEMO.md[SO5L]: F:记录共享IPC候选验证及本周期第三轮交付安排 | R:code:docs/contracts/c08-controller/IPC_JOURNAL.md | A:设计历程与第3轮 | S:763项离线及164输入绑定；新SQL未联接，阶段0未关闭
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛及释放同库完成后的剩余联接事项 | R:code:docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md,code:docs/contracts/c08-controller/ENCODING_RELEASE.md | A:C01至C12及当前关闭状态 | S:188项内存非运行；正常释放已接207表，全50帧共享日志及关闭准备全集、完整seal和Guard预算时间同库与SDK仍缺。四最终准入阻断保持，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总定稿门槛及共享IPC候选后的剩余持久联接 | R:code:docs/contracts/c08-controller/IPC_JOURNAL.md,code:docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md | A:C01至C12当前关闭状态 | S:763项离线不证运行；52帧格式已有但共享日志和准备Closure未接207表，完整seal与SDK仍缺，四最终签发阻断保持，阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -595,6 +595,14 @@ check_encoding_release_storage.py[TD8S]: F:核验释放采用退款及重新预�
 controller-encoding-release.sql[FD9L]: F:承载编码准备与正常释放及单次退款的207表组合 | R:code:docs/contracts/c08-controller/build_encoding_release_storage.py,code:docs/contracts/c08-controller/encoding-release-storage.sql | A:精确原件及退款双向配对和恢复分类 | S:同prepare退款唯一，正常ACK与退役互斥且历史不删除；元数据按exit计费不随活额度归还。旧packet保留而撤回后禁新许可，四最终准入阻断仍在；完整seal与共享日志未齐，不可部署
 encoding-release-storage-report.json[SQ5L]: F:保存188项缓存释放内存结果及172输入原字节摘要 | R:code:docs/contracts/c08-controller/check_encoding_release_storage.py | A:207表故障及额度复用结果 | S:批准为false，SQLite非产品批准；BODY合成且真实并发磁盘IPC设备全零，绑定不证明消费者实际退出或完整最终准入
 encoding-release-storage.sql[FD9S]: F:声明释放请求ACK采用封存五表及退款和撤回守卫 | R:code:docs/contracts/c08-controller/build_encoding_release_storage.py,code:docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md | A:三写集双向配对与恢复及元数据限额 | S:先有编码尝试再请求worker释放，清理不套原编码截止；historical限同出口退役退款。原ACK与采用退款审计缺一不可提交，序号只在编码释放子域去重；BODY及JCS外验，非生产迁移
+IPC_JOURNAL.md[SR9S]: F:规定共享消息持久顺序及紧急关闭和完整准备拒绝覆盖 | R:code:docs/contracts/c08-controller/build_ipc_journal.py,code:docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md | A:IPC0.13及J01至J08 | S:紧急关闭同流但不占普通seq且终止会话资格；拒绝不等缓存清空或退款。大准备集合内部封存分批发送，207表尚未接新日志，四阻断保持，真实运行未验
+build_ipc_journal.py[XN8T]: F:生成共享日志内部对象及52帧IPC和方向响应清单 | R:code:docs/contracts/c08-controller/build_encoding_release.py,code:docs/contracts/c08-controller/encoding-release-ipc.schema.json | A:build与check及唯一局部方向定义 | S:显式升级全部seq和必选模式，不从名字猜方向；紧急仅全worker关闭及ACK，旧0.12不改。内部Closure不导出，生成不执行事务或切SDK权威
+check_ipc_journal.py[TN8M]: F:验证共享IPC形状方向及有限日志故障和准备关闭关联 | R:code:docs/contracts/c08-controller/build_ipc_journal.py,code:docs/contracts/c08-controller/ipc_journal_model.py,code:docs/contracts/c08-controller/check_encoding_release.py | A:763项检查及report和staged绑定 | S:52帧形状不证明全部领域处理器；权威与领域效果为夹具，回滚是副本。164输入核字节不重跑，新SQLite和真实IPC并发设备未验
+ipc-journal-messages.json[FN8L]: F:逐类列出52种设备IPC的方向响应及紧急模式资格 | R:code:docs/contracts/c08-controller/build_ipc_journal.py,code:docs/contracts/c08-controller/journal-ipc.schema.json | A:IPC0.13消息元数据 | S:PREPARE的拒绝由Controller返回，取消DISPATCH非响应；允许响应类型不替代正文身份核验，清单不实现调度
+ipc-journal-report.json[SQ5L]: F:保存763项共享IPC参考结果及164输入字节摘要 | R:code:docs/contracts/c08-controller/check_ipc_journal.py | A:形状与有限日志准备覆盖结果 | S:批准为false，SQLite及真实运行并发磁盘设备全零；字节绑定不扩大领域语义或提供者证明
+ipc-journal.schema.json[FN8L]: F:声明准备拒绝原件与日志提交及完整准备闭合的内部模型 | R:code:docs/contracts/c08-controller/build_ipc_journal.py | A:Deny与FrameRecord和EffectCommit及PreparationClosure | S:根拒直接实例；Closure是内部大集合而非线上帧，字段合法不证全集或来源。DenyAck无清空证明，不替代释放ACK或SQL配对
+ipc_journal_model.py[TR8S]: F:模拟双向日志副本事务及终止关闭和准备拒绝覆盖 | R:code:docs/contracts/c08-controller/build_ipc_journal.py,code:docs/contracts/c08-controller/open_plan_model.py | A:Journal与deny_error及Prepares和closure_error | S:入口须已可信解码，apply结果和选择投影均为夹具；同原wire不重效果。紧急不改普通水位且禁止新执行，拒绝后已发历史保留；无真实I/O或数据库
+journal-ipc.schema.json[FN8L]: F:声明共享日志和逐准备拒绝的完整52帧IPC0.13 | R:code:docs/contracts/c08-controller/build_ipc_journal.py | A:新版本及三项必选特性 | S:正常seq严格正U20，volatile_close仅全worker关闭与ACK且seq为null；方向注解需接收器另验。Deny只阻未来使用不证缓存退出，旧版本不改，运行未批准
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

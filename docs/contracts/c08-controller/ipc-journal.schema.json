@@ -1,0 +1,439 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/ipc-journal.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Positive": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Counter"
+        },
+        {
+          "pattern": "^[1-9]"
+        }
+      ]
+    },
+    "DenyRequest": {
+      "type": "object",
+      "properties": {
+        "deny_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "prepare_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "encoding_authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "encode_message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "encode_frame_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "revocation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "deny_id",
+        "revision",
+        "binding",
+        "prepare_id",
+        "encoding_authorization_ref",
+        "encode_message_id",
+        "encode_frame_digest",
+        "revocation_ref",
+        "selected_tick_ns",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "DenyAck": {
+      "type": "object",
+      "properties": {
+        "deny_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "prepare_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "deny_message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "deny_frame_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "effective_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "state": {
+          "const": "denied"
+        },
+        "future_use_denied": {
+          "const": true
+        }
+      },
+      "required": [
+        "deny_ref",
+        "binding",
+        "prepare_id",
+        "deny_message_id",
+        "deny_frame_digest",
+        "effective_tick_ns",
+        "state",
+        "future_use_denied"
+      ],
+      "additionalProperties": false
+    },
+    "FrameRecord": {
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "session_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "direction": {
+          "enum": [
+            "c2w",
+            "w2c"
+          ]
+        },
+        "sequence": {
+          "$ref": "#/$defs/Positive"
+        },
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "message_type": {
+          "enum": [
+            "HELLO_ACK",
+            "OPEN_GATE",
+            "DISPATCH",
+            "REPORT_STORED",
+            "FENCE",
+            "QUERY_BARRIER",
+            "CLOSE_GATE",
+            "GUARD_INSTALL",
+            "AUTH_FENCE",
+            "TIME_FENCE",
+            "RUN_FENCE",
+            "ENCODE_PACKET",
+            "PREPARE_PACKET_REJECTED",
+            "RESEND_DISPATCH",
+            "RESEND_REJECTED",
+            "BARRIER_STORED",
+            "CANCEL_FENCE",
+            "CANCEL_GUARD",
+            "ENCODE_CANCEL_PACKET",
+            "CANCEL_PREPARE_REJECTED",
+            "DISPATCH_CANCEL",
+            "CANCEL_RESEND_REJECTED",
+            "CANCEL_REPORT_STORED",
+            "QUERY_CANCEL_EXECUTION",
+            "GATE_FENCE",
+            "RELEASE_ENCODING",
+            "DENY_ENCODING",
+            "HELLO",
+            "OPEN_GATE_ACK",
+            "SEND_REPORT",
+            "EVIDENCE_CANDIDATE",
+            "FENCE_ACK",
+            "CLOSE_GATE_ACK",
+            "GUARD_ACK",
+            "AUTH_FENCE_ACK",
+            "TIME_FENCE_ACK",
+            "RUN_FENCE_ACK",
+            "PACKET_ENCODING_FAILED",
+            "PREPARE_PACKET",
+            "RESEND_REQUEST",
+            "BARRIER_UNAVAILABLE",
+            "CANCEL_FENCE_ACK",
+            "CANCEL_GUARD_ACK",
+            "PREPARE_CANCEL_PACKET",
+            "CANCEL_ENCODING_FAILED",
+            "CANCEL_RESEND_REQUEST",
+            "CANCEL_SEND_REPORT",
+            "CANCEL_EVIDENCE_CANDIDATE",
+            "CANCEL_EXECUTION_STATUS",
+            "GATE_FENCE_ACK",
+            "RELEASE_ENCODING_ACK",
+            "DENY_ENCODING_ACK"
+          ]
+        },
+        "frame_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "wire_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "wire_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "frame_object_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "wire_object_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "record_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "record_id",
+        "session_ref",
+        "direction",
+        "sequence",
+        "message_id",
+        "message_type",
+        "frame_digest",
+        "wire_digest",
+        "wire_length",
+        "frame_object_ref",
+        "wire_object_ref",
+        "record_digest"
+      ],
+      "additionalProperties": false
+    },
+    "EffectCommit": {
+      "type": "object",
+      "properties": {
+        "record_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "disposition": {
+          "enum": [
+            "applied",
+            "historical",
+            "rejected"
+          ]
+        },
+        "domain_commit_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1
+        },
+        "audit_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "reply_record_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        },
+        "committed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "record_ref",
+        "disposition",
+        "domain_commit_refs",
+        "audit_ref",
+        "reply_record_refs",
+        "committed_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "PreparationMember": {
+      "type": "object",
+      "properties": {
+        "prepare_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "encoding_authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "basis": {
+          "enum": [
+            "never_attempted",
+            "released",
+            "retired",
+            "deny_ack"
+          ]
+        },
+        "proof_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "prepare_id",
+        "encoding_authorization_ref",
+        "writer_exit_id",
+        "basis",
+        "proof_ref"
+      ],
+      "additionalProperties": false
+    },
+    "PreparationClosure": {
+      "type": "object",
+      "properties": {
+        "closure_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "operation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "selector_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "registry_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "prepare_head": {
+          "$ref": "#/$defs/Counter"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PreparationMember"
+          },
+          "maxItems": 65536
+        },
+        "closure_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "closure_id",
+        "revision",
+        "scope",
+        "operation_ref",
+        "selector_ref",
+        "registry_ref",
+        "prepare_head",
+        "members",
+        "closure_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,423 @@
+{
+  "version": "ipc/0.13.0-journal-draft.1",
+  "approved": false,
+  "messages": [
+    {
+      "type": "HELLO",
+      "direction": "w2c",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__HELLO",
+      "volatile_allowed": false
+    },
+    {
+      "type": "HELLO_ACK",
+      "direction": "c2w",
+      "reply_to_types": [
+        "HELLO"
+      ],
+      "schema_ref": "#/$defs/S9__HELLO_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "OPEN_GATE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__OPEN_GATE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "OPEN_GATE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "OPEN_GATE"
+      ],
+      "schema_ref": "#/$defs/S9__OPEN_GATE_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "DISPATCH",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__DISPATCH",
+      "volatile_allowed": false
+    },
+    {
+      "type": "SEND_REPORT",
+      "direction": "w2c",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__SEND_REPORT",
+      "volatile_allowed": false
+    },
+    {
+      "type": "EVIDENCE_CANDIDATE",
+      "direction": "w2c",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__EVIDENCE_CANDIDATE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "REPORT_STORED",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__REPORT_STORED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "FENCE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__FENCE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "FENCE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "FENCE",
+        "QUERY_BARRIER"
+      ],
+      "schema_ref": "#/$defs/S9__FENCE_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "QUERY_BARRIER",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__QUERY_BARRIER",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CLOSE_GATE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__CLOSE_GATE",
+      "volatile_allowed": true
+    },
+    {
+      "type": "CLOSE_GATE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "CLOSE_GATE"
+      ],
+      "schema_ref": "#/$defs/S9__CLOSE_GATE_ACK",
+      "volatile_allowed": true
+    },
+    {
+      "type": "GUARD_INSTALL",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__GUARD_INSTALL",
+      "volatile_allowed": false
+    },
+    {
+      "type": "GUARD_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "GUARD_INSTALL"
+      ],
+      "schema_ref": "#/$defs/S9__GUARD_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "AUTH_FENCE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__AUTH_FENCE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "AUTH_FENCE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "AUTH_FENCE",
+        "QUERY_BARRIER"
+      ],
+      "schema_ref": "#/$defs/S9__AUTH_FENCE_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "TIME_FENCE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__TIME_FENCE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "TIME_FENCE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "TIME_FENCE",
+        "QUERY_BARRIER"
+      ],
+      "schema_ref": "#/$defs/S9__TIME_FENCE_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "RUN_FENCE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__RUN_FENCE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "RUN_FENCE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "RUN_FENCE",
+        "QUERY_BARRIER"
+      ],
+      "schema_ref": "#/$defs/S9__RUN_FENCE_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "ENCODE_PACKET",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__ENCODE_PACKET",
+      "volatile_allowed": false
+    },
+    {
+      "type": "PACKET_ENCODING_FAILED",
+      "direction": "w2c",
+      "reply_to_types": [
+        "ENCODE_PACKET"
+      ],
+      "schema_ref": "#/$defs/S9__PACKET_ENCODING_FAILED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "PREPARE_PACKET",
+      "direction": "w2c",
+      "reply_to_types": [
+        "ENCODE_PACKET"
+      ],
+      "schema_ref": "#/$defs/S9__PREPARE_PACKET",
+      "volatile_allowed": false
+    },
+    {
+      "type": "PREPARE_PACKET_REJECTED",
+      "direction": "c2w",
+      "reply_to_types": [
+        "PREPARE_PACKET"
+      ],
+      "schema_ref": "#/$defs/S9__PREPARE_PACKET_REJECTED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "RESEND_REQUEST",
+      "direction": "w2c",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__RESEND_REQUEST",
+      "volatile_allowed": false
+    },
+    {
+      "type": "RESEND_DISPATCH",
+      "direction": "c2w",
+      "reply_to_types": [
+        "RESEND_REQUEST"
+      ],
+      "schema_ref": "#/$defs/S9__RESEND_DISPATCH",
+      "volatile_allowed": false
+    },
+    {
+      "type": "RESEND_REJECTED",
+      "direction": "c2w",
+      "reply_to_types": [
+        "RESEND_REQUEST"
+      ],
+      "schema_ref": "#/$defs/S9__RESEND_REJECTED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "BARRIER_UNAVAILABLE",
+      "direction": "w2c",
+      "reply_to_types": [
+        "QUERY_BARRIER"
+      ],
+      "schema_ref": "#/$defs/S9__BARRIER_UNAVAILABLE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "BARRIER_STORED",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__BARRIER_STORED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_FENCE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__CANCEL_FENCE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_FENCE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "CANCEL_FENCE",
+        "QUERY_BARRIER"
+      ],
+      "schema_ref": "#/$defs/S9__CANCEL_FENCE_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_GUARD",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__CANCEL_GUARD",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_GUARD_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "CANCEL_GUARD"
+      ],
+      "schema_ref": "#/$defs/S9__CANCEL_GUARD_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "ENCODE_CANCEL_PACKET",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__ENCODE_CANCEL_PACKET",
+      "volatile_allowed": false
+    },
+    {
+      "type": "PREPARE_CANCEL_PACKET",
+      "direction": "w2c",
+      "reply_to_types": [
+        "ENCODE_CANCEL_PACKET"
+      ],
+      "schema_ref": "#/$defs/S9__PREPARE_CANCEL_PACKET",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_ENCODING_FAILED",
+      "direction": "w2c",
+      "reply_to_types": [
+        "ENCODE_CANCEL_PACKET"
+      ],
+      "schema_ref": "#/$defs/S9__CANCEL_ENCODING_FAILED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_PREPARE_REJECTED",
+      "direction": "c2w",
+      "reply_to_types": [
+        "PREPARE_CANCEL_PACKET"
+      ],
+      "schema_ref": "#/$defs/S9__CANCEL_PREPARE_REJECTED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "DISPATCH_CANCEL",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__DISPATCH_CANCEL",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_RESEND_REQUEST",
+      "direction": "w2c",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__CANCEL_RESEND_REQUEST",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_RESEND_REJECTED",
+      "direction": "c2w",
+      "reply_to_types": [
+        "CANCEL_RESEND_REQUEST"
+      ],
+      "schema_ref": "#/$defs/S9__CANCEL_RESEND_REJECTED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_SEND_REPORT",
+      "direction": "w2c",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__CANCEL_SEND_REPORT",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_REPORT_STORED",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__CANCEL_REPORT_STORED",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_EVIDENCE_CANDIDATE",
+      "direction": "w2c",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__CANCEL_EVIDENCE_CANDIDATE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "QUERY_CANCEL_EXECUTION",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/S9__QUERY_CANCEL_EXECUTION",
+      "volatile_allowed": false
+    },
+    {
+      "type": "CANCEL_EXECUTION_STATUS",
+      "direction": "w2c",
+      "reply_to_types": [
+        "QUERY_CANCEL_EXECUTION"
+      ],
+      "schema_ref": "#/$defs/S9__CANCEL_EXECUTION_STATUS",
+      "volatile_allowed": false
+    },
+    {
+      "type": "GATE_FENCE",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/GF__GATE_FENCE",
+      "volatile_allowed": false
+    },
+    {
+      "type": "GATE_FENCE_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "GATE_FENCE"
+      ],
+      "schema_ref": "#/$defs/GF__GATE_FENCE_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "RELEASE_ENCODING",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/ER__RELEASE_ENCODING",
+      "volatile_allowed": false
+    },
+    {
+      "type": "RELEASE_ENCODING_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "RELEASE_ENCODING"
+      ],
+      "schema_ref": "#/$defs/ER__RELEASE_ENCODING_ACK",
+      "volatile_allowed": false
+    },
+    {
+      "type": "DENY_ENCODING",
+      "direction": "c2w",
+      "reply_to_types": [],
+      "schema_ref": "#/$defs/J__DENY_ENCODING",
+      "volatile_allowed": false
+    },
+    {
+      "type": "DENY_ENCODING_ACK",
+      "direction": "w2c",
+      "reply_to_types": [
+        "DENY_ENCODING"
+      ],
+      "schema_ref": "#/$defs/J__DENY_ENCODING_ACK",
+      "volatile_allowed": false
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录限定取消范围采用的验证及提交周期 | R:code:docs/contracts/c08-controller/SCOPE_STORAGE.md | A:设计历程与新周期第1轮 | S:287项内存非运行；156输入绑定。父发送是合成历史前态，范围采用不等最终签发；四阻断保持且阶段0未关闭
+DEVELOPMENT_MEMO.md[SO5L]: F:记录编码授权与最终签发修订及提交周期 | R:code:docs/contracts/c08-controller/ENCODING_AUTHORITY.md | A:设计历程与新周期第2轮 | S:400项离线非运行；147输入绑定。完整seal和准备持久化仍缺，四阻断保持；本轮仅本地提交，阶段0未关闭
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛及限定范围采用后的剩余联接事项 | R:code:docs/contracts/c08-controller/SCOPE_STORAGE.md,code:docs/contracts/c08-controller/SCOPED_GATE.md | A:C01至C12及当前关闭状态 | S:194表ScopeCommit保持protected，287项内存非运行；完整AdmissionSeal和两安全权威映射及统一关闭日志和SDK未齐。四阻断保持，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛及编码顺序修订后的剩余联接事项 | R:code:docs/contracts/c08-controller/ENCODING_AUTHORITY.md,code:docs/contracts/c08-controller/SCOPE_STORAGE.md | A:C01至C12及当前关闭状态 | S:400项离线非完整seal或真实运行；准备持久化及Guard预算时间同库和统一关闭日志与SDK未齐。194表四阻断保持，阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -569,6 +569,13 @@ check_scope_storage.py[TD8M]: F:核验范围评估开放采用及接管撤回的
 controller-scope.sql[FD9L]: F:承载共享控制资源与取消评估开放采用的194表组合 | R:code:docs/contracts/c08-controller/build_scope_storage.py,code:docs/contracts/c08-controller/scope-storage.sql | A:唯一物理闸及普通与限定范围分型 | S:父unknown不迁归属，取消保持protected；最后seal重核初始评估与当前原件，正常评估刷新不延Access。候选不含实时now或完整Guard，四签发阻断保持，不能部署
 scope-storage-report.json[SQ5L]: F:保存287项范围持久约束结果及156输入原字节摘要 | R:code:docs/contracts/c08-controller/check_scope_storage.py | A:194表内存约束及故障结果 | S:批准为false，父历史前态与BODY合成且SQLite非产品批准；真实并发磁盘IPC设备未验，绑定不证明完整准入或权威
 scope-storage.sql[FD9S]: F:声明政策评估Access及ScopeCommit的八表和当前候选约束 | R:code:docs/contracts/c08-controller/build_scope_storage.py,code:docs/contracts/c08-controller/ownership-storage.sql | A:完整风险共享原件及采用撤回封存 | S:两安全Ref分别三元绑定而真实提供者外验；自身hold当前active，父ordinary风险保留旧Owner并核分类。初始评估撤回不被新评估覆盖，采用不升ready；通知不证worker关闭，非生产迁移
+ENCODING_AUTHORITY.md[SR9T]: F:规定仅编码授权到最终持久签发及Guard安装的无环顺序 | R:code:docs/contracts/c08-controller/FINAL_ADMISSION.md,code:docs/contracts/c08-controller/build_encoding_authority.py | A:三模型与完整IPC0.11及故障验收 | S:编码不做设备I/O，T2先于Guard安装且不跨IPC持写事务；新T2重核期限，历史TTL不抹已提交intent。FinalizationLink非完整seal，准备DDL及提供者和SDK仍缺，四阻断保持，不可部署
+build_encoding_authority.py[XN8T]: F:生成仅编码授权证据模型与完整48帧IPC0.11候选 | R:code:docs/contracts/c08-controller/build_scoped_gate.py,code:docs/contracts/c08-controller/gate-renewal-ipc.schema.json | A:schema与ipc及build和check | S:七正文显式升级且握手必选新特性；FinalizationLink不导出IPC，旧源不改。生成不切SDK权威或执行持久化，结构不授设备许可
+check_encoding_authority.py[TR8M]: F:核验编码原件字节及T2期限撤权和Guard发送顺序并绑定报告 | R:code:docs/contracts/c08-controller/encoding_authority_model.py,code:docs/contracts/c08-controller/check_scoped_gate.py | A:400项检查及report与staged绑定 | S:48帧回归仅形状，完整seal与权威为夹具；依赖图手写非自动全系统分析。147输入核字节不重跑，不执行SQLite或真实IPC并发磁盘设备
+encoding-authority-ipc.schema.json[FN8L]: F:声明拆分编码授权后的完整48帧设备IPC候选 | R:code:docs/contracts/c08-controller/build_encoding_authority.py | A:IPC0.11与encoding_authority_before_issue | S:两编码请求不再引用最终Guard，五响应精确回显授权；编码不等发送。旧Guard和DISPATCH语义保留，结构不证明原件当前性或提供者，不允许旧写版本降级
+encoding-authority-report.json[SQ5L]: F:保存400项编码授权参考结果及147输入原字节摘要 | R:code:docs/contracts/c08-controller/check_encoding_authority.py | A:48帧结构及有限顺序结果 | S:批准为false，SQLite和真实运行并发磁盘设备全零；完整seal合成，字节绑定不扩大覆盖
+encoding-authority.schema.json[FN8L]: F:声明仅编码授权证据及最终提交顺序投影的封闭结构 | R:code:docs/contracts/c08-controller/build_encoding_authority.py | A:EncodingAuthorization与Evidence及FinalizationLink | S:根拒直接实例；ordinary预留attempt不等派发，取消不借父actor。Ref三元与旧ContentRef显式映射，FinalizationLink不是完整AdmissionSeal，结构合法不授真实权威
+encoding_authority_model.py[TR8S]: F:判定编码原件和字节关联并模拟T2到Guard及一次消费 | R:code:docs/contracts/c08-controller/open_plan_model.py,code:docs/contracts/c08-controller/check_encoding_authority.py | A:encoding_error及evidence和Order | S:先Schema，store和完整seal为人工前提；新T2重核编码截止与撤回，重复只查历史。提交未知禁发，先消费后I/O标记且不退款；无SQLite或真实发送，重启不证明监督退役
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

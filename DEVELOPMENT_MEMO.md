@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-23 限定取消发送范围与完整IPC（新周期第1/3轮）
+
+- 上周期三轮已推main并核对`0fb724c`；既有merge commit包含rebirth。本轮继续main，仅本地commit，第3轮再审查完整待推历史并推送。
+- [范围化保护闸候选](docs/contracts/c08-controller/SCOPED_GATE.md)补GateAccess、ProtectionScope、完整风险评估及逐许可GateUse投影，归并为独立IPC0.9的完整46帧。普通与取消单设备只保留一个当前范围；换范围必须新屏障与token，取消不使GUI全局ready，不借父actor或迁移旧hold。
+- 306项结构、原件关联及有限顺序检查通过，报告绑定140输入；原有序出口67项、占用归属152项和时间HTTP/IPC199项实际回归通过。覆盖父unknown、父未发、无关/同父其他取消风险、正常释放后新评估、初始证据撤回、ACK错域、重复OPEN/关闭/许可及期限边界。旧46帧仅形状升级，完整Guard与权威仍是合成前提，不能宣称真实发送验证。
+- 178表及四个最终签发阻断保持；下一步将ScopeCommit与普通ReadyCommit分型、Ownership/Assessment/AdmissionSeal及统一关闭来源和全消息seq落实为同版持久联接，再归入唯一SDK。没有修改业务代码或运行新SQLite布局、真实IPC、并发、磁盘故障和设备，阶段0未关闭。
+
 ## 2026-10-23 不可变占用归属与最终准入衔接（周期第3/3轮）
 
 - 本周期前两轮提交为`421f35c`、`244af35`；本轮继续main，按授权审查完整三轮待推范围后推送，远端结果另行核对。

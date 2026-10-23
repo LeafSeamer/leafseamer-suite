@@ -1,0 +1,637 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/scoped-gate.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Principal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "kind",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionIdentity": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "ordinary",
+            "cancel"
+          ]
+        },
+        "command_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "attempt_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancellation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "execution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "kind",
+        "command_ref",
+        "attempt_ref",
+        "cancellation_ref",
+        "execution_ref",
+        "requester",
+        "origin",
+        "source_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attempt_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "cancellation_ref": {
+                "type": "null"
+              },
+              "execution_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "attempt_ref": {
+                "type": "null"
+              },
+              "cancellation_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "execution_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "service"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "human"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ProtectionScope": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity",
+          "allOf": [
+            {
+              "properties": {
+                "kind": {
+                  "const": "cancel"
+                }
+              }
+            }
+          ]
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ordinary_closure_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "identity",
+        "policy_ref",
+        "ordinary_closure_ref",
+        "hold_ref",
+        "ownership_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Risk": {
+      "type": "object",
+      "properties": {
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "command_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "execution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "classification": {
+          "enum": [
+            "active",
+            "unknown",
+            "unresolved",
+            "stale"
+          ]
+        }
+      },
+      "required": [
+        "hold_ref",
+        "ownership_ref",
+        "command_ref",
+        "execution_ref",
+        "classification"
+      ],
+      "additionalProperties": false
+    },
+    "ProtectionAssessment": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "protection-assessment/0.1.0-draft.1"
+        },
+        "assessment_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "protection": {
+          "$ref": "#/$defs/ProtectionScope"
+        },
+        "resource_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Risk"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "sampled_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "provider_receipt_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "assessment_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "assessment_id",
+        "revision",
+        "binding",
+        "control_authority_ref",
+        "control_epoch",
+        "effective_version",
+        "authorization_ref",
+        "resource_safety_ref",
+        "gate_safety_ref",
+        "protection",
+        "resource_ref",
+        "risks",
+        "sampled_tick_ns",
+        "expires_tick_ns",
+        "provider_receipt_ref",
+        "assessment_digest"
+      ],
+      "additionalProperties": false
+    },
+    "GateAccess": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "gate-access/0.1.0-draft.1"
+        },
+        "access_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "purpose": {
+          "enum": [
+            "ordinary",
+            "cancel_only"
+          ]
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "protection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProtectionScope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "initial_assessment_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "access_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "access_id",
+        "revision",
+        "purpose",
+        "binding",
+        "control_authority_ref",
+        "control_epoch",
+        "effective_version",
+        "authorization_ref",
+        "resource_safety_ref",
+        "gate_safety_ref",
+        "protection",
+        "initial_assessment_ref",
+        "selected_tick_ns",
+        "expires_tick_ns",
+        "access_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "purpose": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "protection": {
+                "type": "null"
+              },
+              "initial_assessment_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "protection": {
+                "$ref": "#/$defs/ProtectionScope"
+              },
+              "initial_assessment_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "GateUse": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "ordinary",
+            "cancel"
+          ]
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "guard_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "protection_assessment_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "permit_id",
+        "kind",
+        "gate_access_ref",
+        "identity",
+        "ownership_ref",
+        "guard_ref",
+        "protection_assessment_ref",
+        "selected_tick_ns",
+        "expires_tick_ns"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "identity": {
+                "properties": {
+                  "kind": {
+                    "const": "ordinary"
+                  }
+                }
+              },
+              "protection_assessment_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "identity": {
+                "properties": {
+                  "kind": {
+                    "const": "cancel"
+                  }
+                }
+              },
+              "protection_assessment_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

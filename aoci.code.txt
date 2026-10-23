@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录取消动作图完成原件及转用main的提交周期 | R:code:docs/contracts/c08-controller/CANCEL_PLAN.md | A:设计历程与本周期第1轮 | S:上周期76b5970已推；main快进保留历史，后续第三轮推main。184项新检查与旧回归不证明运行，独立hold及资源撤回仍缺，业务未实现
+DEVELOPMENT_MEMO.md[SO5L]: F:记录取消独立占用归并及main合并后的提交周期 | R:code:docs/contracts/c08-controller/PROTECTED_HOLD.md | A:设计历程与本周期第2轮 | S:本轮仅本地提交，第三轮审查完整main待推范围；89项新检查非运行证明，完成原件因果撤回仍缺
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总定稿门槛并登记取消动作图及main分支安排 | R:code:docs/contracts/c08-controller/CANCEL_PLAN.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前剩余项 | S:129表已具备动作图及完成原件，不重复从零建设；独立hold资源撤回Decision及其他屏障TIME与统一SDK仍缺。候选未批准运行，全系统设计未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总定稿门槛并登记取消独立占用与撤回链剩余项 | R:code:docs/contracts/c08-controller/PROTECTED_HOLD.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前剩余项 | S:129表已共用占用仲裁，不重复从零建设；完成原件因果撤回、提供者及outbox、Decision和其他屏障TIME与SDK仍缺。候选未批准运行，全系统设计未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -479,6 +479,12 @@ cancel-plan-report.json[SQ5L]: F:保存184项取消动作图内存检查及54输
 cancel-plan.sql[FD9S]: F:声明取消唯一图结果全集与发送依赖的十表约束 | R:code:docs/contracts/c08-controller/build_cancel_plan.py,code:docs/contracts/c08-controller/CANCEL_PLAN.md | A:双向配对封存与锁存视图和最终发送守卫 | S:结果含全部重传，未知失败与任意撤回禁止后继；原结果不改，结果水位两次核验。数量不能证明批准图完整，独立hold仍为Ref且资源撤回未贯通，非生产迁移
 check_cancel_plan.py[TD8S]: F:核验129表动作图及完成证据和后继采用的故障边界 | R:code:docs/contracts/c08-controller/build_cancel_plan.py,code:docs/contracts/c08-controller/check_cancel_closure.py | A:184项内存检查及report和staged绑定 | S:三个写集逐条缺写与主动异常比全库，祖先及签发中撤回另验；BODY为夹具。54输入核字节不重跑，真实并发磁盘设备未验
 controller-cancel-plan.sql[FD9L]: F:承载129表动作图完成原件和取消发送依赖的完整组合 | R:code:docs/contracts/c08-controller/build_cancel_plan.py,code:docs/contracts/c08-controller/cancel-plan.sql | A:共享签发关闭资源与动作图组合 | S:最后发送提交重核锁存与全部前驱；关闭及整体效果仍独立。独立hold资源撤回保护及其他屏障TIME未齐，不是可部署迁移
+PROTECTED_HOLD.md[SD9T]: F:定义取消独立占用与同设备仲裁双政策释放及恢复边界 | R:code:docs/contracts/c08-controller/protected-hold.sql,code:docs/contracts/c08-controller/check_protected_hold.py | A:129表候选字段写集和验收 | S:父未发不造普通attempt；取消hold与父hold可共存，无关命令互斥。两政策合取，晚撤回保留多个风险；cg_result到派生资源验证的因果清单仍缺，候选不可部署
+build_protected_hold.py[XD8T]: F:组合动作图与独立占用约束生成同一129表候选 | R:code:docs/contracts/c08-controller/build_cancel_plan.py,code:docs/contracts/c08-controller/protected-hold.sql | A:build与check及精确替换 | S:普通守卫只限attempt分支，取消走新强绑定；旧源不改且每项替换须精确命中，不是迁移器或运行实现
+check_protected_hold.py[TD8S]: F:核验独立占用原子写集双向资源冲突及晚撤回恢复 | R:code:docs/contracts/c08-controller/build_protected_hold.py,code:docs/contracts/c08-controller/check_cancel_plan.py | A:89项内存检查与report及staged绑定 | S:缺写主动异常比较129表，父未发与父已发分别验；晚撤回保留新许可。BODY权威合成，59输入核字节不重跑，真实并发磁盘设备未验
+controller-protected-hold.sql[FD9L]: F:承载共享资源权威与取消计划独立占用的129表固定组合 | R:code:docs/contracts/c08-controller/build_protected_hold.py,code:docs/contracts/c08-controller/protected-hold.sql | A:互斥归属双向封存与双政策释放 | S:同父风险可共存，其他命令受共享仲裁；最终取消提交复核准入撤回，恢复不吸收后来失效。因果依赖扇出及保护outbox和其他屏障TIME仍缺，不是可部署迁移
+protected-hold-report.json[SQ5L]: F:保存89项独立占用内存结果及59输入原字节摘要 | R:code:docs/contracts/c08-controller/check_protected_hold.py | A:129表约束与故障结果 | S:批准为false，SQLite非产品批准；BODY合成，真实运行并发磁盘设备全零，字节绑定不扩大覆盖
+protected-hold.sql[FD9T]: F:定义取消占用准入封存发送及双政策释放守卫 | R:code:docs/contracts/c08-controller/build_protected_hold.py,code:docs/contracts/c08-controller/resource.sql | A:共享验证依赖视图与六类触发器 | S:须由生成器组合；自身释放验证加入原撤回链，两政策均须有效。释放清风险不自动清保护，原完成结果到资源证明因果关系尚未联接，真实提供者另验
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

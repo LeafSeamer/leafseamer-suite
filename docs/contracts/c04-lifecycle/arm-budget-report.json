@@ -1,0 +1,646 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 108,
+  "scope": "有限生命周期预算模型及现有72表反例，不是完整布防SQL实现",
+  "runtime_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "Schema生成字节一致",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20拒绝非规范值'01'",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20拒绝非规范值'-1'",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20拒绝非规范值'1e2'",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20拒绝非规范值'1\\n'",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20拒绝非规范值'１'",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20拒绝非规范值1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20拒绝非规范值'100000000000000000000'",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "Profile正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "Profile拒绝额外字段",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "Shape正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "Shape拒绝额外字段",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "Reservation正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "Reservation拒绝额外字段",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ProtectionUse正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ProtectionUse拒绝额外字段",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ReleaseProof正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ReleaseProof拒绝额外字段",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "受理保持disarmed",
+      "observed": [
+        "disarmed",
+        false,
+        null
+      ],
+      "expected": [
+        "disarmed",
+        false,
+        null
+      ]
+    },
+    {
+      "name": "可靠受理占槽",
+      "observed": "run",
+      "expected": "run"
+    },
+    {
+      "name": "准备有活动操作",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "准备先持有完整预算",
+      "observed": {
+        "logical_rows": "1180",
+        "logical_bytes": "19937280",
+        "queue_slots": "18",
+        "work_units": "1248"
+      },
+      "expected": {
+        "logical_rows": "1180",
+        "logical_bytes": "19937280",
+        "queue_slots": "18",
+        "work_units": "1248"
+      }
+    },
+    {
+      "name": "全部回执后armed",
+      "observed": "ready",
+      "expected": "ready"
+    },
+    {
+      "name": "布防可派发",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ready不退保护额度",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原请求重查",
+      "observed": "existing",
+      "expected": "existing"
+    },
+    {
+      "name": "重查零写",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "logical_rows不足原子拒绝",
+      "observed": "capacity_rejected",
+      "expected": "capacity_rejected"
+    },
+    {
+      "name": "logical_rows不占槽不消费预检",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "logical_rows等号可受理",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "logical_bytes不足原子拒绝",
+      "observed": "capacity_rejected",
+      "expected": "capacity_rejected"
+    },
+    {
+      "name": "logical_bytes不占槽不消费预检",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "logical_bytes等号可受理",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "queue_slots不足原子拒绝",
+      "observed": "capacity_rejected",
+      "expected": "capacity_rejected"
+    },
+    {
+      "name": "queue_slots不占槽不消费预检",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "queue_slots等号可受理",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "work_units不足原子拒绝",
+      "observed": "capacity_rejected",
+      "expected": "capacity_rejected"
+    },
+    {
+      "name": "work_units不占槽不消费预检",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "work_units等号可受理",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "预算写入后故障回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "inventory_verified阻止受理",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "controller_capacity_verified阻止受理",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "库存摘要绑定",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不得少报Controller集合",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "inventory_verified就绪前失效关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "controller_capacity_verified就绪前失效关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "authorized就绪前失效关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "准备后库存变化",
+      "observed": "inventory_changed",
+      "expected": "inventory_changed"
+    },
+    {
+      "name": "首保护消费一份",
+      "observed": "protected_committed",
+      "expected": "protected_committed"
+    },
+    {
+      "name": "持有转消耗守恒",
+      "observed": {
+        "logical_rows": "1180",
+        "logical_bytes": "19937280",
+        "queue_slots": "18",
+        "work_units": "1248"
+      },
+      "expected": {
+        "logical_rows": "1180",
+        "logical_bytes": "19937280",
+        "queue_slots": "18",
+        "work_units": "1248"
+      }
+    },
+    {
+      "name": "保护后派发关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "只扣一次",
+      "observed": "1",
+      "expected": "1"
+    },
+    {
+      "name": "保护精确重复",
+      "observed": "existing",
+      "expected": "existing"
+    },
+    {
+      "name": "重复不扣新额度",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "同事件不同内容拒绝",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "第二独立故障仍有预算",
+      "observed": "protected_committed",
+      "expected": "protected_committed"
+    },
+    {
+      "name": "超出有限保护次数不伪造持久成功",
+      "observed": "protection_budget_exhausted",
+      "expected": "protection_budget_exhausted"
+    },
+    {
+      "name": "耗尽仍关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "耗尽不额外扣费",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "存储失败状态{'storage_healthy': False}",
+      "observed": "protected_uncommitted",
+      "expected": "protected_uncommitted"
+    },
+    {
+      "name": "存储失败账本回滚{'storage_healthy': False}",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "回滚不重开内存门{'storage_healthy': False}",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "存储失败状态{'abort': True}",
+      "observed": "protected_uncommitted",
+      "expected": "protected_uncommitted"
+    },
+    {
+      "name": "存储失败账本回滚{'abort': True}",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "回滚不重开内存门{'abort': True}",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "dependencies增长必须重预留",
+      "observed": "exposure_growth",
+      "expected": "exposure_growth"
+    },
+    {
+      "name": "dependencies增长不截断而关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "runs增长必须重预留",
+      "observed": "exposure_growth",
+      "expected": "exposure_growth"
+    },
+    {
+      "name": "runs增长不截断而关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "executions增长必须重预留",
+      "observed": "exposure_growth",
+      "expected": "exposure_growth"
+    },
+    {
+      "name": "executions增长不截断而关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "preparations增长必须重预留",
+      "observed": "exposure_growth",
+      "expected": "exposure_growth"
+    },
+    {
+      "name": "preparations增长不截断而关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "submissions增长必须重预留",
+      "observed": "exposure_growth",
+      "expected": "exposure_growth"
+    },
+    {
+      "name": "submissions增长不截断而关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "controller_targets增长必须重预留",
+      "observed": "exposure_growth",
+      "expected": "exposure_growth"
+    },
+    {
+      "name": "controller_targets增长不截断而关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "正文越界关闭",
+      "observed": "row_bound",
+      "expected": "row_bound"
+    },
+    {
+      "name": "保护排队截止前可提交",
+      "observed": "protected_committed",
+      "expected": "protected_committed"
+    },
+    {
+      "name": "排队截止500000000",
+      "observed": "protection_queue_expired",
+      "expected": "protection_queue_expired"
+    },
+    {
+      "name": "超时不退旧预算也不重开500000000",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "排队截止500000001",
+      "observed": "protection_queue_expired",
+      "expected": "protection_queue_expired"
+    },
+    {
+      "name": "超时不退旧预算也不重开500000001",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "保护回执不能退款",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "未授信归档证明拒绝",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "明确核对只退未使用",
+      "observed": "released_unused",
+      "expected": "released_unused"
+    },
+    {
+      "name": "已花费及历史事件保留",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退款重复只查原",
+      "observed": "existing",
+      "expected": "existing"
+    },
+    {
+      "name": "已退款不能再使用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "旧代次保护不关闭新run",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "调低profile保留原持有和消耗",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新profile不夺走旧保护包络",
+      "observed": "protected_committed",
+      "expected": "protected_committed"
+    },
+    {
+      "name": "满额仍能查询原布防",
+      "observed": "existing",
+      "expected": "existing"
+    },
+    {
+      "name": "同profile修订不能换正文",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "准备过程中改profile不能旧ready",
+      "observed": "profile_changed",
+      "expected": "profile_changed"
+    },
+    {
+      "name": "共享池第二run可独立预留",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "完整run绑定避免操作别名碰撞",
+      "observed": 2,
+      "expected": 2
+    },
+    {
+      "name": "共享池两run合计扣减",
+      "observed": {
+        "logical_rows": "2360",
+        "logical_bytes": "39874560",
+        "queue_slots": "36",
+        "work_units": "2496"
+      },
+      "expected": {
+        "logical_rows": "2360",
+        "logical_bytes": "39874560",
+        "queue_slots": "36",
+        "work_units": "2496"
+      }
+    },
+    {
+      "name": "预算乘积超U20拒绝",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "跨53位整数无损",
+      "observed": "9007199254740994",
+      "expected": "9007199254740994"
+    },
+    {
+      "name": "发布profile缺验证Ref拒绝",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "零设备仍预留本地保护",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "现72表可直接建armed而无准备",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "现活动操作仅引用recovery",
+      "observed": [
+        "recovery_operation"
+      ],
+      "expected": [
+        "recovery_operation"
+      ]
+    },
+    {
+      "name": "source实际72表写集含触发器未超行包络",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "source实际写集外键完整",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "preparation实际72表写集含触发器未超行包络",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "preparation实际写集外键完整",
+      "observed": [],
+      "expected": []
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c04-lifecycle/README.md": "e972dd205861f240dea0085a33ce106bd461a44c3ccbfee54e0ef16399099f18",
+    "docs/contracts/c04-lifecycle/build_contracts.py": "9e084302cd626bd9674f06e3a89728c149189efd891977dc80d9bdbe0271606e",
+    "docs/contracts/c04-lifecycle/reference_model.py": "4dd6adf7f9f9b6874feb7a867d7fd7c5c618b14ff61083eee6247f0305669bb7",
+    "docs/contracts/c04-lifecycle/check_contracts.py": "c7119557ea280e0cc55e4035992e0be1ae9b93838726632d31fde5cd26ab5af7",
+    "docs/contracts/c04-lifecycle/lifecycle.schema.json": "a2438f0986af5b75ed64f20cc3d9b42992c3f5cfd9f39ded92bfb746c3e2d93d",
+    "docs/contracts/c04-lifecycle/lifecycle.openapi.json": "9f82eaf77e7500b28d138867f0ef68dd8c9e347deb49c4cf8d715f57236052cd",
+    "docs/contracts/c04-program/program.schema.json": "43612d114488d165605ccdcc801274874e44d6312c58c89f7c1963cf85b1f8b9",
+    "docs/rebirth-c04-automation-design.md": "8dd3f4dcd15d3ec66a086e892229339992735c5ea74c3b737aa670d1635eb7da",
+    "docs/contracts/c04-storage/DISPATCH.md": "d22d90782d7bc929f36b8b42f8e1be7968407b73880e38bd1364fa2a6a76399e",
+    "docs/contracts/c04-storage/dispatch.sql": "8f1548fa1fdf1ded95319273deac429c0be5942bb33c304bf26474d5a2c6e9bc",
+    "docs/contracts/c04-storage/check_dispatch.py": "621cd7ef4e78b2a9578f91e90710a05fa7ea24aace9988f97ecb6f2c9229e03c",
+    "docs/contracts/c04-storage/recovery.sql": "2ab514e81719f0d96642bd6a848f3dedfe7bdffbc2d7b77f3b0b18c2826df613",
+    "docs/contracts/c04-storage/check_recovery.py": "d6fcf79ffcfc2697aad739f17498eeac540e0fc0a25569799f4b6f5cc55dc98a",
+    "docs/contracts/c04-execution/execution.schema.json": "76a31f3d2786f216f3b93efac69ec64a71395b30b1378ae400bbfc5189ed5e89",
+    "docs/rebirth-df04-storage-design.md": "07f6d11c5a2bac49967e0549a26e231a68379e503fb2e5fd5588e65d436c0069",
+    "docs/contracts/c04-storage/README.md": "c988ef237e881c97a39174a5402f36874ebe66ecd26a85227f275a071dfa9234",
+    "docs/contracts/c05-ingress/ingress.sql": "343b8b80ebee325e70f0f89bdcce790aa1a04cc7c3efa60d4e7a3a8a3d0e89b0",
+    "docs/contracts/c08-controller/protection-receiver.sql": "453989f1c52e1b34e5be2fa1e406b358505606fe4da956d71e5ee822d10ed7ec",
+    "docs/contracts/c08-controller/preparation-receiver.sql": "9215cfb30e04cb56f76f28bc8cd18e72f5f501da20bdbf6a06279719997620e2",
+    "docs/contracts/c05-protection/build_storage.py": "37776bd4ec3237a4817d967376a50223a6368e9014de0ac4381df0cbab549307",
+    "docs/contracts/c05-protection/storage.sql": "f2418e00229b035cf62ea8a44515227dc201b256a385f2d381b20162b9eeff28",
+    "docs/contracts/c05-protection/STORAGE.md": "f86475f0cb0681c76a4778bbd8410b350a4a81bd2fb3da1efb6efbab8dfff853",
+    "docs/contracts/c05-protection/storage_model.py": "60034bf5bf4d81fb13f370cd15088e560d071ecd990952bacea286cc89013649",
+    "docs/contracts/c05-protection/check_storage.py": "1c993d7bbdbaa1b7cba881a66fdd0a3930dfdb599c181f0bf96eeb0abaac5c95",
+    "docs/contracts/c05-protection/seamer-protection.sql": "ae1a75c4e777b51259187d12c6646479e46e2f26bc4cbf97c83af67b24d8604b",
+    "docs/contracts/c08-controller/protection_delivery_model.py": "94989829db20874117169c28bdb5001970b276f82f1acb99595cbc58a7a9f4df",
+    "docs/contracts/c08-controller/protection-delivery.schema.json": "d5d4422c27e43e498b900dd4d668048d6a7f2bb76c39f62e7c76b52d3f6b0638",
+    "docs/contracts/c08-controller/build_protection_delivery.py": "812f922613536e738ab35e6f7b90e2cac56c28953297cf8d3885a5bb0eb58abc",
+    "docs/contracts/c08-controller/preparation_delivery_model.py": "3343a39b065cc175a27fd49cdbeb9ee9e59fdfbd942da4e1e75be2cf742e81df",
+    "docs/contracts/c08-controller/preparation-delivery.schema.json": "e1ab5539f7c4806c513e198b000edbcb9f22a1d1969023b1114f578dcfdf22c1",
+    "docs/contracts/c08-controller/build_preparation_delivery.py": "c81251c516ef053407b0486db0105c9ab8024dcb0d0cc26502b6dc6c33c9680b",
+    "docs/contracts/c05-protection/build_registration.py": "a5419d11748f1c121f874003ec464dd8f8c984390479cc886827cff466893c1e",
+    "docs/contracts/c05-protection/registration.sql": "77187a512718546e151cef8635807c9e1be9164a35413ec459fe3b86471994e9",
+    "docs/contracts/c05-protection/REGISTRATION.md": "e790a4ed902d9322e2fc9a0381d044004ad12cba674e2518e6a3d2d675b6f38a",
+    "docs/contracts/c05-protection/registration_model.py": "80397703037d5e33043182cef5488b7e964f6e96afee43571fb4675f298deb66",
+    "docs/contracts/c05-protection/check_registration.py": "92542f466a4cb9f565d22828e3cb34c0da23ee5d819902aac851862773f1d7ed",
+    "docs/contracts/c05-protection/seamer-registration.sql": "5170e00f0ee607d577e1f8baabf12ce256e661313dc0db4c5f9473792167c219",
+    "docs/contracts/c05-ingress/check_storage.py": "3a182381c7b0dc60549346e2ff04f96f41e80c87936e9375c4bd08e6ba3b5b84",
+    "docs/contracts/c05-protection/build_qualification.py": "a6e4218b0080fb85230419c9bc1137b64a5a627c55ac49ec62f0ac4b816c9d5e",
+    "docs/contracts/c05-protection/qualification.sql": "8a923e0b14680cf370f8f1da63dbdfebae778ab5ec24d87d6b8966e61e7d443e",
+    "docs/contracts/c05-protection/QUALIFICATION.md": "09353c5d7e0deb3937528cfeca8c84d1c79c74f9c0ecee0318c39965c021a13d",
+    "docs/contracts/c05-protection/qualification_model.py": "067b63dcdbc377cd8d82715aae3e9979026d0f02e8659e67e771bc22b3ea1593",
+    "docs/contracts/c05-protection/check_qualification.py": "c202cb90293830f2e814327f91dd9ba240820e03011f24fa3dbbc95d0fb7538d",
+    "docs/contracts/c05-protection/seamer-qualification.sql": "8e305bbf05ac249c29ac2dc9b9fdd3a5d8ec31377a982b545b7bd34fe68f3cd1",
+    "docs/contracts/c05-protection/preparation-qualification.schema.json": "52c18ea19e749844eb926eee8ba3505e2e118b76df8113d3c69530ac2a81190e",
+    "docs/contracts/c04-lifecycle/ARM_BUDGET.md": "66a47c3962538765e0b9da04d7f2c01ab73467682bf4a471d7930f5a9b792242",
+    "docs/contracts/c04-lifecycle/build_arm_budget.py": "e20778ac7471086f4d966d5ed123d32c87daf7ab52cdf34b101ffc3462e8e898",
+    "docs/contracts/c04-lifecycle/arm_budget_model.py": "d704cddb178af92a892c3dade14f2debf1ff6493c5b8b20f8f1423e68545cb95",
+    "docs/contracts/c04-lifecycle/check_arm_budget.py": "16d7086f0415c08ee7e559c4663129aa052a134e878d4d2c0d32209f3ee0fc42",
+    "docs/contracts/c04-lifecycle/arm-budget.schema.json": "e2b112b67569fb5fa752d5682e2e3449f8a35ab2c44d4ad017a9a43525a99612"
+  }
+}

@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录准备拒绝与完整关闭同库成果及本周期交付 | R:code:docs/contracts/c08-controller/PREPARE_DENY_STORAGE.md | A:设计历程与第2轮 | S:216项内存检查不证明实际运行；阶段0未关闭，本轮只本地提交
+DEVELOPMENT_MEMO.md[SO5L]: F:记录RUN资格和P4接收成果及三轮交付节奏 | R:code:docs/contracts/c08-controller/PROTECTION_DELIVERY.md | A:设计历程与第3轮 | S:93项内存检查不证跨服务实时一致；阶段0未关闭，本轮审查三提交后推送
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总全系统定稿门槛及准备关闭同库后的剩余契约联接 | R:code:docs/contracts/c08-controller/PREPARE_DENY_STORAGE.md | A:C01至C12关闭状态 | S:216项内存检查不关闭阶段0；AUTH/TIME权威、剩余消息、完整AdmissionSeal、Guard预算时间与SDK仍缺，新增有效投影不等于消费者已接入
+rebirth-design-closure.md[SQ8M]: F:汇总全系统门槛与保护状态交付后仍需联接的设计缺口 | R:code:docs/contracts/c08-controller/PROTECTION_DELIVERY.md | A:C01至C12关闭状态 | S:P4观察不证远端实时有效；P1来源、恢复消费者、RUN撤回资源依赖和AUTH/TIME等尚缺，93项内存检查不关闭阶段0
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -615,6 +615,14 @@ check_prepare_deny_storage.py[TR8M]: F:验证完整准备关闭写集的回滚�
 controller-prepare-deny.sql[PD9L]: F:承载230表的共享日志与准备拒绝完整关闭组合候选 | R:code:docs/contracts/c08-controller/build_prepare_deny_storage.py | A:STRICT表;闭包封存;有效证明;最终提交守卫 | S:生成物只改源重建；未回复失败及已释放准备仍在全集；证明撤回使旧恢复和ready失效，四最终准入阻断不解除
 prepare-deny-storage-report.json[TR7L]: F:保存216项准备拒绝存储检查结果及185输入摘要 | R:code:docs/contracts/c08-controller/check_prepare_deny_storage.py | A:observed与expected;inputs;环境及执行范围 | S:approved为false；真实运行并发磁盘与设备检查均为零
 prepare-deny-storage.sql[PD9S]: F:定义准备登记水位全集捕获DENY原件及四依据关闭证明 | R:code:docs/contracts/c08-controller/build_prepare_deny_storage.py | A:十一表;pd_expected;pd_valid_proof;pd_valid_closure | S:登记不占发送许可，控制捕获包含旧出口全部历史；取消不借父RUN，历史ACK不得作为有效拒绝；总元数据限额不随退款回收，证明不能自证来源可信
+PROTECTION_DELIVERY.md[SR8T]: F:定义历史应用当前资格与Seamer已观察汇总的分层及P3到P4交付 | R:code:docs/contracts/c08-controller/protection-delivery.sql,code:docs/contracts/c08-controller/protection-receiver.sql | A:状态片段;消费矩阵;故障与冻结缺口 | S:传播窗口内已观察applied不证远端当前有效；原回执不授恢复，P1导入和认证仍为合成前提，RUN撤回资源传播未齐
+build_protection_delivery.py[XM8T]: F:生成保护应用状态片段的严格字段和两态修订Schema | R:code:docs/contracts/c08-controller/protection-delivery.schema.json | A:schema;encoded;--check | S:根模型禁止直接实例化，选择具名Observation；不是完整HTTP包络，不替换公共回执或API版本
+check_protection_delivery.py[TR8S]: F:验证P3撤回原子通知及P4独立接收库的乱序去重和完整汇总 | R:code:docs/contracts/c08-controller/protection_delivery_model.py | A:run;--report;--check-report;--staged | S:加载真实232表和5表内存布局，未采用ACK不污染当前应用；第二Controller是合成目标，摘要复核不重跑用例
+protection-delivery-report.json[TR7L]: F:保存93项保护交付内存实验与192输入摘要 | R:code:docs/contracts/c08-controller/check_protection_delivery.py | A:checks;inputs;执行环境和范围 | S:approved为false；真实运行并发磁盘及设备执行均为零
+protection-delivery.schema.json[FM8M]: F:约束保护状态完整来源与切点回执Closure及单调失效修订 | R:code:docs/contracts/c08-controller/build_protection_delivery.py | A:Binding;Observation | S:字节摘要与外层JCS摘要不同；结构校验不证认证来源和原件关联，同一应用修订2永久失效，不存在原件复活修订
+protection-delivery.sql[PD9T]: F:合取RUN目标与准备资格并将应用和三类失效同事务记录状态事件 | R:code:docs/contracts/c08-controller/controller-prepare-deny.sql | A:ra_barrier_revocation;ra_status_event;ra_current_status;pd_valid_application | S:必须在230表后加载；历史回执不覆盖，通知失败回滚源事务；只撤回实际采用ACK，多个原因原件保留而失效事件唯一，资源依赖传播另验
+protection-receiver.sql[PD9T]: F:持久封存目标与P4观察原件审计通知并汇总最高修订 | R:code:docs/contracts/c08-controller/protection_delivery_model.py | A:五表;sp_current_observation;sp_observed_summary | S:P1导入不是完整P1，空集须外部证明；失效可先于历史到达，修订间原件不可换；汇总只表示已观察，不授恢复资格
+protection_delivery_model.py[TM8T]: F:以当前Controller快照导出保护状态并在独立接收事务核验保存 | R:code:docs/contracts/c08-controller/protection-delivery.schema.json,code:docs/contracts/c08-controller/protection-receiver.sql | A:export_event;validate;receive;receiver | S:认证域是调用方可信输入，不从正文自授；同修订只查原而异正文拒绝；原始解码和网络未实现，prepare close不伪造HTTP来源
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

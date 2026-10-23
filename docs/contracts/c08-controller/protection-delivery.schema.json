@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/protection-delivery.schema.json",
+  "title": "protection-delivery/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "controller_scope": {
+          "type": "object",
+          "properties": {
+            "authority_service_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            "database_instance_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "authority_service_id",
+            "database_instance_id"
+          ],
+          "additionalProperties": false
+        },
+        "origin_scope": {
+          "type": "object",
+          "properties": {
+            "authority_service_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            "database_instance_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "authority_service_id",
+            "database_instance_id"
+          ],
+          "additionalProperties": false
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "deny_through_generation": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+        },
+        "selector_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "target_set_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "controller_scope",
+        "origin_scope",
+        "operation_id",
+        "run_id",
+        "deny_through_generation",
+        "selector_digest",
+        "target_set_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "protection-delivery/0.1.0-draft.1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "fence_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "cut_ref": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            "bytes_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "id",
+            "bytes_digest"
+          ],
+          "additionalProperties": false
+        },
+        "receipt_ref": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            "bytes_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "id",
+            "bytes_digest"
+          ],
+          "additionalProperties": false
+        },
+        "prepare_closure_ref": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "id",
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        "status_revision": {
+          "enum": [
+            "1",
+            "2"
+          ]
+        },
+        "state": {
+          "enum": [
+            "applied",
+            "indeterminate"
+          ]
+        },
+        "cause": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "initial",
+                "prepare_closure",
+                "run_barrier_ack",
+                "retirement"
+              ]
+            },
+            "object_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "kind",
+            "object_id"
+          ],
+          "additionalProperties": false
+        },
+        "observation_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "binding",
+        "fence_id",
+        "cut_ref",
+        "receipt_ref",
+        "prepare_closure_ref",
+        "status_revision",
+        "state",
+        "cause",
+        "observation_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status_revision": {
+                "const": "1"
+              }
+            },
+            "required": [
+              "status_revision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "state": {
+                "const": "applied"
+              },
+              "cause": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "initial"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status_revision": {
+                "const": "2"
+              }
+            },
+            "required": [
+              "status_revision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "state": {
+                "const": "indeterminate"
+              },
+              "cause": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "prepare_closure",
+                      "run_barrier_ack",
+                      "retirement"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

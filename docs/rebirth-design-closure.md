@@ -12,6 +12,8 @@
 
 ### 1.1 当前关闭状态，优先于历轮进展中的旧待办
 
+2026-10-24保护状态交付进展：[P3/P4候选](contracts/c08-controller/PROTECTION_DELIVERY.md)在232表Controller中合取准备Closure与原目标ACK/退役资格，追加不可变失效事件；5表Seamer接收完整固定目标并按最高观察修订汇总。93项内存检查和192输入绑定通过，通知失败与源撤回同事务回滚、先失效后历史不复活。P4真实计划来源、准备closed/恢复消费者及通知服务仍未联接；新RUN ACK撤回还须传播到所有依赖资源证明，不能仅有状态投影。跨服务传播窗口显式保留，已观察applied不授权恢复；其余AUTH/TIME、共享消息与完整AdmissionSeal/Guard/预算/时间及SDK仍缺。业务与已确认基线未改，阶段0未关闭。本周期第3/3轮，审查三次提交后推送main。
+
 2026-10-24准备关闭同库进展：[230表候选](contracts/c08-controller/PREPARE_DENY_STORAGE.md)将登记水位、独立来源、DENY日志与四依据Closure配对控制/RUN/取消ordinary/all/保护关闭的原seal；准备集合不再只停留在有限模型。216项内存检查和185输入绑定通过，包含完整保护恢复至ready链及准备证明撤回后的失效。取消使用自身来源，Deny不退款；T4最后提交重新核证明。仍需补AUTH/TIME权威及准备范围、其他消息领域、完整AdmissionSeal/Guard/预算/时间、P3/P4与公共消费者及SDK统一源；新pd_valid_application投影不能替代尚未接入的消费者。真实提供者和平台设备证据未验，阶段0未关闭；本周期第2/3轮仅本地提交。
 
 2026-10-24共享日志同库进展：[219表候选](contracts/c08-controller/IPC_JOURNAL_STORAGE.md)把握手及编码／释放／开放／换闸的八类领域原件接入统一方向日志，拆出编码帧预约，补日志与领域的双向seal、入流前尝试与原回复关联、永久会话终止及候选失效。211项内存SQLite检查通过，含限定取消ScopeCommit正常采用与终止后拒绝；原释放和消息契约报告输入仍匹配。共享日志不再是无人引用的孤立表，但全52类型登记不等于全52领域已持久化：DENY/准备Closure、控制/AUTH/TIME/RUN/取消完整关闭seal与剩余消息仍待迁移。完整AdmissionSeal、可信Guard/预算/时钟、SDK归并和实际运行证据继续保留为缺口。四最终准入阻断保持，阶段0未关闭；本轮为新周期第1/3轮，只本地提交。

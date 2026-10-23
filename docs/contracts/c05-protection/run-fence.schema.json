@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c05-protection/run-fence.schema.json",
+  "title": "仅RUN_FENCE两种正文的设计包络，非完整设备IPC",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "run-fence-body/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "RUN_FENCE"
+        },
+        "body": {
+          "$ref": "https://leafseamer.invalid/design/c05-protection/protection.schema.json#/$defs/RunFenceBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "type",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "const": "run-fence-body/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "RUN_FENCE_ACK"
+        },
+        "body": {
+          "$ref": "https://leafseamer.invalid/design/c05-protection/protection.schema.json#/$defs/RunFenceAckBody"
+        }
+      },
+      "required": [
+        "protocol",
+        "type",
+        "body"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

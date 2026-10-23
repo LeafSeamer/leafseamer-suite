@@ -1,0 +1,959 @@
+{
+  "purpose": "synthetic-reference-no-authentication-no-network",
+  "models": {
+    "SourceBindingRef": {
+      "registration_id": "registration_a",
+      "revision": "1",
+      "owner_service_id": "controller_a",
+      "database_instance_id": "database_a",
+      "provider_id": "provider_a",
+      "provider_boot_id": "boot_a",
+      "device_id": "device_a",
+      "trigger_id": "state_a",
+      "capability_version": "1.0.0",
+      "capture_policy_id": "read_query_a",
+      "capture_policy_revision": "1",
+      "delivery_semantics": "sampled"
+    },
+    "ClockDomainRef": {
+      "clock_domain_id": "clock_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "descriptor_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "SampleChallenge": {
+      "schema_version": "internal-trust/0.1.0-draft.1",
+      "challenge_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "verifier_service_id": "seamer_a",
+      "verifier_domain": {
+        "clock_domain_id": "clock_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "descriptor_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "source_binding": {
+        "registration_id": "registration_a",
+        "revision": "1",
+        "owner_service_id": "controller_a",
+        "database_instance_id": "database_a",
+        "provider_id": "provider_a",
+        "provider_boot_id": "boot_a",
+        "device_id": "device_a",
+        "trigger_id": "state_a",
+        "capability_version": "1.0.0",
+        "capture_policy_id": "read_query_a",
+        "capture_policy_revision": "1",
+        "delivery_semantics": "sampled"
+      },
+      "scope_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "max_age_ms": 1000
+    },
+    "CaptureReceipt": {
+      "challenge_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "source_binding": {
+        "registration_id": "registration_a",
+        "revision": "1",
+        "owner_service_id": "controller_a",
+        "database_instance_id": "database_a",
+        "provider_id": "provider_a",
+        "provider_boot_id": "boot_a",
+        "device_id": "device_a",
+        "trigger_id": "state_a",
+        "capability_version": "1.0.0",
+        "capture_policy_id": "read_query_a",
+        "capture_policy_revision": "1",
+        "delivery_semantics": "sampled"
+      },
+      "scope_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "origin_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "event_id": "event_a",
+      "source_sequence": "9007199254740993",
+      "capture_query_id": "query_a",
+      "source_session_id": "device_session_a",
+      "capture_policy_id": "read_query_a",
+      "capture_policy_revision": "1",
+      "capture_mode": "fresh_query"
+    },
+    "PendingCapture": {
+      "challenge_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "verifier_domain": {
+        "clock_domain_id": "clock_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "descriptor_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "sent_tick_ns": "1000000",
+      "expires_tick_ns": "2001000000",
+      "state": "pending",
+      "result_digest": null
+    },
+    "EvidenceReadGrant": {
+      "peer_binding_id": "pair_a",
+      "peer_binding_revision": "2",
+      "authority_service_id": "controller_a",
+      "object_kind": "time_evidence",
+      "object_id": "evidence_a",
+      "object_revision": null,
+      "purpose": "validation",
+      "state": "active"
+    },
+    "InternalQueryBudget": {
+      "profile_id": "sim-df06-v1",
+      "purpose": "simulation",
+      "per_peer_concurrent": 4,
+      "global_concurrent": 16,
+      "request_max_bytes": 65536,
+      "response_max_bytes": 262144,
+      "json_max_depth": 32,
+      "per_peer_pending_capture": 8,
+      "global_pending_capture": 64,
+      "deadline_ms": 2000,
+      "per_peer_rate": 10,
+      "per_peer_burst": 20,
+      "reserved_reconcile_slots": 4
+    }
+  },
+  "schema_cases": [
+    {
+      "id": "DS01",
+      "model": "SourceBindingRef",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "DS02",
+      "model": "ClockDomainRef",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "DS03",
+      "model": "SampleChallenge",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "DS04",
+      "model": "CaptureReceipt",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "DS05",
+      "model": "PendingCapture",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "DS06",
+      "model": "EvidenceReadGrant",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "DS07",
+      "model": "InternalQueryBudget",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "DS08",
+      "model": "SampleChallenge",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "challenge_id"
+          ],
+          "value": "short"
+        }
+      ]
+    },
+    {
+      "id": "DS09",
+      "model": "SampleChallenge",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "max_age_ms"
+          ],
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "DS10",
+      "model": "SourceBindingRef",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "revision"
+          ],
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "DS11",
+      "model": "SourceBindingRef",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "revision"
+          ],
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "id": "DS12",
+      "model": "SourceBindingRef",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "revision"
+          ],
+          "value": "1\n"
+        }
+      ]
+    },
+    {
+      "id": "DS13",
+      "model": "CaptureReceipt",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "capture_mode"
+          ],
+          "value": "cached"
+        }
+      ]
+    },
+    {
+      "id": "DS14",
+      "model": "CaptureReceipt",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "unexpected_token"
+          ],
+          "value": "synthetic-secret"
+        }
+      ]
+    },
+    {
+      "id": "DS15",
+      "model": "PendingCapture",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "state"
+          ],
+          "value": "consumed"
+        }
+      ]
+    },
+    {
+      "id": "DS16",
+      "model": "InternalQueryBudget",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "purpose"
+          ],
+          "value": "release_candidate"
+        }
+      ]
+    },
+    {
+      "id": "DS17",
+      "model": "PendingCapture",
+      "valid": true,
+      "changes": [
+        {
+          "path": [
+            "state"
+          ],
+          "value": "consumed"
+        },
+        {
+          "path": [
+            "result_digest"
+          ],
+          "value": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ]
+    },
+    {
+      "id": "DS18",
+      "model": "EvidenceReadGrant",
+      "valid": false,
+      "changes": [
+        {
+          "path": [
+            "object_kind"
+          ],
+          "value": "time_profile"
+        }
+      ]
+    },
+    {
+      "id": "DS19",
+      "model": "EvidenceReadGrant",
+      "valid": true,
+      "changes": [
+        {
+          "path": [
+            "object_kind"
+          ],
+          "value": "time_profile"
+        },
+        {
+          "path": [
+            "object_revision"
+          ],
+          "value": "1"
+        }
+      ]
+    }
+  ],
+  "bases": {
+    "read": {
+      "grant": {
+        "peer_binding_id": "pair_a",
+        "peer_binding_revision": "2",
+        "authority_service_id": "controller_a",
+        "object_kind": "time_evidence",
+        "object_id": "evidence_a",
+        "object_revision": null,
+        "purpose": "validation",
+        "state": "active"
+      },
+      "transport_authenticated": true,
+      "pairing_active": true,
+      "permission_present": true,
+      "authority_service_id": "controller_a",
+      "peer_binding_id": "pair_a",
+      "peer_binding_revision": "2",
+      "object_exists": true,
+      "object_id": "evidence_a",
+      "object_kind": "time_evidence",
+      "object_revision": null,
+      "purpose": "validation",
+      "object_current": true,
+      "capacity_available": true
+    },
+    "capture": {
+      "challenge": {
+        "schema_version": "internal-trust/0.1.0-draft.1",
+        "challenge_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "verifier_service_id": "seamer_a",
+        "verifier_domain": {
+          "clock_domain_id": "clock_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "descriptor_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "source_binding": {
+          "registration_id": "registration_a",
+          "revision": "1",
+          "owner_service_id": "controller_a",
+          "database_instance_id": "database_a",
+          "provider_id": "provider_a",
+          "provider_boot_id": "boot_a",
+          "device_id": "device_a",
+          "trigger_id": "state_a",
+          "capability_version": "1.0.0",
+          "capture_policy_id": "read_query_a",
+          "capture_policy_revision": "1",
+          "delivery_semantics": "sampled"
+        },
+        "scope_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "max_age_ms": 1000
+      },
+      "pending": {
+        "challenge_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "verifier_domain": {
+          "clock_domain_id": "clock_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "descriptor_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "sent_tick_ns": "1000000",
+        "expires_tick_ns": "2001000000",
+        "state": "pending",
+        "result_digest": null
+      },
+      "receipt": {
+        "challenge_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "source_binding": {
+          "registration_id": "registration_a",
+          "revision": "1",
+          "owner_service_id": "controller_a",
+          "database_instance_id": "database_a",
+          "provider_id": "provider_a",
+          "provider_boot_id": "boot_a",
+          "device_id": "device_a",
+          "trigger_id": "state_a",
+          "capability_version": "1.0.0",
+          "capture_policy_id": "read_query_a",
+          "capture_policy_revision": "1",
+          "delivery_semantics": "sampled"
+        },
+        "scope_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "origin_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "event_id": "event_a",
+        "source_sequence": "9007199254740993",
+        "capture_query_id": "query_a",
+        "source_session_id": "device_session_a",
+        "capture_policy_id": "read_query_a",
+        "capture_policy_revision": "1",
+        "capture_mode": "fresh_query"
+      },
+      "transport_authenticated": true,
+      "pairing_active": true,
+      "source_approved": true,
+      "capture_attested": true,
+      "trusted_peer_service_id": "controller_a",
+      "current_source_binding": {
+        "registration_id": "registration_a",
+        "revision": "1",
+        "owner_service_id": "controller_a",
+        "database_instance_id": "database_a",
+        "provider_id": "provider_a",
+        "provider_boot_id": "boot_a",
+        "device_id": "device_a",
+        "trigger_id": "state_a",
+        "capability_version": "1.0.0",
+        "capture_policy_id": "read_query_a",
+        "capture_policy_revision": "1",
+        "delivery_semantics": "sampled"
+      },
+      "expected_scope_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "expected_request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "expected_origin_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "event_id": "event_a",
+      "source_sequence": "9007199254740993",
+      "source_session_id": "device_session_a",
+      "live_verifier_domain": {
+        "clock_domain_id": "clock_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "descriptor_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "received_tick_ns": "501000000",
+      "now_tick_ns": "1001000000",
+      "local_verifier_service_id": "seamer_a"
+    }
+  },
+  "decision_cases": [
+    {
+      "id": "DC01",
+      "kind": "read",
+      "expect": "allow",
+      "changes": []
+    },
+    {
+      "id": "DC02",
+      "kind": "read",
+      "expect": "unauthenticated",
+      "changes": [
+        {
+          "path": [
+            "transport_authenticated"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC03",
+      "kind": "read",
+      "expect": "forbidden",
+      "changes": [
+        {
+          "path": [
+            "pairing_active"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC04",
+      "kind": "read",
+      "expect": "forbidden",
+      "changes": [
+        {
+          "path": [
+            "grant",
+            "state"
+          ],
+          "value": "revoked"
+        }
+      ]
+    },
+    {
+      "id": "DC05",
+      "kind": "read",
+      "expect": "forbidden",
+      "changes": [
+        {
+          "path": [
+            "permission_present"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC06",
+      "kind": "read",
+      "expect": "not_found",
+      "changes": [
+        {
+          "path": [
+            "authority_service_id"
+          ],
+          "value": "controller_b"
+        }
+      ]
+    },
+    {
+      "id": "DC07",
+      "kind": "read",
+      "expect": "not_found",
+      "changes": [
+        {
+          "path": [
+            "object_exists"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC08",
+      "kind": "read",
+      "expect": "forbidden",
+      "changes": [
+        {
+          "path": [
+            "peer_binding_revision"
+          ],
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "id": "DC09",
+      "kind": "read",
+      "expect": "forbidden",
+      "changes": [
+        {
+          "path": [
+            "purpose"
+          ],
+          "value": "audit"
+        }
+      ]
+    },
+    {
+      "id": "DC10",
+      "kind": "read",
+      "expect": "precondition_failed",
+      "changes": [
+        {
+          "path": [
+            "object_current"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC11",
+      "kind": "read",
+      "expect": "allow",
+      "changes": [
+        {
+          "path": [
+            "purpose"
+          ],
+          "value": "audit"
+        },
+        {
+          "path": [
+            "grant",
+            "purpose"
+          ],
+          "value": "audit"
+        },
+        {
+          "path": [
+            "object_current"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC12",
+      "kind": "read",
+      "expect": "limited",
+      "changes": [
+        {
+          "path": [
+            "capacity_available"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC13",
+      "kind": "capture",
+      "expect": "fresh",
+      "changes": []
+    },
+    {
+      "id": "DC14",
+      "kind": "capture",
+      "expect": "unauthenticated",
+      "changes": [
+        {
+          "path": [
+            "transport_authenticated"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC15",
+      "kind": "capture",
+      "expect": "forbidden",
+      "changes": [
+        {
+          "path": [
+            "pairing_active"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC16",
+      "kind": "capture",
+      "expect": "source_mismatch",
+      "changes": [
+        {
+          "path": [
+            "trusted_peer_service_id"
+          ],
+          "value": "controller_b"
+        }
+      ]
+    },
+    {
+      "id": "DC17",
+      "kind": "capture",
+      "expect": "source_mismatch",
+      "changes": [
+        {
+          "path": [
+            "current_source_binding",
+            "provider_boot_id"
+          ],
+          "value": "boot_b"
+        }
+      ]
+    },
+    {
+      "id": "DC18",
+      "kind": "capture",
+      "expect": "unproven",
+      "changes": [
+        {
+          "path": [
+            "capture_attested"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC19",
+      "kind": "capture",
+      "expect": "not_sampled",
+      "changes": [
+        {
+          "path": [
+            "challenge",
+            "source_binding",
+            "delivery_semantics"
+          ],
+          "value": "discrete"
+        },
+        {
+          "path": [
+            "current_source_binding",
+            "delivery_semantics"
+          ],
+          "value": "discrete"
+        },
+        {
+          "path": [
+            "receipt",
+            "source_binding",
+            "delivery_semantics"
+          ],
+          "value": "discrete"
+        }
+      ]
+    },
+    {
+      "id": "DC20",
+      "kind": "capture",
+      "expect": "request_mismatch",
+      "changes": [
+        {
+          "path": [
+            "receipt",
+            "challenge_id"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "DC21",
+      "kind": "capture",
+      "expect": "request_mismatch",
+      "changes": [
+        {
+          "path": [
+            "receipt",
+            "request_digest"
+          ],
+          "value": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "DC22",
+      "kind": "capture",
+      "expect": "request_mismatch",
+      "changes": [
+        {
+          "path": [
+            "receipt",
+            "scope_digest"
+          ],
+          "value": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "DC23",
+      "kind": "capture",
+      "expect": "origin_mismatch",
+      "changes": [
+        {
+          "path": [
+            "receipt",
+            "origin_digest"
+          ],
+          "value": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "DC24",
+      "kind": "capture",
+      "expect": "origin_mismatch",
+      "changes": [
+        {
+          "path": [
+            "receipt",
+            "source_sequence"
+          ],
+          "value": "9007199254740992"
+        }
+      ]
+    },
+    {
+      "id": "DC25",
+      "kind": "capture",
+      "expect": "capture_mismatch",
+      "changes": [
+        {
+          "path": [
+            "receipt",
+            "source_session_id"
+          ],
+          "value": "old_session"
+        }
+      ]
+    },
+    {
+      "id": "DC26",
+      "kind": "capture",
+      "expect": "capture_mismatch",
+      "changes": [
+        {
+          "path": [
+            "receipt",
+            "capture_policy_revision"
+          ],
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "id": "DC27",
+      "kind": "capture",
+      "expect": "wrong_domain",
+      "changes": [
+        {
+          "path": [
+            "live_verifier_domain",
+            "descriptor_digest"
+          ],
+          "value": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "DC28",
+      "kind": "capture",
+      "expect": "expired",
+      "changes": [
+        {
+          "path": [
+            "now_tick_ns"
+          ],
+          "value": "2001000000"
+        }
+      ]
+    },
+    {
+      "id": "DC29",
+      "kind": "capture",
+      "expect": "stale",
+      "changes": [
+        {
+          "path": [
+            "now_tick_ns"
+          ],
+          "value": "1001000001"
+        }
+      ]
+    },
+    {
+      "id": "DC30",
+      "kind": "capture",
+      "expect": "tick_order",
+      "changes": [
+        {
+          "path": [
+            "received_tick_ns"
+          ],
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": "DC31",
+      "kind": "capture",
+      "expect": "tick_order",
+      "changes": [
+        {
+          "path": [
+            "received_tick_ns"
+          ],
+          "value": "1001000001"
+        }
+      ]
+    },
+    {
+      "id": "DC32",
+      "kind": "capture",
+      "expect": "not_pending",
+      "changes": [
+        {
+          "path": [
+            "pending",
+            "state"
+          ],
+          "value": "consumed"
+        },
+        {
+          "path": [
+            "pending",
+            "result_digest"
+          ],
+          "value": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ]
+    },
+    {
+      "id": "DC33",
+      "kind": "capture",
+      "expect": "forbidden",
+      "changes": [
+        {
+          "path": [
+            "source_approved"
+          ],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "DC34",
+      "kind": "capture",
+      "expect": "request_mismatch",
+      "changes": [
+        {
+          "path": [
+            "challenge",
+            "scope_digest"
+          ],
+          "value": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "DC35",
+      "kind": "capture",
+      "expect": "wrong_verifier",
+      "changes": [
+        {
+          "path": [
+            "challenge",
+            "verifier_service_id"
+          ],
+          "value": "seamer_b"
+        }
+      ]
+    }
+  ],
+  "consumption_sequence": [
+    {
+      "request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "result_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "expected": "consumed"
+    },
+    {
+      "request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "result_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "expected": "existing"
+    },
+    {
+      "request_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "result_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "expected": "conflict"
+    }
+  ]
+}

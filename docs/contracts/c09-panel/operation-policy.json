@@ -1,0 +1,511 @@
+{
+  "format_version": "panel-operation-policy/0.1.0-draft.1",
+  "approved": false,
+  "runtime_approved": false,
+  "authority_switched": false,
+  "scope": "draft4_operations_panel_policy_candidate",
+  "source_sha256": {
+    "docs/contracts/df01-source/authorization-candidate.json": "e3a72f9c4a91c3a914941b420ef2b4c6ee89eba340f7fe0fd27e4f2bcd3e55c9",
+    "docs/contracts/df01-source/source/http/controller.operations.json": "603e6f3555fd19e76761bbb0dbe808dbd880036dbe119b11f3f98c2009eb72cb",
+    "docs/contracts/df01-source/source/http/seamer.operations.json": "3840cca04f99c00942897a42b08293db8727d93c0c1151d10ff339376a188136"
+  },
+  "operations": {
+    "controller:acceptTransfer": {
+      "mode": "host_confirm",
+      "method_name": "controller.acceptTransfer",
+      "permission": "control.accept",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1transfers~1{transfer_id}~1accept/post",
+      "forward_raw_response": false
+    },
+    "controller:acquireControl": {
+      "mode": "host_confirm",
+      "method_name": "controller.acquireControl",
+      "permission": "control.acquire",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1acquire/post",
+      "forward_raw_response": false
+    },
+    "controller:bootstrap": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "auth.bootstrap",
+      "source_pointer": "/paths/~1auth~1bootstrap/post",
+      "forward_raw_response": false
+    },
+    "controller:cancelCommand": {
+      "mode": "panel_write",
+      "method_name": "controller.cancelCommand",
+      "permission": "command.cancel",
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}~1cancel/post",
+      "forward_raw_response": false
+    },
+    "controller:createRequestContext": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "request.create",
+      "source_pointer": "/paths/~1api~1v1~1request-contexts/post",
+      "forward_raw_response": false
+    },
+    "controller:createSubscription": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions/post",
+      "forward_raw_response": false
+    },
+    "controller:getCapabilities": {
+      "mode": "panel_read",
+      "method_name": "controller.getCapabilities",
+      "permission": "device.read",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1capabilities/get",
+      "forward_raw_response": false
+    },
+    "controller:getCapacity": {
+      "mode": "panel_read",
+      "method_name": "controller.getCapacity",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1capacity/get",
+      "forward_raw_response": false
+    },
+    "controller:getClock": {
+      "mode": "panel_read",
+      "method_name": "controller.getClock",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1clock/get",
+      "forward_raw_response": false
+    },
+    "controller:getClockAssessment": {
+      "mode": "panel_read",
+      "method_name": "controller.getClockAssessment",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1clock-assessment/get",
+      "forward_raw_response": false
+    },
+    "controller:getClockDomainDescriptor": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1clock-domain/get",
+      "forward_raw_response": false
+    },
+    "controller:getClockSample": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1clock-samples~1{sample_id}/get",
+      "forward_raw_response": false
+    },
+    "controller:getCommand": {
+      "mode": "panel_read",
+      "method_name": "controller.getCommand",
+      "permission": "device.read",
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}/get",
+      "forward_raw_response": false
+    },
+    "controller:getCommandEvidence": {
+      "mode": "panel_read",
+      "method_name": "controller.getCommandEvidence",
+      "permission": "command.read",
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}~1evidence/get",
+      "forward_raw_response": false
+    },
+    "controller:getControl": {
+      "mode": "panel_read",
+      "method_name": "controller.getControl",
+      "permission": "control.read",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control/get",
+      "forward_raw_response": false
+    },
+    "controller:getControlOperation": {
+      "mode": "panel_read",
+      "method_name": "controller.getControlOperation",
+      "permission": "control.read",
+      "source_pointer": "/paths/~1api~1v1~1control-operations~1{operation_id}/get",
+      "forward_raw_response": false
+    },
+    "controller:getDeviceState": {
+      "mode": "panel_read",
+      "method_name": "controller.getDeviceState",
+      "permission": "device.read",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1state/get",
+      "forward_raw_response": false
+    },
+    "controller:getMeta": {
+      "mode": "panel_read",
+      "method_name": "controller.getMeta",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1meta/get",
+      "forward_raw_response": false
+    },
+    "controller:getRevocation": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "auth.read",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations~1{operation_id}/get",
+      "forward_raw_response": false
+    },
+    "controller:getSceneCatalog": {
+      "mode": "panel_read",
+      "method_name": "controller.getSceneCatalog",
+      "permission": "device.read",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1scene-catalog/get",
+      "forward_raw_response": false
+    },
+    "controller:getSession": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "session.read",
+      "source_pointer": "/paths/~1api~1v1~1session/get",
+      "forward_raw_response": false
+    },
+    "controller:getSnapshot": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions~1{subscription_id}~1snapshot/get",
+      "forward_raw_response": false
+    },
+    "controller:getSubject": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "identity.read",
+      "source_pointer": "/paths/~1api~1v1~1subjects~1{subject_id}/get",
+      "forward_raw_response": false
+    },
+    "controller:getTimeBoundEvidence": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1time-evidence~1{evidence_id}/get",
+      "forward_raw_response": false
+    },
+    "controller:getTimeBoundProfile": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1time-profiles~1{profile_id}~1{revision}/get",
+      "forward_raw_response": false
+    },
+    "controller:introspect": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "auth.introspect",
+      "source_pointer": "/paths/~1internal~1auth~1introspect/post",
+      "forward_raw_response": false
+    },
+    "controller:issueToken": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "auth.issueToken",
+      "source_pointer": "/paths/~1auth~1service-tokens/post",
+      "forward_raw_response": false
+    },
+    "controller:issueWsTicket": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "subscription.create",
+      "source_pointer": "/paths/~1api~1v1~1ws-tickets/post",
+      "forward_raw_response": false
+    },
+    "controller:listDevices": {
+      "mode": "panel_read",
+      "method_name": "controller.listDevices",
+      "permission": "device.read",
+      "source_pointer": "/paths/~1api~1v1~1devices/get",
+      "forward_raw_response": false
+    },
+    "controller:login": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "auth.login",
+      "source_pointer": "/paths/~1auth~1sessions/post",
+      "forward_raw_response": false
+    },
+    "controller:offerTransfer": {
+      "mode": "host_confirm",
+      "method_name": "controller.offerTransfer",
+      "permission": "control.transfer",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1transfers/post",
+      "forward_raw_response": false
+    },
+    "controller:openEvents": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": null,
+      "source_pointer": "/paths/~1api~1v1~1events/get",
+      "forward_raw_response": false
+    },
+    "controller:refreshSession": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "auth.refreshSession",
+      "source_pointer": "/paths/~1auth~1sessions~1refresh/post",
+      "forward_raw_response": false
+    },
+    "controller:releaseControl": {
+      "mode": "host_confirm",
+      "method_name": "controller.releaseControl",
+      "permission": "control.release",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1release/post",
+      "forward_raw_response": false
+    },
+    "controller:revokeAuthorization": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "auth.manage",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations/post",
+      "forward_raw_response": false
+    },
+    "controller:revokeRunGrant": {
+      "mode": "host_confirm",
+      "method_name": "controller.revokeRunGrant",
+      "permission": "grant.revoke",
+      "source_pointer": "/paths/~1api~1v1~1run-grants~1{grant_id}~1revoke/post",
+      "forward_raw_response": false
+    },
+    "controller:setCapacity": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "capacity.manage",
+      "source_pointer": "/paths/~1api~1v1~1capacity~1profile/put",
+      "forward_raw_response": false
+    },
+    "controller:submitCommand": {
+      "mode": "panel_write",
+      "method_name": "controller.submitCommand",
+      "permission": "device.command",
+      "source_pointer": "/paths/~1api~1v1~1commands/post",
+      "forward_raw_response": false
+    },
+    "controller:updateRunGrant": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "grant.manage",
+      "source_pointer": "/paths/~1api~1v1~1run-grants~1{grant_id}/put",
+      "forward_raw_response": false
+    },
+    "seamer:armRun": {
+      "mode": "host_confirm",
+      "method_name": "seamer.armRun",
+      "permission": "run.arm",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1arm/post",
+      "forward_raw_response": false
+    },
+    "seamer:createDefinition": {
+      "mode": "panel_write",
+      "method_name": "seamer.createDefinition",
+      "permission": "definition.edit",
+      "source_pointer": "/paths/~1api~1v1~1definitions/post",
+      "forward_raw_response": false
+    },
+    "seamer:createRequestContext": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "request.create",
+      "source_pointer": "/paths/~1api~1v1~1request-contexts/post",
+      "forward_raw_response": false
+    },
+    "seamer:createRun": {
+      "mode": "panel_write",
+      "method_name": "seamer.createRun",
+      "permission": "run.manage",
+      "source_pointer": "/paths/~1api~1v1~1runs/post",
+      "forward_raw_response": false
+    },
+    "seamer:createSubscription": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions/post",
+      "forward_raw_response": false
+    },
+    "seamer:getCapacity": {
+      "mode": "panel_read",
+      "method_name": "seamer.getCapacity",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1capacity/get",
+      "forward_raw_response": false
+    },
+    "seamer:getClock": {
+      "mode": "panel_read",
+      "method_name": "seamer.getClock",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1clock/get",
+      "forward_raw_response": false
+    },
+    "seamer:getClockAssessment": {
+      "mode": "panel_read",
+      "method_name": "seamer.getClockAssessment",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1clock-assessment/get",
+      "forward_raw_response": false
+    },
+    "seamer:getClockDomainDescriptor": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1clock-domain/get",
+      "forward_raw_response": false
+    },
+    "seamer:getClockSample": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1clock-samples~1{sample_id}/get",
+      "forward_raw_response": false
+    },
+    "seamer:getIndependenceProof": {
+      "mode": "panel_read",
+      "method_name": "seamer.getIndependenceProof",
+      "permission": "definition.read",
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1proofs~1{proof_id}/get",
+      "forward_raw_response": false
+    },
+    "seamer:getMeta": {
+      "mode": "panel_read",
+      "method_name": "seamer.getMeta",
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1meta/get",
+      "forward_raw_response": false
+    },
+    "seamer:getRecoveryOperation": {
+      "mode": "panel_read",
+      "method_name": "seamer.getRecoveryOperation",
+      "permission": "run.read",
+      "source_pointer": "/paths/~1api~1v1~1recovery-operations~1{operation_id}/get",
+      "forward_raw_response": false
+    },
+    "seamer:getRevocation": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "auth.read",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations~1{operation_id}/get",
+      "forward_raw_response": false
+    },
+    "seamer:getRun": {
+      "mode": "panel_read",
+      "method_name": "seamer.getRun",
+      "permission": "run.read",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}/get",
+      "forward_raw_response": false
+    },
+    "seamer:getSession": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "session.read",
+      "source_pointer": "/paths/~1api~1v1~1session/get",
+      "forward_raw_response": false
+    },
+    "seamer:getSnapshot": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "status.read",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions~1{subscription_id}~1snapshot/get",
+      "forward_raw_response": false
+    },
+    "seamer:getSubject": {
+      "mode": "host_account",
+      "method_name": null,
+      "permission": "identity.read",
+      "source_pointer": "/paths/~1api~1v1~1subjects~1{subject_id}/get",
+      "forward_raw_response": false
+    },
+    "seamer:getTimeBoundEvidence": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1time-evidence~1{evidence_id}/get",
+      "forward_raw_response": false
+    },
+    "seamer:getTimeBoundProfile": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "clock.internal.read",
+      "source_pointer": "/paths/~1internal~1time-profiles~1{profile_id}~1{revision}/get",
+      "forward_raw_response": false
+    },
+    "seamer:ingestEvent": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "provider.publish",
+      "source_pointer": "/paths/~1api~1v1~1providers~1{provider_id}~1events/post",
+      "forward_raw_response": false
+    },
+    "seamer:issueWsTicket": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": "subscription.create",
+      "source_pointer": "/paths/~1api~1v1~1ws-tickets/post",
+      "forward_raw_response": false
+    },
+    "seamer:openEvents": {
+      "mode": "host_transport",
+      "method_name": null,
+      "permission": null,
+      "source_pointer": "/paths/~1api~1v1~1events/get",
+      "forward_raw_response": false
+    },
+    "seamer:pauseRun": {
+      "mode": "panel_write",
+      "method_name": "seamer.pauseRun",
+      "permission": "run.pause",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1pause/post",
+      "forward_raw_response": false
+    },
+    "seamer:preflightRun": {
+      "mode": "panel_read",
+      "method_name": "seamer.preflightRun",
+      "permission": "run.read",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1preflight/post",
+      "forward_raw_response": false
+    },
+    "seamer:previewRecovery": {
+      "mode": "panel_read",
+      "method_name": "seamer.previewRecovery",
+      "permission": "run.read",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1recovery-preview/post",
+      "forward_raw_response": false
+    },
+    "seamer:publishDefinition": {
+      "mode": "host_confirm",
+      "method_name": "seamer.publishDefinition",
+      "permission": "definition.publish",
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1publish/post",
+      "forward_raw_response": false
+    },
+    "seamer:resumeRun": {
+      "mode": "host_confirm",
+      "method_name": "seamer.resumeRun",
+      "permission": "run.resume",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1resume/post",
+      "forward_raw_response": false
+    },
+    "seamer:revokeAuthorization": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "auth.manage",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations/post",
+      "forward_raw_response": false
+    },
+    "seamer:setCapacity": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "capacity.manage",
+      "source_pointer": "/paths/~1api~1v1~1capacity~1profile/put",
+      "forward_raw_response": false
+    },
+    "seamer:updateCatalog": {
+      "mode": "unavailable",
+      "method_name": null,
+      "permission": "provider.publish",
+      "source_pointer": "/paths/~1api~1v1~1providers~1{provider_id}~1catalog/put",
+      "forward_raw_response": false
+    },
+    "seamer:updateDraft": {
+      "mode": "panel_write",
+      "method_name": "seamer.updateDraft",
+      "permission": "definition.edit",
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1draft/put",
+      "forward_raw_response": false
+    }
+  }
+}

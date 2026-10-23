@@ -1,0 +1,1569 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "自动化准备内部接口候选",
+    "version": "automation-preparation/0.1.0-draft.1"
+  },
+  "paths": {
+    "/internal/automation/preparations": {
+      "post": {
+        "operationId": "prepareAutomation",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "automation-preparation/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/S0_PrepareRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "可靠记录或原件；不表示设备执行或资源清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "可靠记录或原件；不表示设备执行或资源清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.prepare",
+        "x-required-origin-ownership": true,
+        "x-retry-policy": "lookup-only-after-uncertainty"
+      }
+    },
+    "/internal/automation/preparations/lookup": {
+      "post": {
+        "operationId": "lookupPreparation",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "automation-preparation/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/S0_PreparationLookup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "可靠记录或原件；不表示设备执行或资源清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationLookupResult"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.prepare.read",
+        "x-required-origin-ownership": true,
+        "x-retry-policy": "read-only"
+      }
+    },
+    "/internal/automation/preparations/close": {
+      "post": {
+        "operationId": "closePreparation",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "automation-preparation/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/S0_PreparationClose"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "可靠记录或原件；不表示设备执行或资源清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "可靠记录或原件；不表示设备执行或资源清理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或未知；不授权重做准备或设备动作",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_PreparationError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.protect",
+        "x-required-origin-ownership": true,
+        "x-retry-policy": "same-identity-monotonic-denial-only"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "S0_PreparationRecord": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/S0_PrepareRequest"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_PositiveCounter"
+          },
+          "state": {
+            "enum": [
+              "accepted",
+              "applied",
+              "rejected",
+              "indeterminate",
+              "closing",
+              "closed"
+            ]
+          },
+          "applied_receipt": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S0_PreparationReceipt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protection_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S0_ProtectionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "request",
+          "request_digest",
+          "revision",
+          "state",
+          "applied_receipt",
+          "protection_ref"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "applied"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "applied_receipt": {
+                  "$ref": "#/components/schemas/S0_PreparationReceipt"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "enum": [
+                    "accepted",
+                    "rejected"
+                  ]
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "applied_receipt": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "closed"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "protection_ref": {
+                  "$ref": "#/components/schemas/S0_ProtectionRef"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S0_PrepareRequest": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "automation-preparation/0.1.0-draft.1"
+          },
+          "operation_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "preparation_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "run_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "definition_version": {
+            "$ref": "#/components/schemas/S0_PositiveCounter"
+          },
+          "arm_generation": {
+            "$ref": "#/components/schemas/S0_PositiveCounter"
+          },
+          "mode": {
+            "enum": [
+              "arm",
+              "recovery"
+            ]
+          },
+          "execution_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S0_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "operation_ref": {
+            "$ref": "#/components/schemas/S0_OperationRef"
+          },
+          "plan_ref": {
+            "$ref": "#/components/schemas/S0_PlanRef"
+          },
+          "artifact_ref": {
+            "$ref": "#/components/schemas/S0_ArtifactRef"
+          },
+          "approval_ref": {
+            "$ref": "#/components/schemas/S0_ApprovalRef"
+          },
+          "authorization_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          },
+          "source_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          },
+          "controls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S0_ControlExpectation"
+            },
+            "minItems": 1,
+            "maxItems": 256
+          },
+          "baseline_grant_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S0_GrantRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "grant_intent": {
+            "$ref": "#/components/schemas/S0_GrantIntent"
+          }
+        },
+        "required": [
+          "contract_version",
+          "operation_id",
+          "preparation_id",
+          "controller_scope",
+          "origin_scope",
+          "run_id",
+          "definition_version",
+          "arm_generation",
+          "mode",
+          "execution_id",
+          "operation_ref",
+          "plan_ref",
+          "artifact_ref",
+          "approval_ref",
+          "authorization_digest",
+          "source_digest",
+          "controls",
+          "baseline_grant_ref",
+          "grant_intent"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "arm"
+                }
+              },
+              "required": [
+                "mode"
+              ]
+            },
+            "then": {
+              "properties": {
+                "execution_id": {
+                  "type": "null"
+                },
+                "plan_ref": {
+                  "properties": {
+                    "kind": {
+                      "const": "arm_plan"
+                    }
+                  }
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "execution_id": {
+                  "$ref": "#/components/schemas/S0_Id"
+                },
+                "plan_ref": {
+                  "properties": {
+                    "kind": {
+                      "const": "recovery_plan"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S0_Id": {
+        "$ref": "#/components/schemas/S1_Id"
+      },
+      "S1_Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "S0_Scope": {
+        "$ref": "#/components/schemas/S1_Scope"
+      },
+      "S1_Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "S0_PositiveCounter": {
+        "$ref": "#/components/schemas/S1_PositiveCounter"
+      },
+      "S1_PositiveCounter": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+      },
+      "S0_OperationRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "lifecycle_operation"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_Counter": {
+        "$ref": "#/components/schemas/S1_Counter"
+      },
+      "S1_Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "S0_Digest": {
+        "$ref": "#/components/schemas/S1_Digest"
+      },
+      "S1_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+      },
+      "S0_PlanRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "arm_plan",
+              "recovery_plan"
+            ]
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_ArtifactRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "artifact"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_ApprovalRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "approval"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_ControlExpectation": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/S3_ControlVersion"
+          }
+        },
+        "required": [
+          "device_id",
+          "expected_control"
+        ],
+        "additionalProperties": false
+      },
+      "S3_ControlVersion": {
+        "type": "object",
+        "properties": {
+          "epoch": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "version": {
+            "$ref": "#/components/schemas/S3_Revision"
+          }
+        },
+        "required": [
+          "epoch",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "S3_Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9._-]+$"
+      },
+      "S3_Revision": {
+        "type": "string",
+        "maxLength": 20,
+        "pattern": "^(0|[1-9][0-9]*)$"
+      },
+      "S0_GrantRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "grant"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_GrantIntent": {
+        "type": "object",
+        "properties": {
+          "principal_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "device_actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_DeviceActionScope"
+            },
+            "minItems": 1,
+            "maxItems": 256
+          },
+          "parameter_constraints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_Predicate"
+            },
+            "maxItems": 64
+          },
+          "validity": {
+            "$ref": "#/components/schemas/S3_Validity"
+          }
+        },
+        "required": [
+          "principal_id",
+          "device_actions",
+          "parameter_constraints",
+          "validity"
+        ],
+        "additionalProperties": false
+      },
+      "S3_DeviceActionScope": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "capability_version": {
+            "$ref": "#/components/schemas/S3_Version"
+          }
+        },
+        "required": [
+          "device_id",
+          "action_id",
+          "capability_version"
+        ],
+        "additionalProperties": false
+      },
+      "S3_Version": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$"
+      },
+      "S3_Predicate": {
+        "type": "object",
+        "properties": {
+          "predicate_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "field": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "operator": {
+            "enum": [
+              "eq",
+              "ne",
+              "lt",
+              "lte",
+              "gt",
+              "gte"
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/S3_JsonValue"
+          },
+          "max_age_ms": {
+            "$ref": "#/components/schemas/S3_Duration"
+          }
+        },
+        "required": [
+          "predicate_id",
+          "device_id",
+          "field",
+          "operator",
+          "value",
+          "max_age_ms"
+        ],
+        "additionalProperties": false
+      },
+      "S3_JsonValue": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string",
+            "maxLength": 16384
+          },
+          {
+            "type": "number",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_JsonValue"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          {
+            "type": "object",
+            "maxProperties": 256,
+            "additionalProperties": {
+              "$ref": "#/components/schemas/S3_JsonValue"
+            }
+          }
+        ]
+      },
+      "S3_Duration": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 86400000
+      },
+      "S3_Validity": {
+        "type": "object",
+        "properties": {
+          "not_before": {
+            "$ref": "#/components/schemas/S3_Timestamp"
+          },
+          "not_after": {
+            "$ref": "#/components/schemas/S3_Timestamp"
+          },
+          "authorization_policy_revision": {
+            "$ref": "#/components/schemas/S3_Revision"
+          }
+        },
+        "required": [
+          "not_before",
+          "not_after",
+          "authorization_policy_revision"
+        ],
+        "additionalProperties": false
+      },
+      "S3_Timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+      },
+      "S0_PreparationReceipt": {
+        "type": "object",
+        "properties": {
+          "receipt_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_PositiveCounter"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "preparation_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          },
+          "grant": {
+            "$ref": "#/components/schemas/S0_RunGrant"
+          },
+          "grant_ref": {
+            "$ref": "#/components/schemas/S0_GrantRef"
+          },
+          "commit_ref": {
+            "$ref": "#/components/schemas/S0_CommitRef"
+          },
+          "receipt_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "receipt_id",
+          "revision",
+          "controller_scope",
+          "preparation_id",
+          "request_digest",
+          "grant",
+          "grant_ref",
+          "commit_ref",
+          "receipt_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_RunGrant": {
+        "$ref": "#/components/schemas/S1_RunGrant"
+      },
+      "S1_RunGrant": {
+        "type": "object",
+        "properties": {
+          "grant_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S1_Counter"
+          },
+          "run_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "definition_version": {
+            "$ref": "#/components/schemas/S1_PositiveCounter"
+          },
+          "arm_generation": {
+            "$ref": "#/components/schemas/S1_Counter"
+          },
+          "principal_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "device_actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_DeviceActionScope"
+            },
+            "minItems": 1,
+            "maxItems": 256
+          },
+          "parameter_constraints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_Predicate"
+            },
+            "minItems": 0,
+            "maxItems": 64
+          },
+          "validity": {
+            "$ref": "#/components/schemas/S3_Validity"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "revoking",
+              "revoked",
+              "expired"
+            ]
+          },
+          "issuer_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "issuer_epoch": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/S1_Scope"
+          }
+        },
+        "required": [
+          "grant_id",
+          "revision",
+          "run_id",
+          "definition_version",
+          "arm_generation",
+          "principal_id",
+          "device_actions",
+          "parameter_constraints",
+          "validity",
+          "state",
+          "issuer_id",
+          "issuer_epoch",
+          "origin_scope"
+        ],
+        "additionalProperties": false
+      },
+      "S0_CommitRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "controller_commit"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_ProtectionRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "run_protection"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_PreparationError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid",
+              "unauthenticated",
+              "forbidden",
+              "conflict",
+              "capacity",
+              "unavailable",
+              "version"
+            ]
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          }
+        },
+        "required": [
+          "code",
+          "request_id"
+        ],
+        "additionalProperties": false
+      },
+      "S0_PreparationLookupResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "found"
+              },
+              "record": {
+                "$ref": "#/components/schemas/S0_PreparationRecord"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "indeterminate"
+                ]
+              },
+              "record": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "S0_PreparationLookup": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "automation-preparation/0.1.0-draft.1"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "preparation_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "contract_version",
+          "controller_scope",
+          "origin_scope",
+          "preparation_id",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_PreparationClose": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "automation-preparation/0.1.0-draft.1"
+          },
+          "close_operation_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "request": {
+            "$ref": "#/components/schemas/S0_PrepareRequest"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "contract_version",
+          "close_operation_id",
+          "request",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "InternalMTLS": {
+        "type": "mutualTLS"
+      }
+    }
+  }
+}

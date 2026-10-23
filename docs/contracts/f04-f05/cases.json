@@ -1,0 +1,2234 @@
+{
+  "examples": [
+    {
+      "case_id": "MODEL-AuthorizationSnapshot",
+      "model": "AuthorizationSnapshot",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "snapshot_id": "snapshot-demo",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "issuer_revision": "9",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "permissions": [
+          "device.command"
+        ],
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "challenge_id": "challenge-a",
+        "validity": {
+          "not_before": "2026-10-17T00:00:00.000Z",
+          "expires_at": "2026-10-17T01:00:00.000Z"
+        },
+        "fresh_for_ms": 2000,
+        "state": "active"
+      }
+    },
+    {
+      "case_id": "MODEL-AuthorizationBinding",
+      "model": "AuthorizationBinding",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      }
+    },
+    {
+      "case_id": "MODEL-ExecutionGuard",
+      "model": "ExecutionGuard",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "guard_id": "guard-a",
+        "permit_id": "permit-a",
+        "command_id": "command-a",
+        "device_id": "device-a",
+        "controller_boot_id": "cb-a",
+        "worker_boot_id": "wb-a",
+        "ipc_session_id": "ipc-a",
+        "binding": {
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "audience": "controller-a",
+          "principal_kind": "human",
+          "principal_id": "human-a",
+          "session_id": "session-a",
+          "credential_id": "credential-a",
+          "subject_revision": "3",
+          "session_revision": "2",
+          "policy_revision": "4",
+          "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "origin": "manual",
+          "grant_id": null,
+          "grant_revision": null,
+          "arm_generation": null,
+          "extension_instance_id": null,
+          "extension_approval_revision": null
+        },
+        "authorization_revision": "9",
+        "authorization_deadline_tick_ns": "2000000000",
+        "clock_domain_id": "clock-a",
+        "clock_generation": null,
+        "time_policy_revision": null,
+        "time_required": false,
+        "capacity_reservation_id": "reserve-a",
+        "guard_digest": "sha256:c8cbdcb0e7e213b977252e1ac993376775d4d614678bf587bf2ec2f3d0d36020"
+      }
+    },
+    {
+      "case_id": "MODEL-RevocationSelector",
+      "model": "RevocationSelector",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "kind": "session",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "session-a",
+        "revision_floor": "3"
+      }
+    },
+    {
+      "case_id": "MODEL-RevocationReceipt",
+      "model": "RevocationReceipt",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "operation_id": "revoke-a",
+        "target_service_id": "controller-a",
+        "service_boot_id": "cb-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "observed_revision": "10",
+        "gate_revision": "5",
+        "state": "applied",
+        "barrier_id": "auth-barrier-a",
+        "closed_subscription_ids": [
+          "sub-a"
+        ],
+        "invalidated_permit_ids": [
+          "permit-a"
+        ],
+        "in_flight_command_ids": [],
+        "unresolved_command_ids": [],
+        "durable": true
+      }
+    },
+    {
+      "case_id": "MODEL-RevocationRecord",
+      "model": "RevocationRecord",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "operation_id": "revoke-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "issuer_commit_revision": "10",
+        "target_service_ids": [
+          "controller-a"
+        ],
+        "state": "applied",
+        "receipts": [
+          {
+            "operation_id": "revoke-a",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-a",
+              "revision_floor": "3"
+            },
+            "observed_revision": "10",
+            "gate_revision": "5",
+            "state": "applied",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          }
+        ],
+        "reason": "logout",
+        "audit_id": "audit-a"
+      }
+    },
+    {
+      "case_id": "MODEL-ClockSample",
+      "model": "ClockSample",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      }
+    },
+    {
+      "case_id": "MODEL-ClockAssessment",
+      "model": "ClockAssessment",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "sample_id": "sample-a",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "evaluated_tick_ns": "2000000000",
+        "sample_age_ms": 1000,
+        "uncertainty_now_ms": 11,
+        "utc_lower_ms": 100989,
+        "utc_upper_ms": 101011,
+        "eligible_for_absolute": true,
+        "reason_code": "CLOCK_ELIGIBLE"
+      }
+    },
+    {
+      "case_id": "MODEL-ScheduleGuard",
+      "model": "ScheduleGuard",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "occurrence_id": "occurrence-a",
+        "definition_version": "1.0.0-draft.2",
+        "clock_generation": "generation-a",
+        "time_policy_revision": "2",
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-17T00:00:01.000Z",
+        "window_enter_tick_ns": "2000000000",
+        "queue_deadline_tick_ns": "3000000000",
+        "health_latched": false,
+        "block_reason": null
+      }
+    },
+    {
+      "case_id": "MODEL-EventAgeProof",
+      "model": "EventAgeProof",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "event_id": "event-a",
+        "provider_boot_id": "provider-boot",
+        "source_sequence": "1",
+        "basis": "trusted_utc",
+        "capture_sample_id": "sample-a",
+        "lower_age_ms": 0,
+        "upper_age_ms": 22,
+        "challenge_id": null,
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "case_id": "MODEL-WsTicketBinding",
+      "model": "WsTicketBinding",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "binding_id": "ticket-binding-a",
+        "session_id": "session-a",
+        "audience": "controller-a",
+        "origin": "https://gui.example.invalid",
+        "client_instance_id": "client-a",
+        "issuer_epoch": "issuer-epoch",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "expires_at": "2026-10-17T00:00:10.000Z",
+        "consumed": false
+      }
+    },
+    {
+      "case_id": "MODEL-AdmissionDecision",
+      "model": "AdmissionDecision",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "request_ref": "request-a",
+        "decision": "accepted",
+        "reason_code": "ACCEPTED",
+        "profile_id": "sim-f04-f05-v1",
+        "profile_revision": "1",
+        "limited_dimension": null,
+        "retry_after_ms": null,
+        "reservation_id": "reserve-a",
+        "command_id": "command-a"
+      }
+    },
+    {
+      "case_id": "MODEL-CapacityProfile",
+      "model": "CapacityProfile",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "profile_id": "sim-f04-f05-v1",
+        "revision": "1",
+        "purpose": "simulation",
+        "validated_environment": null,
+        "evidence_ref": null,
+        "identity": {
+          "access_token_ms": 60000,
+          "session_absolute_ms": 28800000,
+          "recent_auth_ms": 300000,
+          "refresh_idle_ms": 1800000,
+          "snapshot_fresh_ms": 2000,
+          "snapshot_refresh_ms": 500,
+          "gate_lease_ms": 500,
+          "gate_renew_ms": 100,
+          "local_revoke_alarm_ms": 500,
+          "remote_revoke_alarm_ms": 2000,
+          "ws_ticket_ms": 10000,
+          "pairing_ms": 60000,
+          "bootstrap_ms": 600000
+        },
+        "clock": {
+          "max_sample_age_ms": 10000,
+          "max_uncertainty_ms": 50,
+          "drift_bound_ppm": 100
+        },
+        "capacity": {
+          "http_bytes": 65536,
+          "frame_bytes": 262144,
+          "json_depth": 32,
+          "devices": 8,
+          "workers": 2,
+          "command_queue": 32,
+          "device_command_queue": 8,
+          "writer_queue": 64,
+          "evidence_queue": 64,
+          "protection_queue": 16,
+          "ipc_normal_slots": 64,
+          "ipc_protection_slots": 4,
+          "barrier_intents": 256,
+          "requests_per_second": 10,
+          "request_burst": 20,
+          "login_per_minute": 5,
+          "login_burst": 5,
+          "gui_events": 256,
+          "gui_bytes": 1048576,
+          "source_events": 256,
+          "source_bytes": 1048576,
+          "min_disk_free_bytes": 1073741824,
+          "max_wal_bytes": 268435456,
+          "max_reserved_bytes": 16777216
+        },
+        "retention": {
+          "context_ms": 300000,
+          "terminal_detail_days": 7,
+          "audit_days": 30
+        }
+      }
+    },
+    {
+      "case_id": "MODEL-service-binding",
+      "model": "AuthorizationBinding",
+      "schema_valid": true,
+      "semantic_error": null,
+      "instance": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "service",
+        "principal_id": "service-a",
+        "session_id": null,
+        "credential_id": "svc-credential",
+        "subject_revision": "3",
+        "session_revision": null,
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "automation",
+        "grant_id": "grant-a",
+        "grant_revision": "3",
+        "arm_generation": "5",
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      }
+    },
+    {
+      "case_id": "BAD-human-session",
+      "model": "AuthorizationSnapshot",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "snapshot_id": "snapshot-demo",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "issuer_revision": "9",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": null,
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "permissions": [
+          "device.command"
+        ],
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "challenge_id": "challenge-a",
+        "validity": {
+          "not_before": "2026-10-17T00:00:00.000Z",
+          "expires_at": "2026-10-17T01:00:00.000Z"
+        },
+        "fresh_for_ms": 2000,
+        "state": "active"
+      }
+    },
+    {
+      "case_id": "BAD-human-automation",
+      "model": "AuthorizationBinding",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "automation",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      }
+    },
+    {
+      "case_id": "BAD-extension-pair",
+      "model": "AuthorizationBinding",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": "ext-a",
+        "extension_approval_revision": null
+      }
+    },
+    {
+      "case_id": "BAD-time-generation",
+      "model": "ExecutionGuard",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "guard_id": "guard-a",
+        "permit_id": "permit-a",
+        "command_id": "command-a",
+        "device_id": "device-a",
+        "controller_boot_id": "cb-a",
+        "worker_boot_id": "wb-a",
+        "ipc_session_id": "ipc-a",
+        "binding": {
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "audience": "controller-a",
+          "principal_kind": "human",
+          "principal_id": "human-a",
+          "session_id": "session-a",
+          "credential_id": "credential-a",
+          "subject_revision": "3",
+          "session_revision": "2",
+          "policy_revision": "4",
+          "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "origin": "manual",
+          "grant_id": null,
+          "grant_revision": null,
+          "arm_generation": null,
+          "extension_instance_id": null,
+          "extension_approval_revision": null
+        },
+        "authorization_revision": "9",
+        "authorization_deadline_tick_ns": "2000000000",
+        "clock_domain_id": "clock-a",
+        "clock_generation": null,
+        "time_policy_revision": null,
+        "time_required": true,
+        "capacity_reservation_id": "reserve-a",
+        "guard_digest": "sha256:c8cbdcb0e7e213b977252e1ac993376775d4d614678bf587bf2ec2f3d0d36020"
+      }
+    },
+    {
+      "case_id": "BAD-fake-durable",
+      "model": "RevocationReceipt",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "operation_id": "revoke-a",
+        "target_service_id": "controller-a",
+        "service_boot_id": "cb-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "observed_revision": "10",
+        "gate_revision": "5",
+        "state": "applied",
+        "barrier_id": "auth-barrier-a",
+        "closed_subscription_ids": [
+          "sub-a"
+        ],
+        "invalidated_permit_ids": [
+          "permit-a"
+        ],
+        "in_flight_command_ids": [],
+        "unresolved_command_ids": [],
+        "durable": false
+      }
+    },
+    {
+      "case_id": "BAD-clock-null",
+      "model": "ClockAssessment",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "sample_id": "sample-a",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "evaluated_tick_ns": "2000000000",
+        "sample_age_ms": 1000,
+        "uncertainty_now_ms": null,
+        "utc_lower_ms": 100989,
+        "utc_upper_ms": 101011,
+        "eligible_for_absolute": true,
+        "reason_code": "CLOCK_ELIGIBLE"
+      }
+    },
+    {
+      "case_id": "BAD-release-unmeasured",
+      "model": "CapacityProfile",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "profile_id": "sim-f04-f05-v1",
+        "revision": "1",
+        "purpose": "release_candidate",
+        "validated_environment": null,
+        "evidence_ref": null,
+        "identity": {
+          "access_token_ms": 60000,
+          "session_absolute_ms": 28800000,
+          "recent_auth_ms": 300000,
+          "refresh_idle_ms": 1800000,
+          "snapshot_fresh_ms": 2000,
+          "snapshot_refresh_ms": 500,
+          "gate_lease_ms": 500,
+          "gate_renew_ms": 100,
+          "local_revoke_alarm_ms": 500,
+          "remote_revoke_alarm_ms": 2000,
+          "ws_ticket_ms": 10000,
+          "pairing_ms": 60000,
+          "bootstrap_ms": 600000
+        },
+        "clock": {
+          "max_sample_age_ms": 10000,
+          "max_uncertainty_ms": 50,
+          "drift_bound_ppm": 100
+        },
+        "capacity": {
+          "http_bytes": 65536,
+          "frame_bytes": 262144,
+          "json_depth": 32,
+          "devices": 8,
+          "workers": 2,
+          "command_queue": 32,
+          "device_command_queue": 8,
+          "writer_queue": 64,
+          "evidence_queue": 64,
+          "protection_queue": 16,
+          "ipc_normal_slots": 64,
+          "ipc_protection_slots": 4,
+          "barrier_intents": 256,
+          "requests_per_second": 10,
+          "request_burst": 20,
+          "login_per_minute": 5,
+          "login_burst": 5,
+          "gui_events": 256,
+          "gui_bytes": 1048576,
+          "source_events": 256,
+          "source_bytes": 1048576,
+          "min_disk_free_bytes": 1073741824,
+          "max_wal_bytes": 268435456,
+          "max_reserved_bytes": 16777216
+        },
+        "retention": {
+          "context_ms": 300000,
+          "terminal_detail_days": 7,
+          "audit_days": 30
+        }
+      }
+    },
+    {
+      "case_id": "BAD-admission-no-reservation",
+      "model": "AdmissionDecision",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "request_ref": "request-a",
+        "decision": "accepted",
+        "reason_code": "ACCEPTED",
+        "profile_id": "sim-f04-f05-v1",
+        "profile_revision": "1",
+        "limited_dimension": null,
+        "retry_after_ms": null,
+        "reservation_id": null,
+        "command_id": "command-a"
+      }
+    },
+    {
+      "case_id": "BAD-ws-secret-field",
+      "model": "WsTicketBinding",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "binding_id": "ticket-binding-a",
+        "session_id": "session-a",
+        "audience": "controller-a",
+        "origin": "https://gui.example.invalid",
+        "client_instance_id": "client-a",
+        "issuer_epoch": "issuer-epoch",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "expires_at": "2026-10-17T00:00:10.000Z",
+        "consumed": false,
+        "access_token": "synthetic-forbidden-field"
+      }
+    },
+    {
+      "case_id": "BAD-causal-proof",
+      "model": "EventAgeProof",
+      "schema_valid": false,
+      "semantic_error": null,
+      "instance": {
+        "event_id": "event-a",
+        "provider_boot_id": "provider-boot",
+        "source_sequence": "1",
+        "basis": "causal_capture",
+        "capture_sample_id": "sample-a",
+        "lower_age_ms": 0,
+        "upper_age_ms": 22,
+        "challenge_id": null,
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "case_id": "BAD-time-backwards",
+      "model": "ScheduleGuard",
+      "schema_valid": true,
+      "semantic_error": "window_order",
+      "instance": {
+        "occurrence_id": "occurrence-a",
+        "definition_version": "1.0.0-draft.2",
+        "clock_generation": "generation-a",
+        "time_policy_revision": "2",
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-16T23:59:00.000Z",
+        "window_enter_tick_ns": "2000000000",
+        "queue_deadline_tick_ns": "3000000000",
+        "health_latched": false,
+        "block_reason": null
+      }
+    },
+    {
+      "case_id": "BAD-window-enter-after-deadline",
+      "model": "ScheduleGuard",
+      "schema_valid": true,
+      "semantic_error": "monotonic_window_order",
+      "instance": {
+        "occurrence_id": "occurrence-a",
+        "definition_version": "1.0.0-draft.2",
+        "clock_generation": "generation-a",
+        "time_policy_revision": "2",
+        "not_before": "2026-10-17T00:00:00.000Z",
+        "not_after": "2026-10-17T00:00:01.000Z",
+        "window_enter_tick_ns": "3000000000",
+        "queue_deadline_tick_ns": "3000000000",
+        "health_latched": false,
+        "block_reason": null
+      }
+    },
+    {
+      "case_id": "BAD-snapshot-time",
+      "model": "AuthorizationSnapshot",
+      "schema_valid": true,
+      "semantic_error": "validity_order",
+      "instance": {
+        "snapshot_id": "snapshot-demo",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "issuer_revision": "9",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "permissions": [
+          "device.command"
+        ],
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "challenge_id": "challenge-a",
+        "validity": {
+          "not_before": "2026-10-17T00:00:00.000Z",
+          "expires_at": "2026-10-17T00:00:00.000Z"
+        },
+        "fresh_for_ms": 2000,
+        "state": "active"
+      }
+    },
+    {
+      "case_id": "BAD-clock-order",
+      "model": "ClockAssessment",
+      "schema_valid": true,
+      "semantic_error": "interval_order",
+      "instance": {
+        "sample_id": "sample-a",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "evaluated_tick_ns": "2000000000",
+        "sample_age_ms": 1000,
+        "uncertainty_now_ms": 11,
+        "utc_lower_ms": 200000,
+        "utc_upper_ms": 101011,
+        "eligible_for_absolute": true,
+        "reason_code": "CLOCK_ELIGIBLE"
+      }
+    },
+    {
+      "case_id": "BAD-age-order",
+      "model": "EventAgeProof",
+      "schema_valid": true,
+      "semantic_error": "age_order",
+      "instance": {
+        "event_id": "event-a",
+        "provider_boot_id": "provider-boot",
+        "source_sequence": "1",
+        "basis": "trusted_utc",
+        "capture_sample_id": "sample-a",
+        "lower_age_ms": 23,
+        "upper_age_ms": 22,
+        "challenge_id": null,
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "case_id": "BAD-incomplete-targets",
+      "model": "RevocationRecord",
+      "schema_valid": true,
+      "semantic_error": "target_coverage",
+      "instance": {
+        "operation_id": "revoke-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "issuer_commit_revision": "10",
+        "target_service_ids": [
+          "controller-a",
+          "controller-b"
+        ],
+        "state": "applied",
+        "receipts": [
+          {
+            "operation_id": "revoke-a",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-a",
+              "revision_floor": "3"
+            },
+            "observed_revision": "10",
+            "gate_revision": "5",
+            "state": "applied",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          }
+        ],
+        "reason": "logout",
+        "audit_id": "audit-a"
+      }
+    },
+    {
+      "case_id": "BAD-duplicate-receipt",
+      "model": "RevocationRecord",
+      "schema_valid": true,
+      "semantic_error": "duplicate_receipt",
+      "instance": {
+        "operation_id": "revoke-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "issuer_commit_revision": "10",
+        "target_service_ids": [
+          "controller-a"
+        ],
+        "state": "applied",
+        "receipts": [
+          {
+            "operation_id": "revoke-a",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-a",
+              "revision_floor": "3"
+            },
+            "observed_revision": "10",
+            "gate_revision": "5",
+            "state": "applied",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          },
+          {
+            "operation_id": "revoke-a",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-a",
+              "revision_floor": "3"
+            },
+            "observed_revision": "10",
+            "gate_revision": "5",
+            "state": "applied",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          }
+        ],
+        "reason": "logout",
+        "audit_id": "audit-a"
+      }
+    },
+    {
+      "case_id": "BAD-old-receipt",
+      "model": "RevocationRecord",
+      "schema_valid": true,
+      "semantic_error": "stale_receipt",
+      "instance": {
+        "operation_id": "revoke-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "issuer_commit_revision": "10",
+        "target_service_ids": [
+          "controller-a"
+        ],
+        "state": "applied",
+        "receipts": [
+          {
+            "operation_id": "revoke-a",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-a",
+              "revision_floor": "3"
+            },
+            "observed_revision": "9",
+            "gate_revision": "5",
+            "state": "applied",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          }
+        ],
+        "reason": "logout",
+        "audit_id": "audit-a"
+      }
+    },
+    {
+      "case_id": "BAD-other-selector",
+      "model": "RevocationRecord",
+      "schema_valid": true,
+      "semantic_error": "selector_binding",
+      "instance": {
+        "operation_id": "revoke-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "issuer_commit_revision": "10",
+        "target_service_ids": [
+          "controller-a"
+        ],
+        "state": "applied",
+        "receipts": [
+          {
+            "operation_id": "revoke-a",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-b",
+              "revision_floor": "3"
+            },
+            "observed_revision": "10",
+            "gate_revision": "5",
+            "state": "applied",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          }
+        ],
+        "reason": "logout",
+        "audit_id": "audit-a"
+      }
+    },
+    {
+      "case_id": "BAD-other-operation",
+      "model": "RevocationRecord",
+      "schema_valid": true,
+      "semantic_error": "operation_binding",
+      "instance": {
+        "operation_id": "revoke-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "issuer_commit_revision": "10",
+        "target_service_ids": [
+          "controller-a"
+        ],
+        "state": "applied",
+        "receipts": [
+          {
+            "operation_id": "revoke-other",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-a",
+              "revision_floor": "3"
+            },
+            "observed_revision": "10",
+            "gate_revision": "5",
+            "state": "applied",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          }
+        ],
+        "reason": "logout",
+        "audit_id": "audit-a"
+      }
+    },
+    {
+      "case_id": "BAD-pending-target",
+      "model": "RevocationRecord",
+      "schema_valid": true,
+      "semantic_error": "not_applied",
+      "instance": {
+        "operation_id": "revoke-a",
+        "selector": {
+          "kind": "session",
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "target_id": "session-a",
+          "revision_floor": "3"
+        },
+        "issuer_commit_revision": "10",
+        "target_service_ids": [
+          "controller-a"
+        ],
+        "state": "applied",
+        "receipts": [
+          {
+            "operation_id": "revoke-a",
+            "target_service_id": "controller-a",
+            "service_boot_id": "cb-a",
+            "selector": {
+              "kind": "session",
+              "issuer_id": "issuer-demo",
+              "issuer_epoch": "issuer-epoch",
+              "target_id": "session-a",
+              "revision_floor": "3"
+            },
+            "observed_revision": "10",
+            "gate_revision": "5",
+            "state": "pending",
+            "barrier_id": "auth-barrier-a",
+            "closed_subscription_ids": [
+              "sub-a"
+            ],
+            "invalidated_permit_ids": [
+              "permit-a"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "durable": true
+          }
+        ],
+        "reason": "logout",
+        "audit_id": "audit-a"
+      }
+    },
+    {
+      "case_id": "BAD-guard-content",
+      "model": "ExecutionGuard",
+      "schema_valid": true,
+      "semantic_error": "guard_digest",
+      "instance": {
+        "guard_id": "guard-a",
+        "permit_id": "permit-b",
+        "command_id": "command-a",
+        "device_id": "device-a",
+        "controller_boot_id": "cb-a",
+        "worker_boot_id": "wb-a",
+        "ipc_session_id": "ipc-a",
+        "binding": {
+          "issuer_id": "issuer-demo",
+          "issuer_epoch": "issuer-epoch",
+          "audience": "controller-a",
+          "principal_kind": "human",
+          "principal_id": "human-a",
+          "session_id": "session-a",
+          "credential_id": "credential-a",
+          "subject_revision": "3",
+          "session_revision": "2",
+          "policy_revision": "4",
+          "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "origin": "manual",
+          "grant_id": null,
+          "grant_revision": null,
+          "arm_generation": null,
+          "extension_instance_id": null,
+          "extension_approval_revision": null
+        },
+        "authorization_revision": "9",
+        "authorization_deadline_tick_ns": "2000000000",
+        "clock_domain_id": "clock-a",
+        "clock_generation": null,
+        "time_policy_revision": null,
+        "time_required": false,
+        "capacity_reservation_id": "reserve-a",
+        "guard_digest": "sha256:c8cbdcb0e7e213b977252e1ac993376775d4d614678bf587bf2ec2f3d0d36020"
+      }
+    },
+    {
+      "case_id": "BAD-refresh-budget",
+      "model": "CapacityProfile",
+      "schema_valid": true,
+      "semantic_error": "refresh_budget",
+      "instance": {
+        "profile_id": "sim-f04-f05-v1",
+        "revision": "1",
+        "purpose": "simulation",
+        "validated_environment": null,
+        "evidence_ref": null,
+        "identity": {
+          "access_token_ms": 60000,
+          "session_absolute_ms": 28800000,
+          "recent_auth_ms": 300000,
+          "refresh_idle_ms": 1800000,
+          "snapshot_fresh_ms": 2000,
+          "snapshot_refresh_ms": 2000,
+          "gate_lease_ms": 500,
+          "gate_renew_ms": 100,
+          "local_revoke_alarm_ms": 500,
+          "remote_revoke_alarm_ms": 2000,
+          "ws_ticket_ms": 10000,
+          "pairing_ms": 60000,
+          "bootstrap_ms": 600000
+        },
+        "clock": {
+          "max_sample_age_ms": 10000,
+          "max_uncertainty_ms": 50,
+          "drift_bound_ppm": 100
+        },
+        "capacity": {
+          "http_bytes": 65536,
+          "frame_bytes": 262144,
+          "json_depth": 32,
+          "devices": 8,
+          "workers": 2,
+          "command_queue": 32,
+          "device_command_queue": 8,
+          "writer_queue": 64,
+          "evidence_queue": 64,
+          "protection_queue": 16,
+          "ipc_normal_slots": 64,
+          "ipc_protection_slots": 4,
+          "barrier_intents": 256,
+          "requests_per_second": 10,
+          "request_burst": 20,
+          "login_per_minute": 5,
+          "login_burst": 5,
+          "gui_events": 256,
+          "gui_bytes": 1048576,
+          "source_events": 256,
+          "source_bytes": 1048576,
+          "min_disk_free_bytes": 1073741824,
+          "max_wal_bytes": 268435456,
+          "max_reserved_bytes": 16777216
+        },
+        "retention": {
+          "context_ms": 300000,
+          "terminal_detail_days": 7,
+          "audit_days": 30
+        }
+      }
+    }
+  ],
+  "scope_cases": [
+    {
+      "case_id": "SCOPE-session-human",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "session",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "session-a",
+        "revision_floor": "3"
+      },
+      "denied": true
+    },
+    {
+      "case_id": "SCOPE-session-not-organization",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "service",
+        "principal_id": "service-a",
+        "session_id": null,
+        "credential_id": "svc-credential",
+        "subject_revision": "3",
+        "session_revision": null,
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "automation",
+        "grant_id": "grant-a",
+        "grant_revision": "3",
+        "arm_generation": "5",
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "session",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "session-a",
+        "revision_floor": "3"
+      },
+      "denied": false
+    },
+    {
+      "case_id": "SCOPE-other-session",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-b",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "session",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "session-a",
+        "revision_floor": "3"
+      },
+      "denied": false
+    },
+    {
+      "case_id": "SCOPE-new-session-revision",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "3",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "session",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "session-a",
+        "revision_floor": "3"
+      },
+      "denied": false
+    },
+    {
+      "case_id": "SCOPE-other-epoch",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "epoch-other",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "session",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "session-a",
+        "revision_floor": "3"
+      },
+      "denied": false
+    },
+    {
+      "case_id": "SCOPE-disabled-human-not-service",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "service",
+        "principal_id": "service-a",
+        "session_id": null,
+        "credential_id": "svc-credential",
+        "subject_revision": "3",
+        "session_revision": null,
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "automation",
+        "grant_id": "grant-a",
+        "grant_revision": "3",
+        "arm_generation": "5",
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "principal",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "human-a",
+        "revision_floor": "4"
+      },
+      "denied": false
+    },
+    {
+      "case_id": "SCOPE-disabled-human",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "principal",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "human-a",
+        "revision_floor": "4"
+      },
+      "denied": true
+    },
+    {
+      "case_id": "SCOPE-service-grant",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "service",
+        "principal_id": "service-a",
+        "session_id": null,
+        "credential_id": "svc-credential",
+        "subject_revision": "3",
+        "session_revision": null,
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "automation",
+        "grant_id": "grant-a",
+        "grant_revision": "3",
+        "arm_generation": "5",
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "grant",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "grant-a",
+        "revision_floor": "4"
+      },
+      "denied": true
+    },
+    {
+      "case_id": "SCOPE-rotated-credential-old-grant",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "service",
+        "principal_id": "service-a",
+        "session_id": null,
+        "credential_id": "svc-new",
+        "subject_revision": "3",
+        "session_revision": null,
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "automation",
+        "grant_id": "grant-a",
+        "grant_revision": "3",
+        "arm_generation": "5",
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "grant",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "grant-a",
+        "revision_floor": "4"
+      },
+      "denied": true
+    },
+    {
+      "case_id": "SCOPE-credential",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "credential",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "credential-a",
+        "revision_floor": "3"
+      },
+      "denied": true
+    },
+    {
+      "case_id": "SCOPE-trust",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "service",
+        "principal_id": "service-a",
+        "session_id": null,
+        "credential_id": "svc-credential",
+        "subject_revision": "3",
+        "session_revision": null,
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "automation",
+        "grant_id": "grant-a",
+        "grant_revision": "3",
+        "arm_generation": "5",
+        "extension_instance_id": null,
+        "extension_approval_revision": null
+      },
+      "selector": {
+        "kind": "trust",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "issuer-demo",
+        "revision_floor": "3"
+      },
+      "denied": true
+    },
+    {
+      "case_id": "SCOPE-extension",
+      "binding": {
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "audience": "controller-a",
+        "principal_kind": "human",
+        "principal_id": "human-a",
+        "session_id": "session-a",
+        "credential_id": "credential-a",
+        "subject_revision": "3",
+        "session_revision": "2",
+        "policy_revision": "4",
+        "scope_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "origin": "manual",
+        "grant_id": null,
+        "grant_revision": null,
+        "arm_generation": null,
+        "extension_instance_id": "ext-a",
+        "extension_approval_revision": "2"
+      },
+      "selector": {
+        "kind": "extension",
+        "issuer_id": "issuer-demo",
+        "issuer_epoch": "issuer-epoch",
+        "target_id": "ext-a",
+        "revision_floor": "3"
+      },
+      "denied": true
+    }
+  ],
+  "freshness_cases": [
+    {
+      "case_id": "FRESH-normal",
+      "started_ms": 1000,
+      "received_ms": 1100,
+      "now_ms": 1500,
+      "fresh_ms": 2000,
+      "policy_ms": 2000,
+      "expected": true
+    },
+    {
+      "case_id": "FRESH-deadline-equal",
+      "started_ms": 1000,
+      "received_ms": 1100,
+      "now_ms": 3000,
+      "fresh_ms": 2000,
+      "policy_ms": 2000,
+      "expected": false
+    },
+    {
+      "case_id": "FRESH-delayed-response",
+      "started_ms": 1000,
+      "received_ms": 3100,
+      "now_ms": 3100,
+      "fresh_ms": 2000,
+      "policy_ms": 2000,
+      "expected": false
+    },
+    {
+      "case_id": "FRESH-time-reversed",
+      "started_ms": 1000,
+      "received_ms": 900,
+      "now_ms": 1200,
+      "fresh_ms": 2000,
+      "policy_ms": 2000,
+      "expected": false
+    }
+  ],
+  "time_cases": [
+    {
+      "case_id": "TIME-in-window",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100980,
+      "not_after_ms": 101020,
+      "latched": false,
+      "expected": "send"
+    },
+    {
+      "case_id": "TIME-start-overlap",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 101000,
+      "not_after_ms": 101100,
+      "latched": false,
+      "expected": "wait"
+    },
+    {
+      "case_id": "TIME-end-equal",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100980,
+      "not_after_ms": 101011,
+      "latched": false,
+      "expected": "expired"
+    },
+    {
+      "case_id": "TIME-freshness-equal",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "11000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-missing-bound",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": null,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-degraded",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "degraded"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-generation",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-new",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-other-domain",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-other",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-tick-backwards",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "999999999",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-uncertainty-equal",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 49,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "send"
+    },
+    {
+      "case_id": "TIME-uncertainty-over",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 50,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-recovered-latched",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": true,
+      "expected": "blocked"
+    },
+    {
+      "case_id": "TIME-unverified-source",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "unverified",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 10,
+        "drift_bound_ppm": 100,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "2000000000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": true,
+      "not_before_ms": 100000,
+      "not_after_ms": 200000,
+      "latched": false,
+      "expected": "untrusted"
+    },
+    {
+      "case_id": "TIME-fraction-outward",
+      "sample": {
+        "sample_id": "sample-a",
+        "provider_id": "clock-provider",
+        "provider_boot_id": "provider-boot",
+        "host_boot_id": "host-boot",
+        "clock_domain_id": "clock-a",
+        "clock_generation": "generation-a",
+        "policy_revision": "2",
+        "source_ref": "source-demo",
+        "source_auth": "trusted_network",
+        "mode": "application_offset",
+        "sample_tick_ns": "1000000000",
+        "estimated_utc_ms": 100000,
+        "uncertainty_ms": 0,
+        "drift_bound_ppm": 0,
+        "max_sample_age_ms": 10000,
+        "quality": "synchronized"
+      },
+      "now_tick_ns": "1000500000",
+      "domain": "clock-a",
+      "generation": "generation-a",
+      "max_uncertainty_ms": 50,
+      "source_required": false,
+      "not_before_ms": 100000,
+      "not_after_ms": 100001,
+      "latched": false,
+      "expected": "expired"
+    }
+  ],
+  "event_age_cases": [
+    {
+      "case_id": "AGE-normal",
+      "source": [
+        100,
+        110
+      ],
+      "receiver": [
+        115,
+        125
+      ],
+      "max_age_ms": 30,
+      "expected": "fresh"
+    },
+    {
+      "case_id": "AGE-received-is-not-new",
+      "source": [
+        100,
+        110
+      ],
+      "receiver": [
+        1000,
+        1010
+      ],
+      "max_age_ms": 30,
+      "expected": "stale"
+    },
+    {
+      "case_id": "AGE-future",
+      "source": [
+        130,
+        140
+      ],
+      "receiver": [
+        110,
+        120
+      ],
+      "max_age_ms": 30,
+      "expected": "invalid"
+    },
+    {
+      "case_id": "AGE-overlap",
+      "source": [
+        100,
+        120
+      ],
+      "receiver": [
+        110,
+        130
+      ],
+      "max_age_ms": 30,
+      "expected": "fresh"
+    }
+  ],
+  "capacity_cases": [
+    {
+      "case_id": "CAP-normal",
+      "input": {
+        "kind": "command",
+        "already_accepted": false,
+        "storage_healthy": true,
+        "ordinary_used": 31,
+        "ordinary_limit": 32,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": false
+      },
+      "expected": "admit"
+    },
+    {
+      "case_id": "CAP-full",
+      "input": {
+        "kind": "command",
+        "already_accepted": false,
+        "storage_healthy": true,
+        "ordinary_used": 32,
+        "ordinary_limit": 32,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": false
+      },
+      "expected": "reject"
+    },
+    {
+      "case_id": "CAP-requery-full",
+      "input": {
+        "kind": "command",
+        "already_accepted": true,
+        "storage_healthy": true,
+        "ordinary_used": 32,
+        "ordinary_limit": 32,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": false
+      },
+      "expected": "query_existing"
+    },
+    {
+      "case_id": "CAP-protect-reserved",
+      "input": {
+        "kind": "protection",
+        "already_accepted": false,
+        "storage_healthy": true,
+        "ordinary_used": 32,
+        "ordinary_limit": 32,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": false
+      },
+      "expected": "apply_protection"
+    },
+    {
+      "case_id": "CAP-protect-no-db",
+      "input": {
+        "kind": "protection",
+        "already_accepted": false,
+        "storage_healthy": false,
+        "ordinary_used": 31,
+        "ordinary_limit": 32,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": false
+      },
+      "expected": "apply_protection"
+    },
+    {
+      "case_id": "CAP-no-result-room",
+      "input": {
+        "kind": "command",
+        "already_accepted": false,
+        "storage_healthy": true,
+        "ordinary_used": 31,
+        "ordinary_limit": 32,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 0,
+        "profile_shrink": false
+      },
+      "expected": "protect"
+    },
+    {
+      "case_id": "CAP-critical-store",
+      "input": {
+        "kind": "command",
+        "already_accepted": false,
+        "storage_healthy": false,
+        "ordinary_used": 31,
+        "ordinary_limit": 32,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": false
+      },
+      "expected": "protect"
+    },
+    {
+      "case_id": "CAP-protection-full",
+      "input": {
+        "kind": "protection",
+        "already_accepted": false,
+        "storage_healthy": true,
+        "ordinary_used": 31,
+        "ordinary_limit": 32,
+        "protection_used": 16,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": false
+      },
+      "expected": "local_protect_no_ack"
+    },
+    {
+      "case_id": "CAP-lower-limit",
+      "input": {
+        "kind": "command",
+        "already_accepted": false,
+        "storage_healthy": true,
+        "ordinary_used": 31,
+        "ordinary_limit": 16,
+        "protection_used": 0,
+        "protection_limit": 16,
+        "evidence_free": 1,
+        "profile_shrink": true
+      },
+      "expected": "reject"
+    }
+  ]
+}

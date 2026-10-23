@@ -1,0 +1,1807 @@
+{
+  "scope": "46表内存组合的执行登记、运行保护切点及逐出口应用候选",
+  "all_passed": true,
+  "cases_passed": 347,
+  "approved": false,
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "组合46表",
+      "expected": 46,
+      "observed": 46
+    },
+    {
+      "name": "初始许可未决",
+      "expected": [
+        "permit.1"
+      ],
+      "observed": [
+        "permit.1"
+      ]
+    },
+    {
+      "name": "所有FK",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "T1投影缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T1投影缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T1投影异常7",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T1投影回滚7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T2许可缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T2许可缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T2许可异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T2许可回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T2许可缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "T2许可缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T2许可异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "T2许可回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常7",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常8",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写9",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常9",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚9",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写10",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写10全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常10",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚10",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect缺写11",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2protect缺写11全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2protect异常11",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2protect回滚11",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "protect阻断新重传",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "protect阻断新重传全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "protect阻断新attempt",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "protect阻断新attempt全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "protect阻断新命令",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "protect阻断新命令全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "protect保留在途未决",
+      "expected": [
+        "permit.1"
+      ],
+      "observed": [
+        "permit.1"
+      ]
+    },
+    {
+      "name": "P2close缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常7",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常8",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写9",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常9",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚9",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写10",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写10全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常10",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚10",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写11",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写11全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常11",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚11",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写12",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写12全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常12",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚12",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close缺写13",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "P2close缺写13全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "P2close异常13",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "P2close回滚13",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "close阻断新重传",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "close阻断新重传全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "close阻断新attempt",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "close阻断新attempt全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "close阻断新命令",
+      "expected": "preparation_not_applied",
+      "observed": "preparation_not_applied"
+    },
+    {
+      "name": "close阻断新命令全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "close保留在途未决",
+      "expected": [
+        "permit.1"
+      ],
+      "observed": [
+        "permit.1"
+      ]
+    },
+    {
+      "name": "出口结果缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "出口结果缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "出口结果异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "出口结果回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "出口结果缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "出口结果缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "出口结果异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "出口结果回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "汇总前缺出口",
+      "expected": "coverage_incomplete",
+      "observed": "coverage_incomplete"
+    },
+    {
+      "name": "汇总前缺出口全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "单出口先落盘",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "不能把其余出口漏掉",
+      "expected": "coverage_incomplete",
+      "observed": "coverage_incomplete"
+    },
+    {
+      "name": "不能把其余出口漏掉全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "applied不核销",
+      "expected": [
+        "permit.1"
+      ],
+      "observed": [
+        "permit.1"
+      ]
+    },
+    {
+      "name": "汇总FK",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "固定回执不可替换",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "固定回执不可替换全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "冻结覆盖不可追加",
+      "expected": "coverage_frozen",
+      "observed": "coverage_frozen"
+    },
+    {
+      "name": "冻结覆盖不可追加全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "空目标仍持久拒绝",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "queued不可后派",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "queued不可后派全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "漏queued",
+      "expected": "queued_set_incomplete",
+      "observed": "queued_set_incomplete"
+    },
+    {
+      "name": "漏queued全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "漏旧出口",
+      "expected": "target_set_incomplete",
+      "observed": "target_set_incomplete"
+    },
+    {
+      "name": "漏旧出口全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "漏许可",
+      "expected": "intent_set_incomplete",
+      "observed": "intent_set_incomplete"
+    },
+    {
+      "name": "漏许可全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "切点不是当前高水位",
+      "expected": "cut_revision",
+      "observed": "cut_revision"
+    },
+    {
+      "name": "切点不是当前高水位全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "原容器与切点错配",
+      "expected": "source_targets",
+      "observed": "source_targets"
+    },
+    {
+      "name": "原容器与切点错配全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不能捏造已发送",
+      "expected": "entered_snapshot",
+      "observed": "entered_snapshot"
+    },
+    {
+      "name": "不能捏造已发送全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已知进入传输不可降级",
+      "expected": "coverage_downgrade",
+      "observed": "coverage_downgrade"
+    },
+    {
+      "name": "已知进入传输不可降级全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未等全集已采纳单出口强证据",
+      "expected": "in_flight",
+      "observed": "in_flight"
+    },
+    {
+      "name": "迟到进入传输覆盖旧未发判断",
+      "expected": "in_flight",
+      "observed": "in_flight"
+    },
+    {
+      "name": "原ACK保持原文",
+      "expected": "not_sent",
+      "observed": "not_sent"
+    },
+    {
+      "name": "只有单出口ACK也立即保留强证据",
+      "expected": "in_flight",
+      "observed": "in_flight"
+    },
+    {
+      "name": "其余出口未齐仍禁止未发核销",
+      "expected": "not_sent_unproven",
+      "observed": "not_sent_unproven"
+    },
+    {
+      "name": "其余出口未齐仍禁止未发核销全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "可靠未发可核销",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "更强证据重新列为未决",
+      "expected": [
+        "permit.1"
+      ],
+      "observed": [
+        "permit.1"
+      ]
+    },
+    {
+      "name": "不能以旧未发再次核销",
+      "expected": "not_sent_unproven",
+      "observed": "not_sent_unproven"
+    },
+    {
+      "name": "不能以旧未发再次核销全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "后续效果核对可另追加",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "退役出口不可新重传",
+      "expected": "exit_retired",
+      "observed": "exit_retired"
+    },
+    {
+      "name": "退役出口不可新重传全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "退役不证未发",
+      "expected": "coverage_downgrade",
+      "observed": "coverage_downgrade"
+    },
+    {
+      "name": "退役不证未发全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "退役出口仍保留未知",
+      "expected": [
+        "permit.1"
+      ],
+      "observed": [
+        "permit.1"
+      ]
+    },
+    {
+      "name": "未有退役事实不能伪造",
+      "expected": "retirement_unproven",
+      "observed": "retirement_unproven"
+    },
+    {
+      "name": "未有退役事实不能伪造全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "最后未发不清原发送",
+      "expected": [
+        "permit.1"
+      ],
+      "observed": [
+        "permit.1"
+      ]
+    },
+    {
+      "name": "同attempt不同primitive可独立初发",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "不能跨packet借重传parent",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "不能跨packet借重传parent全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ordinal不可跳号",
+      "expected": "ordinal_successor",
+      "observed": "ordinal_successor"
+    },
+    {
+      "name": "ordinal不可跳号全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "全局revision不可跳号",
+      "expected": "issued_successor",
+      "observed": "issued_successor"
+    },
+    {
+      "name": "全局revision不可跳号全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "packet出口错配",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "packet出口错配全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run屏障不包含手动许可",
+      "expected": [
+        [
+          "permit.1"
+        ]
+      ],
+      "observed": [
+        [
+          "permit.1"
+        ]
+      ]
+    },
+    {
+      "name": "run拒绝不直接拦手动",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "相同设备的另一run不误纳入",
+      "expected": [
+        [
+          "permit.1"
+        ]
+      ],
+      "observed": [
+        [
+          "permit.1"
+        ]
+      ]
+    },
+    {
+      "name": "已有floor后关闭缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常7",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常8",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写9",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常9",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚9",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写10",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写10全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常10",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚10",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写11",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写11全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常11",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚11",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭缺写12",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "已有floor后关闭缺写12全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有floor后关闭异常12",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "已有floor后关闭回滚12",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "close复用公共floor",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "超256许可不能截断保护",
+      "expected": "fence_capacity",
+      "observed": "fence_capacity"
+    },
+    {
+      "name": "超256许可不能截断保护全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "容量拒绝保持原许可全集",
+      "expected": 257,
+      "observed": 257
+    },
+    {
+      "name": "空集合也不可先于来源提交应用",
+      "expected": "cut_uncommitted",
+      "observed": "cut_uncommitted"
+    },
+    {
+      "name": "空集合也不可先于来源提交应用全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "seal后拒新增ce_exit",
+      "expected": "pending_cut",
+      "observed": "pending_cut"
+    },
+    {
+      "name": "seal后拒新增ce_exit全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "seal后拒新增ce_report",
+      "expected": "pending_cut",
+      "observed": "pending_cut"
+    },
+    {
+      "name": "seal后拒新增ce_report全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "seal后拒新增ce_settlement",
+      "expected": "pending_cut",
+      "observed": "pending_cut"
+    },
+    {
+      "name": "seal后拒新增ce_settlement全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "seal后拒新增ce_retirement",
+      "expected": "pending_cut",
+      "observed": "pending_cut"
+    },
+    {
+      "name": "seal后拒新增ce_retirement全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_command禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_command禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_command禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_command禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_exit禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_exit禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_exit禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_exit禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_attempt禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_attempt禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_attempt禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_attempt禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_packet禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_packet禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_packet禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_packet禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_permit禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_permit禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_permit禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_permit禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_transmission_commit禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_transmission_commit禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_transmission_commit禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_transmission_commit禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_fence禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_fence禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_fence禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_fence禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_target禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_target禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_target禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_target禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_item禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_item禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_item禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_item禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_cut_commit禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_cut_commit禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_cut_commit禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_cut_commit禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_target_result禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_target_result禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_target_result禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_target_result禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_coverage禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_coverage禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_coverage禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_coverage禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_application禁更新",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_application禁更新全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ce_application禁删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "ce_application禁删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "BODY不证明真实权威",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57"
+  }
+}

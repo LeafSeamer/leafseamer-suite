@@ -1,0 +1,560 @@
+#AOCI-CODE-VOLUME: 1
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/===
+.gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
+.gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
+AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
+DEVELOPMENT_MEMO.md[SO5L]: F:记录取消动作图完成原件及转用main的提交周期 | R:code:docs/contracts/c08-controller/CANCEL_PLAN.md | A:设计历程与本周期第1轮 | S:上周期76b5970已推；main快进保留历史，后续第三轮推main。184项新检查与旧回归不证明运行，独立hold及资源撤回仍缺，业务未实现
+LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
+README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
+THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/LICENSES/===
+legacy-MIT.txt[SV5T]: F:保留旧设计文档沿用的MIT许可与原版权声明 | R:code:THIRD_PARTY_NOTICES.md | A:旧材料许可文本 | S:新版Apache许可不改授旧历史许可
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/===
+LEGACY_HANDOVER.md[SO5T]: F:记录旧仓归档、完整工作区搬移和五仓独立交接结果 | R:code:LICENSES/legacy-MIT.txt | A:历史提交与迁移边界 | S:旧数据不自动迁移；搬移不证明旧环境可运行
+ROADMAP.md[SW7T]: F:定义全系统设计、首闭环实现和全量验收的阶段退出条件 | R:code:docs/rebirth-readiness.md,code:docs/rebirth-c12-deployment-design.md | A:阶段计划与Q35接管粒度 | S:全部首期模块先设计后实施；C01至C12有文档不等于冻结，候选待审阅；协议缺口不缩减交付，首闭环非全量验收
+rebirth-contract-review.md[SN8T]: F:审阅首闭环十二项执行边界并登记F01至F07证明缺口 | R:code:docs/rebirth-draft3-review.md | A:B01至B12 | S:命令终态、资源释放、接管生效与ready分离；旧待归并表保留历史，不覆盖新版本入口
+rebirth-design.md[SG9L]: F:定义五仓职责、完整功能范围与Q1至Q72产品约束 | R:code:docs/rebirth-readiness.md,code:docs/rebirth-draft4-review.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-c12-deployment-design.md | A:Rebirth整体设计与专项细化入口 | S:全系统及首期模块定稿后才实现；draft.4已确认而专题候选未确认；协议及目录来源非能力冻结；不迁移旧数据，手动不绕保护，部署成文非可运行交付
+rebirth-draft3-review.md[SN8T]: F:记录F01至F07归并到draft.3和IPC0.2的十二项衔接 | R:code:docs/contracts/draft3/README.md | A:M01至M12 | S:unknown终态保留，资源清理另附证据；旧版文件留作历史，当前运行域改动以draft.4为准
+rebirth-draft4-review.md[SN9S]: F:说明运行域与NTP归并并登记基础及业务专题的后续修订门槛 | R:code:docs/contracts/draft4/README.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-c12-deployment-design.md | A:DF及同步排期扩展设备GUI与部署归并缺口 | S:候选字段另版归并，不暗改IPC0.3；TransferOffer待补关联，GUI同步非命令终态；输出流不作离散trigger，安装引用不证明设备或文件耐久，运行未验
+rebirth-f02-f03-design.md[SR8M]: F:规定唯一设备写出口、屏障账本和SQLite事务耐久方案 | R:code:docs/contracts/f02-f03/README.md | A:I01至I08、T1至T8、FT01至FT26 | S:effectiveness与ready分离；设备副作用不与数据库原子提交，事件可重传而派发意图不得自动重放
+rebirth-f04-f05-design.md[SR8M]: F:设计精确身份撤销、时间区间门控与有界容量保护 | R:code:docs/contracts/f04-f05/README.md | A:FA01至FA24、TB01至TB24 | S:快照TTL从challenge发出计时；普通退出不撤组织授权，NTP恢复不补旧场次；实验预算不是生产批准
+rebirth-f06-f07-design.md[SR8M]: F:设计OBS完成证据、保守依赖证明与单次恢复消费 | R:code:docs/contracts/f06-f07/README.md | A:OB01至OB16、AU01至AU20 | S:设置ACK加同会话新查询只证协议效果；仅明确failed且独立可继续，恢复CAS不重放成功或未知动作
+rebirth-first-loop-contract.md[SN8M]: F:定义draft.2首闭环API、命令生命周期、接管时序及验收设计 | R:code:docs/contracts/README.md | A:FC01至FC24 | S:202仅受理；完整屏障与持久事务才生效，unknown不重放；本稿保留历史字段，不与新版预发布模型拼接
+rebirth-platform-freeze.md[SR8M]: F:记录运行域原生制品方向及NF02应用参考时钟修订 | R:code:docs/rebirth-draft4-review.md,code:docs/rebirth-df03-time-profile-design.md | A:NF01至NF03和PF01至PF18 | S:NF02新路线已选，旧chrony与W32模型保留历史；字段另版归并。运行nonce不冒充OS启动身份，安装不隐式编译下载，签名可复现及运行分开，PF未执行
+rebirth-readiness.md[SQ8S]: F:映射决策到全系统设计门槛并登记时间模型已选状态 | R:code:docs/rebirth-design-closure.md,code:docs/ROADMAP.md | A:C01至C12与A01至A22及6.1门槛 | S:十八模块盘点非契约冻结；reference-bound路线获准不批准精确profile或新机器基线。旧HTTP统计为历史，当前以收敛清单为准，跨authority路径不共享权限
+rebirth-review.md[SG8M]: F:保留需求确认和跨项冲突记录并连接实施冻结建议 | R:code:docs/rebirth-readiness.md,code:docs/rebirth-df01-sdk-freeze.md | A:Q系列决策、T01至T15 | S:Q72只容许简单顺序中的独立明确失败继续；DF01候选TS版本修正不等于完整工具链获准
+rebirth-technology-selection.md[SV8S]: F:记录SDK生成、认证、SQLite与时钟技术方向及试验计划 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-df01-sdk-freeze.md | A:TS01至TS05、TV01至TV14 | S:早期TS6.0建议被DF01的5.9.3生成候选替代；精确制品未冻结，旧宿主boot建域已由受监督域取代
+rebirth-df01-sdk-freeze.md[SN9M]: F:设计SDK单一源严格解码及语义导出和逐操作主体候选 | R:code:docs/contracts/df01-source/SEMANTIC_REGISTRY.md,code:docs/contracts/df01-source/AUTHORIZATION.md | A:D1至D6、SV01至SV20与第10至14节候选 | S:条件不绕开放参数；service手动收紧须另版接受集，后台准备不等于布防；旧协议及权威未改，元数据检查非真实鉴权
+rebirth-df02-runtime-design.md[SR9S]: F:设计可信启动纳管恢复及监督回执到核心持久绑定的衔接 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-f02-f03-design.md,code:docs/contracts/df02-supervisor/README.md | A:R01至R06与bootstrap和RT及第10节候选 | S:创建时纳管且Linux分UID；HMAC绑定完整扩展意图。监督器不写业务库，准入回执先于核心Ref；组空不证未发或资源释放，同意图不重建，平台仍未验
+rebirth-df03-time-profile-design.md[SR9M]: F:记录参考时钟采集入站与共享TIME切点归并候选 | R:code:docs/contracts/df03-time-fence/README.md,code:docs/contracts/df03-collector/INBOX.md | A:TP系列及第10至17节 | S:路线获准不批准profile；91表普通水位须与取消统一，27表尚无设备cutFK。162项SQL与92项TIME快照分开，完整库和真实提供者及跨服务SDK未齐，业务未实现
+rebirth-df04-storage-design.md[SD9M]: F:设计SQLite执行摄取保护及时间发布失效写集映射 | R:code:docs/contracts/c05-ingress/ingress.sql,code:docs/contracts/c02-admission/STORAGE.md,code:docs/contracts/df03-collector/STORAGE.md | A:DB与T及R和P1至P4事务及时间子域 | S:旧context身份是历史，新命令含issuer_epoch且不含context或digest；PLAN同受理锚独立，applied不清在途。十四表时间写集非完整库或TIME账本，精确加密及耐久未验
+rebirth-df05-release-design.md[SV9M]: F:设计发布清单及独立引导信任、TUF时间持久化适配和升级恢复 | R:code:docs/rebirth-platform-freeze.md,code:docs/contracts/df05/README.md,code:docs/rebirth-c12-deployment-design.md | A:AF01至AF06、RA01至RA46 | S:TUF不套业务JCS；在线key轮换可换缓存epoch但不降root或发行撤销，pending跨崩溃保留；人工时间有信任假设，6.0.0窄补丁待审阅；安装完成非ready，发行及运行未验
+rebirth-df06-internal-trust-design.md[SN9M]: F:设计内部对象授权来源采样及注销服务凭据和配对生命周期 | R:code:docs/rebirth-f04-f05-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/contracts/df01-source/AUTHORIZATION.md | A:IA01至IA06、IL01至IL06与IN及ILT验收 | S:TLS和摘要不证明对象权或新采样；注销不混撤组织run，秘密丢失不重发；新凭据不迁旧许可或恢复暂停，pending配对仅引导用途；双端各自提交且有撤销传播窗口，候选未归并批准或运行
+rebirth-c04-automation-design.md[SW9M]: F:设计自动化执行摄取与来源保护及完整IPC候选衔接 | R:code:docs/rebirth-c05-event-sync-design.md,code:docs/contracts/c05-protection/PROTOCOL.md | A:AR与EX及第9至16节 | S:PLAN同受理锚独立；prepare先登记。IPC0.5贯穿运行绑定且定义计数统一，暂停不加代次，applied不清资源；旧恢复证据不能混投，公共Prepare和DDL及运行未验
+rebirth-c05-event-sync-design.md[SM9L]: F:设计来源摄取同步与完整保护并连接HTTP和执行IPC | R:code:docs/contracts/c05-ingress/README.md,code:docs/contracts/c05-protection/PROTOCOL.md,code:docs/rebirth-df04-storage-design.md | A:ES与SS及SP和EN及PFT与PIP | S:保护覆盖旧执行及准备未知，P1至P4非跨库原子；applied不清资源。IPC0.5先装deny快照再开闸，permit排序每目标256显式替代旧包络；141项离线非运行，公共Prepare与DDL和GC仍缺
+rebirth-c06-schedule-design.md[SW9S]: F:设计排期草稿导入、固定日历、场次身份及激活与逐步派发 | R:code:docs/rebirth-c04-automation-design.md,code:docs/rebirth-c05-event-sync-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-legacy-schedule-map.md | A:SCH01至SCH07、CT01至CT42 | S:导入与字段观察分离；跨版身份不复活，激活受理同writer串行；资格锁存不覆盖设备结果，guard来源待新版绑定；日历包未验收，候选和运行均未冻结
+rebirth-legacy-schedule-map.md[SW8T]: F:按固定旧提交映射排期五模块的十一项能力及保留替代关系 | R:code:docs/rebirth-c06-schedule-design.md,code:docs/rebirth-legacy-device-map.md,code:docs/rebirth-legacy-system-map.md | A:LS01至LS11与旧测试证据边界 | S:本地time不产生plannedAt；旧采集仅五列，轮询revision可绕内存去重且事件只取首条；三表合计18模块来源范围但不证明字段冻结或运行，旧展示不过滤未来
+rebirth-c09-extension-design.md[SE9L]: F:设计扩展面板安装导入及审批启动全链候选 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/contracts/c09-panel/CHANNEL_V02.md,code:docs/contracts/c09-panel-storage/README.md,code:docs/contracts/c09-installation/LIFECYCLE_V02.md,code:docs/contracts/c09-artifact-import/README.md | A:ME及面板和ILC与IAT及LACT | S:安装不授动作权，拒绝实例不复活；关闭退役资源核对分离。包角色经宿主解析，enable先建新实例再审批；启动摘要保留收窄内容，重投不重建组。sealed历史与当前实物分离，完整IPC及DDL和运行未验
+rebirth-legacy-device-map.md[SH9T]: F:按固定旧提交映射八个设备模块的能力型号及证据边界 | R:code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c11-obs-atem-design.md,code:docs/rebirth-c11-audio-design.md,code:docs/rebirth-legacy-schedule-map.md | A:OA01至OA10、AA01至AA08、MXD01至MXD14、VB01至VB07 | S:面板多于旧manifest；VLC选择和ATEM回调不是效果证据；DM3已转录184项仍未批准，WING前级共享；VB本地bank非设备预置且Err不证断路，运行未验
+rebirth-legacy-system-map.md[SG8T]: F:映射旧自动化、图文、日志、备份与NodeCG数据库五模块的实际范围 | R:code:docs/rebirth-legacy-device-map.md,code:docs/rebirth-legacy-schedule-map.md,code:docs/rebirth-c11-nodecg-design.md | A:SY01至SY06、GR01至GR05、OP01至OP08 | S:旧卡片并发无汇总且数组导入空分支；图文仅两行字幕和比分，抓取占位；ZIP无恢复与一致快照，NodeCG持久化不是外部排期PG源；新版兼容候选不证明运行
+rebirth-c11-nodecg-design.md[SN9S]: F:设计NodeCG桥协议、旧图文及编辑器映射和远端故障证据 | R:code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-c12-deployment-design.md | A:NG01至NG07、NGT01至NGT32 | S:原revision非可靠CAS；本地屏障不排空远端，ACK与持久化及像素分离；候选批准面板和有限输出层不独自证明独占；原dashboard仍外部，相对未知不重放，运行未验
+rebirth-c11-obs-atem-design.md[SH9M]: F:设计OBS及ATEM全能力与VLC源扩展和逐传输持久许可及完成政策 | R:code:docs/rebirth-legacy-device-map.md,code:docs/rebirth-f02-f03-design.md,code:docs/rebirth-f06-f07-design.md,code:docs/rebirth-df04-storage-design.md | A:AV01至AV06、VAT01至VAT48 | S:重传同attempt但独立许可，最后未发不清原影响；累计ACK及缓存不证效果，回绕需维护。重复URL须条目身份，VLC窄补丁新增制品成本；转场stop不证正常结束，候选待审阅且运行未验
+rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议及VB观察与WING换接契约 | R:code:docs/contracts/c11-audio/dm3-parameter-profile.json,code:docs/contracts/c11-audio/audio-candidate.schema.json | A:AD01至AD07及AUDT01至AUDT72 | S:静态访问与会话权限分离，秘密设备rw不授读；原生24加8位须先拒越界，协议不透明切换。VB关联不证排空，WING中间态须绑定；候选非完整SDK，设备未验
+rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
+rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
+rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
+rebirth-design-closure.md[SQ8M]: F:汇总定稿门槛并登记取消动作图及main分支安排 | R:code:docs/contracts/c08-controller/CANCEL_PLAN.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前剩余项 | S:129表已具备动作图及完成原件，不重复从零建设；独立hold资源撤回Decision及其他屏障TIME与统一SDK仍缺。候选未批准运行，全系统设计未关闭
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
+.gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
+README.md[SN7T]: F:说明机器契约层次、分版本复验与报告字节绑定检查入口 | R:code:docs/contracts/validate_contracts.py,code:docs/contracts/check_report_bindings.py | A:契约资料使用说明 | S:顶层历史draft.2不递归验证新版；报告匹配不证明覆盖或真实性，变更引用文档也使报告过期
+boundary-traces.json[TB6L]: F:保存接管屏障与命令生命周期的人工正反时序轨迹 | R:code:docs/contracts/build_examples.py | A:barrier与command模型轨迹 | S:模型顺序检查不证明真实并发或持久化
+build_contracts.py[XN7M]: F:生成公共draft.2模型库、路由和两份自包含OpenAPI | R:code:docs/contracts/first-loop.schema.json | A:build与--check | S:默认对象关闭额外字段；动态Payload需能力Schema二次校验；202仅表示受理
+build_examples.py[TN6M]: F:人工编排draft.2正反例、时序与规范化及能力向量 | R:code:docs/contracts/examples.json | A:examples与--check | S:预期结果独立于Schema；只生成合成资料，不执行设备动作
+canonical-vectors.json[TN5T]: F:保存JCS键序、负零、Unicode、数组和指数固定向量 | R:code:docs/contracts/validate_vectors.cjs | A:input与canonical对照 | S:保留Unicode原字符及数组顺序
+capability-cases.json[TN5T]: F:验证动态能力参数的必填、类型和额外写字段限制 | R:code:docs/contracts/validate_contracts.py | A:能力Schema正反例 | S:开放参数容器仍须二次校验
+controller.openapi.json[SN7L]: F:定义draft.2设备、命令、接管和运行授权HTTP及WS入口 | R:code:docs/contracts/build_contracts.py | A:Controller OpenAPI 3.1.1 | S:生成物由定义源维护；202不是设备完成；WS升级不代表帧运行验证
+examples.json[TN6L]: F:保存draft.2公共模型的合成正例和结构及语义反例 | R:code:docs/contracts/build_examples.py | A:schema_valid与contract_valid标记 | S:Schema有效与契约有效分开判定
+first-loop.schema.json[FN8L]: F:提供draft.2首闭环身份、能力、命令、接管与自动化模型库 | R:code:docs/contracts/build_contracts.py | A:JSON Schema 2020-12 $defs | S:结构校验不授权设备写；动态参数还需能力Schema二次校验，历史版本不能与draft.4字段混用
+identity-vectors.json[TN7T]: F:固定请求身份投影的规范化文本和摘要预期 | R:code:docs/contracts/validate_vectors.cjs | A:四组identity向量 | S:只排除顶层context、idempotency_key和correlation_id；acquireControl缺省force按false，嵌套同名字段保留
+invalid-wire.json[TN6T]: F:提供原始JSON重复键和非法数值编码反例 | R:code:docs/contracts/validate_contracts.py | A:四组wire反例 | S:在Schema前拒绝重复键、NaN、孤立代理及不安全整数，普通JSON解析成功不足以通过
+requirements-validation.lock.txt[FV5T]: F:锁定离线契约校验的完整Python依赖版本 | R:code:docs/contracts/requirements-validation.txt | A:pip requirements | S:用于复验工具环境，不能当产品运行依赖或平台验收证明
+requirements-validation.txt[FV5T]: F:声明Schema、OpenAPI与JCS校验的直接Python依赖 | R:code:docs/contracts/requirements-validation.lock.txt | A:jsonschema、openapi-spec-validator、rfc8785 | S:明确仅离线校验，不引入产品服务依赖
+routes.json[FN7M]: F:枚举draft.2两服务及共用HTTP操作的模型、状态码和权限映射 | R:code:docs/contracts/build_contracts.py | A:32条路由描述 | S:权限标记仅为契约；202表示可靠受理，不表示设备完成或接管生效
+seamer.openapi.json[FN8L]: F:描述draft.2 Seamer目录事件、定义发布、运行与恢复HTTP及WS接口 | R:code:docs/contracts/build_contracts.py | A:OpenAPI 3.1.1、/api/v1 | S:模型内联可独立解析；历史bearer订阅声明不等于后续单次票据流程，预发布写协议不可混投
+validate_contracts.py[TQ8M]: F:运行draft.2结构、端点、模型轨迹与双语言规范化校验 | R:code:docs/contracts/validate_vectors.cjs | A:--report | S:原始JSON先拒重复键及非法数值；全部通过才写报告，未递归执行后续版本或真实服务测试
+validate_vectors.cjs[TN7T]: F:用Node核验固定JCS文本、摘要及请求身份投影 | R:code:docs/contracts/identity-vectors.json | A:命令行向量检查 | S:递归排序实现仅验证给定向量，不是完整生产JCS库；只删除顶层身份外字段
+validation-report.json[SQ5T]: F:保存draft.2离线校验计数版本及顶层资料输入摘要 | R:code:docs/contracts/validate_contracts.py | A:all_passed与artifact_sha256 | S:纳入顶层检查脚本摘要不表示已执行它们；非服务IPC数据库并发或设备证据
+check_report_bindings.py[TQ7S]: F:只读核验十份报告在工作区暂存区或指定提交的声明输入摘要 | R:code:docs/contracts/README.md | A:check_report、--staged与--ref | S:显式路径基准且不归一化字节；拒绝重复键逃逸及空摘要表，不重跑测试或证明声明覆盖完整
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/draft3/===
+README.md[SN6T]: F:说明公共draft.3与IPC0.2归并来源和离线复验方式 | R:code:docs/contracts/draft3/validate_contracts.py | A:历史契约入口 | S:当前入口已转draft.4；旧写请求解析失败不得回退旧语义
+build_contracts.py[XN8M]: F:归并身份、守卫、OBS证据和恢复模型生成draft.3与IPC0.2 | R:code:docs/contracts/build_contracts.py,code:docs/contracts/draft3/ipc.schema.json | A:build与ipc及--check | S:沿用旧源不改旧文件；未知终态不改写；WS票据首次返回且禁止日志记录
+build_examples.py[TN7M]: F:升级历史人工夹具并增加守卫、屏障、OBS和恢复关联反例 | R:code:docs/contracts/draft3/examples.json | A:build与ipc_examples及--check | S:包含重新计算摘要后仍应拒绝的身份错配；预期不从Schema派生
+controller.openapi.json[SN7L]: F:定义draft.3设备控制、身份签发、撤销和证据查询端点 | R:code:docs/contracts/draft3/build_contracts.py | A:Controller HTTP与WS契约 | S:内部查询mTLS；会话接口绑定Origin与CSRF；票据重复请求只返回非秘密绑定
+examples.json[TN6L]: F:保存draft.3公共模型、IPC帧和跨对象关联的人工正反例 | R:code:docs/contracts/draft3/build_examples.py | A:examples与ipc_examples及link_cases | S:合成凭据及证据引用不构成生产授权
+first-loop.schema.json[SN8L]: F:声明draft.3公共模型及身份、授权守卫、OBS和恢复约束 | R:code:docs/contracts/draft3/build_contracts.py | A:JSON Schema 2020-12模型库 | S:须选具体defs校验；未知终态只能追加核对；真实权威和时序仍需运行验证
+ipc.schema.json[SN8L]: F:声明IPC0.2的19类消息及守卫与身份时间屏障封装 | R:code:docs/contracts/draft3/first-loop.schema.json | A:消息oneOf与IntentRef及Coverage | S:未发送、在途和未知覆盖证明不同；Schema不证明屏障或落盘真实成立
+routes.json[FN6L]: F:映射draft.3服务路由、请求响应模型、权限和认证方案 | R:code:docs/contracts/draft3/build_contracts.py | A:HTTP操作清单 | S:WS升级由OpenAPI另行声明
+seamer.openapi.json[SN7L]: F:定义draft.3规则、运行、恢复操作及独立性证明查询接口 | R:code:docs/contracts/draft3/build_contracts.py | A:Seamer HTTP与WS契约 | S:恢复返回操作记录而非设备成功；WS使用单次票据
+validate_contracts.py[TN8M]: F:离线验证draft.3生成一致性、Schema、OpenAPI和跨对象IPC证据 | R:code:docs/contracts/draft3/examples.json | A:main与--report | S:先检查生成漂移；票据不进查询参数；仅全通过才写报告，不运行服务或设备
+validation-report.json[SO5T]: F:记录draft.3离线检查计数、工具版本和输入摘要 | R:code:docs/contracts/draft3/validate_contracts.py | A:已执行离线验证记录 | S:runtime验收数量为零；旧报告不能证明新输入
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/draft4/===
+README.md[SN7T]: F:说明已确认draft.4与IPC0.3归并资料及后续DF01入口 | R:code:docs/rebirth-draft4-review.md,code:docs/rebirth-df01-sdk-freeze.md | A:生成与离线复验说明 | S:确认不代表正式SDK或平台批准；机器文件保持原样，历史写协议不得降级
+build_contracts.py[XN8S]: F:基于draft.3生成受监督运行域、条件误差证据及内部查询契约 | R:code:docs/contracts/draft3/first-loop.schema.json | A:build与--check | S:所有IPC信封绑定域摘要；内部时间查询使用mTLS；旧机器契约不改写
+build_examples.py[TN7M]: F:构造运行域、时间证据、跨服务年龄与重新摘要篡改正反例 | R:code:docs/contracts/draft4/examples.json | A:build与--check | S:可信上下文与批准profile仅为合成前提；历史域可读不等于当前许可
+controller.openapi.json[SN8L]: F:声明draft.4设备控制及内部运行域和时间证据查询接口 | R:code:docs/contracts/draft4/build_contracts.py | A:Controller OpenAPI 3.1.1 | S:内部查询需mTLS和clock.internal.read且no-store；公开响应不暴露原始时间证据
+examples.json[TN6L]: F:保存draft.4公共模型、IPC帧和时间域关联的人工检查样本 | R:code:docs/contracts/draft4/build_examples.py | A:examples与ipc_examples及link_cases | S:包含合成授权前提，不证明真实认证或平台时钟
+first-loop.schema.json[SN8L]: F:定义draft.4公共模型与运行域、样本、误差证据和profile引用 | R:code:docs/contracts/draft4/build_contracts.py | A:JSON Schema模型库 | S:受监督运行域独立于OS启动观测；时间守卫必须绑定样本、证据和profile
+ipc.schema.json[SN8L]: F:定义IPC0.3全部19类消息的运行域绑定和时间守卫载荷 | R:code:docs/contracts/draft4/first-loop.schema.json | A:消息信封与oneOf分支 | S:握手协商运行域及时间证据特性；不能降级为旧版运行域语义
+routes.json[FN6L]: F:映射draft.4公共及内部时钟查询的模型、权限和认证方案 | R:code:docs/contracts/draft4/build_contracts.py | A:HTTP路由清单 | S:内部profile查询包含精确revision；WS入口另定义
+seamer.openapi.json[SN8L]: F:声明draft.4自动化、恢复和内部时间证据查询接口 | R:code:docs/contracts/draft4/build_contracts.py | A:Seamer HTTP与WS契约 | S:内部原始证据只供受限mTLS查询；响应结构不代表运行效果
+validate_contracts.py[TN8M]: F:校验draft.4生成物、关联摘要、条件时间区间及公开响应隔离 | R:code:docs/contracts/draft4/examples.json | A:main与--report | S:有理数向外取整；检查公开引用图不达内部证据；可信上下文为人工夹具
+validation-report.json[SO5T]: F:保存draft.4离线检查计数工具版本及生成资料和审阅文档摘要 | R:code:docs/contracts/draft4/validate_contracts.py | A:离线验证记录 | S:平台服务IPC与设备运行执行数为零；引用文档修改也需要重新生成报告
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/f02-f03/===
+README.md[SN6T]: F:说明IPC0.1定义源、完整屏障账本和离线快照验证边界 | R:code:docs/contracts/f02-f03/validate_ipc.py | A:F02与F03资料复现入口 | S:父验证器不递归本目录；有限符号轨迹不证明线程、socket或fsync
+build_cases.py[TN7S]: F:人工构造IPC帧、屏障账本、发送门控及故障顺序向量 | R:code:docs/contracts/f02-f03/cases.json | A:build与--check | S:明确允许存储故障传播窗口内旧许可已发送，不把故障当瞬时全局关闭
+build_ipc.py[XN7S]: F:生成IPC0.1的13类内部消息及许可覆盖结构 | R:code:docs/contracts/first-loop.schema.json | A:build与--check | S:复用公共draft.2模型不复制修改；只定义结构不实现发送或数据库
+cases.json[TN6L]: F:保存IPC帧、屏障覆盖、发送门控和符号轨迹的人工正反例 | R:code:docs/contracts/f02-f03/build_cases.py | A:frames、barriers、dispatch_checks与traces | S:可信快照比较不证明实际状态来源
+ipc.schema.json[SN7L]: F:声明IPC0.1握手、派发、报告、开关闸及屏障消息 | R:code:docs/contracts/f02-f03/build_ipc.py | A:13类信封及许可覆盖字段 | S:动态payload仍需能力Schema；结构通过不能证明真实屏障和持久化
+validate_ipc.py[TN8M]: F:离线验证IPC形状、完整账本覆盖、发送快照和有限故障顺序 | R:code:docs/contracts/f02-f03/cases.json | A:barrier_error、dispatch_error与--report | S:账本按permit_id排序后JCS摘要且拒绝重复；本地引用不联网
+validation-report.json[SO5T]: F:记录IPC0.1消息与屏障快照离线校验结果及输入摘要 | R:code:docs/contracts/f02-f03/validate_ipc.py | A:离线验证记录 | S:真实IPC、SQLite及设备运行验收数量为零
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/f04-f05/===
+README.md[SN6T]: F:说明身份撤销、时间质量及容量候选模型和独立复验入口 | R:code:docs/contracts/f04-f05/validate_contracts.py | A:F04与F05候选资料说明 | S:不替代公共draft.2；实验预算不构成生产参数或实际吞吐
+build_cases.py[TN7S]: F:构造授权撤销作用域、快照时限、UTC区间和容量决策向量 | R:code:docs/contracts/f04-f05/simulation-profile.json | A:build与--check | S:包含等号、未知误差、时钟域变化和恢复锁存边界；非服务实现
+build_contracts.py[XN7S]: F:生成13个授权、守卫、时钟、票据和容量候选模型 | R:code:docs/contracts/f04-f05/contracts.schema.json | A:build与--check | S:human只能manual；automation必须service及grant绑定；发布profile必须含环境证据
+cases.json[TN6L]: F:保存F04与F05模型、撤销范围、时效和容量边界正反例 | R:code:docs/contracts/f04-f05/build_cases.py | A:六组离线样本 | S:容量判定假定已鉴权，不模拟并发分配
+contracts.schema.json[SN7L]: F:声明授权快照、精确撤销、时钟评估及容量候选结构 | R:code:docs/contracts/f04-f05/build_contracts.py | A:13个defs模型 | S:引用公共draft.2且按具体defs校验；active及durable字段不授予真实权威
+simulation-profile.json[FQ6T]: F:固定身份、时间、队列和留存的离线实验预算 | R:code:docs/contracts/f04-f05/build_cases.py | A:sim-f04-f05-v1配置 | S:purpose为simulation且环境证据为空，不能直接作为生产默认
+validate_contracts.py[TN8S]: F:校验身份撤销、快照期限、UTC区间与有限容量决策 | R:code:docs/contracts/f04-f05/cases.json | A:semantic_error与边界判定及--report | S:快照TTL从challenge发出计时；Fraction向外舍入；无认证、NTP或限流运行实现
+validation-report.json[SO5T]: F:记录F04与F05候选模型和边界向量的离线结果 | R:code:docs/contracts/f04-f05/validate_contracts.py | A:工具版本与输入摘要 | S:身份、NTP、压力和设备运行验收数量为零
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/f06-f07/===
+README.md[SQ6T]: F:说明OBS证据与失败恢复候选契约的离线检查入口 | R:code:docs/contracts/f06-f07/validate_contracts.py | A:f06-f07/0.1.0-draft.1 | S:七模型和串行消费向量不证明实际OBS、权威DSL或数据库并发；旧协议保持原版
+build_cases.py[TQ7S]: F:生成OBS四帧、依赖证明及恢复消费的人工预期向量 | R:code:docs/contracts/f06-f07/cases.json | A:--check | S:预期不调用待测判定器；恢复竞争模拟串行原子步，不能充当真实并发证据
+build_contracts.py[XN7T]: F:定义并生成目录绑定、OBS证据、足迹证明及恢复七模型 | R:code:docs/contracts/f06-f07/contracts.schema.json | A:--check | S:引用旧公共draft.2；对象封闭、修订和tick使用十进制字符串，候选不暗改公共接口
+cases.json[TQ7L]: F:提供OBS完成、足迹独立、失败继续和恢复竞争正反例 | R:code:docs/contracts/f06-f07/build_cases.py | A:examples、obs_cases、proof_cases、continue_cases、recovery_cases | S:包含到期等号、错域、摘要篡改及双消费者；合成前提不证明权威来源成立
+contracts.schema.json[FN7L]: F:承载F06/F07七种候选对象的结构约束 | R:code:docs/contracts/f06-f07/build_contracts.py | A:JSON Schema 2020-12 | S:四帧结构不单独证明顺序、目录有效或持久完成；恢复操作消费字段固定为true
+validate_contracts.py[TQ8S]: F:校验候选模型、OBS顺序、依赖闭包和恢复消费判定 | R:code:docs/contracts/f06-f07/cases.json | A:--report | S:先检查生成漂移，全部通过才写报告；手工闭包与串行模型不证明真实权限、隐式副作用或并发
+validation-report.json[SQ5T]: F:保存F06/F07离线检查数量与输入摘要 | R:code:docs/contracts/f06-f07/validate_contracts.py | A:all_passed、runtime_validation | S:运行验收为零，报告只绑定记录时输入，不能代替重新运行或设备证据
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df01/===
+README.md[SN6T]: F:说明DF01固定向量及解码元数据描述的复验入口和证据范围 | R:code:docs/contracts/df01/check_reference_vectors.py | A:参考检查与计划用例说明 | S:三十原始用例只验描述；预算非生产批准，绑定检查不证明完整OpenAPI或SDK生成
+check_integer_vectors.mjs[TN6T]: F:用Node BigInt核验固定字符串边界与数学向下向上除法 | R:code:docs/contracts/df01/vectors.json | A:Node参考向量检查 | S:不实现JSON入口或JCS；有符号负零算术为零但不改写wire原文
+check_reference_vectors.py[TN7T]: F:汇总JCS算术差异探针和解码元数据检查并生成输入绑定报告 | R:code:docs/contracts/df01/check_decoder_design.py | A:固定预期检查与LF报告 | S:Node算术对照非JS JCS；原始数字仅验数学值，不执行SDK解析器或真实生成链
+reference-report.json[SO5S]: F:记录DF01算术规范化与元数据结果及实际工具和输入摘要 | R:code:docs/contracts/df01/check_reference_vectors.py | A:参考检查证据 | S:Node24.11.1非候选验收；三十原始报文只查描述，SDK解析器与生成链未执行
+vectors.json[TN7T]: F:固定JCS文本、整数边界、精确除法与基线缺口的人工预期 | R:code:docs/contracts/df01/check_reference_vectors.py | A:canonical、integers、division与原始输入用例 | S:通用JCS浮点不授权协议整数；六项报文拒绝仅计划，负零和尾部LF差异保持可见
+check_decoder_design.py[TN7T]: F:核验局部预算及HTTP和WS绑定的结构关联与人工预期 | R:code:docs/contracts/df01/decoder-design.schema.json | A:metadata_errors与check | S:原始用例只查承载和Schema格式，不运行扫描器或解析OpenAPI源；预期不由判定器生成
+decoder-design-cases.json[TN7T]: F:提供二十个局部元数据正反例和三十个原始JSON预期 | R:code:docs/contracts/df01/check_decoder_design.py | A:metadata_cases与raw_cases_planned | S:升级操作和模型引用为合成，原始报文尚未执行；integer与number及条件分支接受结果不同
+decoder-design.schema.json[FN7T]: F:定义候选解码预算和HTTP及WS源绑定的局部描述格式 | R:code:docs/rebirth-df01-sdk-freeze.md | A:Profile与HttpBinding及WsBinding | S:用途固定design_fixture；不是完整OpenAPI或源清单，客户端帧null仅记录历史缺失而非新版完成
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df04/===
+README.md[SD6T]: F:说明DF04局部SQL约束探针的复现与验证边界 | R:code:docs/contracts/df04/check_storage_probes.py,code:docs/rebirth-df04-storage-design.md | A:SP01至SP13参考入口 | S:仅内存探针非生产DDL；参考SQLite未满足产品WAL修复门槛，旧协议词法未改
+check_storage_probes.py[TD7S]: F:在内存运行十进制及SQL约束探针并写LF输入绑定报告 | R:code:docs/contracts/df04/storage-probes.sql | A:22项局部参考检查 | S:仅memory且不接收DB路径；预期独立手写，扩展错误码验证不证明驱动WAL或证据来源
+reference-report.json[SQ5S]: F:记录DF04内存探针结果与实际引擎版本及SQL脚本摘要 | R:code:docs/contracts/df04/check_storage_probes.py | A:22项参考结果 | S:SQLite3.50.4非产品批准引擎；运行验收仍为零，摘要只绑定记录时输入
+storage-probes.sql[TD6T]: F:定义十进制文本、命令终态、归属与单次消费的局部探针表 | R:code:docs/contracts/df04/check_storage_probes.py | A:STRICT表与FK及部分唯一索引 | S:不是生产迁移；release和resolution只验非空配对，外键不能证明完整屏障或真实证据
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df05/===
+README.md[SV6T]: F:说明DF05候选清单、离线复验入口及真实发行证据边界 | R:code:docs/contracts/df05/validate_manifest.py,code:docs/rebirth-df05-release-design.md | A:候选资料使用说明 | S:合成stable正例不构成晋级；字符串路径检查不证明解包与加载安全
+examples.json[TV7L]: F:保存发布清单合成基例和36组结构及关联的人工正反预期 | R:code:docs/contracts/df05/validate_manifest.py | A:base与cases | S:hash、commit、版本与报告均为合成占位，不对应真实发布物；预期独立于判定器
+reference-report.json[SQ5M]: F:记录DF05合成格式关联检查结果及工具与原始输入摘要 | R:code:docs/contracts/df05/validate_manifest.py | A:36例参考报告 | S:release_authorized为false；TUF签名制品加载安装恢复运行均未执行
+release-manifest.schema.json[FV8L]: F:定义五仓组合、平台、ABI、依赖和能力报告的发布清单候选结构 | R:code:docs/rebirth-df05-release-design.md | A:native-release/0.1.0-draft.1 | S:本文件为候选格式唯一源；对象封闭、整数序号用字符串，结构通过不证明签名或平台批准，不改变业务draft4
+validate_manifest.py[TV7S]: F:离线校验发布清单结构路径角色与兼容关系并生成LF报告 | R:code:docs/contracts/df05/examples.json,code:docs/contracts/df05/release-manifest.schema.json | A:contract_errors与main | S:仅读合成资料，不验证真实制品TUF；全部预期通过才写报告并绑定原始输入字节
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df06/===
+README.md[SN6T]: F:说明DF06局部模型、合成上下文参考复验及真实证明边界 | R:code:docs/contracts/df06/check_reference_cases.py,code:docs/rebirth-df06-internal-trust-design.md | A:附属候选资料入口 | S:可信标志和摘要由夹具提供；未运行TLS、来源采样、并发或日志脱敏，局部结构不能当完整SDK
+check_reference_cases.py[TN7S]: F:核验对象读取因果来源年龄及串行消费预期并输出LF报告 | R:code:docs/contracts/df06/examples.json,code:docs/contracts/df06/internal-trust.schema.json | A:read_decision、capture_decision与main | S:可信上下文为合成前提，摘要只比较不生成；全部通过才写报告，串行步骤非真实CAS
+examples.json[TN7L]: F:保存DF06模型及对象授权、来源绑定与年龄边界的人工正反预期 | R:code:docs/contracts/df06/check_reference_cases.py | A:19结构例、35决策例与3串行消费步 | S:上下文可信标志与digest均为合成；预期不由判定器生成，不能证明证书或实际采样
+internal-trust.schema.json[FN8L]: F:定义内部来源引用、采样请求回执、消费、单对象读授权及实验预算 | R:code:docs/rebirth-df06-internal-trust-design.md | A:internal-trust候选7个局部模型 | S:模型封闭且数值串严格尾锚；不是完整配对或存储结构，Version需SDK二次验证，合法字段不赋予真实权威
+reference-report.json[SQ5M]: F:保存DF06合成参考结果工具版本及原始输入字节摘要 | R:code:docs/contracts/df06/check_reference_cases.py | A:57项参考报告 | S:未执行真实身份采样并发与JCS生成，摘要匹配不补足这些证据
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c11-audio/===
+README.md[SH6T]: F:说明DM3参数及编码与音频局部候选的独立复验入口 | R:code:docs/contracts/c11-audio/check_audio_candidates.py,code:docs/contracts/c11-audio/check_parameter_profile.py | A:24项参数及22项编码与75项音频检查 | S:177参数与184旧用途分开；独立报告不在顶层十份清单，候选和离线通过不授运行资格
+dm3-legacy-catalog.json[SH7S]: F:保存固定旧提交184条DM3参数场景及meter的原行和解析字段 | R:code:docs/rebirth-c11-audio-design.md,code:THIRD_PARTY_NOTICES.md | A:legacy-audio-inventory/1 | S:source_blob摘要绑定Git原字节；binary非boolean，default保留词法；仅来源清单而非批准目录或厂商验证
+check_codec_plan.py[TH7S]: F:只读核验DM3编码计划结构和来源覆盖及类型秘密分组 | R:code:docs/contracts/c11-audio/dm3-codec-cases.json,code:docs/contracts/c11-audio/dm3-codec-plan.schema.json | A:plan_errors与22例检查 | S:119及名称集合绑定固定旧来源摘要，不套现场序号；不执行RCP解析器或设备测试
+dm3-codec-cases.json[TH6T]: F:保存编码审阅计划覆盖分组和秘密投影的22个人工正反例 | R:code:docs/contracts/c11-audio/check_codec_plan.py | A:DMC01至DMC22 | S:验证对象是设计资料而非线编码；合成秘密标记不是实际凭据
+dm3-codec-plan.json[FH7T]: F:将旧184项DM3来源分入八组编码与秘密审阅候选 | R:code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:dm3-codec-review/1 | S:所有组runtime_approved为false；原整数单位尚未合格，旧index不能作为新会话参数身份
+dm3-codec-plan.schema.json[FH7T]: F:定义DM3编码审阅计划与分组的封闭局部结构 | R:code:docs/contracts/c11-audio/check_codec_plan.py | A:JSON Schema2020-12 Group | S:候选状态固定且禁止运行批准；完整覆盖及跨组秘密约束由检查器验证，不是完整参数资格Schema
+audio-candidate-cases.json[TH7L]: F:提供参数权限、VB关联和WING计划的75组合成正反预期 | R:code:docs/contracts/c11-audio/check_audio_candidates.py | A:AC01至AC75 | S:可信来源和中间态批准由夹具假定；重算摘要不消除错配，预期独立于判定器；不是184项资格全集
+audio-candidate-report.json[SQ5L]: F:记录75项音频合成检查和四份输入字节摘要 | R:code:docs/contracts/c11-audio/check_audio_candidates.py | A:局部结构与关联参考报告 | S:运行和设备执行数为零；不绑定设计文档或证明全部资格，顶层十份报告检查不覆盖本文件
+audio-candidate.schema.json[FH7L]: F:定义RCP参数权限及VB观察与WING计划的封闭局部候选格式 | R:code:docs/rebirth-c11-audio-design.md | A:设计包络与五种模型 | S:包络禁止运行批准；时钟摘要保留sha256前缀而局部Ref用裸hex，不可直接混入旧SDK；数值和关联另验
+check_audio_candidates.py[TH7M]: F:校验音频局部结构及来源时钟与计划关联并绑定报告输入 | R:code:docs/contracts/c11-audio/audio-candidate-cases.json,code:docs/contracts/c11-audio/audio-candidate.schema.json | A:run与check_bindings及命令行 | S:仅合成信任前提，不能证明采样资格或高水位耐久；报告检查不重跑用例，WING源并集不证明隐式足迹完整
+check_parameter_profile.py[TH7S]: F:验证DM3参数候选形状及固定兼容差异并写输入绑定报告 | R:code:docs/contracts/c11-audio/dm3-parameter-profile.json,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:errors与compatibility及24项检查 | S:仅随仓JSON，无网络设备；布尔不当整数，运行批准必须false。只校验目录数据，不解释设备报文或证明权限
+dm3-parameter-profile.json[FH7L]: F:交付DM3 RCP的177项参数候选定义 | R:code:docs/contracts/c11-audio/check_parameter_profile.py | A:dm3-parameter-profile/1与连续目录 | S:静态16r和161rw不授会话写权限，候选禁止运行批准；索引会随profile改变，不能替代地址和版本身份
+parameter-profile-report.json[SQ5S]: F:保存24项参数目录检查与兼容差异及三输入摘要 | R:code:docs/contracts/c11-audio/check_parameter_profile.py | A:结构反例和固定兼容结果 | S:保留174旧地址且154序号变化；设备测试为零，摘要不证明运行资格或当前硬件状态
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/toolchain/===
+metadata-observation.json[SV6L]: F:保存18个固定npm版本及age和Go官方元数据观察 | R:code:docs/rebirth-toolchain-lock-design.md | A:候选兼容声明与证据层次 | S:响应hash和registry integrity声明不证明下载字节；未解析完整依赖或安装构建
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df01-source/===
+README.md[SN6T]: F:提供源提取语义注册及导出和主体候选的独立复验入口 | R:code:docs/contracts/df01-source/AUTHORIZATION.md | A:候选资料与五份独立报告 | S:来源重绑先核34文件字节一致，不改旧接受集；未切SDK权威，真实业务和授权用例仍含计划项，许可追溯非独立发行齐备
+assemble_candidate.py[XN8M]: F:从完整HTTP骨架及唯一模型重组并核对六份历史机器文件 | R:code:docs/contracts/df01-source/source/source-manifest.json | A:load_source、assemble与verify_outputs | S:只适用受检固定结构，不是通用Schema转换器；本地ref封闭且不联网；输出目录必须新建，历史摘要不能随候选变异重算
+check_candidate.py[TN8S]: F:校验固定Git来源逐节点字节等价及独立副本双生成和变异拒绝 | R:code:docs/contracts/df01-source/assemble_candidate.py,code:docs/contracts/draft4/validate_contracts.py | A:run、--report与--check-report及--staged | S:双副本仅Python路径隔离而非OS隔离；232例仍用历史验证器，报告绑定不重跑检查，不证明TS或平台运行
+extract_candidate.py[XN7T]: F:一次性拆出历史六文件的模型与完整HTTP骨架和投影配方 | R:code:docs/contracts/df01-source/assemble_candidate.py | A:extract及来源提交参数 | S:先在内存核对原字节再写新目录；commit参数仅声明，真实性由检查器回读Git证明
+extraction-report.json[SQ5M]: F:记录固定来源六文件等价和双生成及变异检查结果 | R:code:docs/contracts/df01-source/check_candidate.py | A:逐节点比较与45项输入绑定 | S:来源定位统一后重新执行，设备与产品运行均为零；历史用例依赖未迁出，报告不批准权威切换
+SEMANTIC_TRACE.md[SN8T]: F:解释固定历史语义覆盖及缺口和模型路径与导出推荐 | R:code:docs/contracts/df01-source/SEMANTIC_REGISTRY.md,code:docs/contracts/df01-source/semantic-trace-report.json | A:232例分层与SP01至SP04 | S:13入口非原子规则全集；公开闭包不授权限或Payload安全，缺口须另版修复，DP13仅规范化来源定位
+audit_semantic_trace.py[TN8M]: F:追踪历史函数进入并复现语义缺口与计算HTTP和IPC具名引用闭包 | R:code:docs/contracts/df01-source/semantic-trace-map.json,code:docs/contracts/df01-source/digest-projection-map.json | A:run、graph_observation与报告字节检查 | S:先执行完整历史验证再独立追踪；输入报告及其源码与固定提交对账；四探针不改旧预期，投影只查定位，函数进入非分支覆盖
+digest-projection-map.json[FN7M]: F:登记十二摘要与一个身份规范化的源符号字段排序和缺省投影 | R:code:docs/contracts/df01-source/audit_semantic_trace.py | A:DP01至DP13与夹具定位 | S:DP13引用只证明canonical步骤；递归删proof缺陷保持，相关夹具非独立投影反例；未重算来源摘要另列
+semantic-trace-map.json[FN7M]: F:固定十三历史判定入口八个未执行入口及计数与缺口探针预期 | R:code:docs/contracts/df01-source/audit_semantic_trace.py | A:SR01至SR13及SP01至SP04和引用图预期 | S:已知异常和误接受作为历史预期保留，不构成修复或运行批准；覆盖单位是函数进入
+semantic-trace-report.json[SQ5L]: F:保存逐例函数进入及缺口复现和完整模型闭包与输入摘要 | R:code:docs/contracts/df01-source/audit_semantic_trace.py | A:232例观察四探针及37项输入绑定 | S:通过不证明缺口已修或投影算法执行；产品运行数零，公开模型集合非最终exports批准
+SEMANTIC_REGISTRY.md[SN8T]: F:设计语义规则路径选择与开放边界及可信上下文和四类结果 | R:code:docs/contracts/df01-source/semantic-registry.schema.json | A:注册字段、条件选择及结果约束 | S:不适用实例不伪造valid；路径元数据不证明函数体安全，边界非全根覆盖；业务向量与实现均为计划，故障不授权重发
+check_semantic_registry.py[TN8M]: F:离线编译有限语义selector并核验注册关联和结果及报告字节绑定 | R:code:docs/contracts/df01-source/semantic-registry-cases.json,code:docs/contracts/df01-source/semantic-registry.schema.json | A:select、registry_errors、result_errors与命令行 | S:仅列明根与Schema边界双重保护，不执行业务规则或分支求值；路径预期独立，check-report不重跑
+semantic-registry-cases.json[TN7L]: F:保存四条注册示例及78项结构关联和选择器结果的人工预期 | R:code:docs/contracts/df01-source/check_semantic_registry.py | A:47注册、23结果、8合成路径 | S:八个业务向量仅计划；provider声明非真实取证，分支路径对照非运行求值
+semantic-registry-report.json[SQ5L]: F:记录78项语义注册元数据检查与编译路径及五输入摘要 | R:code:docs/contracts/df01-source/check_semantic_registry.py | A:逐例错误和路径观察 | S:产品规则及运行执行数零；不证明SP修复或完整SDK，绑定检查不重跑
+semantic-registry.schema.json[FN8L]: F:定义设计专用规则注册及可信提供者计划和四类结果封闭结构 | R:code:docs/contracts/df01-source/SEMANTIC_REGISTRY.md | A:Registry、Selector与Result | S:运行批准固定false，实现及业务向量固定planned；关联和源路径另验，不是公共API或生产规则全集
+EXPORTS.md[SN8T]: F:设计八个SDK入口的操作模型划分和浏览器消费边界 | R:code:docs/contracts/df01-source/exports-candidate.json,code:docs/contracts/df01-source/check_exports.py | A:完整导出候选与冻结门槛 | S:用途不授主体权限；人员WS与面板委托不混用。闭包含开放Payload，包exports不证明安全隔离；未生成SDK
+check_exports.py[TN8M]: F:从HTTP与Schema核验完整导出清单及引用闭包和独立探针 | R:code:docs/contracts/df01-source/exports-cases.json,code:docs/contracts/df01-source/semantic-trace-report.json | A:inventory、run与报告绑定检查 | S:只走Schema位置并处理参数覆盖及WS根；POLICY为测试预期非生产第二源；不联网、不生成SDK，绑定检查不重跑
+exports-candidate.json[FN8L]: F:逐项登记71操作和227模型的源身份安全声明与八入口闭包 | R:code:docs/contracts/df01-source/EXPORTS.md,code:docs/contracts/df01-source/source/public.schema.json | A:sdk-exports候选清单 | S:approved及权威切换为false；两个孤立类型保留不导出，IPC加前缀；消费环境不等于服务器主体授权
+exports-cases.json[TN7L]: F:提供导出清单变异及Schema和OpenAPI引用行为的46个预期 | R:code:docs/contracts/df01-source/check_exports.py | A:24变异、10Schema与12操作探针 | S:实例数据中的ref不是引用；同名参数按位置覆盖；仅资料提取检查，不证明真实浏览器导入或权限
+exports-report.json[SQ5L]: F:保存完整导出对账和46项检查结果及九输入摘要 | R:code:docs/contracts/df01-source/check_exports.py | A:入口计数模型闭包及逐例结果 | S:SDK构建浏览器导入和鉴权运行均为零；静态闭包不证明开放Payload安全或批准用途
+AUTHORIZATION.md[SI9S]: F:设计逐操作主体用途与对象守卫并列身份生命周期归并要求 | R:code:docs/contracts/df01-source/authorization-candidate.json,code:docs/rebirth-df06-internal-trust-design.md | A:九认证档案、操作矩阵与十八运行轨迹 | S:service手动收紧及服务准备权为新推荐，非旧批准；注销不借管理员撤权。WS订阅owner依赖C05，升级后未关联不交付；元数据不执行鉴权
+authorization-candidate.json[FI8L]: F:登记71操作的105主体分支与43具名用途守卫及源绑定 | R:code:docs/contracts/df01-source/AUTHORIZATION.md | A:sdk-authorization候选矩阵 | S:批准权威及运行标志均false；guard是规则要求非事实，service准备不批准发布布防，provider发布与定义发布分开
+authorization-cases.json[TI7L]: F:保存授权矩阵结构来源和主体用途的36个人工变异预期 | R:code:docs/contracts/df01-source/check_authorization.py | A:AP01至AP36 | S:检查对象是元数据，非真实身份；保留human撤grant且拒绝假service会话，不将用例通过视为策略获准
+authorization-report.json[SQ5M]: F:记录逐操作主体矩阵36项检查与九输入字节摘要 | R:code:docs/contracts/df01-source/check_authorization.py | A:操作分支守卫计数及逐例结果 | S:真实鉴权与设备执行为零，approved为false；报告绑定不证明守卫事实或并发保护
+authorization.schema.json[FI8L]: F:定义逐操作授权候选的封闭结构与档案守卫词表 | R:code:docs/contracts/df01-source/AUTHORIZATION.md | A:JSON Schema2020-12授权元数据格式 | S:固定三个批准标志为false；枚举不证明角色来源，源覆盖和分支最低要求由独立检查核验
+check_authorization.py[TI8M]: F:核验授权矩阵源覆盖与认证主体守卫并检查人工变异和报告绑定 | R:code:docs/contracts/df01-source/authorization.schema.json,code:docs/contracts/df01-source/authorization-cases.json | A:source_operations、policy_errors与命令行 | S:最低策略为审阅预期非生产第二源；不解释guard文本或获取权威事实，不实现鉴权；check-report仅比原字节
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df01-source/source/===
+fixtures.json[TN6L]: F:保留draft4公共模型及IPC和关联检查的人工正反样本 | R:code:docs/contracts/df01-source/source/source-manifest.json | A:160公共例、24IPC例及48关联例 | S:原预期不随提取修订；可信授权和时钟上下文为合成前提，不证明实际采样
+ipc.schema.json[FN8L]: F:保留IPC0.3全部19类消息及运行域与时间守卫结构 | R:code:docs/contracts/df01-source/source/schema-registry.json | A:消息oneOf与42个defs | S:原$id和公共外部ref保持不变；结构合法不证明屏障或耐久成立
+public.schema.json[FN8L]: F:保存候选唯一公共模型源以复现draft4身份命令和运行域契约 | R:code:docs/contracts/df01-source/source/schema-registry.json | A:185个JSON Schema模型 | S:等价提取保留旧词法缺口；components投影不批准公开导出，运行域与时间证据关联仍需语义检查
+route-projection.json[FN6M]: F:定义52条历史route的分组定位及主成功状态和安全类别配方 | R:code:docs/contracts/df01-source/assemble_candidate.py | A:五字段历史投影 | S:其余四字段取HTTP骨架；bootstrap和login同为空security但类别不同，WS不在此表
+schema-registry.json[FN7S]: F:绑定两Schema本地身份及185模型的历史components投影次序 | R:code:docs/contracts/df01-source/assemble_candidate.py | A:ids与legacy_openapi_component_order | S:公开导出批准固定false；此表不承担未来public/internal可见性政策
+source-manifest.json[FN7T]: F:绑定固定来源提交及七输入六输出摘要和未迁出内容 | R:code:docs/contracts/df01-source/check_candidate.py | A:候选用途与原字节清单 | S:来源为595a6b7且自身由外层报告绑定；摘要不是签名，许可路径仅追溯，权威切换固定false
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df01-source/source/http/===
+controller.operations.json[FN8L]: F:保存Controller完整HTTP与WS骨架作为候选操作元数据源 | R:code:docs/contracts/df01-source/source/public.schema.json | A:38HTTP操作与1WS升级 | S:不含第二份schemas；保留Origin和cookie组合及mTLS内部查询，WS扩展字符串引用不能由routes替代
+seamer.operations.json[FN8L]: F:保存Seamer规则运行恢复及身份时间操作的完整HTTP与WS骨架 | R:code:docs/contracts/df01-source/source/public.schema.json | A:31HTTP操作与1WS升级 | S:模型由唯一公共源投影；响应headers和不同错误集合须原样保留，恢复受理不表示设备效果
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c05-subscription/===
+README.md[SM6T]: F:说明服务订阅局部格式和参考判定的独立复验入口 | R:code:docs/contracts/c05-subscription/check_candidates.py | A:候选材料范围与报告绑定 | S:可信前提人工提供；新attempt快照判定不执行幂等并发或真实服务，报告不在旧十份清单内
+cases.json[TM7L]: F:保存服务订阅七模型及结构附着和ACK关联的人工预期 | R:code:docs/contracts/c05-subscription/check_candidates.py | A:27结构例与25附着及20确认例 | S:peer权限和持久状态为合成前提，摘要仅占位比较；不包含真实TLS或attempt幂等和并发消费证明
+check_candidates.py[TM8M]: F:核验服务订阅局部结构和附着ACK快照判定并绑定报告输入 | R:code:docs/contracts/c05-subscription/cases.json,code:docs/contracts/c05-subscription/service-subscription.schema.json | A:attach_decision、ack_decision与报告检查 | S:人工身份前提不取真实权威；不分配generation或执行CAS和网络，摘要不计算JCS；check-report仅核对六输入字节不重跑
+reference-report.json[SQ5L]: F:记录72项服务订阅回归及六输入摘要 | R:code:docs/contracts/c05-subscription/check_candidates.py | A:局部结构与关联结果 | S:真实服务设备和JCS计算为零；不覆盖新增保护协议或完整快照
+service-subscription.schema.json[FM8L]: F:定义服务owner视图与附着确认同步失步七种局部候选格式 | R:code:docs/rebirth-c05-event-sync-design.md | A:JSON Schema2020-12与七分支oneOf | S:拒绝额外字段且计数是严格十进制串；合法owner不授身份，完整data和manifest尚缺，不替代公共draft4或完整SDK
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c09-panel/===
+README.md[SE6T]: F:提供面板局部资料及通道归并候选的独立复验入口 | R:code:docs/contracts/c09-panel/CHANNEL_V02.md,code:docs/contracts/c09-panel/BUNDLE.md | A:六批资料与报告入口 | S:旧五批与168项合并检查分别记账，均不在旧十份报告内；合并格式不证明真实运行
+cases.json[TE7L]: F:保存面板策略来源错配和用途越界及伪批准的28项人工预期 | R:code:docs/contracts/c09-panel/check_policy.py | A:PM01至PM28元数据变异 | S:包含全部禁止的功能退化反例；不执行当前授权或可信确认，预期不由判定器生成
+check_policy.py[TE8S]: F:核验面板策略对HTTP源和主体权限的覆盖及手工变异并绑定报告 | R:code:docs/contracts/c09-panel/policy.schema.json,code:docs/contracts/df01-source/authorization-candidate.json | A:source_operations、policy_errors与报告检查 | S:保留集合是独立审阅预期非生产第二源；不解释guard或执行浏览器代理。check-report只比九输入字节，不重跑用例
+operation-policy.json[FE8L]: F:逐项登记现有71操作的六类面板用途及方法权限源位置 | R:code:docs/rebirth-c09-extension-design.md,code:docs/contracts/df01-source/authorization-candidate.json | A:panel-operation-policy候选清单 | S:三个批准标志均false；35方法含8个仅提确认intent，禁止原响应透传不等于过滤器已实现；新会话接口不在旧操作覆盖内
+policy.schema.json[FE7S]: F:定义面板策略候选的封闭结构及六类用途和源绑定格式 | R:code:docs/contracts/c09-panel/check_policy.py | A:JSON Schema2020-12策略元数据 | S:批准与原响应透传固定false；合法结构不证明权限，精确操作覆盖及方法对应由检查器另验
+reference-report.json[SQ5M]: F:记录71操作对账和28项面板策略检查及九输入摘要 | R:code:docs/contracts/c09-panel/check_policy.py | A:元数据结果与字节绑定 | S:浏览器真实鉴权及设备执行均零；设计文稿绑定不证明新增安装或启动接口运行
+CHANNEL.md[SE6T]: F:说明旧面板会话信封参考检查及后续通道归并入口 | R:code:docs/contracts/c09-panel/check_channel.py,code:docs/contracts/c09-panel/CHANNEL_V02.md | A:旧0.1六输入报告 | S:旧98例用三个方法的合成参数，未迁入0.2；零已知受理不等于未发生，浏览器运行未验
+channel-cases.json[TE7L]: F:保存面板消息结构握手请求确认及有限原子步的98项人工预期 | R:code:docs/contracts/c09-panel/check_channel.py | A:40结构、10握手、17请求、23预览及8轨迹 | S:权限窗口时钟及Schema批准均为合成前提；三个方法名使用非产品参数，提交未知的计数只表示已知回执
+channel-report.json[SQ5L]: F:记录旧98项面板会话参考检查及六输入摘要 | R:code:docs/contracts/c09-panel/check_channel.py | A:旧信封逐例结果与绑定 | S:批准为false，浏览器数据库设备执行为零；文稿更新不证明安装0.2或监督启动运行
+channel.schema.json[FE8L]: F:定义面板窗口端口信封及服务权威会话委托预览和Guard候选 | R:code:docs/rebirth-c09-extension-design.md | A:panel-channel局部格式唯一源 | S:根仅接受消息，接收须另按方向选择；内部权威对象不下发面板。TypedValue须当前Registry二次验证，Origin字段不证明规范来源；不是35方法全集或生产IPC
+check_channel.py[TE8M]: F:核验面板合成握手调用和预览关联及有限消费轨迹并绑定报告 | R:code:docs/contracts/c09-panel/channel-cases.json,code:docs/contracts/c09-panel/channel.schema.json,code:docs/contracts/c09-panel/operation-policy.json | A:handshake_errors、request_decision、preview_decision与报告检查 | S:实际计算双JCS摘要但窗口授权和时限为人工上下文；重算摘要不消除身份错配。轨迹假设原子步且unknown不推断实际受理，未实现浏览器和SQLite；check-report只比六输入
+METHODS.md[SE9S]: F:定义35方法字段归属及21结果白名单和展示句柄事务候选 | R:code:docs/contracts/c09-panel/method-input.schema.json,code:docs/contracts/c09-panel/CHANNEL_V02.md | A:逐方法字段和PMT01至PMT12 | S:句柄不授执行权，确认与恢复一次消费同事务；隐藏未决仍阻ready，定义保存取完整value。输入借旧类型保留词法缺口，后续通道联接不等于字段权威和运行完成
+check_methods.py[TE8M]: F:对账35方法HTTP字段与输入闭包并验证手写样本和报告字节绑定 | R:code:docs/contracts/c09-panel/method-bindings.json,code:docs/contracts/c09-panel/method-cases.json,code:docs/contracts/c09-panel/method-input.schema.json | A:metadata_errors与run及命令行 | S:本地Registry不联网；开放参数和句柄只查结构，不取权威或投影结果。VIEW映射为审阅预期非生产第二源，check-report只比九输入不重跑
+method-bindings.json[FE8L]: F:逐项登记35方法与96个HTTP字段的来源归属和结果视图名 | R:code:docs/contracts/c09-panel/METHODS.md,code:docs/contracts/c09-panel/operation-policy.json | A:panel-method-inputs候选映射 | S:三批准标志固定false；身份及预览字段由宿主绑定不交面板，结果名不等于投影实现或完整结果Schema
+method-cases.json[TE7L]: F:提供35方法正例及25输入和14字段映射变异的人工预期 | R:code:docs/contracts/c09-panel/check_methods.py | A:方法fixtures与MIF及MIM用例 | S:业务参数名token可结构合法，不采用递归黑名单；scheduled和句柄正例不证明授权，样本不执行动态能力二次校验
+method-input.schema.json[FE8L]: F:定义35个具名面板输入对象及离线方法分派联合结构 | R:code:docs/contracts/df01-source/source/public.schema.json,code:docs/contracts/c09-panel/METHODS.md | A:35个defs与method和arguments包络 | S:根包络不是新port消息；借旧领域类型保留词法缺口，动态数据需二次校验。预览原引用禁止但句柄合法不授权限；未定义结果模型
+method-report.json[SQ5L]: F:记录74项方法输入检查及96字段对账和九输入摘要 | R:code:docs/contracts/c09-panel/check_methods.py | A:输入结构与元数据记录 | S:不执行结果投影或权威绑定，浏览器数据库设备均未运行；文稿链接0.2不增加本报告覆盖
+RESULTS.md[SE8T]: F:说明21结果候选源字段映射动态绑定及通道联接边界 | R:code:docs/contracts/c09-panel/result.schema.json,code:docs/contracts/c09-panel/CHANNEL_V02.md | A:结果规范及六输入报告 | S:本117例仍用原根Schema夹具，后续0.2独立验证Bundle具名入口；完整定义保存取value，正常在途可ready，合法字符串不证脱敏，权威过滤未实现
+check_results.py[TE8M]: F:核验面板结果结构和有限可信上下文关联并绑定报告输入 | R:code:docs/contracts/c09-panel/result.schema.json,code:docs/contracts/c09-panel/result-cases.json,code:docs/contracts/c09-panel/method-bindings.json | A:decision与dynamic_errors及命令行 | S:实际计算批准Schema的JCS摘要但权威为夹具；不实现源过滤或脱敏，完整定义只给合成规则Schema。ready允许正常在途；check-report仅比六输入不重跑
+result-cases.json[TE7L]: F:提供21结果夹具及82个结构上下文和限制反证的人工预期 | R:code:docs/contracts/c09-panel/check_results.py | A:35方法正例与PR001至PR082 | S:隐藏目标及权限快照为人工前提；未脱敏合成字符串合法是限制反证，非生产许可；正常在途与资源未决分开
+result-report.json[SQ5L]: F:记录35方法及21结果的117项参考检查和六输入摘要 | R:code:docs/contracts/c09-panel/check_results.py | A:原结果结构和合成关联记录 | S:批准为false，真实过滤权威浏览器数据库设备未运行；保持根Schema夹具，不含0.2具名入口联接
+result.schema.json[FE8L]: F:定义21类面板结果及35方法分派和封闭嵌套格式 | R:code:docs/contracts/c09-panel/RESULTS.md,code:docs/contracts/df01-source/source/public.schema.json | A:具名View与结果离线包络 | S:根不是新线上消息；QualifiedValue及QualifiedDefinition必须二次校验，后者保留旧领域结构。静态封闭不能阻止合法字符串泄露，状态和权威关联另验
+BUNDLE.md[SE8T]: F:定义面板SchemaBundle批准内容与本地闭包和交付失效规则 | R:code:docs/contracts/c09-panel/bundle.schema.json,code:docs/contracts/c09-panel/CHANNEL_V02.md | A:Manifest及四种局部消息与容量候选 | S:旧Active无附件，后续0.2以ActivationRef绑定；缓存不授权限，ready不授执行。允许子实例递归，合法文本不证明脱敏；本109例不覆盖完整通道
+bundle-cases.json[TE7L]: F:提供Bundle内容批准引用和投递失效的109项人工正反预期 | R:code:docs/contracts/c09-panel/check_bundle.py | A:73内容例14信封例22轨迹 | S:权威为人工前提，重算摘要不自动批准；跨块UTF8及子实例递归正例防误拒，合法敏感文本反证不授泄露
+bundle-report.json[SQ5L]: F:记录109项Bundle参考结果工具版本及四输入摘要 | R:code:docs/contracts/c09-panel/check_bundle.py | A:内容与信封及轨迹记录 | S:运行批准为false，浏览器权威worker及设备执行为零；文稿链接0.2不扩大本报告覆盖
+bundle.schema.json[FE8L]: F:定义Bundle清单资源导出及四种投递消息的封闭候选结构 | R:code:docs/contracts/c09-panel/BUNDLE.md | A:Manifest与Offer和Chunk及Ready和Revoke | S:仅channel0.2局部消息，不能混投旧0.1；摘要范围闭包与批准另验。SchemaRef的definition选根defs，静态合法不授运行或执行权
+check_bundle.py[TE8M]: F:核验合成Bundle摘要本地引用图批准及有限投递轨迹并绑定报告 | R:code:docs/contracts/c09-panel/bundle-cases.json,code:docs/contracts/c09-panel/bundle.schema.json | A:profile_errors与bundle_errors及delivery和命令行 | S:只走Schema位置且不联网；同实例环拒绝但子实例递归保留。权威为人工夹具，消息容量只计规范字节，不执行任意模式或实例验证；报告检查不重跑
+CHANNEL_V02.md[SE9T]: F:规定通道激活方法联接及只读投影与失效流控候选 | R:code:docs/contracts/c09-panel/build_channel_v02.py,code:docs/contracts/c09-panel/check_channel_v02.py | A:channel0.2及19帧和35方法 | S:单会话只激活一次，激活ID不扩幂等主键；预检恢复预览不可订阅。退役释放窗口不推进ACK，墓碑禁止复活；Definition仅固定合成规则，HTTP和IPC及DDL仍缺，运行未验
+build_channel_v02.py[XE8S]: F:从局部契约生成完整通道及方法Registry的0.2候选 | R:code:docs/contracts/c09-panel/channel.schema.json,code:docs/contracts/c09-panel/bundle.schema.json,code:docs/contracts/c09-panel/method-bindings.json | A:build与生成及check | S:只替换确切协议常量并允许点号Id；方法结果引用原资源而不复制，Bundle帧保留外部ref。Registry摘要覆盖完整方法集，预检及恢复预览不订阅，不切SDK权威
+channel-v02-cases.json[TE7L]: F:保存完整通道方法联接激活和订阅的168项人工预期 | R:code:docs/contracts/c09-panel/check_channel_v02.py | A:145帧上下文例及23订阅轨迹 | S:含35方法输入结果70正例；权威为人工前提，固定规则不代表完整DSL，退役释放槽不证明消费
+channel-v02-report.json[SQ5L]: F:记录168项通道归并参考结果及十五输入字节摘要 | R:code:docs/contracts/c09-panel/check_channel_v02.py | A:逐例与订阅轨迹结果 | S:运行批准为false，浏览器权威SQLite及设备执行为零；合并引用不证明完整语义或实际字段来源
+channel-v02.schema.json[FE8L]: F:声明19种窗口端口消息及激活方法联接和内部会话候选 | R:code:docs/contracts/c09-panel/build_channel_v02.py,code:docs/contracts/c09-panel/method-registry-v02.json | A:channel0.2及具名模型 | S:内部模型不在根帧联合；accepted具名结果非设备完成，其他状态结果null。方法Schema引用精确摘要，动态值另验；旧0.1不改，服务事务与权限未实现
+check_channel_v02.py[TE8M]: F:验证生成字节及方法静动态Schema和激活与订阅模型并绑定报告 | R:code:docs/contracts/c09-panel/channel-v02-cases.json,code:docs/contracts/c09-panel/check_bundle.py,code:docs/contracts/c09-panel/build_channel_v02.py | A:frame_errors与check_dynamic及subscription_trace | S:本地Registry无网络取源，权威与目录仍为夹具；退役清窗口不改acked，传输ACK不释放投影窗口。只用固定Definition，实际线字节和完整语义未验；报告检查不重跑
+method-registry-v02.json[FE8L]: F:绑定35方法静态输入结果摘要及三种订阅用途 | R:code:docs/contracts/c09-panel/build_channel_v02.py,code:docs/contracts/c09-panel/channel-v02.schema.json | A:完整Registry及revision和digest | S:批准及权威切换固定false，摘要覆盖完整排序列表；port子集不重算为Registry，panel_read不自动允许订阅，完整文档摘要非授权
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c05-snapshot/===
+README.md[SM6T]: F:说明十二类快照投影及分页增量候选的复验入口和证据范围 | R:code:docs/contracts/c05-snapshot/check_snapshot.py | A:候选格式与五输入报告说明 | S:可信上下文人工提供；必需引用不自动推导闭包，来源年龄未验证；独立报告不在旧十份清单内
+cases.json[TM7L]: F:保存十二类投影及快照分页和增量的107项人工正反预期 | R:code:docs/contracts/c05-snapshot/check_snapshot.py | A:32结构、34集合、15重算摘要与26增量例 | S:批准Schema和身份等为合成前提；重算公开摘要后仍须拒绝领域错配，预期不由判定器生成
+check_snapshot.py[TM8M]: F:离线核验类型化快照与分页增量摘要及有限关联并绑定报告 | R:code:docs/contracts/c05-snapshot/snapshot.schema.json,code:docs/contracts/c05-snapshot/cases.json | A:packet_errors、data_errors与报告检查 | S:实际计算JCS但授权和时限为人工前提；重复页先验当代绑定再归并，实际字节另限。给定引用仅核对本地身份与修订，不推导完整闭包或验证来源年龄；check-report只比五输入
+reference-report.json[SQ5L]: F:记录107项快照投影回归及五输入摘要 | R:code:docs/contracts/c05-snapshot/check_snapshot.py | A:结构集合与增量结果 | S:保护协议文稿绑定不增加快照覆盖；服务网络设备及真实权威未验
+snapshot.schema.json[FM8L]: F:定义十二类具名状态投影及快照manifest分页和三类增量载荷 | R:code:docs/rebirth-c05-event-sync-design.md | A:snapshot-projection候选唯一格式源 | S:静态对象封闭，QualifiedValue仍需批准Schema二次校验；固定内容不含连接代或反向manifest摘要。引用kind和权威及来源年龄须另验，结构合法不等于完整协议或运行批准
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c09-panel-service/===
+HTTP_STORAGE.md[SE9T]: F:设计面板十四接口与管理幂等及确认关闭的同库事务 | R:code:docs/contracts/c09-panel-service/build_contracts.py,code:docs/contracts/c09-panel-service/storage-probes.sql | A:PS1至PS6及PST01至PST08 | S:确认限八方法，受理引用固定而投影可失效；续租不延旧预览，关闭保留在途和全部目标世代。191例仅离线候选，真实权限并发及耐久未验，IPC与完整DDL仍缺
+build_contracts.py[XE8M]: F:生成面板服务模型及自包含十四接口OpenAPI候选 | R:code:docs/contracts/c09-panel/method-registry-v02.json,code:docs/contracts/c09-panel/channel-v02.schema.json | A:build与check | S:只投影固定本地引用闭包，const及enum数据不改写；human和CSRF同时要求，确认仅八方法。生成物未切SDK权威，不是通用转换器
+check_contracts.py[TE8M]: F:验证面板HTTP结构与投影接受集及合成关联和SQL探针并绑定报告 | R:code:docs/contracts/c09-panel-service/build_contracts.py,code:docs/contracts/c09-panel-service/check_storage.py | A:run与check-report及staged | S:本地Registry不联网，35方法只验静态Schema；权威仍为人工前提。报告绑定17输入不重跑，内存SQL不证明运行或掉电
+check_storage.py[TD8S]: F:在固定内存SQLite执行确认取消关闭及续租幂等的局部事务实验 | R:code:docs/contracts/c09-panel-service/storage-probes.sql,code:docs/contracts/c09-panel-service/storage-cases.json | A:固定步骤及快照对账 | S:不接受数据库路径；故障为主动异常，提交后丢响应仅查原记录。目标集合人工给定，小整数tick非完整U20，串行步骤不证明真实竞争或耐久
+reference-report.json[SQ5L]: F:记录191项面板服务离线检查及工具版本和17份输入摘要 | R:code:docs/contracts/c09-panel-service/check_contracts.py | A:结构投影关联元数据与SQL结果 | S:运行批准为false；真实浏览器权限服务设备及磁盘崩溃均未验，内存探针不是完整DDL
+service.openapi.json[SN8L]: F:声明两authority共用的面板十四接口和完整内联模型 | R:code:docs/contracts/c09-panel-service/build_contracts.py | A:OpenAPI3.1.1与会话请求确认关闭查询 | S:POST同时要求human与CSRF，全部响应no-store；202非设备完成，错误不授权重发。内联模型是生成投影，未并入旧71操作
+service.schema.json[FE8L]: F:定义面板服务会话管理与调用确认回执的封闭候选模型 | R:code:docs/contracts/c09-panel-service/build_contracts.py,code:docs/contracts/c09-panel/channel-v02.schema.json | A:panel-service候选defs | S:请求绑定35方法而确认仅八方法；accepted可无当前投影但须受理引用，非accepted无结果。结构不证明权限或事务，动态数据另验
+storage-cases.json[TD7T]: F:保存二十三条SQL约束与故障顺序的独立人工预期 | R:code:docs/contracts/c09-panel-service/check_storage.py | A:PSQ01至PSQ23 | S:双顺序为串行实验，提交后响应丢失不自动重发；预期不由待测步骤推导，不覆盖真实平台耐久
+storage-probes.sql[TD7T]: F:定义面板身份归属与受理预览和关闭账本的局部SQL约束 | R:code:docs/contracts/c09-panel-service/check_storage.py | A:STRICT表复合FK唯一键与终态触发器 | S:延迟FK核对accepted与consumed归属，所有身份非空且删除受限；不是生产迁移，权限目标捕获和完整审计由事务设计另约束
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c09-panel-ipc/===
+IPC_GUARD.md[SE9T]: F:设计面板来源绑定与精确撤销和完整世代屏障覆盖 | R:code:docs/contracts/c09-panel-ipc/build_contracts.py,code:docs/contracts/c09-panel-service/HTTP_STORAGE.md | A:候选IPC0.4及PIF01至PIF08 | S:挂载关闭永久拒绝，委托下界用小于；续租不改旧绑定，非面板来源不能由客户端选择。同worker重连旧许可仍未知，ACK须authority落库；102例非运行，完整DDL与公共归并仍缺
+binding.schema.json[FE8L]: F:声明面板执行绑定与两种selector及扩展Guard和Permit模型 | R:code:docs/contracts/c09-panel-ipc/build_contracts.py | A:六个候选defs | S:panel要求human和manual及非空绑定，non_panel必须null；旧六类selector保留。结构不证明受理来源或权限，摘要与关联另验
+build_cases.py[TE7S]: F:生成面板IPC的人工身份账本及19帧和正反轨迹资料 | R:code:docs/contracts/df01-source/source/fixtures.json,code:docs/contracts/c09-panel-ipc/cases.json | A:PG与PB和PS及PT预期 | S:原19正例只升级结构；预期不调用判定器，生成临时对象可能共享引用，变异前须重读JSON隔离权威快照
+build_contracts.py[XE8S]: F:从固定旧源生成面板绑定模型和完整19帧IPC候选 | R:code:docs/contracts/df01-source/source/ipc.schema.json,code:docs/contracts/c09-panel/channel-v02.schema.json | A:build与check | S:新版本要求两项面板特性，IntentRef新增完整发送世代；只替换具名引用及版本常量，旧源不改，未迁移完整公共SDK
+cases.json[TE7L]: F:保存面板Guard与精确selector及覆盖和故障顺序的合成输入 | R:code:docs/contracts/c09-panel-ipc/build_cases.py,code:docs/contracts/c09-panel-ipc/check_contracts.py | A:19帧与25守卫14屏障8选择7轨迹 | S:账本批准及当前世代为人工前提，不能证明实际权威；重算摘要后的错配仍预期拒绝
+check_contracts.py[TE8M]: F:验证面板IPC生成一致性及来源摘要和完整覆盖并绑定报告 | R:code:docs/contracts/c09-panel-ipc/cases.json,code:docs/contracts/c09-panel-ipc/build_contracts.py | A:guard_errors与barrier_errors及报告检查 | S:从JSON重读避免共享引用污染；同命令在途与未知可并存，旧连接不能报未发。新增语义只验合成快照，不执行完整资源NTP或发送窗口；check-report只比11输入字节
+ipc.schema.json[FN8L]: F:声明面板候选IPC的19帧与扩展许可账本及授权屏障结构 | R:code:docs/contracts/c09-panel-ipc/build_contracts.py,code:docs/contracts/c09-panel-ipc/binding.schema.json | A:ipc/0.4.0-panel-draft.1 | S:必选面板特性阻止旧worker降级；GuardACK回显绑定摘要，AuthFence绑定selector摘要，完整世代进入IntentRef；workerACK不替代服务持久提交
+reference-report.json[SQ5L]: F:记录102项面板IPC参考检查及十一输入字节摘要 | R:code:docs/contracts/c09-panel-ipc/check_contracts.py | A:结构与新增关联及故障顺序结果 | S:批准为false，服务IPC数据库设备监督器均未运行；19帧回归仅结构，绑定检查不重跑
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c09-panel-storage/===
+README.md[SE9T]: F:设计安装撤销完整捕获与出口证据和订阅持久化恢复 | R:code:docs/contracts/c09-panel-storage/storage-probes.sql,code:docs/contracts/c09-panel-ipc/IPC_GUARD.md,code:docs/contracts/c09-panel-service/HTTP_STORAGE.md | A:安装fanout事务与PSF01至PSF12 | S:全部owner和旧出口纳入冻结，集合双向差集后计算摘要；关闭不撤回已传输字节或推进消费，终止证明不证设备未执行。51例仅局部内存，完整领域DDL及运行未完成
+check_storage.py[TD8M]: F:执行安装撤销和订阅退役SQL探针并绑定报告输入 | R:code:docs/contracts/c09-panel-storage/storage-probes.sql | A:run及report和check-report与staged | S:只连memory，串行顺序和主动异常非真实竞争或崩溃；证据身份为合成文本，不取监督器权威。同页面出口分别退役；check-report仅比6输入字节不重跑
+reference-report.json[SQ5L]: F:记录51项安装撤销及订阅SQL检查和六输入摘要 | R:code:docs/contracts/c09-panel-storage/check_storage.py | A:逐例预期结果与工具版本 | S:批准为false，真实并发磁盘浏览器监督器设备未验；仅局部DDL及小整数，报告绑定不扩大覆盖
+storage-probes.sql[TD8S]: F:定义安装owner出口与冻结清单和证据及订阅的局部SQL约束 | R:code:docs/contracts/c09-panel-storage/check_storage.py | A:STRICT表复合外键与冻结及退役触发器 | S:冻结对完整owner和出口双向差集；indeterminate不算完成，关闭不改sent或acked。身份世代只当不可变文本且证据真实性另验，不是生产迁移或完整领域事务
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c09-panel-subscriptions/===
+HTTP_SUBSCRIPTIONS.md[SE9T]: F:设计五个面板订阅HTTP接口及持久投影包到宿主消费的映射 | R:code:docs/contracts/c09-panel-subscriptions/build_contracts.py,code:docs/contracts/c09-panel/CHANNEL_V02.md,code:docs/contracts/c09-panel-storage/README.md | A:订阅身份及PSH01至PSH10 | S:包摘要与完整帧摘要分开且依赖可信宿主；GET不分配序号，关闭不要求投影租约有效但仍须认证。旧ACK不增额度，213例非运行，安装HTTP及完整DDL和SDK仍缺
+build_contracts.py[XE8M]: F:生成订阅五接口及十九方法绑定的Schema和OpenAPI候选 | R:code:docs/contracts/c09-panel/method-registry-v02.json,code:docs/contracts/c09-panel/channel-v02.schema.json | A:build及check | S:模型引用旧唯一资源而不改旧文件；内联仅支持固定本地闭包，const和enum不递归重写。HTTP只供宿主且POST同时要求bearer与CSRF，候选不切SDK权威
+check_contracts.py[TE8M]: F:验证订阅结构投影接受集及合成身份分页和累计消费并绑定报告 | R:code:docs/contracts/c09-panel-subscriptions/build_contracts.py,code:docs/contracts/c09-panel/channel-v02-cases.json | A:create_decision与batch_errors和ack_decision及report | S:JSON往返隔离权威和消息；重算帧摘要仍核原包与当前身份。宿主实际发送及完整通道顺序未取证，不跑动态Bundle二次校验；check-report只比15输入字节
+reference-report.json[SQ5L]: F:记录213项订阅HTTP离线检查及十五输入原字节摘要 | R:code:docs/contracts/c09-panel-subscriptions/check_contracts.py | A:结构与合成关联及元数据结果 | S:批准为false，真实服务浏览器鉴权数据库设备均未验；有限消费非网络并发，报告绑定不扩大覆盖
+subscriptions.openapi.json[SN8L]: F:声明订阅创建状态读取分页消费与关闭五接口和内联模型 | R:code:docs/contracts/c09-panel-subscriptions/build_contracts.py | A:OpenAPI3.1.1与两authority共用HTTP | S:GET只读已发布包且要求gui关联，所有响应no-store；POST同时bearer和CSRF，错误不许可重发。结构非真实鉴权，未并入旧操作矩阵
+subscriptions.schema.json[FE8L]: F:定义订阅八元身份意图记录及投影包和完整帧确认格式 | R:code:docs/contracts/c09-panel-subscriptions/build_contracts.py,code:docs/contracts/c09-panel/channel-v02.schema.json | A:封闭模型与十九方法静态绑定 | S:两方法只能null失效通知，baseline限序号1；完整帧与包关联及当前身份另验。published非GUI已发送，动态值仍需批准Schema，不授运行资格
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c09-installation/===
+README.md[SE8T]: F:说明安装十四接口及权限审阅和固定快照的候选语义与复验 | R:code:docs/contracts/c09-installation/build_contracts.py,code:docs/contracts/c09-installation/check_contracts.py | A:安装候选版本及摘要和验证边界 | S:review不是批准，lookup以当前身份读原快照；公开数组超限不能截断保护集合。内部导入完整manifest及DDL仍缺，ILCT未运行
+build_contracts.py[XE8M]: F:定义并生成安装管理封闭模型及十四接口OpenAPI | R:code:docs/contracts/c09-installation/README.md | A:schema与build及check | S:根拒绝直接校验，须选defs；仅投影本地ref且实例常量不改写。U20非uint64，Ref摘要带前缀；POST含CSRF而lookup不建新管理identity，不切SDK权威
+check_contracts.py[TE8M]: F:校验安装候选结构投影和权限计划及局部生命周期并绑定报告 | R:code:docs/contracts/c09-installation/build_contracts.py,code:docs/contracts/c09-installation/README.md | A:run与权限审批及状态分页判定和报告检查 | S:人工权威与证据不取真实宿主；重算摘要仍核原绑定，旧结果先于新CAS而认证在前。局部状态非完整执行器，check-report只比7输入字节，不执行安装或数据库
+installation.openapi.json[SN8L]: F:声明安装十四接口及完整内联候选模型 | R:code:docs/contracts/c09-installation/build_contracts.py | A:OpenAPI3.1.1及十一POST三GET | S:POST要求human与CSRF，lookup只读原请求，全部响应no-store且禁写自动重试。声明不实现鉴权或导入，未并入旧操作矩阵
+installation.schema.json[FE8L]: F:声明权限审批导入收据及安装槽位操作和计划分页的封闭格式 | R:code:docs/contracts/c09-installation/build_contracts.py | A:具名defs与八权限四计划候选 | S:根不可直接校验；旧安装拒绝不可复活，结构不证明权威或实物。current CAS与内容Ref分离，完整影响及期限和权限收窄需语义核验
+reference-report.json[SQ5L]: F:记录219项安装管理0.1参考检查及七输入摘要 | R:code:docs/contracts/c09-installation/check_contracts.py | A:原结构投影与合成关联回归 | S:批准为false，真实HTTP安装数据库监督器设备未运行；文稿新增0.2不扩大本报告覆盖
+LIFECYCLE_V02.md[SE9T]: F:设计角色解析审批与扩展启动关联及一次创建恢复 | R:code:docs/contracts/c09-installation/build_v02.py,code:docs/contracts/df02-supervisor/README.md | A:安装0.2与LACT01至LACT12 | S:enable先建新实例再批准；摘要取收窄权限。监督器出准入回执而核心持久后才出RuntimeBindingRef；组空不准重建同意图，完整DDL及运行未验
+build_v02.py[XE8T]: F:归并角色及启动绑定生成安装0.2模型和十五接口 | R:code:docs/contracts/c09-installation/build_contracts.py,code:docs/contracts/c09-artifact-import/artifact.schema.json | A:build与check | S:仅处理固定本地闭包，旧0.1不改；enable目标先建立，新版本头必需。内部启动对象不投影管理HTTP，生成不切SDK权威
+check_v02.py[TE8M]: F:验证安装0.2接受集及审批启动关联和局部创建账本 | R:code:docs/contracts/c09-installation/build_v02.py,code:docs/contracts/c09-installation/check_contracts.py | A:chain_error与launch_error及create_step和报告检查 | S:上游解析权威及完整资源图为人工前提；重算意图仍核关联，原launch重送仅查询。串行步骤非监督器或SQL，check-report只核十输入字节
+installation-v02.openapi.json[SN8L]: F:声明含角色解析的十五个安装0.2管理HTTP操作 | R:code:docs/contracts/c09-installation/build_v02.py | A:OpenAPI3.1.1与版本选择头 | S:明确版本且POST同时要求人员与CSRF；新enable不接受旧review字段，内部启动模型未导出。结构不执行鉴权或批准，不替换旧0.1
+installation-v02.schema.json[FE8L]: F:定义角色解析审批与安装0.2请求及扩展启动对象 | R:code:docs/contracts/c09-installation/build_v02.py | A:具名defs和新启动绑定 | S:根拒绝直接校验；Stage两来源均新建实例，Enable选新target。扩展LaunchIntent只允许worker；关联权限与账本状态另验，字段合法不证明实物或授权
+reference-v02-report.json[SQ5L]: F:记录191项安装0.2参考结果及工具版本和十输入摘要 | R:code:docs/contracts/c09-installation/check_v02.py | A:结构投影与关联及有限创建结果 | S:批准为false，HTTP数据库监督器设备均未运行；文稿更新不扩大本报告覆盖，人工前提不证明耐久
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c09-artifact-import/===
+README.md[SE9T]: F:设计扩展包闭包与本地角色解析及本机导入恢复 | R:code:docs/contracts/c09-artifact-import/build_contracts.py,code:docs/contracts/c09-installation/README.md | A:包格式与九消息及IAT验收边界 | S:包不含本机权限身份，解析后再审阅；attachment不进intent但信任代保留。sealed历史与当前实物分离，verified不授启动；旧HTTP未归并，ZIP和平台未验
+artifact.schema.json[FE8L]: F:定义扩展manifest文件清单角色模板及导入与物化对象 | R:code:docs/contracts/c09-artifact-import/build_contracts.py,code:docs/contracts/c09-installation/installation.schema.json | A:extension-artifact候选具名defs | S:根拒绝直接实例；U20与Ref复用安装候选，角色语义和权威另验。ResolvedReview仅局部关联，不替换旧HTTP；结构合法不证实物
+build_contracts.py[XE8S]: F:从唯一模型定义生成扩展包与本机导入IPC候选 | R:code:docs/contracts/c09-artifact-import/README.md,code:docs/contracts/c09-installation/installation.schema.json | A:build与check | S:外部引用限安装候选，旧文件不改；响应reply_to必填非空，sealed才带收据。生成不执行包内容或切SDK权威
+check_contracts.py[TE8M]: F:核验包元数据角色解析与导入恢复快照并绑定报告 | R:code:docs/contracts/c09-artifact-import/build_contracts.py,code:docs/contracts/c09-artifact-import/README.md | A:resolve与admission及transition和报告检查 | S:预期手写，权威与helper为夹具；不解析ZIP或取真实FD。重算摘要仍核绑定，已知sealed恢复不改历史；check-report只比七输入字节，不重跑或证明全状态机
+ipc.schema.json[FE8M]: F:声明本机导入查询取消及实物核验的九类消息 | R:code:docs/contracts/c09-artifact-import/build_contracts.py,code:docs/contracts/c09-artifact-import/artifact.schema.json | A:extension-import候选根联合 | S:独立于设备worker协议；请求reply_to为null，响应必须关联。peer与方向和序号另验，合法信封不授权导入或执行
+reference-report.json[SQ5L]: F:记录181项扩展包导入参考结果及七输入摘要 | R:code:docs/contracts/c09-artifact-import/check_contracts.py | A:结构与合成关联及恢复结果 | S:批准为false，ZIP及实际IPC安装数据库设备均未运行；文稿绑定不扩大后续启动关联覆盖
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df02-supervisor/===
+README.md[SR9S]: F:设计监督启动消息准入集合与恢复日志并连接完整表候选 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/contracts/df02-supervisor/build_contracts.py,code:docs/contracts/df02-supervisor/JOURNAL.md | A:控制九帧及bootstrap四帧与SRT01至SRT12 | S:监督回执先于核心绑定，fence ACK非退出证明；保护配置不受业务allow但整域覆盖。attempt后一次OS调用，重启不恢复secret；179例不覆盖新十五表，平台未验
+bootstrap.schema.json[FR8T]: F:声明专属继承通道的四种启动握手帧 | R:code:docs/contracts/df02-supervisor/build_contracts.py,code:docs/contracts/df02-supervisor/supervisor.schema.json | A:bootstrap候选根联合 | S:Assignment含合成测试之外的真实秘密时不得落盘；版本独立于设备IPC，方向及OS实例另验，合法MAC不授设备权
+build_contracts.py[XR8T]: F:从唯一局部定义生成监督控制和bootstrap两份Schema | R:code:docs/contracts/c09-installation/installation-v02.schema.json,code:docs/contracts/draft4/first-loop.schema.json | A:build与check | S:固定本地引用不联网，core和time_provider设备集为空且不能替代worker审批；原协议不改，不切SDK权威
+check_contracts.py[TR8M]: F:离线核验监督消息与HMAC关联及完整fence和一次创建SQL约束 | R:code:docs/contracts/df02-supervisor/build_contracts.py,code:docs/contracts/df02-supervisor/journal-probes.sql | A:proof_error与fence_error及create_error和报告检查 | S:权威和OS来源为人工前提，方向序号为快照；SQL仅memory串行主动回滚。回执持久不代表设备许可，check-report只比十输入字节不重跑
+journal-probes.sql[TD8T]: F:定义启动意图与单次尝试及恢复计数的局部SQLite约束 | R:code:docs/contracts/df02-supervisor/check_contracts.py | A:STRICT表唯一键与不可逆状态触发器 | S:意图成员组及已有回执不可替换，attempt与proof不可回退且墓碑禁止删除；JSON和OS事实另验，不含完整fence表或生产迁移
+reference-report.json[SQ5L]: F:记录179项监督启动离线检查及工具版本和十输入摘要 | R:code:docs/contracts/df02-supervisor/check_contracts.py | A:结构关联与原局部SQL结果 | S:批准为false，真实IPC监督器磁盘故障设备未执行；README连接完整journal不扩大此报告覆盖，十五表另有报告
+supervisor.schema.json[FR8L]: F:定义监督控制九帧及启动身份准入回执和退役证据候选 | R:code:docs/contracts/df02-supervisor/build_contracts.py,code:docs/contracts/c09-installation/installation-v02.schema.json | A:supervisor-control候选与具名模型 | S:JournalView只带监督证据不伪造核心Ref；注册仅扩展worker，保护配置另分支。fence集合覆盖身份及摘要另验，信封不授控制通道权
+JOURNAL.md[SD9T]: F:定义监督日志十五表映射六类原子事务和重开归档边界 | R:code:docs/contracts/df02-supervisor/journal.sql,code:docs/contracts/df02-supervisor/check_journal.py,code:docs/rebirth-df04-storage-design.md | A:journal候选与J1至J6 | S:业务fence覆盖扩展worker而整域退出覆盖保护角色；attempt及receipt双向提交，计数不随重启清零。BODY与OS真实性另验，完整布局非生产迁移或运行证明
+check_journal.py[TD8M]: F:在内存执行完整监督日志的原子配对封存及退役约束检查 | R:code:docs/contracts/df02-supervisor/journal.sql,code:docs/contracts/df02-supervisor/JOURNAL.md | A:run与八十八参考例和报告绑定 | S:只连memory，故障为主动异常与串行顺序；BODY及digest为占位，未执行权威提供者。五输入staged只比字节不重跑，不证明磁盘并发或OS行为
+journal-report.json[SQ5L]: F:记录88项监督日志内存回归及五输入摘要 | R:code:docs/contracts/df02-supervisor/check_journal.py | A:约束与故障切点结果 | S:DF04时间存储更新不扩监督日志范围；BODY不证权威，IPC磁盘设备未验
+journal.sql[FD9M]: F:定义监督日志十五表与恢复视图及封存和不可逆提交约束 | R:code:docs/contracts/df02-supervisor/JOURNAL.md,code:docs/contracts/df02-supervisor/check_journal.py | A:STRICT与复合双向延迟FK和保护触发器 | S:fence封存同事务发布deny及指针；孤立intent与attempt或receipt不可提交，退休须完整目标证据。恢复计数来自尝试视图，墓碑不可删；BODY真实性另验，非已批准迁移
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-program/===
+README.md[SW9T]: F:定义自动化程序与证明的类型图摘要及发布资格候选 | R:code:docs/contracts/c04-program/build_contracts.py,code:docs/contracts/c04-program/reference_model.py | A:automation-program候选与复验入口 | S:权威由夹具模拟，完整参数二次验证未执行；结果绑定生产Schema，proof按id及revision查。全部后继不截断，发布非布防；活动槽与HTTP和DDL仍待归并
+build_contracts.py[XW8S]: F:生成自动化AST规则状态机与完整图和证明发布Schema | R:code:docs/contracts/c04-program/README.md | A:build及生成和check | S:根拒绝直接实例且对象封闭；literal与parameters保留开放业务数据，结构不证权威或依赖。独立版本不改旧源，不切SDK权威
+check_contracts.py[TW8M]: F:以人工预期核验自动化候选及完整后继并绑定参考报告 | R:code:docs/contracts/c04-program/reference_model.py,code:docs/contracts/c04-program/build_contracts.py | A:run与report及check-report和staged | S:实际派生4096步和300后继，fixture摘要不是预期结论；权威和释放为人工前提。六输入字节核对不重跑，未执行完整参数Schema或业务并发
+program.schema.json[FW8L]: F:声明自动化表达式绑定步骤图证明与发布产物的候选模型 | R:code:docs/contracts/c04-program/build_contracts.py | A:JSON Schema2020-12具名defs | S:根不可直接校验；program不内嵌受信proof而业务数据同名键合法。后继4096与总步骤及关联另验；版本不混旧IPC，字段合法不授执行权
+reference-report.json[SQ5L]: F:记录118项程序证明回归及六输入摘要 | R:code:docs/contracts/c04-program/check_contracts.py | A:求值图证明和发布结果 | S:协议归并文稿绑定不扩原程序覆盖；真实服务SQL并发及完整参数二次校验未执行
+reference_model.py[TW8M]: F:在合成上下文求值有限AST派生依赖图并核验失败证明及发布 | R:code:docs/contracts/c04-program/build_contracts.py | A:derive与prove及artifact_error和continue_after_failure | S:仅走具名AST不扫业务值；批准摘要由夹具传入不自取权威。图覆盖完整后继，未知不放行，跨转换和并行等待拒绝；非产品编译器或Schema类型推导器
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-lifecycle/===
+README.md[SW9T]: F:定义自动化生命周期记录和管理HTTP的事务与恢复候选 | R:code:docs/contracts/c04-lifecycle/build_contracts.py,code:docs/contracts/c04-program/README.md | A:二十四操作及活动槽与R2至R5边界 | S:arm受理仍disarmed且全部准备后armed；disarm保留槽而retire释放。grant预期变化不吸收接管，失败不因迟到回执续跑；R4延迟和完整DDL仍缺，参考非运行
+build_contracts.py[XW8M]: F:生成自动化生命周期封闭模型及二十四操作OpenAPI | R:code:docs/contracts/c04-program/program.schema.json,code:docs/contracts/c04-lifecycle/README.md | A:models与build及check | S:只内联固定两资源且实例常量不改写；旧版本不改。人员写需CSRF，service独立分支；版本头必需，结构声明不执行鉴权或切SDK权威
+check_contracts.py[TW8M]: F:以人工预期核验生命周期投影关联与有限原子步并绑定报告 | R:code:docs/contracts/c04-lifecycle/reference_model.py,code:docs/contracts/c04-lifecycle/build_contracts.py | A:run与report及check-report和staged | S:权威目标及证据均为夹具，十九整快照相等只记录比较结果；串行竞争非SQLite并发。八输入字节检查不重跑，不验证完整转换集合或发布事务
+lifecycle.openapi.json[SN8L]: F:声明草稿发布布防恢复与运行查询的二十四个HTTP操作 | R:code:docs/contracts/c04-lifecycle/build_contracts.py | A:OpenAPI3.1.1与独立候选版本 | S:精确版本必需，human写同时要求bearer与CSRF，service另分支；所有响应no-store且202非完成。lookup不重新受理，声明不证明对象权限或真实服务
+lifecycle.schema.json[FW8L]: F:定义活动槽预检执行快照及逐目标准备恢复的候选模型 | R:code:docs/contracts/c04-lifecycle/build_contracts.py,code:docs/contracts/c04-program/program.schema.json | A:JSON Schema2020-12具名defs | S:根拒绝直接实例，引用旧程序唯一源；请求只选输入不接受客户端编译批准。跨对象摘要及槽代次另验，零目标不授执行权，非生产持久化布局
+reference-report.json[SQ5L]: F:记录299项生命周期回归及八输入摘要 | R:code:docs/contracts/c04-lifecycle/check_contracts.py | A:二十四操作及十九快照断言 | S:批准为false；不覆盖新增保护IPC或真实身份与并发设备
+reference_model.py[TW8M]: F:在合成上下文核验生命周期关联及预留准备触发和状态提交 | R:code:docs/contracts/c04-lifecycle/build_contracts.py | A:semantic_error与reserve及prepare和trigger及commit_state | S:原子事务是假定，权威不从实际提供者取；旧结果先于新CAS，精确grant及目标回执必需。失败和存储恢复不续跑，忙碌旧事件不补，R4及真实保护传播未实现
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
+README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验
+build_contracts.py[XW8S]: F:生成恢复开始逐步执行及延迟边沿预算的候选Schema | R:code:docs/contracts/c04-lifecycle/lifecycle.schema.json,code:docs/contracts/c04-execution/README.md | A:build与check | S:根拒绝直接实例，复用既有局部类型不改旧版本；预算limit引用不反向含整体策略。锚和就绪不可变，原请求身份与可变提交摘要分离；不生成服务或切SDK权威
+check_contracts.py[TW8M]: F:以人工预期核验执行记录及开始提交窗口边沿预算并绑定报告 | R:code:docs/contracts/c04-execution/reference_model.py,code:docs/contracts/c04-execution/build_contracts.py | A:225项参考检查与report及check-report和staged | S:可信来源和完整计划为夹具，状态比较不执行并发；旧报告另行回归。八输入字节核对不重跑，不覆盖完整图调度或依赖边消费
+execution.schema.json[FW8L]: F:声明执行开始步骤命令提交及时间采样和预算的封闭候选模型 | R:code:docs/contracts/c04-execution/build_contracts.py | A:JSON Schema2020-12具名defs | S:根不可直接校验；ExecutionAnchor区分触发决策和恢复开始。direct_successor窗口及独立limit绑定需关联核验，raw整数只是局部数值格式；结构合法不授真实权威或发送资格
+reference-report.json[SQ5L]: F:记录225项执行候选回归与八输入摘要 | R:code:docs/contracts/c04-execution/check_contracts.py | A:结构及有限原子步和算术结果 | S:主稿协议归并绑定不扩大原范围；HTTP和IPC及SQL并发时钟设备未验
+reference_model.py[TW8M]: F:模拟恢复开始单次提交及相对窗口边沿和滚动预算判定 | R:code:docs/contracts/c04-execution/build_contracts.py | A:start_recovery与dispatch_once及translated_bounds和edge_step及charge_budget | S:没有I/O或数据库，信任由上下文提供；not_found不许重发，失败准备不续跑。换算向外取整但不证明速率，边沿样本不证连续物理信号，全部预算历史仅有限夹具
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-storage/===
+README.md[SD9T]: F:定义恢复核心十六表与四事务并连接逐步执行组合 | R:code:docs/contracts/c04-storage/recovery.sql,code:docs/contracts/c04-storage/check_recovery.py,code:docs/contracts/c04-storage/DISPATCH.md | A:R2至R5与draft.2布局入口 | S:基础检查仍限16表，新增九表另验；R3仍暂停，R4后另存锚。恢复锁释放非设备资源释放，FK不证全投影；普通触发及完整DDL和运行仍缺
+check_recovery.py[TD8L]: F:执行恢复核心内存SQL事务切点及身份约束并绑定报告 | R:code:docs/contracts/c04-storage/recovery.sql,code:docs/contracts/c04-storage/README.md | A:257项检查及report与check-report和staged | S:使用draft.2 scope但仍只加载16表；仅memory主动异常非磁盘崩溃。BODY及权威为占位，全表回滚与半边提交分验；五输入核字节不重跑
+recovery-report.json[SQ5L]: F:记录257项恢复核心回归及五输入摘要 | R:code:docs/contracts/c04-storage/check_recovery.py | A:基础事务与限制反证 | S:仅16表，DF04时间更新不扩大范围；BODY权威及生产并发磁盘设备未验
+recovery.sql[FD9M]: F:声明恢复核心十六表与恢复视图并提供执行层事务阶段 | R:code:docs/contracts/c04-storage/README.md,code:docs/contracts/c04-storage/dispatch.sql | A:draft.2基础布局与STRICT及双向延迟FK | S:单库固定scope，trigger引用尚无本体FK；paused不释放锁，start及commit反向配对。U20只约束单调非精确加一；phase扩展不等于加载执行层，非生产迁移
+DISPATCH.md[SD9T]: F:定义执行层九表映射及单次提交裁决和崩溃恢复边界 | R:code:docs/contracts/c04-storage/dispatch.sql,code:docs/contracts/c04-storage/check_dispatch.py,code:docs/contracts/c04-execution/execution.schema.json | A:七阶段原子写集及25表组合 | S:标记后只查原身份，迟到accepted不重开unknown；永久拒收须远端排他墓碑，接口尚缺。SQL不证完整计划及提交后采样，取消非完成，候选非生产迁移
+check_dispatch.py[TD8M]: F:在内存核验执行层原子配对和未知恢复并绑定参考报告 | R:code:docs/contracts/c04-storage/dispatch.sql,code:docs/contracts/c04-storage/check_recovery.py,code:docs/contracts/c04-storage/DISPATCH.md | A:212项检查及report与staged绑定 | S:只连memory无网络，六阶段主动异常比25表快照；原始触发前态和权威及BODY均为夹具。取消证据人工给定，不证真实发送或掉电；八输入核字节不重跑
+dispatch-report.json[SQ5L]: F:记录212项执行存储回归及八输入摘要 | R:code:docs/contracts/c04-storage/check_dispatch.py | A:25表约束及故障切点 | S:DF04时间更新不扩大本覆盖；普通触发为合成前态，生产writer并发磁盘设备未验
+dispatch.sql[FD9M]: F:声明执行层九表及提交恢复视图和不可逆配对约束 | R:code:docs/contracts/c04-storage/recovery.sql,code:docs/contracts/c04-storage/DISPATCH.md | A:计划锚就绪提交尝试裁决终态与STRICT及双向延迟FK | S:必须后加载且非迁移；步骤accepted须对应受理，ACK和取消不过R5，optional failed另验Q72。计划数量不证全集，BODY与授权外验；恢复分类无重发许可
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c05-ingress/===
+README.md[SM9T]: F:规定摄取候选格式摘要及三接口和40表写集的复验边界 | R:code:docs/contracts/c05-ingress/build_contracts.py,code:docs/contracts/c05-ingress/ingress.sql | A:普通事件候选与剩余冻结项 | S:provider回执不露全局水位或隐藏决定；PLAN同受理而锚另存。封存显式核完整性，BODY及预算仍占位；完整保护GC和回执持久映射未完成，非生产迁移或运行批准
+build_contracts.py[XM8S]: F:从唯一局部源生成摄取模型及三接口OpenAPI | R:code:docs/contracts/df06/internal-trust.schema.json,code:docs/contracts/c05-ingress/README.md | A:schema与build及check | S:来源绑定复用DF06，根拒绝直接实例；计数用U20字符串。仅内联本地ref且常量不改写，provider响应闭包隔离；不切SDK权威或实现鉴权
+check_contracts.py[TM8M]: F:核验摄取结构投影摘要关联及三值裁决并汇总内存SQL | R:code:docs/contracts/c05-ingress/build_contracts.py,code:docs/contracts/c05-ingress/check_storage.py | A:190项检查与report及staged绑定 | S:权威来源年龄和求值结果为人工前提；重算摘要仍核原绑定。动态值只用固定Schema，JSON与SQL非端到端writer；13输入字节检查不重跑，运行批准为false
+check_storage.py[TD8M]: F:在40表内存组合验证摄取写集故障切点及不可变配对 | R:code:docs/contracts/c05-ingress/ingress.sql,code:docs/contracts/c04-storage/recovery.sql,code:docs/contracts/c04-storage/dispatch.sql | A:94项SQL检查与固定写集 | S:只连memory，逐写主动异常不证掉电。busy等决定及BODY为夹具；查原不追补晚监听，锚独立事务但不证真实采样时刻；未执行保护或预算计费
+ingress.openapi.json[SN8L]: F:声明规范事件提交查原与内部完整账本三接口 | R:code:docs/contracts/c05-ingress/build_contracts.py | A:OpenAPI3.1.1与精确版本头 | S:provider响应不含内部决定集，内部查询mTLS；全部no-store，查原不授重发。共享components不是权限隔离，真实认证和持久回执未实现
+ingress.schema.json[FM8L]: F:定义摄取游标完整匹配快照决定计划和隔离回执格式 | R:code:docs/contracts/c05-ingress/build_contracts.py | A:具名defs与独立候选版本 | S:根不可直接校验；QualifiedValue需批准Schema二次验证。字段合法不证明权威年龄或完整集合，内部Ref关联另验；原公共版本不改
+ingress.sql[FD9M]: F:定义十五表摄取附属布局及封存和双向配对约束 | R:code:docs/contracts/c04-storage/recovery.sql,code:docs/contracts/c04-storage/dispatch.sql,code:docs/contracts/c05-ingress/README.md | A:40表组合中的普通受理约束 | S:后加载且非生产迁移；封存显式核通知容量审计与完整目标，不仅靠延迟FK。accepted须实际决定及PLAN，observed_only不升级；精确加一和BODY及权威预算另验，完整保护GC仍缺
+reference-report.json[SQ5L]: F:记录190项摄取回归及十三输入摘要 | R:code:docs/contracts/c05-ingress/check_contracts.py | A:96项契约及94项SQL结果 | S:批准为false，DF04时间链接不扩范围；JSON和SQL未端到端联接，真实鉴权并发磁盘设备未验
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c05-protection/===
+README.md[SR9T]: F:说明原来源保护局部模型及后续HTTP和完整IPC归并入口 | R:code:docs/contracts/c05-protection/PROTOCOL.md,code:docs/rebirth-c05-event-sync-design.md | A:原0.1与十输入报告 | S:原131项仍限局部两正文与有限P1模型，不继承新排序或容量。拒绝可重投但动作不可，applied不清资源；完整公共迁移及物理DDL与运行仍缺
+build_contracts.py[XR8S]: F:生成来源保护模型与两种运行代次屏障正文包络 | R:code:docs/contracts/c05-ingress/ingress.schema.json | A:build与check | S:复制固定基础类型不改旧源；主Schema根拒绝直接实例，紧急保护不能带伪持久引用。两正文非完整设备IPC，不切SDK权威
+check_contracts.py[TR8M]: F:核验来源保护全集摘要与屏障覆盖及有限原子恢复门槛 | R:code:docs/contracts/c05-protection/build_contracts.py,code:docs/contracts/c05-protection/README.md | A:131项检查与report及staged绑定 | S:集合和权威为人工前提；P1私有副本七切点不执行SQLite，恢复不执行R2至R4。多出口回显需完整有序，ACK布尔不代证据；十输入核字节不重跑，运行未验
+protection.schema.json[FR8L]: F:声明来源故障保护计划及代次绑定和回执恢复的局部格式 | R:code:docs/contracts/c05-protection/build_contracts.py | A:source-protection具名defs | S:根拒绝直接实例，U20字符串与封闭对象；automation非空而manual为空，applied须回执，紧急保护无planRef。结构不证明全集权威或持久性，不替换旧公共契约
+reference-report.json[SQ5L]: F:记录131项局部来源保护回归及十输入摘要 | R:code:docs/contracts/c05-protection/check_contracts.py | A:结构关联与有限原子模型结果 | S:不覆盖完整IPC或时间存储；P1非SQLite，批准为false，真实鉴权并发磁盘设备未执行
+run-fence.schema.json[FR8T]: F:声明RUN_FENCE与ACK两种正文的独立离线包络 | R:code:docs/contracts/c05-protection/protection.schema.json,code:docs/contracts/c05-protection/build_contracts.py | A:run-fence-body候选oneOf | S:固定独立版本且拒绝额外字段，正文引用唯一模型；不含运行域信封握手方向或序号，不能当完整设备IPC
+PROTOCOL.md[SR9T]: F:定义保护HTTP和21帧IPC的来源链快照及故障语义 | R:code:docs/contracts/c05-protection/build_protocol.py,code:docs/contracts/c09-panel-ipc/IPC_GUARD.md | A:保护0.2与IPC0.5及PIP01至PIP16 | S:定义版本用计数，开闸先装完整deny快照；新屏障不被旧快照覆盖。统一permit排序每目标256，原局部约定留历史；141项离线非运行，公共Prepare及DDL仍缺
+build_protocol.py[XR8S]: F:从固定来源生成保护模型21帧IPC和两操作OpenAPI | R:code:docs/contracts/c09-panel-ipc/ipc.schema.json,code:docs/contracts/c05-protection/protection.schema.json | A:build与check | S:仅改具名引用和协议常量，实例数据不重写；新RunGrant有scope且定义计数统一，开闸带完整deny。HTTP只投影保护闭包，不修改旧基线或切SDK权威
+check_protocol.py[TR8L]: F:验证保护HTTP和完整IPC结构及来源链快照与ACK关联 | R:code:docs/contracts/c05-protection/build_protocol.py,code:docs/contracts/c09-panel-ipc/cases.json | A:141项检查与report及staged绑定 | S:人工权威和完整门控为前提；旧19帧只升级结构，新增关联实际计算JCS。查询只回冻结覆盖，旧快照不降floor；十二输入核字节不重跑，不执行服务SQL并发或设备
+ipc-v05.schema.json[FN8L]: F:声明包含面板与运行代次保护的完整21帧IPC候选 | R:code:docs/contracts/c05-protection/build_protocol.py,code:docs/contracts/c05-protection/protocol.schema.json | A:ipc0.5与具名正文及IntentRef | S:三新特性必需，开闸快照ACK回显；RUN只含自动化，其他屏障可混合。每目标256且完整世代回显不证明真实覆盖，旧协议不可混投
+protection.openapi.json[SN8L]: F:声明内部运行代次保护受理和查原两个HTTP操作 | R:code:docs/contracts/c05-protection/build_protocol.py | A:OpenAPI3.1.1与保护服务0.2 | S:需精确版本及mTLS和origin所有权，全部no-store；202非资源clear。保护幂等重投不授设备重试，闭包不含Command或面板模型，不实现鉴权
+protocol-report.json[SQ5L]: F:记录141项保护协议检查及十二输入摘要 | R:code:docs/contracts/c05-protection/check_protocol.py | A:HTTP投影与21帧和来源快照关联结果 | S:批准为false，旧19帧只验证结构；真实HTTP和IPC身份SQL并发设备未执行，报告绑定不扩大覆盖
+protocol.schema.json[FR8L]: F:声明带来源的命令授权守卫许可及拒绝快照和保护HTTP模型 | R:code:docs/contracts/c05-protection/build_protocol.py | A:保护0.2具名defs | S:根拒绝直接实例，manual绑定null而自动化非空；定义版本计数和新RunGrant域不能与旧类型拼接。结构不证实际准入和完整快照，未迁移全部公共接口
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-preparation/===
+README.md[SW9T]: F:设计准备签发无环衔接并连接关闭持久布局 | R:code:docs/contracts/c04-preparation/STORAGE.md,code:docs/contracts/c05-protection/PROTOCOL.md | A:三内部HTTP与PRE01至PRE12 | S:arm绑定代次而恢复绑定单执行；关闭先到阻签发，历史回执不恢复资格。102项协议与430项SQL分开，公共scope和deny须归并，运行未验
+build_contracts.py[XW8S]: F:生成准备签发模型及三操作自包含OpenAPI候选 | R:code:docs/contracts/c05-protection/protocol.schema.json,code:docs/contracts/c04-preparation/README.md | A:build与check | S:固定本地引用投影不改实例常量或旧基线；恢复必有execution，准备不含未来grant。仅闭合格式，签发和权限由真实提供者另验
+check_contracts.py[TW8M]: F:核验准备结构签发关联及查询关闭快照和命令绑定 | R:code:docs/contracts/c04-preparation/build_contracts.py,code:docs/contracts/c04-preparation/README.md | A:102项检查与report及staged字节绑定 | S:JSON往返隔离夹具，权威提交门控为人工前提；关闭先到用已存快照，不运行事务。回执不可换且迟到仅补历史；八输入检查不重跑，不证真实签发或并发
+preparation.openapi.json[SN8L]: F:声明准备查原和关闭三个内部接口及内联模型 | R:code:docs/contracts/c04-preparation/build_contracts.py | A:OpenAPI3.1.1与准备0.1 | S:精确版本及配对mTLS和来源所有权必需；全部no-store，准备未知先查询，关闭单调重投非设备重试。结构不实现鉴权或生产SDK
+preparation.schema.json[FW8L]: F:定义准备意图Controller回执及关闭和查原的封闭候选模型 | R:code:docs/contracts/c04-preparation/build_contracts.py,code:docs/contracts/c05-protection/protocol.schema.json | A:二十二具名defs | S:根拒绝直接实例；arm无execution而恢复必有，applied须回执而closed须保护Ref。grant及完整集合来源另验，旧Validity等词法缺口未全修，不批准运行
+reference-report.json[SQ5L]: F:记录102项准备协议参考结果与八输入原字节摘要 | R:code:docs/contracts/c04-preparation/check_contracts.py | A:结构投影和有限关联结果 | S:批准为false；HTTP身份提供者SQL并发设备均未运行，关闭快照不等于故障事务证据
+STORAGE.md[SD9T]: F:定义准备关闭十四表映射原子写集及恢复和保护提供者边界 | R:code:docs/contracts/c04-preparation/preparation.sql,code:docs/contracts/c04-preparation/check_storage.py | A:准备存储候选与PRE存储映射 | S:库内U20补零排序而线上不变；拒绝下界须与通用保护共享唯一权威。SQL不证明出口全集，closed不清资源，重启不补签；非生产迁移或运行证据
+check_storage.py[TD8M]: F:在内存核验准备签发关闭的原子配对与恢复分类并绑定报告 | R:code:docs/contracts/c04-preparation/preparation.sql,code:docs/contracts/c04-preparation/STORAGE.md | A:430项参考检查及report与staged绑定 | S:仅memory且异常为主动切点，两顺序非并发；高位计数仅表达式探针，BODY及权威为合成前提。四输入核字节不重跑，不证明磁盘或设备
+preparation.sql[FD9M]: F:定义准备关闭十四表及连续修订唯一签发与单调拒绝约束 | R:code:docs/contracts/c04-preparation/STORAGE.md | A:STRICT及延迟配对外键和不可变触发与三视图 | S:commit前当前视图不发布新事件；close_noop不改状态，回执保留且closed须保护引用。两段整数算U20后继，墓碑不可删；目标数量不证全集，BODY权威另验，非生产迁移
+storage-report.json[SQ5L]: F:记录430项准备关闭内存SQL检查及四输入摘要 | R:code:docs/contracts/c04-preparation/check_storage.py | A:事务缺写故障切点与约束结果 | S:SQLite3.50.4非产品引擎批准；计数高位仅表达式探针，串行回滚非磁盘并发，HTTP和IPC及设备未执行
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-admission/===
+README.md[SR9T]: F:设计命令受理查原永久拒收及受理存储衔接 | R:code:docs/contracts/c02-admission/STORAGE.md,code:docs/contracts/c02-admission/build_contracts.py | A:三公共HTTP与ADM01至ADM12 | S:issuer_epoch入唯一键且createCommand映射显式；accepted不改拒收，not_found不授重发。初始CommandRef不可变，11表另有159项内存检查，原92项不扩大覆盖；完整执行DDL和运行未验
+admission.openapi.json[SN8L]: F:声明提交查原和永久拒收三公共接口及内联模型 | R:code:docs/contracts/c02-admission/build_contracts.py | A:OpenAPI3.1.1与command-admission0.1 | S:精确版本及bearer必需，mTLS不代替；no-store且拒收200非设备停止。主体档案是声明，完整对象权限和真实服务未实现
+admission.schema.json[FN8L]: F:定义命令内容持久身份及不可变裁决与拒收格式 | R:code:docs/contracts/c02-admission/build_contracts.py,code:docs/contracts/c05-protection/protocol.schema.json | A:十四具名defs | S:根拒直接实例；identity拆key与digest，裁决revision固定1，accepted才有command。Content只排顶层运输字段；合法结构不证明归属或耐久，不混旧身份
+build_contracts.py[XN8S]: F:从保护协议生成命令身份裁决Schema和三接口OpenAPI | R:code:docs/contracts/c05-protection/protocol.schema.json,code:docs/contracts/c02-admission/README.md | A:build与check | S:固定本地闭包不改实例常量或旧源；Content仅删顶层三字段，HTTP名与持久操作分别声明。未切SDK权威或生成业务服务
+check_contracts.py[TN8M]: F:核验裁决结构摘要和主体归属及串行接受拒收顺序 | R:code:docs/contracts/c02-admission/build_contracts.py,code:docs/contracts/c02-admission/README.md | A:92项检查与report和staged绑定 | S:字典副本假设原子writer，权威为人工前提；已拒收结果缺裁决不重建，重算摘要不证签发。八输入核字节不重跑，不执行SQL并发或设备
+reference-report.json[SQ5M]: F:记录92项命令裁决参考结果及八输入摘要 | R:code:docs/contracts/c02-admission/check_contracts.py | A:结构投影关联与串行顺序结果 | S:批准为false；HTTP鉴权SQLite并发设备均未运行，人工切点不证明真实掉电或网络
+STORAGE.md[SD9T]: F:定义Controller裁决十一表映射写集及历史归属提供者边界 | R:code:docs/contracts/c02-admission/admission.sql,code:docs/contracts/c02-admission/check_storage.py | A:命令裁决子域及ADM故障映射 | S:关闭namespace不阻当前有权保护；初始命令与可变状态分开，通知不派发设备。提交未知查原不重发，BODY及权威另验，子域非完整迁移或运行证明
+admission.sql[FD9M]: F:声明裁决十一表与身份排他及双向提交不可变约束 | R:code:docs/contracts/c02-admission/STORAGE.md | A:STRICT表延迟外键唯一键及保护触发器 | S:完整key不含digest或context，accepted必须匹配初始命令与容量，commit必带审计通知及拒收关联。关闭仍可拒收，全部记录禁删；需FK及递归触发，BODY权威另验，非产品迁移
+check_storage.py[TD8M]: F:在内存核验裁决写集缺失回滚和身份关联并绑定报告 | R:code:docs/contracts/c02-admission/admission.sql,code:docs/contracts/c02-admission/STORAGE.md | A:159项参考检查与报告及staged绑定 | S:只连memory且原子顺序为串行，主动异常非掉电；合成BODY可通过是限制反证。四输入字节核对不重跑，不验证HTTP鉴权或设备
+storage-report.json[SQ5L]: F:记录159项裁决内存SQL检查及四输入摘要 | R:code:docs/contracts/c02-admission/check_storage.py | A:约束和故障切点参考结果 | S:SQLite3.50.4非产品引擎批准；BODY权威为占位，串行回滚不证磁盘并发，未运行HTTP或设备
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c08-controller/===
+README.md[SD9T]: F:提供Controller共库屏障命令资源及公开HTTP的分层复验入口 | R:code:docs/contracts/c08-controller/common.sql,code:docs/contracts/c08-controller/COMMAND_STORAGE.md,code:docs/contracts/c02-command-view/README.md | A:29至77表及IPC和命令HTTP资料 | S:旧报告保持原范围；320项命令和160项HTTP分别记账。Resolution恢复既有not_sent，七接口不等于公开持久化或保护取消执行已完成；统一SDK及其他屏障仍缺，未批准运行
+build_layout.py[XD8T]: F:按具名替换生成单一scope与deny的Controller组合SQL | R:code:docs/contracts/c08-controller/common.sql,code:docs/contracts/c02-admission/admission.sql,code:docs/contracts/c04-preparation/preparation.sql | A:build与check | S:以SQLite完整语句边界删除旧定义，避免CASE结束截断触发器；每项替换必须精确命中，原候选不改。不是通用转换器或生产迁移
+check_layout.py[TD8M]: F:验证29表组合及双入口共享拒绝账本和故障回滚并绑定报告 | R:code:docs/contracts/c08-controller/controller.sql,code:docs/contracts/c04-preparation/check_storage.py,code:docs/contracts/c02-admission/check_storage.py | A:262项内存检查及staged报告核对 | S:复用合成写集而预期独立，混合切点保留旧floor；来源排他核CHECK码。十输入核字节不重跑，未执行完整P2/P3或真实并发设备
+common.sql[FD9S]: F:定义公共Controller身份和通用保护登记及单调拒绝共享结构 | R:code:docs/contracts/c08-controller/build_layout.py,code:docs/contracts/c08-controller/README.md | A:七表与三视图及来源计数守卫 | S:close和HTTP来源互斥，全局与逐run修订精确增长；视图仅发布已配套提交拒绝，旧操作不可追加floor。目标数不证明全集，BODY另验，须与两子域组合加载
+controller.sql[FD9L]: F:承载裁决准备及通用保护共享身份拒绝账本的29表组合生成物 | R:code:docs/contracts/c08-controller/build_layout.py,code:docs/contracts/c08-controller/common.sql | A:controller-storage候选完整组合 | S:只从固定三源生成，不能另加载旧scope或deny；准备门控读取通用保护，低floor复用已提交更强事实。非完整执行P2/P3布局，不证明设备最终发送门控或生产迁移
+layout-report.json[SQ5L]: F:记录262项Controller基础组合回归及十输入摘要 | R:code:docs/contracts/c08-controller/check_layout.py | A:29表共库与故障结果 | S:命令HTTP链接不扩大范围；BODY合成且SQLite非产品批准，真实服务磁盘IPC设备未验
+FENCE.md[SD9T]: F:规定执行登记和运行保护切点及逐出口应用并连接尝试层 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/BARRIER_ATTEMPTS.md | A:46表组合及T1和T2与P2和P3 | S:原347项只验46表；逐出口强证据不等汇总，迟到进入传输推翻未发核销。applied不清资源，五表尝试另加载，完整终态与其他屏障和提供者仍缺
+check_fence.py[TD8M]: F:在46表内存组合核验逐传输登记及完整保护和故障回滚 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/check_layout.py,code:docs/contracts/c08-controller/FENCE.md | A:347项检查及报告与staged绑定 | S:目标期望手写，不查待测视图生成；仅memory主动异常及串行顺序，BODY不证身份预算或效果。单出口强证据先于汇总，最后未发不清原发送；字节检查不重跑
+fence-report.json[SQ5L]: F:记录347项执行保护内存回归及十五输入摘要 | R:code:docs/contracts/c08-controller/check_fence.py | A:46表结果与版本 | S:新增命令HTTP入口不扩大范围；批准为false，SQLite非产品批准，真实身份预算IPC磁盘设备未验
+fence.sql[FD9M]: F:定义17表执行登记与运行切点覆盖和应用附属布局 | R:code:docs/contracts/c08-controller/controller.sql,code:docs/contracts/c08-controller/FENCE.md | A:STRICT及双向配对与全集和不可变守卫 | S:后加载构成46表，permit按packet递增；seal与来源commit同事务，历史出口和未决许可双向核对。逐出口强证据不等全集，迟到进入传输重开未发核销；BODY真实性及其他屏障另验
+BARRIER_ATTEMPTS.md[SR9S]: F:定义同cut屏障尝试恢复与逐传输IPC及持久映射 | R:code:docs/contracts/c08-controller/barrier-attempt.sql,code:docs/contracts/c08-controller/build_execution_ipc.py | A:IPC0.6三十帧与五表附属候选 | S:编码不发送，重传换许可不换包；查询只回原ACK，缓存丢失不证未发。迟到强证据立即保留而不采用旧尝试，换出口走退役；51表仅运行保护，其他屏障及准备持久提供者未完成
+barrier-attempt-report.json[SQ5L]: F:记录78项屏障尝试内存回归及十八输入摘要 | R:code:docs/contracts/c08-controller/check_barrier_attempt.py | A:51表结果与引擎版本 | S:HTTP入口变更不扩大覆盖；批准为false，BODY为占位，主动异常非磁盘崩溃，真实身份IPC设备未验
+barrier-attempt.sql[FD9S]: F:定义运行保护尝试失败与原ACK和采用关系的五表约束 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/BARRIER_ATTEMPTS.md | A:51表组合及双向配对与只增历史 | S:重试须紧邻失败且channel_lost不可复用旧出口；ACK完整封存后独立选择。未采用迟到ACK仍提升在途，原覆盖不改；BODY真实性外验，不是全部屏障或生产迁移
+build_execution_ipc.py[XN8S]: F:从固定IPC0.5生成编码准备逐传输及屏障尝试的三十帧候选 | R:code:docs/contracts/c05-protection/ipc-v05.schema.json,code:docs/contracts/c05-protection/protocol.schema.json | A:build与check及IPC0.6生成 | S:旧文件不改；新增计数严格U20而旧借用词法未统一，三特性必选。ContentRef限可信本机解析，动态字节资格另验，不切SDK权威
+check_barrier_attempt.py[TD8S]: F:在51表内存组合核验尝试历史ACK及采用事务并绑定报告 | R:code:docs/contracts/c08-controller/barrier-attempt.sql,code:docs/contracts/c08-controller/check_fence.py | A:78项检查及report和staged绑定 | S:只连memory且预期手写，缺写和主动异常核对全表；迟到旧ACK不采用但保留强证据。BODY是假定，十八输入核字节不重跑，真实并发耐久与设备未验
+check_execution_ipc.py[TN8L]: F:核验三十帧及编码重传双清单和ACK查询关联并绑定报告 | R:code:docs/contracts/c08-controller/build_execution_ipc.py,code:docs/contracts/c05-protection/check_protocol.py | A:155项检查及report与staged绑定 | S:本地Registry不联网，实际JCS不证明权威；原业务锚与当前守卫分开，旧查询正文固定。持久与时钟为人工前提，十六输入核字节不重跑，未实现真实IPC或完整解码
+execution-ipc-report.json[SQ5L]: F:记录155项逐传输IPC检查及十六输入摘要 | R:code:docs/contracts/c08-controller/check_execution_ipc.py | A:三十帧结构与合成关联结果 | S:批准为false，真实编码身份IPC时钟磁盘设备均未验；报告绑定不扩大旧帧语义覆盖
+execution-ipc.schema.json[FN8L]: F:声明逐传输许可编码准备及四类尝试屏障的三十帧IPC | R:code:docs/contracts/c08-controller/build_execution_ipc.py,code:docs/contracts/c05-protection/protocol.schema.json | A:ipc/0.6.0-transmission-draft.1及76个defs | S:只编码往返与发送分离，累计ACK不归具体ordinal；缓存缺失无覆盖或生效tick。新特性必选，旧借用词法仍在，Schema不证明方向身份或耐久，不修改旧接受集
+LIFECYCLE.md[SR9S]: F:设计命令终态资源字段与提供者并连接完整命令存储候选 | R:code:docs/contracts/c08-controller/COMMAND_STORAGE.md,code:docs/contracts/c08-controller/lifecycle_model.py | A:转换及T1/T2/T6约定 | S:transport只取当前attempt事实；unknown核对不改终态或锁存，资源视图不等公开clear或READY。77表已联接存储但prepare和observe及临时投影错误尚未纳入统一SDK，124项快照非运行
+build_lifecycle.py[XN8S]: F:生成终态资源及提供者回执的十八模型局部Schema | R:code:docs/contracts/c08-controller/LIFECYCLE.md | A:build及check与生命周期0.1候选 | S:根拒直接实例而按defs验证；PacketRef保留原双字段，计数严格U20。未知clear需核对，局部State不是完整公共CommandRecord，生成不切SDK权威
+check_lifecycle.py[TR8M]: F:以人工预期核验终态释放重试及当前尝试和迟到风险 | R:code:docs/contracts/c08-controller/lifecycle_model.py,code:docs/contracts/c08-controller/build_lifecycle.py | A:124项检查与report和staged绑定 | S:提供者回执和期限为合成上下文，重算摘要仍核可信原件；旧attempt事实不得推进新attempt。十一输入字节核对不重跑，未运行SQL或真实提供者，不代替并发验收
+lifecycle-report.json[SQ5L]: F:记录124项终态资源及当前尝试快照回归和十一输入摘要 | R:code:docs/contracts/c08-controller/check_lifecycle.py | A:Schema与关联及风险投影结果 | S:批准为false；DF04新增时间存储不扩本范围，SQLite及真实服务设备均未执行
+lifecycle.schema.json[FN8L]: F:声明终态状态资源切点释放证据与转换的十八个局部模型 | R:code:docs/contracts/c08-controller/build_lifecycle.py | A:controller-lifecycle0.1具名defs | S:根拒直接实例且对象封闭；unknown清理须Resolution，Policy无retry时尝试仅一。合法ProviderReceipt不取得真实权威，非完整公共GET响应或数据库DDL
+lifecycle_model.py[TR8M]: F:判定合成生命周期转换完整资源切点及迟到风险 | R:code:docs/contracts/c08-controller/build_lifecycle.py,code:docs/contracts/c08-controller/check_lifecycle.py | A:transition_error及release_error和hold_blockers | S:transport必须当前attempt的in_flight；核对不改终态或清锁存，safe_failure另绑政策。旧释放重核当前cut，迟到事实只推翻never_sent不自动推翻效果核销；无I/O或权威提供者与事务
+RESOURCE_STORAGE.md[SD9T]: F:规定资源占用释放失效及恢复写集并连接命令修订组合 | R:code:docs/contracts/c08-controller/resource.sql,code:docs/contracts/c08-controller/COMMAND_STORAGE.md | A:66表子域与T1/T2和释放恢复 | S:新attempt不追溯推翻旧正确释放，迟到强事实仍影响原依赖；本机禁许可不等worker屏障。272项仅子域，77表另联命令，恢复不续跑，公共SDK及保护outbox和运行仍缺
+check_resource.py[TD8M]: F:在66表内存组合核验资源写集迟到双占用及恢复保护 | R:code:docs/contracts/c08-controller/resource.sql,code:docs/contracts/c08-controller/check_barrier_attempt.py | A:272项参考检查及report和staged绑定 | S:预期手写且仅memory，缺写及主动异常比较全部表；原件权威仍为夹具，SQL合法不证时效或JCS。二十二输入核字节不重跑，未运行磁盘并发IPC或设备
+resource-report.json[SQ5L]: F:记录272项资源存储参考结果及二十二输入摘要 | R:code:docs/contracts/c08-controller/check_resource.py | A:66表组合及实际引擎版本 | S:HTTP入口变更不扩大覆盖；批准为false且SQLite非产品批准，原件为合成，真实提供者并发IPC磁盘设备未验
+resource.sql[FD9M]: F:声明资源占用释放验证失效及保护恢复十五表附属布局 | R:code:docs/contracts/c08-controller/fence.sql,code:docs/contracts/c08-controller/barrier-attempt.sql,code:docs/contracts/c08-controller/RESOURCE_STORAGE.md | A:STRICT双向配对与完整集合封存及风险视图 | S:两来源共用风险，迟到事实原子锁存但保留双hold；关闭不可再发，完整历史含已核销项。恢复覆盖全部旧失效且不覆盖后来新项，证明撤回重开保护；BODY权威与命令终态外验，非生产迁移
+COMMAND_STORAGE.md[SD9T]: F:设计命令固定终态报告身份与资源联接并连接公开HTTP | R:code:docs/contracts/c08-controller/command.sql,code:docs/contracts/c08-controller/check_command.py,code:docs/contracts/c02-command-view/README.md | A:77表与T1准备T2及T6 | S:Resolution采用not_sent而非unknown；核对不改原终态或锁存。转换与State摘要分开，迟到保护遮蔽旧投影；七HTTP已有候选但公开修订取消证据DDL及保护outbox仍缺，非生产迁移
+check_command.py[TD8M]: F:在77表内存组合核验命令终态核对枚举报告及资源写集 | R:code:docs/contracts/c08-controller/command.sql,code:docs/contracts/c08-controller/check_resource.py,code:docs/contracts/c08-controller/COMMAND_STORAGE.md | A:320项检查及report与staged绑定 | S:缺写和主动异常比全库快照，预期手写；not_sent核对不自动clear，unknown不是确定Resolution。BODY与摘要为占位，不同出口可复用本地报告ID；25输入核字节不重跑，非真实writer或耐久
+command-report.json[SQ5L]: F:记录320项命令资源组合内存检查及二十五输入摘要 | R:code:docs/contracts/c08-controller/check_command.py | A:77表结果及Resolution枚举回归 | S:批准为false；SQLite非产品批准，BODY和摘要为夹具，真实并发磁盘IPC及设备未验
+command.sql[FD9L]: F:定义命令政策修订核对与报告接收的十一表附属约束 | R:code:docs/contracts/c08-controller/resource.sql,code:docs/contracts/c08-controller/COMMAND_STORAGE.md | A:77表双向延迟配对与当前投影视图 | S:终态和锁存不可改，Resolution须同修订选择且拒unknown；T2绑定新hold，终态禁止普通许可。资源释放不替代命令核对；报告同状态提交，迟到保护遮蔽旧clear。SQL不计算JCS或核可信BODY，非生产迁移
+ISSUE_LEDGER.md[SD9T]: F:定义共享签发序列与94表配对及迁移阻断边界 | R:code:docs/contracts/c08-controller/issue-ledger.sql,code:docs/contracts/c08-controller/build_issue_ledger.py | A:普通取消同序列与四切点迁移及故障验收 | S:只冻结物理索引，完整执行原件和取消coverage未齐；阻断不能作为产品降级。非空BODY不证权威，旧91表保留；不得部署，真实并发耐久未验
+build_issue_ledger.py[XD8T]: F:从固定91表与签发源生成94表组合并校验替换数量 | R:code:docs/contracts/c08-controller/issue-ledger.sql,code:docs/contracts/c08-controller/build_layout.py | A:build及check | S:移除旧普通分配器且四水位同版替换，原文件不改；新增反向FK及不可变触发器。不是通用迁移器，生成不授运行资格
+check_issue_ledger.py[TD8S]: F:验证共享签发交错事务及旧水位迁移与缺覆盖阻断 | R:code:docs/contracts/c08-controller/build_issue_ledger.py,code:docs/contracts/c02-command-view/check_storage.py | A:115项内存检查及report和staged绑定 | S:缺写与主动异常比较94表，原字节及资源双顺序另验；高位仅算术探针。BODY人工且完整取消coverage未齐，34输入字节核对不重跑，真实并发设备未验
+controller-issue.sql[FD9L]: F:承载94表共享签发索引与既有命令保护资源的固定组合 | R:code:docs/contracts/c08-controller/build_issue_ledger.py,code:docs/contracts/c08-controller/issue-ledger.sql | A:共享U20与双向FK及迁移阻断 | S:普通和取消共用ID序列，回滚不消费；RUN资源取消四水位统一但新覆盖未齐。取消执行原件仍为BODY，匹配取消的RUN及资源释放阻断，不是可部署迁移
+issue-ledger-report.json[SQ5L]: F:保存115项共享签发内存结果及34输入摘要 | R:code:docs/contracts/c08-controller/check_issue_ledger.py | A:混合序列故障及迁移约束报告 | S:批准为false，SQLite非产品引擎批准；高位仅算术，BODY合成，完整取消coverage及真实并发磁盘设备未验
+issue-ledger.sql[FD9S]: F:声明共享issue与独立取消传输提交三表及保护守卫 | R:code:docs/contracts/c08-controller/ISSUE_LEDGER.md,code:docs/contracts/c08-controller/build_issue_ledger.py | A:全局精确序列与类型配对及原字节固定 | S:必须与生成组合加载，ID及revision跨类型唯一；取消Requester不继承父run，未知关闭禁发。原件权威尚为BODY，RUN和资源取消覆盖未合并时阻断；非生产迁移
+CANCEL_FENCE.md[SD9T]: F:规定RUN取消完整捕获原ACK与采用及迟到强事实持久语义 | R:code:docs/contracts/c08-controller/cancel-fence.sql,code:docs/contracts/c08-controller/build_cancel_fence.py | A:99表候选与原子写集和故障验收 | S:按取消Requester不借父run；退役未决出口保留，applied不清资源。ACK封存也冻结切点窗口；原件撤回及执行Plan和其他屏障仍缺，禁止当完整迁移或运行证据
+build_cancel_fence.py[XD8T]: F:将94表与取消覆盖源组合为99表并移除RUN临时阻断 | R:code:docs/contracts/c08-controller/build_issue_ledger.py,code:docs/contracts/c08-controller/cancel-fence.sql | A:build与check及不可变守卫生成 | S:仅精确移除指定触发器，资源阻断保留；报告核销覆盖和ACK封存均受pending cut保护，防预写行后激活。原版本不改，不是产品迁移器
+cancel-fence-report.json[SQ5L]: F:保存184项RUN取消内存结果及39输入摘要 | R:code:docs/contracts/c08-controller/check_cancel_fence.py | A:三写集故障与来源边界和容量结果 | S:批准为false，BODY合成且SQLite非产品批准；真实IPC并发磁盘设备全零，输入绑定不扩大完整执行或资源证明
+cancel-fence.sql[FD9S]: F:声明取消报告核销切点与ACK采用五表及完整选择约束 | R:code:docs/contracts/c08-controller/CANCEL_FENCE.md,code:docs/contracts/c08-controller/build_cancel_fence.py | A:复合FK封存差集及强事实和未决视图 | S:须由生成器与94表组合；Requester来源精确，never_sent被已发重开。失败原ACK仍贡献强事实，采用不能降切点已发或凭退休制造未发；BODY权威与撤回外验，非生产迁移
+check_cancel_fence.py[TD8S]: F:核验RUN取消完整覆盖及ACK采用的99表故障与边界 | R:code:docs/contracts/c08-controller/build_cancel_fence.py,code:docs/contracts/c08-controller/check_issue_ledger.py,code:docs/contracts/c08-controller/check_barrier_attempt.py | A:184项参考检查与report及staged绑定 | S:集合预期手写，256和257实际插入；缺写主动异常比全库，预写覆盖后ACK的绕过被拒。BODY人工且真实并发磁盘设备未验，39输入字节核对不重跑
+controller-cancel-fence.sql[FD9L]: F:承载共享签发与RUN取消捕获ACK采用的99表组合 | R:code:docs/contracts/c08-controller/build_cancel_fence.py,code:docs/contracts/c08-controller/cancel-fence.sql | A:双类别完整覆盖与源事务及不可变历史 | S:替代RUN临时阻断而保留取消资源阻断；原ACK与采用分开，迟到强事实重开未发核销。封存窗口禁止ACK改变事实；完整执行原件及TIME尚缺，不能部署
+CANCEL_RESOURCE.md[SD9T]: F:设计取消资源完整释放及迟到失效和显式恢复边界 | R:code:docs/contracts/c08-controller/cancel-resource.sql,code:docs/contracts/c08-controller/check_cancel_resource.py | A:103表候选字段与写集及验收限制 | S:关闭修订和回执双绑定不代替ordinary-all原件FK；释放后禁新取消传输。旧恢复不覆盖新失效，候选不是生产迁移，完整执行与其他屏障仍缺
+build_cancel_resource.py[XD8T]: F:组合99表与取消资源关系生成103表并移除释放临时阻断 | R:code:docs/contracts/c08-controller/build_cancel_fence.py,code:docs/contracts/c08-controller/cancel-resource.sql | A:build与check及不可变触发器生成 | S:精确替换失效来源及签发错误名，保留释放后禁发；原版本不改。生成不执行迁移或证明提供者权威
+cancel-resource-report.json[SQ5L]: F:保存129项取消资源核销内存结果及44输入摘要 | R:code:docs/contracts/c08-controller/check_cancel_resource.py | A:103表约束故障与恢复结果 | S:批准为false，SQLite非产品批准；BODY合成且真实运行并发磁盘设备全零，字节绑定不扩大覆盖
+cancel-resource.sql[FD9S]: F:声明取消关闭核销及完整释放四表并扩展失效与风险来源 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/resource.sql | A:完整集合封存与三来源失效触发器 | S:全部历史含已核销项，迟到已发推翻never_sent但不直接推翻效果核销；撤回加入同一资源恢复。关闭仅绑定已提交修订与提供者，完整屏障原件FK仍缺，非生产迁移
+check_cancel_resource.py[TD8S]: F:核验103表释放写集完整性及取消迟到失效和恢复 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/check_cancel_fence.py,code:docs/contracts/c08-controller/check_resource.py | A:129项参考检查与report和staged绑定 | S:缺写主动异常比全库，重传成员预期手写；普通路径亦在新组合验证。反例摘要须不同，BODY合成；44输入核字节不重跑，真实并发耐久未验
+controller-cancel-resource.sql[FD9L]: F:承载103表共享签发RUN覆盖及两类资源核销的固定组合 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/cancel-resource.sql | A:双类别完整释放与迟到失效恢复 | S:替代取消资源阻断但释放后仍禁发；三种强事实同事务重开风险并锁存，不改历史终态。普通all关闭原件及其他屏障与TIME未齐，不能部署
+CANCEL_CLOSURE.md[SD9T]: F:规定两阶段关闭原件及取消编码来源与撤回重取证 | R:code:docs/contracts/c08-controller/cancel-closure.sql,code:docs/contracts/c08-controller/check_cancel_closure.py | A:119表字段写集与剩余冻结边界 | S:ordinary不许公开closed，all冻结新签发；退休不造未发。普通逐出口准备和完整Plan仍缺，BODY非权威证明，不是生产迁移
+build_cancel_closure.py[XD8T]: F:组合103表与关闭原件生成119表并联接公共修订及资源失效 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/cancel-closure.sql | A:build及check与固定替换 | S:旧源不改；两类强事实吸收原ACK，独立失效来源防同名混淆。新ACK禁止在RUN封存窗口激活，生成不执行迁移或取真实权威
+cancel-closure-report.json[SQ5L]: F:保存251项两阶段关闭内存检查及49输入摘要 | R:code:docs/contracts/c08-controller/check_cancel_closure.py | A:119表写集关联与故障结果 | S:批准为false，SQLite非产品批准；真实IPC提供者并发磁盘设备未验，字节绑定不扩大覆盖
+cancel-closure.sql[FD9M]: F:声明关闭切点ACK选择与汇总及取消编码来源十六表约束 | R:code:docs/contracts/c08-controller/build_cancel_closure.py,code:docs/contracts/c08-controller/CANCEL_CLOSURE.md | A:双向配对全集封存与不可逆关闭关联 | S:all冻结新准备和许可，完整历史不省已核销项；失败旧ACK可存强事实但不采用。撤回不复活发送，新汇总须完整选择；普通准备及完整Plan和真实BODY外验，非生产迁移
+check_cancel_closure.py[TD8S]: F:核验关闭编码和公开修订六写集及迟到撤回的119表边界 | R:code:docs/contracts/c08-controller/build_cancel_closure.py,code:docs/contracts/c08-controller/check_cancel_resource.py | A:251项内存检查与report及staged绑定 | S:集合预期手写，缺写主动异常比全库；晚ACK与资源失效同回滚，退休不造未发。BODY合成，49输入核字节不重跑，真实并发磁盘设备未验
+controller-cancel-closure.sql[FD9L]: F:承载119表两阶段关闭编码来源及公开资源联接固定组合 | R:code:docs/contracts/c08-controller/build_cancel_closure.py,code:docs/contracts/c08-controller/cancel-closure.sql | A:共享签发RUN及取消关闭和资源恢复 | S:closed必须有效all原件，撤回隐藏当前而保留历史并重开资源；新汇总不重放动作。普通准备与完整Plan及其他屏障TIME未齐，不能部署
+CANCEL_PLAN.md[SD9T]: F:定义取消动作图完成证据与后继采用及锁存候选 | R:code:docs/contracts/c08-controller/cancel-plan.sql,code:docs/contracts/c08-controller/check_cancel_plan.py | A:129表字段写集及故障验收 | S:primitive成功不等整体取消确认；祖先撤回锁住执行但不回滚历史。父命令可能未发，不能借普通hold；独立占用和撤回到资源保护仍缺，BODY不证权威，不能部署
+build_cancel_plan.py[XD8T]: F:从119表与动作图源生成129表固定组合 | R:code:docs/contracts/c08-controller/build_cancel_closure.py,code:docs/contracts/c08-controller/cancel-plan.sql | A:build与check及不可变封存生成 | S:旧源不改，动作图结果成员及派发采用封存后不可增补；生成不执行迁移或证明提供者资格
+cancel-plan-report.json[SQ5L]: F:保存184项取消动作图内存检查及54输入摘要 | R:code:docs/contracts/c08-controller/check_cancel_plan.py | A:129表故障与依赖边界报告 | S:批准为false，BODY合成且SQLite非产品批准；真实服务提供者并发磁盘设备未验，输入绑定不扩大覆盖
+cancel-plan.sql[FD9S]: F:声明取消唯一图结果全集与发送依赖的十表约束 | R:code:docs/contracts/c08-controller/build_cancel_plan.py,code:docs/contracts/c08-controller/CANCEL_PLAN.md | A:双向配对封存与锁存视图和最终发送守卫 | S:结果含全部重传，未知失败与任意撤回禁止后继；原结果不改，结果水位两次核验。数量不能证明批准图完整，独立hold仍为Ref且资源撤回未贯通，非生产迁移
+check_cancel_plan.py[TD8S]: F:核验129表动作图及完成证据和后继采用的故障边界 | R:code:docs/contracts/c08-controller/build_cancel_plan.py,code:docs/contracts/c08-controller/check_cancel_closure.py | A:184项内存检查及report和staged绑定 | S:三个写集逐条缺写与主动异常比全库，祖先及签发中撤回另验；BODY为夹具。54输入核字节不重跑，真实并发磁盘设备未验
+controller-cancel-plan.sql[FD9L]: F:承载129表动作图完成原件和取消发送依赖的完整组合 | R:code:docs/contracts/c08-controller/build_cancel_plan.py,code:docs/contracts/c08-controller/cancel-plan.sql | A:共享签发关闭资源与动作图组合 | S:最后发送提交重核锁存与全部前驱；关闭及整体效果仍独立。独立hold资源撤回保护及其他屏障TIME未齐，不是可部署迁移
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
+README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行
+build_contracts.py[XN8M]: F:生成命令查询取消与证据模型及七操作自包含OpenAPI | R:code:docs/contracts/c02-command-view/README.md,code:docs/contracts/c08-controller/lifecycle.schema.json | A:build及check与command-view0.1 | S:只投影固定本地闭包且常量不改写；human取消同时要求CSRF，service独立分支。State与record摘要分离，借旧类型的词法未统一，不改旧源或切SDK权威
+check_contracts.py[TN8M]: F:核验命令HTTP结构投影及合成取消证据关联并绑定报告 | R:code:docs/contracts/c02-command-view/reference_model.py,code:docs/contracts/c02-command-view/build_contracts.py | A:160项参考检查及report和staged绑定 | S:权威和游标签名均为夹具；重算摘要仍核原件，取消未知不得重开。只验证有限状态快照，不执行HTTP或SQL，十三输入字节核对不重跑
+command.openapi.json[SN8L]: F:声明命令当前历史查询取消与证据七个HTTP候选操作 | R:code:docs/contracts/c02-command-view/build_contracts.py | A:OpenAPI3.1.1及精确版本头 | S:全部no-store，202仅取消受理；当前不可发布明确503且只能重查，历史标识固定。human取消须CSRF，证据权限独立；内联闭包不含内部原件，声明不实现鉴权或服务
+command.schema.json[FN8L]: F:定义完整公开命令记录及取消身份回执进度和证据快照 | R:code:docs/contracts/c02-command-view/build_contracts.py,code:docs/contracts/c02-command-view/README.md | A:command-view0.1具名defs | S:根拒直接校验，版本独立且固定未批准；取消与命令终态分开，回执单向引用初始操作。动态关联和快照完整性另验，借旧类型词法未全修，非持久布局
+reference-report.json[SQ5L]: F:记录160项命令HTTP参考检查及十三输入字节摘要 | R:code:docs/contracts/c02-command-view/check_contracts.py | A:结构投影与合成关联结果 | S:文稿连接取消IPC不扩大本覆盖；批准为false，HTTP鉴权游标签名SQLite及设备未执行
+reference_model.py[TN8M]: F:在合成上下文判定命令投影取消查原及证据分页关联 | R:code:docs/contracts/c02-command-view/README.md,code:docs/contracts/c02-command-view/check_contracts.py | A:record_error及cancel_step和cancellation_error与page_error | S:字典模拟原子受理；当前权限先于历史身份，原结果先于新CAS期限。未知取消不重开且关闭不回退，确认不改固定终态；完整集和可信标志由夹具提供，无I/O或实际事务
+STORAGE.md[SD9T]: F:规定公开修订取消与固定证据十四表的原子写集和后续保护映射 | R:code:docs/contracts/c02-command-view/storage.sql,code:docs/contracts/c02-cancellation/README.md | A:91表组合与五类写集 | S:受理deny不证关闭，历史全部许可保留；未知终态不变。IPC0.7已有候选但共享签发水位及原件FK尚缺，旧clear失效隐藏当前且保留历史，BODY权威与磁盘未验
+check_storage.py[TD8M]: F:在91表内存组合核验公开修订取消及证据封存并绑定报告 | R:code:docs/contracts/c02-command-view/storage.sql,code:docs/contracts/c08-controller/check_command.py | A:396项检查及report和staged绑定 | S:预期成员手写；缺写与主动异常比全库，未提交取消前序不能绕单调约束。BODY为合成，原件撤回只验投影遮蔽；29输入核字节不重跑，不证明真实权限并发或磁盘设备
+storage-report.json[SQ5L]: F:记录396项公开修订取消存储检查及二十九输入摘要 | R:code:docs/contracts/c02-command-view/check_storage.py | A:91表内存约束及故障切点结果 | S:批准为false且SQLite非产品批准；BODY与权威为合成，主动异常不证磁盘崩溃，真实HTTP和IPC及设备未验
+storage.sql[FD9M]: F:声明公开命令修订取消账本及完整证据索引的十四表约束 | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c08-controller/command.sql | A:91表组合与延迟配对封存及三个视图 | S:每State必须完整record和snapshot；证据双向全集固定排序，取消永久禁普通许可但允许迟到报告。前序提交及进展单调，原回执不变；闭包BODY不证设备关闭，非生产迁移
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-cancellation/===
+README.md[SR9S]: F:设计取消双阶段关闭与独立保护发送及完整IPC和持久归并边界 | R:code:docs/contracts/c02-cancellation/build_contracts.py,code:docs/contracts/c02-command-view/STORAGE.md | A:IPC0.7四十六帧与故障验收 | S:只有all可公开closed且不等效果确认；普通和保护共用闸序但许可独立。即时保护不豁免单调期限，未知不重做；91表尚无共享签发水位或新原件FK，参考检查非运行
+build_contracts.py[XN8M]: F:从固定执行IPC生成取消保护领域及完整四十六帧候选 | R:code:docs/contracts/c08-controller/execution-ipc.schema.json,code:docs/contracts/c02-cancellation/README.md | A:models与build及check | S:旧协议不改，三项特性必选；新增保护覆盖四类屏障，ordinary与all分离。time_required决定可空引用，动态参数仍须二次验证，生成不切SDK权威
+cancellation.schema.json[FN8L]: F:声明取消绑定切点关闭证据与独立执行和传输的封闭模型 | R:code:docs/contracts/c02-cancellation/build_contracts.py | A:command-cancellation0.1及具名defs | S:根拒直接校验；all必须关联ordinary，confirmed必有all证据。即时guard不夹带UTC引用；结构不证明来源全集或当前权限，参考时钟新字段尚未归并
+check_contracts.py[TN8M]: F:核验取消四十六帧结构及新增关联和有限消费并绑定报告 | R:code:docs/contracts/c02-cancellation/reference_model.py,code:docs/contracts/c02-cancellation/build_contracts.py | A:256项检查及report与staged绑定 | S:权威提供者与全集由夹具给定；原三十帧仅结构回归。即时分支仍验单调期限及批准时间要求；二十八输入字节核对不重跑，不执行网络SQL或设备
+ipc.schema.json[FN8L]: F:声明取消保护归并后的四十六种设备IPC消息 | R:code:docs/contracts/c02-cancellation/build_contracts.py,code:docs/contracts/c02-cancellation/cancellation.schema.json | A:ipc0.7候选及十六新增帧 | S:开闸带完整取消deny，四类屏障含独立保护传输；三项新特性阻止降级。查询丢缓存不授重发，报文形状不证明发送方向或耐久，不替换旧版本
+reference-report.json[SQ5L]: F:记录256项取消保护参考检查及二十八输入摘要 | R:code:docs/contracts/c02-cancellation/check_contracts.py | A:四十六帧与合成关联结果 | S:批准为false；真实运行SQL与设备执行均零，旧帧结构通过不证明完整语义
+reference_model.py[TR8M]: F:判定合成取消切点关闭计划发送及屏障与结果关联 | R:code:docs/contracts/c02-cancellation/check_contracts.py,code:docs/contracts/c02-cancellation/build_contracts.py | A:cut与closure及send和consume等参考判定 | S:先模拟消费为unknown再I/O标记，重复仅查缓存；发送核完整持久正文和当前guard。权威及selector为夹具，false时间要求不免运行域期限；没有实际I/O或事务
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df03-reference/===
+README.md[SR9S]: F:定义应用参考时钟字段精确区间与发布失效和守卫边界 | R:code:docs/contracts/df03-reference/build_contracts.py,code:docs/rebirth-df03-time-profile-design.md | A:reference-time0.1候选与六输入复验入口 | S:经过量包络相对观测delta而非硬件频率，NTS不证明E；交换年龄从m1起算，提交及发送均重评。重复只读历史，失效不自动恢复；公共API及IPC和DDL尚未归并，真实平台未验
+build_contracts.py[XN8S]: F:生成参考时钟来源批准交换锚点评估与守卫的领域Schema | R:code:docs/contracts/df03-reference/README.md | A:build与check | S:根拒直接实例，模型固定reference-bound；批准单向引用避免循环。失效评估的区间年龄必须null，NTS引导必有Ref；词法合法仍需词宽及当前权威另验，不改旧协议
+check_contracts.py[TR8M]: F:以人工预期验证参考时钟格式精确算术和有限发布失效模型 | R:code:docs/contracts/df03-reference/reference_model.py,code:docs/contracts/df03-reference/build_contracts.py | A:145项检查及report与staged绑定 | S:信任解析和平台误差由合成上下文给定；零误差夹具非生产默认。原件错配重算摘要仍拒，字典切点非SQLite；六输入字节核对不重跑，无真实NTP设备或运行
+reference-report.json[SQ5L]: F:记录145项参考时钟回归及六输入摘要 | R:code:docs/contracts/df03-reference/check_contracts.py | A:字段区间和有限发布失效结果 | S:主稿TIME切点不扩范围；批准为false，真实NTP和SQLite及设备未验
+reference.schema.json[FN8L]: F:声明应用参考时钟证据链评估失效与UTC子守卫封闭格式 | R:code:docs/contracts/df03-reference/build_contracts.py | A:reference-time0.1具名模型库 | S:严格整数串仍需32位词及时代语义核验；unavailable不带合格区间，引用不授真实权威。UtcGuard仅时间子域，未替换公共ClockSample或旧IPC
+reference_model.py[TR8M]: F:参考计算NTP有理数UTC包络并判定关联发布失效和发送时资格 | R:code:docs/contracts/df03-reference/check_contracts.py | A:exchange_error与derive_anchor及assess和guard_error及publish和invalidate | S:原始小数不经浮点；年龄从m1和m4分别增长，发送重评而非复用旧区间。当前原件与权威是夹具，副本事务非真实CAS；重复只查历史，失效关闭不证明设备屏障完成，无I/O
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df03-service/===
+README.md[SR9T]: F:设计时间HTTP与执行IPC并连接独立采集器协议 | R:code:docs/contracts/df03-service/build_contracts.py,code:docs/contracts/df03-collector/README.md | A:六HTTP与IPC0.8及故障边界 | S:公共显示不授执行权，历史不刷新年龄；当前State变化需新Guard但不重发未知。UTC和排期分开，取消不继承排期，floor不降；采集14帧另通道，199项原检查不扩覆盖，物理写集未完
+build_contracts.py[XN8M]: F:生成时间领域及隔离HTTP闭包和完整46帧IPC0.8候选 | R:code:docs/contracts/c02-cancellation/ipc.schema.json,code:docs/contracts/df03-reference/reference.schema.json | A:build与Projection及check | S:按精确来源和defs投影且不改实例常量；三处旧Guard与取消同版替换，不暗改旧源。公共只人员读取，UTC不必有排期，候选不切SDK权威
+check_contracts.py[TN8M]: F:核验时间HTTP和完整IPC结构及新增关联与floor快照 | R:code:docs/contracts/df03-service/reference_model.py,code:docs/contracts/df03-service/build_contracts.py | A:199项参考检查及报告与staged绑定 | S:46帧升级正例仅形状，新关联独立用合成权威；复杂相等报告仅记结果。43输入核字节不重跑，未执行真实采样授权或事务
+internal.openapi.json[SN8L]: F:声明参考时间Bundle锚点评估和profile四个精确读取接口 | R:code:docs/contracts/df03-service/build_contracts.py | A:OpenAPI3.1.1内部时间查询 | S:精确版本与id修订摘要和配对mTLS必需，全部no-store；读取历史不刷新资格或授执行权，原始bytes仅引用，声明不执行对象授权
+ipc.schema.json[FN8L]: F:声明统一参考时间守卫与失效和排期绑定的完整46帧设备IPC | R:code:docs/contracts/df03-service/build_contracts.py | A:ipc0.8自包含候选 | S:三新特性必需，旧系统时间闭包不可达；取消独立时间且不能借普通排期。ACK回显和floor单调须语义另验，不包含采集器通道或真实权威
+public.openapi.json[SN8L]: F:声明公共时钟及评估两个隔离展示接口 | R:code:docs/contracts/df03-service/build_contracts.py | A:OpenAPI3.1.1与公共参考UTC | S:两authority分别提供且仅人员bearer，精确版本及no-store；区间中点半径用整数串，不可用全部清空。闭包不含内部原件，标签脱敏及实际认证另验
+reference-report.json[SQ5L]: F:记录199项时间HTTP与IPC回归及43输入摘要 | R:code:docs/contracts/df03-service/check_contracts.py | A:结构关联与有限floor结果 | S:TIME切点文稿不扩范围，46帧正例仅结构；权威合成，真实设备及业务运行未验
+reference_model.py[TR8S]: F:判定时间Bundle排期关联展示历史查询及floor和ACK回显 | R:code:docs/contracts/df03-reference/reference_model.py,code:docs/contracts/df03-service/check_contracts.py | A:execution_time_error与public_clock及exact_read和install_floor | S:权威与完整原件由夹具给定；时间要求不可降级，即时仍验域和期限。发送重评区间，历史读取按当前对象权，floor不得下降；无真实网络或持久事务
+source-bindings.json[FN6T]: F:绑定时间服务生成所用十二份历史Schema原字节 | R:code:docs/contracts/df03-service/build_contracts.py | A:来源摘要与六操作46帧计数 | S:批准固定false，摘要只定位生成输入，不证明可信来源或运行兼容
+time.schema.json[FN8L]: F:定义公共UTC投影证据Bundle及执行时间排期和开闸快照 | R:code:docs/contracts/df03-service/build_contracts.py | A:reference-time-service具名模型库 | S:根拒直接实例而闭包自包含；显示不授执行权，source标签不证脱敏，精确原件和当前State及排期关联另验。不是完整公共SDK或时间数据库布局
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df03-collector/===
+README.md[SR9T]: F:提供旧采集协议及有序停止和27表入站修正版入口 | R:code:docs/contracts/df03-collector/INBOX.md,code:docs/contracts/df03-collector/CHANNEL_V02.md | A:旧121项与后续独立复验范围 | S:旧集合和reported规则由0.2替换；162项与269项分开，25表方向错误已登记。机器协议未改，采集只交候选，业务运行未验
+build_contracts.py[XN8S]: F:生成采集器14帧及配置采样捕获提交回执和停止Schema | R:code:docs/contracts/df03-reference/reference.schema.json,code:docs/contracts/df03-service/build_contracts.py | A:build与check及time-collector候选 | S:按固定本地引用闭包自包含，原协议不改；candidate必有完整原件而无Anchor，failed不能夹合格交换。秘密只用受限Ref，形状不授角色或网络权
+check_contracts.py[TN8S]: F:验证采集器14帧及合成身份原件与有限消费停止快照 | R:code:docs/contracts/df03-collector/reference_model.py,code:docs/contracts/df03-collector/build_contracts.py | A:121项检查及report与staged绑定 | S:独立预期不由模型推导，权威与字节真实性为夹具；间隔等号可继续而截止等号拒绝。十二输入核字节不重跑，无真实网络OS身份IPC或SQLite
+collector.schema.json[FN8L]: F:声明独立采集器14类信封及采样证据和停止领域格式 | R:code:docs/contracts/df03-collector/build_contracts.py | A:time-collector0.1与具名入口 | S:角色固定time_provider，方向版本及三特性必需；不是设备IPC。未知捕获不带合格Exchange，published才有Anchor引用；当前权威及完整捕获和OS端点另验
+reference-report.json[SQ5L]: F:保存121项旧采集器协议回归及十二输入摘要 | R:code:docs/contracts/df03-collector/check_contracts.py | A:旧结构关联与有限采样停止结果 | S:TIME候选文稿绑定不扩旧覆盖；批准为false，真实NTP和SQLite及设备未验
+reference_model.py[TR8S]: F:模拟采集身份配置关联及单次消费上报停止和查原 | R:code:docs/contracts/df03-reference/reference_model.py,code:docs/contracts/df03-collector/check_contracts.py | A:reserve与consume及capture_error和stop等 | S:字典状态非真实事务，先消费后I/O标记故障为unknown；cache_missing不准重发，已消费STOP不清。精确原件及批准由上下文给定，核心跨实例容量与真实调度另验
+STORAGE.md[SD9T]: F:定义十四表时间原件写集并修正采集缓存释放边界 | R:code:docs/contracts/df03-collector/storage.sql,code:docs/contracts/df03-collector/JOURNAL.md | A:五类事务与Blob及恢复 | S:核心提交后释放取证副本，采集器等精确回执；密文同库不证加密，普通失败不清锚。215例仍限十四表，25表另验；TIME及完整库与GC未齐
+check_storage.py[TD8M]: F:在内存核验十四表时间写集及故障顺序并绑定报告 | R:code:docs/contracts/df03-collector/storage.sql,code:docs/contracts/df03-collector/STORAGE.md | A:215项检查及report和staged绑定 | S:只连memory，逐写主动异常比全表而非真实掉电；BODY及密文为合成，占位通过不证加密。高位仅表达式探针，三输入字节检查不重跑，不执行生产writer或网络
+storage-report.json[SQ5L]: F:记录215项十四表时间存储回归及三输入摘要 | R:code:docs/contracts/df03-collector/check_storage.py | A:原时间写集约束结果 | S:文稿连接25表不扩大覆盖；SQLite非产品批准，密文BODY合成，高位仅表达式，真实磁盘并发设备未验
+storage.sql[FD9S]: F:声明十四表时间采样裁决与原件发布失效的同库约束 | R:code:docs/contracts/df03-collector/STORAGE.md | A:STRICT及双向延迟外键与seal和当前状态视图 | S:seal核必需报文槽及链，发布和失效推进head而普通失败不动；原件墓碑禁改删，封存后不能增补。库内U20补零且分段递增，BODY和加密权威另验；非完整业务库或生产迁移
+CHANNEL_V02.md[SR9T]: F:规定有序停止与保留规则并连接采集日志组合 | R:code:docs/contracts/df03-collector/JOURNAL.md,code:docs/contracts/df03-collector/check_channel_v02.py | A:采集器0.2十四帧与恢复边界 | S:reported至精确回执仍占槽，旧ordinal不复活；ACK只证未来关闸，跨域未知m1从退役回执后保守等待。原92例不含25表，入站去重及运行未验
+build_channel_v02.py[XN8T]: F:从固定0.1生成有序停止及采样序号的完整0.2 Schema | R:code:docs/contracts/df03-collector/collector.schema.json,code:docs/contracts/df03-collector/CHANNEL_V02.md | A:build与check | S:只改精确具名模型和版本，旧文件不动；STOP删除集合而ACK回显切点，新增两特性必需。结构投影不执行序号或持久化，不切SDK权威
+channel-v02-report.json[SQ5L]: F:记录92项采集器0.2有限顺序回归及输入摘要 | R:code:docs/contracts/df03-collector/check_channel_v02.py | A:旧缺口复现及切点容量结果 | S:TIME切点主稿更新不扩原覆盖；旧缺口通过仅复现，真实IPC和NTP及SQLite设备未验
+channel-v02.schema.json[FN8L]: F:声明采集器0.2十四帧及有序STOP和poll序号字段 | R:code:docs/contracts/df03-collector/build_channel_v02.py | A:time-collector0.2与具名领域入口 | S:拒旧版本及旧STOP集合，ACK固定关闸但不证明历史UDP或设备关闭；连续序号和精确回显需语义核验。原件模型沿用且候选未批准
+check_channel_v02.py[TR8M]: F:复现旧停止容量缺口并核验0.2有限串行通道与释放 | R:code:docs/contracts/df03-collector/build_channel_v02.py,code:docs/contracts/df03-collector/check_contracts.py | A:ChannelModel与capacity_error及92项检查 | S:假定配置完成和可信上下文，非完整会话调度；reported保留至精确回执，旧ordinal拒绝，故障锁存且原ACK不替换。没有真实网络事务或退役，报告绑定不重跑
+JOURNAL.md[SD9T]: F:保留25表发送停止容量设计并标明后续入站修正版 | R:code:docs/contracts/df03-collector/INBOX.md,code:docs/contracts/df03-collector/journal.sql | A:六类写集及历史复验边界 | S:旧QUERY_POLL及核心QUERY_COMMIT不符真实通道，下一布局用27表；269项不扩为新组合证明。STOP不清未知，退役不退款存储，真实运行未验
+build_journal.py[XD8T]: F:组合固定时间SQL和采集日志为25表生成物 | R:code:docs/contracts/df03-collector/storage.sql,code:docs/contracts/df03-collector/journal.sql | A:build及check | S:精确替换一次以增加poll反向延迟FK，逐表投影不可变触发器；不改变旧源或加载数据库，不是通用SQL迁移器
+check_journal.py[TD8M]: F:在内存核验采集日志组合原子写集及恢复并绑定报告 | R:code:docs/contracts/df03-collector/build_journal.py,code:docs/contracts/df03-collector/check_storage.py | A:269项检查及report与staged绑定 | S:只连memory，缺写和主动异常比25表快照；BODY及退役为夹具，written非对端处理。迟到失败不改退休核销；八输入核字节不重跑，真实并发磁盘设备未验
+collector-storage.sql[FD9M]: F:承载时间原件与发送停止及容量的25表组合生成物 | R:code:docs/contracts/df03-collector/build_journal.py,code:docs/contracts/df03-collector/journal.sql | A:固定两源组合与完整不可变触发器 | S:双向poll预约防孤立，seal绑定释放回执及全部旧channel停止；attempt有唯一身份且前缀written后才继续。原件预算不退，BODY权威及入站外验，非生产迁移
+journal-report.json[SQ5L]: F:记录269项旧采集日志内存回归及八输入摘要 | R:code:docs/contracts/df03-collector/check_journal.py | A:25表约束与故障结果 | S:旧消息枚举错误未在本报告修复；27表另验，BODY退役合成，真实IPC磁盘并发设备未验
+journal.sql[FD9S]: F:定义十一表采集日志预约停止及退役核销的附属约束 | R:code:docs/contracts/df03-collector/build_journal.py,code:docs/contracts/df03-collector/JOURNAL.md | A:STRICT表关联触发器及三视图 | S:需生成组合补反向FK和不可变保护；回执同裁决且先于下次POLL，STOP_ACK不释放，退役保留预算。迟到不合格历史可存，逻辑字节不证文件容量，BODY与时效外验
+INBOX.md[SD9T]: F:设计采集入站持久去重与领域效果原子提交 | R:code:docs/contracts/df03-collector/inbox.sql,code:docs/contracts/df03-collector/check_inbox.py | A:27表候选与完整消息关联及故障边界 | S:显式修正旧25表消息方向；重复只查历史，新序号不能更新原件。STOP保留槽不跨缺号，提供者与严格解码未联接；完整库及TIME和容量profile仍缺
+build_inbox.py[XD8T]: F:从固定25表源生成带入站去重的27表修正版 | R:code:docs/contracts/df03-collector/build_journal.py,code:docs/contracts/df03-collector/inbox.sql | A:build及check | S:旧两枚举各四处精确替换，新增预算和回复FK各一次；不改旧源或执行迁移。生成漂移使检查失败，不是通用SQL转换器
+check_inbox.py[TD8S]: F:核验十四帧方向及27表入站效果原子配对和重复处理 | R:code:docs/contracts/df03-collector/build_inbox.py,code:docs/contracts/df03-collector/check_journal.py | A:162项内存检查及report与staged绑定 | S:预期集合人工给定，缺写主动异常比全库；BODY身份和解析合成，观察不证权威。十一输入核字节不重跑，未执行真实IPC磁盘并发或设备
+collector-storage-v02.sql[FD9L]: F:承载时间原件发送与入站效果同库提交的27表生成组合 | R:code:docs/contracts/df03-collector/build_inbox.py,code:docs/contracts/df03-collector/inbox.sql | A:完整组合与双向延迟FK及不可变约束 | S:核心枚举改为QUERY_CAPTURE和COMMIT_STATUS；入站原件ACK查询须配套封存，attempt不是对端已处理。STOP槽不越缺号，BODY及权威外验，非生产迁移
+inbox-report.json[SQ5L]: F:保存162项入站协议对账及27表事务检查和十一输入摘要 | R:code:docs/contracts/df03-collector/check_inbox.py | A:方向关联与故障回滚结果 | S:批准为false，SQLite非产品批准；BODY合成且运行全零，字节绑定不证严格解码或真实耐久
+inbox.sql[FD9T]: F:定义入站记录与封存两表及领域效果归属和回复约束 | R:code:docs/contracts/df03-collector/build_inbox.py,code:docs/contracts/df03-collector/INBOX.md | A:双向延迟FK和精确序号及唯一origin | S:须与25表修正版组合；首次Capture和ACK先有未封存origin，existing须已封存历史。QUERY_COMMIT绑定固定应答，普通预算外仅首ACK留槽；BODY完整相等和可信端点另验
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df03-time-fence/===
+README.md[SD9T]: F:设计TIME共享签发切点三份清单及失效持久归并 | R:code:docs/contracts/df03-time-fence/registry.schema.json,code:docs/contracts/c02-cancellation/README.md | A:内部投影与原子写集及故障验收 | S:91表仅普通水位，须全部相关屏障同版切换；本轮没有合并SQL。OperationIdentity解除摘要环，迟到ACK强事实与采用分离；容量为候选，提供者和运行未验
+build_contracts.py[XN8T]: F:生成TIME共享账本切点与ACK的内部投影Schema | R:code:docs/contracts/df03-service/ipc.schema.json | A:build与check | S:固定引用IPC0.8原件类型而不修改线协议；根拒直接实例，按defs校验。投影不是执行许可，不切SDK权威或生成迁移
+check_contracts.py[TR8S]: F:核验共享序列完整集合及TIME尝试和ACK的人工预期 | R:code:docs/contracts/df03-time-fence/reference_model.py,code:docs/contracts/df03-time-fence/build_contracts.py | A:92项快照检查与report及staged绑定 | S:目标预期手写含256与257边界；合法合成Ref为来源限制反证。只校投影且不运行SQL或完整IPC，六输入核字节不重跑，真实权威和设备未验
+reference-report.json[SQ5L]: F:保存92项TIME快照参考结果及六输入字节摘要 | R:code:docs/contracts/df03-time-fence/check_contracts.py | A:共享序列集合与尝试采用结果 | S:批准为false，SQLite及IPC和NTP等运行全零；快照成功不证明原件来源或持久化原子性
+reference_model.py[TR8S]: F:判定共享签发历史与TIME完整目标及ACK和采用关系 | R:code:docs/contracts/df03-time-fence/README.md,code:docs/contracts/df03-time-fence/check_contracts.py | A:registry_error与cut_error及attempt和ack及时间子域 | S:完整Registry与批准原件为人工前提，不执行writer；原锚已核销仍保留强事实，旧ACK有效不等采用最新尝试。never_sent被已发重开，时间通过不授完整发送权
+registry.schema.json[FN8L]: F:声明共享Issue和Registry及TIME切点尝试ACK的封闭投影 | R:code:docs/contracts/df03-time-fence/build_contracts.py,code:docs/contracts/df03-service/ipc.schema.json | A:time-fence-registry0.1具名defs | S:两批准标志false且根拒直接校验；复用IPC原件类型，投影不含完整原帧。65536历史及256成员为结构上限，完整性和可信来源另验，不是网络API或SQL

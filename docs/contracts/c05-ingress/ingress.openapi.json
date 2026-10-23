@@ -1,0 +1,1790 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Seamer规范摄取候选",
+    "version": "event-ingress/0.1.0-draft.1"
+  },
+  "paths": {
+    "/api/v1/providers/{provider_id}/events": {
+      "post": {
+        "operationId": "submitProviderEvent",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "event-ingress/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "provider_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "已可靠提交或查原；不表示动作成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderReceipt"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "202": {
+            "description": "已可靠提交或查原；不表示动作成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderReceipt"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "404": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "410": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "412": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ProviderBearer": []
+          }
+        ],
+        "x-required-permission": "source.event.submit",
+        "x-no-automatic-write-retry": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitEvent"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/providers/{provider_id}/events/lookup": {
+      "post": {
+        "operationId": "lookupProviderEvent",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "event-ingress/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "provider_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "已可靠提交或查原；不表示动作成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupResult"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "404": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "410": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "412": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ProviderBearer": []
+          }
+        ],
+        "x-required-permission": "source.event.read",
+        "x-no-automatic-write-retry": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupEvent"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/ingress/commits/{commit_id}": {
+      "get": {
+        "operationId": "readIngressCommit",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "event-ingress/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "commit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "已可靠提交或查原；不表示动作成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommittedBatch"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "400": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "401": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "404": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "409": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "410": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "412": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "413": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "422": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "429": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          },
+          "503": {
+            "description": "拒绝或状态不可确认；不授权自动重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                },
+                "description": "不可缓存"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "x-required-permission": "ingress.internal.read",
+        "x-no-automatic-write-retry": true
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "ProviderReceipt": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "event-ingress/0.1.0-draft.1"
+          },
+          "receipt_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "receipt_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "source_key": {
+            "$ref": "#/components/schemas/SourceKey"
+          },
+          "event_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "origin_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "ingest_state": {
+            "const": "committed"
+          },
+          "duplicate": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "contract_version",
+          "receipt_id",
+          "receipt_revision",
+          "source_key",
+          "event_id",
+          "origin_digest",
+          "ingest_state",
+          "duplicate"
+        ],
+        "additionalProperties": false
+      },
+      "SourceKey": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "registration_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "source_stream_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "source_epoch": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id",
+          "registration_id",
+          "source_stream_id",
+          "source_epoch"
+        ],
+        "additionalProperties": false
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "forbidden",
+              "invalid",
+              "conflict",
+              "closed",
+              "capacity",
+              "unavailable",
+              "version"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "code",
+          "request_id"
+        ],
+        "additionalProperties": false
+      },
+      "SubmitEvent": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "event-ingress/0.1.0-draft.1"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/Origin"
+          },
+          "origin_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "delivery_binding_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "age_evidence_ref": {
+            "$ref": "#/components/schemas/Ref"
+          }
+        },
+        "required": [
+          "contract_version",
+          "origin",
+          "origin_digest",
+          "delivery_binding_ref",
+          "age_evidence_ref"
+        ],
+        "additionalProperties": false
+      },
+      "Origin": {
+        "type": "object",
+        "properties": {
+          "source_key": {
+            "$ref": "#/components/schemas/SourceKey"
+          },
+          "binding_ref": {
+            "$ref": "#/components/schemas/SourceBindingRef"
+          },
+          "event_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "source_sequence": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/QualifiedValue"
+          }
+        },
+        "required": [
+          "source_key",
+          "binding_ref",
+          "event_id",
+          "source_sequence",
+          "payload"
+        ],
+        "additionalProperties": false
+      },
+      "SourceBindingRef": {
+        "type": "object",
+        "properties": {
+          "registration_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+            "maxLength": 20
+          },
+          "owner_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "provider_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "provider_boot_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "device_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "trigger_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "capability_version": {
+            "type": "string",
+            "pattern": "^[0-9A-Za-z.+-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "capture_policy_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+            "maxLength": 128
+          },
+          "capture_policy_revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+            "maxLength": 20
+          },
+          "delivery_semantics": {
+            "enum": [
+              "sampled",
+              "discrete"
+            ]
+          }
+        },
+        "required": [
+          "registration_id",
+          "revision",
+          "owner_service_id",
+          "database_instance_id",
+          "provider_id",
+          "provider_boot_id",
+          "device_id",
+          "trigger_id",
+          "capability_version",
+          "capture_policy_id",
+          "capture_policy_revision",
+          "delivery_semantics"
+        ],
+        "additionalProperties": false
+      },
+      "QualifiedValue": {
+        "type": "object",
+        "properties": {
+          "schema_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "value": {}
+        },
+        "required": [
+          "schema_ref",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "Ref": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "object_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "LookupResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "committed"
+              },
+              "receipt": {
+                "$ref": "#/components/schemas/ProviderReceipt"
+              }
+            },
+            "required": [
+              "state",
+              "receipt"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "historically_closed",
+                  "indeterminate"
+                ]
+              },
+              "receipt": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "receipt"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "LookupEvent": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "event-ingress/0.1.0-draft.1"
+          },
+          "source_key": {
+            "$ref": "#/components/schemas/SourceKey"
+          },
+          "event_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "origin_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "contract_version",
+          "source_key",
+          "event_id",
+          "origin_digest"
+        ],
+        "additionalProperties": false
+      },
+      "CommittedBatch": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "event-ingress/0.1.0-draft.1"
+          },
+          "inbox": {
+            "$ref": "#/components/schemas/InboxContent"
+          },
+          "match_set": {
+            "$ref": "#/components/schemas/MatchSet"
+          },
+          "snapshots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvaluationSnapshot"
+            },
+            "maxItems": 256
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TriggerDecision"
+            },
+            "maxItems": 256
+          },
+          "executions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExecutionPlanBinding"
+            },
+            "maxItems": 256
+          },
+          "commit": {
+            "$ref": "#/components/schemas/IngressCommit"
+          }
+        },
+        "required": [
+          "contract_version",
+          "inbox",
+          "match_set",
+          "snapshots",
+          "decisions",
+          "executions",
+          "commit"
+        ],
+        "additionalProperties": false
+      },
+      "InboxContent": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "inbox_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/Origin"
+          },
+          "origin_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "first_observation": {
+            "$ref": "#/components/schemas/FirstObservation"
+          },
+          "content_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "inbox_id",
+          "revision",
+          "origin",
+          "origin_digest",
+          "first_observation",
+          "content_digest"
+        ],
+        "additionalProperties": false
+      },
+      "FirstObservation": {
+        "type": "object",
+        "properties": {
+          "clock_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receive_tick_ns": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "delivery_binding_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "age_evidence_ref": {
+            "$ref": "#/components/schemas/Ref"
+          }
+        },
+        "required": [
+          "clock_ref",
+          "receive_tick_ns",
+          "delivery_binding_ref",
+          "age_evidence_ref"
+        ],
+        "additionalProperties": false
+      },
+      "MatchSet": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "match_set_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "source_key": {
+            "$ref": "#/components/schemas/SourceKey"
+          },
+          "registry_revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MatchTarget"
+            },
+            "maxItems": 256
+          },
+          "targets_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "match_set_id",
+          "source_key",
+          "registry_revision",
+          "targets",
+          "targets_digest"
+        ],
+        "additionalProperties": false
+      },
+      "MatchTarget": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "definition_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "definition_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "artifact_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "trigger_binding_ref": {
+            "$ref": "#/components/schemas/Ref"
+          }
+        },
+        "required": [
+          "run_id",
+          "definition_id",
+          "definition_version",
+          "artifact_ref",
+          "trigger_binding_ref"
+        ],
+        "additionalProperties": false
+      },
+      "EvaluationSnapshot": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "snapshot_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "run_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "run_revision_before": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "ingest_revision_before": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "slot_revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "artifact_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "inbox_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "match_set_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receive_cursor": {
+            "$ref": "#/components/schemas/ReceiveCursor"
+          },
+          "source_revision_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ref"
+            },
+            "maxItems": 256
+          },
+          "observation_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ref"
+            },
+            "maxItems": 256
+          },
+          "input_snapshot_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "business_state_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rule_result": {
+            "anyOf": [
+              {
+                "enum": [
+                  "true",
+                  "false",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransitionEvaluation"
+            },
+            "maxItems": 256
+          },
+          "snapshot_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "snapshot_id",
+          "run_id",
+          "run_revision_before",
+          "ingest_revision_before",
+          "slot_revision",
+          "artifact_ref",
+          "inbox_ref",
+          "match_set_ref",
+          "receive_cursor",
+          "source_revision_refs",
+          "observation_refs",
+          "input_snapshot_ref",
+          "business_state_ref",
+          "rule_result",
+          "transitions",
+          "snapshot_digest"
+        ],
+        "additionalProperties": false
+      },
+      "ReceiveCursor": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "ingest_epoch": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "receive_sequence": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "ingest_epoch",
+          "receive_sequence"
+        ],
+        "additionalProperties": false
+      },
+      "TransitionEvaluation": {
+        "type": "object",
+        "properties": {
+          "transition_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "result": {
+            "enum": [
+              "true",
+              "false",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "transition_id",
+          "priority",
+          "result"
+        ],
+        "additionalProperties": false
+      },
+      "TriggerDecision": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "decision_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "run_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "definition_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "artifact_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "inbox_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "match_set_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receive_cursor": {
+            "$ref": "#/components/schemas/ReceiveCursor"
+          },
+          "run_revision_before": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "run_revision_after": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "ingest_revision_before": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "ingest_revision_after": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "result": {
+            "enum": [
+              "accepted",
+              "no_match",
+              "suppressed_busy",
+              "suppressed_inactive",
+              "suppressed_obsolete",
+              "evaluation_unknown",
+              "ambiguous",
+              "protected"
+            ]
+          },
+          "reason_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "snapshot_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "selected_transition_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "execution_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decision_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "decision_id",
+          "run_id",
+          "definition_version",
+          "artifact_ref",
+          "inbox_ref",
+          "match_set_ref",
+          "receive_cursor",
+          "run_revision_before",
+          "run_revision_after",
+          "ingest_revision_before",
+          "ingest_revision_after",
+          "result",
+          "reason_code",
+          "snapshot_ref",
+          "selected_transition_id",
+          "execution_id",
+          "decision_digest"
+        ],
+        "additionalProperties": false
+      },
+      "ExecutionPlanBinding": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "run_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "execution_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "decision_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "artifact_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receive_cursor": {
+            "$ref": "#/components/schemas/ReceiveCursor"
+          },
+          "execution_binding_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "plan_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "expected_steps": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "sealed": {
+            "const": true
+          }
+        },
+        "required": [
+          "scope",
+          "run_id",
+          "execution_id",
+          "decision_ref",
+          "artifact_ref",
+          "receive_cursor",
+          "execution_binding_ref",
+          "plan_ref",
+          "expected_steps",
+          "sealed"
+        ],
+        "additionalProperties": false
+      },
+      "IngressCommit": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "commit_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "inbox_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receive_cursor": {
+            "$ref": "#/components/schemas/ReceiveCursor"
+          },
+          "source_revision_before": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "source_revision_after": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "match_set_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "decision_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DecisionRef"
+            },
+            "maxItems": 256
+          },
+          "decision_set_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "trigger_disposition": {
+            "enum": [
+              "eligible_decision_recorded",
+              "observed_only",
+              "suppressed",
+              "rejected"
+            ]
+          },
+          "notification_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "commit_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "commit_id",
+          "inbox_ref",
+          "receive_cursor",
+          "source_revision_before",
+          "source_revision_after",
+          "match_set_ref",
+          "decision_refs",
+          "decision_set_digest",
+          "trigger_disposition",
+          "notification_id",
+          "commit_digest"
+        ],
+        "additionalProperties": false
+      },
+      "DecisionRef": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "decision_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "decision_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "run_id",
+          "decision_id",
+          "decision_digest"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "ProviderBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "InternalMTLS": {
+        "type": "mutualTLS"
+      }
+    }
+  }
+}

@@ -1,0 +1,425 @@
+{
+  "approved": false,
+  "runtime_approved": false,
+  "all_passed": true,
+  "checks": [
+    {
+      "name": "完整捕获包含两个页面和后台",
+      "expected": [
+        [
+          "backend-a"
+        ],
+        [
+          "panel-a"
+        ],
+        [
+          "panel-b"
+        ]
+      ],
+      "actual": [
+        [
+          "backend-a"
+        ],
+        [
+          "panel-a"
+        ],
+        [
+          "panel-b"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "name": "包含离线出口且不含另一安装",
+      "expected": [
+        [
+          "background-a"
+        ],
+        [
+          "preview-a"
+        ],
+        [
+          "projection-a"
+        ],
+        [
+          "queue-a"
+        ],
+        [
+          "worker-current"
+        ],
+        [
+          "worker-old"
+        ]
+      ],
+      "actual": [
+        [
+          "background-a"
+        ],
+        [
+          "preview-a"
+        ],
+        [
+          "projection-a"
+        ],
+        [
+          "queue-a"
+        ],
+        [
+          "worker-current"
+        ],
+        [
+          "worker-old"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "name": "冻结清单摘要绑定",
+      "expected": "sha256:2805c0f9a20a07e83e108d99a32de161bc158d264bc2b95fce75d5a8884dfd77",
+      "actual": "sha256:2805c0f9a20a07e83e108d99a32de161bc158d264bc2b95fce75d5a8884dfd77",
+      "passed": true
+    },
+    {
+      "name": "撤销后注册owner拒绝",
+      "expected": "installation_denied",
+      "actual": "installation_denied",
+      "passed": true
+    },
+    {
+      "name": "撤销后注册出口拒绝",
+      "expected": "exit_denied",
+      "actual": "exit_denied",
+      "passed": true
+    },
+    {
+      "name": "撤销后订阅拒绝",
+      "expected": "subscription_denied",
+      "actual": "subscription_denied",
+      "passed": true
+    },
+    {
+      "name": "撤销后释放新帧拒绝",
+      "expected": "frame_denied",
+      "actual": "frame_denied",
+      "passed": true
+    },
+    {
+      "name": "拒绝重开安装",
+      "expected": "installation_immutable",
+      "actual": "installation_immutable",
+      "passed": true
+    },
+    {
+      "name": "拒绝重开owner",
+      "expected": "owner_denied",
+      "actual": "owner_denied",
+      "passed": true
+    },
+    {
+      "name": "冻结后不能删目标",
+      "expected": "capture_frozen",
+      "actual": "capture_frozen",
+      "passed": true
+    },
+    {
+      "name": "冻结后不能增目标",
+      "expected": "capture_frozen",
+      "actual": "capture_frozen",
+      "passed": true
+    },
+    {
+      "name": "冻结后不能删成员",
+      "expected": "capture_frozen",
+      "actual": "capture_frozen",
+      "passed": true
+    },
+    {
+      "name": "不能改目标世代",
+      "expected": "target_immutable",
+      "actual": "target_immutable",
+      "passed": true
+    },
+    {
+      "name": "不能改manifest",
+      "expected": "manifest_immutable",
+      "actual": "manifest_immutable",
+      "passed": true
+    },
+    {
+      "name": "无证据不能ack",
+      "expected": "evidence_required",
+      "actual": "evidence_required",
+      "passed": true
+    },
+    {
+      "name": "未齐不能完成",
+      "expected": "incomplete_evidence",
+      "actual": "incomplete_evidence",
+      "passed": true
+    },
+    {
+      "name": "closing不推进消费",
+      "expected": "subscription_boundary",
+      "actual": "subscription_boundary",
+      "passed": true
+    },
+    {
+      "name": "closing不恢复live",
+      "expected": "subscription_boundary",
+      "actual": "subscription_boundary",
+      "passed": true
+    },
+    {
+      "name": "旧出口墓碑不删除",
+      "expected": "exit_tombstone",
+      "actual": "exit_tombstone",
+      "passed": true
+    },
+    {
+      "name": "新进程不能确认旧世代",
+      "expected": "FOREIGN KEY constraint failed",
+      "actual": "FOREIGN KEY constraint failed",
+      "passed": true
+    },
+    {
+      "name": "本地证据不能替代IPC",
+      "expected": "CHECK constraint failed: (kind IN ('device_worker','background_worker') AND evidence_type<>'local_closed')\n OR (kind IN ('local_projection','local_preview','local_queue') AND evidence_type<>'ipc_fence')",
+      "actual": "CHECK constraint failed: (kind IN ('device_worker','background_worker') AND evidence_type<>'local_closed')\n OR (kind IN ('local_projection','local_preview','local_queue') AND evidence_type<>'ipc_fence')",
+      "passed": true
+    },
+    {
+      "name": "退役保留未消费高水位",
+      "expected": [
+        "closed",
+        3,
+        1
+      ],
+      "actual": [
+        "closed",
+        3,
+        1
+      ],
+      "passed": true
+    },
+    {
+      "name": "退役窗口释放",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "name": "closed不接受迟到ACK",
+      "expected": "subscription_boundary",
+      "actual": "subscription_boundary",
+      "passed": true
+    },
+    {
+      "name": "indeterminate不能当完成",
+      "expected": "incomplete_evidence",
+      "actual": "incomplete_evidence",
+      "passed": true
+    },
+    {
+      "name": "不能覆盖既有证据",
+      "expected": "evidence_immutable",
+      "actual": "evidence_immutable",
+      "passed": true
+    },
+    {
+      "name": "完整证据后可完成",
+      "expected": "acknowledged",
+      "actual": "acknowledged",
+      "passed": true
+    },
+    {
+      "name": "完成不重新激活安装",
+      "expected": "revoking",
+      "actual": "revoking",
+      "passed": true
+    },
+    {
+      "name": "另一安装保持原状态",
+      "expected": "active",
+      "actual": "active",
+      "passed": true
+    },
+    {
+      "name": "同页面另一出口仍待核对",
+      "expected": "closing",
+      "actual": "closing",
+      "passed": true
+    },
+    {
+      "name": "不能代另一出口退役窗口",
+      "expected": "outstanding",
+      "actual": "outstanding",
+      "passed": true
+    },
+    {
+      "name": "复用订阅墓碑拒绝",
+      "expected": "subscription_tombstone",
+      "actual": "subscription_tombstone",
+      "passed": true
+    },
+    {
+      "name": "遗漏离线目标且重算摘要",
+      "expected": "incomplete_capture",
+      "actual": "incomplete_capture",
+      "passed": true
+    },
+    {
+      "name": "遗漏离线目标且重算摘要整事务回滚",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "name": "遗漏零出口owner且重算摘要",
+      "expected": "incomplete_capture",
+      "actual": "incomplete_capture",
+      "passed": true
+    },
+    {
+      "name": "遗漏零出口owner且重算摘要整事务回滚",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "name": "篡改selector且重算摘要",
+      "expected": "incomplete_capture",
+      "actual": "incomplete_capture",
+      "passed": true
+    },
+    {
+      "name": "篡改selector且重算摘要整事务回滚",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "name": "缺保护outbox",
+      "expected": "incomplete_capture",
+      "actual": "incomplete_capture",
+      "passed": true
+    },
+    {
+      "name": "缺保护outbox整事务回滚",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "name": "缺审计记录",
+      "expected": "incomplete_capture",
+      "actual": "incomplete_capture",
+      "passed": true
+    },
+    {
+      "name": "缺审计记录整事务回滚",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "name": "注册先提交被捕获",
+      "expected": 1,
+      "actual": 1,
+      "passed": true
+    },
+    {
+      "name": "其他安装不能混入成员",
+      "expected": "FOREIGN KEY constraint failed",
+      "actual": "FOREIGN KEY constraint failed",
+      "passed": true
+    },
+    {
+      "name": "提交前异常无半批次",
+      "expected": [
+        0,
+        "active"
+      ],
+      "actual": [
+        0,
+        "active"
+      ],
+      "passed": true
+    },
+    {
+      "name": "响应丢失后仅查询原批次",
+      "expected": [
+        [
+          "close-a",
+          "install-a",
+          "frozen",
+          "sha256:2805c0f9a20a07e83e108d99a32de161bc158d264bc2b95fce75d5a8884dfd77"
+        ]
+      ],
+      "actual": [
+        [
+          "close-a",
+          "install-a",
+          "frozen",
+          "sha256:2805c0f9a20a07e83e108d99a32de161bc158d264bc2b95fce75d5a8884dfd77"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "name": "ACK事务异常不提前确认",
+      "expected": "pending",
+      "actual": "pending",
+      "passed": true
+    },
+    {
+      "name": "ACK事务异常不遗留证据",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "name": "同证据重新提交后确认",
+      "expected": "acknowledged",
+      "actual": "acknowledged",
+      "passed": true
+    },
+    {
+      "name": "完整空集可完成",
+      "expected": "acknowledged",
+      "actual": "acknowledged",
+      "passed": true
+    },
+    {
+      "name": "外键最终一致",
+      "expected": [],
+      "actual": [],
+      "passed": true
+    }
+  ],
+  "versions": {
+    "python": "3.14.0",
+    "sqlite": "3.50.4"
+  },
+  "runtime_validation": {
+    "product_services": 0,
+    "concurrency": 0,
+    "disk_crash": 0,
+    "browser": 0,
+    "device": 0,
+    "supervisor": 0
+  },
+  "limitations": [
+    "只用内存SQLite与串行顺序和主动异常",
+    "身份和证据是人工夹具，未验证真实权限或监督器",
+    "未合并PS1至PS6及完整领域DDL",
+    "计数为小整数，未验证生产U20和容量profile"
+  ],
+  "input_sha256": {
+    "docs/contracts/c09-panel-storage/README.md": "3e01ead37b2e6aa0af359fa10abd66d0bb259ed01fd97fe1b3a671b5127d4676",
+    "docs/contracts/c09-panel-storage/storage-probes.sql": "99b24dcfa90eec210b0d73ed8c66dbc58ffe777601b5e8595151c30a3ec65e7e",
+    "docs/contracts/c09-panel-storage/check_storage.py": "74a8459f113509812775d4fc42c08f311c7b7881fde9e6f6b541cc86e649ae3d",
+    "docs/contracts/c09-panel-service/HTTP_STORAGE.md": "3e1e80247d256311f15787a9e16edc20d3205dcef174af56a757dc8d72904932",
+    "docs/contracts/c09-panel-ipc/IPC_GUARD.md": "ef0c697835733243eeb7e25e0d8746eeee953adc43208421de7ca574036ed1ec",
+    "docs/contracts/c09-panel/CHANNEL_V02.md": "291b788022d999d941d00520016126180a80f55aebf953f6a2c7573af191186a"
+  }
+}

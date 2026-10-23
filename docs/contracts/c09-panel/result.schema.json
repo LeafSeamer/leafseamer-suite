@@ -1,0 +1,2386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c09-panel/result.schema.json",
+  "description": "21类面板结果候选；结构不证明字段权威或脱敏，方法与具名View绑定；动态值另按批准Schema校验。",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getMeta"
+        },
+        "value": {
+          "$ref": "#/$defs/MetaView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getClock"
+        },
+        "value": {
+          "$ref": "#/$defs/ClockView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.listDevices"
+        },
+        "value": {
+          "$ref": "#/$defs/DevicePageView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCapabilities"
+        },
+        "value": {
+          "$ref": "#/$defs/CapabilityView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getDeviceState"
+        },
+        "value": {
+          "$ref": "#/$defs/ObservationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.submitCommand"
+        },
+        "value": {
+          "$ref": "#/$defs/CommandView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCommand"
+        },
+        "value": {
+          "$ref": "#/$defs/CommandView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.cancelCommand"
+        },
+        "value": {
+          "$ref": "#/$defs/CancelView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getControlOperation"
+        },
+        "value": {
+          "$ref": "#/$defs/ControlOperationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getControl"
+        },
+        "value": {
+          "$ref": "#/$defs/ControlView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.acquireControl"
+        },
+        "value": {
+          "$ref": "#/$defs/ControlOperationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.releaseControl"
+        },
+        "value": {
+          "$ref": "#/$defs/ControlOperationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.offerTransfer"
+        },
+        "value": {
+          "$ref": "#/$defs/TransferView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.acceptTransfer"
+        },
+        "value": {
+          "$ref": "#/$defs/ControlOperationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.revokeRunGrant"
+        },
+        "value": {
+          "$ref": "#/$defs/MutationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getClockAssessment"
+        },
+        "value": {
+          "$ref": "#/$defs/ClockAssessmentView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCapacity"
+        },
+        "value": {
+          "$ref": "#/$defs/CapacityView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getSceneCatalog"
+        },
+        "value": {
+          "$ref": "#/$defs/SceneCatalogView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "controller.getCommandEvidence"
+        },
+        "value": {
+          "$ref": "#/$defs/EvidencePageView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getMeta"
+        },
+        "value": {
+          "$ref": "#/$defs/MetaView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getClock"
+        },
+        "value": {
+          "$ref": "#/$defs/ClockView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.createDefinition"
+        },
+        "value": {
+          "$ref": "#/$defs/DefinitionView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.updateDraft"
+        },
+        "value": {
+          "$ref": "#/$defs/DefinitionView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.publishDefinition"
+        },
+        "value": {
+          "$ref": "#/$defs/DefinitionView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.createRun"
+        },
+        "value": {
+          "$ref": "#/$defs/RunView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getRun"
+        },
+        "value": {
+          "$ref": "#/$defs/RunView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.preflightRun"
+        },
+        "value": {
+          "$ref": "#/$defs/PreflightView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.armRun"
+        },
+        "value": {
+          "$ref": "#/$defs/MutationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.pauseRun"
+        },
+        "value": {
+          "$ref": "#/$defs/MutationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.previewRecovery"
+        },
+        "value": {
+          "$ref": "#/$defs/RecoveryPlanView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.resumeRun"
+        },
+        "value": {
+          "$ref": "#/$defs/RecoveryOperationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getClockAssessment"
+        },
+        "value": {
+          "$ref": "#/$defs/ClockAssessmentView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getCapacity"
+        },
+        "value": {
+          "$ref": "#/$defs/CapacityView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getRecoveryOperation"
+        },
+        "value": {
+          "$ref": "#/$defs/RecoveryOperationView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "method": {
+          "const": "seamer.getIndependenceProof"
+        },
+        "value": {
+          "$ref": "#/$defs/IndependenceView"
+        }
+      },
+      "required": [
+        "method",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  ],
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._-]+(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z(?![\\s\\S])"
+    },
+    "Text": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "SafeInt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "Duration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400000
+    },
+    "SchemaRef": {
+      "type": "object",
+      "properties": {
+        "schema_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "definition": {
+          "$ref": "#/$defs/Id"
+        },
+        "schema_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "schema_id",
+        "definition",
+        "schema_digest"
+      ],
+      "additionalProperties": false
+    },
+    "QualifiedValue": {
+      "type": "object",
+      "properties": {
+        "schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "value": {}
+      },
+      "required": [
+        "schema_ref",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "QualifiedDefinition": {
+      "type": "object",
+      "properties": {
+        "schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "value": {
+          "$ref": "../df01-source/source/public.schema.json#/$defs/Definition"
+        }
+      },
+      "required": [
+        "schema_ref",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Holder": {
+      "type": "object",
+      "properties": {
+        "relation": {
+          "enum": [
+            "self",
+            "other",
+            "none"
+          ]
+        },
+        "display_label": {
+          "$ref": "#/$defs/Text"
+        }
+      },
+      "required": [
+        "relation",
+        "display_label"
+      ],
+      "additionalProperties": false
+    },
+    "ControlVersion": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "epoch",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "CommandSet": {
+      "type": "object",
+      "properties": {
+        "visible_command_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "has_hidden": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "visible_command_ids",
+        "has_hidden"
+      ],
+      "additionalProperties": false
+    },
+    "TargetStatus": {
+      "type": "object",
+      "properties": {
+        "service_alias": {
+          "$ref": "#/$defs/Id"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "applied",
+            "indeterminate"
+          ]
+        },
+        "applied_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "service_alias",
+        "status",
+        "applied_revision"
+      ],
+      "additionalProperties": false
+    },
+    "TargetSummary": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TargetStatus"
+          },
+          "maxItems": 256
+        },
+        "has_hidden": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items",
+        "has_hidden"
+      ],
+      "additionalProperties": false
+    },
+    "ProofSummary": {
+      "type": "object",
+      "properties": {
+        "proof_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "failed_step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "successor_step_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "verdict": {
+          "enum": [
+            "independent",
+            "dependent",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "proof_id",
+        "failed_step_id",
+        "successor_step_ids",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "ResolutionSummary": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "resolved_outcome": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "cancelled",
+            "not_sent"
+          ]
+        },
+        "resolved_at": {
+          "$ref": "#/$defs/Timestamp"
+        }
+      },
+      "required": [
+        "revision",
+        "resolved_outcome",
+        "resolved_at"
+      ],
+      "additionalProperties": false
+    },
+    "ControlTarget": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "mode": {
+          "enum": [
+            "manual",
+            "automatic"
+          ]
+        },
+        "holder": {
+          "$ref": "#/$defs/Holder"
+        }
+      },
+      "required": [
+        "version",
+        "mode",
+        "holder"
+      ],
+      "additionalProperties": false
+    },
+    "PendingControl": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "target_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "target_mode": {
+          "enum": [
+            "manual",
+            "automatic"
+          ]
+        },
+        "holder": {
+          "$ref": "#/$defs/Holder"
+        },
+        "reason_code": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "operation_id",
+        "target_version",
+        "target_mode",
+        "holder",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    },
+    "GrantItem": {
+      "type": "object",
+      "properties": {
+        "controller_alias": {
+          "$ref": "#/$defs/Id"
+        },
+        "grant_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "applied",
+            "revoking",
+            "revoked",
+            "indeterminate"
+          ]
+        }
+      },
+      "required": [
+        "controller_alias",
+        "grant_id",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "GrantSummary": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GrantItem"
+          },
+          "maxItems": 256
+        },
+        "has_hidden": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items",
+        "has_hidden"
+      ],
+      "additionalProperties": false
+    },
+    "TransitionSummary": {
+      "type": "object",
+      "properties": {
+        "transition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "from_state": {
+          "$ref": "#/$defs/Id"
+        },
+        "to_state": {
+          "$ref": "#/$defs/Id"
+        },
+        "phase": {
+          "enum": [
+            "validating",
+            "exit",
+            "transition",
+            "enter",
+            "committing",
+            "completed",
+            "failed",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "transition_id",
+        "from_state",
+        "to_state",
+        "phase"
+      ],
+      "additionalProperties": false
+    },
+    "MetaView": {
+      "type": "object",
+      "properties": {
+        "component_version": {
+          "$ref": "#/$defs/Id"
+        },
+        "protocol_version": {
+          "$ref": "#/$defs/Id"
+        },
+        "panel_features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "limits_profile_ref": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "component_version",
+        "protocol_version",
+        "panel_features",
+        "limits_profile_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ClockView": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "synchronized",
+            "degraded",
+            "unsynchronized"
+          ]
+        },
+        "sampled_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offset_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uncertainty_ms": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sample_age_ms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafeInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "status",
+        "sampled_at",
+        "offset_ms",
+        "uncertainty_ms",
+        "sample_age_ms",
+        "policy_revision"
+      ],
+      "additionalProperties": false
+    },
+    "ClockAssessmentView": {
+      "type": "object",
+      "properties": {
+        "eligible_for_absolute": {
+          "type": "boolean"
+        },
+        "reason_code": {
+          "$ref": "#/$defs/Id"
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "sample_age_ms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafeInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uncertainty_now_ms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafeInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "utc_lower_ms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafeInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "utc_upper_ms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafeInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "eligible_for_absolute",
+        "reason_code",
+        "policy_revision",
+        "sample_age_ms",
+        "uncertainty_now_ms",
+        "utc_lower_ms",
+        "utc_upper_ms"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceSummary": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_kind": {
+          "$ref": "#/$defs/Id"
+        },
+        "display_name": {
+          "$ref": "#/$defs/Text"
+        },
+        "connection_state": {
+          "enum": [
+            "disconnected",
+            "connecting",
+            "ready",
+            "faulted"
+          ]
+        }
+      },
+      "required": [
+        "device_id",
+        "device_kind",
+        "display_name",
+        "connection_state"
+      ],
+      "additionalProperties": false
+    },
+    "DevicePageView": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DeviceSummary"
+          },
+          "maxItems": 256
+        },
+        "catalog_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "next_page_handle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "catalog_revision",
+        "next_page_handle"
+      ],
+      "additionalProperties": false
+    },
+    "ActionSummary": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "capability_version": {
+          "$ref": "#/$defs/Id"
+        },
+        "parameters_schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "result_schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "supported_completion": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "sent",
+              "acknowledged",
+              "effect_verified"
+            ]
+          },
+          "maxItems": 3,
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "default_completion": {
+          "enum": [
+            "sent",
+            "acknowledged",
+            "effect_verified"
+          ]
+        },
+        "cancel_mode": {
+          "enum": [
+            "before_dispatch_only",
+            "cooperative"
+          ]
+        },
+        "retry_mode": {
+          "enum": [
+            "never",
+            "conditional"
+          ]
+        },
+        "evidence_timeout_ms": {
+          "$ref": "#/$defs/Duration"
+        }
+      },
+      "required": [
+        "action_id",
+        "capability_version",
+        "parameters_schema_ref",
+        "result_schema_ref",
+        "supported_completion",
+        "default_completion",
+        "cancel_mode",
+        "retry_mode",
+        "evidence_timeout_ms"
+      ],
+      "additionalProperties": false
+    },
+    "TriggerSummary": {
+      "type": "object",
+      "properties": {
+        "trigger_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "capability_version": {
+          "$ref": "#/$defs/Id"
+        },
+        "payload_schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "delivery_semantics": {
+          "enum": [
+            "discrete",
+            "sampled"
+          ]
+        },
+        "time_requirement": {
+          "enum": [
+            "relative_age",
+            "trusted_utc"
+          ]
+        },
+        "max_age_ms": {
+          "$ref": "#/$defs/Duration"
+        }
+      },
+      "required": [
+        "trigger_id",
+        "capability_version",
+        "payload_schema_ref",
+        "delivery_semantics",
+        "time_requirement",
+        "max_age_ms"
+      ],
+      "additionalProperties": false
+    },
+    "CapabilityView": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "catalog_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ActionSummary"
+          },
+          "maxItems": 256
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TriggerSummary"
+          },
+          "maxItems": 256
+        },
+        "state_schema_ref": {
+          "$ref": "#/$defs/SchemaRef"
+        }
+      },
+      "required": [
+        "device_id",
+        "catalog_revision",
+        "actions",
+        "triggers",
+        "state_schema_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ObservationView": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "observation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "state_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "observed_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "freshness_ms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafeInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "integrity": {
+          "enum": [
+            "complete",
+            "gap",
+            "unavailable"
+          ]
+        },
+        "projection_status": {
+          "enum": [
+            "complete",
+            "filtered"
+          ]
+        },
+        "values": {
+          "$ref": "#/$defs/QualifiedValue"
+        }
+      },
+      "required": [
+        "device_id",
+        "observation_id",
+        "state_revision",
+        "observed_at",
+        "freshness_ms",
+        "integrity",
+        "projection_status",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "CommandTarget": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "action_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "capability_version": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "device_id",
+        "action_id",
+        "capability_version"
+      ],
+      "additionalProperties": false
+    },
+    "CommandView": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "target": {
+          "$ref": "#/$defs/CommandTarget"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "accepted_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "phase": {
+          "enum": [
+            "queued",
+            "dispatching",
+            "awaiting_evidence",
+            "finished"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "unknown",
+            "cancelled",
+            "expired",
+            "blocked"
+          ]
+        },
+        "effect_status": {
+          "enum": [
+            "not_sent",
+            "possible",
+            "acknowledged",
+            "verified",
+            "partial"
+          ]
+        },
+        "resource_status": {
+          "enum": [
+            "held",
+            "clear",
+            "unresolved"
+          ]
+        },
+        "required_completion": {
+          "enum": [
+            "sent",
+            "acknowledged",
+            "effect_verified"
+          ]
+        },
+        "achieved_completion": {
+          "anyOf": [
+            {
+              "enum": [
+                "sent",
+                "acknowledged",
+                "effect_verified"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancellation_state": {
+          "enum": [
+            "none",
+            "requested",
+            "confirmed",
+            "unsupported",
+            "failed"
+          ]
+        },
+        "automation_continuation": {
+          "enum": [
+            "eligible",
+            "paused_latched"
+          ]
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolution_summary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResolutionSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "command_id",
+        "revision",
+        "target",
+        "origin",
+        "accepted_at",
+        "phase",
+        "outcome",
+        "effect_status",
+        "resource_status",
+        "required_completion",
+        "achieved_completion",
+        "cancellation_state",
+        "automation_continuation",
+        "reason_code",
+        "resolution_summary"
+      ],
+      "additionalProperties": false
+    },
+    "CancelView": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "enum": [
+            "requested",
+            "confirmed",
+            "unsupported",
+            "failed"
+          ]
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation_id",
+        "command_id",
+        "state",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    },
+    "ControlOperationView": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "effective",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/ControlTarget"
+        },
+        "failure_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective_version": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ready": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation_id",
+        "device_id",
+        "state",
+        "target",
+        "failure_code",
+        "effective_version",
+        "ready"
+      ],
+      "additionalProperties": false
+    },
+    "ControlView": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "mode": {
+          "enum": [
+            "manual",
+            "automatic"
+          ]
+        },
+        "holder": {
+          "$ref": "#/$defs/Holder"
+        },
+        "gate_state": {
+          "enum": [
+            "ready",
+            "fencing",
+            "protected"
+          ]
+        },
+        "pending_change": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PendingControl"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "in_flight": {
+          "$ref": "#/$defs/CommandSet"
+        },
+        "unresolved": {
+          "$ref": "#/$defs/CommandSet"
+        }
+      },
+      "required": [
+        "device_id",
+        "revision",
+        "control_epoch",
+        "effective_version",
+        "mode",
+        "holder",
+        "gate_state",
+        "pending_change",
+        "in_flight",
+        "unresolved"
+      ],
+      "additionalProperties": false
+    },
+    "TransferView": {
+      "type": "object",
+      "properties": {
+        "transfer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "from_holder": {
+          "$ref": "#/$defs/Holder"
+        },
+        "target_holder": {
+          "$ref": "#/$defs/Holder"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "state": {
+          "enum": [
+            "offered",
+            "accepted",
+            "expired",
+            "cancelled"
+          ]
+        },
+        "accept_operation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "transfer_id",
+        "device_id",
+        "from_holder",
+        "target_holder",
+        "expected_control",
+        "expires_at",
+        "state",
+        "accept_operation_id"
+      ],
+      "additionalProperties": false
+    },
+    "MutationView": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "applied",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "entity_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "visible_targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TargetStatus"
+          },
+          "maxItems": 256
+        },
+        "has_hidden_targets": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation_id",
+        "state",
+        "entity_id",
+        "revision",
+        "visible_targets",
+        "has_hidden_targets"
+      ],
+      "additionalProperties": false
+    },
+    "PanelBudget": {
+      "type": "object",
+      "properties": {
+        "max_pending_requests": {
+          "$ref": "#/$defs/SafeInt"
+        },
+        "max_unacked_frames": {
+          "$ref": "#/$defs/SafeInt"
+        },
+        "max_unacked_bytes": {
+          "$ref": "#/$defs/SafeInt"
+        }
+      },
+      "required": [
+        "max_pending_requests",
+        "max_unacked_frames",
+        "max_unacked_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "PanelUsage": {
+      "type": "object",
+      "properties": {
+        "pending_requests": {
+          "$ref": "#/$defs/SafeInt"
+        },
+        "unacked_frames": {
+          "$ref": "#/$defs/SafeInt"
+        },
+        "unacked_bytes": {
+          "$ref": "#/$defs/SafeInt"
+        }
+      },
+      "required": [
+        "pending_requests",
+        "unacked_frames",
+        "unacked_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "CapacityView": {
+      "type": "object",
+      "properties": {
+        "pressure": {
+          "enum": [
+            "normal",
+            "limited",
+            "protected"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 64,
+          "uniqueItems": true
+        },
+        "panel_budget": {
+          "$ref": "#/$defs/PanelBudget"
+        },
+        "current_panel_usage": {
+          "$ref": "#/$defs/PanelUsage"
+        }
+      },
+      "required": [
+        "pressure",
+        "reason_codes",
+        "panel_budget",
+        "current_panel_usage"
+      ],
+      "additionalProperties": false
+    },
+    "SceneItem": {
+      "type": "object",
+      "properties": {
+        "scene_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "display_name": {
+          "$ref": "#/$defs/Text"
+        }
+      },
+      "required": [
+        "scene_id",
+        "display_name"
+      ],
+      "additionalProperties": false
+    },
+    "SceneCatalogView": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "collection_ref": {
+          "$ref": "#/$defs/Id"
+        },
+        "collection_generation": {
+          "$ref": "#/$defs/Counter"
+        },
+        "catalog_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "binding_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "status": {
+          "enum": [
+            "unconfirmed",
+            "ready",
+            "changing",
+            "stale"
+          ]
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SceneItem"
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "device_id",
+        "collection_ref",
+        "collection_generation",
+        "catalog_revision",
+        "binding_revision",
+        "status",
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceSummary": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "transport_submission",
+            "device_ack",
+            "fresh_query",
+            "device_event",
+            "cancel_ack"
+          ]
+        },
+        "captured_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "predicate_result": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion_level": {
+          "anyOf": [
+            {
+              "enum": [
+                "sent",
+                "acknowledged",
+                "effect_verified"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "evidence_id",
+        "kind",
+        "captured_at",
+        "predicate_result",
+        "completion_level"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceReleaseSummary": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "held",
+            "clear",
+            "unresolved"
+          ]
+        },
+        "policy_label": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "policy_label"
+      ],
+      "additionalProperties": false
+    },
+    "EvidencePageView": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EvidenceSummary"
+          },
+          "maxItems": 256
+        },
+        "resource_release_summary": {
+          "$ref": "#/$defs/ResourceReleaseSummary"
+        },
+        "next_page_handle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "command_id",
+        "items",
+        "resource_release_summary",
+        "next_page_handle"
+      ],
+      "additionalProperties": false
+    },
+    "DefinitionView": {
+      "type": "object",
+      "properties": {
+        "definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition_version": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "definition": {
+          "$ref": "#/$defs/QualifiedDefinition"
+        },
+        "proof_summaries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProofSummary"
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "definition_id",
+        "revision",
+        "definition_version",
+        "published",
+        "definition",
+        "proof_summaries"
+      ],
+      "additionalProperties": false
+    },
+    "RunView": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "definition_version": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "business_state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transition_summary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TransitionSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lifecycle": {
+          "enum": [
+            "disarmed",
+            "armed",
+            "running",
+            "paused",
+            "completed"
+          ]
+        },
+        "execution_summary": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "completed_with_failures",
+            "failed",
+            "unknown",
+            "blocked"
+          ]
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/Counter"
+        },
+        "active_execution_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "grant_summaries": {
+          "$ref": "#/$defs/GrantSummary"
+        }
+      },
+      "required": [
+        "run_id",
+        "definition_id",
+        "definition_version",
+        "revision",
+        "business_state",
+        "transition_summary",
+        "lifecycle",
+        "execution_summary",
+        "arm_generation",
+        "active_execution_id",
+        "grant_summaries"
+      ],
+      "additionalProperties": false
+    },
+    "CheckSummary": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/Id"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "label_key": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "code",
+        "passed",
+        "label_key"
+      ],
+      "additionalProperties": false
+    },
+    "PreflightView": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "run_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CheckSummary"
+          },
+          "maxItems": 256
+        },
+        "observed_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "assessment_handle": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "run_id",
+        "run_revision",
+        "passed",
+        "checks",
+        "observed_at",
+        "assessment_handle"
+      ],
+      "additionalProperties": false
+    },
+    "RecoveryItem": {
+      "type": "object",
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_command_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision": {
+          "enum": [
+            "retain_success",
+            "execute_new",
+            "reconcile_commit",
+            "stop"
+          ]
+        },
+        "reason_code": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "step_id",
+        "source_execution_id",
+        "source_command_id",
+        "decision",
+        "reason_code"
+      ],
+      "additionalProperties": false
+    },
+    "RecoveryPlanView": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "run_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "recovery_handle": {
+          "$ref": "#/$defs/Id"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecoveryItem"
+          },
+          "maxItems": 256
+        },
+        "unresolved": {
+          "$ref": "#/$defs/CommandSet"
+        }
+      },
+      "required": [
+        "run_id",
+        "run_revision",
+        "recovery_handle",
+        "expires_at",
+        "items",
+        "unresolved"
+      ],
+      "additionalProperties": false
+    },
+    "RecoveryOperationView": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "previous_run_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "committed_run_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "recovery_generation": {
+          "$ref": "#/$defs/Counter"
+        },
+        "state": {
+          "enum": [
+            "reserved",
+            "preparing",
+            "ready",
+            "running",
+            "completed",
+            "paused",
+            "indeterminate"
+          ]
+        },
+        "new_execution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "visible_new_command_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "has_hidden_commands": {
+          "type": "boolean"
+        },
+        "target_status_summary": {
+          "$ref": "#/$defs/TargetSummary"
+        }
+      },
+      "required": [
+        "operation_id",
+        "run_id",
+        "previous_run_revision",
+        "committed_run_revision",
+        "recovery_generation",
+        "state",
+        "new_execution_id",
+        "visible_new_command_ids",
+        "has_hidden_commands",
+        "target_status_summary"
+      ],
+      "additionalProperties": false
+    },
+    "IndependenceView": {
+      "type": "object",
+      "properties": {
+        "proof_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "proof_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "definition_version": {
+          "$ref": "#/$defs/Id"
+        },
+        "failed_step_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "successor_step_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "verdict": {
+          "enum": [
+            "independent",
+            "dependent",
+            "unknown"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "proof_id",
+        "proof_revision",
+        "definition_id",
+        "definition_version",
+        "failed_step_id",
+        "successor_step_ids",
+        "verdict",
+        "reason_codes"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,697 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-preparation/preparation.schema.json",
+  "title": "automation-preparation/0.1.0-draft.1",
+  "not": {},
+  "x-approved": false,
+  "$defs": {
+    "Id": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/Id"
+    },
+    "Scope": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/Scope"
+    },
+    "Counter": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/Counter"
+    },
+    "PositiveCounter": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/PositiveCounter"
+    },
+    "Digest": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/Digest"
+    },
+    "RunGrant": {
+      "$ref": "https://leafseamer.invalid/design/c05-protection/protocol.schema.json#/$defs/RunGrant"
+    },
+    "OperationRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "lifecycle_operation"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "artifact"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ApprovalRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "approval"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "GrantRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "grant"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CommitRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "controller_commit"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ProtectionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "run_protection"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "PlanRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "arm_plan",
+            "recovery_plan"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "GrantIntent": {
+      "type": "object",
+      "properties": {
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_actions": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/DeviceActionScope"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "parameter_constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/Predicate"
+          },
+          "maxItems": 64
+        },
+        "validity": {
+          "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/Validity"
+        }
+      },
+      "required": [
+        "principal_id",
+        "device_actions",
+        "parameter_constraints",
+        "validity"
+      ],
+      "additionalProperties": false
+    },
+    "ControlExpectation": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/ControlVersion"
+        }
+      },
+      "required": [
+        "device_id",
+        "expected_control"
+      ],
+      "additionalProperties": false
+    },
+    "PrepareRequest": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "automation-preparation/0.1.0-draft.1"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "preparation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "controller_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "origin_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "definition_version": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "mode": {
+          "enum": [
+            "arm",
+            "recovery"
+          ]
+        },
+        "execution_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_ref": {
+          "$ref": "#/$defs/OperationRef"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/PlanRef"
+        },
+        "artifact_ref": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/ApprovalRef"
+        },
+        "authorization_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "source_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ControlExpectation"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "baseline_grant_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GrantRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "grant_intent": {
+          "$ref": "#/$defs/GrantIntent"
+        }
+      },
+      "required": [
+        "contract_version",
+        "operation_id",
+        "preparation_id",
+        "controller_scope",
+        "origin_scope",
+        "run_id",
+        "definition_version",
+        "arm_generation",
+        "mode",
+        "execution_id",
+        "operation_ref",
+        "plan_ref",
+        "artifact_ref",
+        "approval_ref",
+        "authorization_digest",
+        "source_digest",
+        "controls",
+        "baseline_grant_ref",
+        "grant_intent"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "arm"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "execution_id": {
+                "type": "null"
+              },
+              "plan_ref": {
+                "properties": {
+                  "kind": {
+                    "const": "arm_plan"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "execution_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "plan_ref": {
+                "properties": {
+                  "kind": {
+                    "const": "recovery_plan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "PreparationReceipt": {
+      "type": "object",
+      "properties": {
+        "receipt_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "controller_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "preparation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "grant": {
+          "$ref": "#/$defs/RunGrant"
+        },
+        "grant_ref": {
+          "$ref": "#/$defs/GrantRef"
+        },
+        "commit_ref": {
+          "$ref": "#/$defs/CommitRef"
+        },
+        "receipt_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "revision",
+        "controller_scope",
+        "preparation_id",
+        "request_digest",
+        "grant",
+        "grant_ref",
+        "commit_ref",
+        "receipt_digest"
+      ],
+      "additionalProperties": false
+    },
+    "PreparationRecord": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/PrepareRequest"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/PositiveCounter"
+        },
+        "state": {
+          "enum": [
+            "accepted",
+            "applied",
+            "rejected",
+            "indeterminate",
+            "closing",
+            "closed"
+          ]
+        },
+        "applied_receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PreparationReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "protection_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProtectionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "request",
+        "request_digest",
+        "revision",
+        "state",
+        "applied_receipt",
+        "protection_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "applied"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "applied_receipt": {
+                "$ref": "#/$defs/PreparationReceipt"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "accepted",
+                  "rejected"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "applied_receipt": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "closed"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "protection_ref": {
+                "$ref": "#/$defs/ProtectionRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "PreparationLookup": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "automation-preparation/0.1.0-draft.1"
+        },
+        "controller_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "origin_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "preparation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "contract_version",
+        "controller_scope",
+        "origin_scope",
+        "preparation_id",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "PreparationLookupResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "found"
+            },
+            "record": {
+              "$ref": "#/$defs/PreparationRecord"
+            }
+          },
+          "required": [
+            "state",
+            "record"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "not_found",
+                "indeterminate"
+              ]
+            },
+            "record": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "state",
+            "record"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PreparationClose": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "automation-preparation/0.1.0-draft.1"
+        },
+        "close_operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request": {
+          "$ref": "#/$defs/PrepareRequest"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "contract_version",
+        "close_operation_id",
+        "request",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "PreparationError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid",
+            "unauthenticated",
+            "forbidden",
+            "conflict",
+            "capacity",
+            "unavailable",
+            "version"
+          ]
+        },
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "code",
+        "request_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

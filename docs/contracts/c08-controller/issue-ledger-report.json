@@ -1,0 +1,664 @@
+{
+  "all_passed": true,
+  "cases_passed": 115,
+  "approved": false,
+  "scope": "共享签发94表内存候选；完整取消覆盖尚未归并",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "94表",
+      "observed": 94,
+      "expected": 94
+    },
+    {
+      "name": "普通取消普通连续",
+      "observed": [
+        [
+          "ordinary",
+          "00000000000000000001"
+        ],
+        [
+          "cancel",
+          "00000000000000000002"
+        ],
+        [
+          "ordinary",
+          "00000000000000000003"
+        ]
+      ],
+      "expected": [
+        [
+          "ordinary",
+          "00000000000000000001"
+        ],
+        [
+          "cancel",
+          "00000000000000000002"
+        ],
+        [
+          "ordinary",
+          "00000000000000000003"
+        ]
+      ]
+    },
+    {
+      "name": "提交后同身份只查原",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "提交后同身份只查原全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原取消仍可查询",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "取消普通连续",
+      "observed": [
+        [
+          "cancel"
+        ],
+        [
+          "ordinary"
+        ]
+      ],
+      "expected": [
+        [
+          "cancel"
+        ],
+        [
+          "ordinary"
+        ]
+      ]
+    },
+    {
+      "name": "取消缺写0",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "取消缺写0全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消主动异常0",
+      "observed": "injected_before_commit",
+      "expected": "injected_before_commit"
+    },
+    {
+      "name": "取消异常回滚0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "回滚未消耗序号0",
+      "observed": "00000000000000000002",
+      "expected": "00000000000000000002"
+    },
+    {
+      "name": "取消缺写1",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "取消缺写1全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消主动异常1",
+      "observed": "injected_before_commit",
+      "expected": "injected_before_commit"
+    },
+    {
+      "name": "取消异常回滚1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "回滚未消耗序号1",
+      "observed": "00000000000000000002",
+      "expected": "00000000000000000002"
+    },
+    {
+      "name": "取消缺写2",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "取消缺写2全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消主动异常2",
+      "observed": "injected_before_commit",
+      "expected": "injected_before_commit"
+    },
+    {
+      "name": "取消异常回滚2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "回滚未消耗序号2",
+      "observed": "00000000000000000002",
+      "expected": "00000000000000000002"
+    },
+    {
+      "name": "跳号",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "跳号全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "重复序号",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "重复序号全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "跨类型ID",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "跨类型ID全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "孤立普通",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "孤立普通全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "孤立取消",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "孤立取消全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段issue_kind",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段issue_kind全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段issued_revision",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段issued_revision全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段exit_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段exit_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段ordinal",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段ordinal全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段initial_permit_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段initial_permit_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段origin_authority",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段origin_authority全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段time_required",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段time_required全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错误取消字段time_binding_body",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "错误取消字段time_binding_body全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通缺共享登记",
+      "observed": "ordinary_issue_pair",
+      "expected": "ordinary_issue_pair"
+    },
+    {
+      "name": "普通缺共享登记全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通缺提交",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "普通缺提交全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通取消模式不能发保护",
+      "observed": "cancel_execution_binding",
+      "expected": "cancel_execution_binding"
+    },
+    {
+      "name": "普通取消模式不能发保护全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消错设备",
+      "observed": "cancel_execution_binding",
+      "expected": "cancel_execution_binding"
+    },
+    {
+      "name": "取消错设备全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消退役出口",
+      "observed": "exit_retired",
+      "expected": "exit_retired"
+    },
+    {
+      "name": "取消退役出口全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消重传execution_id",
+      "observed": "cancel_execution_changed",
+      "expected": "cancel_execution_changed"
+    },
+    {
+      "name": "取消重传execution_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消重传packet_id",
+      "observed": "cancel_initial_binding",
+      "expected": "cancel_initial_binding"
+    },
+    {
+      "name": "取消重传packet_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消重传exit_id",
+      "observed": "cancel_initial_binding",
+      "expected": "cancel_initial_binding"
+    },
+    {
+      "name": "取消重传exit_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消重传initial_permit_id",
+      "observed": "cancel_initial_binding",
+      "expected": "cancel_initial_binding"
+    },
+    {
+      "name": "取消重传initial_permit_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消重传ordinal",
+      "observed": "cancel_ordinal",
+      "expected": "cancel_ordinal"
+    },
+    {
+      "name": "取消重传ordinal全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消重传独立许可",
+      "observed": 2,
+      "expected": 2
+    },
+    {
+      "name": "取消重传原字节不可换",
+      "observed": "cancel_bytes_changed",
+      "expected": "cancel_bytes_changed"
+    },
+    {
+      "name": "取消重传原字节不可换全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消未知或关闭禁止签发indeterminate",
+      "observed": "cancel_execution_closed",
+      "expected": "cancel_execution_closed"
+    },
+    {
+      "name": "取消未知或关闭禁止签发indeterminate全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消未知或关闭禁止签发confirmed",
+      "observed": "cancel_execution_closed",
+      "expected": "cancel_execution_closed"
+    },
+    {
+      "name": "取消未知或关闭禁止签发confirmed全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "RUN拒绝旧普通水位",
+      "observed": "cut_revision",
+      "expected": "cut_revision"
+    },
+    {
+      "name": "RUN拒绝旧普通水位全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "RUN共享水位",
+      "observed": "00000000000000000002",
+      "expected": "00000000000000000002"
+    },
+    {
+      "name": "RUN不能遗漏取消coverage",
+      "observed": "cancel_run_coverage_not_merged",
+      "expected": "cancel_run_coverage_not_merged"
+    },
+    {
+      "name": "RUN不能遗漏取消coverage全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消受理旧普通水位",
+      "observed": "cancel_cut_highwater",
+      "expected": "cancel_cut_highwater"
+    },
+    {
+      "name": "取消受理旧普通水位全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "取消受理共享head",
+      "observed": "00000000000000000002",
+      "expected": "00000000000000000002"
+    },
+    {
+      "name": "释放拒绝旧普通水位",
+      "observed": "release_binding",
+      "expected": "release_binding"
+    },
+    {
+      "name": "释放拒绝旧普通水位全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "释放共享head",
+      "observed": "00000000000000000002",
+      "expected": "00000000000000000002"
+    },
+    {
+      "name": "资源拒绝遗漏取消分支",
+      "observed": "cancel_resource_coverage_not_merged",
+      "expected": "cancel_resource_coverage_not_merged"
+    },
+    {
+      "name": "资源拒绝遗漏取消分支全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "释放在先同事务取消不能绕过",
+      "observed": "cancel_resource_coverage_not_merged",
+      "expected": "cancel_resource_coverage_not_merged"
+    },
+    {
+      "name": "释放在先同事务取消不能绕过全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "释放提交后取消仍不能绕过",
+      "observed": "cancel_resource_coverage_not_merged",
+      "expected": "cancel_resource_coverage_not_merged"
+    },
+    {
+      "name": "释放提交后取消仍不能绕过全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "RUN封存后不可分配",
+      "observed": "pending_cut",
+      "expected": "pending_cut"
+    },
+    {
+      "name": "RUN封存后不可分配全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_issueUPDATE",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_issueUPDATE全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_issueDELETE",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_issueDELETE全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_issueINSERT",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_issueINSERT全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_cancel_transmissionUPDATE",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_cancel_transmissionUPDATE全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_cancel_transmissionDELETE",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_cancel_transmissionDELETE全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_cancel_transmissionINSERT",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_cancel_transmissionINSERT全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_cancel_commitUPDATE",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_cancel_commitUPDATE全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_cancel_commitDELETE",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_cancel_commitDELETE全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ci_cancel_commitINSERT",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "ci_cancel_commitINSERT全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "非空BODY不证普通已关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "全部内存库FK及完整性",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "仅算术探针00000000009999999999",
+      "observed": "00000000010000000000",
+      "expected": "00000000010000000000"
+    },
+    {
+      "name": "仅算术探针09223372036854775807",
+      "observed": "09223372036854775808",
+      "expected": "09223372036854775808"
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/check_barrier_attempt.py": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b",
+    "docs/contracts/c08-controller/resource.sql": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d",
+    "docs/contracts/c08-controller/RESOURCE_STORAGE.md": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa",
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
+    "docs/contracts/c08-controller/check_resource.py": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267",
+    "docs/contracts/c08-controller/check_command.py": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4",
+    "docs/contracts/c02-command-view/storage.sql": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-command-view/check_storage.py": "ca89ed5f7ef5111ea897cf6c5f23b8dd10380afed0daf5cbc519cd092e97ae16",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c08-controller/issue-ledger.sql": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285",
+    "docs/contracts/c08-controller/build_issue_ledger.py": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d",
+    "docs/contracts/c08-controller/controller-issue.sql": "1bceb2564b08afbbd5b6e1ea61f64b6c69b16bebf067cda23e239932d60d4c5b",
+    "docs/contracts/c08-controller/ISSUE_LEDGER.md": "e20988ec1d3fbcefe2eaee160c4be7a0b576c3b6aaf63e3013616deb90d6cb3c",
+    "docs/contracts/c08-controller/check_issue_ledger.py": "9345d6f1ce16150b62f77e137d917a90d07f013aab062140960e0031fceb037b"
+  }
+}

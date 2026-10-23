@@ -1,0 +1,1354 @@
+{
+  "purpose": "design_fixture_only",
+  "runtime_approved": false,
+  "models": {
+    "SubscriptionView": {
+      "schema_version": "service-subscription/0.1.0-draft.1",
+      "type": "service.subscription",
+      "binding": {
+        "subscription_id": "sub-1",
+        "publisher_service_id": "controller",
+        "publisher_database_instance_id": "pub-db",
+        "stream_id": "journal",
+        "stream_epoch": "epoch-1",
+        "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "authorization_revision": "7",
+        "connection_generation": "2"
+      },
+      "revision": "4",
+      "owner": {
+        "issuer_id": "issuer",
+        "issuer_epoch": "ie",
+        "principal_id": "service-subject",
+        "consumer_service_id": "seamer",
+        "consumer_database_instance_id": "consumer-db",
+        "consumer_id": "canonical-main",
+        "pairing_id": "pair-1"
+      },
+      "purpose": "canonical_trigger",
+      "state": "live",
+      "ack_cursor": "1",
+      "ack_payload_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "snapshot_ref": {
+        "snapshot_id": "snapshot-1",
+        "manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "snapshot_cursor": "0"
+      }
+    },
+    "ClientAttach": {
+      "schema_version": "service-subscription/0.1.0-draft.1",
+      "type": "client.attach",
+      "subscription_id": "sub-1",
+      "owner": {
+        "issuer_id": "issuer",
+        "issuer_epoch": "ie",
+        "principal_id": "service-subject",
+        "consumer_service_id": "seamer",
+        "consumer_database_instance_id": "consumer-db",
+        "consumer_id": "canonical-main",
+        "pairing_id": "pair-1"
+      },
+      "stream_id": "journal",
+      "stream_epoch": "epoch-1",
+      "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "authorization_revision": "7",
+      "expected_connection_generation": "2",
+      "replace_existing": true,
+      "resume": {
+        "cursor": "1",
+        "payload_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+        "ack_kind": "durable_ingest"
+      },
+      "connection_attempt_id": "attach-3"
+    },
+    "ServerAttached": {
+      "schema_version": "service-subscription/0.1.0-draft.1",
+      "type": "server.attached",
+      "binding": {
+        "subscription_id": "sub-1",
+        "publisher_service_id": "controller",
+        "publisher_database_instance_id": "pub-db",
+        "stream_id": "journal",
+        "stream_epoch": "epoch-1",
+        "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "authorization_revision": "7",
+        "connection_generation": "2"
+      },
+      "state": "catching_up",
+      "snapshot_ref": {
+        "snapshot_id": "snapshot-1",
+        "manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "snapshot_cursor": "0"
+      },
+      "ack_cursor": "1",
+      "ack_payload_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "ClientAck": {
+      "schema_version": "service-subscription/0.1.0-draft.1",
+      "type": "client.ack",
+      "binding": {
+        "subscription_id": "sub-1",
+        "publisher_service_id": "controller",
+        "publisher_database_instance_id": "pub-db",
+        "stream_id": "journal",
+        "stream_epoch": "epoch-1",
+        "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "authorization_revision": "7",
+        "connection_generation": "2"
+      },
+      "cursor": "2",
+      "payload_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+      "ack_kind": "durable_ingest"
+    },
+    "SnapshotApplied": {
+      "schema_version": "service-subscription/0.1.0-draft.1",
+      "type": "client.snapshot.applied",
+      "binding": {
+        "subscription_id": "sub-1",
+        "publisher_service_id": "controller",
+        "publisher_database_instance_id": "pub-db",
+        "stream_id": "journal",
+        "stream_epoch": "epoch-1",
+        "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "authorization_revision": "7",
+        "connection_generation": "2"
+      },
+      "snapshot": {
+        "snapshot_id": "snapshot-1",
+        "manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "snapshot_cursor": "0"
+      }
+    },
+    "SyncReady": {
+      "schema_version": "service-subscription/0.1.0-draft.1",
+      "type": "server.sync.ready",
+      "binding": {
+        "subscription_id": "sub-1",
+        "publisher_service_id": "controller",
+        "publisher_database_instance_id": "pub-db",
+        "stream_id": "journal",
+        "stream_epoch": "epoch-1",
+        "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "authorization_revision": "7",
+        "connection_generation": "2"
+      },
+      "baseline_snapshot_id": "snapshot-1",
+      "cursor": "3",
+      "previous_cursor": "2",
+      "payload_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+      "delivery_mode": "reconcile"
+    },
+    "ResyncRequired": {
+      "schema_version": "service-subscription/0.1.0-draft.1",
+      "type": "server.resync.required",
+      "binding": {
+        "subscription_id": "sub-1",
+        "publisher_service_id": "controller",
+        "publisher_database_instance_id": "pub-db",
+        "stream_id": "journal",
+        "stream_epoch": "epoch-1",
+        "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "authorization_revision": "7",
+        "connection_generation": "2"
+      },
+      "reason_code": "retention_lost",
+      "last_confirmed_cursor": "1"
+    }
+  },
+  "structure_cases": [
+    {
+      "id": "SS01",
+      "model": "SubscriptionView",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SS02",
+      "model": "ClientAttach",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SS03",
+      "model": "ServerAttached",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SS04",
+      "model": "ClientAck",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SS05",
+      "model": "SnapshotApplied",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SS06",
+      "model": "SyncReady",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SS07",
+      "model": "ResyncRequired",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SS08",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "owner",
+            "session_id"
+          ],
+          "value": "human-session"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS09",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "expected_connection_generation"
+          ],
+          "value": 2
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS10",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "expected_connection_generation"
+          ],
+          "value": "2\n"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS11",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "resume"
+          ],
+          "value": null
+        }
+      ],
+      "expected_valid": true
+    },
+    {
+      "id": "SS12",
+      "model": "ClientAck",
+      "changes": [
+        {
+          "path": [
+            "binding",
+            "connection_generation"
+          ],
+          "value": "02"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS13",
+      "model": "ClientAck",
+      "changes": [
+        {
+          "path": [
+            "cursor"
+          ],
+          "value": "99999999999999999999"
+        }
+      ],
+      "expected_valid": true
+    },
+    {
+      "id": "SS14",
+      "model": "ClientAck",
+      "changes": [
+        {
+          "path": [
+            "cursor"
+          ],
+          "value": "100000000000000000000"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS15",
+      "model": "ClientAck",
+      "changes": [
+        {
+          "path": [
+            "ack_kind"
+          ],
+          "value": "socket_received"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS16",
+      "model": "SubscriptionView",
+      "changes": [
+        {
+          "path": [
+            "owner"
+          ],
+          "value": null
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS17",
+      "model": "SyncReady",
+      "changes": [
+        {
+          "path": [
+            "delivery_mode"
+          ],
+          "value": "live"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS18",
+      "model": "ClientAck",
+      "changes": [
+        {
+          "path": [
+            "binding",
+            "scope_digest"
+          ],
+          "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS19",
+      "model": "SnapshotApplied",
+      "changes": [
+        {
+          "path": [
+            "snapshot",
+            "persisted"
+          ],
+          "value": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS20",
+      "model": "ServerAttached",
+      "changes": [
+        {
+          "path": [
+            "state"
+          ],
+          "value": "live"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS21",
+      "model": "ResyncRequired",
+      "changes": [
+        {
+          "path": [
+            "reason_code"
+          ],
+          "value": "unknown"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS22",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "owner",
+            "issuer_epoch"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS23",
+      "model": "ClientAck",
+      "changes": [
+        {
+          "path": [
+            "device_permission"
+          ],
+          "value": "write"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS24",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "schema_version"
+          ],
+          "value": "1.0.0-draft.4"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS25",
+      "model": "SubscriptionView",
+      "changes": [
+        {
+          "path": [
+            "snapshot_ref"
+          ],
+          "value": null
+        }
+      ],
+      "expected_valid": true
+    },
+    {
+      "id": "SS26",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "replace_existing"
+          ],
+          "value": "true"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SS27",
+      "model": "ClientAttach",
+      "changes": [
+        {
+          "path": [
+            "connection_attempt_id"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    }
+  ],
+  "fixtures": {
+    "attach": {
+      "subscription": {
+        "schema_version": "service-subscription/0.1.0-draft.1",
+        "type": "service.subscription",
+        "binding": {
+          "subscription_id": "sub-1",
+          "publisher_service_id": "controller",
+          "publisher_database_instance_id": "pub-db",
+          "stream_id": "journal",
+          "stream_epoch": "epoch-1",
+          "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "authorization_revision": "7",
+          "connection_generation": "2"
+        },
+        "revision": "4",
+        "owner": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "ie",
+          "principal_id": "service-subject",
+          "consumer_service_id": "seamer",
+          "consumer_database_instance_id": "consumer-db",
+          "consumer_id": "canonical-main",
+          "pairing_id": "pair-1"
+        },
+        "purpose": "canonical_trigger",
+        "state": "live",
+        "ack_cursor": "1",
+        "ack_payload_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+        "snapshot_ref": {
+          "snapshot_id": "snapshot-1",
+          "manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "snapshot_cursor": "0"
+        }
+      },
+      "request": {
+        "schema_version": "service-subscription/0.1.0-draft.1",
+        "type": "client.attach",
+        "subscription_id": "sub-1",
+        "owner": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "ie",
+          "principal_id": "service-subject",
+          "consumer_service_id": "seamer",
+          "consumer_database_instance_id": "consumer-db",
+          "consumer_id": "canonical-main",
+          "pairing_id": "pair-1"
+        },
+        "stream_id": "journal",
+        "stream_epoch": "epoch-1",
+        "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "authorization_revision": "7",
+        "expected_connection_generation": "2",
+        "replace_existing": true,
+        "resume": {
+          "cursor": "1",
+          "payload_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "ack_kind": "durable_ingest"
+        },
+        "connection_attempt_id": "attach-3"
+      },
+      "peer": {
+        "owner": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "ie",
+          "principal_id": "service-subject",
+          "consumer_service_id": "seamer",
+          "consumer_database_instance_id": "consumer-db",
+          "consumer_id": "canonical-main",
+          "pairing_id": "pair-1"
+        },
+        "transport_authenticated": true,
+        "pairing_active": true,
+        "purpose_allowed": true,
+        "authorization_current": true,
+        "authority_available": true,
+        "seamer_role": true,
+        "canonical_scope_complete": true
+      },
+      "current_connection_open": true,
+      "consumer_state_preserved": true,
+      "retention_mapping_available": true
+    },
+    "ack": {
+      "subscription": {
+        "schema_version": "service-subscription/0.1.0-draft.1",
+        "type": "service.subscription",
+        "binding": {
+          "subscription_id": "sub-1",
+          "publisher_service_id": "controller",
+          "publisher_database_instance_id": "pub-db",
+          "stream_id": "journal",
+          "stream_epoch": "epoch-1",
+          "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "authorization_revision": "7",
+          "connection_generation": "2"
+        },
+        "revision": "4",
+        "owner": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "ie",
+          "principal_id": "service-subject",
+          "consumer_service_id": "seamer",
+          "consumer_database_instance_id": "consumer-db",
+          "consumer_id": "canonical-main",
+          "pairing_id": "pair-1"
+        },
+        "purpose": "canonical_trigger",
+        "state": "live",
+        "ack_cursor": "1",
+        "ack_payload_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+        "snapshot_ref": {
+          "snapshot_id": "snapshot-1",
+          "manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "snapshot_cursor": "0"
+        }
+      },
+      "request": {
+        "schema_version": "service-subscription/0.1.0-draft.1",
+        "type": "client.ack",
+        "binding": {
+          "subscription_id": "sub-1",
+          "publisher_service_id": "controller",
+          "publisher_database_instance_id": "pub-db",
+          "stream_id": "journal",
+          "stream_epoch": "epoch-1",
+          "scope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "authorization_revision": "7",
+          "connection_generation": "2"
+        },
+        "cursor": "2",
+        "payload_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+        "ack_kind": "durable_ingest"
+      },
+      "peer": {
+        "owner": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "ie",
+          "principal_id": "service-subject",
+          "consumer_service_id": "seamer",
+          "consumer_database_instance_id": "consumer-db",
+          "consumer_id": "canonical-main",
+          "pairing_id": "pair-1"
+        },
+        "transport_authenticated": true,
+        "pairing_active": true,
+        "purpose_allowed": true,
+        "authorization_current": true,
+        "authority_available": true,
+        "seamer_role": true,
+        "canonical_scope_complete": true
+      },
+      "last_sent": "3",
+      "baseline_cursor": "0",
+      "baseline_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "delivery_map": [
+        {
+          "cursor": "1",
+          "previous_cursor": "0",
+          "payload_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        {
+          "cursor": "2",
+          "previous_cursor": "1",
+          "payload_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        {
+          "cursor": "3",
+          "previous_cursor": "2",
+          "payload_digest": "3333333333333333333333333333333333333333333333333333333333333333"
+        }
+      ]
+    }
+  },
+  "decision_cases": [
+    {
+      "id": "SA01",
+      "kind": "attach",
+      "changes": [],
+      "expected": "catching_up"
+    },
+    {
+      "id": "SA02",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "transport_authenticated"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "identity"
+    },
+    {
+      "id": "SA03",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "pairing_active"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "identity"
+    },
+    {
+      "id": "SA04",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "owner",
+            "consumer_database_instance_id"
+          ],
+          "value": "other-db"
+        }
+      ],
+      "expected": "owner"
+    },
+    {
+      "id": "SA05",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "owner",
+            "consumer_id"
+          ],
+          "value": "another"
+        }
+      ],
+      "expected": "owner"
+    },
+    {
+      "id": "SA06",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "stream_epoch"
+          ],
+          "value": "old"
+        }
+      ],
+      "expected": "binding"
+    },
+    {
+      "id": "SA07",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "scope_digest"
+          ],
+          "value": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "expected": "binding"
+    },
+    {
+      "id": "SA08",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "authorization_revision"
+          ],
+          "value": "8"
+        }
+      ],
+      "expected": "binding"
+    },
+    {
+      "id": "SA09",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "expected_connection_generation"
+          ],
+          "value": "1"
+        }
+      ],
+      "expected": "generation"
+    },
+    {
+      "id": "SA10",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "replace_existing"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "connection_busy"
+    },
+    {
+      "id": "SA11",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "consumer_state_preserved"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "projection_lost"
+    },
+    {
+      "id": "SA12",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "resume",
+            "cursor"
+          ],
+          "value": "2"
+        }
+      ],
+      "expected": "resume"
+    },
+    {
+      "id": "SA13",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "resume",
+            "payload_digest"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expected": "resume"
+    },
+    {
+      "id": "SA14",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "retention_mapping_available"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "retention_lost"
+    },
+    {
+      "id": "SA15",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "resume",
+            "ack_kind"
+          ],
+          "value": "projection_applied"
+        }
+      ],
+      "expected": "ack_kind"
+    },
+    {
+      "id": "SA16",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "subscription",
+            "state"
+          ],
+          "value": "revoked"
+        }
+      ],
+      "expected": "state"
+    },
+    {
+      "id": "SA17",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "seamer_role"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "purpose"
+    },
+    {
+      "id": "SA18",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "canonical_scope_complete"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "purpose"
+    },
+    {
+      "id": "SA19",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "authority_available"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "unavailable"
+    },
+    {
+      "id": "SA20",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "authorization_current"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "authorization"
+    },
+    {
+      "id": "SA21",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "resume"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "snapshot_required"
+    },
+    {
+      "id": "SA22",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "purpose_allowed"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "authorization"
+    },
+    {
+      "id": "SA23",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "subscription",
+            "state"
+          ],
+          "value": "snapshot_ready"
+        },
+        {
+          "path": [
+            "request",
+            "resume"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "snapshot_wait"
+    },
+    {
+      "id": "SA24",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "subscription",
+            "purpose"
+          ],
+          "value": "status_projection"
+        },
+        {
+          "path": [
+            "request",
+            "resume",
+            "ack_kind"
+          ],
+          "value": "projection_applied"
+        },
+        {
+          "path": [
+            "peer",
+            "seamer_role"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "catching_up"
+    },
+    {
+      "id": "SA25",
+      "kind": "attach",
+      "changes": [
+        {
+          "path": [
+            "subscription",
+            "binding",
+            "connection_generation"
+          ],
+          "value": "99999999999999999999"
+        },
+        {
+          "path": [
+            "request",
+            "expected_connection_generation"
+          ],
+          "value": "99999999999999999999"
+        }
+      ],
+      "expected": "generation_exhausted"
+    },
+    {
+      "id": "SK01",
+      "kind": "ack",
+      "changes": [],
+      "expected": "advance"
+    },
+    {
+      "id": "SK02",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "binding",
+            "connection_generation"
+          ],
+          "value": "1"
+        }
+      ],
+      "expected": "binding"
+    },
+    {
+      "id": "SK03",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "cursor"
+          ],
+          "value": "4"
+        }
+      ],
+      "expected": "unsent"
+    },
+    {
+      "id": "SK04",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "payload_digest"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expected": "digest"
+    },
+    {
+      "id": "SK05",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "ack_kind"
+          ],
+          "value": "projection_applied"
+        }
+      ],
+      "expected": "ack_kind"
+    },
+    {
+      "id": "SK06",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "owner",
+            "principal_id"
+          ],
+          "value": "other"
+        }
+      ],
+      "expected": "owner"
+    },
+    {
+      "id": "SK07",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "authorization_current"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "authorization"
+    },
+    {
+      "id": "SK08",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "subscription",
+            "state"
+          ],
+          "value": "expired"
+        }
+      ],
+      "expected": "state"
+    },
+    {
+      "id": "SK09",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "pairing_active"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "identity"
+    },
+    {
+      "id": "SK10",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "cursor"
+          ],
+          "value": "1"
+        },
+        {
+          "path": [
+            "request",
+            "payload_digest"
+          ],
+          "value": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
+      "expected": "duplicate"
+    },
+    {
+      "id": "SK11",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "cursor"
+          ],
+          "value": "0"
+        },
+        {
+          "path": [
+            "request",
+            "payload_digest"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expected": "duplicate"
+    },
+    {
+      "id": "SK12",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "delivery_map"
+          ],
+          "value": [
+            {
+              "cursor": "2",
+              "previous_cursor": "1",
+              "payload_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            {
+              "cursor": "3",
+              "previous_cursor": "2",
+              "payload_digest": "3333333333333333333333333333333333333333333333333333333333333333"
+            }
+          ]
+        }
+      ],
+      "expected": "chain"
+    },
+    {
+      "id": "SK13",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "delivery_map"
+          ],
+          "value": [
+            {
+              "cursor": "1",
+              "previous_cursor": "0",
+              "payload_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            {
+              "cursor": "2",
+              "previous_cursor": "0",
+              "payload_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            {
+              "cursor": "3",
+              "previous_cursor": "2",
+              "payload_digest": "3333333333333333333333333333333333333333333333333333333333333333"
+            }
+          ]
+        }
+      ],
+      "expected": "chain"
+    },
+    {
+      "id": "SK14",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "last_sent"
+          ],
+          "value": "1"
+        }
+      ],
+      "expected": "unsent"
+    },
+    {
+      "id": "SK15",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "subscription",
+            "purpose"
+          ],
+          "value": "status_projection"
+        },
+        {
+          "path": [
+            "request",
+            "ack_kind"
+          ],
+          "value": "projection_applied"
+        }
+      ],
+      "expected": "advance"
+    },
+    {
+      "id": "SK16",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "binding",
+            "publisher_database_instance_id"
+          ],
+          "value": "restored"
+        }
+      ],
+      "expected": "binding"
+    },
+    {
+      "id": "SK17",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "binding",
+            "scope_digest"
+          ],
+          "value": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "expected": "binding"
+    },
+    {
+      "id": "SK18",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "request",
+            "binding",
+            "authorization_revision"
+          ],
+          "value": "6"
+        }
+      ],
+      "expected": "binding"
+    },
+    {
+      "id": "SK19",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "peer",
+            "authority_available"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "unavailable"
+    },
+    {
+      "id": "SK20",
+      "kind": "ack",
+      "changes": [
+        {
+          "path": [
+            "subscription",
+            "purpose"
+          ],
+          "value": "status_projection"
+        },
+        {
+          "path": [
+            "peer",
+            "seamer_role"
+          ],
+          "value": false
+        },
+        {
+          "path": [
+            "request",
+            "ack_kind"
+          ],
+          "value": "durable_ingest"
+        }
+      ],
+      "expected": "advance"
+    }
+  ]
+}

@@ -1,0 +1,2231 @@
+{
+  "scope": "准备子域内存SQL及串行故障切点，非运行或生产迁移",
+  "all_passed": true,
+  "cases_passed": 430,
+  "runtime_approved": false,
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "完整14表",
+      "expected": [
+        "cp_audit",
+        "cp_close",
+        "cp_commit",
+        "cp_completion",
+        "cp_deny_event",
+        "cp_event",
+        "cp_grant",
+        "cp_notification",
+        "cp_protection",
+        "cp_protection_target",
+        "cp_receipt",
+        "cp_request",
+        "cp_request_device",
+        "cp_scope"
+      ],
+      "observed": [
+        "cp_audit",
+        "cp_close",
+        "cp_commit",
+        "cp_completion",
+        "cp_deny_event",
+        "cp_event",
+        "cp_grant",
+        "cp_notification",
+        "cp_protection",
+        "cp_protection_target",
+        "cp_receipt",
+        "cp_request",
+        "cp_request_device",
+        "cp_scope"
+      ]
+    },
+    {
+      "name": "外键开启",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "递归触发开启",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "登记完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "登记查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "登记缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "登记回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "登记缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "登记回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "登记缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "登记回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "登记缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "登记回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "登记缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记故障4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "登记回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "登记缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记故障5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "登记回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "登记缺写6全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "登记故障6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "登记回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "签发查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "签发回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "签发回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "签发回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "签发回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发故障4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "签发回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发故障5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "签发回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "拒绝查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "拒绝缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "拒绝回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "拒绝缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "拒绝回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "拒绝缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "拒绝回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "拒绝缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "拒绝回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "不确定查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "不确定缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "不确定回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "不确定缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "不确定回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "不确定缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "不确定回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "不确定缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不确定故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "不确定回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "关闭先到查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写6全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写7全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障7",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写8全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障8",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写9",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写9全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障9",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚9",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写10",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写10全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障10",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚10",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到缺写11",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭先到缺写11全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到故障11",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭先到回滚11",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "关闭已受理查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写6全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写7全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障7",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已受理缺写8全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已受理故障8",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已受理回滚8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "关闭已签发查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写6全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写7全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障7",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭已签发缺写8全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭已签发故障8",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭已签发回滚8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "关闭完成查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭完成缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭完成回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭完成缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭完成回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭完成缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭完成回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭完成缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭完成回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭完成缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭完成故障4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭完成回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账完整外键",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "关闭重复操作独立记账查原可见",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账查原不变更",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭重复操作独立记账缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账故障0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭重复操作独立记账回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭重复操作独立记账缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账故障1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭重复操作独立记账回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭重复操作独立记账缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账故障2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭重复操作独立记账回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭重复操作独立记账缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账故障3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭重复操作独立记账回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭重复操作独立记账缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账故障4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭重复操作独立记账回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭重复操作独立记账缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账故障5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭重复操作独立记账回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭重复操作独立记账缺写6全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭重复操作独立记账故障6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "关闭重复操作独立记账回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到状态",
+      "expected": [
+        "closing",
+        "00000000000000000001",
+        null
+      ],
+      "observed": [
+        "closing",
+        "00000000000000000001",
+        null
+      ]
+    },
+    {
+      "name": "后到签发",
+      "expected": "invalid_transition",
+      "observed": "invalid_transition"
+    },
+    {
+      "name": "后到签发全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "换内部key重放prepare",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "换内部key重放prepare全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "换准备ID绕过同run代次",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "换准备ID绕过同run代次全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭先到最终不含grant",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "签发先到保留回执",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "最终closed保留引用",
+      "expected": [
+        "closed",
+        "00000000000000000004",
+        "receipt.p"
+      ],
+      "observed": [
+        "closed",
+        "00000000000000000004",
+        "receipt.p"
+      ]
+    },
+    {
+      "name": "已关闭重复独立操作不增状态修订",
+      "expected": "00000000000000000004",
+      "observed": "00000000000000000004"
+    },
+    {
+      "name": "相同floor不增快照修订",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "同close_operation换内部id",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "同close_operation换内部id全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "closed不可复活",
+      "expected": "invalid_transition",
+      "observed": "invalid_transition"
+    },
+    {
+      "name": "closed不可复活全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected关闭后的状态",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "rejected不能补签",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "rejected不能补签全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "indeterminate关闭后的状态",
+      "expected": "closing",
+      "observed": "closing"
+    },
+    {
+      "name": "indeterminate不能补签",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "indeterminate不能补签全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭不能丢弃历史回执",
+      "expected": "invalid_transition",
+      "observed": "invalid_transition"
+    },
+    {
+      "name": "关闭不能丢弃历史回执全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发重复不能替换原件",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发重复不能替换原件全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run拒绝下界升高",
+      "expected": [
+        [
+          "00000000000000000002",
+          "00000000000000000002",
+          "00000000000000000002"
+        ]
+      ],
+      "observed": [
+        [
+          "00000000000000000002",
+          "00000000000000000002",
+          "00000000000000000002"
+        ]
+      ]
+    },
+    {
+      "name": "另run独立行修订共享全局修订",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000003"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000003"
+      ]
+    },
+    {
+      "name": "低代次新签发被更强floor拦截",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "低代次新签发被更强floor拦截全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未占用低代次也不能登记",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "未占用低代次也不能登记全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "高代次关闭阻止旧accepted签发",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "高代次关闭阻止旧accepted签发全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "较低代次关闭复用更强拒绝",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "较低代次独立关闭已提交",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "提交前当前视图仍accepted",
+      "expected": "accepted",
+      "observed": "accepted"
+    },
+    {
+      "name": "签发错请求摘要",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发错请求摘要全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "签发错grant",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "签发错grant全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "receipt错事件",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "receipt错事件全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护目标数错误",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "保护目标数错误全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭错run",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭错run全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "快照跳号",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "快照跳号全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "行修订跳号",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "行修订跳号全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "状态修订跳号",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "状态修订跳号全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "complete错close",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "complete错close全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "审计错准备",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "审计错准备全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted不能noop关闭",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "accepted不能noop关闭全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "请求设备数错误",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "请求设备数错误全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "arm不能偷带execution",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "arm不能偷带execution全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "recovery不能遗漏execution",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "recovery不能遗漏execution全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭错原请求摘要",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "关闭错原请求摘要全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "冻结设备集",
+      "expected": "device_set_frozen",
+      "observed": "device_set_frozen"
+    },
+    {
+      "name": "冻结设备集全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "冻结出口集",
+      "expected": "target_set_frozen",
+      "observed": "target_set_frozen"
+    },
+    {
+      "name": "冻结出口集全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_scope禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_scope禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_scope禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_scope禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_request禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_request禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_request禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_request禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_request_device禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_request_device禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_request_device禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_request_device禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_event禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_event禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_event禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_event禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_grant禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_grant禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_grant禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_grant禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_receipt禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_receipt禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_receipt禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_receipt禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_close禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_close禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_close禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_close禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_protection禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_protection禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_protection禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_protection禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_protection_target禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_protection_target禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_protection_target禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_protection_target禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_completion禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_completion禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_completion禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_completion禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_deny_event禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_deny_event禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_deny_event禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_deny_event禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_commit禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_commit禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_commit禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_commit禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_audit禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_audit禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_audit禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_audit禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_notification禁止改写",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_notification禁止改写全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cp_notification禁止删除",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "cp_notification禁止删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "REPLACE不能替换墓碑",
+      "expected": "immutable",
+      "observed": "immutable"
+    },
+    {
+      "name": "REPLACE不能替换墓碑全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "恢复分类不自动发命令",
+      "expected": "retain_terminal",
+      "observed": "retain_terminal"
+    },
+    {
+      "name": "accepted恢复分类",
+      "expected": "close_without_issuing",
+      "observed": "close_without_issuing"
+    },
+    {
+      "name": "applied恢复分类",
+      "expected": "history_and_close",
+      "observed": "history_and_close"
+    },
+    {
+      "name": "indeterminate恢复分类",
+      "expected": "close_and_reconcile",
+      "observed": "close_and_reconcile"
+    },
+    {
+      "name": "closing恢复分类",
+      "expected": "resume_same_protection",
+      "observed": "resume_same_protection"
+    },
+    {
+      "name": "两段后继9",
+      "expected": "00000000000000000010",
+      "observed": "00000000000000000010"
+    },
+    {
+      "name": "两段后继9999999999",
+      "expected": "00000000010000000000",
+      "observed": "00000000010000000000"
+    },
+    {
+      "name": "两段后继9223372036854775807",
+      "expected": "09223372036854775808",
+      "observed": "09223372036854775808"
+    },
+    {
+      "name": "两段后继99999999999999999998",
+      "expected": "99999999999999999999",
+      "observed": "99999999999999999999"
+    },
+    {
+      "name": "耗尽不回绕",
+      "expected": "100000000000000000000",
+      "observed": "100000000000000000000"
+    },
+    {
+      "name": "21位修订拒绝",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "21位修订拒绝全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "wire计数拒绝'01'",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "wire计数拒绝'1\\n'",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "wire计数拒绝'-1'",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "wire计数拒绝'0'",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "wire计数拒绝'١'",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "wire计数拒绝'100000000000000000000'",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "合成BODY通过不证明JSON或权威",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c04-preparation/STORAGE.md": "d51466410bcd73f0d3e22b11beb1573aa00617168670ae0a8218832a61ddb004",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c04-preparation/preparation.schema.json": "acc82694783ba36ea9532f6616c9cadbc7190b0516e8ae877aab3b00f5f9d6e1"
+  }
+}

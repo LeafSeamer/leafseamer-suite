@@ -1,0 +1,398 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "checks": 92,
+  "results": [
+    {
+      "id": "CommandRequest正例",
+      "passed": true
+    },
+    {
+      "id": "CommandRequest额外字段",
+      "passed": true
+    },
+    {
+      "id": "CommandContent正例",
+      "passed": true
+    },
+    {
+      "id": "CommandContent额外字段",
+      "passed": true
+    },
+    {
+      "id": "RequestIdentity正例",
+      "passed": true
+    },
+    {
+      "id": "RequestIdentity额外字段",
+      "passed": true
+    },
+    {
+      "id": "RequestAdjudication正例",
+      "passed": true
+    },
+    {
+      "id": "RequestAdjudication额外字段",
+      "passed": true
+    },
+    {
+      "id": "RejectRequest正例",
+      "passed": true
+    },
+    {
+      "id": "RejectRequest额外字段",
+      "passed": true
+    },
+    {
+      "id": "LookupResult正例",
+      "passed": true
+    },
+    {
+      "id": "LookupResult额外字段",
+      "passed": true
+    },
+    {
+      "id": "接受一次",
+      "passed": true
+    },
+    {
+      "id": "拒收一次",
+      "passed": true
+    },
+    {
+      "id": "墓碑结构",
+      "passed": true
+    },
+    {
+      "id": "accepted不可空命令",
+      "passed": true
+    },
+    {
+      "id": "rejected不可带命令",
+      "passed": true
+    },
+    {
+      "id": "裁决版本不可混投",
+      "passed": true
+    },
+    {
+      "id": "裁决修订不可更新",
+      "passed": true
+    },
+    {
+      "id": "旧身份缺签发代次拒绝",
+      "passed": true
+    },
+    {
+      "id": "HTTP名称不可冒持久操作名",
+      "passed": true
+    },
+    {
+      "id": "found必须有裁决",
+      "passed": true
+    },
+    {
+      "id": "未知不能附伪裁决",
+      "passed": true
+    },
+    {
+      "id": "Content不接受运输字段_context_id",
+      "passed": true
+    },
+    {
+      "id": "顶层字段不改变摘要_context_id",
+      "passed": true
+    },
+    {
+      "id": "Content不接受运输字段_idempotency_key",
+      "passed": true
+    },
+    {
+      "id": "顶层字段不改变摘要_idempotency_key",
+      "passed": true
+    },
+    {
+      "id": "Content不接受运输字段_correlation_id",
+      "passed": true
+    },
+    {
+      "id": "顶层字段不改变摘要_correlation_id",
+      "passed": true
+    },
+    {
+      "id": "嵌套同名字段保留",
+      "passed": true
+    },
+    {
+      "id": "业务proof参与摘要",
+      "passed": true
+    },
+    {
+      "id": "自动化提交结构",
+      "passed": true
+    },
+    {
+      "id": "自动化来源不可剥离",
+      "passed": true
+    },
+    {
+      "id": "人工不可带自动化来源",
+      "passed": true
+    },
+    {
+      "id": "组织自动化正例",
+      "passed": true
+    },
+    {
+      "id": "service不能冒人工",
+      "passed": true
+    },
+    {
+      "id": "human不能冒自动化",
+      "passed": true
+    },
+    {
+      "id": "provider不能冒Seamer",
+      "passed": true
+    },
+    {
+      "id": "受理先到只返回原accepted",
+      "passed": true
+    },
+    {
+      "id": "拒收先到迟到命令不创建",
+      "passed": true
+    },
+    {
+      "id": "原件查原",
+      "passed": true
+    },
+    {
+      "id": "未找到不是永久拒收",
+      "passed": true
+    },
+    {
+      "id": "存储不可读不报未找到",
+      "passed": true
+    },
+    {
+      "id": "同key换digest仍冲突",
+      "passed": true
+    },
+    {
+      "id": "查询错摘要冲突",
+      "passed": true
+    },
+    {
+      "id": "拒收错摘要保留原件",
+      "passed": true
+    },
+    {
+      "id": "拒收摘要不可自报",
+      "passed": true
+    },
+    {
+      "id": "错命名空间_issuer_epoch",
+      "passed": true
+    },
+    {
+      "id": "错命名空间_issuer_id",
+      "passed": true
+    },
+    {
+      "id": "错命名空间_principal_id",
+      "passed": true
+    },
+    {
+      "id": "错命名空间_request_epoch",
+      "passed": true
+    },
+    {
+      "id": "错命名空间_operation_id",
+      "passed": true
+    },
+    {
+      "id": "Controller换库拒旧身份",
+      "passed": true
+    },
+    {
+      "id": "重复返回仍需当前权限",
+      "passed": true
+    },
+    {
+      "id": "历史同名不证明归属",
+      "passed": true
+    },
+    {
+      "id": "面板委托越界",
+      "passed": true
+    },
+    {
+      "id": "旧动作资格失效可拒收",
+      "passed": true
+    },
+    {
+      "id": "旧动作资格失效不可新受理",
+      "passed": true
+    },
+    {
+      "id": "命名空间退休不再新受理",
+      "passed": true
+    },
+    {
+      "id": "容量不足不删墓碑",
+      "passed": true
+    },
+    {
+      "id": "新拒收容量不足不伪提交",
+      "passed": true
+    },
+    {
+      "id": "同拒收操作不得换内容",
+      "passed": true
+    },
+    {
+      "id": "重复拒收不重新消耗容量",
+      "passed": true
+    },
+    {
+      "id": "拒收结果缺裁决不重建",
+      "passed": true
+    },
+    {
+      "id": "独立拒收仍返回原墓碑",
+      "passed": true
+    },
+    {
+      "id": "submit提交前失败",
+      "passed": true
+    },
+    {
+      "id": "submit响应丢失不伪成功",
+      "passed": true
+    },
+    {
+      "id": "submit提交后查原",
+      "passed": true
+    },
+    {
+      "id": "reject提交前失败",
+      "passed": true
+    },
+    {
+      "id": "reject响应丢失不伪成功",
+      "passed": true
+    },
+    {
+      "id": "reject提交后查原",
+      "passed": true
+    },
+    {
+      "id": "裁决证据关联",
+      "passed": true
+    },
+    {
+      "id": "重算摘要不能伪CommandRef",
+      "passed": true
+    },
+    {
+      "id": "重算摘要不能伪commit",
+      "passed": true
+    },
+    {
+      "id": "命令证据错Controller库",
+      "passed": true
+    },
+    {
+      "id": "没有持久权威不收裁决",
+      "passed": true
+    },
+    {
+      "id": "HTTP操作到持久操作显式映射",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands认证",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands版本",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands禁止缓存",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands投影正例",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands投影反例",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/lookup认证",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/lookup版本",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/lookup禁止缓存",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/lookup投影正例",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/lookup投影反例",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/reject认证",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/reject版本",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/reject禁止缓存",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/reject投影正例",
+      "passed": true
+    },
+    {
+      "id": "/api/v1/commands/reject投影反例",
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "权威命名空间、归属和门控为人工夹具",
+    "字典原子步仅表示两个串行顺序",
+    "提交前故障与响应丢失为人工切点，不证明真实WAL或网络",
+    "未执行参数二次校验、准备提供者、完整SQL与公共其他路由"
+  ],
+  "runtime_validation": {
+    "http": 0,
+    "authentication": 0,
+    "sqlite": 0,
+    "concurrency": 0,
+    "device": 0
+  },
+  "input_sha256": {
+    "docs/contracts/c02-admission/README.md": "626b10c68f549553202d10ff71cd1cdaeb02c294d047b393151975a759407778",
+    "docs/contracts/c02-admission/build_contracts.py": "9060a30ad796e4e9687b3af4454d5b182d528a258129ec97f24ae7b5beb840bb",
+    "docs/contracts/c02-admission/check_contracts.py": "624d14a7b1ae30514cdf5f5149c138823f945ee7816b0f97c22d7bc4b1fad675",
+    "docs/contracts/c02-admission/admission.schema.json": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7",
+    "docs/contracts/c02-admission/admission.openapi.json": "a2e77e729c4dc2173e8848bdde937f10ff6a5b3bdd76984deaa6d160e4ffb28b",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c05-protection/protection.schema.json": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+  }
+}

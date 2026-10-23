@@ -1,0 +1,1590 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "命令受理与永久拒收候选",
+    "version": "command-admission/0.1.0-draft.1"
+  },
+  "paths": {
+    "/api/v1/commands": {
+      "post": {
+        "operationId": "submitCommand",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-admission/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/S0_CommandRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_RequestAdjudication"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_RequestAdjudication"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "device.command",
+        "x-subject-profiles": [
+          "human_manual",
+          "seamer_automation"
+        ],
+        "x-retry-policy": "never-auto-retry",
+        "x-original-operation-id": "createCommand"
+      }
+    },
+    "/api/v1/commands/lookup": {
+      "post": {
+        "operationId": "lookupCommandAdmission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-admission/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/S0_RequestIdentity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_LookupResult"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.read",
+        "x-subject-profiles": [
+          "human_own_namespace",
+          "seamer_own_namespace"
+        ],
+        "x-retry-policy": "read-only",
+        "x-original-operation-id": "createCommand"
+      }
+    },
+    "/api/v1/commands/reject": {
+      "post": {
+        "operationId": "rejectCommandAdmission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-admission/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/S0_RejectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_RequestAdjudication"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.cancel",
+        "x-subject-profiles": [
+          "human_own_namespace",
+          "seamer_own_automation"
+        ],
+        "x-retry-policy": "same-identity-monotonic-denial-only",
+        "x-original-operation-id": "createCommand"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "S0_RequestAdjudication": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "command-admission/0.1.0-draft.1"
+          },
+          "adjudication_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "const": "1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/S0_RequestIdentity"
+          },
+          "decision": {
+            "enum": [
+              "accepted",
+              "rejected"
+            ]
+          },
+          "command_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S0_CommandRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "commit_ref": {
+            "$ref": "#/components/schemas/S0_CommitRef"
+          },
+          "adjudication_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "contract_version",
+          "adjudication_id",
+          "revision",
+          "identity",
+          "decision",
+          "command_ref",
+          "commit_ref",
+          "adjudication_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "decision": {
+                  "const": "accepted"
+                }
+              },
+              "required": [
+                "decision"
+              ]
+            },
+            "then": {
+              "properties": {
+                "command_ref": {
+                  "$ref": "#/components/schemas/S0_CommandRef"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "command_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S0_Id": {
+        "$ref": "#/components/schemas/S1_Id"
+      },
+      "S1_Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "S0_RequestIdentity": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/S0_RequestKey"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "key",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_RequestKey": {
+        "type": "object",
+        "properties": {
+          "target_scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "issuer_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "issuer_epoch": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "principal_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "request_epoch": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "operation_id": {
+            "const": "createCommand"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/S0_Id"
+          }
+        },
+        "required": [
+          "target_scope",
+          "issuer_id",
+          "issuer_epoch",
+          "principal_id",
+          "request_epoch",
+          "operation_id",
+          "idempotency_key"
+        ],
+        "additionalProperties": false
+      },
+      "S0_Scope": {
+        "$ref": "#/components/schemas/S1_Scope"
+      },
+      "S1_Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "S0_Digest": {
+        "$ref": "#/components/schemas/S1_Digest"
+      },
+      "S1_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+      },
+      "S0_CommandRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "command"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_Counter": {
+        "$ref": "#/components/schemas/S1_Counter"
+      },
+      "S1_Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "S0_CommitRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "controller_commit"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0_Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid",
+              "unauthenticated",
+              "forbidden",
+              "conflict",
+              "capacity",
+              "unavailable",
+              "version"
+            ]
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          }
+        },
+        "required": [
+          "code",
+          "request_id"
+        ],
+        "additionalProperties": false
+      },
+      "S0_CommandRequest": {
+        "$ref": "#/components/schemas/S1_CommandRequest"
+      },
+      "S1_CommandRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "capability_version": {
+            "$ref": "#/components/schemas/S3_Version"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/S3_Payload"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/S3_ControlVersion"
+          },
+          "origin": {
+            "enum": [
+              "manual",
+              "automation"
+            ]
+          },
+          "run_binding": {
+            "$ref": "#/components/schemas/S1_RunBinding"
+          },
+          "required_completion": {
+            "$ref": "#/components/schemas/S3_CompletionLevel"
+          },
+          "preconditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_Predicate"
+            },
+            "minItems": 0,
+            "maxItems": 64
+          },
+          "dispatch": {
+            "$ref": "#/components/schemas/S3_Dispatch"
+          },
+          "evidence_timeout_ms": {
+            "$ref": "#/components/schemas/S3_Duration"
+          },
+          "correlation_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "automation_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S1_AutomationOriginBinding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "device_id",
+          "action_id",
+          "capability_version",
+          "parameters",
+          "expected_control",
+          "origin",
+          "required_completion",
+          "preconditions",
+          "dispatch",
+          "evidence_timeout_ms",
+          "automation_binding"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "required": [
+                "run_binding"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "run_binding"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action_id": {
+                  "const": "obs.program_scene.set"
+                }
+              },
+              "required": [
+                "action_id"
+              ]
+            },
+            "then": {
+              "properties": {
+                "parameters": {
+                  "$ref": "#/components/schemas/S3_ObsSceneParameters"
+                },
+                "required_completion": {
+                  "const": "effect_verified"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "properties": {
+                "automation_binding": {
+                  "$ref": "#/components/schemas/S1_AutomationOriginBinding"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "automation_binding": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S3_Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9._-]+$"
+      },
+      "S3_Version": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$"
+      },
+      "S3_Payload": {
+        "type": "object",
+        "maxProperties": 256,
+        "additionalProperties": {
+          "$ref": "#/components/schemas/S3_JsonValue"
+        },
+        "description": "开放容器仅用于动态能力数据，须再通过固定摘要的能力Schema；不是免校验任意写入。"
+      },
+      "S3_JsonValue": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string",
+            "maxLength": 16384
+          },
+          {
+            "type": "number",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_JsonValue"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          {
+            "type": "object",
+            "maxProperties": 256,
+            "additionalProperties": {
+              "$ref": "#/components/schemas/S3_JsonValue"
+            }
+          }
+        ]
+      },
+      "S3_ControlVersion": {
+        "type": "object",
+        "properties": {
+          "epoch": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "version": {
+            "$ref": "#/components/schemas/S3_Revision"
+          }
+        },
+        "required": [
+          "epoch",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "S3_Revision": {
+        "type": "string",
+        "maxLength": 20,
+        "pattern": "^(0|[1-9][0-9]*)$"
+      },
+      "S1_RunBinding": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "definition_version": {
+            "$ref": "#/components/schemas/S1_PositiveCounter"
+          },
+          "grant_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "grant_revision": {
+            "$ref": "#/components/schemas/S1_Counter"
+          },
+          "arm_generation": {
+            "$ref": "#/components/schemas/S1_Counter"
+          },
+          "step_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "logical_action_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          }
+        },
+        "required": [
+          "run_id",
+          "definition_version",
+          "grant_id",
+          "grant_revision",
+          "arm_generation",
+          "step_id",
+          "logical_action_id"
+        ],
+        "additionalProperties": false
+      },
+      "S1_PositiveCounter": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+      },
+      "S3_CompletionLevel": {
+        "enum": [
+          "sent",
+          "acknowledged",
+          "effect_verified"
+        ]
+      },
+      "S3_Predicate": {
+        "type": "object",
+        "properties": {
+          "predicate_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "field": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "operator": {
+            "enum": [
+              "eq",
+              "ne",
+              "lt",
+              "lte",
+              "gt",
+              "gte"
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/S3_JsonValue"
+          },
+          "max_age_ms": {
+            "$ref": "#/components/schemas/S3_Duration"
+          }
+        },
+        "required": [
+          "predicate_id",
+          "device_id",
+          "field",
+          "operator",
+          "value",
+          "max_age_ms"
+        ],
+        "additionalProperties": false
+      },
+      "S3_Duration": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 86400000
+      },
+      "S3_Dispatch": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "const": "immediate"
+              },
+              "max_queue_ms": {
+                "$ref": "#/components/schemas/S3_Duration"
+              }
+            },
+            "required": [
+              "mode",
+              "max_queue_ms"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "const": "scheduled"
+              },
+              "occurrence_id": {
+                "$ref": "#/components/schemas/S3_Id"
+              },
+              "not_before": {
+                "$ref": "#/components/schemas/S3_Timestamp"
+              },
+              "not_after": {
+                "$ref": "#/components/schemas/S3_Timestamp"
+              },
+              "clock_policy_revision": {
+                "$ref": "#/components/schemas/S3_Revision"
+              },
+              "max_queue_ms": {
+                "$ref": "#/components/schemas/S3_Duration"
+              }
+            },
+            "required": [
+              "mode",
+              "occurrence_id",
+              "not_before",
+              "not_after",
+              "clock_policy_revision",
+              "max_queue_ms"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "S3_Timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+      },
+      "S1_AutomationOriginBinding": {
+        "type": "object",
+        "properties": {
+          "origin_scope": {
+            "$ref": "#/components/schemas/S2_Scope"
+          },
+          "run_id": {
+            "$ref": "#/components/schemas/S2_Id"
+          },
+          "definition_version": {
+            "$ref": "#/components/schemas/S2_PositiveCounter"
+          },
+          "arm_generation": {
+            "$ref": "#/components/schemas/S2_Counter"
+          },
+          "execution_id": {
+            "$ref": "#/components/schemas/S2_Id"
+          },
+          "execution_binding_ref": {
+            "$ref": "#/components/schemas/S2_Ref"
+          },
+          "step_id": {
+            "$ref": "#/components/schemas/S2_Id"
+          },
+          "logical_action_id": {
+            "$ref": "#/components/schemas/S2_Id"
+          }
+        },
+        "required": [
+          "origin_scope",
+          "run_id",
+          "definition_version",
+          "arm_generation",
+          "execution_id",
+          "execution_binding_ref",
+          "step_id",
+          "logical_action_id"
+        ],
+        "additionalProperties": false
+      },
+      "S2_Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "S2_Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "S2_PositiveCounter": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+      },
+      "S2_Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "S2_Ref": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/S2_Scope"
+          },
+          "object_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S3_ObsSceneParameters": {
+        "type": "object",
+        "properties": {
+          "scene_ref": {
+            "$ref": "#/components/schemas/S3_SceneRef"
+          }
+        },
+        "required": [
+          "scene_ref"
+        ],
+        "additionalProperties": false
+      },
+      "S3_SceneRef": {
+        "type": "object",
+        "properties": {
+          "collection_ref": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "scene_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "catalog_revision": {
+            "$ref": "#/components/schemas/S3_Revision"
+          },
+          "collection_generation": {
+            "$ref": "#/components/schemas/S3_Revision"
+          },
+          "binding_revision": {
+            "$ref": "#/components/schemas/S3_Revision"
+          }
+        },
+        "required": [
+          "collection_ref",
+          "scene_id",
+          "catalog_revision",
+          "collection_generation",
+          "binding_revision"
+        ],
+        "additionalProperties": false
+      },
+      "S0_LookupResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "found"
+              },
+              "adjudication": {
+                "$ref": "#/components/schemas/S0_RequestAdjudication"
+              }
+            },
+            "required": [
+              "state",
+              "adjudication"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "indeterminate"
+                ]
+              },
+              "adjudication": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "adjudication"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "S0_RejectRequest": {
+        "type": "object",
+        "properties": {
+          "rejection_operation_id": {
+            "$ref": "#/components/schemas/S0_Id"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/S0_RequestIdentity"
+          },
+          "content": {
+            "$ref": "#/components/schemas/S0_CommandContent"
+          }
+        },
+        "required": [
+          "rejection_operation_id",
+          "identity",
+          "content"
+        ],
+        "additionalProperties": false
+      },
+      "S0_CommandContent": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/S3_Id"
+          },
+          "capability_version": {
+            "$ref": "#/components/schemas/S3_Version"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/S3_Payload"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/S3_ControlVersion"
+          },
+          "origin": {
+            "enum": [
+              "manual",
+              "automation"
+            ]
+          },
+          "run_binding": {
+            "$ref": "#/components/schemas/S1_RunBinding"
+          },
+          "required_completion": {
+            "$ref": "#/components/schemas/S3_CompletionLevel"
+          },
+          "preconditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S3_Predicate"
+            },
+            "minItems": 0,
+            "maxItems": 64
+          },
+          "dispatch": {
+            "$ref": "#/components/schemas/S3_Dispatch"
+          },
+          "evidence_timeout_ms": {
+            "$ref": "#/components/schemas/S3_Duration"
+          },
+          "automation_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S1_AutomationOriginBinding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "device_id",
+          "action_id",
+          "capability_version",
+          "parameters",
+          "expected_control",
+          "origin",
+          "required_completion",
+          "preconditions",
+          "dispatch",
+          "evidence_timeout_ms",
+          "automation_binding"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "required": [
+                "run_binding"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "run_binding"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action_id": {
+                  "const": "obs.program_scene.set"
+                }
+              },
+              "required": [
+                "action_id"
+              ]
+            },
+            "then": {
+              "properties": {
+                "parameters": {
+                  "$ref": "#/components/schemas/S3_ObsSceneParameters"
+                },
+                "required_completion": {
+                  "const": "effect_verified"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "properties": {
+                "automation_binding": {
+                  "$ref": "#/components/schemas/S1_AutomationOriginBinding"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "automation_binding": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

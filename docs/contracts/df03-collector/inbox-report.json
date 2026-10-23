@@ -1,0 +1,842 @@
+{
+  "version": "collector-inbox/0.1.0-draft.1",
+  "approved": false,
+  "all_passed": true,
+  "check_count": 162,
+  "table_count": 27,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "生成字节",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "27表集合",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "十四消息无遗漏",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "HELLO方向",
+      "expected": "collector_to_core",
+      "observed": "collector_to_core"
+    },
+    {
+      "name": "HELLO回复是否必需",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ACCEPT方向",
+      "expected": "core_to_collector",
+      "observed": "core_to_collector"
+    },
+    {
+      "name": "ACCEPT回复是否必需",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "CONFIGURE方向",
+      "expected": "core_to_collector",
+      "observed": "core_to_collector"
+    },
+    {
+      "name": "CONFIGURE回复是否必需",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CONFIG_ACK方向",
+      "expected": "collector_to_core",
+      "observed": "collector_to_core"
+    },
+    {
+      "name": "CONFIG_ACK回复是否必需",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "POLL方向",
+      "expected": "core_to_collector",
+      "observed": "core_to_collector"
+    },
+    {
+      "name": "POLL回复是否必需",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "POLL_ACK方向",
+      "expected": "collector_to_core",
+      "observed": "collector_to_core"
+    },
+    {
+      "name": "POLL_ACK回复是否必需",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "CAPTURE_REPORT方向",
+      "expected": "collector_to_core",
+      "observed": "collector_to_core"
+    },
+    {
+      "name": "CAPTURE_REPORT回复是否必需",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "REPORT_STORED方向",
+      "expected": "core_to_collector",
+      "observed": "core_to_collector"
+    },
+    {
+      "name": "REPORT_STORED回复是否必需",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_CAPTURE方向",
+      "expected": "core_to_collector",
+      "observed": "core_to_collector"
+    },
+    {
+      "name": "QUERY_CAPTURE回复是否必需",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "CAPTURE_STATUS方向",
+      "expected": "collector_to_core",
+      "observed": "collector_to_core"
+    },
+    {
+      "name": "CAPTURE_STATUS回复是否必需",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_COMMIT方向",
+      "expected": "collector_to_core",
+      "observed": "collector_to_core"
+    },
+    {
+      "name": "QUERY_COMMIT回复是否必需",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "COMMIT_STATUS方向",
+      "expected": "core_to_collector",
+      "observed": "core_to_collector"
+    },
+    {
+      "name": "COMMIT_STATUS回复是否必需",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP方向",
+      "expected": "core_to_collector",
+      "observed": "core_to_collector"
+    },
+    {
+      "name": "STOP回复是否必需",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "STOP_ACK方向",
+      "expected": "collector_to_core",
+      "observed": "collector_to_core"
+    },
+    {
+      "name": "STOP_ACK回复是否必需",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "tc_frame枚举严格等于协议方向集合",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "tc_inbox枚举严格等于协议方向集合",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒旧错误QUERY_POLL",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒旧错误QUERY_POLL全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒核心发送QUERY_COMMIT",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒核心发送QUERY_COMMIT全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障0",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障1",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障2",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障3",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障4",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障5",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写6",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障6",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写7",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障7",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写8",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障8",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写9",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障9",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写10",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写10全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障10",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障10全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写11",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写11全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障11",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障11全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写12",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写12全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障12",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障12全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写13",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写13全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障13",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障13全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务缺写14",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "Capture与入站同事务缺写14全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Capture与入站同事务故障14",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "Capture与入站同事务故障14全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP_ACK与入站同事务缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "STOP_ACK与入站同事务缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP_ACK与入站同事务故障0",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "STOP_ACK与入站同事务故障0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP_ACK与入站同事务缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "STOP_ACK与入站同事务缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP_ACK与入站同事务故障1",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "STOP_ACK与入站同事务故障1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP_ACK与入站同事务缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "STOP_ACK与入站同事务缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP_ACK与入站同事务故障2",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "STOP_ACK与入站同事务故障2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务故障0",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务故障0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务故障1",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务故障1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务故障2",
+      "expected": "synthetic_cut",
+      "observed": "synthetic_cut"
+    },
+    {
+      "name": "QUERY_COMMIT与固定应答同事务故障2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "提交后丢反馈只读原结果",
+      "expected": "fixed_history",
+      "observed": "fixed_history"
+    },
+    {
+      "name": "原结果查询不重新发布",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已存在也先验当前peer",
+      "expected": "authority",
+      "observed": "authority"
+    },
+    {
+      "name": "同序号异消息拒绝",
+      "expected": "identity_conflict",
+      "observed": "identity_conflict"
+    },
+    {
+      "name": "同身份异字节拒绝",
+      "expected": "identity_conflict",
+      "observed": "identity_conflict"
+    },
+    {
+      "name": "未找到不是重发授权",
+      "expected": "not_found_no_retry_permission",
+      "observed": "not_found_no_retry_permission"
+    },
+    {
+      "name": "新序号相同Capture只存历史指向",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "新序号重复不多发持久回执",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "序号缺口不能接纳",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "序号缺口不能接纳全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "message_id不能跨序号复用",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "message_id不能跨序号复用全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "相同Capture不能声明新效果",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "相同Capture不能声明新效果全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "无原效果不得声称existing",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "无原效果不得声称existing全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "POLL_ACK不准回复CONFIGURE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "POLL_ACK不准回复CONFIGURE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未尝试请求不接受回复",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未尝试请求不接受回复全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动报告不夹reply_to",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "主动报告不夹reply_to全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "STOP_ACK不能作为普通观察跳过效果",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "STOP_ACK不能作为普通观察跳过效果全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重复ACK不重写原闭闸tick",
+      "expected": "00000000000000000500",
+      "observed": "00000000000000000500"
+    },
+    {
+      "name": "查询首次找回Capture同样原子提交",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "cache_missing观察不释放额度",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "普通入站满额不增长",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "普通入站满额不增长全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "首个STOP_ACK保留独立槽",
+      "expected": 5,
+      "observed": 5
+    },
+    {
+      "name": "不同序号重复STOP_ACK仍受预算",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "不同序号重复STOP_ACK仍受预算全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "tc_inbox不可改",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "tc_inbox不可改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "tc_inbox不可删",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "tc_inbox不可删全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "tc_inbox_seal不可改",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "tc_inbox_seal不可改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "tc_inbox_seal不可删",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "tc_inbox_seal不可删全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "合成正文可通过不代表完成解码",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "runtime_validation": {
+    "ipc": 0,
+    "ntp": 0,
+    "authority": 0,
+    "strict_decoder": 0,
+    "concurrency": 0,
+    "disk_crash": 0,
+    "device": 0
+  },
+  "artifact_sha256": {
+    "docs/contracts/df03-collector/INBOX.md": "8a30ddc6afd80c915c87d2feb178ce53749c78361efde17561cf0c667401856e",
+    "docs/contracts/df03-collector/inbox.sql": "82f650be693186e90f1d8a9571938e192dc11c1179a36ab2fc0fa54a1e250f2d",
+    "docs/contracts/df03-collector/build_inbox.py": "7c9fbd1264cc6e7d37cff9f07ce322acaaffcdf9a1845fecfb5381366975a93e",
+    "docs/contracts/df03-collector/check_inbox.py": "d96b366707290795e15f14370df08b50af35d48cb1fece6c7808436faab30b9d",
+    "docs/contracts/df03-collector/collector-storage-v02.sql": "a206079a760e03d7367a02fff233d0c6a6504a684581c50620142dfe151e18d4",
+    "docs/contracts/df03-collector/channel-v02.schema.json": "2d7e11d1697ac7dd412f867c64f1c64e643d5ec7242e5c933c85ffb958333885",
+    "docs/contracts/df03-collector/journal.sql": "c2020083774725f7dfeb4c9bc98309f6be3822ac15df230a2fb204ef209eb99f",
+    "docs/contracts/df03-collector/build_journal.py": "642bfe2becf376afda2885b73f61d21401f0e07edb10f66dd513367c9628b395",
+    "docs/contracts/df03-collector/check_journal.py": "9c18d30142e1c203589f0d3fe5e890a6994a2f709c235426fa2eaaf34739b783",
+    "docs/contracts/df03-collector/storage.sql": "13d2de230134fa5644979fd42f1038813c07762df4e420b163dcea3b0af4fe44",
+    "docs/contracts/df03-collector/check_storage.py": "b9a6bfb3ad7e07734ae042bb86b96260bb296f830ea3bfed01b86e0dc6d18353"
+  }
+}

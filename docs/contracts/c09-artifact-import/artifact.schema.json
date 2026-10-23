@@ -1,0 +1,1642 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c09-artifact-import/artifact.schema.json",
+  "x-approved": false,
+  "$defs": {
+    "Id": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Id"
+    },
+    "U20": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/U20"
+    },
+    "Digest": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Digest"
+    },
+    "ClockRef": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ClockRef"
+    },
+    "Permission": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/Permission"
+    },
+    "ArtifactIntakeReceipt": {
+      "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ArtifactIntakeReceipt"
+    },
+    "RoleDeclaration": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "device",
+            "source",
+            "data_object",
+            "secret_role",
+            "filesystem_role",
+            "helper_artifact",
+            "protocol_profile",
+            "validation_policy",
+            "run",
+            "endpoint"
+          ]
+        },
+        "minimum": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "maximum": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "minimum",
+        "maximum",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_device": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "device"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/DeviceRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_source": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "source"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/SourceRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_data_object": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "data_object"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/DataObjectRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_secret_role": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "secret_role"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/SecretRoleRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_filesystem_role": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "filesystem_role"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/FilesystemRoleRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_helper_artifact": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "helper_artifact"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/HelperArtifactRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_protocol_profile": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "protocol_profile"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ProtocolProfileRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_validation_policy": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "validation_policy"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ValidationPolicyRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_run": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "run"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/RunRef"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Binding_endpoint": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "endpoint"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 253
+              },
+              "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65535
+              }
+            },
+            "required": [
+              "host",
+              "port"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        }
+      },
+      "required": [
+        "role_id",
+        "kind",
+        "values",
+        "configuration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "RoleBinding": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Binding_device"
+        },
+        {
+          "$ref": "#/$defs/Binding_source"
+        },
+        {
+          "$ref": "#/$defs/Binding_data_object"
+        },
+        {
+          "$ref": "#/$defs/Binding_secret_role"
+        },
+        {
+          "$ref": "#/$defs/Binding_filesystem_role"
+        },
+        {
+          "$ref": "#/$defs/Binding_helper_artifact"
+        },
+        {
+          "$ref": "#/$defs/Binding_protocol_profile"
+        },
+        {
+          "$ref": "#/$defs/Binding_validation_policy"
+        },
+        {
+          "$ref": "#/$defs/Binding_run"
+        },
+        {
+          "$ref": "#/$defs/Binding_endpoint"
+        }
+      ]
+    },
+    "Template_device_scope": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "device_scope"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "device_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "action_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 128,
+              "minItems": 0,
+              "uniqueItems": true
+            },
+            "trigger_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 128,
+              "minItems": 0,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "device_role",
+            "action_ids",
+            "trigger_ids"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Template_data_scope": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "data_scope"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "data_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "access": {
+              "enum": [
+                "read",
+                "propose"
+              ]
+            }
+          },
+          "required": [
+            "data_role",
+            "access"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Template_network_endpoint": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "network_endpoint"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "endpoint_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "protocol_profile_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "transport": {
+              "enum": [
+                "tcp",
+                "udp",
+                "https",
+                "wss"
+              ]
+            },
+            "min_port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "max_port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          },
+          "required": [
+            "endpoint_role",
+            "protocol_profile_role",
+            "transport",
+            "min_port",
+            "max_port"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Template_secret_role": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "secret_role"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "secret_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "device_role": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source_role": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "secret_role",
+            "device_role",
+            "source_role"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Template_filesystem_root_role": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "filesystem_root_role"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "filesystem_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "access": {
+              "enum": [
+                "read",
+                "cache_write"
+              ]
+            },
+            "quota_bytes": {
+              "$ref": "#/$defs/U20"
+            }
+          },
+          "required": [
+            "filesystem_role",
+            "access",
+            "quota_bytes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Template_helper_artifact": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "helper_artifact"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "helper_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "launch_policy_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "helper_file_id": {
+              "$ref": "#/$defs/Id"
+            }
+          },
+          "required": [
+            "helper_role",
+            "launch_policy_role",
+            "helper_file_id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Template_panel_method": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "panel_method"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "authority": {
+              "enum": [
+                "controller",
+                "seamer"
+              ]
+            },
+            "method_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 35,
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "object_roles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 128,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "authority",
+            "method_ids",
+            "object_roles"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "Template_protocol_io": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "const": "protocol_io"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "protocol_profile_role": {
+              "$ref": "#/$defs/Id"
+            },
+            "endpoint_request_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "frame_classes": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "authentication",
+                  "query",
+                  "subscription",
+                  "keepalive",
+                  "ack",
+                  "control"
+                ]
+              },
+              "maxItems": 6,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "protocol_profile_role",
+            "endpoint_request_id",
+            "frame_classes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request_id",
+        "kind",
+        "purpose",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "PermissionTemplate": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Template_device_scope"
+        },
+        {
+          "$ref": "#/$defs/Template_data_scope"
+        },
+        {
+          "$ref": "#/$defs/Template_network_endpoint"
+        },
+        {
+          "$ref": "#/$defs/Template_secret_role"
+        },
+        {
+          "$ref": "#/$defs/Template_filesystem_root_role"
+        },
+        {
+          "$ref": "#/$defs/Template_helper_artifact"
+        },
+        {
+          "$ref": "#/$defs/Template_panel_method"
+        },
+        {
+          "$ref": "#/$defs/Template_protocol_io"
+        }
+      ]
+    },
+    "FileEntry": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "role": {
+          "enum": [
+            "module",
+            "native_helper",
+            "panel",
+            "schema",
+            "license",
+            "dependency_lock",
+            "resource",
+            "policy"
+          ]
+        },
+        "executable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "file_id",
+        "path",
+        "size_bytes",
+        "digest",
+        "role",
+        "executable"
+      ],
+      "additionalProperties": false
+    },
+    "FileInventory": {
+      "type": "object",
+      "properties": {
+        "inventory_version": {
+          "const": "extension-files/1"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FileEntry"
+          },
+          "maxItems": 65536,
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "inventory_version",
+        "files"
+      ],
+      "additionalProperties": false
+    },
+    "Entrypoint": {
+      "type": "object",
+      "properties": {
+        "entry_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "worker",
+            "panel",
+            "helper"
+          ]
+        },
+        "file_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "loader": {
+          "enum": [
+            "node_module",
+            "native_binary",
+            "static_document"
+          ]
+        },
+        "io_policy_file_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "entry_id",
+        "kind",
+        "file_id",
+        "loader",
+        "io_policy_file_id"
+      ],
+      "additionalProperties": false
+    },
+    "Manifest": {
+      "type": "object",
+      "properties": {
+        "manifest_version": {
+          "const": "extension-artifact/0.1.0-draft.1"
+        },
+        "extension_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "extension_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "kind": {
+          "enum": [
+            "device_module",
+            "data_source",
+            "panel",
+            "nodecg_bridge"
+          ]
+        },
+        "publisher_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_revision": {
+          "$ref": "#/$defs/Id"
+        },
+        "inventory_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "dependency_lock_file_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "license_file_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "capability_template_file_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "configuration_schema_file_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "windows-x64",
+              "linux-x64"
+            ]
+          },
+          "maxItems": 2,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "api_versions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "ipc_versions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "maxItems": 16,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "required_features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "entrypoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Entrypoint"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RoleDeclaration"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "permission_templates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PermissionTemplate"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "manifest_version",
+        "extension_id",
+        "extension_version",
+        "kind",
+        "publisher_id",
+        "source_revision",
+        "inventory_digest",
+        "dependency_lock_file_id",
+        "license_file_ids",
+        "capability_template_file_ids",
+        "configuration_schema_file_id",
+        "platforms",
+        "api_versions",
+        "ipc_versions",
+        "required_features",
+        "entrypoints",
+        "roles",
+        "permission_templates"
+      ],
+      "additionalProperties": false
+    },
+    "RoleResolution": {
+      "type": "object",
+      "properties": {
+        "resolution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "installation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "configuration_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ConfigurationRef"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RoleBinding"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Permission"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "resolution_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "resolution_id",
+        "authority_service_id",
+        "database_instance_id",
+        "installation_id",
+        "manifest_digest",
+        "artifact_set_digest",
+        "configuration_ref",
+        "bindings",
+        "permissions",
+        "resolution_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ResolvedReview": {
+      "type": "object",
+      "properties": {
+        "resolution_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "resolution_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "review": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/PermissionReview"
+        }
+      },
+      "required": [
+        "resolution_id",
+        "resolution_digest",
+        "review"
+      ],
+      "additionalProperties": false
+    },
+    "ImportIdentity": {
+      "type": "object",
+      "properties": {
+        "host_installation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "client_registration_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "import_request_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "host_installation_id",
+        "client_registration_id",
+        "import_request_id"
+      ],
+      "additionalProperties": false
+    },
+    "ImportBegin": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/ImportIdentity"
+        },
+        "target_authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_attachment_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "package_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "package_bytes": {
+          "$ref": "#/$defs/U20"
+        },
+        "expected_manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "host_trust_epoch": {
+          "$ref": "#/$defs/U20"
+        },
+        "release_authorization_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ReleaseAuthorizationRef"
+        },
+        "validation_policy_ref": {
+          "$ref": "https://leafseamer.invalid/design/c09-installation/installation.schema.json#/$defs/ValidationPolicyRef"
+        }
+      },
+      "required": [
+        "identity",
+        "target_authority_service_id",
+        "source_attachment_id",
+        "package_digest",
+        "package_bytes",
+        "expected_manifest_digest",
+        "host_trust_epoch",
+        "release_authorization_ref",
+        "validation_policy_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ImportStatus": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/ImportIdentity"
+        },
+        "intent_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "enum": [
+            "accepted",
+            "copying",
+            "validating",
+            "sealing",
+            "sealed",
+            "cancelled",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "target_authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "package_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactIntakeReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "enum": [
+                "operator_cancelled",
+                "content_mismatch",
+                "invalid_archive",
+                "trust_denied",
+                "capacity",
+                "storage_unknown",
+                "source_unavailable"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "identity",
+        "intent_digest",
+        "operation_id",
+        "state",
+        "target_authority_service_id",
+        "package_digest",
+        "receipt",
+        "reason_code"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "sealed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "receipt": {
+                "$ref": "#/$defs/ArtifactIntakeReceipt"
+              },
+              "reason_code": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "receipt": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "accepted",
+                  "copying",
+                  "validating",
+                  "sealing"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "cancelled"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "const": "operator_cancelled"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "indeterminate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "const": "storage_unknown"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "rejected"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "enum": [
+                  "content_mismatch",
+                  "invalid_archive",
+                  "trust_denied",
+                  "capacity",
+                  "source_unavailable"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "IntakeQuery": {
+      "type": "object",
+      "properties": {
+        "intake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "target_authority_service_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "intake_id",
+        "target_authority_service_id"
+      ],
+      "additionalProperties": false
+    },
+    "IntakeResult": {
+      "type": "object",
+      "properties": {
+        "intake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "status": {
+          "enum": [
+            "available",
+            "unavailable"
+          ]
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactIntakeReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "intake_id",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "available"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "receipt": {
+                "$ref": "#/$defs/ArtifactIntakeReceipt"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "receipt": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "VerifyMaterialization": {
+      "type": "object",
+      "properties": {
+        "intake_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "target_authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "artifact_set_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "host_trust_epoch": {
+          "$ref": "#/$defs/U20"
+        },
+        "challenge_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "launch_intent_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "intake_id",
+        "target_authority_service_id",
+        "manifest_digest",
+        "artifact_set_digest",
+        "host_trust_epoch",
+        "challenge_id",
+        "launch_intent_digest"
+      ],
+      "additionalProperties": false
+    },
+    "MaterializationResult": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/VerifyMaterialization"
+        },
+        "result": {
+          "enum": [
+            "verified",
+            "mismatch",
+            "unavailable"
+          ]
+        },
+        "evidence_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observer_domain": {
+          "$ref": "#/$defs/ClockRef"
+        },
+        "observed_tick": {
+          "$ref": "#/$defs/U20"
+        }
+      },
+      "required": [
+        "request",
+        "result",
+        "evidence_id",
+        "observer_domain",
+        "observed_tick"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "const": "verified"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "evidence_id": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "evidence_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_request",
+            "unauthorized_peer",
+            "identity_conflict",
+            "not_found_or_invisible",
+            "capacity",
+            "unknown_outcome"
+          ]
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "operation_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "not": {}
+}

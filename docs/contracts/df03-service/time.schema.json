@@ -1,0 +1,1795 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/df03-service/time.schema.json",
+  "title": "reference-time-service/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "S11__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "S11__Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Positive": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S11__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "S11__UInt": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "S11__Signed": {
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]{0,29})$(?![\\s\\S])"
+    },
+    "S11__Interval": {
+      "type": "object",
+      "properties": {
+        "lower_ns": {
+          "$ref": "#/$defs/S11__Signed"
+        },
+        "upper_ns": {
+          "$ref": "#/$defs/S11__Signed"
+        }
+      },
+      "required": [
+        "lower_ns",
+        "upper_ns"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Domain": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "provider_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "provider_boot_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "runtime_binding_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        },
+        "clock_generation": {
+          "$ref": "#/$defs/S11__Positive"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "provider_id",
+        "provider_boot_id",
+        "runtime_binding_ref",
+        "clock_domain_id",
+        "descriptor_digest",
+        "clock_generation"
+      ],
+      "additionalProperties": false
+    },
+    "S12__Id": {
+      "$ref": "#/$defs/S11__Id"
+    },
+    "S12__Interval": {
+      "$ref": "#/$defs/S11__Interval"
+    },
+    "S12__Signed": {
+      "$ref": "#/$defs/S11__Signed"
+    },
+    "S12__UInt": {
+      "$ref": "#/$defs/S11__UInt"
+    },
+    "S12__Ref": {
+      "$ref": "#/$defs/S11__Ref"
+    },
+    "S11__Source": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "configured_server_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "endpoint_set_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "effective_config_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "authentication": {
+          "enum": [
+            "nts",
+            "trusted_network"
+          ]
+        },
+        "trust_policy_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "source_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "source_id",
+        "revision",
+        "configured_server_ref",
+        "endpoint_set_ref",
+        "effective_config_ref",
+        "authentication",
+        "trust_policy_ref",
+        "source_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Profile": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "collector_artifact_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "protocol_artifact_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "platform_qualification_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "clock_method_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "error_method_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "era_method_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "elapsed_model": {
+          "const": "observed-delta-relative/1"
+        },
+        "elapsed_error_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999999
+        },
+        "span_quantization_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "max_packet_bytes": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "time_scale": {
+          "const": "posix-utc"
+        },
+        "leap_policy": {
+          "const": "normal-only"
+        },
+        "smear_policy": {
+          "const": "forbidden"
+        },
+        "profile_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "profile_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "collector_artifact_ref",
+        "protocol_artifact_ref",
+        "platform_qualification_ref",
+        "clock_method_ref",
+        "error_method_ref",
+        "era_method_ref",
+        "elapsed_model",
+        "elapsed_error_ppm",
+        "span_quantization_ns",
+        "max_packet_bytes",
+        "time_scale",
+        "leap_policy",
+        "smear_policy",
+        "profile_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Policy": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "max_exchange_span_ns": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "max_exchange_age_ns": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "max_anchor_age_ns": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "max_upstream_age_ns": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "max_half_width_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "policy_id",
+        "revision",
+        "max_exchange_span_ns",
+        "max_exchange_age_ns",
+        "max_anchor_age_ns",
+        "max_upstream_age_ns",
+        "max_half_width_ns",
+        "policy_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Approval": {
+      "type": "object",
+      "properties": {
+        "approval_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "qualification_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "status": {
+          "enum": [
+            "approved",
+            "revoked"
+          ]
+        },
+        "approval_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "approval_id",
+        "revision",
+        "profile_ref",
+        "source_ref",
+        "qualification_ref",
+        "authority_service_id",
+        "status",
+        "approval_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Request": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/S11__Binding"
+        },
+        "correlation_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "endpoint_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "send_before_tick_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "response_deadline_tick_ns": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "request_bytes_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "request_size": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "request_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "request_id",
+        "revision",
+        "binding",
+        "correlation_ref",
+        "endpoint_ref",
+        "send_before_tick_ns",
+        "response_deadline_tick_ns",
+        "request_bytes_ref",
+        "request_size",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Binding": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "$ref": "#/$defs/S11__Domain"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "time_generation": {
+          "$ref": "#/$defs/S11__Positive"
+        }
+      },
+      "required": [
+        "domain",
+        "source_ref",
+        "profile_ref",
+        "approval_ref",
+        "policy_ref",
+        "time_generation"
+      ],
+      "additionalProperties": false
+    },
+    "S11__AuthEvidence": {
+      "type": "object",
+      "properties": {
+        "auth_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "mode": {
+          "enum": [
+            "nts",
+            "trusted_network"
+          ]
+        },
+        "verification_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "bootstrap_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S11__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peer_binding_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "authentication_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "auth_id",
+        "revision",
+        "request_ref",
+        "response_bytes_ref",
+        "source_ref",
+        "mode",
+        "verification_ref",
+        "bootstrap_ref",
+        "peer_binding_ref",
+        "authentication_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "nts"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "bootstrap_ref": {
+                "$ref": "#/$defs/S11__Ref"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "bootstrap_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S11__ErrorEvidence": {
+      "type": "object",
+      "properties": {
+        "error_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/S11__Binding"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "error_method_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "qualification_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "t2_error_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "t3_error_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "upstream_age_upper_at_m1_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "provenance_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "error_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "error_id",
+        "revision",
+        "binding",
+        "request_ref",
+        "response_bytes_ref",
+        "error_method_ref",
+        "qualification_ref",
+        "t2_error_ns",
+        "t3_error_ns",
+        "upstream_age_upper_at_m1_ns",
+        "provenance_ref",
+        "error_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__EraEvidence": {
+      "type": "object",
+      "properties": {
+        "era_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "method_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "independent_time_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "allowed_utc": {
+          "$ref": "#/$defs/S11__Interval"
+        },
+        "era_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "era_id",
+        "revision",
+        "request_ref",
+        "response_bytes_ref",
+        "method_ref",
+        "independent_time_ref",
+        "allowed_utc",
+        "era_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Exchange": {
+      "type": "object",
+      "properties": {
+        "exchange_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "binding": {
+          "$ref": "#/$defs/S11__Binding"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "correlation_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "endpoint_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "response_bytes_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "response_size": {
+          "type": "integer",
+          "minimum": 48,
+          "maximum": 65536
+        },
+        "receive_after_tick_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "ntp_version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "ntp_mode": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "leap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "stratum": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "precision": {
+          "type": "integer",
+          "minimum": -128,
+          "maximum": 127
+        },
+        "root_delay_word": {
+          "$ref": "#/$defs/S11__Word"
+        },
+        "root_dispersion_word": {
+          "$ref": "#/$defs/S11__Word"
+        },
+        "t2": {
+          "$ref": "#/$defs/S11__Stamp"
+        },
+        "t3": {
+          "$ref": "#/$defs/S11__Stamp"
+        },
+        "authentication_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "error_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "era_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "parser_receipt_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "exchange_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "exchange_id",
+        "revision",
+        "binding",
+        "request_ref",
+        "correlation_ref",
+        "endpoint_ref",
+        "response_bytes_ref",
+        "response_size",
+        "receive_after_tick_ns",
+        "ntp_version",
+        "ntp_mode",
+        "leap",
+        "stratum",
+        "precision",
+        "root_delay_word",
+        "root_dispersion_word",
+        "t2",
+        "t3",
+        "authentication_ref",
+        "error_ref",
+        "era_ref",
+        "parser_receipt_ref",
+        "exchange_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Word": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,9})$(?![\\s\\S])"
+    },
+    "S11__Stamp": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "$ref": "#/$defs/S11__Word"
+        },
+        "fraction": {
+          "$ref": "#/$defs/S11__Word"
+        },
+        "era": {
+          "$ref": "#/$defs/S11__Signed"
+        }
+      },
+      "required": [
+        "seconds",
+        "fraction",
+        "era"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Anchor": {
+      "type": "object",
+      "properties": {
+        "anchor_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/S11__Binding"
+        },
+        "exchange_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "anchor_tick_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "exchange_start_tick_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "utc_at_anchor": {
+          "$ref": "#/$defs/S11__Interval"
+        },
+        "derivation_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        },
+        "anchor_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "anchor_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "binding",
+        "exchange_ref",
+        "anchor_tick_ns",
+        "exchange_start_tick_ns",
+        "utc_at_anchor",
+        "derivation_digest",
+        "anchor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Assessment": {
+      "type": "object",
+      "properties": {
+        "assessment_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/S11__Binding"
+        },
+        "anchor_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "assessed_tick_ns": {
+          "$ref": "#/$defs/S11__UInt"
+        },
+        "utc": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S11__Interval"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exchange_age_upper_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S11__UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "anchor_age_upper_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S11__UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstream_age_upper_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S11__UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision": {
+          "enum": [
+            "conditional",
+            "unavailable"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "binding",
+              "approval",
+              "runtime_clock",
+              "source",
+              "evidence",
+              "expired",
+              "uncertainty",
+              "generation",
+              "storage",
+              "bootstrap",
+              "invalid_interval"
+            ]
+          },
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "assessment_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "binding",
+        "anchor_ref",
+        "assessed_tick_ns",
+        "utc",
+        "exchange_age_upper_ns",
+        "anchor_age_upper_ns",
+        "upstream_age_upper_ns",
+        "decision",
+        "reasons",
+        "assessment_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "conditional"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "utc": {
+                "$ref": "#/$defs/S11__Interval"
+              },
+              "exchange_age_upper_ns": {
+                "$ref": "#/$defs/S11__UInt"
+              },
+              "anchor_age_upper_ns": {
+                "$ref": "#/$defs/S11__UInt"
+              },
+              "upstream_age_upper_ns": {
+                "$ref": "#/$defs/S11__UInt"
+              },
+              "reasons": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "utc": {
+                "type": "null"
+              },
+              "exchange_age_upper_ns": {
+                "type": "null"
+              },
+              "anchor_age_upper_ns": {
+                "type": "null"
+              },
+              "upstream_age_upper_ns": {
+                "type": "null"
+              },
+              "reasons": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S12__Digest": {
+      "$ref": "#/$defs/S11__Digest"
+    },
+    "S12__Positive": {
+      "$ref": "#/$defs/S11__Positive"
+    },
+    "S11__Window": {
+      "type": "object",
+      "properties": {
+        "not_before_utc_ns": {
+          "$ref": "#/$defs/S11__Signed"
+        },
+        "not_after_utc_ns": {
+          "$ref": "#/$defs/S11__Signed"
+        }
+      },
+      "required": [
+        "not_before_utc_ns",
+        "not_after_utc_ns"
+      ],
+      "additionalProperties": false
+    },
+    "S12__Domain": {
+      "$ref": "#/$defs/S11__Domain"
+    },
+    "S11__UtcGuard": {
+      "type": "object",
+      "properties": {
+        "guard_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/S11__Binding"
+        },
+        "anchor_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "assessment_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "window": {
+          "$ref": "#/$defs/S11__Window"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "guard_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "binding",
+        "anchor_ref",
+        "assessment_ref",
+        "window",
+        "expires_tick_ns",
+        "guard_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S12__PublicClock": {
+      "type": "object",
+      "properties": {
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "observation_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_boot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "status": {
+          "enum": [
+            "conditional",
+            "unavailable"
+          ]
+        },
+        "source_label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_authentication": {
+          "enum": [
+            "nts",
+            "trusted_network",
+            "unavailable"
+          ]
+        },
+        "reference_utc": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Interval"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "estimated_utc_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Signed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_radius_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 12,
+          "items": {
+            "enum": [
+              "clock_unavailable",
+              "source_unavailable",
+              "expired",
+              "unqualified",
+              "storage_unavailable"
+            ]
+          }
+        },
+        "grants_execution": {
+          "const": false
+        }
+      },
+      "required": [
+        "model_id",
+        "model_revision",
+        "observation_id",
+        "service_id",
+        "service_boot_id",
+        "status",
+        "source_label",
+        "source_authentication",
+        "reference_utc",
+        "estimated_utc_ns",
+        "error_radius_ns",
+        "reasons",
+        "grants_execution"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "conditional"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source_label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "source_authentication": {
+                "enum": [
+                  "nts",
+                  "trusted_network"
+                ]
+              },
+              "reference_utc": {
+                "$ref": "#/$defs/S12__Interval"
+              },
+              "estimated_utc_ns": {
+                "$ref": "#/$defs/S12__Signed"
+              },
+              "error_radius_ns": {
+                "$ref": "#/$defs/S12__UInt"
+              },
+              "reasons": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reference_utc": {
+                "type": "null"
+              },
+              "estimated_utc_ns": {
+                "type": "null"
+              },
+              "error_radius_ns": {
+                "type": "null"
+              },
+              "reasons": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S12__EvidenceBundle": {
+      "type": "object",
+      "properties": {
+        "bundle_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "source": {
+          "$ref": "#/$defs/S11__Source"
+        },
+        "profile": {
+          "$ref": "#/$defs/S11__Profile"
+        },
+        "policy": {
+          "$ref": "#/$defs/S11__Policy"
+        },
+        "approval": {
+          "$ref": "#/$defs/S11__Approval"
+        },
+        "request": {
+          "$ref": "#/$defs/S11__Request"
+        },
+        "authentication": {
+          "$ref": "#/$defs/S11__AuthEvidence"
+        },
+        "error": {
+          "$ref": "#/$defs/S11__ErrorEvidence"
+        },
+        "era": {
+          "$ref": "#/$defs/S11__EraEvidence"
+        },
+        "exchange": {
+          "$ref": "#/$defs/S11__Exchange"
+        },
+        "anchor": {
+          "$ref": "#/$defs/S11__Anchor"
+        },
+        "assessment": {
+          "$ref": "#/$defs/S11__Assessment"
+        },
+        "bundle_digest": {
+          "$ref": "#/$defs/S12__Digest"
+        }
+      },
+      "required": [
+        "bundle_id",
+        "revision",
+        "state_ref",
+        "source",
+        "profile",
+        "policy",
+        "approval",
+        "request",
+        "authentication",
+        "error",
+        "era",
+        "exchange",
+        "anchor",
+        "assessment",
+        "bundle_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Id": {
+      "$ref": "#/$defs/S11__Id"
+    },
+    "Ref": {
+      "$ref": "#/$defs/S11__Ref"
+    },
+    "UInt": {
+      "$ref": "#/$defs/S11__UInt"
+    },
+    "Positive": {
+      "$ref": "#/$defs/S11__Positive"
+    },
+    "Signed": {
+      "$ref": "#/$defs/S11__Signed"
+    },
+    "Digest": {
+      "$ref": "#/$defs/S11__Digest"
+    },
+    "Interval": {
+      "$ref": "#/$defs/S11__Interval"
+    },
+    "Domain": {
+      "$ref": "#/$defs/S11__Domain"
+    },
+    "PublicClock": {
+      "type": "object",
+      "properties": {
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "observation_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_boot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "status": {
+          "enum": [
+            "conditional",
+            "unavailable"
+          ]
+        },
+        "source_label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_authentication": {
+          "enum": [
+            "nts",
+            "trusted_network",
+            "unavailable"
+          ]
+        },
+        "reference_utc": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Interval"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "estimated_utc_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Signed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_radius_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__UInt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 12,
+          "items": {
+            "enum": [
+              "clock_unavailable",
+              "source_unavailable",
+              "expired",
+              "unqualified",
+              "storage_unavailable"
+            ]
+          }
+        },
+        "grants_execution": {
+          "const": false
+        }
+      },
+      "required": [
+        "model_id",
+        "model_revision",
+        "observation_id",
+        "service_id",
+        "service_boot_id",
+        "status",
+        "source_label",
+        "source_authentication",
+        "reference_utc",
+        "estimated_utc_ns",
+        "error_radius_ns",
+        "reasons",
+        "grants_execution"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "conditional"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source_label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "source_authentication": {
+                "enum": [
+                  "nts",
+                  "trusted_network"
+                ]
+              },
+              "reference_utc": {
+                "$ref": "#/$defs/S12__Interval"
+              },
+              "estimated_utc_ns": {
+                "$ref": "#/$defs/S12__Signed"
+              },
+              "error_radius_ns": {
+                "$ref": "#/$defs/S12__UInt"
+              },
+              "reasons": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reference_utc": {
+                "type": "null"
+              },
+              "estimated_utc_ns": {
+                "type": "null"
+              },
+              "error_radius_ns": {
+                "type": "null"
+              },
+              "reasons": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "EvidenceBundle": {
+      "type": "object",
+      "properties": {
+        "bundle_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "source": {
+          "$ref": "#/$defs/S11__Source"
+        },
+        "profile": {
+          "$ref": "#/$defs/S11__Profile"
+        },
+        "policy": {
+          "$ref": "#/$defs/S11__Policy"
+        },
+        "approval": {
+          "$ref": "#/$defs/S11__Approval"
+        },
+        "request": {
+          "$ref": "#/$defs/S11__Request"
+        },
+        "authentication": {
+          "$ref": "#/$defs/S11__AuthEvidence"
+        },
+        "error": {
+          "$ref": "#/$defs/S11__ErrorEvidence"
+        },
+        "era": {
+          "$ref": "#/$defs/S11__EraEvidence"
+        },
+        "exchange": {
+          "$ref": "#/$defs/S11__Exchange"
+        },
+        "anchor": {
+          "$ref": "#/$defs/S11__Anchor"
+        },
+        "assessment": {
+          "$ref": "#/$defs/S11__Assessment"
+        },
+        "bundle_digest": {
+          "$ref": "#/$defs/S12__Digest"
+        }
+      },
+      "required": [
+        "bundle_id",
+        "revision",
+        "state_ref",
+        "source",
+        "profile",
+        "policy",
+        "approval",
+        "request",
+        "authentication",
+        "error",
+        "era",
+        "exchange",
+        "anchor",
+        "assessment",
+        "bundle_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleGuard": {
+      "type": "object",
+      "properties": {
+        "guard_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "origin_service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "origin_database_instance_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "occurrence_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "definition_artifact_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "schedule_version": {
+          "$ref": "#/$defs/S12__Positive"
+        },
+        "activation_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "admission_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "step_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "step_window_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "window": {
+          "$ref": "#/$defs/S11__Window"
+        },
+        "queue_deadline_tick_ns": {
+          "$ref": "#/$defs/S12__Positive"
+        },
+        "local_clock_domain": {
+          "$ref": "#/$defs/S12__Domain"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S12__Digest"
+        }
+      },
+      "required": [
+        "guard_id",
+        "revision",
+        "origin_service_id",
+        "origin_database_instance_id",
+        "occurrence_ref",
+        "definition_artifact_ref",
+        "schedule_version",
+        "activation_ref",
+        "admission_ref",
+        "execution_id",
+        "step_id",
+        "step_window_ref",
+        "window",
+        "queue_deadline_tick_ns",
+        "local_clock_domain",
+        "guard_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionTime": {
+      "type": "object",
+      "properties": {
+        "context_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "utc_guard": {
+          "$ref": "#/$defs/S11__UtcGuard"
+        },
+        "schedule_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "context_ref",
+        "utc_guard",
+        "schedule_ref"
+      ],
+      "additionalProperties": false
+    },
+    "GateSnapshot": {
+      "type": "object",
+      "properties": {
+        "snapshot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "domain": {
+          "$ref": "#/$defs/S12__Domain"
+        },
+        "snapshot_revision": {
+          "$ref": "#/$defs/S12__Positive"
+        },
+        "minimum_time_generation": {
+          "$ref": "#/$defs/S12__Positive"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "snapshot_digest": {
+          "$ref": "#/$defs/S12__Digest"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "domain",
+        "snapshot_revision",
+        "minimum_time_generation",
+        "state_ref",
+        "snapshot_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_request",
+            "unauthenticated",
+            "forbidden",
+            "not_found",
+            "digest_mismatch",
+            "capacity",
+            "unavailable"
+          ]
+        },
+        "retry_write": {
+          "const": false
+        }
+      },
+      "required": [
+        "code",
+        "retry_write"
+      ],
+      "additionalProperties": false
+    },
+    "ClockResponse": {
+      "type": "object",
+      "properties": {
+        "contract": {
+          "const": "reference-time-service/0.1.0-draft.1"
+        },
+        "request_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_boot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "data": {
+          "$ref": "#/$defs/S12__PublicClock"
+        }
+      },
+      "required": [
+        "contract",
+        "request_id",
+        "service_id",
+        "service_boot_id",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "BundleResponse": {
+      "type": "object",
+      "properties": {
+        "contract": {
+          "const": "reference-time-service/0.1.0-draft.1"
+        },
+        "request_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_boot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "data": {
+          "$ref": "#/$defs/S12__EvidenceBundle"
+        }
+      },
+      "required": [
+        "contract",
+        "request_id",
+        "service_id",
+        "service_boot_id",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "AnchorResponse": {
+      "type": "object",
+      "properties": {
+        "contract": {
+          "const": "reference-time-service/0.1.0-draft.1"
+        },
+        "request_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_boot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "data": {
+          "$ref": "#/$defs/S11__Anchor"
+        }
+      },
+      "required": [
+        "contract",
+        "request_id",
+        "service_id",
+        "service_boot_id",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "AssessmentResponse": {
+      "type": "object",
+      "properties": {
+        "contract": {
+          "const": "reference-time-service/0.1.0-draft.1"
+        },
+        "request_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_boot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "data": {
+          "$ref": "#/$defs/S11__Assessment"
+        }
+      },
+      "required": [
+        "contract",
+        "request_id",
+        "service_id",
+        "service_boot_id",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ProfileResponse": {
+      "type": "object",
+      "properties": {
+        "contract": {
+          "const": "reference-time-service/0.1.0-draft.1"
+        },
+        "request_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "service_boot_id": {
+          "$ref": "#/$defs/S12__Id"
+        },
+        "data": {
+          "$ref": "#/$defs/S11__Profile"
+        }
+      },
+      "required": [
+        "contract",
+        "request_id",
+        "service_id",
+        "service_boot_id",
+        "data"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

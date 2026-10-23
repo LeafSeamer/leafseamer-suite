@@ -1,0 +1,27 @@
+{
+  "scope": "只检查审阅计划的结构与来源覆盖，不执行RCP编码器或设备命令",
+  "cases": [
+    {"id":"DMC01","valid":true,"set":[]},
+    {"id":"DMC02","valid":false,"error":"schema","set":[[["runtime_approved"],true]]},
+    {"id":"DMC03","valid":false,"error":"schema","set":[[["groups",0,"runtime_approved"],true]]},
+    {"id":"DMC04","valid":false,"error":"source_digest","set":[[["source_inventory_sha256"],"0000000000000000000000000000000000000000000000000000000000000000"]]},
+    {"id":"DMC05","valid":false,"error":"coverage","set":[[["groups",5,"source_indices"],[1000]]]},
+    {"id":"DMC06","valid":false,"error":"duplicate_source","set":[[["groups",5,"source_indices"],[1000,1001,0]]]},
+    {"id":"DMC07","valid":false,"error":"unknown_source","set":[[["groups",5,"source_indices"],[1000,999]]]},
+    {"id":"DMC08","valid":false,"error":"duplicate_group","set":[[["groups",1,"id"],"raw-integer"]]},
+    {"id":"DMC09","valid":false,"error":"family_source","set":[[["groups",0,"family"],"binary_unresolved"]]},
+    {"id":"DMC10","valid":false,"error":"secret_projection","set":[[["groups",3,"redaction"],"standard"]]},
+    {"id":"DMC11","valid":false,"error":"secret_projection","set":[[["groups",3,"value_projection"],"unresolved"]]},
+    {"id":"DMC12","valid":false,"error":"secret_projection","set":[[["groups",3,"family"],"binary_unresolved"]]},
+    {"id":"DMC13","valid":false,"error":"family_projection","set":[[["groups",0,"value_projection"],"raw_meter"]]},
+    {"id":"DMC14","valid":false,"error":"family_projection","set":[[["groups",7,"units"],"not_applicable"]]},
+    {"id":"DMC15","valid":false,"error":"family_source","set":[[["groups",5,"family"],"scene_relative"]]},
+    {"id":"DMC16","valid":false,"error":"schema","set":[[["groups",1,"address"],"get anything"]]},
+    {"id":"DMC17","valid":false,"error":"schema","set":[[["groups",3,"secret_value"],"synthetic-test-only"]]},
+    {"id":"DMC18","valid":false,"error":"schema","set":[[["groups",7,"source_indices"],[2000,2000]]]},
+    {"id":"DMC19","valid":false,"error":"schema","set":[[["groups",0,"source_indices",0],true]]},
+    {"id":"DMC20","valid":false,"error":"schema","set":[[["groups",1,"id"],"label-text\n"]]},
+    {"id":"DMC21","valid":true,"set":[[["groups",5,"source_indices"],[1001,1000]]]},
+    {"id":"DMC22","valid":false,"error":"family_source","set":[[["groups",1,"family"],"text_or_enum_unresolved"]]}
+  ]
+}

@@ -1,0 +1,45 @@
+[
+  {
+    "case_id": "jcs-order",
+    "input": {
+      "b": 2,
+      "a": 1
+    },
+    "canonical": "{\"a\":1,\"b\":2}"
+  },
+  {
+    "case_id": "jcs-negative-zero",
+    "input": {
+      "zero": -0.0,
+      "fraction": 1.5
+    },
+    "canonical": "{\"fraction\":1.5,\"zero\":0}"
+  },
+  {
+    "case_id": "jcs-unicode-preserved",
+    "input": {
+      "text": "é",
+      "decomposed": "é"
+    },
+    "canonical": "{\"decomposed\":\"é\",\"text\":\"é\"}"
+  },
+  {
+    "case_id": "jcs-arrays",
+    "input": {
+      "b": [
+        2,
+        1
+      ],
+      "a": null
+    },
+    "canonical": "{\"a\":null,\"b\":[2,1]}"
+  },
+  {
+    "case_id": "jcs-exponents",
+    "input": {
+      "tiny": 1e-07,
+      "big": 1e+21
+    },
+    "canonical": "{\"big\":1e+21,\"tiny\":1e-7}"
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "case_id": "identity-force-default",
+    "operation": "acquireControl",
+    "body": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "隔离验证"
+    },
+    "canonical": "{\"expected_control\":{\"epoch\":\"control-test\",\"version\":\"8\"},\"force\":false,\"reason\":\"隔离验证\"}"
+  },
+  {
+    "case_id": "identity-force-explicit",
+    "operation": "acquireControl",
+    "body": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "隔离验证",
+      "force": false
+    },
+    "canonical": "{\"expected_control\":{\"epoch\":\"control-test\",\"version\":\"8\"},\"force\":false,\"reason\":\"隔离验证\"}"
+  },
+  {
+    "case_id": "identity-change-reason",
+    "operation": "acquireControl",
+    "body": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "expected_control": {
+        "epoch": "control-test",
+        "version": "8"
+      },
+      "reason": "different"
+    },
+    "canonical": "{\"expected_control\":{\"epoch\":\"control-test\",\"version\":\"8\"},\"force\":false,\"reason\":\"different\"}"
+  },
+  {
+    "case_id": "identity-correlation-excluded",
+    "operation": "submitCommand",
+    "body": {
+      "context_id": "ctx-test",
+      "idempotency_key": "key-test",
+      "correlation_id": "trace-test",
+      "parameters": {
+        "value": 1
+      }
+    },
+    "canonical": "{\"parameters\":{\"value\":1}}"
+  }
+]

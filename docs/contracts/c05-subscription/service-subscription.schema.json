@@ -1,0 +1,479 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:leafseamer:design:service-subscription:0.1.0-draft.1",
+  "title": "服务订阅局部候选；结构合法不构成身份、持久化或运行资格",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/SubscriptionView"
+    },
+    {
+      "$ref": "#/$defs/ClientAttach"
+    },
+    {
+      "$ref": "#/$defs/ServerAttached"
+    },
+    {
+      "$ref": "#/$defs/ClientAck"
+    },
+    {
+      "$ref": "#/$defs/SnapshotApplied"
+    },
+    {
+      "$ref": "#/$defs/SyncReady"
+    },
+    {
+      "$ref": "#/$defs/ResyncRequired"
+    }
+  ],
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+      "maxLength": 128
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+      "maxLength": 20
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+      "maxLength": 64
+    },
+    "State": {
+      "enum": [
+        "building",
+        "snapshot_ready",
+        "catching_up",
+        "live",
+        "resync_required",
+        "revoked",
+        "expired",
+        "closed"
+      ]
+    },
+    "AckKind": {
+      "enum": [
+        "projection_applied",
+        "durable_ingest"
+      ]
+    },
+    "ServiceOwner": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "consumer_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "consumer_database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "consumer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "pairing_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id",
+        "consumer_service_id",
+        "consumer_database_instance_id",
+        "consumer_id",
+        "pairing_id"
+      ],
+      "additionalProperties": false
+    },
+    "SnapshotRef": {
+      "type": "object",
+      "properties": {
+        "snapshot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "snapshot_cursor": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "manifest_digest",
+        "snapshot_cursor"
+      ],
+      "additionalProperties": false
+    },
+    "Resume": {
+      "type": "object",
+      "properties": {
+        "cursor": {
+          "$ref": "#/$defs/Counter"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "ack_kind": {
+          "$ref": "#/$defs/AckKind"
+        }
+      },
+      "required": [
+        "cursor",
+        "payload_digest",
+        "ack_kind"
+      ],
+      "additionalProperties": false
+    },
+    "DeliveryBinding": {
+      "type": "object",
+      "properties": {
+        "subscription_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "publisher_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "publisher_database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "stream_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "stream_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "authorization_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "connection_generation": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "subscription_id",
+        "publisher_service_id",
+        "publisher_database_instance_id",
+        "stream_id",
+        "stream_epoch",
+        "scope_digest",
+        "authorization_revision",
+        "connection_generation"
+      ],
+      "additionalProperties": false
+    },
+    "SubscriptionView": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "service-subscription/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "service.subscription"
+        },
+        "binding": {
+          "$ref": "#/$defs/DeliveryBinding"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "owner": {
+          "$ref": "#/$defs/ServiceOwner"
+        },
+        "purpose": {
+          "enum": [
+            "status_projection",
+            "canonical_trigger"
+          ]
+        },
+        "state": {
+          "$ref": "#/$defs/State"
+        },
+        "ack_cursor": {
+          "$ref": "#/$defs/Counter"
+        },
+        "ack_payload_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "snapshot_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SnapshotRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "binding",
+        "revision",
+        "owner",
+        "purpose",
+        "state",
+        "ack_cursor",
+        "ack_payload_digest",
+        "snapshot_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ClientAttach": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "service-subscription/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "client.attach"
+        },
+        "subscription_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "owner": {
+          "$ref": "#/$defs/ServiceOwner"
+        },
+        "stream_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "stream_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "authorization_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expected_connection_generation": {
+          "$ref": "#/$defs/Counter"
+        },
+        "replace_existing": {
+          "type": "boolean"
+        },
+        "resume": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Resume"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "connection_attempt_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "subscription_id",
+        "owner",
+        "stream_id",
+        "stream_epoch",
+        "scope_digest",
+        "authorization_revision",
+        "expected_connection_generation",
+        "replace_existing",
+        "resume",
+        "connection_attempt_id"
+      ],
+      "additionalProperties": false
+    },
+    "ServerAttached": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "service-subscription/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "server.attached"
+        },
+        "binding": {
+          "$ref": "#/$defs/DeliveryBinding"
+        },
+        "state": {
+          "enum": [
+            "building",
+            "snapshot_ready",
+            "catching_up"
+          ]
+        },
+        "snapshot_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SnapshotRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ack_cursor": {
+          "$ref": "#/$defs/Counter"
+        },
+        "ack_payload_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "binding",
+        "state",
+        "snapshot_ref",
+        "ack_cursor",
+        "ack_payload_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ClientAck": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "service-subscription/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "client.ack"
+        },
+        "binding": {
+          "$ref": "#/$defs/DeliveryBinding"
+        },
+        "cursor": {
+          "$ref": "#/$defs/Counter"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "ack_kind": {
+          "$ref": "#/$defs/AckKind"
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "binding",
+        "cursor",
+        "payload_digest",
+        "ack_kind"
+      ],
+      "additionalProperties": false
+    },
+    "SnapshotApplied": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "service-subscription/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "client.snapshot.applied"
+        },
+        "binding": {
+          "$ref": "#/$defs/DeliveryBinding"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/SnapshotRef"
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "binding",
+        "snapshot"
+      ],
+      "additionalProperties": false
+    },
+    "SyncReady": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "service-subscription/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "server.sync.ready"
+        },
+        "binding": {
+          "$ref": "#/$defs/DeliveryBinding"
+        },
+        "baseline_snapshot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "cursor": {
+          "$ref": "#/$defs/Counter"
+        },
+        "previous_cursor": {
+          "$ref": "#/$defs/Counter"
+        },
+        "payload_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "delivery_mode": {
+          "const": "reconcile"
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "binding",
+        "baseline_snapshot_id",
+        "cursor",
+        "previous_cursor",
+        "payload_digest",
+        "delivery_mode"
+      ],
+      "additionalProperties": false
+    },
+    "ResyncRequired": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "service-subscription/0.1.0-draft.1"
+        },
+        "type": {
+          "const": "server.resync.required"
+        },
+        "binding": {
+          "$ref": "#/$defs/DeliveryBinding"
+        },
+        "reason_code": {
+          "enum": [
+            "authorization_changed",
+            "stream_changed",
+            "retention_lost",
+            "projection_lost",
+            "capacity_exceeded",
+            "snapshot_invalid",
+            "binding_mismatch"
+          ]
+        },
+        "last_confirmed_cursor": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "binding",
+        "reason_code",
+        "last_confirmed_cursor"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

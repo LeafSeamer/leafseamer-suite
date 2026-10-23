@@ -1,0 +1,758 @@
+{
+  "purpose": "authorization_metadata_only_no_runtime",
+  "cases": [
+    {
+      "id": "AP01",
+      "description": "完整待审阅矩阵",
+      "changes": [],
+      "expected_errors": []
+    },
+    {
+      "id": "AP02",
+      "description": "不得自批",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "approved"
+          ],
+          "value": true
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP03",
+      "description": "数字零不是批准布尔值",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "approved"
+          ],
+          "value": 0
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP04",
+      "description": "不得切权威",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "authority_switched"
+          ],
+          "value": true
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP05",
+      "description": "不得授运行资格",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "runtime_approved"
+          ],
+          "value": true
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP06",
+      "description": "源变更不能只保持旧资格",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "source_sha256",
+            "source/public.schema.json"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expected_errors": [
+        "source_binding"
+      ]
+    },
+    {
+      "id": "AP07",
+      "description": "不能漏操作",
+      "changes": [
+        {
+          "action": "delete",
+          "path": [
+            "operations",
+            "controller:getClock"
+          ]
+        }
+      ],
+      "expected_errors": [
+        "operation_coverage"
+      ]
+    },
+    {
+      "id": "AP08",
+      "description": "不能伪造已交付新端点",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:unknown"
+          ],
+          "value": {
+            "source_pointer": "/paths/~1api~1v1~1clock/get",
+            "permission": "status.read",
+            "branches": [
+              {
+                "profile": "human",
+                "origin": null,
+                "guards": [
+                  "public_projection"
+                ]
+              },
+              {
+                "profile": "service",
+                "origin": null,
+                "guards": [
+                  "public_projection"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "expected_errors": [
+        "operation_coverage"
+      ]
+    },
+    {
+      "id": "AP09",
+      "description": "源位置不匹配",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getClock",
+            "source_pointer"
+          ],
+          "value": "/paths/~1wrong/get"
+        }
+      ],
+      "expected_errors": [
+        "source_metadata"
+      ]
+    },
+    {
+      "id": "AP10",
+      "description": "不能删去基础权限",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getClock",
+            "permission"
+          ],
+          "value": null
+        }
+      ],
+      "expected_errors": [
+        "source_metadata"
+      ]
+    },
+    {
+      "id": "AP11",
+      "description": "service不能借manual绕布防",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP12",
+      "description": "human不能自报automation",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "branches",
+            1,
+            "profile"
+          ],
+          "value": "human"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP13",
+      "description": "普通service不是配对Seamer",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:updateRunGrant",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP14",
+      "description": "不能删除人员撤grant入口",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:revokeRunGrant",
+            "branches"
+          ],
+          "value": [
+            {
+              "profile": "seamer",
+              "origin": null,
+              "guards": [
+                "grant_revoke_target"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP15",
+      "description": "provider写不是一般human发布",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "seamer:updateCatalog",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "human"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP16",
+      "description": "service不得独立发布定义",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "seamer:publishDefinition",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP17",
+      "description": "service不得独立布防",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "seamer:armRun",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP18",
+      "description": "service不得独立确认恢复",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "seamer:resumeRun",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP19",
+      "description": "service不能伪造Session",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getSession",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP20",
+      "description": "当前人员订阅链不自动接受service",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:createSubscription",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy"
+      ]
+    },
+    {
+      "id": "AP21",
+      "description": "bearer不能进入internal",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getClockSample",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "human"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy",
+        "transport_policy"
+      ]
+    },
+    {
+      "id": "AP22",
+      "description": "bearer不能替代Cookie与CSRF",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:issueToken",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "human"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy",
+        "transport_policy"
+      ]
+    },
+    {
+      "id": "AP23",
+      "description": "service bearer不能冒充WS票据",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:openEvents",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "service"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy",
+        "transport_policy"
+      ]
+    },
+    {
+      "id": "AP24",
+      "description": "登录前证明不是已登录bearer",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:login",
+            "branches",
+            0,
+            "profile"
+          ],
+          "value": "human"
+        }
+      ],
+      "expected_errors": [
+        "principal_policy",
+        "transport_policy"
+      ]
+    },
+    {
+      "id": "AP25",
+      "description": "重复分支拒绝",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "branches"
+          ],
+          "value": [
+            {
+              "profile": "human",
+              "origin": null,
+              "guards": [
+                "public_projection"
+              ]
+            },
+            {
+              "profile": "service",
+              "origin": null,
+              "guards": [
+                "public_projection"
+              ]
+            },
+            {
+              "profile": "human",
+              "origin": null,
+              "guards": [
+                "public_projection"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected_errors": [
+        "duplicate_branch"
+      ]
+    },
+    {
+      "id": "AP26",
+      "description": "未知守卫不能默许",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "branches",
+            0,
+            "guards"
+          ],
+          "value": [
+            "trust_me"
+          ]
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP27",
+      "description": "管理撤权不省近期认证",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:revokeAuthorization",
+            "branches",
+            0,
+            "guards"
+          ],
+          "value": [
+            "revocation_target"
+          ]
+        }
+      ],
+      "expected_errors": [
+        "missing_guard"
+      ]
+    },
+    {
+      "id": "AP28",
+      "description": "空目标保护拒绝",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "branches",
+            0,
+            "guards"
+          ],
+          "value": []
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP29",
+      "description": "grant不能只查公开投影",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:updateRunGrant",
+            "branches",
+            0,
+            "guards"
+          ],
+          "value": [
+            "public_projection"
+          ]
+        }
+      ],
+      "expected_errors": [
+        "missing_guard",
+        "guard_coverage"
+      ]
+    },
+    {
+      "id": "AP30",
+      "description": "Session不得读他人",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getSession",
+            "branches",
+            0,
+            "guards"
+          ],
+          "value": [
+            "public_projection"
+          ]
+        }
+      ],
+      "expected_errors": [
+        "missing_guard"
+      ]
+    },
+    {
+      "id": "AP31",
+      "description": "不消费的顶层字段拒绝",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "extra"
+          ],
+          "value": true
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP32",
+      "description": "客户端不能在分支自报权威",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "branches",
+            0,
+            "trusted"
+          ],
+          "value": true
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "AP33",
+      "description": "设备写必须明确origin分支",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "branches",
+            0,
+            "origin"
+          ],
+          "value": null
+        }
+      ],
+      "expected_errors": [
+        "principal_policy",
+        "missing_guard"
+      ]
+    },
+    {
+      "id": "AP34",
+      "description": "OR分支次序不改变候选含义",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:getMeta",
+            "branches"
+          ],
+          "value": [
+            {
+              "profile": "service",
+              "origin": null,
+              "guards": [
+                "public_projection"
+              ]
+            },
+            {
+              "profile": "human",
+              "origin": null,
+              "guards": [
+                "public_projection"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected_errors": []
+    },
+    {
+      "id": "AP35",
+      "description": "手动与自动化守卫不可互换",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "branches",
+            0,
+            "guards"
+          ],
+          "value": [
+            "automation_grant"
+          ]
+        },
+        {
+          "action": "set",
+          "path": [
+            "operations",
+            "controller:submitCommand",
+            "branches",
+            1,
+            "guards"
+          ],
+          "value": [
+            "manual_holder"
+          ]
+        }
+      ],
+      "expected_errors": [
+        "missing_guard"
+      ]
+    },
+    {
+      "id": "AP36",
+      "description": "用途版本不能静默升级",
+      "changes": [
+        {
+          "action": "set",
+          "path": [
+            "scope"
+          ],
+          "value": "runtime"
+        }
+      ],
+      "expected_errors": [
+        "schema"
+      ]
+    }
+  ]
+}

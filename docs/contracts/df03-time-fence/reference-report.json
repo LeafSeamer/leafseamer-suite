@@ -1,0 +1,509 @@
+{
+  "version": "time-fence-registry/0.1.0-draft.1",
+  "approved": false,
+  "all_passed": true,
+  "check_count": 92,
+  "checks": [
+    {
+      "name": "生成字节",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构:Registry",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "额外字段:Registry",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "结构:Cut",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "额外字段:Cut",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "结构:Attempt",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "额外字段:Attempt",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "结构:Ack",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "额外字段:Ack",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Registry关联",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "固定完整切点",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "首次尝试",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "原ACK完整覆盖",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "采用当前尝试",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "全部应用",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "漏空出口不能应用",
+      "expected": "incomplete_application",
+      "observed": "incomplete_application"
+    },
+    {
+      "name": "重复出口不算完整",
+      "expected": "incomplete_application",
+      "observed": "incomplete_application"
+    },
+    {
+      "name": "同许可跨类别复用",
+      "expected": "identity_collision",
+      "observed": "identity_collision"
+    },
+    {
+      "name": "两个局部水位冲突",
+      "expected": "shared_sequence",
+      "observed": "shared_sequence"
+    },
+    {
+      "name": "缺历史行",
+      "expected": "shared_sequence",
+      "observed": "shared_sequence"
+    },
+    {
+      "name": "错head",
+      "expected": "shared_sequence",
+      "observed": "shared_sequence"
+    },
+    {
+      "name": "换序不掩盖缺口",
+      "expected": "shared_sequence",
+      "observed": "shared_sequence"
+    },
+    {
+      "name": "缺出口",
+      "expected": "exit_missing",
+      "observed": "exit_missing"
+    },
+    {
+      "name": "重复出口",
+      "expected": "identity_collision",
+      "observed": "identity_collision"
+    },
+    {
+      "name": "出口乱序",
+      "expected": "exit_order",
+      "observed": "exit_order"
+    },
+    {
+      "name": "取消冒用普通初始",
+      "expected": "initial_binding",
+      "observed": "initial_binding"
+    },
+    {
+      "name": "重传换packet",
+      "expected": "initial_binding",
+      "observed": "initial_binding"
+    },
+    {
+      "name": "错业务锚",
+      "expected": "business_anchor",
+      "observed": "business_anchor"
+    },
+    {
+      "name": "取消夹普通锚",
+      "expected": "cancel_anchor",
+      "observed": "cancel_anchor"
+    },
+    {
+      "name": "降级UTC需求",
+      "expected": "time_shape",
+      "observed": "time_shape"
+    },
+    {
+      "name": "重复传输原件",
+      "expected": "transmission_collision",
+      "observed": "transmission_collision"
+    },
+    {
+      "name": "跨authority",
+      "expected": "scope",
+      "observed": "scope"
+    },
+    {
+      "name": "错时钟域",
+      "expected": "domain",
+      "observed": "domain"
+    },
+    {
+      "name": "未知冒充未发核销",
+      "expected": "resolution_contradiction",
+      "observed": "resolution_contradiction"
+    },
+    {
+      "name": "漏取消许可",
+      "expected": "target_set",
+      "observed": "target_set"
+    },
+    {
+      "name": "漏原初始锚",
+      "expected": "target_set",
+      "observed": "target_set"
+    },
+    {
+      "name": "漏空活出口",
+      "expected": "target_set",
+      "observed": "target_set"
+    },
+    {
+      "name": "漏退役未决出口",
+      "expected": "target_set",
+      "observed": "target_set"
+    },
+    {
+      "name": "即时许可混入UTC",
+      "expected": "target_set",
+      "observed": "target_set"
+    },
+    {
+      "name": "错共享切点",
+      "expected": "cut_watermark",
+      "observed": "cut_watermark"
+    },
+    {
+      "name": "错Registry引用",
+      "expected": "registry_ref",
+      "observed": "registry_ref"
+    },
+    {
+      "name": "错操作身份",
+      "expected": "operation",
+      "observed": "operation"
+    },
+    {
+      "name": "目标乱序",
+      "expected": "target_set",
+      "observed": "target_set"
+    },
+    {
+      "name": "重算原件不是批准",
+      "expected": "invalidation_authority",
+      "observed": "invalidation_authority"
+    },
+    {
+      "name": "精确代次后继",
+      "expected": "generation",
+      "observed": "generation"
+    },
+    {
+      "name": "代次不回绕",
+      "expected": "generation",
+      "observed": "generation"
+    },
+    {
+      "name": "ACK漏取消分支",
+      "expected": "coverage_set",
+      "observed": "coverage_set"
+    },
+    {
+      "name": "ACK多余许可",
+      "expected": "coverage_set",
+      "observed": "coverage_set"
+    },
+    {
+      "name": "ACK错误proof",
+      "expected": "proof",
+      "observed": "proof"
+    },
+    {
+      "name": "末次未发不能清原已发",
+      "expected": "business_coverage",
+      "observed": "business_coverage"
+    },
+    {
+      "name": "ACK错失效原件",
+      "expected": "invalidation",
+      "observed": "invalidation"
+    },
+    {
+      "name": "ACK错floor回显",
+      "expected": "floor_echo",
+      "observed": "floor_echo"
+    },
+    {
+      "name": "ACK错尝试",
+      "expected": "attempt",
+      "observed": "attempt"
+    },
+    {
+      "name": "ACK先验当前端点",
+      "expected": "peer",
+      "observed": "peer"
+    },
+    {
+      "name": "已知发送不可降级",
+      "expected": "downgrade",
+      "observed": "downgrade"
+    },
+    {
+      "name": "尝试恢复:cache_miss",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "尝试恢复:deadline_elapsed",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "尝试恢复:channel_lost",
+      "expected": "retry_basis",
+      "observed": "retry_basis"
+    },
+    {
+      "name": "无失败不得重装",
+      "expected": "retry_basis",
+      "observed": "retry_basis"
+    },
+    {
+      "name": "退役出口不得重装",
+      "expected": "retired",
+      "observed": "retired"
+    },
+    {
+      "name": "已采用不重装",
+      "expected": "already_applied",
+      "observed": "already_applied"
+    },
+    {
+      "name": "旧ACK保留原件有效",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "旧ACK不替新尝试",
+      "expected": "not_latest",
+      "observed": "not_latest"
+    },
+    {
+      "name": "失败尝试不采用",
+      "expected": "failed_attempt",
+      "observed": "failed_attempt"
+    },
+    {
+      "name": "更高floor保留",
+      "expected": "4",
+      "observed": "4"
+    },
+    {
+      "name": "新floor推进",
+      "expected": "2",
+      "observed": "2"
+    },
+    {
+      "name": "先失效阻旧UTC",
+      "expected": "denied_generation",
+      "observed": "denied_generation"
+    },
+    {
+      "name": "即时不受UTC子域拒绝",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "即时不得夹带旧时间",
+      "expected": "unexpected_time",
+      "observed": "unexpected_time"
+    },
+    {
+      "name": "新代仍需合格State",
+      "expected": "unqualified",
+      "observed": "unqualified"
+    },
+    {
+      "name": "新代只通过时间子域",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "迟到强事实重新未决",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "原核销不被覆盖",
+      "expected": "never_sent",
+      "observed": "never_sent"
+    },
+    {
+      "name": "空活出口仍在集合",
+      "expected": [
+        "a",
+        "b",
+        "r"
+      ],
+      "observed": [
+        "a",
+        "b",
+        "r"
+      ]
+    },
+    {
+      "name": "已退役且已核销可不纳入",
+      "expected": [
+        "a",
+        "b"
+      ],
+      "observed": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "name": "另一域空出口不混入",
+      "expected": [
+        "a",
+        "r"
+      ],
+      "observed": [
+        "a",
+        "r"
+      ]
+    },
+    {
+      "name": "迟到旧cut选择不扩大到新代",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "同域旧源仍受floor保护",
+      "expected": [
+        "c1"
+      ],
+      "observed": [
+        "c1"
+      ]
+    },
+    {
+      "name": "目标容量:256",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "目标容量:257",
+      "expected": "capacity",
+      "observed": "capacity"
+    },
+    {
+      "name": "取消完整集合容量:256",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "取消完整集合容量:257",
+      "expected": "capacity",
+      "observed": "capacity"
+    },
+    {
+      "name": "真实空集合可冻结",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "真实空集合可应用",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "尝试:ordinal",
+      "expected": "attempt_ordinal",
+      "observed": "attempt_ordinal"
+    },
+    {
+      "name": "尝试:previous_barrier_id",
+      "expected": "previous",
+      "observed": "previous"
+    },
+    {
+      "name": "同packet不能另建初始许可",
+      "expected": "initial_collision",
+      "observed": "initial_collision"
+    },
+    {
+      "name": "限制反证:Ref合法不证明真实原件",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "严格计数字段:'01'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格计数字段:'1\\n'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格计数字段:'-0'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格计数字段:1",
+      "expected": false,
+      "observed": false
+    }
+  ],
+  "runtime_validation": {
+    "sqlite": 0,
+    "ipc": 0,
+    "ntp": 0,
+    "authority": 0,
+    "device": 0,
+    "concurrency": 0,
+    "disk_crash": 0
+  },
+  "artifact_sha256": {
+    "docs/contracts/df03-time-fence/README.md": "06669f4d9b5a63d28ae5ed67ef55a253339069cfc3ebbcc38b8756814245c25e",
+    "docs/contracts/df03-time-fence/build_contracts.py": "9c7ba52eadb2f0f33dad82685a9b0f263c2143a270da6079d276f09b27854ab6",
+    "docs/contracts/df03-time-fence/registry.schema.json": "a651027762d425e7732a528ab45072e122868cdc60be5197eade4c38aea6b483",
+    "docs/contracts/df03-time-fence/reference_model.py": "2215cf23855e7393f5816e93ab687ffbab9d2b8ae6d7129e179acafee7012689",
+    "docs/contracts/df03-time-fence/check_contracts.py": "8def35e290fcb733134982961166e6df1048c798a4e9433ca605a3767783b729",
+    "docs/contracts/df03-service/ipc.schema.json": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2"
+  }
+}

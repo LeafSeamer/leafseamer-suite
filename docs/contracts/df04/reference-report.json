@@ -1,0 +1,116 @@
+{
+  "purpose": "DF04局部SQL约束参考，非生产存储验收",
+  "python_version": "3.14.0",
+  "sqlite_version": "3.50.4",
+  "database": ":memory:",
+  "product_engine_qualified": false,
+  "check_count": 22,
+  "checks": [
+    {
+      "id": "SP01_exact_decimal_order",
+      "passed": true
+    },
+    {
+      "id": "SP02_01_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_02_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_03_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_04_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_05_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_06_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_07_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_08_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_09_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP02_10_invalid_decimal",
+      "passed": true
+    },
+    {
+      "id": "SP03_not_null",
+      "passed": true
+    },
+    {
+      "id": "SP04_strict_coercion_is_not_wire_validation",
+      "passed": true
+    },
+    {
+      "id": "SP05_composite_owner_fk",
+      "passed": true
+    },
+    {
+      "id": "SP06_unique_permit",
+      "passed": true
+    },
+    {
+      "id": "SP07_partial_unique_hold_with_history",
+      "passed": true
+    },
+    {
+      "id": "SP08_terminal_immutable_release_separate",
+      "passed": true
+    },
+    {
+      "id": "SP09_coverage_fk_does_not_prove_completeness",
+      "passed": true
+    },
+    {
+      "id": "SP10_single_preview_and_active_run",
+      "passed": true
+    },
+    {
+      "id": "SP11_explicit_whole_transaction_rollback",
+      "passed": true
+    },
+    {
+      "id": "SP12_returning_is_not_commit",
+      "passed": true
+    },
+    {
+      "id": "SP13_stream_epoch_sequence",
+      "passed": true
+    }
+  ],
+  "all_passed": true,
+  "runtime_validation": {
+    "wal": 0,
+    "concurrency": 0,
+    "power_loss": 0,
+    "backup_restore": 0,
+    "devices": 0
+  },
+  "limitations": [
+    "只覆盖局部结构，不是完整生产DDL",
+    "未执行SDK输入或驱动绑定器",
+    "释放证据来源未在探针实现",
+    "参考SQLite未满足产品WAL修复门槛"
+  ],
+  "input_sha256": {
+    "storage-probes.sql": "31abba06467e020fcd107d7f55a6646961479aca4c4aab6eb9d1bc190c87c7aa",
+    "check_storage_probes.py": "0762b919ce0e2a06455b4b19a5ad27b6622899ce2c303e37ee064cf3c267d6eb"
+  }
+}

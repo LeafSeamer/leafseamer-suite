@@ -1,0 +1,1272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-program/program.schema.json",
+  "title": "C04 程序与证明候选，尚未批准",
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Revision": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Pointer": {
+      "type": "string",
+      "maxLength": 1024,
+      "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+    },
+    "Resource": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+    },
+    "ContentRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "TypeSpec": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "boolean",
+            "null",
+            "string",
+            "binary64",
+            "integer_string",
+            "json"
+          ]
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "Literal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "literal"
+        },
+        "value": {}
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Reference": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "ref"
+        },
+        "source": {
+          "enum": [
+            "event",
+            "observation",
+            "machine",
+            "step_result"
+          ]
+        },
+        "binding_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "pointer": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "kind",
+        "source",
+        "binding_id",
+        "pointer"
+      ],
+      "additionalProperties": false
+    },
+    "Value": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Literal"
+        },
+        {
+          "$ref": "#/$defs/Reference"
+        }
+      ]
+    },
+    "Condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "value": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "compare"
+            },
+            "operator": {
+              "enum": [
+                "eq",
+                "ne",
+                "lt",
+                "lte",
+                "gt",
+                "gte"
+              ]
+            },
+            "value_type": {
+              "$ref": "#/$defs/TypeSpec"
+            },
+            "left": {
+              "$ref": "#/$defs/Value"
+            },
+            "right": {
+              "$ref": "#/$defs/Value"
+            }
+          },
+          "required": [
+            "kind",
+            "operator",
+            "value_type",
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "all",
+                "any"
+              ]
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "maxItems": 256,
+              "minItems": 1,
+              "uniqueItems": false
+            }
+          },
+          "required": [
+            "kind",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "not"
+            },
+            "item": {
+              "$ref": "#/$defs/Condition"
+            }
+          },
+          "required": [
+            "kind",
+            "item"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "exists",
+                "is_null"
+              ]
+            },
+            "value": {
+              "$ref": "#/$defs/Reference"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Projection": {
+      "type": "object",
+      "properties": {
+        "pointer": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+        },
+        "value_type": {
+          "$ref": "#/$defs/TypeSpec"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "pointer",
+        "value_type",
+        "reads"
+      ],
+      "additionalProperties": false
+    },
+    "InputBinding": {
+      "type": "object",
+      "properties": {
+        "binding_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "source": {
+          "enum": [
+            "event",
+            "observation",
+            "machine",
+            "step_result"
+          ]
+        },
+        "authority_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "registration_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "schema_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "producer_step_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Projection"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "binding_id",
+        "source",
+        "authority_id",
+        "registration_ref",
+        "schema_ref",
+        "producer_step_id",
+        "projections"
+      ],
+      "additionalProperties": false
+    },
+    "Footprint": {
+      "type": "object",
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "evidence_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "failure_writes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "preconditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "target_constraints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "safe_failure_classes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "complete",
+        "evidence_ref",
+        "reads",
+        "writes",
+        "failure_writes",
+        "resources",
+        "preconditions",
+        "target_constraints",
+        "safe_failure_classes"
+      ],
+      "additionalProperties": false
+    },
+    "ParameterSlot": {
+      "type": "object",
+      "properties": {
+        "pointer": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+        },
+        "value_type": {
+          "$ref": "#/$defs/TypeSpec"
+        }
+      },
+      "required": [
+        "pointer",
+        "value_type"
+      ],
+      "additionalProperties": false
+    },
+    "ActionBinding": {
+      "type": "object",
+      "properties": {
+        "binding_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "authority_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "controller_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "device_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "provider_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "capability_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "registration_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "catalog_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "module_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "parameter_schema_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "result_schema_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "parameter_slots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ParameterSlot"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "footprint": {
+          "$ref": "#/$defs/Footprint"
+        }
+      },
+      "required": [
+        "binding_id",
+        "authority_id",
+        "controller_id",
+        "device_id",
+        "provider_id",
+        "capability_id",
+        "registration_ref",
+        "catalog_ref",
+        "module_ref",
+        "parameter_schema_ref",
+        "result_schema_ref",
+        "parameter_slots",
+        "footprint"
+      ],
+      "additionalProperties": false
+    },
+    "ParameterBinding": {
+      "type": "object",
+      "properties": {
+        "target_pointer": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+        },
+        "value": {
+          "$ref": "#/$defs/Value"
+        }
+      },
+      "required": [
+        "target_pointer",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "ActionStep": {
+      "type": "object",
+      "properties": {
+        "step_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "failure_policy": {
+          "enum": [
+            "stop",
+            "continue_if_independent"
+          ]
+        },
+        "kind": {
+          "const": "action"
+        },
+        "action_binding_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "parameter_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ParameterBinding"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "guard": {
+          "$ref": "#/$defs/Condition"
+        }
+      },
+      "required": [
+        "step_id",
+        "depends_on",
+        "required",
+        "failure_policy",
+        "kind",
+        "action_binding_id",
+        "parameters",
+        "parameter_bindings",
+        "guard"
+      ],
+      "additionalProperties": false
+    },
+    "DelayStep": {
+      "type": "object",
+      "properties": {
+        "step_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "required": {
+          "const": true
+        },
+        "failure_policy": {
+          "const": "stop"
+        },
+        "kind": {
+          "const": "delay"
+        },
+        "delay_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "max_lateness_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60000
+        }
+      },
+      "required": [
+        "step_id",
+        "depends_on",
+        "required",
+        "failure_policy",
+        "kind",
+        "delay_ms",
+        "max_lateness_ms"
+      ],
+      "additionalProperties": false
+    },
+    "Step": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ActionStep"
+        },
+        {
+          "$ref": "#/$defs/DelayStep"
+        }
+      ]
+    },
+    "Group": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "sequence",
+            "parallel"
+          ]
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "mode",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "rule"
+        },
+        "trigger_binding_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "condition": {
+          "$ref": "#/$defs/Condition"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Group"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "kind",
+        "trigger_binding_id",
+        "condition",
+        "groups"
+      ],
+      "additionalProperties": false
+    },
+    "Transition": {
+      "type": "object",
+      "properties": {
+        "transition_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "from_state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "to_state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "trigger_binding_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "condition": {
+          "$ref": "#/$defs/Condition"
+        },
+        "exit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "transition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "enter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "maxItems": 64,
+          "minItems": 0,
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "transition_id",
+        "from_state",
+        "to_state",
+        "priority",
+        "trigger_binding_id",
+        "condition",
+        "exit",
+        "transition",
+        "enter"
+      ],
+      "additionalProperties": false
+    },
+    "StateMachine": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "state_machine"
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "initial_state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Transition"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "kind",
+        "states",
+        "initial_state",
+        "transitions"
+      ],
+      "additionalProperties": false
+    },
+    "Program": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Rule"
+        },
+        {
+          "$ref": "#/$defs/StateMachine"
+        }
+      ]
+    },
+    "AliasTable": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "logical": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+              },
+              "physical": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[A-Za-z0-9_:-]+(?:/[A-Za-z0-9_:-]+)*$(?![\\s\\S])"
+              }
+            },
+            "required": [
+              "logical",
+              "physical"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "ref",
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "Edge": {
+      "type": "object",
+      "properties": {
+        "from_step_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "to_step_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "edge_kind": {
+          "enum": [
+            "sequence",
+            "requires_success",
+            "data",
+            "guard",
+            "resource"
+          ]
+        }
+      },
+      "required": [
+        "from_step_id",
+        "to_step_id",
+        "edge_kind"
+      ],
+      "additionalProperties": false
+    },
+    "Graph": {
+      "type": "object",
+      "properties": {
+        "graph_version": {
+          "const": "automation-graph/1"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Edge"
+          },
+          "maxItems": 131072,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "alias_table_ref": {
+          "$ref": "#/$defs/ContentRef"
+        }
+      },
+      "required": [
+        "graph_version",
+        "nodes",
+        "edges",
+        "alias_table_ref"
+      ],
+      "additionalProperties": false
+    },
+    "CompiledProgram": {
+      "type": "object",
+      "properties": {
+        "dsl_version": {
+          "const": "automation-program/0.1.0-draft.1"
+        },
+        "compiler_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "definition_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "definition_version": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "program": {
+          "$ref": "#/$defs/Program"
+        },
+        "input_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InputBinding"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "action_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ActionBinding"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "alias_table": {
+          "$ref": "#/$defs/AliasTable"
+        },
+        "graph_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "dsl_version",
+        "compiler_version",
+        "definition_id",
+        "definition_version",
+        "policy_ref",
+        "program",
+        "input_bindings",
+        "action_bindings",
+        "alias_table",
+        "graph_digest"
+      ],
+      "additionalProperties": false
+    },
+    "IndependenceProof": {
+      "type": "object",
+      "properties": {
+        "proof_version": {
+          "const": "automation-program/0.1.0-draft.1"
+        },
+        "generator_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "program_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "bindings_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "graph_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "failed_step_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "successor_step_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "footprint_binding_digests": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "verdict": {
+          "enum": [
+            "independent",
+            "dependent",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "proof_version",
+        "generator_version",
+        "program_digest",
+        "bindings_digest",
+        "graph_digest",
+        "failed_step_id",
+        "successor_step_ids",
+        "footprint_binding_digests",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "PublishedArtifact": {
+      "type": "object",
+      "properties": {
+        "artifact_version": {
+          "const": "automation-program/0.1.0-draft.1"
+        },
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "program_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "bindings_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "proof_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContentRef"
+          },
+          "maxItems": 4096,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "publisher_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "review_ref": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "manifest_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "artifact_version",
+        "artifact_id",
+        "program_digest",
+        "bindings_digest",
+        "proof_refs",
+        "publisher_ref",
+        "review_ref",
+        "manifest_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CompileDiagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "definition_path": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+        },
+        "related_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1024,
+            "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "budget": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "observed": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "kind",
+                "limit",
+                "observed"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "definition_path",
+        "related_paths",
+        "budget"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

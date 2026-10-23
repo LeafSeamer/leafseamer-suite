@@ -1,0 +1,1750 @@
+{
+  "purpose": "synthetic_snapshot_design_only",
+  "runtime_approved": false,
+  "records": {
+    "devices": {
+      "entity_kind": "devices",
+      "entity_id": "devices_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "device_kind": "obs",
+        "display_name": "Synthetic device",
+        "model": null,
+        "firmware": null,
+        "connection_state": "ready",
+        "observation_quality": "fresh",
+        "catalog_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "catalogs",
+          "entity_id": "catalogs_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    },
+    "catalogs": {
+      "entity_kind": "catalogs",
+      "entity_id": "catalogs_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "device_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "devices",
+          "entity_id": "devices_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "approval_state": "approved",
+        "capability_revision": "1",
+        "capability_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "action_ids": [
+          "set_scene"
+        ],
+        "trigger_ids": [
+          "scene_changed"
+        ],
+        "catalog_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "catalog_artifact",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "unavailable_reason": null
+      }
+    },
+    "commands": {
+      "entity_kind": "commands",
+      "entity_id": "commands_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "device_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "devices",
+          "entity_id": "devices_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "action_id": "set_scene",
+        "capability_version": "1.0.0",
+        "request_ref": {
+          "service_id": "controller_1",
+          "context_epoch": "context_epoch",
+          "context_id": "context_1",
+          "principal_id": "human_1",
+          "idempotency_key": "request_1",
+          "operation": "submitCommand",
+          "issuer_id": "issuer_1",
+          "issuer_epoch": "issuer_epoch"
+        },
+        "origin": "manual",
+        "accepted_at": "2026-10-18T00:00:00Z",
+        "phase": "finished",
+        "outcome": "unknown",
+        "effect_status": "possible",
+        "resource_status": "unresolved",
+        "control_epoch": "control_epoch",
+        "effective_version": "1",
+        "completion_required": "effect_verified",
+        "completion_achieved": null,
+        "evidence_policy_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "evidence_policy",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "reason_code": "no_evidence",
+        "evidence_refs": [],
+        "cancellation_state": "none",
+        "cancellation_operation_ref": null,
+        "resolution_ref": null
+      }
+    },
+    "controls": {
+      "entity_kind": "controls",
+      "entity_id": "controls_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "device_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "devices",
+          "entity_id": "devices_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "control_epoch": "control_epoch",
+        "effective_version": "1",
+        "effective_holder_id": "human_1",
+        "mode": "manual",
+        "gate_state": "protected",
+        "pending_change": null,
+        "transfers": [],
+        "in_flight_commands": [],
+        "unresolved_commands": [
+          {
+            "authority_service_id": "controller_1",
+            "database_instance_id": "db_1",
+            "entity_kind": "commands",
+            "entity_id": "commands_1",
+            "entity_epoch": "epoch_1",
+            "revision": "1",
+            "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    "observations": {
+      "entity_kind": "observations",
+      "entity_id": "observations_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "device_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "devices",
+          "entity_id": "devices_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "source_key": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "registration_id": "source_reg",
+          "source_stream_id": "source_stream",
+          "source_epoch": "source_epoch"
+        },
+        "provider_boot_id": "provider_boot",
+        "device_session_id": "device_session",
+        "observed_at": "2026-10-18T00:00:00Z",
+        "sampling_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "sampling",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "freshness_ms": 10,
+        "quality": "fresh",
+        "integrity": "complete",
+        "values": {
+          "schema_ref": {
+            "schema_id": "urn:leafseamer:design:snapshot-projection/0.1.0-draft.1",
+            "definition": "SyntheticState",
+            "schema_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "value": {
+            "active": true
+          }
+        }
+      }
+    },
+    "sources": {
+      "entity_kind": "sources",
+      "entity_id": "sources_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "source_key": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "registration_id": "source_reg",
+          "source_stream_id": "source_stream",
+          "source_epoch": "source_epoch"
+        },
+        "binding_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "source_binding",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "state": "synchronized",
+        "contiguous_sequence": "7",
+        "highest_seen_sequence": "7",
+        "baseline_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "baseline",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "gaps": []
+      }
+    },
+    "definitions": {
+      "entity_kind": "definitions",
+      "entity_id": "definitions_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "display_name": "Synthetic definition",
+        "published_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "definition_version",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "draft_revision": null,
+        "activation_state": "active"
+      }
+    },
+    "runs": {
+      "entity_kind": "runs",
+      "entity_id": "runs_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "definition_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "definition_version",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "business_state_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "business_states",
+          "entity_id": "business_states_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "arm_generation": "1",
+        "lifecycle": "paused",
+        "execution_summary": "unknown",
+        "active_execution_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "executions",
+          "entity_id": "executions_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "pause_reasons": [
+          "manual_takeover"
+        ],
+        "authorization_state": "valid",
+        "recovery": null
+      }
+    },
+    "business_states": {
+      "entity_kind": "business_states",
+      "entity_id": "business_states_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "run_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "runs",
+          "entity_id": "runs_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "state_id": "state_idle",
+        "last_transition_ref": null,
+        "active_execution_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "executions",
+          "entity_id": "executions_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    },
+    "executions": {
+      "entity_kind": "executions",
+      "entity_id": "executions_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "run_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "runs",
+          "entity_id": "runs_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "plan_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "plan",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "generation": "1",
+        "state": "paused",
+        "steps": [
+          {
+            "step_id": "step_1",
+            "required": true,
+            "state": "unknown",
+            "command_ref": {
+              "authority_service_id": "controller_1",
+              "database_instance_id": "db_1",
+              "entity_kind": "commands",
+              "entity_id": "commands_1",
+              "entity_epoch": "epoch_1",
+              "revision": "1",
+              "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "evidence_refs": []
+          }
+        ],
+        "source_execution_ref": null
+      }
+    },
+    "schedule_activations": {
+      "entity_kind": "schedule_activations",
+      "entity_id": "schedule_activations_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "schedule_id": "schedule_1",
+        "active_version_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "schedule_version",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "activation_revision": "1",
+        "calendar_profile_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "calendar_profile",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "committed_at": "2026-10-18T00:00:00Z",
+        "qualification_state": "blocked"
+      }
+    },
+    "occurrences": {
+      "entity_kind": "occurrences",
+      "entity_id": "occurrences_1",
+      "entity_epoch": "epoch_1",
+      "entity_revision": "1",
+      "view": {
+        "logical_key_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "schedule_id": "schedule_1",
+        "original_local_date": "2026-10-18",
+        "planned_at": "2026-10-18T00:00:00Z",
+        "window": {
+          "earliest": "2026-10-18T00:00:00Z",
+          "latest": "2026-10-18T00:00:10Z"
+        },
+        "activation_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "schedule_activations",
+          "entity_id": "schedule_activations_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "qualification_latch": "blocked",
+        "admission_state": "accepted",
+        "admission_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "admission",
+          "entity_id": "evidence_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "execution_ref": {
+          "authority_service_id": "controller_1",
+          "database_instance_id": "db_1",
+          "entity_kind": "executions",
+          "entity_id": "executions_1",
+          "entity_epoch": "epoch_1",
+          "revision": "1",
+          "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "execution_summary": "unknown",
+        "reason_code": "manual_takeover",
+        "replay_of": null
+      }
+    }
+  },
+  "dynamic_schemas": {
+    "SyntheticState": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "active"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "view_names": {
+    "devices": "DeviceSnapshotView",
+    "catalogs": "CatalogSnapshotView",
+    "commands": "CommandSnapshotView",
+    "controls": "ControlSnapshotView",
+    "observations": "ObservationSnapshotView",
+    "sources": "SourceSnapshotView",
+    "definitions": "DefinitionSnapshotView",
+    "runs": "RunSnapshotView",
+    "business_states": "BusinessStateSnapshotView",
+    "executions": "ExecutionSnapshotView",
+    "schedule_activations": "ScheduleActivationSnapshotView",
+    "occurrences": "OccurrenceSnapshotView"
+  },
+  "structure_cases": [
+    {
+      "id": "SV01",
+      "kind": "devices",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV02",
+      "kind": "catalogs",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV03",
+      "kind": "commands",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV04",
+      "kind": "controls",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV05",
+      "kind": "observations",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV06",
+      "kind": "sources",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV07",
+      "kind": "definitions",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV08",
+      "kind": "runs",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV09",
+      "kind": "business_states",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV10",
+      "kind": "executions",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV11",
+      "kind": "schedule_activations",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV12",
+      "kind": "occurrences",
+      "changes": [],
+      "expected_valid": true
+    },
+    {
+      "id": "SV13",
+      "kind": "commands",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "token"
+          ],
+          "value": "forbidden"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV14",
+      "kind": "commands",
+      "changes": [
+        {
+          "path": [
+            "entity_revision"
+          ],
+          "value": "01"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV15",
+      "kind": "commands",
+      "changes": [
+        {
+          "path": [
+            "entity_revision"
+          ],
+          "value": "1\n"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV16",
+      "kind": "runs",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "lifecycle"
+          ],
+          "value": "ready"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV17",
+      "kind": "sources",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "source_key",
+            "source_epoch"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV18",
+      "kind": "controls",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "gate_state"
+          ],
+          "value": "green"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV19",
+      "kind": "devices",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "credentials"
+          ],
+          "value": {}
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV20",
+      "kind": "observations",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "values",
+            "schema_ref"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV21",
+      "kind": "definitions",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "published_ref",
+            "revision"
+          ],
+          "value": 2
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV22",
+      "kind": "executions",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "steps",
+            0,
+            "required"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV23",
+      "kind": "occurrences",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "planned_at"
+          ],
+          "value": "not-a-time"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV24",
+      "kind": "catalogs",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "approval_state"
+          ],
+          "value": "self_approved"
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV25",
+      "kind": "schedule_activations",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "calendar_profile_ref"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV26",
+      "kind": "business_states",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "state_id"
+          ],
+          "value": 42
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV27",
+      "kind": "commands",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "cancellation_state"
+          ],
+          "value": "unsupported"
+        },
+        {
+          "path": [
+            "view",
+            "cancellation_operation_ref"
+          ],
+          "value": {
+            "authority_service_id": "controller_1",
+            "database_instance_id": "db_1",
+            "entity_kind": "cancel_operation",
+            "entity_id": "evidence_1",
+            "entity_epoch": "epoch_1",
+            "revision": "1",
+            "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      ],
+      "expected_valid": true
+    },
+    {
+      "id": "SV28",
+      "kind": "controls",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "gate_state"
+          ],
+          "value": "fencing"
+        },
+        {
+          "path": [
+            "view",
+            "pending_change"
+          ],
+          "value": {
+            "operation_ref": {
+              "authority_service_id": "controller_1",
+              "database_instance_id": "db_1",
+              "entity_kind": "control_operation",
+              "entity_id": "evidence_1",
+              "entity_epoch": "epoch_1",
+              "revision": "1",
+              "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "target_version": "2",
+            "target_holder_id": "human_2",
+            "target_mode": "manual",
+            "state": "pending",
+            "reason_code": "takeover"
+          }
+        }
+      ],
+      "expected_valid": true
+    },
+    {
+      "id": "SV29",
+      "kind": "controls",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "transfers"
+          ],
+          "value": [
+            {
+              "transfer_ref": {
+                "authority_service_id": "controller_1",
+                "database_instance_id": "db_1",
+                "entity_kind": "transfer",
+                "entity_id": "evidence_1",
+                "entity_epoch": "epoch_1",
+                "revision": "1",
+                "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "from_principal_id": "human_1",
+              "target_principal_id": "human_2",
+              "expected_control_epoch": "control_epoch",
+              "expected_effective_version": "1",
+              "expires_at": "2026-10-18T00:00:30Z",
+              "state": "accepted",
+              "accept_operation_ref": {
+                "authority_service_id": "controller_1",
+                "database_instance_id": "db_1",
+                "entity_kind": "control_operation",
+                "entity_id": "evidence_1",
+                "entity_epoch": "epoch_1",
+                "revision": "1",
+                "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            }
+          ]
+        }
+      ],
+      "expected_valid": true
+    },
+    {
+      "id": "SV30",
+      "kind": "runs",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "recovery"
+          ],
+          "value": {
+            "operation_ref": {
+              "authority_service_id": "controller_1",
+              "database_instance_id": "db_1",
+              "entity_kind": "recovery_operation",
+              "entity_id": "evidence_1",
+              "entity_epoch": "epoch_1",
+              "revision": "1",
+              "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "state": "ready",
+            "recovery_generation": "2",
+            "new_execution_ref": {
+              "authority_service_id": "controller_1",
+              "database_instance_id": "db_1",
+              "entity_kind": "executions",
+              "entity_id": "new_execution",
+              "entity_epoch": "epoch_1",
+              "revision": "1",
+              "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "consumed": true
+          }
+        }
+      ],
+      "expected_valid": true
+    },
+    {
+      "id": "SV31",
+      "kind": "commands",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "completion_achieved"
+          ],
+          "delete": true
+        }
+      ],
+      "expected_valid": false
+    },
+    {
+      "id": "SV32",
+      "kind": "commands",
+      "changes": [
+        {
+          "path": [
+            "view",
+            "cancellation_state"
+          ],
+          "value": "rejected"
+        }
+      ],
+      "expected_valid": false
+    }
+  ],
+  "bundle_cases": [
+    {
+      "id": "SB01",
+      "mode": "controller",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SB02",
+      "mode": "seamer",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SB03",
+      "mode": "empty",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SB04",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "pages",
+            0,
+            "content",
+            "page_index"
+          ],
+          "value": 1
+        }
+      ],
+      "expected": "page_layout"
+    },
+    {
+      "id": "SB05",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "pages",
+            0,
+            "content",
+            "records",
+            0,
+            "entity_revision"
+          ],
+          "value": "2"
+        }
+      ],
+      "expected": "page_digest"
+    },
+    {
+      "id": "SB06",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "pages",
+            0,
+            "delivery_binding",
+            "connection_generation"
+          ],
+          "value": "2"
+        }
+      ],
+      "expected": "delivery_binding"
+    },
+    {
+      "id": "SB07",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "binding",
+            "scope_digest"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expected": "content_binding"
+    },
+    {
+      "id": "SB08",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "collections",
+            0,
+            "count"
+          ],
+          "value": "99"
+        }
+      ],
+      "expected": "collection_coverage"
+    },
+    {
+      "id": "SB09",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "pages",
+            0,
+            "content_bytes"
+          ],
+          "value": 1
+        }
+      ],
+      "expected": "page_digest"
+    },
+    {
+      "id": "SB10",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "manifest_digest"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expected": "manifest_digest"
+    },
+    {
+      "id": "SB11",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "source_watermarks",
+            0,
+            "baseline_sequence"
+          ],
+          "value": "8"
+        }
+      ],
+      "expected": "watermark"
+    },
+    {
+      "id": "SB12",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "source_watermarks",
+            0,
+            "source_key",
+            "source_epoch"
+          ],
+          "value": "other"
+        }
+      ],
+      "expected": "watermark"
+    },
+    {
+      "id": "SB13",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "page_count"
+          ],
+          "value": 2
+        }
+      ],
+      "expected": "page_layout"
+    },
+    {
+      "id": "SB14",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "pages",
+            0,
+            "content",
+            "next_page_index"
+          ],
+          "value": 0
+        }
+      ],
+      "expected": "page_layout"
+    },
+    {
+      "id": "SB15",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "expires_at"
+          ],
+          "value": "2026-10-17T23:59:59Z"
+        }
+      ],
+      "expected": "deadline"
+    },
+    {
+      "id": "SB16",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "now_tick"
+          ],
+          "value": "30"
+        }
+      ],
+      "expected": "deadline"
+    },
+    {
+      "id": "SB17",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "authorized"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "authority"
+    },
+    {
+      "id": "SB18",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "domain_current"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "authority"
+    },
+    {
+      "id": "SB19",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "expected_binding",
+            "authorization_revision"
+          ],
+          "value": "2"
+        }
+      ],
+      "expected": "content_binding"
+    },
+    {
+      "id": "SB20",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "collections"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "collection_coverage"
+    },
+    {
+      "id": "SB21",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "pages",
+            0,
+            "content",
+            "manifest_digest"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SB22",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "pages",
+            0,
+            "delivery_binding",
+            "owner"
+          ],
+          "value": {}
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SB23",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "purpose"
+          ],
+          "value": "status_projection"
+        }
+      ],
+      "expected": "watermark"
+    },
+    {
+      "id": "SB24",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "manifest",
+            "total_content_bytes"
+          ],
+          "value": 0
+        }
+      ],
+      "expected": "total_bytes"
+    },
+    {
+      "id": "SB25",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "required_refs"
+          ],
+          "value": [
+            {
+              "authority_service_id": "controller_1",
+              "database_instance_id": "db_1",
+              "entity_kind": "commands",
+              "entity_id": "missing_command",
+              "entity_epoch": "epoch_1",
+              "revision": "1",
+              "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "expected": "reference_closure"
+    },
+    {
+      "id": "SB26",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "approved_dynamic_schemas"
+          ],
+          "value": {}
+        }
+      ],
+      "expected": "dynamic_schema"
+    },
+    {
+      "id": "SB27",
+      "mode": "controller",
+      "changes": [],
+      "operation": "split_pages",
+      "expected": "valid"
+    },
+    {
+      "id": "SB28",
+      "mode": "controller",
+      "changes": [],
+      "operation": "duplicate_page",
+      "expected": "valid"
+    },
+    {
+      "id": "SB29",
+      "mode": "controller",
+      "changes": [],
+      "operation": "reverse_download",
+      "expected": "valid"
+    },
+    {
+      "id": "SB30",
+      "mode": "controller",
+      "changes": [],
+      "operation": "conflicting_page",
+      "expected": "page_conflict"
+    },
+    {
+      "id": "SB31",
+      "mode": "controller",
+      "changes": [],
+      "operation": "missing_page",
+      "expected": "page_layout"
+    },
+    {
+      "id": "SB32",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "required_refs"
+          ],
+          "value": [
+            {
+              "authority_service_id": "publisher_1",
+              "database_instance_id": "publisher_db",
+              "entity_kind": "commands",
+              "entity_id": "commands_1",
+              "entity_epoch": "epoch_1",
+              "revision": "1",
+              "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "SB33",
+      "mode": "controller",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "required_refs"
+          ],
+          "value": [
+            {
+              "authority_service_id": "other_publisher",
+              "database_instance_id": "publisher_db",
+              "entity_kind": "commands",
+              "entity_id": "commands_1",
+              "entity_epoch": "epoch_1",
+              "revision": "1",
+              "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "expected": "reference_closure"
+    },
+    {
+      "id": "SB34",
+      "mode": "controller",
+      "operation": "oversize_content",
+      "changes": [],
+      "expected": "capacity"
+    }
+  ],
+  "resealed_cases": [
+    {
+      "id": "SR01",
+      "mode": "controller",
+      "mutation": "duplicate_entity",
+      "expected": "entity_identity"
+    },
+    {
+      "id": "SR02",
+      "mode": "controller",
+      "mutation": "reverse_records",
+      "expected": "entity_order"
+    },
+    {
+      "id": "SR03",
+      "mode": "controller",
+      "mutation": "command_pending_terminal",
+      "expected": "command_state"
+    },
+    {
+      "id": "SR04",
+      "mode": "controller",
+      "mutation": "manual_without_holder",
+      "expected": "control_state"
+    },
+    {
+      "id": "SR05",
+      "mode": "controller",
+      "mutation": "source_frontier_inverted",
+      "expected": "source_state"
+    },
+    {
+      "id": "SR06",
+      "mode": "controller",
+      "mutation": "invalid_dynamic_value",
+      "expected": "dynamic_value"
+    },
+    {
+      "id": "SR07",
+      "mode": "seamer",
+      "mutation": "accepted_without_execution",
+      "expected": "occurrence_state"
+    },
+    {
+      "id": "SR08",
+      "mode": "seamer",
+      "mutation": "duplicate_step",
+      "expected": "execution_state"
+    },
+    {
+      "id": "SR09",
+      "mode": "controller",
+      "mutation": "watermark_missing",
+      "expected": "watermark"
+    },
+    {
+      "id": "SR10",
+      "mode": "controller",
+      "mutation": "wrong_view_schema",
+      "expected": "collection_coverage"
+    },
+    {
+      "id": "SR11",
+      "mode": "controller",
+      "mutation": "same_entity_next_page",
+      "expected": "entity_identity"
+    },
+    {
+      "id": "SR12",
+      "mode": "controller",
+      "mutation": "unknown_gap_with_range",
+      "expected": "source_state"
+    },
+    {
+      "id": "SR13",
+      "mode": "controller",
+      "mutation": "succeeded_without_completion",
+      "expected": "command_state"
+    },
+    {
+      "id": "SR14",
+      "mode": "controller",
+      "mutation": "cancellation_without_operation",
+      "expected": "command_state"
+    },
+    {
+      "id": "SR15",
+      "mode": "controller",
+      "mutation": "duplicate_source_identity",
+      "expected": "source_identity"
+    }
+  ],
+  "data_cases": [
+    {
+      "id": "SD01",
+      "variant": "devices",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD02",
+      "variant": "catalogs",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD03",
+      "variant": "commands",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD04",
+      "variant": "controls",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD05",
+      "variant": "observations",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD06",
+      "variant": "sources",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD07",
+      "variant": "definitions",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD08",
+      "variant": "runs",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD09",
+      "variant": "business_states",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD10",
+      "variant": "executions",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD11",
+      "variant": "schedule_activations",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD12",
+      "variant": "occurrences",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD13",
+      "variant": "remove",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD14",
+      "variant": "event",
+      "changes": [],
+      "expected": "valid"
+    },
+    {
+      "id": "SD15",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "cursor"
+          ],
+          "value": 1
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SD16",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "binding",
+            "connection_generation"
+          ],
+          "value": "2"
+        }
+      ],
+      "expected": "delivery_binding"
+    },
+    {
+      "id": "SD17",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "payload_digest"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expected": "payload_digest"
+    },
+    {
+      "id": "SD18",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "previous_cursor"
+          ],
+          "value": "2"
+        }
+      ],
+      "expected": "cursor_order"
+    },
+    {
+      "id": "SD19",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "entry",
+            "payload",
+            "view",
+            "token"
+          ],
+          "value": "forbidden"
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SD20",
+      "variant": "event",
+      "changes": [
+        {
+          "path": [
+            "entry",
+            "payload",
+            "payload",
+            "value",
+            "active"
+          ],
+          "value": "true"
+        }
+      ],
+      "expected": "dynamic_value"
+    },
+    {
+      "id": "SD21",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "delivery_mode"
+          ],
+          "value": "unknown"
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SD22",
+      "variant": "remove",
+      "changes": [
+        {
+          "path": [
+            "entry",
+            "payload",
+            "reason"
+          ],
+          "value": "failed"
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SD23",
+      "variant": "event",
+      "changes": [
+        {
+          "path": [
+            "entry",
+            "payload",
+            "age_evidence_ref"
+          ],
+          "delete": true
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SD24",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "entry",
+            "payload",
+            "view",
+            "display_name"
+          ],
+          "value": "changed"
+        }
+      ],
+      "expected": "payload_digest"
+    },
+    {
+      "id": "SD25",
+      "variant": "event",
+      "changes": [
+        {
+          "path": [
+            "entry",
+            "payload",
+            "source_sequence"
+          ],
+          "value": "0"
+        }
+      ],
+      "expected": "structure"
+    },
+    {
+      "id": "SD26",
+      "variant": "devices",
+      "changes": [
+        {
+          "path": [
+            "cursor"
+          ],
+          "value": "9007199254740993"
+        },
+        {
+          "path": [
+            "previous_cursor"
+          ],
+          "value": "9007199254740992"
+        }
+      ],
+      "expected": "valid"
+    }
+  ]
+}

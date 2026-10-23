@@ -1,0 +1,322 @@
+{
+  "version": "df01-digest-trace/1",
+  "purpose": "historical_projection_reference",
+  "digest_algorithm_for_dp01_to_dp12": "RFC8785-UTF8-SHA256",
+  "digest_output_prefix_for_dp01_to_dp12": "sha256:",
+  "dp13_source_evidence": "历史Python身份向量段只比较canonical bytes；此定位不证明SHA256步骤",
+  "authority_switched": false,
+  "fixture_relation": "相关夹具定位，不代表投影独立正反例覆盖",
+  "projections": [
+    {
+      "id": "DP01",
+      "name": "schema_document",
+      "input_model": "SchemaDescriptor",
+      "source": {
+        "module": "base",
+        "symbol": "contract_errors"
+      },
+      "operation": "select_path",
+      "path": "/document",
+      "excluded_top_level": [],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [],
+      "constraint": "校验document合法性及本地ref；来源摘要不是Schema执行批准"
+    },
+    {
+      "id": "DP02",
+      "name": "command_content",
+      "input_model": "CommandRequest",
+      "source": {
+        "module": "d3",
+        "symbol": "linked"
+      },
+      "operation": "drop_top_level",
+      "path": "",
+      "excluded_top_level": [
+        "context_id",
+        "idempotency_key",
+        "correlation_id"
+      ],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "linked",
+          "case_id": "guard-linked"
+        }
+      ],
+      "constraint": "只排除顶层；嵌套同名字段保留；不添加force"
+    },
+    {
+      "id": "DP03",
+      "name": "execution_guard",
+      "input_model": "ExecutionGuard",
+      "source": {
+        "module": "f4",
+        "symbol": "semantic_error"
+      },
+      "operation": "drop_top_level",
+      "path": "",
+      "excluded_top_level": [
+        "guard_digest"
+      ],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "positive-ExecutionGuard"
+        }
+      ],
+      "constraint": "保留嵌套所有摘要和域引用"
+    },
+    {
+      "id": "DP04",
+      "name": "definition_legacy",
+      "input_model": "DefinitionRecord",
+      "source": {
+        "module": "d3",
+        "symbol": "definition_digest"
+      },
+      "operation": "legacy_recursive_step_id",
+      "path": "/definition",
+      "excluded_top_level": [],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "published-independent-step"
+        }
+      ],
+      "constraint": "深拷贝定义；任何字典有step_id就删除该字典independence_proof，含开放业务参数；缺陷须另版修"
+    },
+    {
+      "id": "DP05",
+      "name": "proof_bindings",
+      "input_model": "IndependenceProof",
+      "source": {
+        "module": "d3",
+        "symbol": "semantics"
+      },
+      "operation": "select_fields",
+      "path": "",
+      "excluded_top_level": [],
+      "selected_fields": [
+        "definition_id",
+        "definition_version",
+        "definition_digest",
+        "action_bindings",
+        "dependency_graph_digest",
+        "dsl_version",
+        "generator_version",
+        "alias_revision"
+      ],
+      "order": "require_action_ref_jcs_byte_order",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "positive-IndependenceProof"
+        }
+      ],
+      "constraint": "检查action_bindings已排序且action_ref不重复，不偷偷为输入排序"
+    },
+    {
+      "id": "DP06",
+      "name": "recovery_plan",
+      "input_model": "RecoveryPreview",
+      "source": {
+        "module": "d3",
+        "symbol": "semantics"
+      },
+      "operation": "select_path",
+      "path": "/plan",
+      "excluded_top_level": [],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "positive-RecoveryPreview"
+        }
+      ],
+      "constraint": "完整plan；结果与snapshot.plan_digest比较"
+    },
+    {
+      "id": "DP07",
+      "name": "recovery_preview",
+      "input_model": "RecoverySnapshot",
+      "source": {
+        "module": "f6",
+        "symbol": "semantic_error"
+      },
+      "operation": "drop_top_level",
+      "path": "",
+      "excluded_top_level": [
+        "preview_digest"
+      ],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "positive-RecoverySnapshot"
+        }
+      ],
+      "constraint": "仅删snapshot本身preview_digest；不对整个RecoveryPreview包络求此摘要"
+    },
+    {
+      "id": "DP08",
+      "name": "barrier_ledger",
+      "input_model": null,
+      "source": {
+        "module": "d3",
+        "symbol": "linked"
+      },
+      "operation": "ledger_array",
+      "path": "/request/body/open_intents",
+      "excluded_top_level": [],
+      "selected_fields": [],
+      "order": "sort_permit_id_then_reject_duplicates",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "linked",
+          "case_id": "AUTH_FENCE-complete"
+        }
+      ],
+      "constraint": "对完整intent数组排序求摘要，另验coverage与各disposition集合；input_model为复合关联上下文而非公共模型"
+    },
+    {
+      "id": "DP09",
+      "name": "clock_domain_descriptor",
+      "input_model": "ClockDomainDescriptor",
+      "source": {
+        "module": "d4",
+        "symbol": "semantics"
+      },
+      "operation": "drop_top_level",
+      "path": "",
+      "excluded_top_level": [
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "new-ClockDomainDescriptor"
+        }
+      ],
+      "constraint": "clock_domain_id必须为clock_加摘要hex；不加额外密码学盐"
+    },
+    {
+      "id": "DP10",
+      "name": "time_profile",
+      "input_model": "TimeBoundProfile",
+      "source": {
+        "module": "d4",
+        "symbol": "semantics"
+      },
+      "operation": "drop_top_level",
+      "path": "",
+      "excluded_top_level": [
+        "profile_digest"
+      ],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "new-TimeBoundProfile"
+        }
+      ],
+      "constraint": "批准profile集合属于外部权威，不由摘要证明"
+    },
+    {
+      "id": "DP11",
+      "name": "time_evidence",
+      "input_model": "TimeBoundEvidence",
+      "source": {
+        "module": "d4",
+        "symbol": "semantics"
+      },
+      "operation": "drop_top_level",
+      "path": "",
+      "excluded_top_level": [
+        "evidence_digest"
+      ],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "public",
+          "case_id": "new-TimeBoundEvidence"
+        }
+      ],
+      "constraint": "重新算对摘要也必须检查域、来源、年龄和误差界"
+    },
+    {
+      "id": "DP12",
+      "name": "clock_sample",
+      "input_model": "ClockSample",
+      "source": {
+        "module": "d4",
+        "symbol": "sample_ref"
+      },
+      "operation": "whole",
+      "path": "",
+      "excluded_top_level": [],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "none",
+      "fixture_refs": [
+        {
+          "group": "linked",
+          "case_id": "cross-service-utc-age"
+        }
+      ],
+      "constraint": "完整ClockSample，保留profile及evidence引用"
+    },
+    {
+      "id": "DP13",
+      "name": "acquire_identity_legacy",
+      "input_model": "AcquireRequest",
+      "source": {
+        "module": "base",
+        "symbol": "main"
+      },
+      "operation": "drop_top_level",
+      "path": "",
+      "excluded_top_level": [
+        "context_id",
+        "idempotency_key",
+        "correlation_id"
+      ],
+      "selected_fields": [],
+      "order": "preserve_arrays",
+      "defaults": "absent_force_false",
+      "fixture_refs": [],
+      "constraint": "仅旧独立identity向量特例，不在232例内；Schema的default不代表运行填值"
+    }
+  ],
+  "not_recomputed_from_origin": [
+    "dependency_graph_digest",
+    "configured_source_set_digest",
+    "artifact_digest",
+    "validation_report_ref"
+  ],
+  "raw_file_hash_policy": "源文件和发布文件SHA256取原bytes，无JCS；不得与业务sha256前缀摘要互换"
+}

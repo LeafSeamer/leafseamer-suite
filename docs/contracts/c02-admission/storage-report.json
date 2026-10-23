@@ -1,0 +1,880 @@
+{
+  "version": "command-admission-storage/0.1.0-draft.1",
+  "approved": false,
+  "all_passed": true,
+  "sqlite_version": "3.50.4",
+  "check_count": 159,
+  "checks": [
+    {
+      "name": "完整11表",
+      "expected": [
+        "ca_adjudication",
+        "ca_audit",
+        "ca_command_initial",
+        "ca_commit",
+        "ca_namespace",
+        "ca_namespace_closure",
+        "ca_notification",
+        "ca_rejection",
+        "ca_request_key",
+        "ca_reservation",
+        "ca_scope"
+      ],
+      "observed": [
+        "ca_adjudication",
+        "ca_audit",
+        "ca_command_initial",
+        "ca_commit",
+        "ca_namespace",
+        "ca_namespace_closure",
+        "ca_notification",
+        "ca_rejection",
+        "ca_request_key",
+        "ca_reservation",
+        "ca_scope"
+      ]
+    },
+    {
+      "name": "外键开启",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "REPLACE删除触发开启",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "accepted裁决",
+      "expected": [
+        [
+          "accepted",
+          "1"
+        ]
+      ],
+      "observed": [
+        [
+          "accepted",
+          "1"
+        ]
+      ]
+    },
+    {
+      "name": "accepted命令数",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "accepted完整关联",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "accepted先到后相反裁决",
+      "expected": 2067,
+      "observed": 2067
+    },
+    {
+      "name": "accepted先到后相反裁决全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted拒收操作不改原裁决",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted拒收独立通知",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "accepted重复拒收不新增",
+      "expected": 2067,
+      "observed": 2067
+    },
+    {
+      "name": "accepted重复拒收不新增全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted提交后查原",
+      "expected": [
+        [
+          "accepted",
+          "command.one"
+        ]
+      ],
+      "observed": [
+        [
+          "accepted",
+          "command.one"
+        ]
+      ]
+    },
+    {
+      "name": "rejected裁决",
+      "expected": [
+        [
+          "rejected",
+          "1"
+        ]
+      ],
+      "observed": [
+        [
+          "rejected",
+          "1"
+        ]
+      ]
+    },
+    {
+      "name": "rejected命令数",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "rejected完整关联",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "rejected先到后相反裁决",
+      "expected": 2067,
+      "observed": 2067
+    },
+    {
+      "name": "rejected先到后相反裁决全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected拒收操作不改原裁决",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected拒收独立通知",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "rejected重复拒收不新增",
+      "expected": 2067,
+      "observed": 2067
+    },
+    {
+      "name": "rejected重复拒收不新增全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected提交后查原",
+      "expected": [
+        [
+          "rejected",
+          null
+        ]
+      ],
+      "observed": [
+        [
+          "rejected",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "accepted缺写0",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "accepted缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted主动异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "accepted异常全表回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted缺写1",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "accepted缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted主动异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "accepted异常全表回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted缺写2",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "accepted缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted主动异常2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "accepted异常全表回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted缺写3",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "accepted缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted主动异常3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "accepted异常全表回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted缺写4",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "accepted缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted主动异常4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "accepted异常全表回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted缺写5",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "accepted缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted主动异常5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "accepted异常全表回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted缺写6",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "accepted缺写6全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted主动异常6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "accepted异常全表回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected缺写0",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "rejected缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected主动异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "rejected异常全表回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected缺写1",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "rejected缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected主动异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "rejected异常全表回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected缺写2",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "rejected缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected主动异常2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "rejected异常全表回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected缺写3",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "rejected缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected主动异常3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "rejected异常全表回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected缺写4",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "rejected缺写4全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected主动异常4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "rejected异常全表回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected缺写5",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "rejected缺写5全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "rejected主动异常5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "rejected异常全表回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已受理后拒收缺写0",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "已受理后拒收缺写0全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已受理后拒收缺写1",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "已受理后拒收缺写1全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已受理后拒收缺写2",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "已受理后拒收缺写2全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已受理后拒收缺写3",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "已受理后拒收缺写3全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同拒收操作换目标和内部ID",
+      "expected": 2067,
+      "observed": 2067
+    },
+    {
+      "name": "同拒收操作换目标和内部ID全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始命令错配",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "初始命令错配全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "容量预留错配",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "容量预留错配全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "审计错key",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "审计错key全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通知错key",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "通知错key全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通知错kind",
+      "expected": 787,
+      "observed": 787
+    },
+    {
+      "name": "通知错kind全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "issuer换代允许不同身份但不覆盖旧件",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "同namespace不能换内部ID",
+      "expected": 2067,
+      "observed": 2067
+    },
+    {
+      "name": "同namespace不能换内部ID全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭后不新受理",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "关闭后不新受理错误",
+      "expected": "namespace_closed",
+      "observed": "namespace_closed"
+    },
+    {
+      "name": "关闭后不新受理全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭后可永久拒收",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "不能重开namespace",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "不能重开namespace错误",
+      "expected": "permanent_closure",
+      "observed": "permanent_closure"
+    },
+    {
+      "name": "不能重开namespace全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不能更换库身份",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "不能更换库身份错误",
+      "expected": "immutable_scope",
+      "observed": "immutable_scope"
+    },
+    {
+      "name": "不能更换库身份全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_request_keyDELETE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_request_keyDELETE错误",
+      "expected": "immutable_request",
+      "observed": "immutable_request"
+    },
+    {
+      "name": "ca_request_keyDELETE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_request_keyUPDATE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_request_keyUPDATE错误",
+      "expected": "immutable_request",
+      "observed": "immutable_request"
+    },
+    {
+      "name": "ca_request_keyUPDATE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_adjudicationDELETE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_adjudicationDELETE错误",
+      "expected": "immutable_adjudication",
+      "observed": "immutable_adjudication"
+    },
+    {
+      "name": "ca_adjudicationDELETE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_adjudicationUPDATE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_adjudicationUPDATE错误",
+      "expected": "immutable_adjudication",
+      "observed": "immutable_adjudication"
+    },
+    {
+      "name": "ca_adjudicationUPDATE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_command_initialDELETE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_command_initialDELETE错误",
+      "expected": "immutable_initial",
+      "observed": "immutable_initial"
+    },
+    {
+      "name": "ca_command_initialDELETE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_command_initialUPDATE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_command_initialUPDATE错误",
+      "expected": "immutable_initial",
+      "observed": "immutable_initial"
+    },
+    {
+      "name": "ca_command_initialUPDATE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_reservationDELETE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_reservationDELETE错误",
+      "expected": "immutable_reservation",
+      "observed": "immutable_reservation"
+    },
+    {
+      "name": "ca_reservationDELETE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_reservationUPDATE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_reservationUPDATE错误",
+      "expected": "immutable_reservation",
+      "observed": "immutable_reservation"
+    },
+    {
+      "name": "ca_reservationUPDATE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_commitDELETE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_commitDELETE错误",
+      "expected": "immutable_commit",
+      "observed": "immutable_commit"
+    },
+    {
+      "name": "ca_commitDELETE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_commitUPDATE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_commitUPDATE错误",
+      "expected": "immutable_commit",
+      "observed": "immutable_commit"
+    },
+    {
+      "name": "ca_commitUPDATE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_auditDELETE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_auditDELETE错误",
+      "expected": "immutable_audit",
+      "observed": "immutable_audit"
+    },
+    {
+      "name": "ca_auditDELETE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_auditUPDATE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_auditUPDATE错误",
+      "expected": "immutable_audit",
+      "observed": "immutable_audit"
+    },
+    {
+      "name": "ca_auditUPDATE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_notificationDELETE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_notificationDELETE错误",
+      "expected": "immutable_notification",
+      "observed": "immutable_notification"
+    },
+    {
+      "name": "ca_notificationDELETE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ca_notificationUPDATE",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "ca_notificationUPDATE错误",
+      "expected": "immutable_notification",
+      "observed": "immutable_notification"
+    },
+    {
+      "name": "ca_notificationUPDATE全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒收操作不可删除",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "拒收操作不可删除错误",
+      "expected": "immutable_rejection",
+      "observed": "immutable_rejection"
+    },
+    {
+      "name": "拒收操作不可删除全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "REPLACE不能复活墓碑",
+      "expected": 1811,
+      "observed": 1811
+    },
+    {
+      "name": "REPLACE不能复活墓碑错误",
+      "expected": "immutable_adjudication",
+      "observed": "immutable_adjudication"
+    },
+    {
+      "name": "REPLACE不能复活墓碑全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "摘要不同仍冲突同键",
+      "expected": 2067,
+      "observed": 2067
+    },
+    {
+      "name": "摘要不同仍冲突同键全表回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "BODY未被SQL解释的限制",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "limitations": [
+    "仅内存SQLite",
+    "主动异常与串行步骤不是掉电或并发",
+    "BODY和权威为合成占位",
+    "不执行HTTP鉴权或设备"
+  ],
+  "inputs": {
+    "docs/contracts/c02-admission/STORAGE.md": "1fcad05997b15934e5de4dafa52a76868092f5adf9dfd59865566af644384967",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c02-admission/admission.schema.json": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7"
+  }
+}

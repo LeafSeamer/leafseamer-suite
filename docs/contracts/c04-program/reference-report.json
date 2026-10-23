@@ -1,0 +1,707 @@
+{
+  "contract": "automation-program/0.1.0-draft.1",
+  "approved": false,
+  "scope": "合成程序与有限AST求值、结构派生图及证明和发布关联；非业务引擎或权威提供者",
+  "checks_passed": 118,
+  "all_passed": true,
+  "checks": [
+    {
+      "id": "graph.sequence",
+      "expected": [
+        {
+          "from_step_id": "s0",
+          "to_step_id": "s1",
+          "edge_kind": "sequence"
+        },
+        {
+          "from_step_id": "s1",
+          "to_step_id": "s2",
+          "edge_kind": "sequence"
+        }
+      ],
+      "actual": [
+        {
+          "from_step_id": "s0",
+          "to_step_id": "s1",
+          "edge_kind": "sequence"
+        },
+        {
+          "from_step_id": "s1",
+          "to_step_id": "s2",
+          "edge_kind": "sequence"
+        }
+      ]
+    },
+    {
+      "id": "proof.closure",
+      "expected": [
+        "s1",
+        "s2"
+      ],
+      "actual": [
+        "s1",
+        "s2"
+      ]
+    },
+    {
+      "id": "proof.independent",
+      "expected": "independent",
+      "actual": "independent"
+    },
+    {
+      "id": "schema.CompiledProgram",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.Program",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.StateMachine",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.Graph",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.IndependenceProof",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.PublishedArtifact",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.InputBinding",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.ActionBinding",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.Condition",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.AliasTable",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "schema.old_version",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "schema.self_digest",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "schema.embedded_proof",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "pointer.slash",
+      "expected": [
+        "a/b"
+      ],
+      "actual": [
+        "a/b"
+      ]
+    },
+    {
+      "id": "pointer.tilde",
+      "expected": [
+        "~1"
+      ],
+      "actual": [
+        "~1"
+      ]
+    },
+    {
+      "id": "pointer.root",
+      "expected": [],
+      "actual": []
+    },
+    {
+      "id": "pointer.empty",
+      "expected": [
+        ""
+      ],
+      "actual": [
+        ""
+      ]
+    },
+    {
+      "id": "pointer.escape",
+      "expected": "pointer",
+      "actual": "pointer"
+    },
+    {
+      "id": "pointer.fragment",
+      "expected": "pointer",
+      "actual": "pointer"
+    },
+    {
+      "id": "pointer.append",
+      "expected": "pointer_policy",
+      "actual": "pointer_policy"
+    },
+    {
+      "id": "pointer.prototype",
+      "expected": "pointer_policy",
+      "actual": "pointer_policy"
+    },
+    {
+      "id": "pointer.dynamic",
+      "expected": "pointer_policy",
+      "actual": "pointer_policy"
+    },
+    {
+      "id": "pointer.object01",
+      "expected": 9,
+      "actual": 9
+    },
+    {
+      "id": "pointer.array01",
+      "expected": "array_index",
+      "actual": "array_index"
+    },
+    {
+      "id": "eval.big_integer",
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "id": "eval.string_number",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.false_zero",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.invalid_ne",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.null_equal",
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "id": "eval.object_equal",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.string_order",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.unit_string",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.exists_missing",
+      "expected": "false",
+      "actual": "false"
+    },
+    {
+      "id": "eval.exists_null",
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "id": "eval.is_null",
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "id": "eval.is_null_missing",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.compare_missing",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.no_default",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.all",
+      "expected": "false",
+      "actual": "false"
+    },
+    {
+      "id": "eval.any",
+      "expected": "true",
+      "actual": "true"
+    },
+    {
+      "id": "eval.not",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.not_exists_unavailable",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.not_exists_stale",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.not_exists_desynchronized",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.lexeme_'-0'",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.lexeme_'01'",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.lexeme_'1e2'",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.lexeme_'1\\n'",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "eval.lexeme_'100000000000000000000'",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "condition.reject_52",
+      "expected": "schema",
+      "actual": "schema"
+    },
+    {
+      "id": "condition.reject_53",
+      "expected": "schema",
+      "actual": "schema"
+    },
+    {
+      "id": "budget.depth",
+      "expected": "budget",
+      "actual": "budget"
+    },
+    {
+      "id": "budget.nodes",
+      "expected": "budget",
+      "actual": "budget"
+    },
+    {
+      "id": "proof.implicit_guard_read",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.no_short_circuit_omission",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.result_dependency",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.result_schema_mismatch",
+      "expected": "producer_schema",
+      "actual": "producer_schema"
+    },
+    {
+      "id": "proof.success_dependency",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.overlap_reads",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.overlap_writes",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.overlap_failure_writes",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.overlap_resources",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.overlap_preconditions",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.overlap_target_constraints",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.segment_boundary",
+      "expected": "independent",
+      "actual": "independent"
+    },
+    {
+      "id": "proof.failure_write",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.physical_alias",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "alias.ambiguous",
+      "expected": "ambiguous_alias",
+      "actual": "ambiguous_alias"
+    },
+    {
+      "id": "alias.recursive",
+      "expected": "recursive_alias",
+      "actual": "recursive_alias"
+    },
+    {
+      "id": "proof.untrusted",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "proof.incomplete_0",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "proof.incomplete_1",
+      "expected": "unknown",
+      "actual": "unknown"
+    },
+    {
+      "id": "graph.duplicate",
+      "expected": "duplicate_step",
+      "actual": "duplicate_step"
+    },
+    {
+      "id": "graph.missing",
+      "expected": "dependency_reference",
+      "actual": "dependency_reference"
+    },
+    {
+      "id": "graph.self",
+      "expected": "dependency_order",
+      "actual": "dependency_order"
+    },
+    {
+      "id": "graph.forward",
+      "expected": "dependency_order",
+      "actual": "dependency_order"
+    },
+    {
+      "id": "graph.cycle",
+      "expected": "dependency_order",
+      "actual": "dependency_order"
+    },
+    {
+      "id": "graph.state_loop",
+      "expected": 4,
+      "actual": 4
+    },
+    {
+      "id": "graph.exclusive_transition",
+      "expected": "dependency_order",
+      "actual": "dependency_order"
+    },
+    {
+      "id": "graph.parallel",
+      "expected": [],
+      "actual": []
+    },
+    {
+      "id": "parallel.qualified",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "parallel.untrusted",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "parallel.incomplete",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "graph.parallel_wait",
+      "expected": "dependency_order",
+      "actual": "dependency_order"
+    },
+    {
+      "id": "graph.parallel_conflict",
+      "expected": "parallel_conflict",
+      "actual": "parallel_conflict"
+    },
+    {
+      "id": "graph.parallel_optional",
+      "expected": "required_group",
+      "actual": "required_group"
+    },
+    {
+      "id": "parameters.overlap",
+      "expected": "parameter_overlap",
+      "actual": "parameter_overlap"
+    },
+    {
+      "id": "parameters.type_binding",
+      "expected": "type_binding",
+      "actual": "type_binding"
+    },
+    {
+      "id": "parameters.projection",
+      "expected": "projection_binding",
+      "actual": "projection_binding"
+    },
+    {
+      "id": "digest.business_data_retained",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "graph.business_data_opaque",
+      "expected": {
+        "graph_version": "automation-graph/1",
+        "nodes": [
+          "s0",
+          "s1",
+          "s2"
+        ],
+        "edges": [
+          {
+            "from_step_id": "s0",
+            "to_step_id": "s1",
+            "edge_kind": "sequence"
+          },
+          {
+            "from_step_id": "s1",
+            "to_step_id": "s2",
+            "edge_kind": "sequence"
+          }
+        ],
+        "alias_table_ref": {
+          "id": "aliases",
+          "revision": "1",
+          "digest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "actual": {
+        "graph_version": "automation-graph/1",
+        "nodes": [
+          "s0",
+          "s1",
+          "s2"
+        ],
+        "edges": [
+          {
+            "from_step_id": "s0",
+            "to_step_id": "s1",
+            "edge_kind": "sequence"
+          },
+          {
+            "from_step_id": "s1",
+            "to_step_id": "s2",
+            "edge_kind": "sequence"
+          }
+        ],
+        "alias_table_ref": {
+          "id": "aliases",
+          "revision": "1",
+          "digest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "id": "proof.300_successors",
+      "expected": 300,
+      "actual": 300
+    },
+    {
+      "id": "proof.late_dependency",
+      "expected": "dependent",
+      "actual": "dependent"
+    },
+    {
+      "id": "proof.truncated",
+      "expected": "proof_binding",
+      "actual": "proof_binding"
+    },
+    {
+      "id": "graph.4096_steps",
+      "expected": 4096,
+      "actual": 4096
+    },
+    {
+      "id": "proof.4095_successors",
+      "expected": 4095,
+      "actual": 4095
+    },
+    {
+      "id": "budget.group_limit",
+      "expected": "schema",
+      "actual": "schema"
+    },
+    {
+      "id": "proof.claim_not_trusted",
+      "expected": "proof_binding",
+      "actual": "proof_binding"
+    },
+    {
+      "id": "proof.binding_changed",
+      "expected": "proof_binding",
+      "actual": "proof_binding"
+    },
+    {
+      "id": "continue.safe",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "continue.reject_outcome_unknown",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_outcome_blocked",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_outcome_expired",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_outcome_cancelled",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_failure_class_transport_timeout",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_resource_status_uncertain",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_release_proved_False",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_gates_valid_False",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "continue.reject_current_bindings_False",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "artifact.valid",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "id": "artifact.missing_proof",
+      "expected": "proof_coverage",
+      "actual": "proof_coverage"
+    },
+    {
+      "id": "artifact.rehashed_wrong_proof",
+      "expected": "proof_ref",
+      "actual": "proof_ref"
+    },
+    {
+      "id": "artifact.wrong_proof_revision",
+      "expected": "proof_ref",
+      "actual": "proof_ref"
+    },
+    {
+      "id": "artifact.unapproved",
+      "expected": "unapproved_binding",
+      "actual": "unapproved_binding"
+    },
+    {
+      "id": "checks.unique",
+      "expected": 117,
+      "actual": 117
+    }
+  ],
+  "runtime_validation": {
+    "services": 0,
+    "sqlite": 0,
+    "concurrent_execution": 0,
+    "devices": 0,
+    "full_parameter_schema_validation": 0
+  },
+  "versions": {
+    "python": "3.14.0",
+    "jsonschema": "4.25.1",
+    "rfc8785": "0.1.4"
+  },
+  "input_sha256": {
+    "docs/contracts/c04-program/README.md": "d6b56e4143ddf287e0156f4bd4b1858735ba63784934e465b194d27d5655b2fb",
+    "docs/contracts/c04-program/build_contracts.py": "7a6a6ee3a9724770537a8a84a82a59c1e589853dca248cc276a3c70c5b8fc81f",
+    "docs/contracts/c04-program/reference_model.py": "c512a0aaec99ee7940342e73dbd6397bf621aad19e5d92a6a7370a5756602e13",
+    "docs/contracts/c04-program/check_contracts.py": "aa86721d64dc84e709312a826843350630f7b0bd8e2370af209b2556ded2cc87",
+    "docs/contracts/c04-program/program.schema.json": "43612d114488d165605ccdcc801274874e44d6312c58c89f7c1963cf85b1f8b9",
+    "docs/rebirth-c04-automation-design.md": "8dd3f4dcd15d3ec66a086e892229339992735c5ea74c3b737aa670d1635eb7da"
+  }
+}

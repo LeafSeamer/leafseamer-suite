@@ -1,0 +1,614 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "LeafSeamer参考时间public",
+    "version": "reference-time-service/0.1.0-draft.1"
+  },
+  "x-approved": false,
+  "paths": {
+    "/api/v1/clock": {
+      "get": {
+        "operationId": "getClock",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "reference-time-service/0.1.0-draft.1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "精确查询结果",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__ClockResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "humanBearer": []
+          }
+        ],
+        "x-permission": "status.read",
+        "x-current-object-authorization-required": true
+      }
+    },
+    "/api/v1/clock-assessment": {
+      "get": {
+        "operationId": "getClockAssessment",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "reference-time-service/0.1.0-draft.1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "精确查询结果",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__ClockResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "humanBearer": []
+          }
+        ],
+        "x-permission": "status.read",
+        "x-current-object-authorization-required": true
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "S12__ClockResponse": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "const": "reference-time-service/0.1.0-draft.1"
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_boot_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "data": {
+            "$ref": "#/components/schemas/S12__PublicClock"
+          }
+        },
+        "required": [
+          "contract",
+          "request_id",
+          "service_id",
+          "service_boot_id",
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "S12__Id": {
+        "$ref": "#/components/schemas/S11__Id"
+      },
+      "S11__Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+      },
+      "S12__PublicClock": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "const": "reference-bound/1"
+          },
+          "model_revision": {
+            "const": "1"
+          },
+          "observation_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_boot_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "status": {
+            "enum": [
+              "conditional",
+              "unavailable"
+            ]
+          },
+          "source_label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_authentication": {
+            "enum": [
+              "nts",
+              "trusted_network",
+              "unavailable"
+            ]
+          },
+          "reference_utc": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S12__Interval"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "estimated_utc_ns": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S12__Signed"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error_radius_ns": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S12__UInt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reasons": {
+            "type": "array",
+            "uniqueItems": true,
+            "maxItems": 12,
+            "items": {
+              "enum": [
+                "clock_unavailable",
+                "source_unavailable",
+                "expired",
+                "unqualified",
+                "storage_unavailable"
+              ]
+            }
+          },
+          "grants_execution": {
+            "const": false
+          }
+        },
+        "required": [
+          "model_id",
+          "model_revision",
+          "observation_id",
+          "service_id",
+          "service_boot_id",
+          "status",
+          "source_label",
+          "source_authentication",
+          "reference_utc",
+          "estimated_utc_ns",
+          "error_radius_ns",
+          "reasons",
+          "grants_execution"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "conditional"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "source_label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "source_authentication": {
+                  "enum": [
+                    "nts",
+                    "trusted_network"
+                  ]
+                },
+                "reference_utc": {
+                  "$ref": "#/components/schemas/S12__Interval"
+                },
+                "estimated_utc_ns": {
+                  "$ref": "#/components/schemas/S12__Signed"
+                },
+                "error_radius_ns": {
+                  "$ref": "#/components/schemas/S12__UInt"
+                },
+                "reasons": {
+                  "maxItems": 0
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "reference_utc": {
+                  "type": "null"
+                },
+                "estimated_utc_ns": {
+                  "type": "null"
+                },
+                "error_radius_ns": {
+                  "type": "null"
+                },
+                "reasons": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S12__Interval": {
+        "$ref": "#/components/schemas/S11__Interval"
+      },
+      "S11__Interval": {
+        "type": "object",
+        "properties": {
+          "lower_ns": {
+            "$ref": "#/components/schemas/S11__Signed"
+          },
+          "upper_ns": {
+            "$ref": "#/components/schemas/S11__Signed"
+          }
+        },
+        "required": [
+          "lower_ns",
+          "upper_ns"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Signed": {
+        "type": "string",
+        "pattern": "^(0|-?[1-9][0-9]{0,29})$(?![\\s\\S])"
+      },
+      "S12__Signed": {
+        "$ref": "#/components/schemas/S11__Signed"
+      },
+      "S12__UInt": {
+        "$ref": "#/components/schemas/S11__UInt"
+      },
+      "S11__UInt": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+      },
+      "S12__Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid_request",
+              "unauthenticated",
+              "forbidden",
+              "not_found",
+              "digest_mismatch",
+              "capacity",
+              "unavailable"
+            ]
+          },
+          "retry_write": {
+            "const": false
+          }
+        },
+        "required": [
+          "code",
+          "retry_write"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "humanBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

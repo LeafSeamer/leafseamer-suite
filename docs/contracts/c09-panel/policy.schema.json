@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "面板逐操作策略候选；非运行授权器",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "const": "panel-operation-policy/0.1.0-draft.1"
+    },
+    "approved": {
+      "const": false
+    },
+    "runtime_approved": {
+      "const": false
+    },
+    "authority_switched": {
+      "const": false
+    },
+    "scope": {
+      "const": "draft4_operations_panel_policy_candidate"
+    },
+    "source_sha256": {
+      "type": "object",
+      "properties": {
+        "docs/contracts/df01-source/authorization-candidate.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "docs/contracts/df01-source/source/http/controller.operations.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "docs/contracts/df01-source/source/http/seamer.operations.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "docs/contracts/df01-source/authorization-candidate.json",
+        "docs/contracts/df01-source/source/http/controller.operations.json",
+        "docs/contracts/df01-source/source/http/seamer.operations.json"
+      ],
+      "additionalProperties": false
+    },
+    "operations": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {
+        "^(controller|seamer):[A-Za-z][A-Za-z0-9]*(?![\\s\\S])": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "panel_read",
+                "panel_write",
+                "host_confirm",
+                "host_transport",
+                "host_account",
+                "unavailable"
+              ]
+            },
+            "method_name": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(controller|seamer)\\.[A-Za-z][A-Za-z0-9]*(?![\\s\\S])"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "permission": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source_pointer": {
+              "type": "string",
+              "pattern": "^/paths/",
+              "maxLength": 512
+            },
+            "forward_raw_response": {
+              "const": false
+            }
+          },
+          "required": [
+            "mode",
+            "method_name",
+            "permission",
+            "source_pointer",
+            "forward_raw_response"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "format_version",
+    "approved",
+    "runtime_approved",
+    "authority_switched",
+    "scope",
+    "source_sha256",
+    "operations"
+  ],
+  "additionalProperties": false
+}

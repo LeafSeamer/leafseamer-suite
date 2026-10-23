@@ -1,0 +1,430 @@
+[
+  {
+    "case_id": "trace-barrier-before-send",
+    "kind": "barrier",
+    "valid": true,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": []
+      },
+      {
+        "event": "effective_saved",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": []
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-send-before-barrier",
+    "kind": "barrier",
+    "valid": true,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "send_old",
+        "command": "c1"
+      },
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "effective_saved",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-report-without-commit",
+    "kind": "barrier",
+    "valid": false,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "send_old",
+        "command": "c1"
+      },
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-old-send-after-fence",
+    "kind": "barrier",
+    "valid": false,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "send_old",
+        "command": "c1"
+      },
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "effective_saved",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "report_effective"
+      },
+      {
+        "event": "send_old",
+        "command": "c2"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-lost-ack",
+    "kind": "barrier",
+    "valid": true,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "timeout"
+      },
+      {
+        "event": "remain_protected"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-timeout-success",
+    "kind": "barrier",
+    "valid": false,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "timeout"
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-lost-inflight",
+    "kind": "barrier",
+    "valid": false,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "send_old",
+        "command": "c1"
+      },
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "effective_saved",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": []
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-no-pending-ack",
+    "kind": "barrier",
+    "valid": false,
+    "steps": [
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "effective_saved",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-old-worker-ack",
+    "kind": "barrier",
+    "valid": false,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "send_old",
+        "command": "c1"
+      },
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "old-worker",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "effective_saved",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-reconcile-same-barrier",
+    "kind": "barrier",
+    "valid": true,
+    "steps": [
+      {
+        "event": "pending_saved",
+        "version": "9"
+      },
+      {
+        "event": "timeout"
+      },
+      {
+        "event": "remain_protected"
+      },
+      {
+        "event": "send_old",
+        "command": "c1"
+      },
+      {
+        "event": "fence_ack",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "effective_saved",
+        "version": "9",
+        "worker": "w1",
+        "barrier": "b1",
+        "in_flight": [
+          "c1"
+        ]
+      },
+      {
+        "event": "report_effective"
+      }
+    ]
+  },
+  {
+    "case_id": "trace-command-success",
+    "kind": "command",
+    "valid": true,
+    "steps": [
+      "queued",
+      "dispatching",
+      "awaiting_evidence",
+      "finished:succeeded"
+    ],
+    "guards": [
+      "intent_durable",
+      "permit_consumed",
+      "completion_durable"
+    ]
+  },
+  {
+    "case_id": "trace-command-finish-reopens",
+    "kind": "command",
+    "valid": false,
+    "steps": [
+      "queued",
+      "finished:cancelled",
+      "queued"
+    ],
+    "guards": [
+      "not_sent_proven"
+    ]
+  },
+  {
+    "case_id": "trace-command-unknown-late",
+    "kind": "command",
+    "valid": true,
+    "steps": [
+      "queued",
+      "dispatching",
+      "finished:unknown",
+      "resolution"
+    ],
+    "guards": [
+      "intent_durable",
+      "paused_latched"
+    ]
+  },
+  {
+    "case_id": "trace-command-unknown-auto-resume",
+    "kind": "command",
+    "valid": false,
+    "steps": [
+      "queued",
+      "dispatching",
+      "finished:unknown",
+      "resolution",
+      "queued"
+    ],
+    "guards": [
+      "intent_durable",
+      "paused_latched"
+    ]
+  },
+  {
+    "case_id": "trace-command-no-intent",
+    "kind": "command",
+    "valid": false,
+    "steps": [
+      "queued",
+      "dispatching",
+      "awaiting_evidence"
+    ],
+    "guards": [
+      "permit_consumed"
+    ]
+  },
+  {
+    "case_id": "trace-command-safe-retry",
+    "kind": "command",
+    "valid": true,
+    "steps": [
+      "queued",
+      "dispatching",
+      "awaiting_evidence",
+      "queued",
+      "dispatching",
+      "awaiting_evidence",
+      "finished:succeeded"
+    ],
+    "guards": [
+      "intent_durable",
+      "permit_consumed",
+      "retry_safe_failure",
+      "retry_budget",
+      "completion_durable"
+    ]
+  },
+  {
+    "case_id": "trace-command-unsafe-retry",
+    "kind": "command",
+    "valid": false,
+    "steps": [
+      "queued",
+      "dispatching",
+      "awaiting_evidence",
+      "queued"
+    ],
+    "guards": [
+      "intent_durable",
+      "permit_consumed",
+      "retry_budget"
+    ]
+  },
+  {
+    "case_id": "trace-command-cancel-not-proven",
+    "kind": "command",
+    "valid": false,
+    "steps": [
+      "queued",
+      "dispatching",
+      "finished:cancelled"
+    ],
+    "guards": [
+      "intent_durable"
+    ]
+  }
+]

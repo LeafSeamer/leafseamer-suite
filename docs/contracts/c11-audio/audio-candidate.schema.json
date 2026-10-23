@@ -1,0 +1,858 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.leafseamer.invalid/design/audio-candidate/1",
+  "title": "音频候选资料局部结构，不是完整SDK或执行授权",
+  "$ref": "#/$defs/FixtureEnvelope",
+  "$defs": {
+    "Decimal": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "revision": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ClockDomainRef": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Context": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "device_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "device_session_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "topology_revision": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "catalog_revision": {
+          "$ref": "#/$defs/Decimal"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "device_id",
+        "device_session_id",
+        "profile_ref",
+        "topology_revision",
+        "catalog_revision"
+      ],
+      "additionalProperties": false
+    },
+    "SourceEntryRef": {
+      "type": "object",
+      "properties": {
+        "inventory_sha256": {
+          "$ref": "#/$defs/Digest"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "inventory_sha256",
+        "index",
+        "address"
+      ],
+      "additionalProperties": false
+    },
+    "AccessSet": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "read",
+          "write"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 2,
+      "uniqueItems": true
+    },
+    "ParameterDefinitionCandidate": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "parameter_definition_candidate"
+        },
+        "definition_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "protocol_family": {
+          "const": "yamaha_rcp"
+        },
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "parameter_set_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "legacy_source_ref": {
+          "$ref": "#/$defs/SourceEntryRef"
+        },
+        "protocol_evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "advertised_access": {
+          "$ref": "#/$defs/AccessSet"
+        },
+        "approved_access": {
+          "$ref": "#/$defs/AccessSet"
+        },
+        "read_codec_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "write_codec_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coordinate_schema_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "raw_domain_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "semantic_projection_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sensitivity": {
+          "enum": [
+            "ordinary",
+            "secret"
+          ]
+        },
+        "value_mode": {
+          "enum": [
+            "typed",
+            "secret_ref_only"
+          ]
+        },
+        "ordinary_exposure": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "query",
+              "trigger",
+              "snapshot",
+              "preset",
+              "export"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "footprint_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "completion_policy_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "release_policy_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "qualification_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 0,
+          "maxItems": 16,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "kind",
+        "definition_ref",
+        "protocol_family",
+        "address",
+        "parameter_set_ref",
+        "legacy_source_ref",
+        "protocol_evidence_refs",
+        "advertised_access",
+        "approved_access",
+        "read_codec_ref",
+        "write_codec_ref",
+        "coordinate_schema_ref",
+        "raw_domain_ref",
+        "semantic_projection_ref",
+        "sensitivity",
+        "value_mode",
+        "ordinary_exposure",
+        "footprint_ref",
+        "response_policy_ref",
+        "completion_policy_ref",
+        "release_policy_ref",
+        "qualification_refs"
+      ],
+      "additionalProperties": false
+    },
+    "ParameterSessionAccess": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "parameter_session_access"
+        },
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "definition_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "access_revision": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "session_access": {
+          "$ref": "#/$defs/AccessSet"
+        },
+        "effective_access": {
+          "$ref": "#/$defs/AccessSet"
+        }
+      },
+      "required": [
+        "kind",
+        "context",
+        "definition_ref",
+        "access_revision",
+        "session_access",
+        "effective_access"
+      ],
+      "additionalProperties": false
+    },
+    "MatrixPoint": {
+      "type": "object",
+      "properties": {
+        "endpoint_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "slot_catalog_revision": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "input_suid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "input_channel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "output_suid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "output_channel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        }
+      },
+      "required": [
+        "endpoint_binding_ref",
+        "slot_catalog_revision",
+        "input_suid",
+        "input_channel",
+        "output_suid",
+        "output_channel"
+      ],
+      "additionalProperties": false
+    },
+    "VbanRequestBinding": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "vban_request_binding"
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "clock_domain": {
+          "$ref": "#/$defs/ClockDomainRef"
+        },
+        "transport_namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "local_socket_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "remote_endpoint_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "stream_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "wire_counter": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "target": {
+          "$ref": "#/$defs/MatrixPoint"
+        },
+        "property": {
+          "enum": [
+            "gain",
+            "mute",
+            "phase"
+          ]
+        },
+        "issued_tick_ns": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "deadline_tick_ns": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "task_deadline_tick_ns": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "request_id",
+        "context",
+        "clock_domain",
+        "transport_namespace",
+        "local_socket_ref",
+        "remote_endpoint_ref",
+        "stream_binding_ref",
+        "wire_counter",
+        "target",
+        "property",
+        "issued_tick_ns",
+        "deadline_tick_ns",
+        "task_deadline_tick_ns",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReplyValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "finite_level"
+            },
+            "centi_db": {
+              "type": "integer",
+              "minimum": -1000000,
+              "maximum": 1000000
+            }
+          },
+          "required": [
+            "kind",
+            "centi_db"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "negative_infinity"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "boolean"
+            },
+            "value": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ReplyResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "value"
+            },
+            "value": {
+              "$ref": "#/$defs/ReplyValue"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "error"
+            },
+            "error_code": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            }
+          },
+          "required": [
+            "kind",
+            "error_code"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "VbanReplyCandidate": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "vban_reply_candidate"
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "clock_domain": {
+          "$ref": "#/$defs/ClockDomainRef"
+        },
+        "transport_namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "local_socket_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "remote_endpoint_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "stream_binding_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "wire_counter": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "service_id": {
+          "const": 2
+        },
+        "function": {
+          "const": 128
+        },
+        "target": {
+          "$ref": "#/$defs/MatrixPoint"
+        },
+        "property": {
+          "enum": [
+            "gain",
+            "mute",
+            "phase"
+          ]
+        },
+        "received_tick_ns": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "codec_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "result": {
+          "$ref": "#/$defs/ReplyResult"
+        }
+      },
+      "required": [
+        "kind",
+        "request_id",
+        "request_digest",
+        "context",
+        "clock_domain",
+        "transport_namespace",
+        "local_socket_ref",
+        "remote_endpoint_ref",
+        "stream_binding_ref",
+        "wire_counter",
+        "service_id",
+        "function",
+        "target",
+        "property",
+        "received_tick_ns",
+        "packet_digest",
+        "codec_ref",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "Source": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        }
+      },
+      "required": [
+        "group",
+        "index"
+      ],
+      "additionalProperties": false
+    },
+    "WingSourceState": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "$ref": "#/$defs/Source"
+        },
+        "alternate": {
+          "$ref": "#/$defs/Source"
+        },
+        "altsrc": {
+          "enum": [
+            "primary",
+            "alternate"
+          ]
+        },
+        "srcauto": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "primary",
+        "alternate",
+        "altsrc",
+        "srcauto"
+      ],
+      "additionalProperties": false
+    },
+    "WingPrimitive": {
+      "type": "object",
+      "properties": {
+        "primitive_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "property": {
+          "enum": [
+            "primary.group",
+            "primary.index",
+            "alternate.group",
+            "alternate.index",
+            "altsrc"
+          ]
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            }
+          ]
+        },
+        "before": {
+          "$ref": "#/$defs/WingSourceState"
+        },
+        "after": {
+          "$ref": "#/$defs/WingSourceState"
+        },
+        "precondition_slot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "observation_slot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "permit_slot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "primitive_id",
+        "property",
+        "value",
+        "before",
+        "after",
+        "precondition_slot",
+        "observation_slot",
+        "permit_slot"
+      ],
+      "additionalProperties": false
+    },
+    "WingPatchPlanCandidate": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "wing_patch_plan_candidate"
+        },
+        "plan_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "channel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        },
+        "initial_observation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "branch": {
+          "enum": [
+            "primary",
+            "alternate"
+          ]
+        },
+        "activate": {
+          "type": "boolean"
+        },
+        "before": {
+          "$ref": "#/$defs/WingSourceState"
+        },
+        "target": {
+          "$ref": "#/$defs/WingSourceState"
+        },
+        "ordered_primitives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WingPrimitive"
+          },
+          "minItems": 0,
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "affected_sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "footprint_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "completion_policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "release_policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "plan_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "plan_id",
+        "context",
+        "channel",
+        "initial_observation_ref",
+        "branch",
+        "activate",
+        "before",
+        "target",
+        "ordered_primitives",
+        "affected_sources",
+        "footprint_ref",
+        "completion_policy_ref",
+        "release_policy_ref",
+        "plan_digest"
+      ],
+      "additionalProperties": false
+    },
+    "FixtureEnvelope": {
+      "type": "object",
+      "properties": {
+        "purpose": {
+          "const": "design_fixture_only"
+        },
+        "runtime_approved": {
+          "const": false
+        },
+        "model": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ParameterDefinitionCandidate"
+            },
+            {
+              "$ref": "#/$defs/ParameterSessionAccess"
+            },
+            {
+              "$ref": "#/$defs/VbanRequestBinding"
+            },
+            {
+              "$ref": "#/$defs/VbanReplyCandidate"
+            },
+            {
+              "$ref": "#/$defs/WingPatchPlanCandidate"
+            }
+          ]
+        }
+      },
+      "required": [
+        "purpose",
+        "runtime_approved",
+        "model"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

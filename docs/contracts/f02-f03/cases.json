@@ -1,0 +1,3540 @@
+{
+  "frames": [
+    {
+      "case_id": "IP-HELLO",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "HELLO",
+        "message_id": "m-hello",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": null,
+        "body": {
+          "module_id": "obs-demo",
+          "module_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "clock_domain_id": "clock-demo",
+          "supported_ipc_versions": [
+            "ipc/0.1.0-draft.1"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "IP-HELLO_ACK",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "HELLO_ACK",
+        "message_id": "m-hello_ack",
+        "reply_to": "m-request",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": null,
+        "body": {
+          "selected_ipc_version": "ipc/0.1.0-draft.1",
+          "clock_domain_id": "clock-demo",
+          "gate_state": "closed"
+        }
+      }
+    },
+    {
+      "case_id": "IP-OPEN_GATE",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "OPEN_GATE",
+        "message_id": "m-open_gate",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "installed-barrier",
+          "gate_token": "gate-demo",
+          "device_session_id": "ds-demo",
+          "control_epoch": "epoch-demo",
+          "control_version": "7",
+          "gate_revision": "5",
+          "authorization_revision": "3",
+          "clock_domain_id": "clock-demo",
+          "lease_until_tick_ns": "1000000000"
+        }
+      }
+    },
+    {
+      "case_id": "IP-OPEN_GATE_ACK",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "OPEN_GATE_ACK",
+        "message_id": "m-open_gate_ack",
+        "reply_to": "m-request",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "gate_token": "gate-demo",
+          "gate_revision": "5",
+          "state": "open"
+        }
+      }
+    },
+    {
+      "case_id": "IP-DISPATCH",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      }
+    },
+    {
+      "case_id": "IP-SEND_REPORT",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "SEND_REPORT",
+        "message_id": "m-send_report",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "report_id": "report-demo",
+          "permit_id": "permit-1",
+          "attempt_id": "attempt-1",
+          "dispatch_intent_id": "intent-1",
+          "device_session_id": "ds-demo",
+          "disposition": "in_flight",
+          "proof": "transport_entered",
+          "protocol_request_id": "protocol-demo"
+        }
+      }
+    },
+    {
+      "case_id": "IP-EVIDENCE_CANDIDATE",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "EVIDENCE_CANDIDATE",
+        "message_id": "m-evidence_candidate",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "report_id": "report-evidence",
+          "command_id": "cmd-1",
+          "attempt_id": "attempt-1",
+          "device_session_id": "ds-demo",
+          "evidence_kind": "fresh_query",
+          "observation_id": "obs-1",
+          "payload": {
+            "scene_uuid": "scene-demo"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "IP-REPORT_STORED",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "REPORT_STORED",
+        "message_id": "m-report_stored",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "report_id": "report-evidence",
+          "record_revision": "11"
+        }
+      }
+    },
+    {
+      "case_id": "IP-FENCE",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "IP-FENCE_ACK",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "IP-QUERY_BARRIER",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "QUERY_BARRIER",
+        "message_id": "m-query_barrier",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo"
+        }
+      }
+    },
+    {
+      "case_id": "IP-CLOSE_GATE",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "CLOSE_GATE",
+        "message_id": "m-close_gate",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": null,
+        "body": {
+          "close_id": "close-demo",
+          "reason": "storage_fault",
+          "scope": "controller"
+        }
+      }
+    },
+    {
+      "case_id": "IP-CLOSE_GATE_ACK",
+      "valid": true,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "CLOSE_GATE_ACK",
+        "message_id": "m-close_gate_ack",
+        "reply_to": "m-request",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": null,
+        "body": {
+          "close_id": "close-demo",
+          "closed_device_ids": [
+            "device-demo"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "IP-extra-field",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ],
+          "ignore_unknown": true
+        }
+      }
+    },
+    {
+      "case_id": "IP-fake-durable",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "EVIDENCE_CANDIDATE",
+        "message_id": "m-evidence_candidate",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "report_id": "report-evidence",
+          "command_id": "cmd-1",
+          "attempt_id": "attempt-1",
+          "device_session_id": "ds-demo",
+          "evidence_kind": "fresh_query",
+          "observation_id": "obs-1",
+          "payload": {
+            "scene_uuid": "scene-demo"
+          },
+          "durable": true
+        }
+      }
+    },
+    {
+      "case_id": "IP-incomplete-exits",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": false
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "IP-zero-seq",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "0",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      }
+    },
+    {
+      "case_id": "IP-unknown-version",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/9",
+        "type": "HELLO",
+        "message_id": "m-hello",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": null,
+        "body": {
+          "module_id": "obs-demo",
+          "module_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "clock_domain_id": "clock-demo",
+          "supported_ipc_versions": [
+            "ipc/0.1.0-draft.1"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "IP-close-scope",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "CLOSE_GATE",
+        "message_id": "m-close_gate",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "close_id": "close-demo",
+          "reason": "storage_fault",
+          "scope": "controller"
+        }
+      }
+    },
+    {
+      "case_id": "IP-missing-reply",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "OPEN_GATE_ACK",
+        "message_id": "m-open_gate_ack",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "gate_token": "gate-demo",
+          "gate_revision": "5",
+          "state": "open"
+        }
+      }
+    },
+    {
+      "case_id": "IP-false-not-sent",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "SEND_REPORT",
+        "message_id": "m-send_report",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "report_id": "report-demo",
+          "permit_id": "permit-1",
+          "attempt_id": "attempt-1",
+          "dispatch_intent_id": "intent-1",
+          "device_session_id": "ds-demo",
+          "disposition": "not_sent",
+          "proof": "transport_entered",
+          "protocol_request_id": "protocol-demo"
+        }
+      }
+    },
+    {
+      "case_id": "IP-empty-coverage-item",
+      "valid": false,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            },
+            {}
+          ]
+        }
+      }
+    }
+  ],
+  "barriers": [
+    {
+      "case_id": "BK-complete",
+      "expected_error": null,
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-missing",
+      "expected_error": "coverage_set",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-duplicate",
+      "expected_error": "coverage_duplicate",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-worker-mismatch",
+      "expected_error": "frame_identity",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-other",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-session-mismatch",
+      "expected_error": "frame_identity",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-other",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-ack-operation",
+      "expected_error": "ack_binding",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-other",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-digest",
+      "expected_error": "ledger_digest",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-cut",
+      "expected_error": "cut_revision",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "13",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-gate",
+      "expected_error": "gate_revision",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "4",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-intent-replaced",
+      "expected_error": "intent_identity",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-other",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-old-worker-unsent",
+      "expected_error": "old_worker_unsent",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1",
+              "permit-2"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-lost-unknown-list",
+      "expected_error": "projection",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "BK-duplicate-list",
+      "expected_error": "projection",
+      "fence": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE",
+        "message_id": "m-fence",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "barrier_id": "barrier-demo",
+          "operation_id": "op-demo",
+          "control_epoch": "epoch-demo",
+          "target_version": "8",
+          "target_gate_revision": "6",
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "open_intents": [
+            {
+              "permit_id": "permit-1",
+              "command_id": "cmd-1",
+              "attempt_id": "attempt-1",
+              "dispatch_intent_id": "intent-1",
+              "worker_boot_id": "wb-demo",
+              "device_session_id": "ds-demo"
+            },
+            {
+              "permit_id": "permit-2",
+              "command_id": "cmd-2",
+              "attempt_id": "attempt-2",
+              "dispatch_intent_id": "intent-2",
+              "worker_boot_id": "wb-old",
+              "device_session_id": "ds-old"
+            }
+          ]
+        }
+      },
+      "ack": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "FENCE_ACK",
+        "message_id": "m-fence_ack",
+        "reply_to": "m-fence",
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "ack": {
+            "barrier_id": "barrier-demo",
+            "operation_id": "op-demo",
+            "device_id": "device-demo",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "control_epoch": "epoch-demo",
+            "installed_version": "8",
+            "discarded_permit_ids": [
+              "permit-1",
+              "permit-1"
+            ],
+            "in_flight_command_ids": [],
+            "unresolved_command_ids": [
+              "cmd-2"
+            ],
+            "all_write_exits_fenced": true
+          },
+          "issued_cut_revision": "12",
+          "ledger_digest": "sha256:b537f599836a1053ba1b6fb9a92da52f3025f36b3d94ac41c21c5453af4bf858",
+          "gate_revision": "6",
+          "coverage": [
+            {
+              "intent": {
+                "permit_id": "permit-1",
+                "command_id": "cmd-1",
+                "attempt_id": "attempt-1",
+                "dispatch_intent_id": "intent-1",
+                "worker_boot_id": "wb-demo",
+                "device_session_id": "ds-demo"
+              },
+              "disposition": "not_sent",
+              "proof": "never_received"
+            },
+            {
+              "intent": {
+                "permit_id": "permit-2",
+                "command_id": "cmd-2",
+                "attempt_id": "attempt-2",
+                "dispatch_intent_id": "intent-2",
+                "worker_boot_id": "wb-old",
+                "device_session_id": "ds-old"
+              },
+              "disposition": "unknown",
+              "proof": "send_uncertain"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "dispatch_checks": [
+    {
+      "case_id": "DG-open",
+      "expected_error": null,
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-deadline-equal",
+      "expected_error": "deadline",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "900",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-too-early",
+      "expected_error": "deadline",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "99",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-closed",
+      "expected_error": "gate_closed",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": false,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-consumed",
+      "expected_error": "permit_consumed",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [
+        "permit-1"
+      ],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-storage",
+      "expected_error": "storage_fault",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": false
+    },
+    {
+      "case_id": "DG-old-token",
+      "expected_error": "gate_binding",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "old-token",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-other-clock",
+      "expected_error": "clock_domain",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "other-clock",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-expired-lease",
+      "expected_error": "lease_expired",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "500"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-old-session",
+      "expected_error": "gate_binding",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-old",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-changed-content",
+      "expected_error": "content_digest",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 3000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-other-device",
+      "expected_error": "request_binding",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "other-device",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-old-control",
+      "expected_error": "request_binding",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "6"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    },
+    {
+      "case_id": "DG-extended-deadline",
+      "expected_error": "request_binding",
+      "frame": {
+        "ipc_version": "ipc/0.1.0-draft.1",
+        "type": "DISPATCH",
+        "message_id": "m-dispatch",
+        "reply_to": null,
+        "ipc_session_id": "ipc-demo",
+        "controller_boot_id": "cb-demo",
+        "worker_boot_id": "wb-demo",
+        "seq": "1",
+        "device_id": "device-demo",
+        "body": {
+          "permit": {
+            "permit_id": "permit-1",
+            "command_id": "cmd-1",
+            "attempt_id": "attempt-1",
+            "dispatch_intent_id": "intent-1",
+            "controller_boot_id": "cb-demo",
+            "worker_boot_id": "wb-demo",
+            "device_session_id": "ds-demo",
+            "control_epoch": "epoch-demo",
+            "control_version": "7",
+            "authorization_revision": "3",
+            "origin": "manual",
+            "grant_revision": null,
+            "arm_generation": null,
+            "gate_revision": "5",
+            "deadline_policy": {
+              "mode": "immediate",
+              "max_queue_ms": 2000
+            },
+            "content_digest": "sha256:522c9ae7bc81cbc59282bbe09bcc32c2b5d246daffb3673d09c02867f3f6b3b5"
+          },
+          "gate_token": "gate-demo",
+          "send_window": {
+            "clock_domain_id": "clock-demo",
+            "earliest_tick_ns": "100",
+            "latest_tick_ns": "900"
+          },
+          "request": {
+            "context_id": "context-demo",
+            "idempotency_key": "key-demo",
+            "device_id": "device-demo",
+            "action_id": "obs.program_scene.set",
+            "capability_version": "1.0.0-draft.2",
+            "parameters": {
+              "scene_ref": {
+                "collection_ref": "collection-demo",
+                "scene_id": "scene-demo",
+                "catalog_revision": "2"
+              }
+            },
+            "expected_control": {
+              "epoch": "epoch-demo",
+              "version": "7"
+            },
+            "origin": "manual",
+            "required_completion": "effect_verified",
+            "preconditions": [],
+            "dispatch": {
+              "mode": "immediate",
+              "max_queue_ms": 1000
+            },
+            "evidence_timeout_ms": 2000
+          },
+          "parameters_schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "gate": {
+        "barrier_id": "installed-barrier",
+        "gate_token": "gate-demo",
+        "device_session_id": "ds-demo",
+        "control_epoch": "epoch-demo",
+        "control_version": "7",
+        "gate_revision": "5",
+        "authorization_revision": "3",
+        "clock_domain_id": "clock-demo",
+        "lease_until_tick_ns": "1000000000"
+      },
+      "gate_open": true,
+      "now_tick_ns": "500",
+      "consumed": [],
+      "storage_healthy": true
+    }
+  ],
+  "traces": [
+    {
+      "case_id": "TR-fence-first",
+      "valid": true,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "fence_commit",
+        "fence_apply",
+        "fence_ack",
+        "effective_commit",
+        "open_gate",
+        "open_ack",
+        "ready_commit",
+        "manual_send"
+      ]
+    },
+    {
+      "case_id": "TR-send-first-clear",
+      "valid": true,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "send",
+        "fence_commit",
+        "fence_apply",
+        "fence_ack",
+        "effective_commit",
+        "open_gate",
+        "open_ack",
+        "ready_commit",
+        "resource_clear",
+        "manual_send"
+      ]
+    },
+    {
+      "case_id": "TR-no-intent",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "dispatch",
+        "send"
+      ]
+    },
+    {
+      "case_id": "TR-double-permit",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "send",
+        "send"
+      ]
+    },
+    {
+      "case_id": "TR-send-after-fence",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "fence_commit",
+        "fence_apply",
+        "send"
+      ]
+    },
+    {
+      "case_id": "TR-effective-without-ack",
+      "valid": false,
+      "events": [
+        "fence_commit",
+        "effective_commit"
+      ]
+    },
+    {
+      "case_id": "TR-open-before-commit",
+      "valid": false,
+      "events": [
+        "fence_commit",
+        "fence_apply",
+        "fence_ack",
+        "open_gate"
+      ]
+    },
+    {
+      "case_id": "TR-held-resource",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "send",
+        "fence_commit",
+        "fence_apply",
+        "fence_ack",
+        "effective_commit",
+        "open_gate",
+        "open_ack",
+        "ready_commit",
+        "manual_send"
+      ]
+    },
+    {
+      "case_id": "TR-unknown-resolution-paused",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "unknown",
+        "resolve",
+        "automatic_continue"
+      ]
+    },
+    {
+      "case_id": "TR-unknown-resolution-observe",
+      "valid": true,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "unknown",
+        "resolve"
+      ]
+    },
+    {
+      "case_id": "TR-restart-no-replay",
+      "valid": true,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "crash",
+        "restart",
+        "unknown",
+        "old_writer_dead",
+        "new_worker"
+      ]
+    },
+    {
+      "case_id": "TR-restart-replay",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "crash",
+        "restart",
+        "replay_device"
+      ]
+    },
+    {
+      "case_id": "TR-second-writer",
+      "valid": false,
+      "events": [
+        "worker_lost",
+        "new_worker"
+      ]
+    },
+    {
+      "case_id": "TR-safe-replacement",
+      "valid": true,
+      "events": [
+        "worker_lost",
+        "old_writer_dead",
+        "new_worker"
+      ]
+    },
+    {
+      "case_id": "TR-store-fault-before-close-window",
+      "valid": true,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "storage_fault",
+        "send",
+        "close_apply",
+        "unknown"
+      ]
+    },
+    {
+      "case_id": "TR-store-fault-new-dispatch",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "storage_fault",
+        "dispatch"
+      ]
+    },
+    {
+      "case_id": "TR-send-after-close",
+      "valid": false,
+      "events": [
+        "accept_commit",
+        "intent_commit",
+        "dispatch",
+        "storage_fault",
+        "close_apply",
+        "send"
+      ]
+    },
+    {
+      "case_id": "TR-outbox-repeat",
+      "valid": true,
+      "events": [
+        "outbox_commit",
+        "publish",
+        "replay_event"
+      ]
+    },
+    {
+      "case_id": "TR-event-without-commit",
+      "valid": false,
+      "events": [
+        "publish"
+      ]
+    },
+    {
+      "case_id": "TR-ack-db-failed",
+      "valid": true,
+      "events": [
+        "fence_commit",
+        "fence_apply",
+        "fence_ack",
+        "storage_fault"
+      ]
+    },
+    {
+      "case_id": "TR-close-no-database",
+      "valid": true,
+      "events": [
+        "storage_fault",
+        "close_apply"
+      ]
+    },
+    {
+      "case_id": "TR-close-late-open",
+      "valid": false,
+      "events": [
+        "fence_commit",
+        "fence_apply",
+        "fence_ack",
+        "effective_commit",
+        "close_apply",
+        "open_gate"
+      ]
+    },
+    {
+      "case_id": "TR-close-old-fence",
+      "valid": false,
+      "events": [
+        "fence_commit",
+        "fence_apply",
+        "fence_ack",
+        "effective_commit",
+        "close_apply",
+        "fence_apply",
+        "open_gate"
+      ]
+    }
+  ]
+}

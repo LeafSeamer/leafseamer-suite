@@ -1,0 +1,29 @@
+{
+  "purpose": "in_memory_design_probes_only",
+  "runtime_approved": false,
+  "cases": [
+    {"id":"PSQ01","steps":["confirm","query"],"expected":["accepted","accepted"],"final":{"request":"accepted","preview":"consumed","admissions":1,"audit":1,"outbox":1}},
+    {"id":"PSQ02","steps":["confirm","confirm"],"expected":["accepted","already_accepted"],"final":{"admissions":1,"audit":1,"outbox":1}},
+    {"id":"PSQ03","steps":["cancel","confirm"],"expected":["cancelled","rejected"],"final":{"request":"cancelled","preview":"cancelled","admissions":0}},
+    {"id":"PSQ04","steps":["confirm","cancel"],"expected":["accepted","conflict"],"final":{"request":"accepted","preview":"consumed","admissions":1}},
+    {"id":"PSQ05","steps":["close","confirm"],"expected":["propagating","rejected"],"final":{"request":"rejected","preview":"revoked","admissions":0,"targets":2,"outbox":1}},
+    {"id":"PSQ06","steps":["confirm","close","query"],"expected":["accepted","propagating","accepted"],"final":{"request":"accepted","preview":"consumed","admissions":1,"targets":2,"audit":2,"outbox":2}},
+    {"id":"PSQ07","steps":["fault_after_admission","query"],"expected":["rolled_back","pending_confirmation"],"final":{"preview":"offered","admissions":0,"audit":0,"outbox":0}},
+    {"id":"PSQ08","steps":["fault_before_commit","query"],"expected":["rolled_back","pending_confirmation"],"final":{"preview":"offered","admissions":0,"audit":0,"outbox":0}},
+    {"id":"PSQ09","steps":["fault_after_commit","query"],"expected":["response_lost","accepted"],"final":{"preview":"consumed","admissions":1,"audit":1,"outbox":1}},
+    {"id":"PSQ10","steps":["close_fail","query"],"expected":["rolled_back","pending_confirmation"],"final":{"session":"active","preview":"offered","targets":0,"audit":0,"outbox":0}},
+    {"id":"PSQ11","steps":["duplicate_identity"],"expected":["SQLITE_CONSTRAINT_UNIQUE"],"final":{"admissions":0}},
+    {"id":"PSQ12","steps":["other_session_same_id"],"expected":["inserted"],"final":{"request":"pending_confirmation"}},
+    {"id":"PSQ13","steps":["cross_authority"],"expected":["SQLITE_CONSTRAINT_FOREIGNKEY"],"final":{"admissions":0}},
+    {"id":"PSQ14","steps":["cross_preview"],"expected":["SQLITE_CONSTRAINT_FOREIGNKEY"],"final":{"preview":"offered"}},
+    {"id":"PSQ15","steps":["second_preview"],"expected":["SQLITE_CONSTRAINT_UNIQUE"],"final":{"preview":"offered"}},
+    {"id":"PSQ16","steps":["mutate_intent"],"expected":["SQLITE_CONSTRAINT_TRIGGER"],"final":{"preview":"offered"}},
+    {"id":"PSQ17","steps":["cancel","revive"],"expected":["cancelled","SQLITE_CONSTRAINT_TRIGGER"],"final":{"preview":"cancelled"}},
+    {"id":"PSQ18","steps":["delete_session"],"expected":["SQLITE_CONSTRAINT_FOREIGNKEY"],"final":{"session":"active"}},
+    {"id":"PSQ19","steps":["orphan_accept"],"expected":["SQLITE_CONSTRAINT_FOREIGNKEY"],"final":{"request":"pending_confirmation","admissions":0}},
+    {"id":"PSQ20","steps":["orphan_consume"],"expected":["SQLITE_CONSTRAINT_FOREIGNKEY"],"final":{"preview":"offered","admissions":0}},
+    {"id":"PSQ21","steps":["confirm_deadline"],"expected":["expired"],"final":{"request":"rejected","preview":"expired","admissions":0}},
+    {"id":"PSQ22","steps":["renew","renew","renew_conflict","confirm_deadline"],"expected":["renewed","replayed","conflict","expired"],"final":{"lease":150,"lease_revision":2,"deadline":90,"admissions":0}},
+    {"id":"PSQ23","steps":["cancel","cancel"],"expected":["cancelled","cancelled"],"final":{"audit":1,"admissions":0}}
+  ]
+}

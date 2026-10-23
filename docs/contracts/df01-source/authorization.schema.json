@@ -1,0 +1,450 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/sdk-authorization.schema.json",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "const": "sdk-authorization/0.1.0-draft.1"
+    },
+    "approved": {
+      "const": false
+    },
+    "authority_switched": {
+      "const": false
+    },
+    "runtime_approved": {
+      "const": false
+    },
+    "scope": {
+      "const": "draft4_operations_next_policy_candidate"
+    },
+    "source_sha256": {
+      "type": "object",
+      "properties": {
+        "source/public.schema.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source/http/controller.operations.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source/http/seamer.operations.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "exports-candidate.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "source/public.schema.json",
+        "source/http/controller.operations.json",
+        "source/http/seamer.operations.json",
+        "exports-candidate.json"
+      ],
+      "additionalProperties": false
+    },
+    "guard_registry": {
+      "type": "object",
+      "properties": {
+        "public_projection": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "own_session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "context_intersection": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "subscription_owner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "ticket_binding": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "device_scope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "command_scope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "control_scope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "manual_holder": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "automation_grant": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "cancel_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "acquire_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "release_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "offer_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "accept_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "grant_proposal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "grant_revoke_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "bootstrap_once": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "login_proof": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "cookie_binding": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "refresh_rotation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "token_intersection": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "introspection_audience": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "revocation_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "recent_auth": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "revocation_visibility": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "subject_visibility": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "capacity_profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "provider_catalog": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "provider_event": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "definition_edit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "definition_publish": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "run_create_unarmed": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "run_read": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "preflight_readonly": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "recovery_readonly": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "arm_approval": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "pause_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "recovery_confirm": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "recovery_visibility": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "proof_visibility": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "internal_object": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "ticket_issue": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "public_projection",
+        "own_session",
+        "context_intersection",
+        "subscription_owner",
+        "ticket_binding",
+        "device_scope",
+        "command_scope",
+        "control_scope",
+        "manual_holder",
+        "automation_grant",
+        "cancel_target",
+        "acquire_target",
+        "release_target",
+        "offer_target",
+        "accept_target",
+        "grant_proposal",
+        "grant_revoke_target",
+        "bootstrap_once",
+        "login_proof",
+        "cookie_binding",
+        "refresh_rotation",
+        "token_intersection",
+        "introspection_audience",
+        "revocation_target",
+        "recent_auth",
+        "revocation_visibility",
+        "subject_visibility",
+        "capacity_profile",
+        "provider_catalog",
+        "provider_event",
+        "definition_edit",
+        "definition_publish",
+        "run_create_unarmed",
+        "run_read",
+        "preflight_readonly",
+        "recovery_readonly",
+        "arm_approval",
+        "pause_target",
+        "recovery_confirm",
+        "recovery_visibility",
+        "proof_visibility",
+        "internal_object",
+        "ticket_issue"
+      ],
+      "additionalProperties": false
+    },
+    "operations": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 200,
+      "propertyNames": {
+        "pattern": "^(controller|seamer):[A-Za-z][A-Za-z0-9]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "source_pointer": {
+            "type": "string",
+            "pattern": "^/paths/~1"
+          },
+          "permission": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "branches": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "human",
+                    "service",
+                    "seamer",
+                    "provider",
+                    "internal",
+                    "cookie",
+                    "ticket",
+                    "bootstrap",
+                    "login"
+                  ]
+                },
+                "origin": {
+                  "enum": [
+                    null,
+                    "manual",
+                    "automation"
+                  ]
+                },
+                "guards": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "uniqueItems": true,
+                  "items": {
+                    "enum": [
+                      "public_projection",
+                      "own_session",
+                      "context_intersection",
+                      "subscription_owner",
+                      "ticket_binding",
+                      "device_scope",
+                      "command_scope",
+                      "control_scope",
+                      "manual_holder",
+                      "automation_grant",
+                      "cancel_target",
+                      "acquire_target",
+                      "release_target",
+                      "offer_target",
+                      "accept_target",
+                      "grant_proposal",
+                      "grant_revoke_target",
+                      "bootstrap_once",
+                      "login_proof",
+                      "cookie_binding",
+                      "refresh_rotation",
+                      "token_intersection",
+                      "introspection_audience",
+                      "revocation_target",
+                      "recent_auth",
+                      "revocation_visibility",
+                      "subject_visibility",
+                      "capacity_profile",
+                      "provider_catalog",
+                      "provider_event",
+                      "definition_edit",
+                      "definition_publish",
+                      "run_create_unarmed",
+                      "run_read",
+                      "preflight_readonly",
+                      "recovery_readonly",
+                      "arm_approval",
+                      "pause_target",
+                      "recovery_confirm",
+                      "recovery_visibility",
+                      "proof_visibility",
+                      "internal_object",
+                      "ticket_issue"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "profile",
+                "origin",
+                "guards"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "source_pointer",
+          "permission",
+          "branches"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "format_version",
+    "approved",
+    "authority_switched",
+    "runtime_approved",
+    "scope",
+    "source_sha256",
+    "guard_registry",
+    "operations"
+  ],
+  "additionalProperties": false
+}

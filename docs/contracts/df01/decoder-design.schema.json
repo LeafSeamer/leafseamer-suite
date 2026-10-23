@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:leafseamer:design:decoder-metadata:1",
+  "title": "DF01候选预算与生成绑定描述；不是生产解码器或完整OpenAPI",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "purpose", "profiles", "http", "websocket"],
+  "properties": {
+    "format": {"const": "df01-decoder-design/1"},
+    "purpose": {"const": "design_fixture"},
+    "profiles": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/Profile"}},
+    "http": {"type": "array", "minItems": 1, "maxItems": 256, "items": {"$ref": "#/$defs/HttpBinding"}},
+    "websocket": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/WsBinding"}}
+  },
+  "$defs": {
+    "Name": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9_.-]+(?![\\s\\S])"},
+    "ProfileRef": {"anyOf": [{"$ref": "#/$defs/Name"}, {"type": "null"}]},
+    "ModelRef": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[A-Za-z0-9_.-]+#/[A-Za-z0-9_/$~-]+(?![\\s\\S])"},
+    "Profile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profile_id", "max_message_bytes", "max_depth", "max_value_nodes", "max_object_members", "max_key_utf8_bytes", "max_string_utf8_bytes", "max_number_chars", "max_exponent_abs", "slice_units", "parse_deadline_ms", "bom", "underflow"],
+      "properties": {
+        "profile_id": {"$ref": "#/$defs/Name"},
+        "max_message_bytes": {"type": "integer", "minimum": 1, "maximum": 8388608},
+        "max_depth": {"type": "integer", "minimum": 1, "maximum": 64},
+        "max_value_nodes": {"type": "integer", "minimum": 1, "maximum": 1048576},
+        "max_object_members": {"type": "integer", "minimum": 1, "maximum": 65536},
+        "max_key_utf8_bytes": {"type": "integer", "minimum": 1, "maximum": 4096},
+        "max_string_utf8_bytes": {"type": "integer", "minimum": 1, "maximum": 8388608},
+        "max_number_chars": {"type": "integer", "minimum": 1, "maximum": 128},
+        "max_exponent_abs": {"type": "integer", "minimum": 1, "maximum": 4096},
+        "slice_units": {"type": "integer", "minimum": 1, "maximum": 4096},
+        "parse_deadline_ms": {"type": "integer", "minimum": 1, "maximum": 5000},
+        "bom": {"const": "reject"},
+        "underflow": {"const": "reject_nonzero_to_zero"}
+      }
+    },
+    "HttpBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["service", "operation_id", "source_path", "operation_pointer", "request_profile", "response_profile"],
+      "properties": {
+        "service": {"enum": ["controller", "seamer"]},
+        "operation_id": {"$ref": "#/$defs/Name"},
+        "source_path": {"enum": ["http/controller.operations.json", "http/seamer.operations.json"]},
+        "operation_pointer": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^/paths/(?:[^~/]|~[01])+(?:/(?:get|post|put|patch|delete|options|head))(?![\\s\\S])"},
+        "request_profile": {"$ref": "#/$defs/ProfileRef"},
+        "response_profile": {"$ref": "#/$defs/ProfileRef"}
+      }
+    },
+    "WsBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["service", "upgrade_operation_id", "subprotocol", "client_message_root", "server_message_root", "profile_ref"],
+      "properties": {
+        "service": {"enum": ["controller", "seamer"]},
+        "upgrade_operation_id": {"$ref": "#/$defs/Name"},
+        "subprotocol": {"const": "leafseamer.v1"},
+        "client_message_root": {"anyOf": [{"$ref": "#/$defs/ModelRef"}, {"type": "null"}]},
+        "server_message_root": {"$ref": "#/$defs/ModelRef"},
+        "profile_ref": {"$ref": "#/$defs/Name"}
+      }
+    }
+  }
+}

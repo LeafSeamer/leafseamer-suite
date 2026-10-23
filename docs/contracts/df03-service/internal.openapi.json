@@ -1,0 +1,1926 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "LeafSeamer参考时间internal",
+    "version": "reference-time-service/0.1.0-draft.1"
+  },
+  "x-approved": false,
+  "paths": {
+    "/internal/reference-time/bundles/{id}/{revision}": {
+      "get": {
+        "operationId": "getReferenceTimeBundle",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "reference-time-service/0.1.0-draft.1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Positive"
+            }
+          },
+          {
+            "name": "digest",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Digest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "精确查询结果",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__BundleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "pairedMTLS": []
+          }
+        ],
+        "x-permission": "clock.internal.read",
+        "x-current-object-authorization-required": true
+      }
+    },
+    "/internal/reference-time/anchors/{id}/{revision}": {
+      "get": {
+        "operationId": "getReferenceTimeAnchor",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "reference-time-service/0.1.0-draft.1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Positive"
+            }
+          },
+          {
+            "name": "digest",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Digest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "精确查询结果",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__AnchorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "pairedMTLS": []
+          }
+        ],
+        "x-permission": "clock.internal.read",
+        "x-current-object-authorization-required": true
+      }
+    },
+    "/internal/reference-time/assessments/{id}/{revision}": {
+      "get": {
+        "operationId": "getReferenceTimeAssessment",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "reference-time-service/0.1.0-draft.1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Positive"
+            }
+          },
+          {
+            "name": "digest",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Digest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "精确查询结果",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__AssessmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "pairedMTLS": []
+          }
+        ],
+        "x-permission": "clock.internal.read",
+        "x-current-object-authorization-required": true
+      }
+    },
+    "/internal/reference-time/profiles/{id}/{revision}": {
+      "get": {
+        "operationId": "getReferenceTimeProfile",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "reference-time-service/0.1.0-draft.1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Positive"
+            }
+          },
+          {
+            "name": "digest",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/S12__Digest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "精确查询结果",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__ProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "读取失败，不授权写重试",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S12__Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "pairedMTLS": []
+          }
+        ],
+        "x-permission": "clock.internal.read",
+        "x-current-object-authorization-required": true
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "S12__Id": {
+        "$ref": "#/components/schemas/S11__Id"
+      },
+      "S11__Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+      },
+      "S12__Positive": {
+        "$ref": "#/components/schemas/S11__Positive"
+      },
+      "S11__Positive": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+      },
+      "S12__Digest": {
+        "$ref": "#/components/schemas/S11__Digest"
+      },
+      "S11__Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+      },
+      "S12__BundleResponse": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "const": "reference-time-service/0.1.0-draft.1"
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_boot_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "data": {
+            "$ref": "#/components/schemas/S12__EvidenceBundle"
+          }
+        },
+        "required": [
+          "contract",
+          "request_id",
+          "service_id",
+          "service_boot_id",
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "S12__EvidenceBundle": {
+        "type": "object",
+        "properties": {
+          "bundle_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "revision": {
+            "const": "1"
+          },
+          "state_ref": {
+            "$ref": "#/components/schemas/S12__Ref"
+          },
+          "source": {
+            "$ref": "#/components/schemas/S11__Source"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/S11__Profile"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/S11__Policy"
+          },
+          "approval": {
+            "$ref": "#/components/schemas/S11__Approval"
+          },
+          "request": {
+            "$ref": "#/components/schemas/S11__Request"
+          },
+          "authentication": {
+            "$ref": "#/components/schemas/S11__AuthEvidence"
+          },
+          "error": {
+            "$ref": "#/components/schemas/S11__ErrorEvidence"
+          },
+          "era": {
+            "$ref": "#/components/schemas/S11__EraEvidence"
+          },
+          "exchange": {
+            "$ref": "#/components/schemas/S11__Exchange"
+          },
+          "anchor": {
+            "$ref": "#/components/schemas/S11__Anchor"
+          },
+          "assessment": {
+            "$ref": "#/components/schemas/S11__Assessment"
+          },
+          "bundle_digest": {
+            "$ref": "#/components/schemas/S12__Digest"
+          }
+        },
+        "required": [
+          "bundle_id",
+          "revision",
+          "state_ref",
+          "source",
+          "profile",
+          "policy",
+          "approval",
+          "request",
+          "authentication",
+          "error",
+          "era",
+          "exchange",
+          "anchor",
+          "assessment",
+          "bundle_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S12__Ref": {
+        "$ref": "#/components/schemas/S11__Ref"
+      },
+      "S11__Ref": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Source": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "configured_server_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "endpoint_set_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "effective_config_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "authentication": {
+            "enum": [
+              "nts",
+              "trusted_network"
+            ]
+          },
+          "trust_policy_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "source_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "source_id",
+          "revision",
+          "configured_server_ref",
+          "endpoint_set_ref",
+          "effective_config_ref",
+          "authentication",
+          "trust_policy_ref",
+          "source_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Profile": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "model_id": {
+            "const": "reference-bound/1"
+          },
+          "model_revision": {
+            "const": "1"
+          },
+          "collector_artifact_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "protocol_artifact_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "platform_qualification_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "clock_method_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "error_method_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "era_method_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "elapsed_model": {
+            "const": "observed-delta-relative/1"
+          },
+          "elapsed_error_ppm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999999
+          },
+          "span_quantization_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "max_packet_bytes": {
+            "type": "integer",
+            "minimum": 48,
+            "maximum": 65536
+          },
+          "time_scale": {
+            "const": "posix-utc"
+          },
+          "leap_policy": {
+            "const": "normal-only"
+          },
+          "smear_policy": {
+            "const": "forbidden"
+          },
+          "profile_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "profile_id",
+          "revision",
+          "model_id",
+          "model_revision",
+          "collector_artifact_ref",
+          "protocol_artifact_ref",
+          "platform_qualification_ref",
+          "clock_method_ref",
+          "error_method_ref",
+          "era_method_ref",
+          "elapsed_model",
+          "elapsed_error_ppm",
+          "span_quantization_ns",
+          "max_packet_bytes",
+          "time_scale",
+          "leap_policy",
+          "smear_policy",
+          "profile_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__UInt": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+      },
+      "S11__Policy": {
+        "type": "object",
+        "properties": {
+          "policy_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "max_exchange_span_ns": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "max_exchange_age_ns": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "max_anchor_age_ns": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "max_upstream_age_ns": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "max_half_width_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "policy_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "policy_id",
+          "revision",
+          "max_exchange_span_ns",
+          "max_exchange_age_ns",
+          "max_anchor_age_ns",
+          "max_upstream_age_ns",
+          "max_half_width_ns",
+          "policy_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Approval": {
+        "type": "object",
+        "properties": {
+          "approval_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "profile_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "source_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "qualification_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "authority_service_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "status": {
+            "enum": [
+              "approved",
+              "revoked"
+            ]
+          },
+          "approval_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "approval_id",
+          "revision",
+          "profile_ref",
+          "source_ref",
+          "qualification_ref",
+          "authority_service_id",
+          "status",
+          "approval_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Request": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/S11__Binding"
+          },
+          "correlation_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "endpoint_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "send_before_tick_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "response_deadline_tick_ns": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "request_bytes_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "request_size": {
+            "type": "integer",
+            "minimum": 48,
+            "maximum": 65536
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "request_id",
+          "revision",
+          "binding",
+          "correlation_ref",
+          "endpoint_ref",
+          "send_before_tick_ns",
+          "response_deadline_tick_ns",
+          "request_bytes_ref",
+          "request_size",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Binding": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "$ref": "#/components/schemas/S11__Domain"
+          },
+          "source_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "profile_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "approval_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "policy_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "time_generation": {
+            "$ref": "#/components/schemas/S11__Positive"
+          }
+        },
+        "required": [
+          "domain",
+          "source_ref",
+          "profile_ref",
+          "approval_ref",
+          "policy_ref",
+          "time_generation"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Domain": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "database_instance_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "provider_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "provider_boot_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "runtime_binding_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "clock_domain_id": {
+            "type": "string",
+            "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+          },
+          "descriptor_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          },
+          "clock_generation": {
+            "$ref": "#/components/schemas/S11__Positive"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id",
+          "provider_id",
+          "provider_boot_id",
+          "runtime_binding_ref",
+          "clock_domain_id",
+          "descriptor_digest",
+          "clock_generation"
+        ],
+        "additionalProperties": false
+      },
+      "S11__AuthEvidence": {
+        "type": "object",
+        "properties": {
+          "auth_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "request_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "response_bytes_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "source_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "mode": {
+            "enum": [
+              "nts",
+              "trusted_network"
+            ]
+          },
+          "verification_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "bootstrap_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S11__Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "peer_binding_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "authentication_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "auth_id",
+          "revision",
+          "request_ref",
+          "response_bytes_ref",
+          "source_ref",
+          "mode",
+          "verification_ref",
+          "bootstrap_ref",
+          "peer_binding_ref",
+          "authentication_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "nts"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "bootstrap_ref": {
+                  "$ref": "#/components/schemas/S11__Ref"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "bootstrap_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S11__ErrorEvidence": {
+        "type": "object",
+        "properties": {
+          "error_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/S11__Binding"
+          },
+          "request_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "response_bytes_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "error_method_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "qualification_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "t2_error_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "t3_error_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "upstream_age_upper_at_m1_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "provenance_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "error_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "error_id",
+          "revision",
+          "binding",
+          "request_ref",
+          "response_bytes_ref",
+          "error_method_ref",
+          "qualification_ref",
+          "t2_error_ns",
+          "t3_error_ns",
+          "upstream_age_upper_at_m1_ns",
+          "provenance_ref",
+          "error_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__EraEvidence": {
+        "type": "object",
+        "properties": {
+          "era_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "request_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "response_bytes_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "method_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "independent_time_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "allowed_utc": {
+            "$ref": "#/components/schemas/S11__Interval"
+          },
+          "era_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "era_id",
+          "revision",
+          "request_ref",
+          "response_bytes_ref",
+          "method_ref",
+          "independent_time_ref",
+          "allowed_utc",
+          "era_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Interval": {
+        "type": "object",
+        "properties": {
+          "lower_ns": {
+            "$ref": "#/components/schemas/S11__Signed"
+          },
+          "upper_ns": {
+            "$ref": "#/components/schemas/S11__Signed"
+          }
+        },
+        "required": [
+          "lower_ns",
+          "upper_ns"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Signed": {
+        "type": "string",
+        "pattern": "^(0|-?[1-9][0-9]{0,29})$(?![\\s\\S])"
+      },
+      "S11__Exchange": {
+        "type": "object",
+        "properties": {
+          "exchange_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/S11__Positive"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/S11__Binding"
+          },
+          "request_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "correlation_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "endpoint_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "response_bytes_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "response_size": {
+            "type": "integer",
+            "minimum": 48,
+            "maximum": 65536
+          },
+          "receive_after_tick_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "ntp_version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 7
+          },
+          "ntp_mode": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 7
+          },
+          "leap": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "stratum": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "precision": {
+            "type": "integer",
+            "minimum": -128,
+            "maximum": 127
+          },
+          "root_delay_word": {
+            "$ref": "#/components/schemas/S11__Word"
+          },
+          "root_dispersion_word": {
+            "$ref": "#/components/schemas/S11__Word"
+          },
+          "t2": {
+            "$ref": "#/components/schemas/S11__Stamp"
+          },
+          "t3": {
+            "$ref": "#/components/schemas/S11__Stamp"
+          },
+          "authentication_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "error_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "era_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "parser_receipt_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "exchange_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "exchange_id",
+          "revision",
+          "binding",
+          "request_ref",
+          "correlation_ref",
+          "endpoint_ref",
+          "response_bytes_ref",
+          "response_size",
+          "receive_after_tick_ns",
+          "ntp_version",
+          "ntp_mode",
+          "leap",
+          "stratum",
+          "precision",
+          "root_delay_word",
+          "root_dispersion_word",
+          "t2",
+          "t3",
+          "authentication_ref",
+          "error_ref",
+          "era_ref",
+          "parser_receipt_ref",
+          "exchange_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Word": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,9})$(?![\\s\\S])"
+      },
+      "S11__Stamp": {
+        "type": "object",
+        "properties": {
+          "seconds": {
+            "$ref": "#/components/schemas/S11__Word"
+          },
+          "fraction": {
+            "$ref": "#/components/schemas/S11__Word"
+          },
+          "era": {
+            "$ref": "#/components/schemas/S11__Signed"
+          }
+        },
+        "required": [
+          "seconds",
+          "fraction",
+          "era"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Anchor": {
+        "type": "object",
+        "properties": {
+          "anchor_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "const": "1"
+          },
+          "model_id": {
+            "const": "reference-bound/1"
+          },
+          "model_revision": {
+            "const": "1"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/S11__Binding"
+          },
+          "exchange_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "anchor_tick_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "exchange_start_tick_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "utc_at_anchor": {
+            "$ref": "#/components/schemas/S11__Interval"
+          },
+          "derivation_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          },
+          "anchor_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "anchor_id",
+          "revision",
+          "model_id",
+          "model_revision",
+          "binding",
+          "exchange_ref",
+          "anchor_tick_ns",
+          "exchange_start_tick_ns",
+          "utc_at_anchor",
+          "derivation_digest",
+          "anchor_digest"
+        ],
+        "additionalProperties": false
+      },
+      "S11__Assessment": {
+        "type": "object",
+        "properties": {
+          "assessment_id": {
+            "$ref": "#/components/schemas/S11__Id"
+          },
+          "revision": {
+            "const": "1"
+          },
+          "model_id": {
+            "const": "reference-bound/1"
+          },
+          "model_revision": {
+            "const": "1"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/S11__Binding"
+          },
+          "anchor_ref": {
+            "$ref": "#/components/schemas/S11__Ref"
+          },
+          "assessed_tick_ns": {
+            "$ref": "#/components/schemas/S11__UInt"
+          },
+          "utc": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S11__Interval"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "exchange_age_upper_ns": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S11__UInt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "anchor_age_upper_ns": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S11__UInt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upstream_age_upper_ns": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S11__UInt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decision": {
+            "enum": [
+              "conditional",
+              "unavailable"
+            ]
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "binding",
+                "approval",
+                "runtime_clock",
+                "source",
+                "evidence",
+                "expired",
+                "uncertainty",
+                "generation",
+                "storage",
+                "bootstrap",
+                "invalid_interval"
+              ]
+            },
+            "maxItems": 32,
+            "uniqueItems": true
+          },
+          "assessment_digest": {
+            "$ref": "#/components/schemas/S11__Digest"
+          }
+        },
+        "required": [
+          "assessment_id",
+          "revision",
+          "model_id",
+          "model_revision",
+          "binding",
+          "anchor_ref",
+          "assessed_tick_ns",
+          "utc",
+          "exchange_age_upper_ns",
+          "anchor_age_upper_ns",
+          "upstream_age_upper_ns",
+          "decision",
+          "reasons",
+          "assessment_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "decision": {
+                  "const": "conditional"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "utc": {
+                  "$ref": "#/components/schemas/S11__Interval"
+                },
+                "exchange_age_upper_ns": {
+                  "$ref": "#/components/schemas/S11__UInt"
+                },
+                "anchor_age_upper_ns": {
+                  "$ref": "#/components/schemas/S11__UInt"
+                },
+                "upstream_age_upper_ns": {
+                  "$ref": "#/components/schemas/S11__UInt"
+                },
+                "reasons": {
+                  "maxItems": 0
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "utc": {
+                  "type": "null"
+                },
+                "exchange_age_upper_ns": {
+                  "type": "null"
+                },
+                "anchor_age_upper_ns": {
+                  "type": "null"
+                },
+                "upstream_age_upper_ns": {
+                  "type": "null"
+                },
+                "reasons": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S12__Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid_request",
+              "unauthenticated",
+              "forbidden",
+              "not_found",
+              "digest_mismatch",
+              "capacity",
+              "unavailable"
+            ]
+          },
+          "retry_write": {
+            "const": false
+          }
+        },
+        "required": [
+          "code",
+          "retry_write"
+        ],
+        "additionalProperties": false
+      },
+      "S12__AnchorResponse": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "const": "reference-time-service/0.1.0-draft.1"
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_boot_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "data": {
+            "$ref": "#/components/schemas/S11__Anchor"
+          }
+        },
+        "required": [
+          "contract",
+          "request_id",
+          "service_id",
+          "service_boot_id",
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "S12__AssessmentResponse": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "const": "reference-time-service/0.1.0-draft.1"
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_boot_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "data": {
+            "$ref": "#/components/schemas/S11__Assessment"
+          }
+        },
+        "required": [
+          "contract",
+          "request_id",
+          "service_id",
+          "service_boot_id",
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "S12__ProfileResponse": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "const": "reference-time-service/0.1.0-draft.1"
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "service_boot_id": {
+            "$ref": "#/components/schemas/S12__Id"
+          },
+          "data": {
+            "$ref": "#/components/schemas/S11__Profile"
+          }
+        },
+        "required": [
+          "contract",
+          "request_id",
+          "service_id",
+          "service_boot_id",
+          "data"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "pairedMTLS": {
+        "type": "mutualTLS"
+      }
+    }
+  }
+}

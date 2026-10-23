@@ -1,0 +1,446 @@
+{
+  "format_version": "panel-method-inputs/0.1.0-draft.1",
+  "approved": false,
+  "runtime_approved": false,
+  "authority_switched": false,
+  "methods": {
+    "controller.getMeta": {
+      "operation_key": "controller:getMeta",
+      "mode": "panel_read",
+      "input_definition": "controller_getMeta",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "MetaView",
+      "raw_response_allowed": false
+    },
+    "controller.getClock": {
+      "operation_key": "controller:getClock",
+      "mode": "panel_read",
+      "input_definition": "controller_getClock",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "ClockView",
+      "raw_response_allowed": false
+    },
+    "controller.listDevices": {
+      "operation_key": "controller:listDevices",
+      "mode": "panel_read",
+      "input_definition": "controller_listDevices",
+      "request_model": null,
+      "source_fields": {
+        "query.cursor": "host_page_binding"
+      },
+      "result_view": "DevicePageView",
+      "raw_response_allowed": false
+    },
+    "controller.getCapabilities": {
+      "operation_key": "controller:getCapabilities",
+      "mode": "panel_read",
+      "input_definition": "controller_getCapabilities",
+      "request_model": null,
+      "source_fields": {
+        "path.device_id": "panel_bound"
+      },
+      "result_view": "CapabilityView",
+      "raw_response_allowed": false
+    },
+    "controller.getDeviceState": {
+      "operation_key": "controller:getDeviceState",
+      "mode": "panel_read",
+      "input_definition": "controller_getDeviceState",
+      "request_model": null,
+      "source_fields": {
+        "path.device_id": "panel_bound"
+      },
+      "result_view": "ObservationView",
+      "raw_response_allowed": false
+    },
+    "controller.submitCommand": {
+      "operation_key": "controller:submitCommand",
+      "mode": "panel_write",
+      "input_definition": "controller_submitCommand",
+      "request_model": "CommandRequest",
+      "source_fields": {
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.device_id": "panel",
+        "body.action_id": "panel",
+        "body.capability_version": "panel",
+        "body.parameters": "panel",
+        "body.expected_control": "panel",
+        "body.origin": "fixed_manual",
+        "body.run_binding": "forbidden",
+        "body.required_completion": "panel",
+        "body.preconditions": "panel",
+        "body.dispatch": "panel",
+        "body.evidence_timeout_ms": "panel",
+        "body.correlation_id": "host_correlation"
+      },
+      "result_view": "CommandView",
+      "raw_response_allowed": false
+    },
+    "controller.getCommand": {
+      "operation_key": "controller:getCommand",
+      "mode": "panel_read",
+      "input_definition": "controller_getCommand",
+      "request_model": null,
+      "source_fields": {
+        "path.command_id": "panel_bound"
+      },
+      "result_view": "CommandView",
+      "raw_response_allowed": false
+    },
+    "controller.cancelCommand": {
+      "operation_key": "controller:cancelCommand",
+      "mode": "panel_write",
+      "input_definition": "controller_cancelCommand",
+      "request_model": "CancelRequest",
+      "source_fields": {
+        "path.command_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_revision": "panel",
+        "body.reason": "panel"
+      },
+      "result_view": "CancelView",
+      "raw_response_allowed": false
+    },
+    "controller.getControlOperation": {
+      "operation_key": "controller:getControlOperation",
+      "mode": "panel_read",
+      "input_definition": "controller_getControlOperation",
+      "request_model": null,
+      "source_fields": {
+        "path.operation_id": "panel_bound"
+      },
+      "result_view": "ControlOperationView",
+      "raw_response_allowed": false
+    },
+    "controller.getControl": {
+      "operation_key": "controller:getControl",
+      "mode": "panel_read",
+      "input_definition": "controller_getControl",
+      "request_model": null,
+      "source_fields": {
+        "path.device_id": "panel_bound"
+      },
+      "result_view": "ControlView",
+      "raw_response_allowed": false
+    },
+    "controller.acquireControl": {
+      "operation_key": "controller:acquireControl",
+      "mode": "host_confirm",
+      "input_definition": "controller_acquireControl",
+      "request_model": "AcquireRequest",
+      "source_fields": {
+        "path.device_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_control": "panel",
+        "body.reason": "panel",
+        "body.force": "panel"
+      },
+      "result_view": "ControlOperationView",
+      "raw_response_allowed": false
+    },
+    "controller.releaseControl": {
+      "operation_key": "controller:releaseControl",
+      "mode": "host_confirm",
+      "input_definition": "controller_releaseControl",
+      "request_model": "ReleaseRequest",
+      "source_fields": {
+        "path.device_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_control": "panel",
+        "body.reason": "panel"
+      },
+      "result_view": "ControlOperationView",
+      "raw_response_allowed": false
+    },
+    "controller.offerTransfer": {
+      "operation_key": "controller:offerTransfer",
+      "mode": "host_confirm",
+      "input_definition": "controller_offerTransfer",
+      "request_model": "TransferRequest",
+      "source_fields": {
+        "path.device_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_control": "panel",
+        "body.reason": "panel",
+        "body.target_principal_id": "panel",
+        "body.offer_ttl_ms": "panel"
+      },
+      "result_view": "TransferView",
+      "raw_response_allowed": false
+    },
+    "controller.acceptTransfer": {
+      "operation_key": "controller:acceptTransfer",
+      "mode": "host_confirm",
+      "input_definition": "controller_acceptTransfer",
+      "request_model": "TransferAcceptRequest",
+      "source_fields": {
+        "path.device_id": "panel_bound",
+        "path.transfer_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_control": "panel",
+        "body.reason": "panel"
+      },
+      "result_view": "ControlOperationView",
+      "raw_response_allowed": false
+    },
+    "controller.revokeRunGrant": {
+      "operation_key": "controller:revokeRunGrant",
+      "mode": "host_confirm",
+      "input_definition": "controller_revokeRunGrant",
+      "request_model": "RevokeRequest",
+      "source_fields": {
+        "path.grant_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_revision": "panel",
+        "body.reason": "panel"
+      },
+      "result_view": "MutationView",
+      "raw_response_allowed": false
+    },
+    "controller.getClockAssessment": {
+      "operation_key": "controller:getClockAssessment",
+      "mode": "panel_read",
+      "input_definition": "controller_getClockAssessment",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "ClockAssessmentView",
+      "raw_response_allowed": false
+    },
+    "controller.getCapacity": {
+      "operation_key": "controller:getCapacity",
+      "mode": "panel_read",
+      "input_definition": "controller_getCapacity",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "CapacityView",
+      "raw_response_allowed": false
+    },
+    "controller.getSceneCatalog": {
+      "operation_key": "controller:getSceneCatalog",
+      "mode": "panel_read",
+      "input_definition": "controller_getSceneCatalog",
+      "request_model": null,
+      "source_fields": {
+        "path.device_id": "panel_bound"
+      },
+      "result_view": "SceneCatalogView",
+      "raw_response_allowed": false
+    },
+    "controller.getCommandEvidence": {
+      "operation_key": "controller:getCommandEvidence",
+      "mode": "panel_read",
+      "input_definition": "controller_getCommandEvidence",
+      "request_model": null,
+      "source_fields": {
+        "path.command_id": "panel_bound",
+        "query.cursor": "host_page_binding"
+      },
+      "result_view": "EvidencePageView",
+      "raw_response_allowed": false
+    },
+    "seamer.getMeta": {
+      "operation_key": "seamer:getMeta",
+      "mode": "panel_read",
+      "input_definition": "seamer_getMeta",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "MetaView",
+      "raw_response_allowed": false
+    },
+    "seamer.getClock": {
+      "operation_key": "seamer:getClock",
+      "mode": "panel_read",
+      "input_definition": "seamer_getClock",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "ClockView",
+      "raw_response_allowed": false
+    },
+    "seamer.createDefinition": {
+      "operation_key": "seamer:createDefinition",
+      "mode": "panel_write",
+      "input_definition": "seamer_createDefinition",
+      "request_model": "DefinitionCreate",
+      "source_fields": {
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.definition": "panel"
+      },
+      "result_view": "DefinitionView",
+      "raw_response_allowed": false
+    },
+    "seamer.updateDraft": {
+      "operation_key": "seamer:updateDraft",
+      "mode": "panel_write",
+      "input_definition": "seamer_updateDraft",
+      "request_model": "DraftUpdate",
+      "source_fields": {
+        "path.definition_id": "panel_bound",
+        "body.expected_revision": "panel",
+        "body.definition": "panel"
+      },
+      "result_view": "DefinitionView",
+      "raw_response_allowed": false
+    },
+    "seamer.publishDefinition": {
+      "operation_key": "seamer:publishDefinition",
+      "mode": "host_confirm",
+      "input_definition": "seamer_publishDefinition",
+      "request_model": "PublishRequest",
+      "source_fields": {
+        "path.definition_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_revision": "panel"
+      },
+      "result_view": "DefinitionView",
+      "raw_response_allowed": false
+    },
+    "seamer.createRun": {
+      "operation_key": "seamer:createRun",
+      "mode": "panel_write",
+      "input_definition": "seamer_createRun",
+      "request_model": "RunCreate",
+      "source_fields": {
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.definition_id": "panel",
+        "body.definition_version": "panel"
+      },
+      "result_view": "RunView",
+      "raw_response_allowed": false
+    },
+    "seamer.getRun": {
+      "operation_key": "seamer:getRun",
+      "mode": "panel_read",
+      "input_definition": "seamer_getRun",
+      "request_model": null,
+      "source_fields": {
+        "path.run_id": "panel_bound"
+      },
+      "result_view": "RunView",
+      "raw_response_allowed": false
+    },
+    "seamer.preflightRun": {
+      "operation_key": "seamer:preflightRun",
+      "mode": "panel_read",
+      "input_definition": "seamer_preflightRun",
+      "request_model": "RunRevisionRequest",
+      "source_fields": {
+        "path.run_id": "panel_bound",
+        "body.expected_revision": "panel"
+      },
+      "result_view": "PreflightView",
+      "raw_response_allowed": false
+    },
+    "seamer.armRun": {
+      "operation_key": "seamer:armRun",
+      "mode": "host_confirm",
+      "input_definition": "seamer_armRun",
+      "request_model": "ArmRequest",
+      "source_fields": {
+        "path.run_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_revision": "panel",
+        "body.preflight_id": "host_assessment_binding",
+        "body.approval_id": "host_approval_binding"
+      },
+      "result_view": "MutationView",
+      "raw_response_allowed": false
+    },
+    "seamer.pauseRun": {
+      "operation_key": "seamer:pauseRun",
+      "mode": "panel_write",
+      "input_definition": "seamer_pauseRun",
+      "request_model": "RunMutationRequest",
+      "source_fields": {
+        "path.run_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_revision": "panel",
+        "body.reason": "panel"
+      },
+      "result_view": "MutationView",
+      "raw_response_allowed": false
+    },
+    "seamer.previewRecovery": {
+      "operation_key": "seamer:previewRecovery",
+      "mode": "panel_read",
+      "input_definition": "seamer_previewRecovery",
+      "request_model": "RunRevisionRequest",
+      "source_fields": {
+        "path.run_id": "panel_bound",
+        "body.expected_revision": "panel"
+      },
+      "result_view": "RecoveryPlanView",
+      "raw_response_allowed": false
+    },
+    "seamer.resumeRun": {
+      "operation_key": "seamer:resumeRun",
+      "mode": "host_confirm",
+      "input_definition": "seamer_resumeRun",
+      "request_model": "ResumeRequest",
+      "source_fields": {
+        "path.run_id": "panel_bound",
+        "body.context_id": "host_identity",
+        "body.idempotency_key": "host_identity",
+        "body.expected_revision": "panel",
+        "body.preview_id": "host_recovery_binding",
+        "body.preview_digest": "host_recovery_binding"
+      },
+      "result_view": "RecoveryOperationView",
+      "raw_response_allowed": false
+    },
+    "seamer.getClockAssessment": {
+      "operation_key": "seamer:getClockAssessment",
+      "mode": "panel_read",
+      "input_definition": "seamer_getClockAssessment",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "ClockAssessmentView",
+      "raw_response_allowed": false
+    },
+    "seamer.getCapacity": {
+      "operation_key": "seamer:getCapacity",
+      "mode": "panel_read",
+      "input_definition": "seamer_getCapacity",
+      "request_model": null,
+      "source_fields": {},
+      "result_view": "CapacityView",
+      "raw_response_allowed": false
+    },
+    "seamer.getRecoveryOperation": {
+      "operation_key": "seamer:getRecoveryOperation",
+      "mode": "panel_read",
+      "input_definition": "seamer_getRecoveryOperation",
+      "request_model": null,
+      "source_fields": {
+        "path.operation_id": "panel_bound"
+      },
+      "result_view": "RecoveryOperationView",
+      "raw_response_allowed": false
+    },
+    "seamer.getIndependenceProof": {
+      "operation_key": "seamer:getIndependenceProof",
+      "mode": "panel_read",
+      "input_definition": "seamer_getIndependenceProof",
+      "request_model": null,
+      "source_fields": {
+        "path.definition_id": "panel_bound",
+        "path.proof_id": "panel_bound"
+      },
+      "result_view": "IndependenceView",
+      "raw_response_allowed": false
+    }
+  }
+}

@@ -1,0 +1,881 @@
+{
+  "mutations": [
+    {
+      "id": "EX01",
+      "set": [],
+      "expected_errors": []
+    },
+    {
+      "id": "EX02",
+      "set": [
+        [
+          [
+            "approved"
+          ],
+          true
+        ]
+      ],
+      "expected_errors": [
+        "plan_status"
+      ]
+    },
+    {
+      "id": "EX03",
+      "set": [
+        [
+          [
+            "approved"
+          ],
+          0
+        ]
+      ],
+      "expected_errors": [
+        "plan_status"
+      ]
+    },
+    {
+      "id": "EX04",
+      "set": [
+        [
+          [
+            "authority_switched"
+          ],
+          true
+        ]
+      ],
+      "expected_errors": [
+        "plan_status"
+      ]
+    },
+    {
+      "id": "EX05",
+      "set": [
+        [
+          [
+            "source_sha256",
+            "public.schema.json"
+          ],
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ]
+      ],
+      "expected_errors": [
+        "source_binding"
+      ]
+    },
+    {
+      "id": "EX06",
+      "set": [
+        [
+          [
+            "entrypoints",
+            "./models",
+            "models"
+          ],
+          [
+            "public/Id"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX07",
+      "set": [
+        [
+          [
+            "entrypoints",
+            "./models",
+            "models"
+          ],
+          [
+            "public/ClockDomainDescriptor"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX08",
+      "set": [
+        [
+          [
+            "entrypoints",
+            "./internal/controller",
+            "runtime"
+          ],
+          "browser_node"
+        ]
+      ],
+      "expected_errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX09",
+      "set": [
+        [
+          [
+            "entrypoints",
+            "./controller",
+            "operations"
+          ],
+          [
+            "controller:updateRunGrant"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX10",
+      "set": [
+        [
+          [
+            "entrypoints",
+            "./provider",
+            "operations"
+          ],
+          []
+        ]
+      ],
+      "expected_errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX11",
+      "set": [
+        [
+          [
+            "operations",
+            "controller:issueToken",
+            "effective_security"
+          ],
+          [
+            {
+              "sessionCookie": []
+            },
+            {
+              "csrfHeader": []
+            }
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX12",
+      "set": [
+        [
+          [
+            "operations",
+            "controller:login",
+            "security_source"
+          ],
+          "root"
+        ]
+      ],
+      "expected_errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX13",
+      "set": [
+        [
+          [
+            "operations",
+            "controller:openEvents",
+            "roots"
+          ],
+          []
+        ]
+      ],
+      "expected_errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX14",
+      "set": [
+        [
+          [
+            "operations",
+            "seamer:openEvents",
+            "transport"
+          ],
+          "http"
+        ]
+      ],
+      "expected_errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX15",
+      "set": [
+        [
+          [
+            "operations",
+            "controller:revokeRunGrant",
+            "entrypoint"
+          ],
+          "./seamer-controller"
+        ]
+      ],
+      "expected_errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX16",
+      "set": [
+        [
+          [
+            "operations",
+            "seamer:updateCatalog",
+            "permission"
+          ],
+          "device.command"
+        ]
+      ],
+      "expected_errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX17",
+      "set": [
+        [
+          [
+            "models",
+            "public/RunGrant",
+            "status"
+          ],
+          "candidate_export"
+        ]
+      ],
+      "expected_errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX18",
+      "set": [
+        [
+          [
+            "models",
+            "public/AuthorizationSnapshotResponse",
+            "entrypoints"
+          ],
+          [
+            "./models"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX19",
+      "set": [
+        [
+          [
+            "models",
+            "ipc/HELLO",
+            "export_name"
+          ],
+          "HELLO"
+        ]
+      ],
+      "expected_errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX20",
+      "set": [
+        [
+          [
+            "models",
+            "ipc/HELLO",
+            "entrypoints"
+          ],
+          [
+            "./models"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX21",
+      "set": [
+        [
+          [
+            "models",
+            "public/ClockSample",
+            "entrypoints"
+          ],
+          [
+            "./models"
+          ]
+        ]
+      ],
+      "expected_errors": [
+        "models_mismatch"
+      ]
+    },
+    {
+      "id": "EX22",
+      "set": [
+        [
+          [
+            "entrypoints",
+            "./ipc",
+            "models"
+          ],
+          []
+        ]
+      ],
+      "expected_errors": [
+        "entrypoints_mismatch"
+      ]
+    },
+    {
+      "id": "EX23",
+      "set": [
+        [
+          [
+            "operations",
+            "seamer:resumeRun",
+            "source_pointer"
+          ],
+          "/paths/wrong/post"
+        ]
+      ],
+      "expected_errors": [
+        "operations_mismatch"
+      ]
+    },
+    {
+      "id": "EX24",
+      "set": [
+        [
+          [
+            "unconsumed"
+          ],
+          true
+        ]
+      ],
+      "expected_errors": [
+        "plan_fields"
+      ]
+    }
+  ],
+  "schema_probes": [
+    {
+      "id": "EG01",
+      "schema": {
+        "type": "object",
+        "default": {
+          "$ref": "#/components/schemas/Secret"
+        },
+        "examples": [
+          {
+            "$ref": "https://invalid.example"
+          }
+        ],
+        "const": {
+          "$ref": "#/components/schemas/Other"
+        }
+      },
+      "refs": [],
+      "error": null
+    },
+    {
+      "id": "EG02",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/A"
+          },
+          {
+            "if": {
+              "$ref": "#/components/schemas/B"
+            },
+            "then": {
+              "$ref": "#/components/schemas/C"
+            },
+            "else": {
+              "$ref": "#/components/schemas/D"
+            }
+          }
+        ]
+      },
+      "refs": [
+        "#/components/schemas/A",
+        "#/components/schemas/B",
+        "#/components/schemas/C",
+        "#/components/schemas/D"
+      ],
+      "error": null
+    },
+    {
+      "id": "EG03",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/A"
+        },
+        "contains": {
+          "$ref": "#/components/schemas/B"
+        }
+      },
+      "refs": [
+        "#/components/schemas/A",
+        "#/components/schemas/B"
+      ],
+      "error": null
+    },
+    {
+      "id": "EG04",
+      "schema": {
+        "properties": {
+          "$ref": {
+            "type": "string"
+          },
+          "x": {
+            "$ref": "#/components/schemas/A"
+          }
+        }
+      },
+      "refs": [
+        "#/components/schemas/A"
+      ],
+      "error": null
+    },
+    {
+      "id": "EG05",
+      "schema": {
+        "$dynamicRef": "#x"
+      },
+      "refs": null,
+      "error": "unsupported_schema_scope"
+    },
+    {
+      "id": "EG06",
+      "schema": {
+        "$id": "other",
+        "type": "object"
+      },
+      "refs": null,
+      "error": "unsupported_schema_scope"
+    },
+    {
+      "id": "EG07",
+      "schema": {
+        "unknownValidation": {
+          "$ref": "#/components/schemas/A"
+        }
+      },
+      "refs": null,
+      "error": "unsupported_schema_keyword"
+    },
+    {
+      "id": "EG08",
+      "schema": false,
+      "refs": [],
+      "error": null
+    },
+    {
+      "id": "EG09",
+      "schema": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "$ref": "#/components/schemas/A"
+          },
+          {
+            "$ref": "#/components/schemas/B"
+          }
+        ],
+        "items": false
+      },
+      "refs": [
+        "#/components/schemas/A",
+        "#/components/schemas/B"
+      ],
+      "error": null
+    },
+    {
+      "id": "EG10",
+      "schema": {
+        "$ref": 5
+      },
+      "refs": null,
+      "error": "invalid_ref"
+    }
+  ],
+  "operation_probes": [
+    {
+      "id": "EO01",
+      "api": {},
+      "item": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Old"
+            }
+          }
+        ]
+      },
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/New"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "refs": [
+          "#/components/schemas/New"
+        ],
+        "websocket": false
+      },
+      "error": null
+    },
+    {
+      "id": "EO02",
+      "api": {},
+      "item": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/A"
+            }
+          }
+        ]
+      },
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/B"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "refs": [
+          "#/components/schemas/A",
+          "#/components/schemas/B"
+        ],
+        "websocket": false
+      },
+      "error": null
+    },
+    {
+      "id": "EO03",
+      "api": {
+        "components": {
+          "parameters": {
+            "P": {
+              "name": "id",
+              "in": "query",
+              "schema": {
+                "$ref": "#/components/schemas/A"
+              }
+            }
+          }
+        }
+      },
+      "item": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/P"
+          }
+        ]
+      },
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        }
+      },
+      "expected": {
+        "refs": [
+          "#/components/schemas/A"
+        ],
+        "websocket": false
+      },
+      "error": null
+    },
+    {
+      "id": "EO04",
+      "api": {
+        "components": {
+          "parameters": {
+            "P": {
+              "$ref": "#/components/parameters/P"
+            }
+          }
+        }
+      },
+      "item": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/P"
+          }
+        ]
+      },
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        }
+      },
+      "expected": null,
+      "error": "component_cycle"
+    },
+    {
+      "id": "EO05",
+      "api": {},
+      "item": {
+        "parameters": [
+          {
+            "$ref": "https://invalid.example/p"
+          }
+        ]
+      },
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        }
+      },
+      "expected": null,
+      "error": "unknown_component_ref"
+    },
+    {
+      "id": "EO06",
+      "api": {},
+      "item": {},
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture",
+            "headers": {
+              "X-Test": {
+                "schema": {
+                  "$ref": "#/components/schemas/A"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/B"
+                }
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "refs": [
+          "#/components/schemas/A",
+          "#/components/schemas/B"
+        ],
+        "websocket": false
+      },
+      "error": null
+    },
+    {
+      "id": "EO07",
+      "api": {},
+      "item": {},
+      "operation": {
+        "responses": {
+          "101": {
+            "description": "fixture"
+          }
+        },
+        "x-ticket-binding-schema": "#/components/schemas/Ticket",
+        "x-websocket-frame-schema": "#/components/schemas/Frame"
+      },
+      "expected": {
+        "refs": [
+          "#/components/schemas/Frame",
+          "#/components/schemas/Ticket"
+        ],
+        "websocket": true
+      },
+      "error": null
+    },
+    {
+      "id": "EO08",
+      "api": {},
+      "item": {},
+      "operation": {
+        "responses": {
+          "101": {
+            "description": "fixture"
+          }
+        },
+        "x-ticket-binding-schema": "#/components/schemas/Ticket"
+      },
+      "expected": null,
+      "error": "missing_ws_model"
+    },
+    {
+      "id": "EO09",
+      "api": {},
+      "item": {},
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        },
+        "x-websocket-frame-schema": "#/components/schemas/Frame"
+      },
+      "expected": null,
+      "error": "unexpected_ws_model"
+    },
+    {
+      "id": "EO10",
+      "api": {},
+      "item": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/A"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/B"
+            }
+          }
+        ]
+      },
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        }
+      },
+      "expected": null,
+      "error": "duplicate_parameter"
+    },
+    {
+      "id": "EO11",
+      "api": {},
+      "item": {},
+      "operation": {
+        "responses": {
+          "200": {
+            "description": "fixture"
+          }
+        },
+        "callbacks": {}
+      },
+      "expected": null,
+      "error": "unsupported_callbacks"
+    },
+    {
+      "id": "EO12",
+      "api": {
+        "components": {
+          "requestBodies": {
+            "Body": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/A"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "Response": {
+              "description": "fixture",
+              "headers": {
+                "X-T": {
+                  "$ref": "#/components/headers/H"
+                }
+              }
+            }
+          },
+          "headers": {
+            "H": {
+              "schema": {
+                "$ref": "#/components/schemas/B"
+              }
+            }
+          }
+        }
+      },
+      "item": {},
+      "operation": {
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Body"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Response"
+          }
+        }
+      },
+      "expected": {
+        "refs": [
+          "#/components/schemas/A",
+          "#/components/schemas/B"
+        ],
+        "websocket": false
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,1318 @@
+{
+  "all_passed": true,
+  "scope": "语义注册元数据及结果形状离线检查",
+  "registry_cases": 47,
+  "result_cases": 23,
+  "synthetic_selector_cases": 8,
+  "business_vector_plans_not_executed": 8,
+  "production_rules_executed": 0,
+  "runtime_tests_executed": 0,
+  "sdk_authority_switched": false,
+  "compiled_base": {
+    "catalog.identity_unique": {
+      "schema_pointer": "#/$defs/CatalogBinding",
+      "instance_pattern": [],
+      "guards": [],
+      "locations": {
+        "entries": {
+          "schema_pointer": "#/$defs/CatalogBinding/properties/entries",
+          "instance_pattern": [
+            {
+              "property": "entries"
+            }
+          ],
+          "guards": []
+        }
+      }
+    },
+    "control.binding_match": {
+      "schema_pointer": "#/$defs/ControlVersion",
+      "instance_pattern": [
+        {
+          "property": "expected_control"
+        }
+      ],
+      "guards": [],
+      "locations": {
+        "control": {
+          "schema_pointer": "#/$defs/ControlVersion",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": []
+        }
+      }
+    },
+    "parameters.capability_valid": {
+      "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+      "instance_pattern": [
+        {
+          "property": "parameters"
+        }
+      ],
+      "guards": [],
+      "locations": {
+        "parameters": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": []
+        }
+      }
+    },
+    "schema.document_approved": {
+      "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+      "instance_pattern": [
+        {
+          "property": "document"
+        }
+      ],
+      "guards": [],
+      "locations": {
+        "document": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": []
+        }
+      }
+    }
+  },
+  "observations": [
+    {
+      "id": "SM01",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/CatalogBinding/properties/entries",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/ControlVersion",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/ControlVersion",
+              "instance_pattern": [
+                {
+                  "property": "expected_control"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM02",
+      "errors": [
+        "schema"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM03",
+      "errors": [
+        "source_digest"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM04",
+      "errors": [
+        "model_ref"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM05",
+      "errors": [
+        "schema"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM06",
+      "errors": [
+        "duplicate_rule",
+        "fixture_binding"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM07",
+      "errors": [
+        "selector_property"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM08",
+      "errors": [
+        "selector_items"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM09",
+      "errors": [
+        "selector_ref"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM10",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/CatalogBinding/properties/entries",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/expected_control",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/CommandRequest/properties/expected_control",
+              "instance_pattern": [
+                {
+                  "property": "expected_control"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM11",
+      "errors": [
+        "phase_context"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM12",
+      "errors": [
+        "phase_context"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM13",
+      "errors": [
+        "context_provider"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM14",
+      "errors": [
+        "context_policy"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM15",
+      "errors": [
+        "context_model"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM16",
+      "errors": [
+        "schema"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM17",
+      "errors": [
+        "opaque_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM18",
+      "errors": [
+        "opaque_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM19",
+      "errors": [
+        "opaque_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM20",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/CatalogBinding/properties/entries",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/ControlVersion",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/ControlVersion",
+              "instance_pattern": [
+                {
+                  "property": "expected_control"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/allOf/1/then/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "if",
+              "schema_pointer": "#/$defs/CommandRequest/allOf/1/if",
+              "instance_pattern": [],
+              "expected": true
+            }
+          ],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/allOf/1/then/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": [
+                {
+                  "kind": "if",
+                  "schema_pointer": "#/$defs/CommandRequest/allOf/1/if",
+                  "instance_pattern": [],
+                  "expected": true
+                }
+              ]
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM21",
+      "errors": [
+        "opaque_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM22",
+      "errors": [
+        "opaque_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM23",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/CatalogBinding/properties/entries",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/ControlVersion",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/ControlVersion",
+              "instance_pattern": [
+                {
+                  "property": "expected_control"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/Payload",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/Payload",
+              "instance_pattern": [],
+              "guards": []
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM24",
+      "errors": [
+        "opaque_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM25",
+      "errors": [
+        "specialized_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM26",
+      "errors": [
+        "selector_branch"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM27",
+      "errors": [
+        "selector_conditional"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM28",
+      "errors": [
+        "schema"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM29",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/Id",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                },
+                {
+                  "items": true
+                },
+                {
+                  "property": "scene_id"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/ControlVersion",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/ControlVersion",
+              "instance_pattern": [
+                {
+                  "property": "expected_control"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM30",
+      "errors": [
+        "reason_location"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM31",
+      "errors": [
+        "fixture_binding",
+        "fixture_coverage",
+        "orphan_fixture"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM32",
+      "errors": [
+        "schema"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM33",
+      "errors": [
+        "schema"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM34",
+      "errors": [
+        "binding_path"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM35",
+      "errors": [
+        "duplicate_context"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM36",
+      "errors": [
+        "duplicate_location"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM37",
+      "errors": [
+        "duplicate_reason"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM38",
+      "errors": [
+        "duplicate_binding"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM39",
+      "errors": [
+        "specialized_context"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM40",
+      "errors": [
+        "selector_property"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM41",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms/anyOf/0",
+          "instance_pattern": [
+            {
+              "property": "uncertainty_ms"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "anyOf",
+              "parent_schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms",
+              "instance_pattern": [
+                {
+                  "property": "uncertainty_ms"
+                }
+              ],
+              "branch_index": 0
+            }
+          ],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms/anyOf/0",
+              "instance_pattern": [
+                {
+                  "property": "uncertainty_ms"
+                }
+              ],
+              "guards": [
+                {
+                  "kind": "anyOf",
+                  "parent_schema_pointer": "#/$defs/ClockSample/properties/uncertainty_ms",
+                  "instance_pattern": [
+                    {
+                      "property": "uncertainty_ms"
+                    }
+                  ],
+                  "branch_index": 0
+                }
+              ]
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/ControlVersion",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/ControlVersion",
+              "instance_pattern": [
+                {
+                  "property": "expected_control"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM42",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/CatalogBinding/properties/entries",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/CommandRequest/allOf/0/else",
+          "instance_pattern": [],
+          "guards": [
+            {
+              "kind": "if",
+              "schema_pointer": "#/$defs/CommandRequest/allOf/0/if",
+              "instance_pattern": [],
+              "expected": false
+            }
+          ],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/CommandRequest/allOf/0/else",
+              "instance_pattern": [],
+              "guards": [
+                {
+                  "kind": "if",
+                  "schema_pointer": "#/$defs/CommandRequest/allOf/0/if",
+                  "instance_pattern": [],
+                  "expected": false
+                }
+              ]
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM43",
+      "errors": [],
+      "compiled_paths": {
+        "catalog.identity_unique": {
+          "schema_pointer": "#/$defs/CatalogBinding",
+          "instance_pattern": [],
+          "guards": [],
+          "locations": {
+            "entries": {
+              "schema_pointer": "#/$defs/CatalogBinding/properties/entries/items/properties/display_name",
+              "instance_pattern": [
+                {
+                  "property": "entries"
+                },
+                {
+                  "items": true
+                },
+                {
+                  "property": "display_name"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "control.binding_match": {
+          "schema_pointer": "#/$defs/ControlVersion",
+          "instance_pattern": [
+            {
+              "property": "expected_control"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "control": {
+              "schema_pointer": "#/$defs/ControlVersion",
+              "instance_pattern": [
+                {
+                  "property": "expected_control"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "parameters.capability_valid": {
+          "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+          "instance_pattern": [
+            {
+              "property": "parameters"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "parameters": {
+              "schema_pointer": "#/$defs/CommandRequest/properties/parameters",
+              "instance_pattern": [
+                {
+                  "property": "parameters"
+                }
+              ],
+              "guards": []
+            }
+          }
+        },
+        "schema.document_approved": {
+          "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+          "instance_pattern": [
+            {
+              "property": "document"
+            }
+          ],
+          "guards": [],
+          "locations": {
+            "document": {
+              "schema_pointer": "#/$defs/SchemaDescriptor/properties/document",
+              "instance_pattern": [
+                {
+                  "property": "document"
+                }
+              ],
+              "guards": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "SM44",
+      "errors": [
+        "specialized_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM45",
+      "errors": [
+        "opaque_boundary"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM46",
+      "errors": [
+        "duplicate_provider"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SM47",
+      "errors": [
+        "fixture_coverage"
+      ],
+      "compiled_paths": null
+    },
+    {
+      "id": "SR01",
+      "errors": []
+    },
+    {
+      "id": "SR02",
+      "errors": []
+    },
+    {
+      "id": "SR03",
+      "errors": []
+    },
+    {
+      "id": "SR04",
+      "errors": []
+    },
+    {
+      "id": "SR05",
+      "errors": []
+    },
+    {
+      "id": "SR06",
+      "errors": []
+    },
+    {
+      "id": "SR07",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR08",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR09",
+      "errors": [
+        "result_reason"
+      ]
+    },
+    {
+      "id": "SR10",
+      "errors": [
+        "result_location"
+      ]
+    },
+    {
+      "id": "SR11",
+      "errors": [
+        "result_context"
+      ]
+    },
+    {
+      "id": "SR12",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR13",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR14",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR15",
+      "errors": [
+        "result_rule"
+      ]
+    },
+    {
+      "id": "SR16",
+      "errors": [
+        "result_revision"
+      ]
+    },
+    {
+      "id": "SR17",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR18",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR19",
+      "errors": [
+        "schema"
+      ]
+    },
+    {
+      "id": "SR20",
+      "errors": []
+    },
+    {
+      "id": "SR21",
+      "errors": []
+    },
+    {
+      "id": "SR22",
+      "errors": []
+    },
+    {
+      "id": "SR23",
+      "errors": [
+        "result_order"
+      ]
+    },
+    {
+      "id": "SS01",
+      "error": null,
+      "compiled_path": {
+        "schema_pointer": "#/$defs/Row/oneOf/0/properties/a~1b~0c",
+        "instance_pattern": [
+          {
+            "property": "rows"
+          },
+          {
+            "items": true
+          },
+          {
+            "property": "a/b~c"
+          }
+        ],
+        "guards": [
+          {
+            "kind": "oneOf",
+            "parent_schema_pointer": "#/$defs/Row",
+            "instance_pattern": [
+              {
+                "property": "rows"
+              },
+              {
+                "items": true
+              }
+            ],
+            "branch_index": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "SS02",
+      "error": null,
+      "compiled_path": {
+        "schema_pointer": "#/$defs/Row/then",
+        "instance_pattern": [
+          {
+            "property": "rows"
+          },
+          {
+            "items": true
+          }
+        ],
+        "guards": [
+          {
+            "kind": "if",
+            "schema_pointer": "#/$defs/Row/if",
+            "instance_pattern": [
+              {
+                "property": "rows"
+              },
+              {
+                "items": true
+              }
+            ],
+            "expected": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "SS03",
+      "error": "opaque_boundary",
+      "compiled_path": null
+    },
+    {
+      "id": "SS04",
+      "error": "selector_ref",
+      "compiled_path": null
+    },
+    {
+      "id": "SS05",
+      "error": "model_ref",
+      "compiled_path": null
+    },
+    {
+      "id": "SS06",
+      "error": "selector_node",
+      "compiled_path": null
+    },
+    {
+      "id": "SS07",
+      "error": "selector_branch",
+      "compiled_path": null
+    },
+    {
+      "id": "SS08",
+      "error": null,
+      "compiled_path": {
+        "schema_pointer": "#/$defs/Row/else",
+        "instance_pattern": [
+          {
+            "property": "rows"
+          },
+          {
+            "items": true
+          }
+        ],
+        "guards": [
+          {
+            "kind": "if",
+            "schema_pointer": "#/$defs/Row/if",
+            "instance_pattern": [
+              {
+                "property": "rows"
+              },
+              {
+                "items": true
+              }
+            ],
+            "expected": false
+          }
+        ]
+      }
+    }
+  ],
+  "input_sha256": {
+    "docs/contracts/df01-source/SEMANTIC_REGISTRY.md": "5648c2f9875d1aa079a67c694845bcf36aa733adcdabfaff9aed94a1aa97cfa1",
+    "docs/contracts/df01-source/semantic-registry.schema.json": "08180417cc5f8d787fcb0ea8c8851a58edc01673995e342f7731a70287d3ab4d",
+    "docs/contracts/df01-source/semantic-registry-cases.json": "7ccaeba0b4114c7c1af864817f5435850e2010842db991fe7c3af1ead5930c1f",
+    "docs/contracts/df01-source/check_semantic_registry.py": "f499b2a59b569aa8f1a1e38d7adb4daff543c019114051354c36c3e40b60f77d",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+  }
+}

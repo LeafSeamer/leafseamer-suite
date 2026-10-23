@@ -1,0 +1,493 @@
+{
+  "approved": false,
+  "all_passed": true,
+  "cases_passed": 92,
+  "checks": [
+    {
+      "name": "生成字节",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "14帧正例HELLO",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧HELLO",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例ACCEPT",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧ACCEPT",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例CONFIGURE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧CONFIGURE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例CONFIG_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧CONFIG_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例POLL",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧POLL",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例POLL_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧POLL_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例CAPTURE_REPORT",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧CAPTURE_REPORT",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例REPORT_STORED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧REPORT_STORED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例QUERY_CAPTURE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧QUERY_CAPTURE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例CAPTURE_STATUS",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧CAPTURE_STATUS",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例QUERY_COMMIT",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧QUERY_COMMIT",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例COMMIT_STATUS",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧COMMIT_STATUS",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例STOP",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧STOP",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "14帧正例STOP_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧帧STOP_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "缺新特性HELLOordered_stop_cut",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "缺新特性HELLOpoll_ordinal_retention",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "缺新特性ACCEPTordered_stop_cut",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "缺新特性ACCEPTpoll_ordinal_retention",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "STOP缺字段cut_sequence",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "STOP缺字段last_poll_ordinal",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "拒旧集合语义",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧STOP对reported发生集合冲突",
+      "observed": "coverage",
+      "expected": "coverage"
+    },
+    {
+      "name": "旧reported未持久却允许下一采样",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "一次消费",
+      "observed": "io_allowed_once",
+      "expected": "io_allowed_once"
+    },
+    {
+      "name": "报告",
+      "observed": "reported",
+      "expected": "reported"
+    },
+    {
+      "name": "报告未达核心仍能STOP",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "STOP后不可消费",
+      "observed": "stopped",
+      "expected": "stopped"
+    },
+    {
+      "name": "STOP不删除未决原件",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "同STOP重复只回原ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "重复STOP不再发送",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "不能换新stop身份覆盖原ACK",
+      "observed": "stop_conflict",
+      "expected": "stop_conflict"
+    },
+    {
+      "name": "原STOP在后续消息后仍可查",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "STOP先到",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "STOP先到不发送",
+      "observed": "stopped",
+      "expected": "stopped"
+    },
+    {
+      "name": "发送数为零",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "切点错配sequence",
+      "observed": "sequence",
+      "expected": "sequence"
+    },
+    {
+      "name": "错配仍关闸sequence",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "协议故障不自行恢复sequence",
+      "observed": "retire_required",
+      "expected": "retire_required"
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "切点错配cut",
+      "observed": "retire_required",
+      "expected": "retire_required"
+    },
+    {
+      "name": "错配仍关闸cut",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "协议故障不自行恢复cut",
+      "observed": "retire_required",
+      "expected": "retire_required"
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "切点错配ordinal",
+      "observed": "retire_required",
+      "expected": "retire_required"
+    },
+    {
+      "name": "错配仍关闸ordinal",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "协议故障不自行恢复ordinal",
+      "observed": "retire_required",
+      "expected": "retire_required"
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "切点错配config",
+      "observed": "stop_binding",
+      "expected": "stop_binding"
+    },
+    {
+      "name": "错配仍关闸config",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "协议故障不自行恢复config",
+      "observed": "retire_required",
+      "expected": "retire_required"
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "reported占单飞槽",
+      "observed": "capacity",
+      "expected": "capacity"
+    },
+    {
+      "name": "容量拒绝仍消耗ordinal",
+      "observed": 2,
+      "expected": 2
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "精确持久回执释放",
+      "observed": "released",
+      "expected": "released"
+    },
+    {
+      "name": "释放后本机详情有界",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "新帧旧ordinal不重发",
+      "observed": "old_poll",
+      "expected": "old_poll"
+    },
+    {
+      "name": "新ordinal可保留新采样",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "保留最后m1的间隔边界",
+      "observed": "interval",
+      "expected": "interval"
+    },
+    {
+      "name": "间隔等号可发送",
+      "observed": "io_allowed_once",
+      "expected": "io_allowed_once"
+    },
+    {
+      "name": "总发送只两次",
+      "observed": 2,
+      "expected": 2
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "无可信回执不释放",
+      "observed": "authority",
+      "expected": "authority"
+    },
+    {
+      "name": "仍保留原件",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "新实例接受第一POLL",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "poll跳号关闭",
+      "observed": "poll_gap",
+      "expected": "poll_gap"
+    },
+    {
+      "name": "跳号无后续发送",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒失效身份peer_verified",
+      "observed": "identity",
+      "expected": "identity"
+    },
+    {
+      "name": "拒失效身份runtime_valid",
+      "observed": "identity",
+      "expected": "identity"
+    },
+    {
+      "name": "容量等号允许",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "别名源不绕过占用",
+      "observed": "source_busy",
+      "expected": "source_busy"
+    },
+    {
+      "name": "核心全局在途限制",
+      "observed": "outstanding",
+      "expected": "outstanding"
+    },
+    {
+      "name": "核心来源数量限制",
+      "observed": "sources",
+      "expected": "sources"
+    },
+    {
+      "name": "核心字节不足",
+      "observed": "bytes",
+      "expected": "bytes"
+    }
+  ],
+  "runtime_validation": {
+    "ipc": 0,
+    "ntp": 0,
+    "sqlite": 0,
+    "cryptography": 0,
+    "process_retirement": 0,
+    "device": 0
+  },
+  "inputs": {
+    "docs/contracts/df03-collector/CHANNEL_V02.md": "715999a5a19c38a9e965b4685af277422a671fae7fffd514318e57f0c732da13",
+    "docs/contracts/df03-collector/build_channel_v02.py": "246346914ba68be2d2ae9e7fc03ad26a86d3de125585f21cfabad6a3972142b8",
+    "docs/contracts/df03-collector/check_channel_v02.py": "89c26da3b33594bdf07b9b26d0b872d751ae59088703cf8268a9ee29740f5fdd",
+    "docs/contracts/df03-collector/channel-v02.schema.json": "2d7e11d1697ac7dd412f867c64f1c64e643d5ec7242e5c933c85ffb958333885",
+    "docs/contracts/df03-collector/README.md": "3bf0b26c5bccc1d7fbaec923f0078dda687b67971177e2d67d0027d8ab920936",
+    "docs/contracts/df03-collector/build_contracts.py": "9c7d60b1738a0587b5b142112eee4d7e316250773e89565ae6d6d4d5e2f446f4",
+    "docs/contracts/df03-collector/collector.schema.json": "ba93e191f991257e90533da553acd783886c3ccb5f9356083c8539334100f049",
+    "docs/contracts/df03-collector/reference_model.py": "2d7189670b9b01cad8de7776f1e889f5688f570439ab21ceb7f5c146e9684bb8",
+    "docs/contracts/df03-collector/check_contracts.py": "68b96ec8aa694280c282dd9412e9860790ec4bd9e0814bfb6f9f06ba52b8f3a8",
+    "docs/contracts/df03-reference/build_contracts.py": "9e5801a567d8cd5f5181ccbcb68cc3be082cdac4010ff9fd737e3d0125bebb8b",
+    "docs/contracts/df03-reference/reference.schema.json": "a5265f970647ab31a2289339b3c4dac17873e17dbf74b7dc2b4f115d02946a40",
+    "docs/contracts/df03-reference/reference_model.py": "40d0dd9295c65499072a1c9fdc993d27f10b497a456334f48a8171bf59c32a2f",
+    "docs/contracts/df03-reference/check_contracts.py": "33ff456fecc9301da66d9d05bc5fad616ce58e1df1a6a7c037b2734607e9c872",
+    "docs/contracts/df03-service/build_contracts.py": "f5d03021aad382e08fe5d2939d33032d3d49db69dca86570245f05f14f014c08",
+    "docs/contracts/df02-supervisor/supervisor.schema.json": "ba848f2245140294fa20fbcc7cae9f4f18a8afb7a96aee809522ed70556a7091",
+    "docs/rebirth-df03-time-profile-design.md": "88608760e8c740bd76d264f3363f0bd9f6d123adb7fa4e4dc6d3890f200ba918"
+  }
+}

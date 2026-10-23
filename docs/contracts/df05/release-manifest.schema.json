@@ -1,0 +1,625 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DF05 候选发布清单；不构成发布授权",
+  "type": "object",
+  "properties": {
+    "manifest_schema": {
+      "const": "native-release/0.1.0-draft.1"
+    },
+    "release_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])",
+      "maxLength": 256
+    },
+    "release_sequence": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])",
+      "maxLength": 256
+    },
+    "channel": {
+      "enum": [
+        "preview",
+        "stable"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z(?![\\s\\S])"
+    },
+    "target_profile_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}(?![\\s\\S])",
+      "maxLength": 256
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "leafseamer": {
+          "$ref": "#/$defs/component"
+        },
+        "leafseamer-controller": {
+          "$ref": "#/$defs/component"
+        },
+        "leafseamer-gui": {
+          "$ref": "#/$defs/component"
+        },
+        "leafseamer-sdk": {
+          "$ref": "#/$defs/component"
+        },
+        "leafseamer-suite": {
+          "$ref": "#/$defs/component"
+        }
+      },
+      "required": [
+        "leafseamer",
+        "leafseamer-controller",
+        "leafseamer-gui",
+        "leafseamer-sdk",
+        "leafseamer-suite"
+      ],
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "os": {
+          "enum": [
+            "windows",
+            "linux"
+          ]
+        },
+        "arch": {
+          "enum": [
+            "x64",
+            "arm64"
+          ]
+        },
+        "libc": {
+          "enum": [
+            null,
+            "glibc",
+            "musl"
+          ]
+        },
+        "tested_environment_ref": {
+          "$ref": "#/$defs/path"
+        },
+        "required_cpu_features": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+(?![\\s\\S])",
+            "maxLength": 256
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "container_image_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "os",
+        "arch",
+        "libc",
+        "tested_environment_ref",
+        "required_cpu_features",
+        "container_image_digest"
+      ],
+      "additionalProperties": false
+    },
+    "protocols": {
+      "type": "object",
+      "properties": {
+        "public": {
+          "$ref": "#/$defs/version"
+        },
+        "ipc": {
+          "type": "string",
+          "pattern": "^ipc/[A-Za-z0-9.-]+(?![\\s\\S])",
+          "maxLength": 256
+        },
+        "bootstrap": {
+          "type": "string",
+          "pattern": "^bootstrap/[A-Za-z0-9.-]+(?![\\s\\S])",
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "public",
+        "ipc",
+        "bootstrap"
+      ],
+      "additionalProperties": false
+    },
+    "db_compatibility": {
+      "type": "object",
+      "properties": {
+        "controller": {
+          "$ref": "#/$defs/db"
+        },
+        "seamer": {
+          "$ref": "#/$defs/db"
+        }
+      },
+      "required": [
+        "controller",
+        "seamer"
+      ],
+      "additionalProperties": false
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "node_version": {
+          "$ref": "#/$defs/version"
+        },
+        "npm_version": {
+          "$ref": "#/$defs/version"
+        },
+        "openssl_version": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.+-]+(?![\\s\\S])",
+          "maxLength": 256
+        },
+        "artifact_path": {
+          "$ref": "#/$defs/path"
+        }
+      },
+      "required": [
+        "node_version",
+        "npm_version",
+        "openssl_version",
+        "artifact_path"
+      ],
+      "additionalProperties": false
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "toolchain_manifest_path": {
+          "$ref": "#/$defs/path"
+        }
+      },
+      "required": [
+        "toolchain_manifest_path"
+      ],
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "dynamic_dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependency"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "capabilities": {
+      "type": "object",
+      "properties": {
+        "sqlite": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "$ref": "#/$defs/version"
+            },
+            "source_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "compile_options_digest": {
+              "$ref": "#/$defs/hash"
+            },
+            "expected_pragmas": {
+              "type": "object",
+              "properties": {
+                "journal_mode": {
+                  "const": "wal"
+                },
+                "synchronous": {
+                  "const": "FULL"
+                },
+                "foreign_keys": {
+                  "const": true
+                },
+                "busy_timeout": {
+                  "const": 0
+                },
+                "wal_autocheckpoint": {
+                  "const": 0
+                }
+              },
+              "required": [
+                "journal_mode",
+                "synchronous",
+                "foreign_keys",
+                "busy_timeout",
+                "wal_autocheckpoint"
+              ],
+              "additionalProperties": false
+            },
+            "report_path": {
+              "$ref": "#/$defs/path"
+            }
+          },
+          "required": [
+            "version",
+            "source_id",
+            "compile_options_digest",
+            "expected_pragmas",
+            "report_path"
+          ],
+          "additionalProperties": false
+        },
+        "argon2": {
+          "type": "object",
+          "properties": {
+            "reference_commit": {
+              "$ref": "#/$defs/commit"
+            },
+            "report_path": {
+              "$ref": "#/$defs/path"
+            }
+          },
+          "required": [
+            "reference_commit",
+            "report_path"
+          ],
+          "additionalProperties": false
+        },
+        "clock": {
+          "type": "object",
+          "properties": {
+            "adapter_abi": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+(?![\\s\\S])",
+              "maxLength": 256
+            },
+            "backend_profile_id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+(?![\\s\\S])",
+              "maxLength": 256
+            },
+            "report_path": {
+              "$ref": "#/$defs/path"
+            }
+          },
+          "required": [
+            "adapter_abi",
+            "backend_profile_id",
+            "report_path"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "sqlite",
+        "argon2",
+        "clock"
+      ],
+      "additionalProperties": false
+    },
+    "reports": {
+      "type": "object",
+      "properties": {
+        "sbom_path": {
+          "$ref": "#/$defs/path"
+        },
+        "license_bundle_path": {
+          "$ref": "#/$defs/path"
+        },
+        "acceptance_path": {
+          "$ref": "#/$defs/path"
+        },
+        "provenance_path": {
+          "$ref": "#/$defs/path"
+        }
+      },
+      "required": [
+        "sbom_path",
+        "license_bundle_path",
+        "acceptance_path",
+        "provenance_path"
+      ],
+      "additionalProperties": false
+    },
+    "reproducibility": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "unverified",
+            "verified"
+          ]
+        },
+        "comparison_target": {
+          "const": "unsigned_payload"
+        },
+        "report_path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "comparison_target",
+        "report_path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "manifest_schema",
+    "release_id",
+    "release_sequence",
+    "channel",
+    "created_at",
+    "target_profile_id",
+    "components",
+    "target",
+    "protocols",
+    "db_compatibility",
+    "runtime",
+    "build",
+    "artifacts",
+    "dynamic_dependencies",
+    "capabilities",
+    "reports",
+    "reproducibility"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "path": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:/[A-Za-z0-9_][A-Za-z0-9_.-]*)*(?![\\s\\S])",
+      "maxLength": 256
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])",
+      "maxLength": 256
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?![\\s\\S])",
+      "maxLength": 256
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})(?![\\s\\S])",
+      "maxLength": 256
+    },
+    "component": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "source_commit": {
+          "$ref": "#/$defs/commit"
+        },
+        "source_archive_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "lockfile_sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "version",
+        "source_commit",
+        "source_archive_sha256",
+        "lockfile_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "abi": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "none"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "node_api"
+            },
+            "napi_version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          "required": [
+            "kind",
+            "napi_version"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "node_module_abi"
+            },
+            "modules_abi": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            }
+          },
+          "required": [
+            "kind",
+            "modules_abi"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "role": {
+          "enum": [
+            "runtime",
+            "native_addon",
+            "native_helper",
+            "app",
+            "gui",
+            "module",
+            "build_metadata",
+            "report",
+            "license",
+            "sbom",
+            "provenance"
+          ]
+        },
+        "component": {
+          "enum": [
+            "leafseamer",
+            "leafseamer-controller",
+            "leafseamer-gui",
+            "leafseamer-sdk",
+            "leafseamer-suite"
+          ]
+        },
+        "abi": {
+          "$ref": "#/$defs/abi"
+        }
+      },
+      "required": [
+        "path",
+        "size_bytes",
+        "sha256",
+        "role",
+        "component",
+        "abi"
+      ],
+      "additionalProperties": false
+    },
+    "db": {
+      "type": "object",
+      "properties": {
+        "read_schema_revisions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])",
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "write_schema_revisions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])",
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "read_schema_revisions",
+        "write_schema_revisions"
+      ],
+      "additionalProperties": false
+    },
+    "dependency": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "bundled"
+            },
+            "artifact_path": {
+              "$ref": "#/$defs/path"
+            }
+          },
+          "required": [
+            "kind",
+            "artifact_path"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "host"
+            },
+            "name": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+(?![\\s\\S])",
+              "maxLength": 256
+            },
+            "requirement": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "environment_report_path": {
+              "$ref": "#/$defs/path"
+            }
+          },
+          "required": [
+            "kind",
+            "name",
+            "requirement",
+            "environment_report_path"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

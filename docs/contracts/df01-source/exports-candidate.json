@@ -1,0 +1,4813 @@
+{
+  "format_version": "sdk-exports/0.1.0-draft.1",
+  "approved": false,
+  "authority_switched": false,
+  "scope": "draft4_design_candidate",
+  "source_sha256": {
+    "public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "ipc.schema.json": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705",
+    "http/controller.operations.json": "603e6f3555fd19e76761bbb0dbe808dbd880036dbe119b11f3f98c2009eb72cb",
+    "http/seamer.operations.json": "3840cca04f99c00942897a42b08293db8727d93c0c1151d10ff339376a188136"
+  },
+  "operations": {
+    "controller:acceptTransfer": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/devices/{device_id}/control/transfers/{transfer_id}/accept",
+      "operation_id": "acceptTransfer",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1transfers~1{transfer_id}~1accept/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "control.accept",
+      "roots": [
+        "public/ControlOperationResponse",
+        "public/ErrorResponse",
+        "public/Id",
+        "public/TransferAcceptRequest"
+      ]
+    },
+    "controller:acquireControl": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/devices/{device_id}/control/acquire",
+      "operation_id": "acquireControl",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1acquire/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "control.acquire",
+      "roots": [
+        "public/AcquireRequest",
+        "public/ControlOperationResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:bootstrap": {
+      "service": "controller",
+      "method": "post",
+      "path": "/auth/bootstrap",
+      "operation_id": "bootstrap",
+      "source_pointer": "/paths/~1auth~1bootstrap/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [],
+      "permission": "auth.bootstrap",
+      "roots": [
+        "public/BootstrapRequest",
+        "public/ErrorResponse",
+        "public/SessionResponse"
+      ]
+    },
+    "controller:cancelCommand": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/commands/{command_id}/cancel",
+      "operation_id": "cancelCommand",
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}~1cancel/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "command.cancel",
+      "roots": [
+        "public/CancelOperationResponse",
+        "public/CancelRequest",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:createRequestContext": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/request-contexts",
+      "operation_id": "createRequestContext",
+      "source_pointer": "/paths/~1api~1v1~1request-contexts/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "request.create",
+      "roots": [
+        "public/ErrorResponse",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse"
+      ]
+    },
+    "controller:createSubscription": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/subscriptions",
+      "operation_id": "createSubscription",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse"
+      ]
+    },
+    "controller:getCapabilities": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/devices/{device_id}/capabilities",
+      "operation_id": "getCapabilities",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1capabilities/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "device.read",
+      "roots": [
+        "public/CapabilityCatalogResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:getCapacity": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/capacity",
+      "operation_id": "getCapacity",
+      "source_pointer": "/paths/~1api~1v1~1capacity/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/CapacityStatusResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "controller:getClock": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/clock",
+      "operation_id": "getClock",
+      "source_pointer": "/paths/~1api~1v1~1clock/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ClockStatusResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "controller:getClockAssessment": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/clock-assessment",
+      "operation_id": "getClockAssessment",
+      "source_pointer": "/paths/~1api~1v1~1clock-assessment/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ClockAssessmentResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "controller:getClockDomainDescriptor": {
+      "service": "controller",
+      "method": "get",
+      "path": "/internal/clock-domain",
+      "operation_id": "getClockDomainDescriptor",
+      "source_pointer": "/paths/~1internal~1clock-domain/get",
+      "transport": "http",
+      "entrypoint": "./internal/controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ClockDomainDescriptorResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "controller:getClockSample": {
+      "service": "controller",
+      "method": "get",
+      "path": "/internal/clock-samples/{sample_id}",
+      "operation_id": "getClockSample",
+      "source_pointer": "/paths/~1internal~1clock-samples~1{sample_id}/get",
+      "transport": "http",
+      "entrypoint": "./internal/controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ClockSampleResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:getCommand": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/commands/{command_id}",
+      "operation_id": "getCommand",
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "device.read",
+      "roots": [
+        "public/CommandRecordResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:getCommandEvidence": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/commands/{command_id}/evidence",
+      "operation_id": "getCommandEvidence",
+      "source_pointer": "/paths/~1api~1v1~1commands~1{command_id}~1evidence/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "command.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/EvidencePageResponse",
+        "public/Id"
+      ]
+    },
+    "controller:getControl": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/devices/{device_id}/control",
+      "operation_id": "getControl",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "control.read",
+      "roots": [
+        "public/ControlRecordResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:getControlOperation": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/control-operations/{operation_id}",
+      "operation_id": "getControlOperation",
+      "source_pointer": "/paths/~1api~1v1~1control-operations~1{operation_id}/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "control.read",
+      "roots": [
+        "public/ControlOperationResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:getDeviceState": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/devices/{device_id}/state",
+      "operation_id": "getDeviceState",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1state/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "device.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/ObservationResponse"
+      ]
+    },
+    "controller:getMeta": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/meta",
+      "operation_id": "getMeta",
+      "source_pointer": "/paths/~1api~1v1~1meta/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/MetaResponse"
+      ]
+    },
+    "controller:getRevocation": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/auth/revocations/{operation_id}",
+      "operation_id": "getRevocation",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations~1{operation_id}/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "auth.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/RevocationRecordResponse"
+      ]
+    },
+    "controller:getSceneCatalog": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/devices/{device_id}/scene-catalog",
+      "operation_id": "getSceneCatalog",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1scene-catalog/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "device.read",
+      "roots": [
+        "public/CatalogBindingResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:getSession": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/session",
+      "operation_id": "getSession",
+      "source_pointer": "/paths/~1api~1v1~1session/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "session.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/SessionResponse"
+      ]
+    },
+    "controller:getSnapshot": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/subscriptions/{subscription_id}/snapshot",
+      "operation_id": "getSnapshot",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions~1{subscription_id}~1snapshot/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/SnapshotResponse"
+      ]
+    },
+    "controller:getSubject": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/subjects/{subject_id}",
+      "operation_id": "getSubject",
+      "source_pointer": "/paths/~1api~1v1~1subjects~1{subject_id}/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "identity.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/SubjectRecordResponse"
+      ]
+    },
+    "controller:getTimeBoundEvidence": {
+      "service": "controller",
+      "method": "get",
+      "path": "/internal/time-evidence/{evidence_id}",
+      "operation_id": "getTimeBoundEvidence",
+      "source_pointer": "/paths/~1internal~1time-evidence~1{evidence_id}/get",
+      "transport": "http",
+      "entrypoint": "./internal/controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/TimeBoundEvidenceResponse"
+      ]
+    },
+    "controller:getTimeBoundProfile": {
+      "service": "controller",
+      "method": "get",
+      "path": "/internal/time-profiles/{profile_id}/{revision}",
+      "operation_id": "getTimeBoundProfile",
+      "source_pointer": "/paths/~1internal~1time-profiles~1{profile_id}~1{revision}/get",
+      "transport": "http",
+      "entrypoint": "./internal/controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/Revision",
+        "public/TimeBoundProfileResponse"
+      ]
+    },
+    "controller:introspect": {
+      "service": "controller",
+      "method": "post",
+      "path": "/internal/auth/introspect",
+      "operation_id": "introspect",
+      "source_pointer": "/paths/~1internal~1auth~1introspect/post",
+      "transport": "http",
+      "entrypoint": "./internal/controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "auth.introspect",
+      "roots": [
+        "public/ErrorResponse",
+        "public/IntrospectRequest",
+        "public/IntrospectResultResponse"
+      ]
+    },
+    "controller:issueToken": {
+      "service": "controller",
+      "method": "post",
+      "path": "/auth/service-tokens",
+      "operation_id": "issueToken",
+      "source_pointer": "/paths/~1auth~1service-tokens/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "sessionCookie": [],
+          "csrfHeader": []
+        }
+      ],
+      "permission": "auth.issueToken",
+      "roots": [
+        "public/ErrorResponse",
+        "public/TokenRequest",
+        "public/TokenResultResponse"
+      ]
+    },
+    "controller:issueWsTicket": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/ws-tickets",
+      "operation_id": "issueWsTicket",
+      "source_pointer": "/paths/~1api~1v1~1ws-tickets/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "subscription.create",
+      "roots": [
+        "public/ErrorResponse",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResultResponse"
+      ]
+    },
+    "controller:listDevices": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/devices",
+      "operation_id": "listDevices",
+      "source_pointer": "/paths/~1api~1v1~1devices/get",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "device.read",
+      "roots": [
+        "public/DevicePageResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "controller:login": {
+      "service": "controller",
+      "method": "post",
+      "path": "/auth/sessions",
+      "operation_id": "login",
+      "source_pointer": "/paths/~1auth~1sessions/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [],
+      "permission": "auth.login",
+      "roots": [
+        "public/ErrorResponse",
+        "public/LoginRequest",
+        "public/SessionResponse"
+      ]
+    },
+    "controller:offerTransfer": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/devices/{device_id}/control/transfers",
+      "operation_id": "offerTransfer",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1transfers/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "control.transfer",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/TransferOfferResponse",
+        "public/TransferRequest"
+      ]
+    },
+    "controller:openEvents": {
+      "service": "controller",
+      "method": "get",
+      "path": "/api/v1/events",
+      "operation_id": "openEvents",
+      "source_pointer": "/paths/~1api~1v1~1events/get",
+      "transport": "websocket",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "wsTicketHeader": []
+        }
+      ],
+      "permission": null,
+      "roots": [
+        "public/ErrorResponse",
+        "public/WsFrame",
+        "public/WsTicketBinding"
+      ]
+    },
+    "controller:refreshSession": {
+      "service": "controller",
+      "method": "post",
+      "path": "/auth/sessions/refresh",
+      "operation_id": "refreshSession",
+      "source_pointer": "/paths/~1auth~1sessions~1refresh/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "sessionCookie": [],
+          "csrfHeader": []
+        }
+      ],
+      "permission": "auth.refreshSession",
+      "roots": [
+        "public/ErrorResponse",
+        "public/RefreshRequest",
+        "public/SessionResponse"
+      ]
+    },
+    "controller:releaseControl": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/devices/{device_id}/control/release",
+      "operation_id": "releaseControl",
+      "source_pointer": "/paths/~1api~1v1~1devices~1{device_id}~1control~1release/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "control.release",
+      "roots": [
+        "public/ControlOperationResponse",
+        "public/ErrorResponse",
+        "public/Id",
+        "public/ReleaseRequest"
+      ]
+    },
+    "controller:revokeAuthorization": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/auth/revocations",
+      "operation_id": "revokeAuthorization",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "auth.manage",
+      "roots": [
+        "public/ErrorResponse",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest"
+      ]
+    },
+    "controller:revokeRunGrant": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/run-grants/{grant_id}/revoke",
+      "operation_id": "revokeRunGrant",
+      "source_pointer": "/paths/~1api~1v1~1run-grants~1{grant_id}~1revoke/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "grant.revoke",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/MutationReceiptResponse",
+        "public/RevokeRequest"
+      ]
+    },
+    "controller:setCapacity": {
+      "service": "controller",
+      "method": "put",
+      "path": "/api/v1/capacity/profile",
+      "operation_id": "setCapacity",
+      "source_pointer": "/paths/~1api~1v1~1capacity~1profile/put",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "capacity.manage",
+      "roots": [
+        "public/CapacityUpdate",
+        "public/ErrorResponse",
+        "public/MutationReceiptResponse"
+      ]
+    },
+    "controller:submitCommand": {
+      "service": "controller",
+      "method": "post",
+      "path": "/api/v1/commands",
+      "operation_id": "submitCommand",
+      "source_pointer": "/paths/~1api~1v1~1commands/post",
+      "transport": "http",
+      "entrypoint": "./controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "device.command",
+      "roots": [
+        "public/CommandRecordResponse",
+        "public/CommandRequest",
+        "public/ErrorResponse"
+      ]
+    },
+    "controller:updateRunGrant": {
+      "service": "controller",
+      "method": "put",
+      "path": "/api/v1/run-grants/{grant_id}",
+      "operation_id": "updateRunGrant",
+      "source_pointer": "/paths/~1api~1v1~1run-grants~1{grant_id}/put",
+      "transport": "http",
+      "entrypoint": "./seamer-controller",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "grant.manage",
+      "roots": [
+        "public/ErrorResponse",
+        "public/GrantUpdate",
+        "public/Id",
+        "public/MutationReceiptResponse"
+      ]
+    },
+    "seamer:armRun": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/runs/{run_id}/arm",
+      "operation_id": "armRun",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1arm/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.arm",
+      "roots": [
+        "public/ArmRequest",
+        "public/ErrorResponse",
+        "public/Id",
+        "public/MutationReceiptResponse"
+      ]
+    },
+    "seamer:createDefinition": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/definitions",
+      "operation_id": "createDefinition",
+      "source_pointer": "/paths/~1api~1v1~1definitions/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "definition.edit",
+      "roots": [
+        "public/DefinitionCreate",
+        "public/DefinitionRecordResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "seamer:createRequestContext": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/request-contexts",
+      "operation_id": "createRequestContext",
+      "source_pointer": "/paths/~1api~1v1~1request-contexts/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "request.create",
+      "roots": [
+        "public/ErrorResponse",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse"
+      ]
+    },
+    "seamer:createRun": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/runs",
+      "operation_id": "createRun",
+      "source_pointer": "/paths/~1api~1v1~1runs/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.manage",
+      "roots": [
+        "public/ErrorResponse",
+        "public/RunCreate",
+        "public/RunRecordResponse"
+      ]
+    },
+    "seamer:createSubscription": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/subscriptions",
+      "operation_id": "createSubscription",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse"
+      ]
+    },
+    "seamer:getCapacity": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/capacity",
+      "operation_id": "getCapacity",
+      "source_pointer": "/paths/~1api~1v1~1capacity/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/CapacityStatusResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "seamer:getClock": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/clock",
+      "operation_id": "getClock",
+      "source_pointer": "/paths/~1api~1v1~1clock/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ClockStatusResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "seamer:getClockAssessment": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/clock-assessment",
+      "operation_id": "getClockAssessment",
+      "source_pointer": "/paths/~1api~1v1~1clock-assessment/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ClockAssessmentResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "seamer:getClockDomainDescriptor": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/internal/clock-domain",
+      "operation_id": "getClockDomainDescriptor",
+      "source_pointer": "/paths/~1internal~1clock-domain/get",
+      "transport": "http",
+      "entrypoint": "./internal/seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ClockDomainDescriptorResponse",
+        "public/ErrorResponse"
+      ]
+    },
+    "seamer:getClockSample": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/internal/clock-samples/{sample_id}",
+      "operation_id": "getClockSample",
+      "source_pointer": "/paths/~1internal~1clock-samples~1{sample_id}/get",
+      "transport": "http",
+      "entrypoint": "./internal/seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ClockSampleResponse",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "seamer:getIndependenceProof": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/definitions/{definition_id}/proofs/{proof_id}",
+      "operation_id": "getIndependenceProof",
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1proofs~1{proof_id}/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "definition.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/IndependenceProofResponse"
+      ]
+    },
+    "seamer:getMeta": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/meta",
+      "operation_id": "getMeta",
+      "source_pointer": "/paths/~1api~1v1~1meta/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/MetaResponse"
+      ]
+    },
+    "seamer:getRecoveryOperation": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/recovery-operations/{operation_id}",
+      "operation_id": "getRecoveryOperation",
+      "source_pointer": "/paths/~1api~1v1~1recovery-operations~1{operation_id}/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/RecoveryOperationResponse"
+      ]
+    },
+    "seamer:getRevocation": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/auth/revocations/{operation_id}",
+      "operation_id": "getRevocation",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations~1{operation_id}/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "auth.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/RevocationRecordResponse"
+      ]
+    },
+    "seamer:getRun": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/runs/{run_id}",
+      "operation_id": "getRun",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/RunRecordResponse"
+      ]
+    },
+    "seamer:getSession": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/session",
+      "operation_id": "getSession",
+      "source_pointer": "/paths/~1api~1v1~1session/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "session.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/SessionResponse"
+      ]
+    },
+    "seamer:getSnapshot": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/subscriptions/{subscription_id}/snapshot",
+      "operation_id": "getSnapshot",
+      "source_pointer": "/paths/~1api~1v1~1subscriptions~1{subscription_id}~1snapshot/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "status.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/SnapshotResponse"
+      ]
+    },
+    "seamer:getSubject": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/subjects/{subject_id}",
+      "operation_id": "getSubject",
+      "source_pointer": "/paths/~1api~1v1~1subjects~1{subject_id}/get",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "identity.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/SubjectRecordResponse"
+      ]
+    },
+    "seamer:getTimeBoundEvidence": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/internal/time-evidence/{evidence_id}",
+      "operation_id": "getTimeBoundEvidence",
+      "source_pointer": "/paths/~1internal~1time-evidence~1{evidence_id}/get",
+      "transport": "http",
+      "entrypoint": "./internal/seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/TimeBoundEvidenceResponse"
+      ]
+    },
+    "seamer:getTimeBoundProfile": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/internal/time-profiles/{profile_id}/{revision}",
+      "operation_id": "getTimeBoundProfile",
+      "source_pointer": "/paths/~1internal~1time-profiles~1{profile_id}~1{revision}/get",
+      "transport": "http",
+      "entrypoint": "./internal/seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "serviceMtls": []
+        }
+      ],
+      "permission": "clock.internal.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/Revision",
+        "public/TimeBoundProfileResponse"
+      ]
+    },
+    "seamer:ingestEvent": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/providers/{provider_id}/events",
+      "operation_id": "ingestEvent",
+      "source_pointer": "/paths/~1api~1v1~1providers~1{provider_id}~1events/post",
+      "transport": "http",
+      "entrypoint": "./provider",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "provider.publish",
+      "roots": [
+        "public/ErrorResponse",
+        "public/EventEnvelope",
+        "public/EventReceiptResponse",
+        "public/Id"
+      ]
+    },
+    "seamer:issueWsTicket": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/ws-tickets",
+      "operation_id": "issueWsTicket",
+      "source_pointer": "/paths/~1api~1v1~1ws-tickets/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "subscription.create",
+      "roots": [
+        "public/ErrorResponse",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResultResponse"
+      ]
+    },
+    "seamer:openEvents": {
+      "service": "seamer",
+      "method": "get",
+      "path": "/api/v1/events",
+      "operation_id": "openEvents",
+      "source_pointer": "/paths/~1api~1v1~1events/get",
+      "transport": "websocket",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "wsTicketHeader": []
+        }
+      ],
+      "permission": null,
+      "roots": [
+        "public/ErrorResponse",
+        "public/WsFrame",
+        "public/WsTicketBinding"
+      ]
+    },
+    "seamer:pauseRun": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/runs/{run_id}/pause",
+      "operation_id": "pauseRun",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1pause/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.pause",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/MutationReceiptResponse",
+        "public/RunMutationRequest"
+      ]
+    },
+    "seamer:preflightRun": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/runs/{run_id}/preflight",
+      "operation_id": "preflightRun",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1preflight/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/PreflightResponse",
+        "public/RunRevisionRequest"
+      ]
+    },
+    "seamer:previewRecovery": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/runs/{run_id}/recovery-preview",
+      "operation_id": "previewRecovery",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1recovery-preview/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.read",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/RecoveryPreviewResponse",
+        "public/RunRevisionRequest"
+      ]
+    },
+    "seamer:publishDefinition": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/definitions/{definition_id}/publish",
+      "operation_id": "publishDefinition",
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1publish/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "definition.publish",
+      "roots": [
+        "public/DefinitionRecordResponse",
+        "public/ErrorResponse",
+        "public/Id",
+        "public/PublishRequest"
+      ]
+    },
+    "seamer:resumeRun": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/runs/{run_id}/resume",
+      "operation_id": "resumeRun",
+      "source_pointer": "/paths/~1api~1v1~1runs~1{run_id}~1resume/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "run.resume",
+      "roots": [
+        "public/ErrorResponse",
+        "public/Id",
+        "public/RecoveryOperationResponse",
+        "public/ResumeRequest"
+      ]
+    },
+    "seamer:revokeAuthorization": {
+      "service": "seamer",
+      "method": "post",
+      "path": "/api/v1/auth/revocations",
+      "operation_id": "revokeAuthorization",
+      "source_pointer": "/paths/~1api~1v1~1auth~1revocations/post",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "auth.manage",
+      "roots": [
+        "public/ErrorResponse",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest"
+      ]
+    },
+    "seamer:setCapacity": {
+      "service": "seamer",
+      "method": "put",
+      "path": "/api/v1/capacity/profile",
+      "operation_id": "setCapacity",
+      "source_pointer": "/paths/~1api~1v1~1capacity~1profile/put",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "capacity.manage",
+      "roots": [
+        "public/CapacityUpdate",
+        "public/ErrorResponse",
+        "public/MutationReceiptResponse"
+      ]
+    },
+    "seamer:updateCatalog": {
+      "service": "seamer",
+      "method": "put",
+      "path": "/api/v1/providers/{provider_id}/catalog",
+      "operation_id": "updateCatalog",
+      "source_pointer": "/paths/~1api~1v1~1providers~1{provider_id}~1catalog/put",
+      "transport": "http",
+      "entrypoint": "./provider",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "provider.publish",
+      "roots": [
+        "public/CapabilityCatalogResponse",
+        "public/CatalogUpdate",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    },
+    "seamer:updateDraft": {
+      "service": "seamer",
+      "method": "put",
+      "path": "/api/v1/definitions/{definition_id}/draft",
+      "operation_id": "updateDraft",
+      "source_pointer": "/paths/~1api~1v1~1definitions~1{definition_id}~1draft/put",
+      "transport": "http",
+      "entrypoint": "./seamer",
+      "security_source": "operation",
+      "effective_security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "permission": "definition.edit",
+      "roots": [
+        "public/DefinitionRecordResponse",
+        "public/DraftUpdate",
+        "public/ErrorResponse",
+        "public/Id"
+      ]
+    }
+  },
+  "entrypoints": {
+    "./seamer": {
+      "runtime": "browser_node",
+      "operations": [
+        "seamer:armRun",
+        "seamer:createDefinition",
+        "seamer:createRequestContext",
+        "seamer:createRun",
+        "seamer:createSubscription",
+        "seamer:getCapacity",
+        "seamer:getClock",
+        "seamer:getClockAssessment",
+        "seamer:getIndependenceProof",
+        "seamer:getMeta",
+        "seamer:getRecoveryOperation",
+        "seamer:getRevocation",
+        "seamer:getRun",
+        "seamer:getSession",
+        "seamer:getSnapshot",
+        "seamer:getSubject",
+        "seamer:issueWsTicket",
+        "seamer:openEvents",
+        "seamer:pauseRun",
+        "seamer:preflightRun",
+        "seamer:previewRecovery",
+        "seamer:publishDefinition",
+        "seamer:resumeRun",
+        "seamer:revokeAuthorization",
+        "seamer:setCapacity",
+        "seamer:updateDraft"
+      ],
+      "roots": [
+        "public/ArmRequest",
+        "public/CapacityStatusResponse",
+        "public/CapacityUpdate",
+        "public/ClockAssessmentResponse",
+        "public/ClockStatusResponse",
+        "public/DefinitionCreate",
+        "public/DefinitionRecordResponse",
+        "public/DraftUpdate",
+        "public/ErrorResponse",
+        "public/Id",
+        "public/IndependenceProofResponse",
+        "public/MetaResponse",
+        "public/MutationReceiptResponse",
+        "public/PreflightResponse",
+        "public/PublishRequest",
+        "public/RecoveryOperationResponse",
+        "public/RecoveryPreviewResponse",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse",
+        "public/ResumeRequest",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest",
+        "public/RunCreate",
+        "public/RunMutationRequest",
+        "public/RunRecordResponse",
+        "public/RunRevisionRequest",
+        "public/SessionResponse",
+        "public/SnapshotResponse",
+        "public/SubjectRecordResponse",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse",
+        "public/WsFrame",
+        "public/WsTicketBinding",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResultResponse"
+      ],
+      "models": [
+        "public/ActionRef",
+        "public/Actor",
+        "public/AdmissionDecision",
+        "public/ArmRequest",
+        "public/Attempt",
+        "public/Cancellation",
+        "public/CapacityProfile",
+        "public/CapacityStatus",
+        "public/CapacityStatusResponse",
+        "public/CapacityUpdate",
+        "public/CausalAgeBasis",
+        "public/CheckResult",
+        "public/ClockAssessment",
+        "public/ClockAssessmentResponse",
+        "public/ClockDomainRef",
+        "public/ClockSampleRef",
+        "public/ClockStatus",
+        "public/ClockStatusResponse",
+        "public/CommandRecord",
+        "public/Completion",
+        "public/CompletionEvidence",
+        "public/CompletionLevel",
+        "public/ControlRecord",
+        "public/ControlVersion",
+        "public/Definition",
+        "public/DefinitionCreate",
+        "public/DefinitionRecord",
+        "public/DefinitionRecordResponse",
+        "public/Digest",
+        "public/Dispatch",
+        "public/DraftUpdate",
+        "public/Duration",
+        "public/EffectFootprint",
+        "public/Error",
+        "public/ErrorCode",
+        "public/ErrorResponse",
+        "public/EventAgeProof",
+        "public/EventEnvelope",
+        "public/EvidenceRef",
+        "public/GrantBinding",
+        "public/Id",
+        "public/IndependenceProof",
+        "public/IndependenceProofResponse",
+        "public/JsonValue",
+        "public/Meta",
+        "public/MetaResponse",
+        "public/MutationReceipt",
+        "public/MutationReceiptResponse",
+        "public/ObsCompletionBundle",
+        "public/ObsEvidenceFrame",
+        "public/Observation",
+        "public/Payload",
+        "public/PendingChange",
+        "public/Predicate",
+        "public/Preflight",
+        "public/PreflightResponse",
+        "public/PrincipalRef",
+        "public/ProofActionBinding",
+        "public/ProofRef",
+        "public/PublishRequest",
+        "public/RecoveryOperation",
+        "public/RecoveryOperationResponse",
+        "public/RecoveryPlan",
+        "public/RecoveryPlanItem",
+        "public/RecoveryPreview",
+        "public/RecoveryPreviewResponse",
+        "public/RecoverySnapshot",
+        "public/RecoveryTarget",
+        "public/RequestContext",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse",
+        "public/RequestIdentity",
+        "public/RequiredStep",
+        "public/Resolution",
+        "public/ResourceReleaseEvidence",
+        "public/ResumeRequest",
+        "public/RetryPolicy",
+        "public/Revision",
+        "public/RevocationReceipt",
+        "public/RevocationRecord",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest",
+        "public/RevocationSelector",
+        "public/RunBinding",
+        "public/RunCreate",
+        "public/RunMutationRequest",
+        "public/RunRecord",
+        "public/RunRecordResponse",
+        "public/RunRevisionRequest",
+        "public/Session",
+        "public/SessionResponse",
+        "public/Snapshot",
+        "public/SnapshotResponse",
+        "public/StepDefinition",
+        "public/StepGroup",
+        "public/StepResult",
+        "public/SubjectRecord",
+        "public/SubjectRecordResponse",
+        "public/Subscription",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse",
+        "public/TargetApplication",
+        "public/TimeProfileRef",
+        "public/Timestamp",
+        "public/TransitionDefinition",
+        "public/TransitionRecord",
+        "public/TriggerBinding",
+        "public/UtcAgeBasis",
+        "public/Validity",
+        "public/Version",
+        "public/WsEvent",
+        "public/WsFrame",
+        "public/WsResync",
+        "public/WsTicketBinding",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResult",
+        "public/WsTicketResultResponse"
+      ]
+    },
+    "./controller": {
+      "runtime": "browser_node",
+      "operations": [
+        "controller:acceptTransfer",
+        "controller:acquireControl",
+        "controller:bootstrap",
+        "controller:cancelCommand",
+        "controller:createRequestContext",
+        "controller:createSubscription",
+        "controller:getCapabilities",
+        "controller:getCapacity",
+        "controller:getClock",
+        "controller:getClockAssessment",
+        "controller:getCommand",
+        "controller:getCommandEvidence",
+        "controller:getControl",
+        "controller:getControlOperation",
+        "controller:getDeviceState",
+        "controller:getMeta",
+        "controller:getRevocation",
+        "controller:getSceneCatalog",
+        "controller:getSession",
+        "controller:getSnapshot",
+        "controller:getSubject",
+        "controller:issueToken",
+        "controller:issueWsTicket",
+        "controller:listDevices",
+        "controller:login",
+        "controller:offerTransfer",
+        "controller:openEvents",
+        "controller:refreshSession",
+        "controller:releaseControl",
+        "controller:revokeAuthorization",
+        "controller:revokeRunGrant",
+        "controller:setCapacity",
+        "controller:submitCommand"
+      ],
+      "roots": [
+        "public/AcquireRequest",
+        "public/BootstrapRequest",
+        "public/CancelOperationResponse",
+        "public/CancelRequest",
+        "public/CapabilityCatalogResponse",
+        "public/CapacityStatusResponse",
+        "public/CapacityUpdate",
+        "public/CatalogBindingResponse",
+        "public/ClockAssessmentResponse",
+        "public/ClockStatusResponse",
+        "public/CommandRecordResponse",
+        "public/CommandRequest",
+        "public/ControlOperationResponse",
+        "public/ControlRecordResponse",
+        "public/DevicePageResponse",
+        "public/ErrorResponse",
+        "public/EvidencePageResponse",
+        "public/Id",
+        "public/LoginRequest",
+        "public/MetaResponse",
+        "public/MutationReceiptResponse",
+        "public/ObservationResponse",
+        "public/RefreshRequest",
+        "public/ReleaseRequest",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest",
+        "public/RevokeRequest",
+        "public/SessionResponse",
+        "public/SnapshotResponse",
+        "public/SubjectRecordResponse",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse",
+        "public/TokenRequest",
+        "public/TokenResultResponse",
+        "public/TransferAcceptRequest",
+        "public/TransferOfferResponse",
+        "public/TransferRequest",
+        "public/WsFrame",
+        "public/WsTicketBinding",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResultResponse"
+      ],
+      "models": [
+        "public/AcquireRequest",
+        "public/ActionDescriptor",
+        "public/Actor",
+        "public/AdmissionDecision",
+        "public/Attempt",
+        "public/BarrierAck",
+        "public/BootstrapRequest",
+        "public/CancelDescriptor",
+        "public/CancelOperation",
+        "public/CancelOperationResponse",
+        "public/CancelRequest",
+        "public/Cancellation",
+        "public/CapabilityCatalog",
+        "public/CapabilityCatalogResponse",
+        "public/CapacityProfile",
+        "public/CapacityStatus",
+        "public/CapacityStatusResponse",
+        "public/CapacityUpdate",
+        "public/CatalogBinding",
+        "public/CatalogBindingResponse",
+        "public/CausalAgeBasis",
+        "public/ClockAssessment",
+        "public/ClockAssessmentResponse",
+        "public/ClockDomainRef",
+        "public/ClockSampleRef",
+        "public/ClockStatus",
+        "public/ClockStatusResponse",
+        "public/CommandRecord",
+        "public/CommandRecordResponse",
+        "public/CommandRequest",
+        "public/Completion",
+        "public/CompletionEvidence",
+        "public/CompletionLevel",
+        "public/ControlOperation",
+        "public/ControlOperationResponse",
+        "public/ControlRecord",
+        "public/ControlRecordResponse",
+        "public/ControlTarget",
+        "public/ControlVersion",
+        "public/DeviceDescriptor",
+        "public/DevicePage",
+        "public/DevicePageResponse",
+        "public/Digest",
+        "public/Dispatch",
+        "public/Duration",
+        "public/EffectFootprint",
+        "public/Error",
+        "public/ErrorCode",
+        "public/ErrorResponse",
+        "public/EventAgeProof",
+        "public/EventEnvelope",
+        "public/EvidencePage",
+        "public/EvidencePageResponse",
+        "public/EvidenceRef",
+        "public/GrantBinding",
+        "public/Id",
+        "public/JsonValue",
+        "public/LoginRequest",
+        "public/Meta",
+        "public/MetaResponse",
+        "public/MutationReceipt",
+        "public/MutationReceiptResponse",
+        "public/ObsCompletionBundle",
+        "public/ObsEvidenceFrame",
+        "public/ObsSceneParameters",
+        "public/Observation",
+        "public/ObservationResponse",
+        "public/Payload",
+        "public/PendingChange",
+        "public/Platform",
+        "public/Predicate",
+        "public/PrincipalRef",
+        "public/RefreshRequest",
+        "public/ReleaseRequest",
+        "public/RequestContext",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse",
+        "public/RequestIdentity",
+        "public/Resolution",
+        "public/ResourceReleaseEvidence",
+        "public/ResourceSet",
+        "public/RetryDescriptor",
+        "public/RetryPolicy",
+        "public/Revision",
+        "public/RevocationReceipt",
+        "public/RevocationRecord",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest",
+        "public/RevocationSelector",
+        "public/RevokeRequest",
+        "public/RunBinding",
+        "public/RunRecord",
+        "public/SceneRef",
+        "public/SchemaDescriptor",
+        "public/Session",
+        "public/SessionResponse",
+        "public/Snapshot",
+        "public/SnapshotResponse",
+        "public/StepResult",
+        "public/SubjectRecord",
+        "public/SubjectRecordResponse",
+        "public/Subscription",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse",
+        "public/TargetApplication",
+        "public/TimeProfileRef",
+        "public/Timestamp",
+        "public/TokenRequest",
+        "public/TokenResult",
+        "public/TokenResultResponse",
+        "public/TransferAcceptRequest",
+        "public/TransferOffer",
+        "public/TransferOfferResponse",
+        "public/TransferRequest",
+        "public/TransitionRecord",
+        "public/TriggerDescriptor",
+        "public/UtcAgeBasis",
+        "public/Validity",
+        "public/Version",
+        "public/WsEvent",
+        "public/WsFrame",
+        "public/WsResync",
+        "public/WsTicketBinding",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResult",
+        "public/WsTicketResultResponse"
+      ]
+    },
+    "./provider": {
+      "runtime": "node",
+      "operations": [
+        "seamer:ingestEvent",
+        "seamer:updateCatalog"
+      ],
+      "roots": [
+        "public/CapabilityCatalogResponse",
+        "public/CatalogUpdate",
+        "public/ErrorResponse",
+        "public/EventEnvelope",
+        "public/EventReceiptResponse",
+        "public/Id"
+      ],
+      "models": [
+        "public/ActionDescriptor",
+        "public/CancelDescriptor",
+        "public/CapabilityCatalog",
+        "public/CapabilityCatalogResponse",
+        "public/CatalogUpdate",
+        "public/CausalAgeBasis",
+        "public/ClockDomainRef",
+        "public/ClockSampleRef",
+        "public/ClockStatus",
+        "public/CompletionLevel",
+        "public/DeviceDescriptor",
+        "public/Digest",
+        "public/Duration",
+        "public/EffectFootprint",
+        "public/Error",
+        "public/ErrorCode",
+        "public/ErrorResponse",
+        "public/EventAgeProof",
+        "public/EventEnvelope",
+        "public/EventReceipt",
+        "public/EventReceiptResponse",
+        "public/EvidenceRef",
+        "public/Id",
+        "public/JsonValue",
+        "public/Payload",
+        "public/Platform",
+        "public/ResourceSet",
+        "public/RetryDescriptor",
+        "public/RetryPolicy",
+        "public/Revision",
+        "public/SchemaDescriptor",
+        "public/Timestamp",
+        "public/TriggerDescriptor",
+        "public/UtcAgeBasis",
+        "public/Version"
+      ]
+    },
+    "./seamer-controller": {
+      "runtime": "node",
+      "operations": [
+        "controller:updateRunGrant"
+      ],
+      "roots": [
+        "public/ErrorResponse",
+        "public/GrantUpdate",
+        "public/Id",
+        "public/MutationReceiptResponse"
+      ],
+      "models": [
+        "public/DeviceActionScope",
+        "public/Duration",
+        "public/Error",
+        "public/ErrorCode",
+        "public/ErrorResponse",
+        "public/GrantProposal",
+        "public/GrantUpdate",
+        "public/Id",
+        "public/JsonValue",
+        "public/MutationReceipt",
+        "public/MutationReceiptResponse",
+        "public/Payload",
+        "public/Predicate",
+        "public/Revision",
+        "public/TargetApplication",
+        "public/Timestamp",
+        "public/Validity",
+        "public/Version"
+      ]
+    },
+    "./internal/controller": {
+      "runtime": "node",
+      "operations": [
+        "controller:getClockDomainDescriptor",
+        "controller:getClockSample",
+        "controller:getTimeBoundEvidence",
+        "controller:getTimeBoundProfile",
+        "controller:introspect"
+      ],
+      "roots": [
+        "public/ClockDomainDescriptorResponse",
+        "public/ClockSampleResponse",
+        "public/ErrorResponse",
+        "public/Id",
+        "public/IntrospectRequest",
+        "public/IntrospectResultResponse",
+        "public/Revision",
+        "public/TimeBoundEvidenceResponse",
+        "public/TimeBoundProfileResponse"
+      ],
+      "models": [
+        "public/AuthorizationSnapshot",
+        "public/ClockDomainDescriptor",
+        "public/ClockDomainDescriptorResponse",
+        "public/ClockSample",
+        "public/ClockSampleResponse",
+        "public/Digest",
+        "public/Error",
+        "public/ErrorCode",
+        "public/ErrorResponse",
+        "public/EvidenceRef",
+        "public/Id",
+        "public/IntrospectRequest",
+        "public/IntrospectResult",
+        "public/IntrospectResultResponse",
+        "public/JsonValue",
+        "public/OsBootIdentity",
+        "public/Payload",
+        "public/Revision",
+        "public/TimeBoundEvidence",
+        "public/TimeBoundEvidenceResponse",
+        "public/TimeBoundProfile",
+        "public/TimeBoundProfileResponse",
+        "public/TimeProfileRef",
+        "public/Timestamp"
+      ]
+    },
+    "./internal/seamer": {
+      "runtime": "node",
+      "operations": [
+        "seamer:getClockDomainDescriptor",
+        "seamer:getClockSample",
+        "seamer:getTimeBoundEvidence",
+        "seamer:getTimeBoundProfile"
+      ],
+      "roots": [
+        "public/ClockDomainDescriptorResponse",
+        "public/ClockSampleResponse",
+        "public/ErrorResponse",
+        "public/Id",
+        "public/Revision",
+        "public/TimeBoundEvidenceResponse",
+        "public/TimeBoundProfileResponse"
+      ],
+      "models": [
+        "public/ClockDomainDescriptor",
+        "public/ClockDomainDescriptorResponse",
+        "public/ClockSample",
+        "public/ClockSampleResponse",
+        "public/Digest",
+        "public/Error",
+        "public/ErrorCode",
+        "public/ErrorResponse",
+        "public/EvidenceRef",
+        "public/Id",
+        "public/JsonValue",
+        "public/OsBootIdentity",
+        "public/Payload",
+        "public/Revision",
+        "public/TimeBoundEvidence",
+        "public/TimeBoundEvidenceResponse",
+        "public/TimeBoundProfile",
+        "public/TimeBoundProfileResponse",
+        "public/TimeProfileRef"
+      ]
+    },
+    "./ipc": {
+      "runtime": "node",
+      "operations": [],
+      "roots": [
+        "ipc/AUTH_FENCE",
+        "ipc/AUTH_FENCE_ACK",
+        "ipc/CLOSE_GATE",
+        "ipc/CLOSE_GATE_ACK",
+        "ipc/DISPATCH",
+        "ipc/EVIDENCE_CANDIDATE",
+        "ipc/FENCE",
+        "ipc/FENCE_ACK",
+        "ipc/GUARD_ACK",
+        "ipc/GUARD_INSTALL",
+        "ipc/HELLO",
+        "ipc/HELLO_ACK",
+        "ipc/OPEN_GATE",
+        "ipc/OPEN_GATE_ACK",
+        "ipc/QUERY_BARRIER",
+        "ipc/REPORT_STORED",
+        "ipc/SEND_REPORT",
+        "ipc/TIME_FENCE",
+        "ipc/TIME_FENCE_ACK"
+      ],
+      "models": [
+        "ipc/AUTH_FENCE",
+        "ipc/AUTH_FENCEBody",
+        "ipc/AUTH_FENCE_ACK",
+        "ipc/AUTH_FENCE_ACKBody",
+        "ipc/CLOSE_GATE",
+        "ipc/CLOSE_GATEBody",
+        "ipc/CLOSE_GATE_ACK",
+        "ipc/CLOSE_GATE_ACKBody",
+        "ipc/Coverage",
+        "ipc/DISPATCH",
+        "ipc/DISPATCHBody",
+        "ipc/EVIDENCE_CANDIDATE",
+        "ipc/EVIDENCE_CANDIDATEBody",
+        "ipc/FENCE",
+        "ipc/FENCEBody",
+        "ipc/FENCE_ACK",
+        "ipc/FENCE_ACKBody",
+        "ipc/GUARD_ACK",
+        "ipc/GUARD_ACKBody",
+        "ipc/GUARD_INSTALL",
+        "ipc/GUARD_INSTALLBody",
+        "ipc/HELLO",
+        "ipc/HELLOBody",
+        "ipc/HELLO_ACK",
+        "ipc/HELLO_ACKBody",
+        "ipc/IntentRef",
+        "ipc/OPEN_GATE",
+        "ipc/OPEN_GATEBody",
+        "ipc/OPEN_GATE_ACK",
+        "ipc/OPEN_GATE_ACKBody",
+        "ipc/ObsCompletionCandidate",
+        "ipc/QUERY_BARRIER",
+        "ipc/QUERY_BARRIERBody",
+        "ipc/REPORT_STORED",
+        "ipc/REPORT_STOREDBody",
+        "ipc/SEND_REPORT",
+        "ipc/SEND_REPORTBody",
+        "ipc/SendWindow",
+        "ipc/TIME_FENCE",
+        "ipc/TIME_FENCEBody",
+        "ipc/TIME_FENCE_ACK",
+        "ipc/TIME_FENCE_ACKBody",
+        "public/AuthorizationBinding",
+        "public/BarrierAck",
+        "public/ClockDomainDescriptor",
+        "public/ClockSample",
+        "public/ClockSampleRef",
+        "public/CommandRequest",
+        "public/CompletionLevel",
+        "public/ControlVersion",
+        "public/Digest",
+        "public/Dispatch",
+        "public/DispatchPermit",
+        "public/Duration",
+        "public/EvidenceRef",
+        "public/ExecutionGuard",
+        "public/Id",
+        "public/JsonValue",
+        "public/ObsEvidenceFrame",
+        "public/ObsSceneParameters",
+        "public/OsBootIdentity",
+        "public/Payload",
+        "public/Predicate",
+        "public/Revision",
+        "public/RevocationSelector",
+        "public/RunBinding",
+        "public/SceneRef",
+        "public/ScheduleGuard",
+        "public/TimeBoundEvidence",
+        "public/TimeBoundProfile",
+        "public/TimeProfileRef",
+        "public/Timestamp",
+        "public/Version"
+      ]
+    },
+    "./models": {
+      "runtime": "browser_node_types_only",
+      "operations": [],
+      "roots": [
+        "public/AcquireRequest",
+        "public/ArmRequest",
+        "public/BootstrapRequest",
+        "public/CancelOperationResponse",
+        "public/CancelRequest",
+        "public/CapabilityCatalogResponse",
+        "public/CapacityStatusResponse",
+        "public/CapacityUpdate",
+        "public/CatalogBindingResponse",
+        "public/CatalogUpdate",
+        "public/ClockAssessmentResponse",
+        "public/ClockStatusResponse",
+        "public/CommandRecordResponse",
+        "public/CommandRequest",
+        "public/ControlOperationResponse",
+        "public/ControlRecordResponse",
+        "public/DefinitionCreate",
+        "public/DefinitionRecordResponse",
+        "public/DevicePageResponse",
+        "public/DraftUpdate",
+        "public/ErrorResponse",
+        "public/EventEnvelope",
+        "public/EventReceiptResponse",
+        "public/EvidencePageResponse",
+        "public/GrantUpdate",
+        "public/Id",
+        "public/IndependenceProofResponse",
+        "public/LoginRequest",
+        "public/MetaResponse",
+        "public/MutationReceiptResponse",
+        "public/ObservationResponse",
+        "public/PreflightResponse",
+        "public/PublishRequest",
+        "public/RecoveryOperationResponse",
+        "public/RecoveryPreviewResponse",
+        "public/RefreshRequest",
+        "public/ReleaseRequest",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse",
+        "public/ResumeRequest",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest",
+        "public/RevokeRequest",
+        "public/RunCreate",
+        "public/RunMutationRequest",
+        "public/RunRecordResponse",
+        "public/RunRevisionRequest",
+        "public/SessionResponse",
+        "public/SnapshotResponse",
+        "public/SubjectRecordResponse",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse",
+        "public/TokenRequest",
+        "public/TokenResultResponse",
+        "public/TransferAcceptRequest",
+        "public/TransferOfferResponse",
+        "public/TransferRequest",
+        "public/WsFrame",
+        "public/WsTicketBinding",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResultResponse"
+      ],
+      "models": [
+        "public/AcquireRequest",
+        "public/ActionDescriptor",
+        "public/ActionRef",
+        "public/Actor",
+        "public/AdmissionDecision",
+        "public/ArmRequest",
+        "public/Attempt",
+        "public/BarrierAck",
+        "public/BootstrapRequest",
+        "public/CancelDescriptor",
+        "public/CancelOperation",
+        "public/CancelOperationResponse",
+        "public/CancelRequest",
+        "public/Cancellation",
+        "public/CapabilityCatalog",
+        "public/CapabilityCatalogResponse",
+        "public/CapacityProfile",
+        "public/CapacityStatus",
+        "public/CapacityStatusResponse",
+        "public/CapacityUpdate",
+        "public/CatalogBinding",
+        "public/CatalogBindingResponse",
+        "public/CatalogUpdate",
+        "public/CausalAgeBasis",
+        "public/CheckResult",
+        "public/ClockAssessment",
+        "public/ClockAssessmentResponse",
+        "public/ClockDomainRef",
+        "public/ClockSampleRef",
+        "public/ClockStatus",
+        "public/ClockStatusResponse",
+        "public/CommandRecord",
+        "public/CommandRecordResponse",
+        "public/CommandRequest",
+        "public/Completion",
+        "public/CompletionEvidence",
+        "public/CompletionLevel",
+        "public/ControlOperation",
+        "public/ControlOperationResponse",
+        "public/ControlRecord",
+        "public/ControlRecordResponse",
+        "public/ControlTarget",
+        "public/ControlVersion",
+        "public/Definition",
+        "public/DefinitionCreate",
+        "public/DefinitionRecord",
+        "public/DefinitionRecordResponse",
+        "public/DeviceActionScope",
+        "public/DeviceDescriptor",
+        "public/DevicePage",
+        "public/DevicePageResponse",
+        "public/Digest",
+        "public/Dispatch",
+        "public/DraftUpdate",
+        "public/Duration",
+        "public/EffectFootprint",
+        "public/Error",
+        "public/ErrorCode",
+        "public/ErrorResponse",
+        "public/EventAgeProof",
+        "public/EventEnvelope",
+        "public/EventReceipt",
+        "public/EventReceiptResponse",
+        "public/EvidencePage",
+        "public/EvidencePageResponse",
+        "public/EvidenceRef",
+        "public/GrantBinding",
+        "public/GrantProposal",
+        "public/GrantUpdate",
+        "public/Id",
+        "public/IndependenceProof",
+        "public/IndependenceProofResponse",
+        "public/JsonValue",
+        "public/LoginRequest",
+        "public/Meta",
+        "public/MetaResponse",
+        "public/MutationReceipt",
+        "public/MutationReceiptResponse",
+        "public/ObsCompletionBundle",
+        "public/ObsEvidenceFrame",
+        "public/ObsSceneParameters",
+        "public/Observation",
+        "public/ObservationResponse",
+        "public/Payload",
+        "public/PendingChange",
+        "public/Platform",
+        "public/Predicate",
+        "public/Preflight",
+        "public/PreflightResponse",
+        "public/PrincipalRef",
+        "public/ProofActionBinding",
+        "public/ProofRef",
+        "public/PublishRequest",
+        "public/RecoveryOperation",
+        "public/RecoveryOperationResponse",
+        "public/RecoveryPlan",
+        "public/RecoveryPlanItem",
+        "public/RecoveryPreview",
+        "public/RecoveryPreviewResponse",
+        "public/RecoverySnapshot",
+        "public/RecoveryTarget",
+        "public/RefreshRequest",
+        "public/ReleaseRequest",
+        "public/RequestContext",
+        "public/RequestContextRequest",
+        "public/RequestContextResponse",
+        "public/RequestIdentity",
+        "public/RequiredStep",
+        "public/Resolution",
+        "public/ResourceReleaseEvidence",
+        "public/ResourceSet",
+        "public/ResumeRequest",
+        "public/RetryDescriptor",
+        "public/RetryPolicy",
+        "public/Revision",
+        "public/RevocationReceipt",
+        "public/RevocationRecord",
+        "public/RevocationRecordResponse",
+        "public/RevocationRequest",
+        "public/RevocationSelector",
+        "public/RevokeRequest",
+        "public/RunBinding",
+        "public/RunCreate",
+        "public/RunMutationRequest",
+        "public/RunRecord",
+        "public/RunRecordResponse",
+        "public/RunRevisionRequest",
+        "public/SceneRef",
+        "public/SchemaDescriptor",
+        "public/Session",
+        "public/SessionResponse",
+        "public/Snapshot",
+        "public/SnapshotResponse",
+        "public/StepDefinition",
+        "public/StepGroup",
+        "public/StepResult",
+        "public/SubjectRecord",
+        "public/SubjectRecordResponse",
+        "public/Subscription",
+        "public/SubscriptionRequest",
+        "public/SubscriptionResponse",
+        "public/TargetApplication",
+        "public/TimeProfileRef",
+        "public/Timestamp",
+        "public/TokenRequest",
+        "public/TokenResult",
+        "public/TokenResultResponse",
+        "public/TransferAcceptRequest",
+        "public/TransferOffer",
+        "public/TransferOfferResponse",
+        "public/TransferRequest",
+        "public/TransitionDefinition",
+        "public/TransitionRecord",
+        "public/TriggerBinding",
+        "public/TriggerDescriptor",
+        "public/UtcAgeBasis",
+        "public/Validity",
+        "public/Version",
+        "public/WsEvent",
+        "public/WsFrame",
+        "public/WsResync",
+        "public/WsTicketBinding",
+        "public/WsTicketBindingResponse",
+        "public/WsTicketRequest",
+        "public/WsTicketResult",
+        "public/WsTicketResultResponse"
+      ]
+    }
+  },
+  "models": {
+    "ipc/AUTH_FENCE": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/AUTH_FENCE",
+      "export_name": "IpcAUTH_FENCE",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/AUTH_FENCEBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/AUTH_FENCEBody",
+      "export_name": "IpcAUTH_FENCEBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/AUTH_FENCE_ACK": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/AUTH_FENCE_ACK",
+      "export_name": "IpcAUTH_FENCE_ACK",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/AUTH_FENCE_ACKBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/AUTH_FENCE_ACKBody",
+      "export_name": "IpcAUTH_FENCE_ACKBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/CLOSE_GATE": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/CLOSE_GATE",
+      "export_name": "IpcCLOSE_GATE",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/CLOSE_GATEBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/CLOSE_GATEBody",
+      "export_name": "IpcCLOSE_GATEBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/CLOSE_GATE_ACK": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/CLOSE_GATE_ACK",
+      "export_name": "IpcCLOSE_GATE_ACK",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/CLOSE_GATE_ACKBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/CLOSE_GATE_ACKBody",
+      "export_name": "IpcCLOSE_GATE_ACKBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/Coverage": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/Coverage",
+      "export_name": "IpcCoverage",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/DISPATCH": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/DISPATCH",
+      "export_name": "IpcDISPATCH",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/DISPATCHBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/DISPATCHBody",
+      "export_name": "IpcDISPATCHBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/EVIDENCE_CANDIDATE": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/EVIDENCE_CANDIDATE",
+      "export_name": "IpcEVIDENCE_CANDIDATE",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/EVIDENCE_CANDIDATEBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/EVIDENCE_CANDIDATEBody",
+      "export_name": "IpcEVIDENCE_CANDIDATEBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/FENCE": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/FENCE",
+      "export_name": "IpcFENCE",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/FENCEBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/FENCEBody",
+      "export_name": "IpcFENCEBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/FENCE_ACK": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/FENCE_ACK",
+      "export_name": "IpcFENCE_ACK",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/FENCE_ACKBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/FENCE_ACKBody",
+      "export_name": "IpcFENCE_ACKBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/GUARD_ACK": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/GUARD_ACK",
+      "export_name": "IpcGUARD_ACK",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/GUARD_ACKBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/GUARD_ACKBody",
+      "export_name": "IpcGUARD_ACKBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/GUARD_INSTALL": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/GUARD_INSTALL",
+      "export_name": "IpcGUARD_INSTALL",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/GUARD_INSTALLBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/GUARD_INSTALLBody",
+      "export_name": "IpcGUARD_INSTALLBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/HELLO": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/HELLO",
+      "export_name": "IpcHELLO",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/HELLOBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/HELLOBody",
+      "export_name": "IpcHELLOBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/HELLO_ACK": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/HELLO_ACK",
+      "export_name": "IpcHELLO_ACK",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/HELLO_ACKBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/HELLO_ACKBody",
+      "export_name": "IpcHELLO_ACKBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/IntentRef": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/IntentRef",
+      "export_name": "IpcIntentRef",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/OPEN_GATE": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/OPEN_GATE",
+      "export_name": "IpcOPEN_GATE",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/OPEN_GATEBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/OPEN_GATEBody",
+      "export_name": "IpcOPEN_GATEBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/OPEN_GATE_ACK": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/OPEN_GATE_ACK",
+      "export_name": "IpcOPEN_GATE_ACK",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/OPEN_GATE_ACKBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/OPEN_GATE_ACKBody",
+      "export_name": "IpcOPEN_GATE_ACKBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/ObsCompletionCandidate": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/ObsCompletionCandidate",
+      "export_name": "IpcObsCompletionCandidate",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/QUERY_BARRIER": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/QUERY_BARRIER",
+      "export_name": "IpcQUERY_BARRIER",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/QUERY_BARRIERBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/QUERY_BARRIERBody",
+      "export_name": "IpcQUERY_BARRIERBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/REPORT_STORED": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/REPORT_STORED",
+      "export_name": "IpcREPORT_STORED",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/REPORT_STOREDBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/REPORT_STOREDBody",
+      "export_name": "IpcREPORT_STOREDBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/SEND_REPORT": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/SEND_REPORT",
+      "export_name": "IpcSEND_REPORT",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/SEND_REPORTBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/SEND_REPORTBody",
+      "export_name": "IpcSEND_REPORTBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/SendWindow": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/SendWindow",
+      "export_name": "IpcSendWindow",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/TIME_FENCE": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/TIME_FENCE",
+      "export_name": "IpcTIME_FENCE",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/TIME_FENCEBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/TIME_FENCEBody",
+      "export_name": "IpcTIME_FENCEBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/TIME_FENCE_ACK": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/TIME_FENCE_ACK",
+      "export_name": "IpcTIME_FENCE_ACK",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "ipc/TIME_FENCE_ACKBody": {
+      "source": "ipc.schema.json",
+      "pointer": "/$defs/TIME_FENCE_ACKBody",
+      "export_name": "IpcTIME_FENCE_ACKBody",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/AcquireRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/AcquireRequest",
+      "export_name": "AcquireRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ActionDescriptor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ActionDescriptor",
+      "export_name": "ActionDescriptor",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ActionRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ActionRef",
+      "export_name": "ActionRef",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Actor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Actor",
+      "export_name": "Actor",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/AdmissionDecision": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/AdmissionDecision",
+      "export_name": "AdmissionDecision",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ArmRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ArmRequest",
+      "export_name": "ArmRequest",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Attempt": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Attempt",
+      "export_name": "Attempt",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/AuthorizationBinding": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/AuthorizationBinding",
+      "export_name": "AuthorizationBinding",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/AuthorizationSnapshot": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/AuthorizationSnapshot",
+      "export_name": "AuthorizationSnapshot",
+      "entrypoints": [
+        "./internal/controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/AuthorizationSnapshotResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/AuthorizationSnapshotResponse",
+      "export_name": "AuthorizationSnapshotResponse",
+      "entrypoints": [],
+      "status": "retained_unexported"
+    },
+    "public/BarrierAck": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/BarrierAck",
+      "export_name": "BarrierAck",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/BootstrapRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/BootstrapRequest",
+      "export_name": "BootstrapRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CancelDescriptor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CancelDescriptor",
+      "export_name": "CancelDescriptor",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CancelOperation": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CancelOperation",
+      "export_name": "CancelOperation",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CancelOperationResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CancelOperationResponse",
+      "export_name": "CancelOperationResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CancelRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CancelRequest",
+      "export_name": "CancelRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Cancellation": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Cancellation",
+      "export_name": "Cancellation",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CapabilityCatalog": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CapabilityCatalog",
+      "export_name": "CapabilityCatalog",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CapabilityCatalogResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CapabilityCatalogResponse",
+      "export_name": "CapabilityCatalogResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CapacityProfile": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CapacityProfile",
+      "export_name": "CapacityProfile",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CapacityStatus": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CapacityStatus",
+      "export_name": "CapacityStatus",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CapacityStatusResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CapacityStatusResponse",
+      "export_name": "CapacityStatusResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CapacityUpdate": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CapacityUpdate",
+      "export_name": "CapacityUpdate",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CatalogBinding": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CatalogBinding",
+      "export_name": "CatalogBinding",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CatalogBindingResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CatalogBindingResponse",
+      "export_name": "CatalogBindingResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CatalogUpdate": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CatalogUpdate",
+      "export_name": "CatalogUpdate",
+      "entrypoints": [
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CausalAgeBasis": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CausalAgeBasis",
+      "export_name": "CausalAgeBasis",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CheckResult": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CheckResult",
+      "export_name": "CheckResult",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockAssessment": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockAssessment",
+      "export_name": "ClockAssessment",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockAssessmentResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockAssessmentResponse",
+      "export_name": "ClockAssessmentResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockDomainDescriptor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockDomainDescriptor",
+      "export_name": "ClockDomainDescriptor",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockDomainDescriptorResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockDomainDescriptorResponse",
+      "export_name": "ClockDomainDescriptorResponse",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockDomainRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockDomainRef",
+      "export_name": "ClockDomainRef",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockSample": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockSample",
+      "export_name": "ClockSample",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockSampleRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockSampleRef",
+      "export_name": "ClockSampleRef",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockSampleResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockSampleResponse",
+      "export_name": "ClockSampleResponse",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockStatus": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockStatus",
+      "export_name": "ClockStatus",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ClockStatusResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ClockStatusResponse",
+      "export_name": "ClockStatusResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CommandRecord": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CommandRecord",
+      "export_name": "CommandRecord",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CommandRecordResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CommandRecordResponse",
+      "export_name": "CommandRecordResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CommandRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CommandRequest",
+      "export_name": "CommandRequest",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Completion": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Completion",
+      "export_name": "Completion",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CompletionEvidence": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CompletionEvidence",
+      "export_name": "CompletionEvidence",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/CompletionLevel": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/CompletionLevel",
+      "export_name": "CompletionLevel",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ControlOperation": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ControlOperation",
+      "export_name": "ControlOperation",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ControlOperationResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ControlOperationResponse",
+      "export_name": "ControlOperationResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ControlRecord": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ControlRecord",
+      "export_name": "ControlRecord",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ControlRecordResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ControlRecordResponse",
+      "export_name": "ControlRecordResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ControlTarget": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ControlTarget",
+      "export_name": "ControlTarget",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ControlVersion": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ControlVersion",
+      "export_name": "ControlVersion",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Definition": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Definition",
+      "export_name": "Definition",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DefinitionCreate": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DefinitionCreate",
+      "export_name": "DefinitionCreate",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DefinitionRecord": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DefinitionRecord",
+      "export_name": "DefinitionRecord",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DefinitionRecordResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DefinitionRecordResponse",
+      "export_name": "DefinitionRecordResponse",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DeviceActionScope": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DeviceActionScope",
+      "export_name": "DeviceActionScope",
+      "entrypoints": [
+        "./models",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DeviceDescriptor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DeviceDescriptor",
+      "export_name": "DeviceDescriptor",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DevicePage": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DevicePage",
+      "export_name": "DevicePage",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DevicePageResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DevicePageResponse",
+      "export_name": "DevicePageResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Digest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Digest",
+      "export_name": "Digest",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Dispatch": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Dispatch",
+      "export_name": "Dispatch",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DispatchPermit": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DispatchPermit",
+      "export_name": "DispatchPermit",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/DraftUpdate": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/DraftUpdate",
+      "export_name": "DraftUpdate",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Duration": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Duration",
+      "export_name": "Duration",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EffectFootprint": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EffectFootprint",
+      "export_name": "EffectFootprint",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Error": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Error",
+      "export_name": "Error",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ErrorCode": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ErrorCode",
+      "export_name": "ErrorCode",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ErrorResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ErrorResponse",
+      "export_name": "ErrorResponse",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EventAgeProof": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EventAgeProof",
+      "export_name": "EventAgeProof",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EventEnvelope": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EventEnvelope",
+      "export_name": "EventEnvelope",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EventReceipt": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EventReceipt",
+      "export_name": "EventReceipt",
+      "entrypoints": [
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EventReceiptResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EventReceiptResponse",
+      "export_name": "EventReceiptResponse",
+      "entrypoints": [
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EvidencePage": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EvidencePage",
+      "export_name": "EvidencePage",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EvidencePageResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EvidencePageResponse",
+      "export_name": "EvidencePageResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/EvidenceRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/EvidenceRef",
+      "export_name": "EvidenceRef",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ExecutionGuard": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ExecutionGuard",
+      "export_name": "ExecutionGuard",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/GrantBinding": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/GrantBinding",
+      "export_name": "GrantBinding",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/GrantProposal": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/GrantProposal",
+      "export_name": "GrantProposal",
+      "entrypoints": [
+        "./models",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/GrantUpdate": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/GrantUpdate",
+      "export_name": "GrantUpdate",
+      "entrypoints": [
+        "./models",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Id": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Id",
+      "export_name": "Id",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/IndependenceProof": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/IndependenceProof",
+      "export_name": "IndependenceProof",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/IndependenceProofResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/IndependenceProofResponse",
+      "export_name": "IndependenceProofResponse",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/IntrospectRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/IntrospectRequest",
+      "export_name": "IntrospectRequest",
+      "entrypoints": [
+        "./internal/controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/IntrospectResult": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/IntrospectResult",
+      "export_name": "IntrospectResult",
+      "entrypoints": [
+        "./internal/controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/IntrospectResultResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/IntrospectResultResponse",
+      "export_name": "IntrospectResultResponse",
+      "entrypoints": [
+        "./internal/controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/JsonValue": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/JsonValue",
+      "export_name": "JsonValue",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/LoginRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/LoginRequest",
+      "export_name": "LoginRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Meta": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Meta",
+      "export_name": "Meta",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/MetaResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/MetaResponse",
+      "export_name": "MetaResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/MutationReceipt": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/MutationReceipt",
+      "export_name": "MutationReceipt",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/MutationReceiptResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/MutationReceiptResponse",
+      "export_name": "MutationReceiptResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ObsCompletionBundle": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ObsCompletionBundle",
+      "export_name": "ObsCompletionBundle",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ObsEvidenceFrame": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ObsEvidenceFrame",
+      "export_name": "ObsEvidenceFrame",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ObsSceneParameters": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ObsSceneParameters",
+      "export_name": "ObsSceneParameters",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Observation": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Observation",
+      "export_name": "Observation",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ObservationResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ObservationResponse",
+      "export_name": "ObservationResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/OsBootIdentity": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/OsBootIdentity",
+      "export_name": "OsBootIdentity",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Payload": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Payload",
+      "export_name": "Payload",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/PendingChange": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/PendingChange",
+      "export_name": "PendingChange",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Platform": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Platform",
+      "export_name": "Platform",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Predicate": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Predicate",
+      "export_name": "Predicate",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Preflight": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Preflight",
+      "export_name": "Preflight",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/PreflightResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/PreflightResponse",
+      "export_name": "PreflightResponse",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/PrincipalRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/PrincipalRef",
+      "export_name": "PrincipalRef",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ProofActionBinding": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ProofActionBinding",
+      "export_name": "ProofActionBinding",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ProofRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ProofRef",
+      "export_name": "ProofRef",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/PublishRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/PublishRequest",
+      "export_name": "PublishRequest",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoveryOperation": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoveryOperation",
+      "export_name": "RecoveryOperation",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoveryOperationResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoveryOperationResponse",
+      "export_name": "RecoveryOperationResponse",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoveryPlan": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoveryPlan",
+      "export_name": "RecoveryPlan",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoveryPlanItem": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoveryPlanItem",
+      "export_name": "RecoveryPlanItem",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoveryPreview": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoveryPreview",
+      "export_name": "RecoveryPreview",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoveryPreviewResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoveryPreviewResponse",
+      "export_name": "RecoveryPreviewResponse",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoverySnapshot": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoverySnapshot",
+      "export_name": "RecoverySnapshot",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RecoveryTarget": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RecoveryTarget",
+      "export_name": "RecoveryTarget",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RefreshRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RefreshRequest",
+      "export_name": "RefreshRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ReleaseRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ReleaseRequest",
+      "export_name": "ReleaseRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RequestContext": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RequestContext",
+      "export_name": "RequestContext",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RequestContextRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RequestContextRequest",
+      "export_name": "RequestContextRequest",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RequestContextResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RequestContextResponse",
+      "export_name": "RequestContextResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RequestIdentity": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RequestIdentity",
+      "export_name": "RequestIdentity",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RequiredStep": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RequiredStep",
+      "export_name": "RequiredStep",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Resolution": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Resolution",
+      "export_name": "Resolution",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ResourceReleaseEvidence": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ResourceReleaseEvidence",
+      "export_name": "ResourceReleaseEvidence",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ResourceSet": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ResourceSet",
+      "export_name": "ResourceSet",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ResumeRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ResumeRequest",
+      "export_name": "ResumeRequest",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RetryDescriptor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RetryDescriptor",
+      "export_name": "RetryDescriptor",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RetryPolicy": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RetryPolicy",
+      "export_name": "RetryPolicy",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Revision": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Revision",
+      "export_name": "Revision",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RevocationReceipt": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RevocationReceipt",
+      "export_name": "RevocationReceipt",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RevocationRecord": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RevocationRecord",
+      "export_name": "RevocationRecord",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RevocationRecordResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RevocationRecordResponse",
+      "export_name": "RevocationRecordResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RevocationRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RevocationRequest",
+      "export_name": "RevocationRequest",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RevocationSelector": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RevocationSelector",
+      "export_name": "RevocationSelector",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RevokeRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RevokeRequest",
+      "export_name": "RevokeRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RunBinding": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RunBinding",
+      "export_name": "RunBinding",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RunCreate": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RunCreate",
+      "export_name": "RunCreate",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RunGrant": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RunGrant",
+      "export_name": "RunGrant",
+      "entrypoints": [],
+      "status": "retained_unexported"
+    },
+    "public/RunMutationRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RunMutationRequest",
+      "export_name": "RunMutationRequest",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RunRecord": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RunRecord",
+      "export_name": "RunRecord",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RunRecordResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RunRecordResponse",
+      "export_name": "RunRecordResponse",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/RunRevisionRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/RunRevisionRequest",
+      "export_name": "RunRevisionRequest",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SceneRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SceneRef",
+      "export_name": "SceneRef",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/ScheduleGuard": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/ScheduleGuard",
+      "export_name": "ScheduleGuard",
+      "entrypoints": [
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SchemaDescriptor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SchemaDescriptor",
+      "export_name": "SchemaDescriptor",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Session": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Session",
+      "export_name": "Session",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SessionResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SessionResponse",
+      "export_name": "SessionResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Snapshot": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Snapshot",
+      "export_name": "Snapshot",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SnapshotResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SnapshotResponse",
+      "export_name": "SnapshotResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/StepDefinition": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/StepDefinition",
+      "export_name": "StepDefinition",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/StepGroup": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/StepGroup",
+      "export_name": "StepGroup",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/StepResult": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/StepResult",
+      "export_name": "StepResult",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SubjectRecord": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SubjectRecord",
+      "export_name": "SubjectRecord",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SubjectRecordResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SubjectRecordResponse",
+      "export_name": "SubjectRecordResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Subscription": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Subscription",
+      "export_name": "Subscription",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SubscriptionRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SubscriptionRequest",
+      "export_name": "SubscriptionRequest",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/SubscriptionResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/SubscriptionResponse",
+      "export_name": "SubscriptionResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TargetApplication": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TargetApplication",
+      "export_name": "TargetApplication",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TimeBoundEvidence": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TimeBoundEvidence",
+      "export_name": "TimeBoundEvidence",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TimeBoundEvidenceResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TimeBoundEvidenceResponse",
+      "export_name": "TimeBoundEvidenceResponse",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TimeBoundProfile": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TimeBoundProfile",
+      "export_name": "TimeBoundProfile",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TimeBoundProfileResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TimeBoundProfileResponse",
+      "export_name": "TimeBoundProfileResponse",
+      "entrypoints": [
+        "./internal/controller",
+        "./internal/seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TimeProfileRef": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TimeProfileRef",
+      "export_name": "TimeProfileRef",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./internal/seamer",
+        "./ipc",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Timestamp": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Timestamp",
+      "export_name": "Timestamp",
+      "entrypoints": [
+        "./controller",
+        "./internal/controller",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TokenRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TokenRequest",
+      "export_name": "TokenRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TokenResult": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TokenResult",
+      "export_name": "TokenResult",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TokenResultResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TokenResultResponse",
+      "export_name": "TokenResultResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TransferAcceptRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TransferAcceptRequest",
+      "export_name": "TransferAcceptRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TransferOffer": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TransferOffer",
+      "export_name": "TransferOffer",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TransferOfferResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TransferOfferResponse",
+      "export_name": "TransferOfferResponse",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TransferRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TransferRequest",
+      "export_name": "TransferRequest",
+      "entrypoints": [
+        "./controller",
+        "./models"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TransitionDefinition": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TransitionDefinition",
+      "export_name": "TransitionDefinition",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TransitionRecord": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TransitionRecord",
+      "export_name": "TransitionRecord",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TriggerBinding": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TriggerBinding",
+      "export_name": "TriggerBinding",
+      "entrypoints": [
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/TriggerDescriptor": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/TriggerDescriptor",
+      "export_name": "TriggerDescriptor",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider"
+      ],
+      "status": "candidate_export"
+    },
+    "public/UtcAgeBasis": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/UtcAgeBasis",
+      "export_name": "UtcAgeBasis",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./provider",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Validity": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Validity",
+      "export_name": "Validity",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/Version": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/Version",
+      "export_name": "Version",
+      "entrypoints": [
+        "./controller",
+        "./ipc",
+        "./models",
+        "./provider",
+        "./seamer",
+        "./seamer-controller"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsEvent": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsEvent",
+      "export_name": "WsEvent",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsFrame": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsFrame",
+      "export_name": "WsFrame",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsResync": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsResync",
+      "export_name": "WsResync",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsTicketBinding": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsTicketBinding",
+      "export_name": "WsTicketBinding",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsTicketBindingResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsTicketBindingResponse",
+      "export_name": "WsTicketBindingResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsTicketRequest": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsTicketRequest",
+      "export_name": "WsTicketRequest",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsTicketResult": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsTicketResult",
+      "export_name": "WsTicketResult",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    },
+    "public/WsTicketResultResponse": {
+      "source": "public.schema.json",
+      "pointer": "/$defs/WsTicketResultResponse",
+      "export_name": "WsTicketResultResponse",
+      "entrypoints": [
+        "./controller",
+        "./models",
+        "./seamer"
+      ],
+      "status": "candidate_export"
+    }
+  }
+}

@@ -1,0 +1,1699 @@
+{
+  "contract": "automation-lifecycle/0.1.0-draft.1",
+  "approved": false,
+  "checks_passed": 299,
+  "all_passed": true,
+  "operations": 24,
+  "scope": "结构和HTTP投影及合成基线、有限串行原子步；不运行服务或数据库",
+  "checks": [
+    {
+      "id": "schema.DraftRecord",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.DraftRecord",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.DraftRecord",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.DraftRecord",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.PublishedVersion",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.PublishedVersion",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.PublishedVersion",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.PublishedVersion",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.ActivationSlot",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.ActivationSlot",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.ActivationSlot",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.ActivationSlot",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.RunRecord",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.RunRecord",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.RunRecord",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.RunRecord",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.DependencyBaseline",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.DependencyBaseline",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.DependencyBaseline",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.DependencyBaseline",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.Preflight",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.Preflight",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.Preflight",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.Preflight",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.LifecycleOperation",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.LifecycleOperation",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.LifecycleOperation",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.LifecycleOperation",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.EvaluationSnapshot",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.EvaluationSnapshot",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.EvaluationSnapshot",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.EvaluationSnapshot",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.TriggerDecision",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.TriggerDecision",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.TriggerDecision",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.TriggerDecision",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.ExecutionBinding",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.ExecutionBinding",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.ExecutionBinding",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.ExecutionBinding",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.ExecutionRecord",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.ExecutionRecord",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.ExecutionRecord",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.ExecutionRecord",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.RecoveryPreview",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.RecoveryPreview",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.RecoveryPreview",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.RecoveryPreview",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.CreateDefinition",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.CreateDefinition",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.CreateDefinition",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.CreateDefinition",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.UpdateDraft",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.UpdateDraft",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.UpdateDraft",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.UpdateDraft",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.UpdateMetadata",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.UpdateMetadata",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.UpdateMetadata",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.UpdateMetadata",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.Publish",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.Publish",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.Publish",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.Publish",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.CreateRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.CreateRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.CreateRun",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.CreateRun",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.InspectRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.InspectRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.InspectRun",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.InspectRun",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.Arm",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.Arm",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.Arm",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.Arm",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.ProtectRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.ProtectRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.ProtectRun",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.ProtectRun",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.Resume",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.Resume",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.Resume",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.Resume",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.Lookup",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.Lookup",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.Lookup",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.Lookup",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "schema.LookupResult",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "projection.LookupResult",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "semantic.LookupResult",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "closed.LookupResult",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "rehashed.ActivationSlot.slot_pair",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.ActivationSlot.slot_pair",
+      "actual": "slot_pair",
+      "expected": "slot_pair"
+    },
+    {
+      "id": "rehashed.RunRecord.run_gate",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.RunRecord.run_gate",
+      "actual": "run_gate",
+      "expected": "run_gate"
+    },
+    {
+      "id": "rehashed.RunRecord.execution_required",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.RunRecord.execution_required",
+      "actual": "execution_required",
+      "expected": "execution_required"
+    },
+    {
+      "id": "rehashed.Preflight.preflight_checks",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.Preflight.preflight_checks",
+      "actual": "preflight_checks",
+      "expected": "preflight_checks"
+    },
+    {
+      "id": "rehashed.Preflight.lifetime",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.Preflight.lifetime",
+      "actual": "lifetime",
+      "expected": "lifetime"
+    },
+    {
+      "id": "rehashed.RecoveryPreview.retain_evidence",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.RecoveryPreview.retain_evidence",
+      "actual": "retain_evidence",
+      "expected": "retain_evidence"
+    },
+    {
+      "id": "rehashed.TriggerDecision.decision_execution",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.TriggerDecision.decision_execution",
+      "actual": "decision_execution",
+      "expected": "decision_execution"
+    },
+    {
+      "id": "rehashed.TriggerDecision.snapshot_pair",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.TriggerDecision.snapshot_pair",
+      "actual": "snapshot_pair",
+      "expected": "snapshot_pair"
+    },
+    {
+      "id": "rehashed.ExecutionRecord.finished_pending",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.ExecutionRecord.finished_pending",
+      "actual": "finished_pending",
+      "expected": "finished_pending"
+    },
+    {
+      "id": "rehashed.LifecycleOperation.arm_generation",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.LifecycleOperation.arm_generation",
+      "actual": "arm_generation",
+      "expected": "arm_generation"
+    },
+    {
+      "id": "rehashed.LifecycleOperation.run_revision",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.LifecycleOperation.run_revision",
+      "actual": "run_revision",
+      "expected": "run_revision"
+    },
+    {
+      "id": "rehashed.LifecycleOperation.slot_revision",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.LifecycleOperation.slot_revision",
+      "actual": "slot_revision",
+      "expected": "slot_revision"
+    },
+    {
+      "id": "rehashed.LifecycleOperation.ready_targets",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.LifecycleOperation.ready_targets",
+      "actual": "ready_targets",
+      "expected": "ready_targets"
+    },
+    {
+      "id": "rehashed.LifecycleOperation.barrier_incomplete",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "reject.LifecycleOperation.barrier_incomplete",
+      "actual": "barrier_incomplete",
+      "expected": "barrier_incomplete"
+    },
+    {
+      "id": "api.operation_count",
+      "actual": 24,
+      "expected": 24
+    },
+    {
+      "id": "api.subject.createDefinition",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.createDefinition",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.createDefinition",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.getDraft",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getDraft",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getDraft",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.updateDraft",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.updateDraft",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.updateDraft",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.updateDefinitionMetadata",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.updateDefinitionMetadata",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.updateDefinitionMetadata",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.publishDefinition",
+      "actual": [
+        "human"
+      ],
+      "expected": [
+        "human"
+      ]
+    },
+    {
+      "id": "api.version.publishDefinition",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.publishDefinition",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.getDefinitionVersion",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getDefinitionVersion",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getDefinitionVersion",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.getCompiledProgram",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getCompiledProgram",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getCompiledProgram",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.getPublishedArtifact",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getPublishedArtifact",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getPublishedArtifact",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.getIndependenceProof",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getIndependenceProof",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getIndependenceProof",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.getActivationSlot",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getActivationSlot",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getActivationSlot",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.createRun",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.createRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.createRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.getRun",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getRun",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.preflightRun",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.preflightRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.preflightRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.armRun",
+      "actual": [
+        "human"
+      ],
+      "expected": [
+        "human"
+      ]
+    },
+    {
+      "id": "api.version.armRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.armRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.pauseRun",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.pauseRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.pauseRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.disarmRun",
+      "actual": [
+        "human"
+      ],
+      "expected": [
+        "human"
+      ]
+    },
+    {
+      "id": "api.version.disarmRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.disarmRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.retireRun",
+      "actual": [
+        "human"
+      ],
+      "expected": [
+        "human"
+      ]
+    },
+    {
+      "id": "api.version.retireRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.retireRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.previewRecovery",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.previewRecovery",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.previewRecovery",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.resumeRun",
+      "actual": [
+        "human"
+      ],
+      "expected": [
+        "human"
+      ]
+    },
+    {
+      "id": "api.version.resumeRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.resumeRun",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.subject.getRunOperation",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getRunOperation",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getRunOperation",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.getRecoveryOperation",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getRecoveryOperation",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getRecoveryOperation",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.getExecution",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getExecution",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getExecution",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.getTriggerDecision",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.getTriggerDecision",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.getTriggerDecision",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "api.subject.lookupAutomationRequest",
+      "actual": [
+        "human",
+        "service"
+      ],
+      "expected": [
+        "human",
+        "service"
+      ]
+    },
+    {
+      "id": "api.version.lookupAutomationRequest",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "api.csrf.lookupAutomationRequest",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "binding.trigger",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "id": "binding.rehashed_run_id",
+      "actual": "execution_scope",
+      "expected": "execution_scope"
+    },
+    {
+      "id": "binding.rehashed_execution_id",
+      "actual": "execution_identity",
+      "expected": "execution_identity"
+    },
+    {
+      "id": "binding.rehashed_target_state_id",
+      "actual": "target_state",
+      "expected": "target_state"
+    },
+    {
+      "id": "binding.rehashed_input_snapshot_ref",
+      "actual": "execution_snapshot",
+      "expected": "execution_snapshot"
+    },
+    {
+      "id": "choose.empty",
+      "actual": [
+        "no_match",
+        null
+      ],
+      "expected": [
+        "no_match",
+        null
+      ]
+    },
+    {
+      "id": "choose.none_true",
+      "actual": [
+        "evaluation_unknown",
+        null
+      ],
+      "expected": [
+        "evaluation_unknown",
+        null
+      ]
+    },
+    {
+      "id": "choose.winner",
+      "actual": [
+        "accepted",
+        "a"
+      ],
+      "expected": [
+        "accepted",
+        "a"
+      ]
+    },
+    {
+      "id": "choose.higher_unknown",
+      "actual": [
+        "evaluation_unknown",
+        null
+      ],
+      "expected": [
+        "evaluation_unknown",
+        null
+      ]
+    },
+    {
+      "id": "choose.equal_unknown",
+      "actual": [
+        "evaluation_unknown",
+        null
+      ],
+      "expected": [
+        "evaluation_unknown",
+        null
+      ]
+    },
+    {
+      "id": "choose.tie",
+      "actual": [
+        "ambiguous",
+        null
+      ],
+      "expected": [
+        "ambiguous",
+        null
+      ]
+    },
+    {
+      "id": "arm.accepted",
+      "actual": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "id": "arm.not_eligible",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "arm.slot",
+      "actual": "run",
+      "expected": "run"
+    },
+    {
+      "id": "arm.generation",
+      "actual": "3",
+      "expected": "3"
+    },
+    {
+      "id": "arm.execution_count",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "id": "arm.lost_reply",
+      "actual": "existing",
+      "expected": "existing"
+    },
+    {
+      "id": "arm.no_second_execution",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.second_consumer",
+      "actual": "conflict",
+      "expected": "conflict"
+    },
+    {
+      "id": "arm.same_key_changed",
+      "actual": "request_conflict",
+      "expected": "request_conflict"
+    },
+    {
+      "id": "arm.revoked",
+      "actual": "forbidden",
+      "expected": "forbidden"
+    },
+    {
+      "id": "arm.revoked_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.service",
+      "actual": "forbidden",
+      "expected": "forbidden"
+    },
+    {
+      "id": "arm.service_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.expired",
+      "actual": "expired",
+      "expected": "expired"
+    },
+    {
+      "id": "arm.expired_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.before",
+      "actual": "expired",
+      "expected": "expired"
+    },
+    {
+      "id": "arm.before_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.storage",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "arm.storage_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.gates",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "arm.gates_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.rollback",
+      "actual": "rolled_back",
+      "expected": "rolled_back"
+    },
+    {
+      "id": "arm.rollback_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "arm.takeover",
+      "actual": "stale",
+      "expected": "stale"
+    },
+    {
+      "id": "arm.cross_version_slot",
+      "actual": "slot_owned",
+      "expected": "slot_owned"
+    },
+    {
+      "id": "arm.ready",
+      "actual": "ready",
+      "expected": "ready"
+    },
+    {
+      "id": "arm.ready_lifecycle",
+      "actual": "armed",
+      "expected": "armed"
+    },
+    {
+      "id": "arm.receipt_state",
+      "actual": "target_unready",
+      "expected": "target_unready"
+    },
+    {
+      "id": "arm.receipt_durable",
+      "actual": "target_unready",
+      "expected": "target_unready"
+    },
+    {
+      "id": "arm.receipt_operation_id",
+      "actual": "receipt_binding",
+      "expected": "receipt_binding"
+    },
+    {
+      "id": "arm.receipt_arm_generation",
+      "actual": "receipt_binding",
+      "expected": "receipt_binding"
+    },
+    {
+      "id": "arm.receipt_target_grant_ref",
+      "actual": "grant_binding",
+      "expected": "grant_binding"
+    },
+    {
+      "id": "arm.partial_preparation",
+      "actual": "target_coverage",
+      "expected": "target_coverage"
+    },
+    {
+      "id": "arm.late_receipts_no_restart",
+      "actual": "operation_terminal",
+      "expected": "operation_terminal"
+    },
+    {
+      "id": "arm.storage_recovery_no_restart",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "arm.prepare_revoked",
+      "actual": "stale",
+      "expected": "stale"
+    },
+    {
+      "id": "resume.accepted",
+      "actual": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "id": "resume.not_eligible",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "resume.slot",
+      "actual": "run",
+      "expected": "run"
+    },
+    {
+      "id": "resume.generation",
+      "actual": "3",
+      "expected": "3"
+    },
+    {
+      "id": "resume.execution_count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "id": "resume.lost_reply",
+      "actual": "existing",
+      "expected": "existing"
+    },
+    {
+      "id": "resume.no_second_execution",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.second_consumer",
+      "actual": "conflict",
+      "expected": "conflict"
+    },
+    {
+      "id": "resume.same_key_changed",
+      "actual": "request_conflict",
+      "expected": "request_conflict"
+    },
+    {
+      "id": "resume.revoked",
+      "actual": "forbidden",
+      "expected": "forbidden"
+    },
+    {
+      "id": "resume.revoked_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.service",
+      "actual": "forbidden",
+      "expected": "forbidden"
+    },
+    {
+      "id": "resume.service_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.expired",
+      "actual": "expired",
+      "expected": "expired"
+    },
+    {
+      "id": "resume.expired_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.before",
+      "actual": "expired",
+      "expected": "expired"
+    },
+    {
+      "id": "resume.before_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.storage",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "resume.storage_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.gates",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "resume.gates_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.rollback",
+      "actual": "rolled_back",
+      "expected": "rolled_back"
+    },
+    {
+      "id": "resume.rollback_no_mutation",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "resume.takeover",
+      "actual": "stale",
+      "expected": "stale"
+    },
+    {
+      "id": "resume.cross_version_slot",
+      "actual": "slot_owned",
+      "expected": "slot_owned"
+    },
+    {
+      "id": "resume.ready",
+      "actual": "ready",
+      "expected": "ready"
+    },
+    {
+      "id": "resume.ready_lifecycle",
+      "actual": "paused",
+      "expected": "paused"
+    },
+    {
+      "id": "resume.receipt_state",
+      "actual": "target_unready",
+      "expected": "target_unready"
+    },
+    {
+      "id": "resume.receipt_durable",
+      "actual": "target_unready",
+      "expected": "target_unready"
+    },
+    {
+      "id": "resume.receipt_operation_id",
+      "actual": "receipt_binding",
+      "expected": "receipt_binding"
+    },
+    {
+      "id": "resume.receipt_arm_generation",
+      "actual": "receipt_binding",
+      "expected": "receipt_binding"
+    },
+    {
+      "id": "resume.receipt_target_grant_ref",
+      "actual": "grant_binding",
+      "expected": "grant_binding"
+    },
+    {
+      "id": "resume.partial_preparation",
+      "actual": "target_coverage",
+      "expected": "target_coverage"
+    },
+    {
+      "id": "resume.late_receipts_no_restart",
+      "actual": "operation_terminal",
+      "expected": "operation_terminal"
+    },
+    {
+      "id": "resume.storage_recovery_no_restart",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "resume.prepare_revoked",
+      "actual": "stale",
+      "expected": "stale"
+    },
+    {
+      "id": "recovery.unresolved",
+      "actual": "unresolved",
+      "expected": "unresolved"
+    },
+    {
+      "id": "trigger.accepted",
+      "actual": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "id": "trigger.one_execution",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "id": "trigger.repeat",
+      "actual": "existing_accepted",
+      "expected": "existing_accepted"
+    },
+    {
+      "id": "trigger.busy",
+      "actual": "suppressed_busy",
+      "expected": "suppressed_busy"
+    },
+    {
+      "id": "trigger.no_busy_replay",
+      "actual": "existing_suppressed_busy",
+      "expected": "existing_suppressed_busy"
+    },
+    {
+      "id": "trigger.immutable_event",
+      "actual": "event_conflict",
+      "expected": "event_conflict"
+    },
+    {
+      "id": "trigger.closed",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "trigger.paused",
+      "actual": "suppressed_inactive",
+      "expected": "suppressed_inactive"
+    },
+    {
+      "id": "trigger.old_unseen",
+      "actual": "suppressed_obsolete",
+      "expected": "suppressed_obsolete"
+    },
+    {
+      "id": "trigger.rollback",
+      "actual": "rolled_back",
+      "expected": "rolled_back"
+    },
+    {
+      "id": "trigger.rollback_empty",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "trigger.true_not_permission",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "commit.success",
+      "actual": "committed",
+      "expected": "committed"
+    },
+    {
+      "id": "commit.outbox_once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "id": "commit.lost_reply",
+      "actual": "existing",
+      "expected": "existing"
+    },
+    {
+      "id": "commit.no_duplicate_outbox",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "commit.latch",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "commit.evidence",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "commit.unresolved",
+      "actual": "protected",
+      "expected": "protected"
+    },
+    {
+      "id": "commit.new_generation",
+      "actual": "stale",
+      "expected": "stale"
+    },
+    {
+      "id": "commit.rollback",
+      "comparison": "whole_fixture_snapshot",
+      "equal": true
+    },
+    {
+      "id": "checks.unique",
+      "actual": 298,
+      "expected": 298
+    }
+  ],
+  "snapshot_assertions_passed": 19,
+  "runtime_validation": {
+    "http": 0,
+    "identity_providers": 0,
+    "sqlite": 0,
+    "concurrency": 0,
+    "devices": 0
+  },
+  "versions": {
+    "python": "3.14.0",
+    "jsonschema": "4.25.1",
+    "openapi_spec_validator": "0.7.2",
+    "rfc8785": "0.1.4"
+  },
+  "input_sha256": {
+    "docs/contracts/c04-lifecycle/README.md": "e972dd205861f240dea0085a33ce106bd461a44c3ccbfee54e0ef16399099f18",
+    "docs/contracts/c04-lifecycle/build_contracts.py": "9e084302cd626bd9674f06e3a89728c149189efd891977dc80d9bdbe0271606e",
+    "docs/contracts/c04-lifecycle/reference_model.py": "4dd6adf7f9f9b6874feb7a867d7fd7c5c618b14ff61083eee6247f0305669bb7",
+    "docs/contracts/c04-lifecycle/check_contracts.py": "c7119557ea280e0cc55e4035992e0be1ae9b93838726632d31fde5cd26ab5af7",
+    "docs/contracts/c04-lifecycle/lifecycle.schema.json": "a2438f0986af5b75ed64f20cc3d9b42992c3f5cfd9f39ded92bfb746c3e2d93d",
+    "docs/contracts/c04-lifecycle/lifecycle.openapi.json": "9f82eaf77e7500b28d138867f0ef68dd8c9e347deb49c4cf8d715f57236052cd",
+    "docs/contracts/c04-program/program.schema.json": "43612d114488d165605ccdcc801274874e44d6312c58c89f7c1963cf85b1f8b9",
+    "docs/rebirth-c04-automation-design.md": "8dd3f4dcd15d3ec66a086e892229339992735c5ea74c3b737aa670d1635eb7da"
+  }
+}

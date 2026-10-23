@@ -1,0 +1,774 @@
+{
+  "all_passed": true,
+  "cases_passed": 129,
+  "approved": false,
+  "scope": "103表取消资源核销候选",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "103表组合",
+      "expected": 103,
+      "observed": 103
+    },
+    {
+      "name": "未释放仍占用",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "完整释放缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "完整释放缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动异常0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "异常全部103表回滚0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整释放缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "完整释放缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动异常1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "异常全部103表回滚1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整释放缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "完整释放缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动异常2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "异常全部103表回滚2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整释放缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "完整释放缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动异常3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "异常全部103表回滚3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整释放缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "完整释放缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动异常4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "异常全部103表回滚4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整释放缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "完整释放缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动异常5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "异常全部103表回滚5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整释放缺写6",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "完整释放缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "主动异常6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "异常全部103表回滚6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ordinary关闭不能冒充all",
+      "expected": "cancel_all_closure_binding",
+      "observed": "cancel_all_closure_binding"
+    },
+    {
+      "name": "ordinary关闭不能冒充all全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未核销不清资源",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未核销不清资源全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "两类历史齐全可释放",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "103表普通路径无取消也可释放",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "迟到未发不制造资源失效",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "释放后不得补取消传输",
+      "expected": "cancel_after_release",
+      "observed": "cancel_after_release"
+    },
+    {
+      "name": "释放后不得补取消传输全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "成员关联permit_id",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "成员关联permit_id全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "成员关联settlement_id",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "成员关联settlement_id全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "成员关联cancellation_id",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "成员关联cancellation_id全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "成员关联issued_cut_revision",
+      "expected": "release_binding",
+      "observed": "release_binding"
+    },
+    {
+      "name": "成员关联issued_cut_revision全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "历史重传不能漏掉",
+      "expected": "cancel_release_permit_set",
+      "observed": "cancel_release_permit_set"
+    },
+    {
+      "name": "历史重传不能漏掉全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重传不能借初始核销",
+      "expected": "cancel_release_member_unproven",
+      "observed": "cancel_release_member_unproven"
+    },
+    {
+      "name": "重传不能借初始核销全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已核销历史亦完整保留",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "关闭原件关联operation_revision",
+      "expected": "cancel_all_closure_binding",
+      "observed": "cancel_all_closure_binding"
+    },
+    {
+      "name": "关闭原件关联operation_revision全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭原件关联closure_digest",
+      "expected": "cancel_all_closure_binding",
+      "observed": "cancel_all_closure_binding"
+    },
+    {
+      "name": "关闭原件关联closure_digest全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "关闭提供者必须绑定原取消",
+      "expected": "cancel_all_closure_binding",
+      "observed": "cancel_all_closure_binding"
+    },
+    {
+      "name": "关闭提供者必须绑定原取消全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "核销提供者关联settlement_digest",
+      "expected": "cancel_settlement_binding",
+      "observed": "cancel_settlement_binding"
+    },
+    {
+      "name": "核销提供者关联settlement_digest全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "核销提供者关联subject_id",
+      "expected": "cancel_settlement_binding",
+      "observed": "cancel_settlement_binding"
+    },
+    {
+      "name": "核销提供者关联subject_id全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "核销提供者关联purpose",
+      "expected": "cancel_settlement_binding",
+      "observed": "cancel_settlement_binding"
+    },
+    {
+      "name": "核销提供者关联purpose全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "核销提供者关联device_id",
+      "expected": "cancel_settlement_binding",
+      "observed": "cancel_settlement_binding"
+    },
+    {
+      "name": "核销提供者关联device_id全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "封存前撤回不能释放",
+      "expected": "cancel_release_member_unproven",
+      "observed": "cancel_release_member_unproven"
+    },
+    {
+      "name": "封存前撤回不能释放全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "封存前关闭证明撤回",
+      "expected": "cancel_closure_revoked",
+      "observed": "cancel_closure_revoked"
+    },
+    {
+      "name": "封存前关闭证明撤回全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "撤回原子回滚close.cancel",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "撤回重开占用close.cancel",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "撤回锁存保护close.cancel",
+      "expected": [
+        "r"
+      ],
+      "observed": [
+        "r"
+      ]
+    },
+    {
+      "name": "撤回原子回滚v.cs",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "撤回重开占用v.cs",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "撤回锁存保护v.cs",
+      "expected": [
+        "r"
+      ],
+      "observed": [
+        "r"
+      ]
+    },
+    {
+      "name": "撤回原子回滚v.r",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "撤回重开占用v.r",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "撤回锁存保护v.r",
+      "expected": [
+        "r"
+      ],
+      "observed": [
+        "r"
+      ]
+    },
+    {
+      "name": "迟到与失效同回滚report",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "迟到重开资源report",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "迟到锁存设备report",
+      "expected": [
+        "r"
+      ],
+      "observed": [
+        "r"
+      ]
+    },
+    {
+      "name": "迟到不抹旧释放report",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "迟到与失效同回滚ack",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "迟到重开资源ack",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "迟到锁存设备ack",
+      "expected": [
+        "r"
+      ],
+      "observed": [
+        "r"
+      ]
+    },
+    {
+      "name": "迟到不抹旧释放ack",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "迟到与失效同回滚target",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "迟到重开资源target",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "迟到锁存设备target",
+      "expected": [
+        "r"
+      ],
+      "observed": [
+        "r"
+      ]
+    },
+    {
+      "name": "迟到不抹旧释放target",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "未核销不能恢复",
+      "expected": "recovery_resource_busy",
+      "observed": "recovery_resource_busy"
+    },
+    {
+      "name": "未核销不能恢复全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "新释放可消除占用",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "旧保护仍锁存",
+      "expected": [
+        "r"
+      ],
+      "observed": [
+        "r"
+      ]
+    },
+    {
+      "name": "恢复不能漏旧失效",
+      "expected": "recovery_protection_set",
+      "observed": "recovery_protection_set"
+    },
+    {
+      "name": "恢复不能漏旧失效全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整恢复才解锁",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "历史终态未改写",
+      "expected": [
+        "indeterminate",
+        "closed"
+      ],
+      "observed": [
+        "indeterminate",
+        "closed"
+      ]
+    },
+    {
+      "name": "效果核销不被重复传输报告推翻",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "新撤回不被旧恢复覆盖",
+      "expected": [
+        "r.fixed"
+      ],
+      "observed": [
+        "r.fixed"
+      ]
+    },
+    {
+      "name": "资源再次未决",
+      "expected": [
+        "h"
+      ],
+      "observed": [
+        "h"
+      ]
+    },
+    {
+      "name": "新恢复不能遗漏新失效",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "新恢复不能遗漏新失效全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_closureUPDATE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_closureUPDATE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_closureDELETE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_closureDELETE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_closureINSERT",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_closureINSERT全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_settlementUPDATE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_settlementUPDATE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_settlementDELETE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_settlementDELETE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_settlementINSERT",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_settlementINSERT全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_release_cancelUPDATE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_release_cancelUPDATE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_release_cancelDELETE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_release_cancelDELETE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_release_cancelINSERT",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_release_cancelINSERT全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_release_memberUPDATE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_release_memberUPDATE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_release_memberDELETE",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_release_memberDELETE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "cx_release_memberINSERT",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "cx_release_memberINSERT全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "全部内存库FK与完整性",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/check_barrier_attempt.py": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b",
+    "docs/contracts/c08-controller/resource.sql": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d",
+    "docs/contracts/c08-controller/RESOURCE_STORAGE.md": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa",
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
+    "docs/contracts/c08-controller/check_resource.py": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267",
+    "docs/contracts/c08-controller/check_command.py": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4",
+    "docs/contracts/c02-command-view/storage.sql": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-command-view/check_storage.py": "ca89ed5f7ef5111ea897cf6c5f23b8dd10380afed0daf5cbc519cd092e97ae16",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c08-controller/issue-ledger.sql": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285",
+    "docs/contracts/c08-controller/build_issue_ledger.py": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d",
+    "docs/contracts/c08-controller/controller-issue.sql": "1bceb2564b08afbbd5b6e1ea61f64b6c69b16bebf067cda23e239932d60d4c5b",
+    "docs/contracts/c08-controller/ISSUE_LEDGER.md": "e20988ec1d3fbcefe2eaee160c4be7a0b576c3b6aaf63e3013616deb90d6cb3c",
+    "docs/contracts/c08-controller/check_issue_ledger.py": "9345d6f1ce16150b62f77e137d917a90d07f013aab062140960e0031fceb037b",
+    "docs/contracts/c08-controller/cancel-fence.sql": "559a918a21b95e4e3f293bf888f68a694b12fe6560e84c4786789d02aa5493b5",
+    "docs/contracts/c08-controller/build_cancel_fence.py": "cbba07f9548d0b09fc765ee749e74ca2d777977544782cb4200105a4d7524f1d",
+    "docs/contracts/c08-controller/controller-cancel-fence.sql": "54af09ffcbc6ebc959025fad1954b12bc9153fa7795016c4bcd3c42ac5c32fcd",
+    "docs/contracts/c08-controller/CANCEL_FENCE.md": "8a2a35d0dce59951a9db74b3a41cc115e8560b8170135fbb5364812aa67d68fe",
+    "docs/contracts/c08-controller/check_cancel_fence.py": "f7aab87c739236d2215bb22754e182d8e1131ae582bfd996f07925f12a83495f",
+    "docs/contracts/c08-controller/cancel-resource.sql": "3ace3a1a067791527f772ba662ede9776df8e4472244f93b2ac479a6d7e0d86d",
+    "docs/contracts/c08-controller/build_cancel_resource.py": "41a36379b491898284e3dfd17f4910c61316944a4da1fc6db5e2997701b6f519",
+    "docs/contracts/c08-controller/controller-cancel-resource.sql": "9305bbd31226cca764dd4bfd92e9b41f5895c6c524d41d3ff0f9e60b58429caa",
+    "docs/contracts/c08-controller/CANCEL_RESOURCE.md": "af5e2ab040a673863431f11ec40b706082c838fa63c1c6dc50ca180219f5d11c",
+    "docs/contracts/c08-controller/check_cancel_resource.py": "b7a105462c796d0c811f2530066a585cfc0c450eb04d103815aa25a2df17aa36"
+  }
+}

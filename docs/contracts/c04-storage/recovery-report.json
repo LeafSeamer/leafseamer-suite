@@ -1,0 +1,1434 @@
+{
+  "format": "automation-recovery-storage-reference/1",
+  "approved": false,
+  "python": "3.14.0",
+  "sqlite": "3.50.4",
+  "checks_passed": 257,
+  "all_passed": true,
+  "cases": [
+    {
+      "case": "state_machine_execute_reserve",
+      "passed": true,
+      "observed": "accepted"
+    },
+    {
+      "case": "state_machine_execute_audit_1",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_execute_prepare",
+      "passed": true,
+      "observed": "ready_paused"
+    },
+    {
+      "case": "state_machine_execute_audit_2",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_execute_R3_still_paused",
+      "passed": true,
+      "observed": "paused"
+    },
+    {
+      "case": "state_machine_execute_start",
+      "passed": true,
+      "observed": "started"
+    },
+    {
+      "case": "state_machine_execute_audit_3",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_execute_dispatch",
+      "passed": true,
+      "observed": 1
+    },
+    {
+      "case": "state_machine_execute_finish",
+      "passed": true,
+      "observed": "committed"
+    },
+    {
+      "case": "state_machine_execute_audit_4",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_execute_state_rows",
+      "passed": true,
+      "observed": 1
+    },
+    {
+      "case": "state_machine_execute_events",
+      "passed": true,
+      "observed": 4
+    },
+    {
+      "case": "state_machine_execute_old_unknown_preserved",
+      "passed": true,
+      "observed": "unknown"
+    },
+    {
+      "case": "state_machine_execute_lost_response_lookup",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "state_machine_execute_lookup_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "state_machine_execute_restart",
+      "passed": true,
+      "observed": "lookup_committed"
+    },
+    {
+      "case": "state_machine_reconcile_commit_reserve",
+      "passed": true,
+      "observed": "accepted"
+    },
+    {
+      "case": "state_machine_reconcile_commit_audit_1",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_reconcile_commit_prepare",
+      "passed": true,
+      "observed": "ready_paused"
+    },
+    {
+      "case": "state_machine_reconcile_commit_audit_2",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_reconcile_commit_R3_still_paused",
+      "passed": true,
+      "observed": "paused"
+    },
+    {
+      "case": "state_machine_reconcile_commit_start",
+      "passed": true,
+      "observed": "started"
+    },
+    {
+      "case": "state_machine_reconcile_commit_audit_3",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_reconcile_commit_dispatch",
+      "passed": true,
+      "observed": 0
+    },
+    {
+      "case": "state_machine_reconcile_commit_finish",
+      "passed": true,
+      "observed": "committed"
+    },
+    {
+      "case": "state_machine_reconcile_commit_audit_4",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "state_machine_reconcile_commit_state_rows",
+      "passed": true,
+      "observed": 1
+    },
+    {
+      "case": "state_machine_reconcile_commit_events",
+      "passed": true,
+      "observed": 4
+    },
+    {
+      "case": "state_machine_reconcile_commit_old_unknown_preserved",
+      "passed": true,
+      "observed": "unknown"
+    },
+    {
+      "case": "state_machine_reconcile_commit_lost_response_lookup",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "state_machine_reconcile_commit_lookup_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "state_machine_reconcile_commit_restart",
+      "passed": true,
+      "observed": "lookup_committed"
+    },
+    {
+      "case": "rule_execute_reserve",
+      "passed": true,
+      "observed": "accepted"
+    },
+    {
+      "case": "rule_execute_audit_1",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_execute_prepare",
+      "passed": true,
+      "observed": "ready_paused"
+    },
+    {
+      "case": "rule_execute_audit_2",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_execute_R3_still_paused",
+      "passed": true,
+      "observed": "paused"
+    },
+    {
+      "case": "rule_execute_start",
+      "passed": true,
+      "observed": "started"
+    },
+    {
+      "case": "rule_execute_audit_3",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_execute_dispatch",
+      "passed": true,
+      "observed": 1
+    },
+    {
+      "case": "rule_execute_finish",
+      "passed": true,
+      "observed": "committed"
+    },
+    {
+      "case": "rule_execute_audit_4",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_execute_state_rows",
+      "passed": true,
+      "observed": 0
+    },
+    {
+      "case": "rule_execute_events",
+      "passed": true,
+      "observed": 4
+    },
+    {
+      "case": "rule_execute_old_unknown_preserved",
+      "passed": true,
+      "observed": "unknown"
+    },
+    {
+      "case": "rule_execute_lost_response_lookup",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "rule_execute_lookup_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "rule_execute_restart",
+      "passed": true,
+      "observed": "lookup_committed"
+    },
+    {
+      "case": "rule_reconcile_commit_reserve",
+      "passed": true,
+      "observed": "accepted"
+    },
+    {
+      "case": "rule_reconcile_commit_audit_1",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_reconcile_commit_prepare",
+      "passed": true,
+      "observed": "ready_paused"
+    },
+    {
+      "case": "rule_reconcile_commit_audit_2",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_reconcile_commit_R3_still_paused",
+      "passed": true,
+      "observed": "paused"
+    },
+    {
+      "case": "rule_reconcile_commit_start",
+      "passed": true,
+      "observed": "started"
+    },
+    {
+      "case": "rule_reconcile_commit_audit_3",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_reconcile_commit_dispatch",
+      "passed": true,
+      "observed": 0
+    },
+    {
+      "case": "rule_reconcile_commit_finish",
+      "passed": true,
+      "observed": "committed"
+    },
+    {
+      "case": "rule_reconcile_commit_audit_4",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "rule_reconcile_commit_state_rows",
+      "passed": true,
+      "observed": 0
+    },
+    {
+      "case": "rule_reconcile_commit_events",
+      "passed": true,
+      "observed": 4
+    },
+    {
+      "case": "rule_reconcile_commit_old_unknown_preserved",
+      "passed": true,
+      "observed": "unknown"
+    },
+    {
+      "case": "rule_reconcile_commit_lost_response_lookup",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "rule_reconcile_commit_lookup_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "rule_reconcile_commit_restart",
+      "passed": true,
+      "observed": "lookup_committed"
+    },
+    {
+      "case": "reserve_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_5",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_6",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_7",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_8",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_9",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_10",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "reserve_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_5",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_6",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_7",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "prepare_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_5",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_6",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_7",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_8",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "start_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_1",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_2",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_3",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_4",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_5",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_6",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_7",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_8",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_9",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "finish_cut_before_commit",
+      "passed": true,
+      "observed": [
+        "rolled_back",
+        true
+      ]
+    },
+    {
+      "case": "R2_orphan_operation",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "R2_orphan_operation_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R4_orphan_start",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "R4_orphan_start_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R5_orphan_commit",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "R5_orphan_commit_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reserve_same_identity_no_reexecute",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "reserve_same_identity_all_tables_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "start_same_identity_no_reexecute",
+      "passed": true,
+      "observed": "existing"
+    },
+    {
+      "case": "start_same_identity_all_tables_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reserve_forbidden",
+      "passed": true,
+      "observed": "forbidden"
+    },
+    {
+      "case": "reserve_forbidden_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reserve_storage",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "reserve_storage_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reserve_wrong_scope",
+      "passed": true,
+      "observed": "scope"
+    },
+    {
+      "case": "reserve_wrong_scope_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reserve_gate",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "reserve_gate_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "start_forbidden",
+      "passed": true,
+      "observed": "forbidden"
+    },
+    {
+      "case": "start_forbidden_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "start_storage",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "start_storage_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "start_wrong_scope",
+      "passed": true,
+      "observed": "scope"
+    },
+    {
+      "case": "start_wrong_scope_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "start_gate",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "start_gate_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "finish_forbidden",
+      "passed": true,
+      "observed": "forbidden"
+    },
+    {
+      "case": "finish_forbidden_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "finish_storage",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "finish_storage_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "finish_wrong_scope",
+      "passed": true,
+      "observed": "scope"
+    },
+    {
+      "case": "finish_wrong_scope_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "finish_gate",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "finish_gate_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "preview_expiry_equal",
+      "passed": true,
+      "observed": "preview_time"
+    },
+    {
+      "case": "preview_expiry_equal_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "preview_future",
+      "passed": true,
+      "observed": "preview_time"
+    },
+    {
+      "case": "preview_future_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "preview_clock_domain",
+      "passed": true,
+      "observed": "preview_time"
+    },
+    {
+      "case": "preview_clock_domain_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reserve_old_revision",
+      "passed": true,
+      "observed": "cas"
+    },
+    {
+      "case": "reserve_old_revision_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "same_identity_changed_content",
+      "passed": true,
+      "observed": "identity_conflict"
+    },
+    {
+      "case": "same_identity_changed_content_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R3_reduced_targets",
+      "passed": true,
+      "observed": "target_coverage"
+    },
+    {
+      "case": "R3_reduced_targets_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R4_reduced_targets",
+      "passed": true,
+      "observed": "target_coverage"
+    },
+    {
+      "case": "R4_reduced_targets_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R4_before_ready",
+      "passed": true,
+      "observed": "operation_state"
+    },
+    {
+      "case": "R4_before_ready_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R4_new_same_reason_latch",
+      "passed": true,
+      "observed": "new_latch"
+    },
+    {
+      "case": "R4_new_same_reason_latch_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R5_missing_required_evidence",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "R5_missing_required_evidence_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R5_unresolved",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "R5_unresolved_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R5_no_lock_release_evidence",
+      "passed": true,
+      "observed": "protected"
+    },
+    {
+      "case": "R5_no_lock_release_evidence_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R5_new_latch",
+      "passed": true,
+      "observed": "new_latch"
+    },
+    {
+      "case": "R5_new_latch_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "R5_generation_changed",
+      "passed": true,
+      "observed": "binding"
+    },
+    {
+      "case": "R5_generation_changed_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "reconcile_no_new_write",
+      "passed": true,
+      "observed": "write_forbidden"
+    },
+    {
+      "case": "immutable_scope",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_scope_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_artifact",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_artifact_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_preview",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_preview_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "consume_without_operation",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "consume_without_operation_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "clear_consumption",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "clear_consumption_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "slot_release_paused",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "slot_release_paused_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "slot_wrong_version",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "slot_wrong_version_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "slot_no_version",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "slot_no_version_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "active_execution_missing",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "active_execution_missing_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "operation_request_changed",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "operation_request_changed_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "drop_unresolved_lock",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "drop_unresolved_lock_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "fake_release_kind",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "fake_release_kind_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "unpaired_start",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "unpaired_start_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "terminal_reopened",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "terminal_reopened_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "old_unknown_reopened",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "old_unknown_reopened_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_start",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_start_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_commit",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_commit_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_evidence",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_evidence_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_event",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_event_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "immutable_request_result",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "immutable_request_result_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "latch_cleared_again",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "latch_cleared_again_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "release_reopened",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "release_reopened_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "state_without_commit",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "state_without_commit_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "state_wrong_commit_projection",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "state_wrong_commit_projection_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "event_without_transaction",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "event_without_transaction_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "transaction_without_event",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_FOREIGNKEY"
+    },
+    {
+      "case": "transaction_without_event_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "new_target_after_ready",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "new_target_after_ready_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "replace_must_not_delete_tombstone",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_TRIGGER"
+    },
+    {
+      "case": "replace_must_not_delete_tombstone_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_''",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_''_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'01'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'01'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'-0'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'-0'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'-1'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'-1'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'+1'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'+1'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'1e2'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'1e2'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'1\\n'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'1\\n'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'1\\x00'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'1\\x00'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'１'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'１'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "bad_u20_'100000000000000000000'",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_CHECK"
+    },
+    {
+      "case": "bad_u20_'100000000000000000000'_unchanged",
+      "passed": true,
+      "observed": true
+    },
+    {
+      "case": "exact_increment_9",
+      "passed": true,
+      "observed": "10"
+    },
+    {
+      "case": "sql_u20_exact_storage_9",
+      "passed": true,
+      "observed": [
+        "10",
+        "text"
+      ]
+    },
+    {
+      "case": "exact_increment_9223372036854775807",
+      "passed": true,
+      "observed": "9223372036854775808"
+    },
+    {
+      "case": "sql_u20_exact_storage_9223372036854775807",
+      "passed": true,
+      "observed": [
+        "9223372036854775808",
+        "text"
+      ]
+    },
+    {
+      "case": "exact_increment_99999999999999999998",
+      "passed": true,
+      "observed": "99999999999999999999"
+    },
+    {
+      "case": "sql_u20_exact_storage_99999999999999999998",
+      "passed": true,
+      "observed": [
+        "99999999999999999999",
+        "text"
+      ]
+    },
+    {
+      "case": "overflow",
+      "passed": true,
+      "observed": "u20_overflow"
+    },
+    {
+      "case": "fk_cannot_prove_whole_transaction_semantics",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "case": "detect_wrong_run_projection",
+      "passed": true,
+      "observed": [
+        "started_run_projection"
+      ]
+    },
+    {
+      "case": "sql_monotonic_not_exact_successor",
+      "passed": true,
+      "observed": "3"
+    },
+    {
+      "case": "strict_can_coerce_integer_to_text",
+      "passed": true,
+      "observed": "9"
+    },
+    {
+      "case": "paused_lock_held",
+      "passed": true,
+      "observed": 1
+    },
+    {
+      "case": "late_prepare_no_restart",
+      "passed": true,
+      "observed": "operation_state"
+    },
+    {
+      "case": "restart_never_dispatch",
+      "passed": true,
+      "observed": "protected_reconcile_targets"
+    },
+    {
+      "case": "paused_operation_still_blocks_new_recovery",
+      "passed": true,
+      "observed": "SQLITE_CONSTRAINT_UNIQUE"
+    },
+    {
+      "case": "second_recovery_rollback_all_tables",
+      "passed": true,
+      "observed": true
+    }
+  ],
+  "runtime_validation": {
+    "production_writer": 0,
+    "concurrent_connections": 0,
+    "disk_crash": 0,
+    "ipc": 0,
+    "devices": 0
+  },
+  "artifact_sha256": {
+    "docs/contracts/c04-storage/README.md": "c988ef237e881c97a39174a5402f36874ebe66ecd26a85227f275a071dfa9234",
+    "docs/contracts/c04-storage/recovery.sql": "2ab514e81719f0d96642bd6a848f3dedfe7bdffbc2d7b77f3b0b18c2826df613",
+    "docs/contracts/c04-storage/check_recovery.py": "d6fcf79ffcfc2697aad739f17498eeac540e0fc0a25569799f4b6f5cc55dc98a",
+    "docs/rebirth-df04-storage-design.md": "07f6d11c5a2bac49967e0549a26e231a68379e503fb2e5fd5588e65d436c0069",
+    "docs/rebirth-c04-automation-design.md": "8dd3f4dcd15d3ec66a086e892229339992735c5ea74c3b737aa670d1635eb7da"
+  }
+}

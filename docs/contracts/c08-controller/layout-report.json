@@ -1,0 +1,1615 @@
+{
+  "scope": "Controller29表组合与共享拒绝账本，非完整执行/P2/P3或运行证明",
+  "all_passed": true,
+  "cases_passed": 262,
+  "approved": false,
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "生成物精确一致",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "共库29表",
+      "expected": [
+        "ca_adjudication",
+        "ca_audit",
+        "ca_command_initial",
+        "ca_commit",
+        "ca_namespace",
+        "ca_namespace_closure",
+        "ca_notification",
+        "ca_rejection",
+        "ca_request_key",
+        "ca_reservation",
+        "controller_scope",
+        "cp_audit",
+        "cp_close",
+        "cp_commit",
+        "cp_completion",
+        "cp_event",
+        "cp_grant",
+        "cp_notification",
+        "cp_protection",
+        "cp_protection_target",
+        "cp_receipt",
+        "cp_request",
+        "cp_request_device",
+        "run_deny_event",
+        "run_protection_audit",
+        "run_protection_commit",
+        "run_protection_outbox",
+        "run_protection_request",
+        "run_protection_target"
+      ],
+      "observed": [
+        "ca_adjudication",
+        "ca_audit",
+        "ca_command_initial",
+        "ca_commit",
+        "ca_namespace",
+        "ca_namespace_closure",
+        "ca_notification",
+        "ca_rejection",
+        "ca_request_key",
+        "ca_reservation",
+        "controller_scope",
+        "cp_audit",
+        "cp_close",
+        "cp_commit",
+        "cp_completion",
+        "cp_event",
+        "cp_grant",
+        "cp_notification",
+        "cp_protection",
+        "cp_protection_target",
+        "cp_receipt",
+        "cp_request",
+        "cp_request_device",
+        "run_deny_event",
+        "run_protection_audit",
+        "run_protection_commit",
+        "run_protection_outbox",
+        "run_protection_request",
+        "run_protection_target"
+      ]
+    },
+    {
+      "name": "无重复scope或旧deny表",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "空快照revision为零",
+      "expected": "00000000000000000000",
+      "observed": "00000000000000000000"
+    },
+    {
+      "name": "共库裁决仍accepted",
+      "expected": "accepted",
+      "observed": "accepted"
+    },
+    {
+      "name": "共库准备closed保留receipt",
+      "expected": [
+        "closed",
+        "receipt.p"
+      ],
+      "observed": [
+        "closed",
+        "receipt.p"
+      ]
+    },
+    {
+      "name": "共库全部FK",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "namespace不能选择另scope",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "namespace不能选择另scope全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备不能选择另scope",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备不能选择另scope全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "scope不可改库身份",
+      "expected": "immutable_scope",
+      "observed": "immutable_scope"
+    },
+    {
+      "name": "scope不可改库身份全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "scope不可REPLACE",
+      "expected": "immutable_scope",
+      "observed": "immutable_scope"
+    },
+    {
+      "name": "scope不可REPLACE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "目标数0",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "空或非空目标都有floor0",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "原操作可查0",
+      "expected": "protection",
+      "observed": "protection"
+    },
+    {
+      "name": "查原不改写0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同operation换内部ID0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "同operation换内部ID0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "晚准备被通用保护拒绝0",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "晚准备被通用保护拒绝0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护0目标缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护0目标缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障0/0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚0/0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护0目标缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护0目标缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障0/1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚0/1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护0目标缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护0目标缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障0/2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚0/2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护0目标缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护0目标缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障0/3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚0/3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护0目标缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护0目标缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障0/4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚0/4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "目标数2",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "空或非空目标都有floor2",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "原操作可查2",
+      "expected": "protection",
+      "observed": "protection"
+    },
+    {
+      "name": "查原不改写2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同operation换内部ID2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "同operation换内部ID2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "晚准备被通用保护拒绝2",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "晚准备被通用保护拒绝2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护2目标缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护2目标缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障2/0",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚2/0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护2目标缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护2目标缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障2/1",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚2/1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护2目标缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护2目标缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障2/2",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚2/2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护2目标缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护2目标缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障2/3",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚2/3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护2目标缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护2目标缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障2/4",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚2/4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护2目标缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护2目标缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障2/5",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚2/5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用保护2目标缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用保护2目标缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护故障2/6",
+      "expected": "injected_before_commit",
+      "observed": "injected_before_commit"
+    },
+    {
+      "name": "保护故障回滚2/6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用先到准备关闭不增加floor",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用先到不丢签发历史",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "准备先到通用保护复用floor",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备关闭后仍不可签发",
+      "expected": "invalid_transition",
+      "observed": "invalid_transition"
+    },
+    {
+      "name": "准备关闭后仍不可签发全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "两入口连续抬高floor",
+      "expected": [
+        "00000000000000000005",
+        "00000000000000000003",
+        "00000000000000000003"
+      ],
+      "observed": [
+        "00000000000000000005",
+        "00000000000000000003",
+        "00000000000000000003"
+      ]
+    },
+    {
+      "name": "更低请求不降低或增加修订",
+      "expected": [
+        "00000000000000000005",
+        "00000000000000000003",
+        "00000000000000000003"
+      ],
+      "observed": [
+        "00000000000000000005",
+        "00000000000000000003",
+        "00000000000000000003"
+      ]
+    },
+    {
+      "name": "另一run独立行修订",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000004"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000004"
+      ]
+    },
+    {
+      "name": "另一origin库隔离同名run",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000005"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000005"
+      ]
+    },
+    {
+      "name": "强floor阻止旧代次新登记",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "强floor阻止旧代次新登记全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "更高代次可登记但未签发",
+      "expected": "accepted",
+      "observed": "accepted"
+    },
+    {
+      "name": "原保护操作各自保留",
+      "expected": 5,
+      "observed": 5
+    },
+    {
+      "name": "通用接续准备缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用接续准备缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备故障0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备旧floor保留0",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用接续准备缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用接续准备缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备故障1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备旧floor保留1",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用接续准备缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用接续准备缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备故障2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备旧floor保留2",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用接续准备缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用接续准备缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备故障3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备旧floor保留3",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用接续准备缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用接续准备缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备故障4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备旧floor保留4",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用接续准备缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用接续准备缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备故障5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备旧floor保留5",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用接续准备缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "通用接续准备缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备故障6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用接续准备旧floor保留6",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留0",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留1",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留2",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留3",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留4",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留5",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留6",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留7",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留8",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写9",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障9",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留9",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写10",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写10全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障10",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留10",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "准备接续通用缺写11",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备接续通用缺写11全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用故障11",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备接续通用旧floor保留11",
+      "expected": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ],
+      "observed": [
+        "00000000000000000001",
+        "00000000000000000001",
+        "00000000000000000001"
+      ]
+    },
+    {
+      "name": "通用保护切断旧accepted签发",
+      "expected": "run_denied",
+      "observed": "run_denied"
+    },
+    {
+      "name": "通用保护切断旧accepted签发全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错目标计数",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "错目标计数全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错origin",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "错origin全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错run",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "错run全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错floor",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "错floor全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错来源ID",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "错来源ID全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "全局修订跳号",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "全局修订跳号全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "行修订跳号",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "行修订跳号全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错审计归属",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "错审计归属全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错通知归属",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "错通知归属全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源缺失不允许",
+      "expected": 275,
+      "observed": 275
+    },
+    {
+      "name": "来源缺失不允许全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "close与HTTP同时占来源",
+      "expected": 275,
+      "observed": 275
+    },
+    {
+      "name": "close与HTTP同时占来源全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未提交拒绝不进入启动快照",
+      "expected": "00000000000000000000",
+      "observed": "00000000000000000000"
+    },
+    {
+      "name": "没有floor不能提交复用保护",
+      "expected": "protection_incomplete",
+      "observed": "protection_incomplete"
+    },
+    {
+      "name": "没有floor不能提交复用保护全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决组合缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "裁决组合缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决组合缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "裁决组合缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决组合缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "裁决组合缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决组合缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "裁决组合缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决组合缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "裁决组合缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决组合缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "裁决组合缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决组合缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "裁决组合缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写0",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写1",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写2",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写3",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写4",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写5",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写6",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写7",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写8",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写9",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写10",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写10全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "准备关闭组合缺写11",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "准备关闭组合缺写11全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "保护目标冻结",
+      "expected": "target_set_frozen",
+      "observed": "target_set_frozen"
+    },
+    {
+      "name": "保护目标冻结全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_request不可修改",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_request不可修改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_request不可删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_request不可删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_target不可修改",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_target不可修改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_target不可删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_target不可删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_commit不可修改",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_commit不可修改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_commit不可删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_commit不可删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_audit不可修改",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_audit不可修改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_audit不可删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_audit不可删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_outbox不可修改",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_outbox不可修改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_protection_outbox不可删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_protection_outbox不可删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_deny_event不可修改",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_deny_event不可修改全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "run_deny_event不可删除",
+      "expected": "constraint_rejected",
+      "observed": "constraint_rejected"
+    },
+    {
+      "name": "run_deny_event不可删除全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "通用墓碑不可REPLACE",
+      "expected": "commit_frozen",
+      "observed": "commit_frozen"
+    },
+    {
+      "name": "通用墓碑不可REPLACE全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "BODY只是合成前提",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657"
+  }
+}

@@ -1,0 +1,1315 @@
+{
+  "all_passed": true,
+  "cases_passed": 145,
+  "approved": false,
+  "scope": "reference-bound/1字段及精确区间和有限发布失效模型",
+  "runtime_tests_executed": 0,
+  "ntp_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "生成物与唯一源一致",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Source正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Source拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Profile正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Profile拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Policy正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Policy拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Approval正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Approval拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Binding正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Binding拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Request正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Request拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "AuthEvidence正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "AuthEvidence拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ErrorEvidence正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ErrorEvidence拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "EraEvidence正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "EraEvidence拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Exchange正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Exchange拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Anchor正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Anchor拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Assessment正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Assessment拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "UtcGuard正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "UtcGuard拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Invalidation正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "Invalidation拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "AuthorityState正例",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "AuthorityState拒额外字段",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "根不是实例入口",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'01'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'-0'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'+1'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'1e3'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'1\\n'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'1.0'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝' 1'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "计数拒绝'100000000000000000000'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Anchor不混旧模型",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "Profile不混旧模型",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "UtcGuard不混旧模型",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "NTS结构必须有独立引导引用",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "受信网络不伪造NTS引导",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "失效不能仍给合格区间",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "失效用null而非零",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "基础交换合格",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "精确原始32位小数",
+      "expected": "1953125/8388608",
+      "observed": "1953125/8388608"
+    },
+    {
+      "name": "时代回绕不截32位",
+      "expected": "2085978497000000000",
+      "observed": "2085978497000000000"
+    },
+    {
+      "name": "负纪元",
+      "expected": "-1000000000",
+      "observed": "-1000000000"
+    },
+    {
+      "name": "TP39区间",
+      "expected": {
+        "lower_ns": "1001000000",
+        "upper_ns": "1021000000"
+      },
+      "observed": {
+        "lower_ns": "1001000000",
+        "upper_ns": "1021000000"
+      }
+    },
+    {
+      "name": "TP40后续经过量区间",
+      "expected": {
+        "lower_ns": "1100000000",
+        "upper_ns": "1122000000"
+      },
+      "observed": {
+        "lower_ns": "1100000000",
+        "upper_ns": "1122000000"
+      }
+    },
+    {
+      "name": "TP42外推上界",
+      "expected": "20003000",
+      "observed": "20003000"
+    },
+    {
+      "name": "负下端向下舍入",
+      "expected": -1,
+      "observed": -1
+    },
+    {
+      "name": "毫秒上端向上舍入",
+      "expected": 1022,
+      "observed": 1022
+    },
+    {
+      "name": "基础锚点不用半RTT",
+      "expected": {
+        "lower_ns": "1499000000",
+        "upper_ns": "1601000000"
+      },
+      "observed": {
+        "lower_ns": "1499000000",
+        "upper_ns": "1601000000"
+      }
+    },
+    {
+      "name": "后续UTC区间",
+      "expected": {
+        "lower_ns": "1599000000",
+        "upper_ns": "1701000000"
+      },
+      "observed": {
+        "lower_ns": "1599000000",
+        "upper_ns": "1701000000"
+      }
+    },
+    {
+      "name": "交换年龄从m1",
+      "expected": "700000000",
+      "observed": "700000000"
+    },
+    {
+      "name": "锚点年龄从m4",
+      "expected": "100000000",
+      "observed": "100000000"
+    },
+    {
+      "name": "上游年龄仍增长",
+      "expected": "3700000000",
+      "observed": "3700000000"
+    },
+    {
+      "name": "速率和量化计入采样上界",
+      "expected": {
+        "lower_ns": "1499000000",
+        "upper_ns": "1601061000"
+      },
+      "observed": {
+        "lower_ns": "1499000000",
+        "upper_ns": "1601061000"
+      }
+    },
+    {
+      "name": "速率和量化计入后续区间",
+      "expected": {
+        "lower_ns": "1598989000",
+        "upper_ns": "1701072000"
+      },
+      "observed": {
+        "lower_ns": "1598989000",
+        "upper_ns": "1701072000"
+      }
+    },
+    {
+      "name": "上游年龄使用经过量上界",
+      "expected": "3700071000",
+      "observed": "3700071000"
+    },
+    {
+      "name": "误差过宽",
+      "expected": [
+        "uncertainty"
+      ],
+      "observed": [
+        "uncertainty"
+      ]
+    },
+    {
+      "name": "交换年龄等号",
+      "expected": [
+        "expired"
+      ],
+      "observed": [
+        "expired"
+      ]
+    },
+    {
+      "name": "上游年龄等号",
+      "expected": [
+        "expired"
+      ],
+      "observed": [
+        "expired"
+      ]
+    },
+    {
+      "name": "采样跨度等号可接受",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "跨度超过一纳秒拒绝",
+      "expected": "span",
+      "observed": "span"
+    },
+    {
+      "name": "TP41空区间拒绝",
+      "expected": "empty_interval",
+      "observed": "empty_interval"
+    },
+    {
+      "name": "交换拒绝runtime_clock_valid",
+      "expected": "runtime_clock",
+      "observed": "runtime_clock"
+    },
+    {
+      "name": "交换拒绝approval_current",
+      "expected": "approval",
+      "observed": "approval"
+    },
+    {
+      "name": "交换拒绝source_current",
+      "expected": "source",
+      "observed": "source"
+    },
+    {
+      "name": "交换拒绝correlation_verified",
+      "expected": "correlation",
+      "observed": "correlation"
+    },
+    {
+      "name": "交换拒绝authentication_verified",
+      "expected": "authentication",
+      "observed": "authentication"
+    },
+    {
+      "name": "交换拒绝independent_bootstrap_valid",
+      "expected": "bootstrap",
+      "observed": "bootstrap"
+    },
+    {
+      "name": "交换拒绝era_verified",
+      "expected": "era",
+      "observed": "era"
+    },
+    {
+      "name": "交换拒绝error_verified",
+      "expected": "upstream",
+      "observed": "upstream"
+    },
+    {
+      "name": "交换拒绝ordinary_utc_verified",
+      "expected": "leap_or_smear",
+      "observed": "leap_or_smear"
+    },
+    {
+      "name": "报文字段ntp_version3",
+      "expected": "packet",
+      "observed": "packet"
+    },
+    {
+      "name": "报文字段ntp_mode3",
+      "expected": "packet",
+      "observed": "packet"
+    },
+    {
+      "name": "报文字段stratum0",
+      "expected": "kod",
+      "observed": "kod"
+    },
+    {
+      "name": "报文字段stratum16",
+      "expected": "packet",
+      "observed": "packet"
+    },
+    {
+      "name": "报文字段leap1",
+      "expected": "leap_or_smear",
+      "observed": "leap_or_smear"
+    },
+    {
+      "name": "报文字段leap3",
+      "expected": "leap_or_smear",
+      "observed": "leap_or_smear"
+    },
+    {
+      "name": "报文字段root_delay_word4294967296",
+      "expected": "packet",
+      "observed": "packet"
+    },
+    {
+      "name": "重算摘要仍拒错配request_ref",
+      "expected": "request",
+      "observed": "request"
+    },
+    {
+      "name": "重算摘要仍拒错配correlation_ref",
+      "expected": "correlation",
+      "observed": "correlation"
+    },
+    {
+      "name": "重算摘要仍拒错配response_size",
+      "expected": "capacity",
+      "observed": "capacity"
+    },
+    {
+      "name": "重算摘要仍拒错配response_bytes_ref",
+      "expected": "parser",
+      "observed": "parser"
+    },
+    {
+      "name": "重算摘要仍拒错配receive_after_tick_ns",
+      "expected": "deadline",
+      "observed": "deadline"
+    },
+    {
+      "name": "重算摘要仍拒错配receive_after_tick_ns",
+      "expected": "deadline",
+      "observed": "deadline"
+    },
+    {
+      "name": "重算摘要仍拒错配authentication_ref",
+      "expected": "authentication",
+      "observed": "authentication"
+    },
+    {
+      "name": "重算摘要仍拒错配error_ref",
+      "expected": "error",
+      "observed": "error"
+    },
+    {
+      "name": "重算摘要仍拒错配era_ref",
+      "expected": "era",
+      "observed": "era"
+    },
+    {
+      "name": "原始词宽fraction",
+      "expected": "era",
+      "observed": "era"
+    },
+    {
+      "name": "原始词宽era",
+      "expected": "era",
+      "observed": "era"
+    },
+    {
+      "name": "原始词宽seconds",
+      "expected": "era",
+      "observed": "era"
+    },
+    {
+      "name": "独立时代窗口不覆盖",
+      "expected": "era",
+      "observed": "era"
+    },
+    {
+      "name": "评估失效runtime_clock_valid",
+      "expected": [
+        "runtime_clock"
+      ],
+      "observed": [
+        "runtime_clock"
+      ]
+    },
+    {
+      "name": "失效结果形状runtime_clock_valid",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "评估失效approval_current",
+      "expected": [
+        "approval"
+      ],
+      "observed": [
+        "approval"
+      ]
+    },
+    {
+      "name": "失效结果形状approval_current",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "评估失效source_current",
+      "expected": [
+        "source"
+      ],
+      "observed": [
+        "source"
+      ]
+    },
+    {
+      "name": "失效结果形状source_current",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "评估失效error_verified",
+      "expected": [
+        "evidence"
+      ],
+      "observed": [
+        "evidence"
+      ]
+    },
+    {
+      "name": "失效结果形状error_verified",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "年龄到等号拒绝",
+      "expected": [
+        "expired"
+      ],
+      "observed": [
+        "expired"
+      ]
+    },
+    {
+      "name": "时钟回退拒绝",
+      "expected": [
+        "runtime_clock"
+      ],
+      "observed": [
+        "runtime_clock"
+      ]
+    },
+    {
+      "name": "评估不能换误差原件刷新年龄",
+      "expected": [
+        "evidence"
+      ],
+      "observed": [
+        "evidence"
+      ]
+    },
+    {
+      "name": "新provider不继承旧锚点",
+      "expected": [
+        "binding"
+      ],
+      "observed": [
+        "binding"
+      ]
+    },
+    {
+      "name": "宿主wall诊断不参与区间",
+      "expected": {
+        "assessment_id": "assessment",
+        "revision": "1",
+        "model_id": "reference-bound/1",
+        "model_revision": "1",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "anchor_ref": {
+          "id": "anchor",
+          "revision": "1",
+          "digest": "sha256:c98222d40fcf69576dcfd17618b7d39db2a0cd8fd1a203d0cd3cd4971a8db8ec"
+        },
+        "assessed_tick_ns": "700000100",
+        "utc": {
+          "lower_ns": "1599000000",
+          "upper_ns": "1701000000"
+        },
+        "exchange_age_upper_ns": "700000000",
+        "anchor_age_upper_ns": "100000000",
+        "upstream_age_upper_ns": "3700000000",
+        "decision": "conditional",
+        "reasons": [],
+        "assessment_digest": "sha256:fe39609948fc2f9c1a03726c5bcab4c48be5aa40dbf72d3fd1c00498394469e1"
+      },
+      "observed": {
+        "assessment_id": "assessment",
+        "revision": "1",
+        "model_id": "reference-bound/1",
+        "model_revision": "1",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "anchor_ref": {
+          "id": "anchor",
+          "revision": "1",
+          "digest": "sha256:c98222d40fcf69576dcfd17618b7d39db2a0cd8fd1a203d0cd3cd4971a8db8ec"
+        },
+        "assessed_tick_ns": "700000100",
+        "utc": {
+          "lower_ns": "1599000000",
+          "upper_ns": "1701000000"
+        },
+        "exchange_age_upper_ns": "700000000",
+        "anchor_age_upper_ns": "100000000",
+        "upstream_age_upper_ns": "3700000000",
+        "decision": "conditional",
+        "reasons": [],
+        "assessment_digest": "sha256:fe39609948fc2f9c1a03726c5bcab4c48be5aa40dbf72d3fd1c00498394469e1"
+      }
+    },
+    {
+      "name": "误差上限等号可合格",
+      "expected": "conditional",
+      "observed": "conditional"
+    },
+    {
+      "name": "改变政策必须换绑定",
+      "expected": [
+        "binding"
+      ],
+      "observed": [
+        "binding"
+      ]
+    },
+    {
+      "name": "当前UTC守卫通过",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "同代同区间不能替换评估锚点",
+      "expected": "assessment",
+      "observed": "assessment"
+    },
+    {
+      "name": "排期右端等号拒绝",
+      "expected": "window",
+      "observed": "window"
+    },
+    {
+      "name": "区间左端不足拒绝",
+      "expected": "window",
+      "observed": "window"
+    },
+    {
+      "name": "发送时必须重新外推",
+      "expected": "window",
+      "observed": "window"
+    },
+    {
+      "name": "单调守卫期限等号拒绝",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "同摘要不能代替批准guard",
+      "expected": "authority",
+      "observed": "authority"
+    },
+    {
+      "name": "有效旧区间不豁免当前撤销",
+      "expected": "approval",
+      "observed": "approval"
+    },
+    {
+      "name": "事务切点after_evidence",
+      "expected": "rolled_back",
+      "observed": "rolled_back"
+    },
+    {
+      "name": "切点状态不变after_evidence",
+      "expected": {
+        "state_id": "state",
+        "revision": "1",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "status": "collecting",
+        "current_anchor_ref": null,
+        "invalidation_ref": null,
+        "state_digest": "sha256:ea130058dda561afc984b9e1ec65b7dd3fde309c1e427a0b98606fe5d36856e4"
+      },
+      "observed": {
+        "state_id": "state",
+        "revision": "1",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "status": "collecting",
+        "current_anchor_ref": null,
+        "invalidation_ref": null,
+        "state_digest": "sha256:ea130058dda561afc984b9e1ec65b7dd3fde309c1e427a0b98606fe5d36856e4"
+      }
+    },
+    {
+      "name": "切点无消费after_evidence",
+      "expected": {},
+      "observed": {}
+    },
+    {
+      "name": "事务切点before_commit",
+      "expected": "rolled_back",
+      "observed": "rolled_back"
+    },
+    {
+      "name": "切点状态不变before_commit",
+      "expected": {
+        "state_id": "state",
+        "revision": "1",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "status": "collecting",
+        "current_anchor_ref": null,
+        "invalidation_ref": null,
+        "state_digest": "sha256:ea130058dda561afc984b9e1ec65b7dd3fde309c1e427a0b98606fe5d36856e4"
+      },
+      "observed": {
+        "state_id": "state",
+        "revision": "1",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "status": "collecting",
+        "current_anchor_ref": null,
+        "invalidation_ref": null,
+        "state_digest": "sha256:ea130058dda561afc984b9e1ec65b7dd3fde309c1e427a0b98606fe5d36856e4"
+      }
+    },
+    {
+      "name": "切点无消费before_commit",
+      "expected": {},
+      "observed": {}
+    },
+    {
+      "name": "证据和当前指针原子发布",
+      "expected": "committed",
+      "observed": "committed"
+    },
+    {
+      "name": "重复响应只返回历史",
+      "expected": "historical",
+      "observed": "historical"
+    },
+    {
+      "name": "重复不刷新修订或当前指针",
+      "expected": {
+        "state_id": "state",
+        "revision": "2",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "status": "qualified",
+        "current_anchor_ref": {
+          "id": "anchor",
+          "revision": "1",
+          "digest": "sha256:c98222d40fcf69576dcfd17618b7d39db2a0cd8fd1a203d0cd3cd4971a8db8ec"
+        },
+        "invalidation_ref": null,
+        "state_digest": "sha256:b2b8f77fa347d7c11ff7ecec265ee0d19a43a167ed434f5139d2b28dfd1331fb"
+      },
+      "observed": {
+        "state_id": "state",
+        "revision": "2",
+        "binding": {
+          "domain": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database",
+            "provider_id": "provider",
+            "provider_boot_id": "provider-boot",
+            "runtime_binding_ref": {
+              "id": "runtime",
+              "revision": "1",
+              "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+            },
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+            "clock_generation": "1"
+          },
+          "time_generation": "1",
+          "profile_ref": {
+            "id": "profile",
+            "revision": "1",
+            "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+          },
+          "source_ref": {
+            "id": "source",
+            "revision": "1",
+            "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+          },
+          "approval_ref": {
+            "id": "approval",
+            "revision": "1",
+            "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+          },
+          "policy_ref": {
+            "id": "policy",
+            "revision": "1",
+            "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+          }
+        },
+        "status": "qualified",
+        "current_anchor_ref": {
+          "id": "anchor",
+          "revision": "1",
+          "digest": "sha256:c98222d40fcf69576dcfd17618b7d39db2a0cd8fd1a203d0cd3cd4971a8db8ec"
+        },
+        "invalidation_ref": null,
+        "state_digest": "sha256:b2b8f77fa347d7c11ff7ecec265ee0d19a43a167ed434f5139d2b28dfd1331fb"
+      }
+    },
+    {
+      "name": "同请求不能换交换身份",
+      "expected": "identity_conflict",
+      "observed": "identity_conflict"
+    },
+    {
+      "name": "CAS竞争丢失不发布",
+      "expected": "cas",
+      "observed": "cas"
+    },
+    {
+      "name": "较旧采样不能覆盖",
+      "expected": "old_sample",
+      "observed": "old_sample"
+    },
+    {
+      "name": "提交前过期不发布",
+      "expected": "expired_or_unqualified",
+      "observed": "expired_or_unqualified"
+    },
+    {
+      "name": "过期事务无半边记录",
+      "expected": [
+        {
+          "state_id": "state",
+          "revision": "1",
+          "binding": {
+            "domain": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database",
+              "provider_id": "provider",
+              "provider_boot_id": "provider-boot",
+              "runtime_binding_ref": {
+                "id": "runtime",
+                "revision": "1",
+                "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+              },
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+              "clock_generation": "1"
+            },
+            "time_generation": "1",
+            "profile_ref": {
+              "id": "profile",
+              "revision": "1",
+              "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+            },
+            "source_ref": {
+              "id": "source",
+              "revision": "1",
+              "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+            },
+            "approval_ref": {
+              "id": "approval",
+              "revision": "1",
+              "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+            },
+            "policy_ref": {
+              "id": "policy",
+              "revision": "1",
+              "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+            }
+          },
+          "status": "collecting",
+          "current_anchor_ref": null,
+          "invalidation_ref": null,
+          "state_digest": "sha256:ea130058dda561afc984b9e1ec65b7dd3fde309c1e427a0b98606fe5d36856e4"
+        },
+        {}
+      ],
+      "observed": [
+        {
+          "state_id": "state",
+          "revision": "1",
+          "binding": {
+            "domain": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database",
+              "provider_id": "provider",
+              "provider_boot_id": "provider-boot",
+              "runtime_binding_ref": {
+                "id": "runtime",
+                "revision": "1",
+                "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+              },
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:0080437ba92d759250ba1e7a1db83a5fbf6f748ad79f20f42d4d859403629945",
+              "clock_generation": "1"
+            },
+            "time_generation": "1",
+            "profile_ref": {
+              "id": "profile",
+              "revision": "1",
+              "digest": "sha256:7306d4b549e0682db8277cd0fba9b9b9069b0e286cf2c4ef25274eabfea6baec"
+            },
+            "source_ref": {
+              "id": "source",
+              "revision": "1",
+              "digest": "sha256:e4d8fcab40a465d7a4bde32827cc56ffbd3f778e47915c6e2161c25067f7d87a"
+            },
+            "approval_ref": {
+              "id": "approval",
+              "revision": "1",
+              "digest": "sha256:7ff3fcdf706a6591ff1c1425fb0ace25e1b51c148ad3cfd6c4390e983f8ba0f8"
+            },
+            "policy_ref": {
+              "id": "policy",
+              "revision": "1",
+              "digest": "sha256:e29f0be5a64475a3120f4e0ac18579c9e9e8bf05b459ad9e50697589dcae7178"
+            }
+          },
+          "status": "collecting",
+          "current_anchor_ref": null,
+          "invalidation_ref": null,
+          "state_digest": "sha256:ea130058dda561afc984b9e1ec65b7dd3fde309c1e427a0b98606fe5d36856e4"
+        },
+        {}
+      ]
+    },
+    {
+      "name": "失效先关闭资格",
+      "expected": "closed_pending_fence",
+      "observed": "closed_pending_fence"
+    },
+    {
+      "name": "失效推进代次",
+      "expected": "2",
+      "observed": "2"
+    },
+    {
+      "name": "失效不保留当前锚点",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "失效状态格式",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重复失效不二次推进",
+      "expected": "cas",
+      "observed": "cas"
+    },
+    {
+      "name": "失效后不能提交旧采样",
+      "expected": "cas",
+      "observed": "cas"
+    },
+    {
+      "name": "合格包不能绕失效状态",
+      "expected": [
+        "generation"
+      ],
+      "observed": [
+        "generation"
+      ]
+    },
+    {
+      "name": "无法建来源时只发布失败诊断",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构合法不证明误差权威",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/df03-reference/README.md": "0d29e0e977a74f3d98b5fe66acf7628230e3d1f0221efd5c64a13369a3e667b3",
+    "docs/contracts/df03-reference/build_contracts.py": "9e5801a567d8cd5f5181ccbcb68cc3be082cdac4010ff9fd737e3d0125bebb8b",
+    "docs/contracts/df03-reference/reference.schema.json": "a5265f970647ab31a2289339b3c4dac17873e17dbf74b7dc2b4f115d02946a40",
+    "docs/contracts/df03-reference/reference_model.py": "40d0dd9295c65499072a1c9fdc993d27f10b497a456334f48a8171bf59c32a2f",
+    "docs/contracts/df03-reference/check_contracts.py": "33ff456fecc9301da66d9d05bc5fad616ce58e1df1a6a7c037b2734607e9c872",
+    "docs/rebirth-df03-time-profile-design.md": "88608760e8c740bd76d264f3363f0bd9f6d123adb7fa4e4dc6d3890f200ba918"
+  }
+}

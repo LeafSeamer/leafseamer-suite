@@ -1,0 +1,1052 @@
+{
+  "all_passed": true,
+  "cases_passed": 199,
+  "approved": false,
+  "scope": "时间HTTP、46帧IPC结构及有限映射与floor快照",
+  "runtime_tests_executed": 0,
+  "ntp_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "生成字节:time.schema.json",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "生成字节:ipc.schema.json",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "生成字节:public.openapi.json",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "生成字节:internal.openapi.json",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "生成字节:source-bindings.json",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "OpenAPI:public.openapi.json",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "OpenAPI:internal.openapi.json",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "领域正例:EvidenceBundle",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "领域正例:ExecutionTime",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "领域正例:ScheduleGuard",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "领域正例:GateSnapshot",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "完整帧数",
+      "expected": 46,
+      "actual": 46
+    },
+    {
+      "name": "IPC正例:HELLO",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:HELLO",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:HELLO_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:HELLO_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:OPEN_GATE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:OPEN_GATE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:OPEN_GATE_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:OPEN_GATE_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:DISPATCH",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:DISPATCH",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:SEND_REPORT",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:SEND_REPORT",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:EVIDENCE_CANDIDATE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:EVIDENCE_CANDIDATE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:REPORT_STORED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:REPORT_STORED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:FENCE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:FENCE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:FENCE_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:FENCE_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:QUERY_BARRIER",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:QUERY_BARRIER",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CLOSE_GATE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CLOSE_GATE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CLOSE_GATE_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CLOSE_GATE_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:GUARD_INSTALL",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:GUARD_INSTALL",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:GUARD_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:GUARD_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:AUTH_FENCE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:AUTH_FENCE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:AUTH_FENCE_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:AUTH_FENCE_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:TIME_FENCE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:TIME_FENCE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:TIME_FENCE_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:TIME_FENCE_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:RUN_FENCE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:RUN_FENCE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:RUN_FENCE_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:RUN_FENCE_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:ENCODE_PACKET",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:ENCODE_PACKET",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:PACKET_ENCODING_FAILED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:PACKET_ENCODING_FAILED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:PREPARE_PACKET",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:PREPARE_PACKET",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:PREPARE_PACKET_REJECTED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:PREPARE_PACKET_REJECTED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:RESEND_REQUEST",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:RESEND_REQUEST",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:RESEND_DISPATCH",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:RESEND_DISPATCH",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:RESEND_REJECTED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:RESEND_REJECTED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:BARRIER_UNAVAILABLE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:BARRIER_UNAVAILABLE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:BARRIER_STORED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:BARRIER_STORED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_FENCE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_FENCE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_FENCE_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_FENCE_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_GUARD",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_GUARD",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_GUARD_ACK",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_GUARD_ACK",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:ENCODE_CANCEL_PACKET",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:ENCODE_CANCEL_PACKET",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:PREPARE_CANCEL_PACKET",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:PREPARE_CANCEL_PACKET",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_ENCODING_FAILED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_ENCODING_FAILED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_PREPARE_REJECTED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_PREPARE_REJECTED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:DISPATCH_CANCEL",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:DISPATCH_CANCEL",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_RESEND_REQUEST",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_RESEND_REQUEST",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_RESEND_REJECTED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_RESEND_REJECTED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_SEND_REPORT",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_SEND_REPORT",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_REPORT_STORED",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_REPORT_STORED",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_EVIDENCE_CANDIDATE",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_EVIDENCE_CANDIDATE",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:QUERY_CANCEL_EXECUTION",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:QUERY_CANCEL_EXECUTION",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "IPC正例:CANCEL_EXECUTION_STATUS",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "旧版本拒绝:CANCEL_EXECUTION_STATUS",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺特性:HELLO:reference_bound_time",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺特性:HELLO_ACK:reference_bound_time",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺特性:HELLO:reference_time_floor",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺特性:HELLO_ACK:reference_time_floor",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺特性:HELLO:schedule_source_binding",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺特性:HELLO_ACK:schedule_source_binding",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "拒绝旧载荷:GUARD_INSTALL",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺当前上下文:GUARD_INSTALL",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "即时夹带UTC:GUARD_INSTALL",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "即时无UTC:GUARD_INSTALL",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "拒绝旧载荷:CANCEL_GUARD",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "缺当前上下文:CANCEL_GUARD",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "即时夹带UTC:CANCEL_GUARD",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "即时无UTC:CANCEL_GUARD",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "需要UTC但无排期可表达",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "取消保护不能继承普通排期",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "旧时间闭包不可达:system-bound/1",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "旧时间闭包不可达:TimeBoundEvidence",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "旧时间闭包不可达:TimeBoundProfile",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "旧时间闭包不可达:ClockSample",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "全部Schema引用本地闭合",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "HTTP声明数",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "公共闭包隔离:EvidenceBundle",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公共闭包隔离:Domain",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公共闭包隔离:ErrorEvidence",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公共闭包隔离:Approval",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公共闭包隔离:runtime_binding_ref",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公共闭包隔离:request_bytes_ref",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公共闭包隔离:response_bytes_ref",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "公共闭包隔离:database_instance_id",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "内部精确地址:/internal/reference-time/bundles/{id}/{revision}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "内部精确地址:/internal/reference-time/anchors/{id}/{revision}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "内部精确地址:/internal/reference-time/assessments/{id}/{revision}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "内部精确地址:/internal/reference-time/profiles/{id}/{revision}",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "完整Bundle",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "失效与屏障域一致",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "失效与屏障错域拒绝",
+      "expected": "domain",
+      "actual": "domain"
+    },
+    {
+      "name": "重算失效摘要不代权威",
+      "expected": "authority",
+      "actual": "authority"
+    },
+    {
+      "name": "批准输入仍验精确后继",
+      "expected": "generation",
+      "actual": "generation"
+    },
+    {
+      "name": "新增回显正例:GUARD_ACK:reference_time_digest",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "新增回显错配:GUARD_ACK:reference_time_digest",
+      "expected": "time_digest",
+      "actual": "time_digest"
+    },
+    {
+      "name": "新增回显正例:CANCEL_GUARD_ACK:reference_time_digest",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "新增回显错配:CANCEL_GUARD_ACK:reference_time_digest",
+      "expected": "time_digest",
+      "actual": "time_digest"
+    },
+    {
+      "name": "新增回显正例:GUARD_ACK:schedule_guard_digest",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "新增回显错配:GUARD_ACK:schedule_guard_digest",
+      "expected": "schedule_digest",
+      "actual": "schedule_digest"
+    },
+    {
+      "name": "新增回显正例:OPEN_GATE_ACK:reference_time_snapshot_ref",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "新增回显错配:OPEN_GATE_ACK:reference_time_snapshot_ref",
+      "expected": "snapshot",
+      "actual": "snapshot"
+    },
+    {
+      "name": "新增回显正例:TIME_FENCE_ACK:invalidation_ref",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "新增回显错配:TIME_FENCE_ACK:invalidation_ref",
+      "expected": "invalidation",
+      "actual": "invalidation"
+    },
+    {
+      "name": "新增回显正例:TIME_FENCE_ACK:minimum_time_generation",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "新增回显错配:TIME_FENCE_ACK:minimum_time_generation",
+      "expected": "floor",
+      "actual": "floor"
+    },
+    {
+      "name": "许可引用新Guard",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "许可旧摘要拒绝",
+      "expected": "guard_reference",
+      "actual": "guard_reference"
+    },
+    {
+      "name": "排期绑定正例",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "已推进floor拒旧守卫",
+      "expected": "floor",
+      "actual": "floor"
+    },
+    {
+      "name": "域无效",
+      "expected": "runtime",
+      "actual": "runtime"
+    },
+    {
+      "name": "发送截止等号",
+      "expected": "send_window",
+      "actual": "send_window"
+    },
+    {
+      "name": "UTC子守卫截止等号",
+      "expected": "expired",
+      "actual": "expired"
+    },
+    {
+      "name": "发送时区间越界不复用安装结果",
+      "expected": "window",
+      "actual": "window"
+    },
+    {
+      "name": "重算摘要不能替换误差原件",
+      "expected": "evidence",
+      "actual": "evidence"
+    },
+    {
+      "name": "重算摘要仍核排期来源:origin_service_id",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:origin_database_instance_id",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:occurrence_ref",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:definition_artifact_ref",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:schedule_version",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:activation_ref",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:admission_ref",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:execution_id",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:step_id",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "重算摘要仍核排期来源:step_window_ref",
+      "expected": "schedule_origin",
+      "actual": "schedule_origin"
+    },
+    {
+      "name": "排期其他边界:window",
+      "expected": "schedule_window",
+      "actual": "schedule_window"
+    },
+    {
+      "name": "排期其他边界:local_clock_domain",
+      "expected": "schedule_domain",
+      "actual": "schedule_domain"
+    },
+    {
+      "name": "排期其他边界:queue_deadline_tick_ns",
+      "expected": "queue_expired",
+      "actual": "queue_expired"
+    },
+    {
+      "name": "即时无UTC仍可检查其他门控",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "不能自行降低时间要求",
+      "expected": "requirement",
+      "actual": "requirement"
+    },
+    {
+      "name": "即时不能绕域",
+      "expected": "runtime",
+      "actual": "runtime"
+    },
+    {
+      "name": "公共状态:700000100",
+      "expected": "conditional",
+      "actual": "conditional"
+    },
+    {
+      "name": "公共结构:700000100",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "独立中点预期",
+      "expected": "1650000000",
+      "actual": "1650000000"
+    },
+    {
+      "name": "独立误差预期",
+      "expected": "51000000",
+      "actual": "51000000"
+    },
+    {
+      "name": "公共状态:1600000100",
+      "expected": "unavailable",
+      "actual": "unavailable"
+    },
+    {
+      "name": "公共结构:1600000100",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "不可用不返回旧UTC",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "公共额外内部字段拒绝",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "冷启动无锚仍可表达状态",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "冷启动无UTC",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "name": "安装更强floor",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "重复不变",
+      "expected": "duplicate",
+      "actual": "duplicate"
+    },
+    {
+      "name": "迟到开闸不降floor",
+      "expected": "stale",
+      "actual": "stale"
+    },
+    {
+      "name": "floor保留",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "name": "精确历史查原",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "失去当前读取权",
+      "expected": "forbidden",
+      "actual": "forbidden"
+    },
+    {
+      "name": "跨authority不可见",
+      "expected": "not_found",
+      "actual": "not_found"
+    },
+    {
+      "name": "摘要错配拒绝",
+      "expected": "digest_mismatch",
+      "actual": "digest_mismatch"
+    },
+    {
+      "name": "常量引用不重写",
+      "expected": true,
+      "actual": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/df03-reference/README.md": "0d29e0e977a74f3d98b5fe66acf7628230e3d1f0221efd5c64a13369a3e667b3",
+    "docs/contracts/df03-reference/build_contracts.py": "9e5801a567d8cd5f5181ccbcb68cc3be082cdac4010ff9fd737e3d0125bebb8b",
+    "docs/contracts/df03-reference/reference.schema.json": "a5265f970647ab31a2289339b3c4dac17873e17dbf74b7dc2b4f115d02946a40",
+    "docs/contracts/df03-reference/reference_model.py": "40d0dd9295c65499072a1c9fdc993d27f10b497a456334f48a8171bf59c32a2f",
+    "docs/contracts/df03-reference/check_contracts.py": "33ff456fecc9301da66d9d05bc5fad616ce58e1df1a6a7c037b2734607e9c872",
+    "docs/rebirth-df03-time-profile-design.md": "88608760e8c740bd76d264f3363f0bd9f6d123adb7fa4e4dc6d3890f200ba918",
+    "docs/contracts/c05-protection/PROTOCOL.md": "07f3b408b39e54acd90c3925b7bc8d55fa6de33db62f0c87d43460cb6f0f3afe",
+    "docs/contracts/c05-protection/build_protocol.py": "da6c252af3e6fcb580f892fce2b2051fadea1d368ca93994f8992c81e61aeae7",
+    "docs/contracts/c05-protection/check_protocol.py": "3c51df2d386c50cae17364fa3c139deb3f9caa062e826e535203e7206ca596d2",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c05-protection/ipc-v05.schema.json": "c4822441ecbdc034a50bc1fac1fb969551594240634a2e0d6ac2f42ea2da2277",
+    "docs/contracts/c05-protection/protection.openapi.json": "a1e9d53cd9dd4a2ac8ef5b291d23f76a5932e542651408ffe1c6c0911860f089",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c09-panel-ipc/binding.schema.json": "1a46eb10b421a98c4a971b21b57cf17400e829277de5963b77b2b47b3986b2ed",
+    "docs/contracts/c09-panel-ipc/ipc.schema.json": "48e8a646655ccf3367026bebdc8e9d599225954e9fcad67f73465dd2ef88a740",
+    "docs/contracts/c05-protection/protection.schema.json": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72",
+    "docs/contracts/c09-panel-ipc/cases.json": "8a6ff69620cefa99c2e1e92427d166f8e1918ce647373e76668d667b748bf391",
+    "docs/contracts/c09-panel/channel-v02.schema.json": "f6e71178af8ffc8a8d784aab1416a0a4e30fedbc589e2032171f9a9581b64a1f",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/build_execution_ipc.py": "ae36c783e0ce39fb1b86275b3578f474e6f8eaad4080dd2f9eef3207a7daf3ae",
+    "docs/contracts/c08-controller/execution-ipc.schema.json": "23c8603fd6f05fc4c445f318a99f609c776f1fc79b5df2262d62d2591514b98b",
+    "docs/contracts/c08-controller/check_execution_ipc.py": "183943863074507eb10778cd8d90345d8927821293442090616de8b038ee021d",
+    "docs/contracts/draft4/first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c08-controller/lifecycle.schema.json": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c02-admission/admission.schema.json": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7",
+    "docs/contracts/c02-cancellation/cancellation.schema.json": "5a2c462a3a50d23077d16818751f4d990aa3c833d19ef5548ec3c7ccb9e8cbf3",
+    "docs/contracts/c02-cancellation/ipc.schema.json": "d71b04fec2004ed351b0fb8aa43fb95db7ffc147d98741f3d266f196b7be07ad",
+    "docs/contracts/c02-command-view/README.md": "7ba6bb9790701ef2690f2a0c4882a151b99255507c7d360c8caa349350e740c1",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-cancellation/README.md": "19c0c2df545ac42fbdd62b7045dc812e0f8fd62a98cbc55c387742142cc5b8fa",
+    "docs/contracts/c02-cancellation/build_contracts.py": "137ae07e8603252998745dd6ed818f3287060541abce077301007079a145278f",
+    "docs/contracts/c02-cancellation/reference_model.py": "48926177faee6991c2dfad02099f33661f6574cfb92014d7f7c4a03ea17dea50",
+    "docs/contracts/c02-cancellation/check_contracts.py": "42d7360f87936bfebb915f23176843101d50e0f4002d2c96805ea3ea4683617e",
+    "docs/contracts/df03-service/README.md": "fc44300f1c032154a788a284ec10d8eb1ebd9029dc7502d49da2d21f90e1280f",
+    "docs/contracts/df03-service/build_contracts.py": "f5d03021aad382e08fe5d2939d33032d3d49db69dca86570245f05f14f014c08",
+    "docs/contracts/df03-service/reference_model.py": "60ed04f0216af54ffe7bffd10db2651504e49bbd1033c896820708804cc21d28",
+    "docs/contracts/df03-service/check_contracts.py": "a3294467db9857c41de304c3420208720c4efc2247df36615d341aa63335726e",
+    "docs/contracts/df03-service/time.schema.json": "fab54dd7ac9e57a4e581c74cd3049d5b855bae05e566242edd4d13e2574c2885",
+    "docs/contracts/df03-service/ipc.schema.json": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2",
+    "docs/contracts/df03-service/public.openapi.json": "e08fad77fdffacc5afd7ea8d68d0a8c5c6d04259480d4d8f8e46a0db9cd92438",
+    "docs/contracts/df03-service/internal.openapi.json": "060d8fab1d9760af0d1e15fd56280276219d7d4a7e5ca50197ad824cd291bebb",
+    "docs/contracts/df03-service/source-bindings.json": "95434ade1ecff9dc2d2a042d1799ba5bc7f7de97a05f575258bba477ef0644fe"
+  }
+}

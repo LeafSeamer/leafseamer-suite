@@ -1,0 +1,801 @@
+{
+  "all_passed": true,
+  "runtime_approved": false,
+  "checks": 190,
+  "contract_checks": 96,
+  "sqlite_checks": 94,
+  "results": [
+    {
+      "id": "结构-完整批次",
+      "passed": true
+    },
+    {
+      "id": "关联-完整批次",
+      "passed": true
+    },
+    {
+      "id": "结构-CommittedBatch",
+      "passed": true
+    },
+    {
+      "id": "缺字段-CommittedBatch-contract_version",
+      "passed": true
+    },
+    {
+      "id": "缺字段-CommittedBatch-inbox",
+      "passed": true
+    },
+    {
+      "id": "缺字段-CommittedBatch-match_set",
+      "passed": true
+    },
+    {
+      "id": "缺字段-CommittedBatch-snapshots",
+      "passed": true
+    },
+    {
+      "id": "缺字段-CommittedBatch-decisions",
+      "passed": true
+    },
+    {
+      "id": "缺字段-CommittedBatch-executions",
+      "passed": true
+    },
+    {
+      "id": "缺字段-CommittedBatch-commit",
+      "passed": true
+    },
+    {
+      "id": "额外字段-CommittedBatch",
+      "passed": true
+    },
+    {
+      "id": "结构-SubmitEvent",
+      "passed": true
+    },
+    {
+      "id": "缺字段-SubmitEvent-contract_version",
+      "passed": true
+    },
+    {
+      "id": "缺字段-SubmitEvent-origin",
+      "passed": true
+    },
+    {
+      "id": "缺字段-SubmitEvent-origin_digest",
+      "passed": true
+    },
+    {
+      "id": "缺字段-SubmitEvent-delivery_binding_ref",
+      "passed": true
+    },
+    {
+      "id": "缺字段-SubmitEvent-age_evidence_ref",
+      "passed": true
+    },
+    {
+      "id": "额外字段-SubmitEvent",
+      "passed": true
+    },
+    {
+      "id": "结构-LookupEvent",
+      "passed": true
+    },
+    {
+      "id": "缺字段-LookupEvent-contract_version",
+      "passed": true
+    },
+    {
+      "id": "缺字段-LookupEvent-source_key",
+      "passed": true
+    },
+    {
+      "id": "缺字段-LookupEvent-event_id",
+      "passed": true
+    },
+    {
+      "id": "缺字段-LookupEvent-origin_digest",
+      "passed": true
+    },
+    {
+      "id": "额外字段-LookupEvent",
+      "passed": true
+    },
+    {
+      "id": "结构-ProviderReceipt",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-contract_version",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-receipt_id",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-receipt_revision",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-source_key",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-event_id",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-origin_digest",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-ingest_state",
+      "passed": true
+    },
+    {
+      "id": "缺字段-ProviderReceipt-duplicate",
+      "passed": true
+    },
+    {
+      "id": "额外字段-ProviderReceipt",
+      "passed": true
+    },
+    {
+      "id": "结构-LookupResult",
+      "passed": true
+    },
+    {
+      "id": "缺字段-LookupResult-state",
+      "passed": true
+    },
+    {
+      "id": "缺字段-LookupResult-receipt",
+      "passed": true
+    },
+    {
+      "id": "额外字段-LookupResult",
+      "passed": true
+    },
+    {
+      "id": "结构-Error",
+      "passed": true
+    },
+    {
+      "id": "缺字段-Error-code",
+      "passed": true
+    },
+    {
+      "id": "缺字段-Error-request_id",
+      "passed": true
+    },
+    {
+      "id": "额外字段-Error",
+      "passed": true
+    },
+    {
+      "id": "U20反例-'01'",
+      "passed": true
+    },
+    {
+      "id": "U20反例-'-1'",
+      "passed": true
+    },
+    {
+      "id": "U20反例-'1\\n'",
+      "passed": true
+    },
+    {
+      "id": "U20反例-'1\\x00'",
+      "passed": true
+    },
+    {
+      "id": "U20反例-'100000000000000000000'",
+      "passed": true
+    },
+    {
+      "id": "U20反例-9007199254740993",
+      "passed": true
+    },
+    {
+      "id": "U20精确大整数",
+      "passed": true
+    },
+    {
+      "id": "U20上限关闭",
+      "passed": true
+    },
+    {
+      "id": "查原状态-committed",
+      "passed": true
+    },
+    {
+      "id": "查原状态-indeterminate",
+      "passed": true
+    },
+    {
+      "id": "查原状态-historically_closed",
+      "passed": true
+    },
+    {
+      "id": "provider禁止内部字段-run_id",
+      "passed": true
+    },
+    {
+      "id": "provider禁止内部字段-decision_refs",
+      "passed": true
+    },
+    {
+      "id": "provider禁止内部字段-decision_set_digest",
+      "passed": true
+    },
+    {
+      "id": "provider禁止内部字段-receive_cursor",
+      "passed": true
+    },
+    {
+      "id": "provider禁止内部字段-receive_sequence",
+      "passed": true
+    },
+    {
+      "id": "provider不得自报live",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-来源世代",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-首次观察延寿",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-跨epoch",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-游标重复",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-来源修订跳跃",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-相同count换run",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-registry修订",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-转换同count换unknown",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-删unknown",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-快照前态",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-决定多一项",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-决定少一项",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-进度未增",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-run修订未增",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-选错转换",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-遗漏执行",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-执行错误run",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-执行错误引用kind",
+      "passed": true
+    },
+    {
+      "id": "重算摘要仍拒绝-公开汇总错",
+      "passed": true
+    },
+    {
+      "id": "动态值二次校验",
+      "passed": true
+    },
+    {
+      "id": "来源锁存禁止执行",
+      "passed": true
+    },
+    {
+      "id": "三值-[(2, 'true'), (1, 'unknown')]",
+      "passed": true
+    },
+    {
+      "id": "三值-[(2, 'true'), (2, 'unknown')]",
+      "passed": true
+    },
+    {
+      "id": "三值-[(2, 'true'), (3, 'unknown')]",
+      "passed": true
+    },
+    {
+      "id": "三值-[(2, 'true'), (2, 'true')]",
+      "passed": true
+    },
+    {
+      "id": "三值-[(1, 'false')]",
+      "passed": true
+    },
+    {
+      "id": "三值-[(1, 'unknown')]",
+      "passed": true
+    },
+    {
+      "id": "HTTP身份-submitProviderEvent",
+      "passed": true
+    },
+    {
+      "id": "HTTP版本-submitProviderEvent",
+      "passed": true
+    },
+    {
+      "id": "HTTP不缓存-submitProviderEvent",
+      "passed": true
+    },
+    {
+      "id": "HTTP身份-lookupProviderEvent",
+      "passed": true
+    },
+    {
+      "id": "HTTP版本-lookupProviderEvent",
+      "passed": true
+    },
+    {
+      "id": "HTTP不缓存-lookupProviderEvent",
+      "passed": true
+    },
+    {
+      "id": "HTTP身份-readIngressCommit",
+      "passed": true
+    },
+    {
+      "id": "HTTP版本-readIngressCommit",
+      "passed": true
+    },
+    {
+      "id": "HTTP不缓存-readIngressCommit",
+      "passed": true
+    },
+    {
+      "id": "provider响应闭包隔离",
+      "passed": true
+    },
+    {
+      "id": "SQL-positive-()",
+      "passed": true
+    },
+    {
+      "id": "SQL-no-anchor-before-separate-transaction-()",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-1",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-2",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-3",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-4",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-5",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-6",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-7",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-0-8",
+      "passed": true
+    },
+    {
+      "id": "SQL-positive-('accepted', 'suppressed_busy', 'no_match')",
+      "passed": true
+    },
+    {
+      "id": "SQL-no-anchor-before-separate-transaction-('accepted', 'suppressed_busy', 'no_match')",
+      "passed": true
+    },
+    {
+      "id": "SQL-positive-('accepted', 'accepted')",
+      "passed": true
+    },
+    {
+      "id": "SQL-no-anchor-before-separate-transaction-('accepted', 'accepted')",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-1",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-2",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-3",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-4",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-5",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-6",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-7",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-8",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-9",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-10",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-11",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-12",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-13",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-14",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-15",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-16",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-17",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-18",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-19",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-20",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-21",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-22",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-23",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-24",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-25",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-26",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-27",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-28",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-29",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-30",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-31",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-32",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-33",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-34",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-35",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-36",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-37",
+      "passed": true
+    },
+    {
+      "id": "SQL-rollback-2-38",
+      "passed": true
+    },
+    {
+      "id": "SQL-positive-('evaluation_unknown', 'ambiguous', 'protected')",
+      "passed": true
+    },
+    {
+      "id": "SQL-no-anchor-before-separate-transaction-('evaluation_unknown', 'ambiguous', 'protected')",
+      "passed": true
+    },
+    {
+      "id": "SQL-positive-('suppressed_inactive', 'suppressed_obsolete')",
+      "passed": true
+    },
+    {
+      "id": "SQL-no-anchor-before-separate-transaction-('suppressed_inactive', 'suppressed_obsolete')",
+      "passed": true
+    },
+    {
+      "id": "SQL-missing-seal",
+      "passed": true
+    },
+    {
+      "id": "SQL-missing-notification",
+      "passed": true
+    },
+    {
+      "id": "SQL-missing-charge",
+      "passed": true
+    },
+    {
+      "id": "SQL-missing-audit",
+      "passed": true
+    },
+    {
+      "id": "SQL-missing-progress",
+      "passed": true
+    },
+    {
+      "id": "SQL-pending-first-observation",
+      "passed": true
+    },
+    {
+      "id": "SQL-lookup-0",
+      "passed": true
+    },
+    {
+      "id": "SQL-lookup-1",
+      "passed": true
+    },
+    {
+      "id": "SQL-late-listener-does-not-rewrite-original",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_commit",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_commit",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_target",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_target",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_snapshot",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_snapshot",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_decision",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_decision",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_notification",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_notification",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_run_audit",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_run_audit",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_charge",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_charge",
+      "passed": true
+    },
+    {
+      "id": "SQL-immutable-ingress_inbox",
+      "passed": true
+    },
+    {
+      "id": "SQL-retain-ingress_inbox",
+      "passed": true
+    },
+    {
+      "id": "SQL-U20-'01'",
+      "passed": true
+    },
+    {
+      "id": "SQL-U20-'-1'",
+      "passed": true
+    },
+    {
+      "id": "SQL-U20-'1\\n'",
+      "passed": true
+    },
+    {
+      "id": "SQL-U20-'1\\x00'",
+      "passed": true
+    },
+    {
+      "id": "SQL-U20-'100000000000000000000'",
+      "passed": true
+    },
+    {
+      "id": "SQL-second-open-epoch",
+      "passed": true
+    },
+    {
+      "id": "SQL-cross-epoch-progress",
+      "passed": true
+    },
+    {
+      "id": "SQL-identity-content-overwrite",
+      "passed": true
+    },
+    {
+      "id": "SQL-source-sequence-reuse",
+      "passed": true
+    },
+    {
+      "id": "SQL-separate-anchor-transaction",
+      "passed": true
+    },
+    {
+      "id": "SQL-observed-only-no-execution",
+      "passed": true
+    },
+    {
+      "id": "SQL-observed-only-no-upgrade",
+      "passed": true
+    },
+    {
+      "id": "SQL-same-count-wrong-binding",
+      "passed": true
+    }
+  ],
+  "tools": {
+    "python": "3.14.0",
+    "sqlite_reference": "3.50.4"
+  },
+  "runtime_validation": {
+    "product_services": 0,
+    "authentication": 0,
+    "device": 0,
+    "concurrency": 0,
+    "disk_crash": 0
+  },
+  "limitations": [
+    "权威索引、授权、年龄和AST结果为人工前提",
+    "仅连续规范事件及部分pending锁存；完整保护和GC事务未实现",
+    "SQL BODY为占位，不与JSON夹具构成端到端writer；预算仅存储占位",
+    "参考SQLite非产品批准引擎"
+  ],
+  "input_sha256": {
+    "docs/contracts/c05-ingress/README.md": "8310ac7a35ff9aa7b56cef6f60783e0898b040633475e3a0f580e3243a76008a",
+    "docs/contracts/c05-ingress/build_contracts.py": "6eea258b6df001a4466e7fcc2ea027ef793aae2af5bbebdd9c9e5f37197f2ce4",
+    "docs/contracts/c05-ingress/check_contracts.py": "48dae091e4fb91136457451ab24645a004a971cfc040b7cdc8cef966e14eb432",
+    "docs/contracts/c05-ingress/check_storage.py": "3a182381c7b0dc60549346e2ff04f96f41e80c87936e9375c4bd08e6ba3b5b84",
+    "docs/contracts/c05-ingress/ingress.sql": "343b8b80ebee325e70f0f89bdcce790aa1a04cc7c3efa60d4e7a3a8a3d0e89b0",
+    "docs/contracts/c05-ingress/ingress.schema.json": "1126b7c81d775f1d251f7a81f30a23f98e1c9514d1afad952a8bf0b6221e8f35",
+    "docs/contracts/c05-ingress/ingress.openapi.json": "c2155c044c1602e16a3086d0fbcf42181a6729079d9531412dfa0bdc00f32cab",
+    "docs/contracts/df06/internal-trust.schema.json": "3138deb7c94115db980b9760ef55303bda11685c8b53c82760b443cc389c68f7",
+    "docs/contracts/c04-storage/recovery.sql": "2ab514e81719f0d96642bd6a848f3dedfe7bdffbc2d7b77f3b0b18c2826df613",
+    "docs/contracts/c04-storage/dispatch.sql": "8f1548fa1fdf1ded95319273deac429c0be5942bb33c304bf26474d5a2c6e9bc",
+    "docs/rebirth-c05-event-sync-design.md": "087fe4dc19e5305e5d906ce20960d56e0d77a6e7b2d7fa2dbe8ecffbce2fdd5d",
+    "docs/rebirth-c04-automation-design.md": "8dd3f4dcd15d3ec66a086e892229339992735c5ea74c3b737aa670d1635eb7da",
+    "docs/rebirth-df04-storage-design.md": "07f6d11c5a2bac49967e0549a26e231a68379e503fb2e5fd5588e65d436c0069"
+  }
+}

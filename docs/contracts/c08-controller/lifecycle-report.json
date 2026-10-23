@@ -1,0 +1,657 @@
+{
+  "all_passed": true,
+  "cases_passed": 124,
+  "approved": false,
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "checks": [
+    {
+      "name": "超时保留未知结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "超时保留未知",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "新尝试不借旧尝试进入传输结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "新尝试不借旧尝试进入传输",
+      "expected": "transport_unproven",
+      "observed": "transport_unproven"
+    },
+    {
+      "name": "当前尝试有独立进入证据结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "当前尝试有独立进入证据",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "封闭字段State",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "封闭字段Transition",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "封闭字段Policy",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "封闭字段ResourceCut",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "封闭字段Transmission",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格计数'01'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格计数'-1'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格计数'1\\n'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格计数'100000000000000000000'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "修订不跳号结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "修订不跳号",
+      "expected": "state_revision",
+      "observed": "state_revision"
+    },
+    {
+      "name": "过期CAS结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期CAS",
+      "expected": "state_cas",
+      "observed": "state_cas"
+    },
+    {
+      "name": "跨库拒绝结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "跨库拒绝",
+      "expected": "state_owner",
+      "observed": "state_owner"
+    },
+    {
+      "name": "观测期限未到结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "观测期限未到",
+      "expected": "not_timed_out",
+      "observed": "not_timed_out"
+    },
+    {
+      "name": "完成不自动清资源结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完成不自动清资源",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "协议确认不冒充效果完成结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "协议确认不冒充效果完成",
+      "expected": "completion_level",
+      "observed": "completion_level"
+    },
+    {
+      "name": "独立批准较弱完成标准结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "独立批准较弱完成标准",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "提供者rejected结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "提供者rejected",
+      "expected": "provider_unconfirmed",
+      "observed": "provider_unconfirmed"
+    },
+    {
+      "name": "提供者indeterminate结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "提供者indeterminate",
+      "expected": "provider_unconfirmed",
+      "observed": "provider_unconfirmed"
+    },
+    {
+      "name": "无提供者记录结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "无提供者记录",
+      "expected": "provider_missing",
+      "observed": "provider_missing"
+    },
+    {
+      "name": "证据摘要不可改结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "证据摘要不可改",
+      "expected": "decision_digest",
+      "observed": "decision_digest"
+    },
+    {
+      "name": "完成层级与效果不可矛盾结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完成层级与效果不可矛盾",
+      "expected": "completion_effect",
+      "observed": "completion_effect"
+    },
+    {
+      "name": "重算摘要不取得权威结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重算摘要不取得权威",
+      "expected": "provider_missing",
+      "observed": "provider_missing"
+    },
+    {
+      "name": "完成与独立释放同提交结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完成与独立释放同提交",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "释放模型",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "回执模型sha256:fd8d6dd48c1cbb8467c316cf63f7d6f7e87da18806b67282ba1bfdca26f322b7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "回执模型sha256:3dedce66edd6559d3a7832131abf9c069852419c36161c18e3919fe5a97630dd",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放绑定hold_id",
+      "expected": "release_binding",
+      "observed": "release_binding"
+    },
+    {
+      "name": "释放绑定device_id",
+      "expected": "release_binding",
+      "observed": "release_binding"
+    },
+    {
+      "name": "释放绑定future_writes_closed_ref",
+      "expected": "future_writes",
+      "observed": "future_writes"
+    },
+    {
+      "name": "释放绑定settlement_proof_ref",
+      "expected": "settlement_binding",
+      "observed": "settlement_binding"
+    },
+    {
+      "name": "重算摘要不能省传输",
+      "expected": "cut_binding",
+      "observed": "cut_binding"
+    },
+    {
+      "name": "仅效果证明不能排除后续写",
+      "expected": "provider_claims",
+      "observed": "provider_claims"
+    },
+    {
+      "name": "同摘要跨库不授权",
+      "expected": "provider_binding",
+      "observed": "provider_binding"
+    },
+    {
+      "name": "未知追加核对并释放结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知追加核对并释放",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "核对模型",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "终态固定outcome结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "终态固定outcome",
+      "expected": "terminal_immutable",
+      "observed": "terminal_immutable"
+    },
+    {
+      "name": "终态固定terminal_revision结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "终态固定terminal_revision",
+      "expected": "terminal_immutable",
+      "observed": "terminal_immutable"
+    },
+    {
+      "name": "核对不能换原终态结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "核对不能换原终态",
+      "expected": "resolution_binding",
+      "observed": "resolution_binding"
+    },
+    {
+      "name": "核对修订精确后继结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "核对修订精确后继",
+      "expected": "resolution_revision",
+      "observed": "resolution_revision"
+    },
+    {
+      "name": "未知不得恢复自动化结构",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "锁存不可清除语义",
+      "expected": "latch_immutable",
+      "observed": "latch_immutable"
+    },
+    {
+      "name": "未知只清资源不附核对结构",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "未知只清资源不附核对语义",
+      "expected": "unknown_clear_without_resolution",
+      "observed": "unknown_clear_without_resolution"
+    },
+    {
+      "name": "明确失败仍可部分影响结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "明确失败仍可部分影响",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "明确失败不是安全重试证明结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "明确失败不是安全重试证明",
+      "expected": "provider_claims",
+      "observed": "provider_claims"
+    },
+    {
+      "name": "安全断言仍须绑定固定重试政策结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "安全断言仍须绑定固定重试政策",
+      "expected": "retry_policy_binding",
+      "observed": "retry_policy_binding"
+    },
+    {
+      "name": "安全条件重试仍保留部分影响结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "安全条件重试仍保留部分影响",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "重试边界retry_error_allowed结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重试边界retry_error_allowed",
+      "expected": "retry_forbidden",
+      "observed": "retry_forbidden"
+    },
+    {
+      "name": "重试边界retry_budget_remaining结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重试边界retry_budget_remaining",
+      "expected": "retry_forbidden",
+      "observed": "retry_forbidden"
+    },
+    {
+      "name": "重试边界now_tick结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重试边界now_tick",
+      "expected": "retry_forbidden",
+      "observed": "retry_forbidden"
+    },
+    {
+      "name": "初次计入尝试预算结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初次计入尝试预算",
+      "expected": "retry_forbidden",
+      "observed": "retry_forbidden"
+    },
+    {
+      "name": "重试需独立清资源结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重试需独立清资源",
+      "expected": "retry_release_required",
+      "observed": "retry_release_required"
+    },
+    {
+      "name": "纯排队取消无虚构释放结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "纯排队取消无虚构释放",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "排队取消必须持久排除派发结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "排队取消必须持久排除派发",
+      "expected": "queued_cancel_unproven",
+      "observed": "queued_cancel_unproven"
+    },
+    {
+      "name": "排队截止等号前结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "排队截止等号前",
+      "expected": "not_expired",
+      "observed": "not_expired"
+    },
+    {
+      "name": "排队截止等号结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "排队截止等号",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "释放路径never_sent",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "迟到发送推翻未发释放",
+      "expected": "not_sent_unproven",
+      "observed": "not_sent_unproven"
+    },
+    {
+      "name": "释放路径maintenance_fenced",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "释放后新命令唯一占用",
+      "expected": [
+        "new"
+      ],
+      "observed": [
+        "new"
+      ]
+    },
+    {
+      "name": "迟到强证据保留两个风险占用",
+      "expected": [
+        "old",
+        "new"
+      ],
+      "observed": [
+        "old",
+        "new"
+      ]
+    },
+    {
+      "name": "原发送观察不推翻独立效果核销",
+      "expected": [
+        "new"
+      ],
+      "observed": [
+        "new"
+      ]
+    },
+    {
+      "name": "单次派发状态结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "单次派发状态",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "手动也不越过其他风险占用结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "手动也不越过其他风险占用",
+      "expected": "dispatch_gate",
+      "observed": "dispatch_gate"
+    },
+    {
+      "name": "未提交许可不可派发结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未提交许可不可派发",
+      "expected": "dispatch_gate",
+      "observed": "dispatch_gate"
+    },
+    {
+      "name": "派发截止等号结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "派发截止等号",
+      "expected": "dispatch_gate",
+      "observed": "dispatch_gate"
+    },
+    {
+      "name": "传输事实进入证据等待结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "传输事实进入证据等待",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "IPC投递不证实际发送结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "IPC投递不证实际发送",
+      "expected": "transport_unproven",
+      "observed": "transport_unproven"
+    },
+    {
+      "name": "在途不能伪装门控前未发结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "在途不能伪装门控前未发",
+      "expected": "stop_uncertain",
+      "observed": "stop_uncertain"
+    },
+    {
+      "name": "当前未发仍保留前次效果结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "当前未发仍保留前次效果",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "已有完整释放仍核验原证据结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "已有完整释放仍核验原证据",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "过期切点不能裁决当前资源结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期切点不能裁决当前资源",
+      "expected": "cut_binding",
+      "observed": "cut_binding"
+    },
+    {
+      "name": "新切点使旧释放资格失效结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "新切点使旧释放资格失效",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "完整未发证据可排除先前不确定结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整未发证据可排除先前不确定",
+      "expected": null,
+      "observed": null
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
+    "docs/contracts/c08-controller/build_lifecycle.py": "88f13652607987ec79a23f8d57f1a02dd9360787da93c7ed2752da4f1ae98810",
+    "docs/contracts/c08-controller/lifecycle_model.py": "fa0a3393e40688ceee052130874b054d73f9576fab41683603150c948e08a84b",
+    "docs/contracts/c08-controller/check_lifecycle.py": "441aa8d2996cb6dda968c456321c98a1c48afe32cf13c009a2967804decd165b",
+    "docs/contracts/c08-controller/lifecycle.schema.json": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-f06-f07-design.md": "14a4da4758007957cee1893ac1b7023ea32839e914abe69e5565288337b9180b",
+    "docs/rebirth-df04-storage-design.md": "07f6d11c5a2bac49967e0549a26e231a68379e503fb2e5fd5588e65d436c0069"
+  }
+}

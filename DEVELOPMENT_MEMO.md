@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-24 继续运行内部API与引用衔接（新周期第1/3轮）
+
+- 上周期已推送并核对`85944dc`；本轮继续main，仅本地提交，第三轮后再审查推送，其他四仓保持原样。
+- [内部协议候选](docs/contracts/c04-lifecycle/CONTINUATION_PROTOCOL.md)提供八个操作、封闭Schema和两份自包含OpenAPI，复用Request/Receipt/Adoption原件。历史查询固定不声明当前资格；Controller通知只返回自身ACK；新签发必须由可信namespace精确回绑人员issuer_epoch。
+- 244项离线检查通过，覆盖OpenAPI完整校验、实际三库登记/回执/采用/R5投影、重新摘要后的错原件、身份/权限反例、撤回保护重复不扣账以及普通命令引用。发现并处理Seamer/Controller身份列映射差异；R5的commit_body_digest明确只覆盖旧提交正文，不伪装成整行Ref。
+- 本轮没有实现HTTP或真实身份提供者，没有将内部registration_id塞入旧公共命令。下一步须同版归并ExecutionBinding/Guard/Permit/Intent与SDK单一来源，落实身份历史提供者和完整容量/GC。业务未改，网络/真实鉴权/磁盘/并发/设备未验，阶段0及项目未完成。
+
 ## 2026-10-24 继续运行授权接入普通触发（新周期第3/3轮）
 
 - 前两轮本地提交为`d8eedd5`和`c6ad765`；本轮继续main，完成后审查整个周期的提交内容及报告输入，再按三轮周期推送。其他四仓保持原样。

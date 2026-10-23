@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录继续运行授权接入普通触发及第三轮交付 | R:code:docs/contracts/c04-lifecycle/CONTINUATION_TRIGGER.md | A:设计历程与三轮提交 | S:156项与140项仅离线验证，完成证据为合成；本周期三轮审查后推送
+DEVELOPMENT_MEMO.md[SO5L]: F:记录继续运行内部API和新周期首轮交付 | R:code:docs/contracts/c04-lifecycle/CONTINUATION_PROTOCOL.md | A:设计历程及三轮提交 | S:244项仅离线检查，HTTP与真实身份未验；本轮只本地提交
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总恢复后普通触发参考链接通后的系统关闭缺口 | R:code:docs/contracts/c04-lifecycle/CONTINUATION_TRIGGER.md | A:C01至C12关闭状态 | S:三库成功链及保护预算已有离线证据，统一SDK和真实提供者及完整容量仍缺；阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总继续运行内部API交付后的系统关闭缺口 | R:code:docs/contracts/c04-lifecycle/CONTINUATION_PROTOCOL.md | A:C01至C12关闭状态 | S:八操作已有机器契约，执行绑定与SDK同版归并、身份提供者及容量仍缺，阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -455,6 +455,14 @@ continuation-command.sql[PR8T]: F:绑定新普通命令与继续运行grant并�
 continuation-trigger-report.json[TR7L]: F:固化普通触发联接156项检查与323份输入摘要 | R:code:docs/contracts/c04-lifecycle/check_continuation_trigger.py | A:checks、inputs及119/236表计数 | S:approved为false，运行与设备检查为零；报告仅证明绑定字节对应的离线参考检查
 continuation-trigger.sql[PR8T]: F:持久化普通动作采用引用及撤回原件并查询当前资格 | R:code:docs/contracts/c04-lifecycle/continuation-seamer.sql,code:docs/contracts/c04-lifecycle/build_continuation_trigger.py | A:cn_step、cn_withdrawal、cn_current及封存守卫 | S:新动作要求已封存恢复R5及当前代次资格；撤回须与PQ故障关联，原件不能替代远端当前资格验证
 continuation_trigger_model.py[AR8T]: F:编排普通触发授权封装与Controller关联及带预算撤回 | R:code:docs/contracts/c04-lifecycle/continuation_storage_model.py,code:docs/contracts/c04-lifecycle/trigger_flow_model.py,code:docs/contracts/c05-protection/qualification_model.py | A:receive_event、admission_link、withdraw | S:批准摘要覆盖未封装完整步骤，再追加固定grant引用；撤回必须走实例预算apply，查原不重扣；跨库提供者不等于网络原子性
+CONTINUATION_PROTOCOL.md[SR8T]: F:规定转交内部API身份查原投影和命令引用衔接 | R:code:docs/contracts/c04-lifecycle/build_continuation_protocol.py,code:docs/contracts/c04-lifecycle/continuation_protocol_model.py | A:八操作、通知ACK与后续归并 | S:历史记录不授当前资格，R5摘要仅覆盖commit_body；请求actor须由可信namespace回绑issuer_epoch，公共命令和SDK尚未统一
+build_continuation_protocol.py[XN8T]: F:生成转交具名Schema和两服务内部OpenAPI | R:code:docs/contracts/c04-lifecycle/build_continuation.py,code:docs/contracts/c04-lifecycle/continuation-protocol.schema.json | A:build、ROUTES及--check | S:原Request/Receipt/Adoption形状不改；协议外层独立版本，八操作明确权限和重试策略，响应固定no-store
+check_continuation_protocol.py[TR8S]: F:验证内部协议结构与真实内存SQL投影及撤回对接 | R:code:docs/contracts/c04-lifecycle/continuation_protocol_model.py,code:docs/contracts/c04-lifecycle/check_continuation_trigger.py | A:run及输入摘要核对 | S:实际串联登记采用R5与保护预算，但认证仍合成；不能将244项离线检查视作HTTP或真实鉴权通过
+continuation-controller.openapi.json[EN8L]: F:描述Controller转交签发和历史查原接口 | R:code:docs/contracts/c04-lifecycle/build_continuation_protocol.py | A:issueContinuation、lookupControllerContinuation | S:仅内部配对origin可调用；未知后只查原，found不声明当前grant可用，mTLS声明不证明实际归属检查
+continuation-protocol-report.json[TR7L]: F:固化244项协议检查及331份输入摘要 | R:code:docs/contracts/c04-lifecycle/check_continuation_protocol.py | A:checks与inputs | S:HTTP、真实身份及设备测试均为零；approved为false
+continuation-protocol.schema.json[FN8L]: F:定义转交协议输入历史投影通知ACK与命令授权引用 | R:code:docs/contracts/c04-lifecycle/build_continuation_protocol.py | A:具名defs、TransferIdentity与CommandGrantBinding | S:根拒绝所有实例；原件和外层版本不同，R5必须有采用；通知ACK不表示激活或保护完成
+continuation-seamer.openapi.json[EN8L]: F:描述Seamer登记查询观测采用完成和撤回六接口 | R:code:docs/contracts/c04-lifecycle/build_continuation_protocol.py | A:六项continuation操作 | S:Controller通知只返回自身ACK；采用与R5是不同写入，撤回202只证明计划记录，不代表远端applied
+continuation_protocol_model.py[AR8S]: F:校验服务归属并从实际转交原件投影历史与命令引用 | R:code:docs/contracts/c04-lifecycle/continuation_trigger_model.py,code:docs/contracts/c04-lifecycle/build_continuation_protocol.py | A:lookup、validate_seamer_input、receive_withdrawal、command_binding | S:Seamer和Controller身份列分开映射；查询不授当前资格，撤回经原预算writer；认证上下文及原件查询尚非实际网络提供者
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

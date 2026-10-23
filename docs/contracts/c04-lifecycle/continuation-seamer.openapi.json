@@ -1,0 +1,2273 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "继续运行seamer内部候选",
+    "version": "run-continuation-http/0.1.0-draft.1"
+  },
+  "x-approved": false,
+  "paths": {
+    "/internal/automation/continuations": {
+      "post": {
+        "operationId": "registerContinuation",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "run-continuation-http/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeamerRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeamerRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.continuation.manage",
+        "x-required-peer-role": "origin",
+        "x-retry-policy": "lookup-only-after-uncertainty",
+        "x-max-request-jcs-bytes": 270336,
+        "x-max-response-jcs-bytes": 1048576
+      }
+    },
+    "/internal/automation/continuations/lookup": {
+      "post": {
+        "operationId": "lookupSeamerContinuation",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "run-continuation-http/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeamerLookup"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.continuation.read",
+        "x-required-peer-role": "origin",
+        "x-retry-policy": "read-only",
+        "x-max-request-jcs-bytes": 20480,
+        "x-max-response-jcs-bytes": 1048576
+      }
+    },
+    "/internal/automation/continuations/receipts": {
+      "post": {
+        "operationId": "observeContinuationReceipt",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "run-continuation-http/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReceiptInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptAck"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptAck"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.continuation.notify",
+        "x-required-peer-role": "controller",
+        "x-retry-policy": "same-original-observation-only",
+        "x-max-request-jcs-bytes": 20480,
+        "x-max-response-jcs-bytes": 1048576
+      }
+    },
+    "/internal/automation/continuations/adoptions": {
+      "post": {
+        "operationId": "adoptContinuation",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "run-continuation-http/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdoptionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeamerRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeamerRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.continuation.manage",
+        "x-required-peer-role": "origin",
+        "x-retry-policy": "lookup-only-after-uncertainty",
+        "x-max-request-jcs-bytes": 20480,
+        "x-max-response-jcs-bytes": 1048576
+      }
+    },
+    "/internal/automation/continuations/finish": {
+      "post": {
+        "operationId": "finishContinuation",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "run-continuation-http/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinishInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeamerRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeamerRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.continuation.manage",
+        "x-required-peer-role": "origin",
+        "x-retry-policy": "lookup-only-after-uncertainty",
+        "x-max-request-jcs-bytes": 20480,
+        "x-max-response-jcs-bytes": 1048576
+      }
+    },
+    "/internal/automation/continuations/withdrawals": {
+      "post": {
+        "operationId": "observeContinuationWithdrawal",
+        "security": [
+          {
+            "InternalMTLS": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "run-continuation-http/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WithdrawalNotice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalAck"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "已持久记录或同一原件；不证明当前可执行或设备完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalAck"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无成功原件证明；不允许换身份重做",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtocolError"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "automation.continuation.protect",
+        "x-required-peer-role": "controller",
+        "x-retry-policy": "same-identity-monotonic-protection-only",
+        "x-max-request-jcs-bytes": 20480,
+        "x-max-response-jcs-bytes": 1048576
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "Ref": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "object",
+            "properties": {
+              "authority_service_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+              },
+              "database_instance_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+              }
+            },
+            "required": [
+              "authority_service_id",
+              "database_instance_id"
+            ],
+            "additionalProperties": false
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "Device": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "control_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "authorization_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "action_set_ref": {
+            "$ref": "#/components/schemas/Ref"
+          }
+        },
+        "required": [
+          "device_id",
+          "control_ref",
+          "authorization_ref",
+          "action_set_ref"
+        ],
+        "additionalProperties": false
+      },
+      "Target": {
+        "type": "object",
+        "properties": {
+          "controller_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "preparation_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "recovery_grant_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "devices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Device"
+            },
+            "minItems": 1,
+            "maxItems": 256,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "controller_scope",
+          "preparation_ref",
+          "recovery_grant_ref",
+          "devices"
+        ],
+        "additionalProperties": false
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "run-continuation/0.1.0-draft.1"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "run_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "transfer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "recovery_operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "recovery_execution_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "continuation_plan_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "request_epoch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "issuer_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+              },
+              "principal_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+              }
+            },
+            "required": [
+              "issuer_id",
+              "principal_id"
+            ],
+            "additionalProperties": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "approval_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Target"
+            },
+            "minItems": 1,
+            "maxItems": 32,
+            "uniqueItems": true
+          },
+          "request_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "contract_version",
+          "origin_scope",
+          "run_id",
+          "generation",
+          "transfer_id",
+          "recovery_operation_id",
+          "recovery_execution_id",
+          "continuation_plan_ref",
+          "request_epoch",
+          "actor",
+          "idempotency_key",
+          "approval_ref",
+          "targets",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "Receipt": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "run-continuation/0.1.0-draft.1"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "run_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "transfer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "recovery_operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "recovery_execution_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "continuation_plan_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "request_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "receipt_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "revision": {
+            "const": "1"
+          },
+          "target_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "preparation_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "recovery_grant_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "continuation_grant_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "qualification_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receipt_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "contract_version",
+          "origin_scope",
+          "run_id",
+          "generation",
+          "transfer_id",
+          "recovery_operation_id",
+          "recovery_execution_id",
+          "continuation_plan_ref",
+          "request_digest",
+          "controller_scope",
+          "receipt_id",
+          "revision",
+          "target_digest",
+          "preparation_ref",
+          "recovery_grant_ref",
+          "continuation_grant_ref",
+          "qualification_ref",
+          "receipt_digest"
+        ],
+        "additionalProperties": false
+      },
+      "Adoption": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "run-continuation/0.1.0-draft.1"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "run_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "transfer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "recovery_operation_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "recovery_execution_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "continuation_plan_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "request_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "adoption_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "revision": {
+            "const": "1"
+          },
+          "expected_run_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "expected_slot_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "expected_operation_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "receipt_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ref"
+            },
+            "minItems": 1,
+            "maxItems": 32,
+            "uniqueItems": true
+          },
+          "release_proof_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "adoption_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "contract_version",
+          "origin_scope",
+          "run_id",
+          "generation",
+          "transfer_id",
+          "recovery_operation_id",
+          "recovery_execution_id",
+          "continuation_plan_ref",
+          "request_digest",
+          "adoption_id",
+          "revision",
+          "expected_run_revision",
+          "expected_slot_revision",
+          "expected_operation_revision",
+          "receipt_refs",
+          "release_proof_ref",
+          "adoption_digest"
+        ],
+        "additionalProperties": false
+      },
+      "TransferIdentity": {
+        "type": "object",
+        "properties": {
+          "target_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "origin_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "transfer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "request_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "target_scope",
+          "origin_scope",
+          "transfer_id",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "IssueInput": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "target_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "request": {
+            "$ref": "#/components/schemas/Request"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "target_scope",
+          "request"
+        ],
+        "additionalProperties": false
+      },
+      "LookupInput": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/TransferIdentity"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "identity"
+        ],
+        "additionalProperties": false
+      },
+      "ReceiptInput": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "target_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "receipt": {
+            "$ref": "#/components/schemas/Receipt"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "target_scope",
+          "receipt"
+        ],
+        "additionalProperties": false
+      },
+      "AdoptionInput": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "target_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "adoption": {
+            "$ref": "#/components/schemas/Adoption"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "target_scope",
+          "adoption"
+        ],
+        "additionalProperties": false
+      },
+      "FinishInput": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/TransferIdentity"
+          },
+          "adoption_ref": {
+            "$ref": "#/components/schemas/Ref"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "identity",
+          "adoption_ref"
+        ],
+        "additionalProperties": false
+      },
+      "FinishRecord": {
+        "type": "object",
+        "properties": {
+          "commit_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "execution_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "adoption_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "commit_body_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "commit_id",
+          "execution_id",
+          "adoption_digest",
+          "commit_body_digest"
+        ],
+        "additionalProperties": false
+      },
+      "ControllerRecord": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "request": {
+            "$ref": "#/components/schemas/Request"
+          },
+          "receipt": {
+            "$ref": "#/components/schemas/Receipt"
+          },
+          "qualification": {
+            "const": "not_asserted"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "request",
+          "receipt",
+          "qualification"
+        ],
+        "additionalProperties": false
+      },
+      "SeamerRecord": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "request": {
+            "$ref": "#/components/schemas/Request"
+          },
+          "receipts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Receipt"
+            },
+            "minItems": 0,
+            "maxItems": 32,
+            "uniqueItems": true
+          },
+          "adoption": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Adoption"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "finish": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FinishRecord"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "qualification": {
+            "const": "not_asserted"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "request",
+          "receipts",
+          "adoption",
+          "finish",
+          "qualification"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "adoption": {
+                  "type": "null"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "finish": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ControllerLookup": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "found"
+              },
+              "record": {
+                "$ref": "#/components/schemas/ControllerRecord"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "indeterminate"
+                ]
+              },
+              "record": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "SeamerLookup": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "found"
+              },
+              "record": {
+                "$ref": "#/components/schemas/SeamerRecord"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "indeterminate"
+                ]
+              },
+              "record": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "record"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "WithdrawalNotice": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/TransferIdentity"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "receipt_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "revocation_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "notice_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "identity",
+          "controller_scope",
+          "receipt_ref",
+          "revocation_ref",
+          "notice_digest"
+        ],
+        "additionalProperties": false
+      },
+      "WithdrawalAck": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/TransferIdentity"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "notice_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "protection_plan_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "receipt_state": {
+            "const": "recorded"
+          },
+          "protection_completion": {
+            "const": "not_asserted"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "identity",
+          "controller_scope",
+          "notice_digest",
+          "protection_plan_id",
+          "receipt_state",
+          "protection_completion"
+        ],
+        "additionalProperties": false
+      },
+      "ReceiptAck": {
+        "type": "object",
+        "properties": {
+          "protocol_version": {
+            "const": "run-continuation-http/0.1.0-draft.1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/TransferIdentity"
+          },
+          "controller_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "receipt_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receipt_state": {
+            "const": "recorded"
+          },
+          "activation": {
+            "const": "not_asserted"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "identity",
+          "controller_scope",
+          "receipt_ref",
+          "receipt_state",
+          "activation"
+        ],
+        "additionalProperties": false
+      },
+      "CommandGrantBinding": {
+        "type": "object",
+        "properties": {
+          "origin_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "run_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "execution_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "step_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "submission_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "device_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "transfer_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "adoption_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "receipt_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "grant_ref": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "plan_ref": {
+            "$ref": "#/components/schemas/Ref"
+          }
+        },
+        "required": [
+          "origin_scope",
+          "run_id",
+          "generation",
+          "execution_id",
+          "step_id",
+          "submission_id",
+          "device_id",
+          "transfer_ref",
+          "adoption_ref",
+          "receipt_ref",
+          "grant_ref",
+          "plan_ref"
+        ],
+        "additionalProperties": false
+      },
+      "ProtocolError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid",
+              "unauthenticated",
+              "forbidden",
+              "conflict",
+              "capacity",
+              "unavailable",
+              "version"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "code",
+          "request_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "InternalMTLS": {
+        "type": "mutualTLS"
+      }
+    }
+  }
+}

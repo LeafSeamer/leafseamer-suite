@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24来源重新同步进展：[109表候选](contracts/c04-lifecycle/SOURCE_RESYNC.md)新增基线、连续reconcile增量及ready检查点的原子事务，148项离线检查通过；旧floor/缺口和所有预算保留，source变绿不恢复run，R4还须最新来源保护计划当前applied。串联暴露恢复准备仅供原execution而R5回armed的继续运行缺口：已把越界复用拒绝前移计划seal，但必须继续补显式Controller转交/Seamer采用以及恢复后正常trigger成功正例，不能据当前拒绝用例关闭完整恢复。普通存储总容量/GC、完整订阅与观测、AUTH/TIME、真实提供者及唯一SDK仍未齐，阶段0不关闭；本轮为第3/3轮，审查完整周期后推送main。
+
 2026-10-24运行增长准入进展：[106表增长候选](contracts/c04-lifecycle/WORKLOAD_BUDGET.md)在新执行、准备、依赖、计划及命令插入边界核对所有剩余账户；action计划在任何发送前占完整命令槽与目标并集，实际submission不重复计数。86项检查及原来源90项回归通过，包含8次双动作R5、超额全事务回滚后P1仍成功、新旧代次隔离及R2/R4/R5。六维增长前置准入已有具体方案，长期字节容量、完整CostManifest、层级预算和GC、来源恢复、AUTH/TIME及唯一SDK仍待完成。业务未改，真实运行未验，阶段0未关闭；新周期第2/3轮，仅本地提交。
 
 2026-10-24来源独享预算进展：[106表候选](contracts/c04-lifecycle/SOURCE_BUDGET.md)补来源启用的份数预留/registry/seal原子事务，90项检查通过。全部held/spent占原实例份额，消费和关闭不重新出售；其他来源耗尽不阻本来源正常触发到R5，本来源耗尽时正式摄取及ready/submission/attempt拒绝，查原及已在途accepted仍可记录。独享来源准入已有具体方案；持续库存增长、主体/设备层级、完整成本、释放/GC、AUTH/TIME和唯一SDK继续待完成。业务未改，真实运行未验，阶段0未关闭；新周期第1/3轮，仅本地提交。

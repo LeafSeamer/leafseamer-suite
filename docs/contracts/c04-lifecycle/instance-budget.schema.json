@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/instance-budget.schema.json",
+  "title": "source-instance-budget/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "Vector": {
+      "type": "object",
+      "properties": {
+        "logical_rows": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "logical_bytes": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "queue_slots": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "work_units": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "logical_rows",
+        "logical_bytes",
+        "queue_slots",
+        "work_units"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "PoolProfile": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "source-instance-budget/0.1.0-draft.1"
+        },
+        "profile_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "purpose": {
+          "const": "simulation"
+        },
+        "arm_profile_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "total_capacity": {
+          "$ref": "#/$defs/Vector"
+        },
+        "per_episode": {
+          "$ref": "#/$defs/Vector"
+        },
+        "episodes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "per_source_episodes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "max_row_bytes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "max_queue_wait_ns": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "profile_id",
+        "scope",
+        "purpose",
+        "arm_profile_digest",
+        "total_capacity",
+        "per_episode",
+        "episodes",
+        "per_source_episodes",
+        "max_row_bytes",
+        "max_queue_wait_ns"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

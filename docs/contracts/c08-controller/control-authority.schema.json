@@ -1,0 +1,1229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/control-authority.schema.json",
+  "title": "control-authority/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "U20": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Principal": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ControlVersion": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "$ref": "#/$defs/U20"
+        }
+      },
+      "required": [
+        "epoch",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "Reason": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "Lifetime": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "issued_tick_ns": {
+          "$ref": "#/$defs/U20"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/U20"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest",
+        "issued_tick_ns",
+        "expires_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Target": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/U20"
+        },
+        "mode": {
+          "enum": [
+            "manual",
+            "automatic"
+          ]
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Principal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "mode",
+        "holder"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "manual"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "holder": {
+                "$ref": "#/$defs/Principal"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "automatic"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "holder": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "RequestKey": {
+      "type": "object",
+      "properties": {
+        "target_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation_id": {
+          "enum": [
+            "acquireControl",
+            "releaseControl",
+            "offerTransfer",
+            "acceptTransfer",
+            "cancelTransfer"
+          ]
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "target_scope",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id",
+        "request_epoch",
+        "operation_id",
+        "idempotency_key"
+      ],
+      "additionalProperties": false
+    },
+    "Identity": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/RequestKey"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "key",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "RequestReceipt": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/Identity"
+        },
+        "result_kind": {
+          "enum": [
+            "control_operation",
+            "transfer_offer"
+          ]
+        },
+        "initial_result_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "identity",
+        "result_kind",
+        "initial_result_ref"
+      ],
+      "additionalProperties": false
+    },
+    "LookupRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/RequestKey"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "key",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "LookupResult": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "found",
+            "not_found"
+          ]
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RequestReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "found"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "receipt": {
+                "$ref": "#/$defs/RequestReceipt"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "not_found"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "receipt": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AcquireRequest": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        },
+        "force": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "context_id",
+        "idempotency_key",
+        "expected_control",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "ReleaseRequest": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        }
+      },
+      "required": [
+        "context_id",
+        "idempotency_key",
+        "expected_control",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "OfferRequest": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        },
+        "target_principal": {
+          "$ref": "#/$defs/Principal"
+        },
+        "offer_ttl_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        }
+      },
+      "required": [
+        "context_id",
+        "idempotency_key",
+        "expected_control",
+        "reason",
+        "target_principal",
+        "offer_ttl_ms"
+      ],
+      "additionalProperties": false
+    },
+    "AcceptRequest": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        }
+      },
+      "required": [
+        "context_id",
+        "idempotency_key",
+        "expected_control",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "CancelRequest": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_offer": {
+          "$ref": "#/$defs/Ref"
+        },
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        }
+      },
+      "required": [
+        "context_id",
+        "idempotency_key",
+        "expected_offer",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "PendingChange": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "target": {
+          "$ref": "#/$defs/Target"
+        },
+        "requested_by": {
+          "$ref": "#/$defs/Principal"
+        },
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        }
+      },
+      "required": [
+        "operation_id",
+        "target",
+        "requested_by",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "ControlRecord": {
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/U20"
+        },
+        "reserved_version": {
+          "$ref": "#/$defs/U20"
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Principal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mode": {
+          "enum": [
+            "manual",
+            "automatic"
+          ]
+        },
+        "pending_change": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PendingChange"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_state": {
+          "enum": [
+            "ready",
+            "fencing",
+            "protected"
+          ]
+        },
+        "in_flight_command_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "uniqueItems": true,
+          "maxItems": 256
+        },
+        "unresolved_command_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "uniqueItems": true,
+          "maxItems": 256
+        },
+        "record_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "record_id",
+        "scope",
+        "device_id",
+        "revision",
+        "control_epoch",
+        "effective_version",
+        "reserved_version",
+        "holder",
+        "mode",
+        "pending_change",
+        "gate_state",
+        "in_flight_command_ids",
+        "unresolved_command_ids",
+        "record_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "manual"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "holder": {
+                "$ref": "#/$defs/Principal"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "automatic"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "holder": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "gate_state": {
+                "const": "ready"
+              }
+            },
+            "required": [
+              "gate_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "pending_change": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "gate_state": {
+                "const": "fencing"
+              }
+            },
+            "required": [
+              "gate_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "pending_change": {
+                "$ref": "#/$defs/PendingChange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ControlOperation": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "identity": {
+          "$ref": "#/$defs/Identity"
+        },
+        "kind": {
+          "enum": [
+            "acquire",
+            "release",
+            "transfer"
+          ]
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "target": {
+          "$ref": "#/$defs/Target"
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "effective",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "barrier_selection_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective_control_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "failure_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "operation_id",
+        "scope",
+        "device_id",
+        "revision",
+        "identity",
+        "kind",
+        "requester",
+        "expected_control",
+        "target",
+        "state",
+        "barrier_selection_ref",
+        "effective_control_ref",
+        "failure_code",
+        "operation_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "effective"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "barrier_selection_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "effective_control_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "failure_code": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "release"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target": {
+                "properties": {
+                  "mode": {
+                    "const": "automatic"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "acquire"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target": {
+                "properties": {
+                  "mode": {
+                    "const": "manual"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "transfer"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target": {
+                "properties": {
+                  "mode": {
+                    "const": "manual"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "pending"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "failure_code": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "pending"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "effective_control_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "rejected"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "effective_control_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "indeterminate"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "effective_control_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "rejected"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "failure_code": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "indeterminate"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "failure_code": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "TransferOffer": {
+      "type": "object",
+      "properties": {
+        "transfer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/U20"
+        },
+        "from_principal": {
+          "$ref": "#/$defs/Principal"
+        },
+        "target_principal": {
+          "$ref": "#/$defs/Principal"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/ControlVersion"
+        },
+        "lifetime": {
+          "$ref": "#/$defs/Lifetime"
+        },
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        },
+        "state": {
+          "enum": [
+            "offered",
+            "accepted",
+            "expired",
+            "cancelled"
+          ]
+        },
+        "accepted_operation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "closed_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offer_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "transfer_id",
+        "scope",
+        "device_id",
+        "revision",
+        "from_principal",
+        "target_principal",
+        "expected_control",
+        "lifetime",
+        "reason",
+        "state",
+        "accepted_operation_id",
+        "closed_reason",
+        "offer_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "accepted"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "accepted_operation_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "closed_reason": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "offered"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "closed_reason": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "offered"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "accepted_operation_id": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "expired"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "accepted_operation_id": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "cancelled"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "accepted_operation_id": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "expired"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "closed_reason": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "cancelled"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "closed_reason": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/Id"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "retry_instruction": {
+          "const": "query_original"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "retry_instruction"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

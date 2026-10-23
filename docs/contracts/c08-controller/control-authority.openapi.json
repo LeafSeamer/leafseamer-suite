@@ -1,0 +1,2990 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "LeafSeamer control authority candidate",
+    "version": "control-authority/0.1.0-draft.1"
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "x-approved": false,
+  "paths": {
+    "/devices/{device_id}/control": {
+      "get": {
+        "operationId": "getControl",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ControlRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.read",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization"
+        ]
+      }
+    },
+    "/control-operations/{operation_id}": {
+      "get": {
+        "operationId": "getControlOperation",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "operation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ControlOperation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.read",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization"
+        ]
+      }
+    },
+    "/devices/{device_id}/control/acquire": {
+      "post": {
+        "operationId": "acquireControl",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.acquire",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization",
+          "trusted_origin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcquireRequest"
+              }
+            }
+          }
+        },
+        "x-force-permission": "control.emergency"
+      }
+    },
+    "/devices/{device_id}/control/release": {
+      "post": {
+        "operationId": "releaseControl",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.release",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization",
+          "trusted_origin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/control/transfers": {
+      "post": {
+        "operationId": "offerTransfer",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.transfer",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization",
+          "trusted_origin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/control/transfers/{transfer_id}/accept": {
+      "post": {
+        "operationId": "acceptTransfer",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "transfer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.accept",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization",
+          "trusted_origin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/control/transfers/{transfer_id}": {
+      "get": {
+        "operationId": "getTransfer",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "transfer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.read",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization"
+        ]
+      }
+    },
+    "/devices/{device_id}/control/transfers/{transfer_id}/cancel": {
+      "post": {
+        "operationId": "cancelTransfer",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "transfer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.transfer",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization",
+          "trusted_origin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control-requests/lookup": {
+      "post": {
+        "operationId": "lookupControlRequest",
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "control-authority/0.1.0-draft.1"
+            }
+          }
+        ],
+        "security": [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "候选结果；受理不等于生效或ready",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-permission": "control.read",
+        "x-principal-profiles": [
+          "human"
+        ],
+        "x-required-guards": [
+          "current_subject",
+          "current_object_authorization",
+          "trusted_origin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+      },
+      "U20": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+      },
+      "Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+      },
+      "Principal": {
+        "type": "object",
+        "properties": {
+          "issuer_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "issuer_epoch": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "principal_id": {
+            "$ref": "#/components/schemas/Id"
+          }
+        },
+        "required": [
+          "issuer_id",
+          "issuer_epoch",
+          "principal_id"
+        ],
+        "additionalProperties": false
+      },
+      "Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "database_instance_id": {
+            "$ref": "#/components/schemas/Id"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "Ref": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/Digest"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "ControlVersion": {
+        "type": "object",
+        "properties": {
+          "epoch": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "version": {
+            "$ref": "#/components/schemas/U20"
+          }
+        },
+        "required": [
+          "epoch",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "Reason": {
+        "type": "string",
+        "maxLength": 1024
+      },
+      "Lifetime": {
+        "type": "object",
+        "properties": {
+          "clock_domain_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "descriptor_digest": {
+            "$ref": "#/components/schemas/Digest"
+          },
+          "issued_tick_ns": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "expires_tick_ns": {
+            "$ref": "#/components/schemas/U20"
+          }
+        },
+        "required": [
+          "clock_domain_id",
+          "descriptor_digest",
+          "issued_tick_ns",
+          "expires_tick_ns"
+        ],
+        "additionalProperties": false
+      },
+      "Target": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "mode": {
+            "enum": [
+              "manual",
+              "automatic"
+            ]
+          },
+          "holder": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Principal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "version",
+          "mode",
+          "holder"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "manual"
+                }
+              },
+              "required": [
+                "mode"
+              ]
+            },
+            "then": {
+              "properties": {
+                "holder": {
+                  "$ref": "#/components/schemas/Principal"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "automatic"
+                }
+              },
+              "required": [
+                "mode"
+              ]
+            },
+            "then": {
+              "properties": {
+                "holder": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "RequestKey": {
+        "type": "object",
+        "properties": {
+          "target_scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "issuer_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "issuer_epoch": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "principal_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "request_epoch": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "operation_id": {
+            "enum": [
+              "acquireControl",
+              "releaseControl",
+              "offerTransfer",
+              "acceptTransfer",
+              "cancelTransfer"
+            ]
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/Id"
+          }
+        },
+        "required": [
+          "target_scope",
+          "issuer_id",
+          "issuer_epoch",
+          "principal_id",
+          "request_epoch",
+          "operation_id",
+          "idempotency_key"
+        ],
+        "additionalProperties": false
+      },
+      "Identity": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/RequestKey"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/Digest"
+          }
+        },
+        "required": [
+          "key",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "RequestReceipt": {
+        "type": "object",
+        "properties": {
+          "identity": {
+            "$ref": "#/components/schemas/Identity"
+          },
+          "result_kind": {
+            "enum": [
+              "control_operation",
+              "transfer_offer"
+            ]
+          },
+          "initial_result_ref": {
+            "$ref": "#/components/schemas/Ref"
+          }
+        },
+        "required": [
+          "identity",
+          "result_kind",
+          "initial_result_ref"
+        ],
+        "additionalProperties": false
+      },
+      "LookupRequest": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/RequestKey"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/Digest"
+          }
+        },
+        "required": [
+          "key",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "LookupResult": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "found",
+              "not_found"
+            ]
+          },
+          "receipt": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RequestReceipt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "receipt"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "found"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "receipt": {
+                  "$ref": "#/components/schemas/RequestReceipt"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "not_found"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "receipt": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "AcquireRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/ControlVersion"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          },
+          "force": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "expected_control",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "ReleaseRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/ControlVersion"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "expected_control",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "OfferRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/ControlVersion"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          },
+          "target_principal": {
+            "$ref": "#/components/schemas/Principal"
+          },
+          "offer_ttl_ms": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 86400000
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "expected_control",
+          "reason",
+          "target_principal",
+          "offer_ttl_ms"
+        ],
+        "additionalProperties": false
+      },
+      "AcceptRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/ControlVersion"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "expected_control",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "CancelRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "expected_offer": {
+            "$ref": "#/components/schemas/Ref"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "expected_offer",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "PendingChange": {
+        "type": "object",
+        "properties": {
+          "operation_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "target": {
+            "$ref": "#/components/schemas/Target"
+          },
+          "requested_by": {
+            "$ref": "#/components/schemas/Principal"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        },
+        "required": [
+          "operation_id",
+          "target",
+          "requested_by",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "ControlRecord": {
+        "type": "object",
+        "properties": {
+          "record_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "control_epoch": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "effective_version": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "reserved_version": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "holder": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Principal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mode": {
+            "enum": [
+              "manual",
+              "automatic"
+            ]
+          },
+          "pending_change": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PendingChange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "gate_state": {
+            "enum": [
+              "ready",
+              "fencing",
+              "protected"
+            ]
+          },
+          "in_flight_command_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Id"
+            },
+            "uniqueItems": true,
+            "maxItems": 256
+          },
+          "unresolved_command_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Id"
+            },
+            "uniqueItems": true,
+            "maxItems": 256
+          },
+          "record_digest": {
+            "$ref": "#/components/schemas/Digest"
+          }
+        },
+        "required": [
+          "record_id",
+          "scope",
+          "device_id",
+          "revision",
+          "control_epoch",
+          "effective_version",
+          "reserved_version",
+          "holder",
+          "mode",
+          "pending_change",
+          "gate_state",
+          "in_flight_command_ids",
+          "unresolved_command_ids",
+          "record_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "manual"
+                }
+              },
+              "required": [
+                "mode"
+              ]
+            },
+            "then": {
+              "properties": {
+                "holder": {
+                  "$ref": "#/components/schemas/Principal"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "automatic"
+                }
+              },
+              "required": [
+                "mode"
+              ]
+            },
+            "then": {
+              "properties": {
+                "holder": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "gate_state": {
+                  "const": "ready"
+                }
+              },
+              "required": [
+                "gate_state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "pending_change": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "gate_state": {
+                  "const": "fencing"
+                }
+              },
+              "required": [
+                "gate_state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "pending_change": {
+                  "$ref": "#/components/schemas/PendingChange"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ControlOperation": {
+        "type": "object",
+        "properties": {
+          "operation_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/Identity"
+          },
+          "kind": {
+            "enum": [
+              "acquire",
+              "release",
+              "transfer"
+            ]
+          },
+          "requester": {
+            "$ref": "#/components/schemas/Principal"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/ControlVersion"
+          },
+          "target": {
+            "$ref": "#/components/schemas/Target"
+          },
+          "state": {
+            "enum": [
+              "pending",
+              "effective",
+              "rejected",
+              "indeterminate"
+            ]
+          },
+          "barrier_selection_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effective_control_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failure_code": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "operation_digest": {
+            "$ref": "#/components/schemas/Digest"
+          }
+        },
+        "required": [
+          "operation_id",
+          "scope",
+          "device_id",
+          "revision",
+          "identity",
+          "kind",
+          "requester",
+          "expected_control",
+          "target",
+          "state",
+          "barrier_selection_ref",
+          "effective_control_ref",
+          "failure_code",
+          "operation_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "effective"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "barrier_selection_ref": {
+                  "$ref": "#/components/schemas/Ref"
+                },
+                "effective_control_ref": {
+                  "$ref": "#/components/schemas/Ref"
+                },
+                "failure_code": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "release"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "target": {
+                  "properties": {
+                    "mode": {
+                      "const": "automatic"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "acquire"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "target": {
+                  "properties": {
+                    "mode": {
+                      "const": "manual"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "transfer"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "target": {
+                  "properties": {
+                    "mode": {
+                      "const": "manual"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "pending"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "failure_code": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "pending"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "effective_control_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "rejected"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "effective_control_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "indeterminate"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "effective_control_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "rejected"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "failure_code": {
+                  "$ref": "#/components/schemas/Id"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "indeterminate"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "failure_code": {
+                  "$ref": "#/components/schemas/Id"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "TransferOffer": {
+        "type": "object",
+        "properties": {
+          "transfer_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/U20"
+          },
+          "from_principal": {
+            "$ref": "#/components/schemas/Principal"
+          },
+          "target_principal": {
+            "$ref": "#/components/schemas/Principal"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/ControlVersion"
+          },
+          "lifetime": {
+            "$ref": "#/components/schemas/Lifetime"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          },
+          "state": {
+            "enum": [
+              "offered",
+              "accepted",
+              "expired",
+              "cancelled"
+            ]
+          },
+          "accepted_operation_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "closed_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "offer_digest": {
+            "$ref": "#/components/schemas/Digest"
+          }
+        },
+        "required": [
+          "transfer_id",
+          "scope",
+          "device_id",
+          "revision",
+          "from_principal",
+          "target_principal",
+          "expected_control",
+          "lifetime",
+          "reason",
+          "state",
+          "accepted_operation_id",
+          "closed_reason",
+          "offer_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "accepted"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "accepted_operation_id": {
+                  "$ref": "#/components/schemas/Id"
+                },
+                "closed_reason": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "offered"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "closed_reason": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "offered"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "accepted_operation_id": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "expired"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "accepted_operation_id": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "cancelled"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "accepted_operation_id": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "expired"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "closed_reason": {
+                  "$ref": "#/components/schemas/Id"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "cancelled"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            },
+            "then": {
+              "properties": {
+                "closed_reason": {
+                  "$ref": "#/components/schemas/Id"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "retry_instruction": {
+            "const": "query_original"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "retry_instruction"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "humanBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "csrf": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-Token"
+      }
+    }
+  }
+}

@@ -1,0 +1,1134 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 163,
+  "scope": "控制权与转交HTTP及有限状态候选",
+  "runtime_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "控制结构:1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:offered",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请不改控制权或关闸",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "控制结构:2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:accepted",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作结构:pending",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted不是effective",
+      "expected": [
+        "accepted",
+        "pending",
+        "a",
+        "fencing"
+      ],
+      "observed": [
+        "accepted",
+        "pending",
+        "a",
+        "fencing"
+      ]
+    },
+    {
+      "name": "预留版本独立于生效",
+      "expected": [
+        "1",
+        "2"
+      ],
+      "observed": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "name": "同键只查原裁决",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同键异内容",
+      "expected": "identity_conflict",
+      "observed": "identity_conflict"
+    },
+    {
+      "name": "查原不免CSRF",
+      "expected": "request_origin",
+      "observed": "request_origin"
+    },
+    {
+      "name": "当前可读时旧结果先于新写门控",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "旧裁决仍需当前读取权",
+      "expected": "identity",
+      "observed": "identity"
+    },
+    {
+      "name": "另一键不创建第二pending",
+      "expected": "control_busy",
+      "observed": "control_busy"
+    },
+    {
+      "name": "紧急接管不越未决槽",
+      "expected": "control_busy",
+      "observed": "control_busy"
+    },
+    {
+      "name": "控制结构:3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:accepted",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作结构:effective",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "T4只生效不ready",
+      "expected": [
+        "effective",
+        "b",
+        "protected"
+      ],
+      "observed": [
+        "effective",
+        "b",
+        "protected"
+      ]
+    },
+    {
+      "name": "生效历史Ref精确",
+      "expected": {
+        "id": "control.device",
+        "revision": "3",
+        "digest": "sha256:bfc9c42ba54deb44013ff89ebc38308a8ba9d1db309ecc8defc3201fcff522ff"
+      },
+      "observed": {
+        "id": "control.device",
+        "revision": "3",
+        "digest": "sha256:bfc9c42ba54deb44013ff89ebc38308a8ba9d1db309ecc8defc3201fcff522ff"
+      }
+    },
+    {
+      "name": "生效完整历史持久映射",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始裁决不随操作修订改变",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受后TTL不改邀请",
+      "expected": "accepted",
+      "observed": "accepted"
+    },
+    {
+      "name": "effective不二次转交",
+      "expected": "terminal",
+      "observed": "terminal"
+    },
+    {
+      "name": "控制结构:3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:accepted",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作结构:indeterminate",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知保留pending和版本",
+      "expected": [
+        "control.1476031c15a66dcf9fa063ea",
+        "2",
+        "protected"
+      ],
+      "observed": [
+        "control.1476031c15a66dcf9fa063ea",
+        "2",
+        "protected"
+      ]
+    },
+    {
+      "name": "恢复不另预留",
+      "expected": [
+        "2",
+        "2"
+      ],
+      "observed": [
+        "2",
+        "2"
+      ]
+    },
+    {
+      "name": "旧尝试不能采用",
+      "expected": "barrier_binding",
+      "observed": "barrier_binding"
+    },
+    {
+      "name": "历史attempt不得复用",
+      "expected": "attempt_reuse",
+      "observed": "attempt_reuse"
+    },
+    {
+      "name": "新完整尝试核对未知",
+      "expected": "effective",
+      "observed": "effective"
+    },
+    {
+      "name": "屏障原件错配:device_id",
+      "expected": "barrier_binding",
+      "observed": "barrier_binding"
+    },
+    {
+      "name": "屏障原件错配:control_epoch",
+      "expected": "barrier_binding",
+      "observed": "barrier_binding"
+    },
+    {
+      "name": "屏障原件错配:target_version",
+      "expected": "barrier_binding",
+      "observed": "barrier_binding"
+    },
+    {
+      "name": "屏障原件错配:operation_id",
+      "expected": "barrier_binding",
+      "observed": "barrier_binding"
+    },
+    {
+      "name": "T4缺可信前提:target_authorized",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "T4缺可信前提:storage_healthy",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "T4缺可信前提:barrier_verified",
+      "expected": "barrier_unverified",
+      "observed": "barrier_unverified"
+    },
+    {
+      "name": "目标权限不能借他人",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "控制结构:3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:accepted",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作结构:rejected",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝不回收版本也不恢复写",
+      "expected": [
+        "2",
+        "1",
+        "protected",
+        null
+      ],
+      "observed": [
+        "2",
+        "1",
+        "protected",
+        null
+      ]
+    },
+    {
+      "name": "新操作跳过已安装可能版本",
+      "expected": "3",
+      "observed": "3"
+    },
+    {
+      "name": "同名异issuer",
+      "expected": "not_target",
+      "observed": "not_target"
+    },
+    {
+      "name": "同名异issuer代次",
+      "expected": "not_target",
+      "observed": "not_target"
+    },
+    {
+      "name": "原持有人撤权",
+      "expected": "transfer_permission",
+      "observed": "transfer_permission"
+    },
+    {
+      "name": "接受者撤权",
+      "expected": "transfer_permission",
+      "observed": "transfer_permission"
+    },
+    {
+      "name": "TTL等号",
+      "expected": "offer_expired",
+      "observed": "offer_expired"
+    },
+    {
+      "name": "创建之前",
+      "expected": "offer_expired",
+      "observed": "offer_expired"
+    },
+    {
+      "name": "不可比较域",
+      "expected": "offer_clock",
+      "observed": "offer_clock"
+    },
+    {
+      "name": "TTL前最后一tick接受",
+      "expected": "accepted",
+      "observed": "accepted"
+    },
+    {
+      "name": "控制结构:1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:expired",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请到期不释放",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "控制结构:1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:cancelled",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消不改持有人",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消后不能接受",
+      "expected": "offer_consumed",
+      "observed": "offer_consumed"
+    },
+    {
+      "name": "紧急接管后旧邀请版本拒绝",
+      "expected": "control_cas",
+      "observed": "control_cas"
+    },
+    {
+      "name": "普通重启保留控制限制",
+      "expected": [
+        {
+          "issuer_id": "issuer",
+          "issuer_epoch": "issuer.epoch",
+          "principal_id": "b"
+        },
+        "epoch",
+        "2"
+      ],
+      "observed": [
+        {
+          "issuer_id": "issuer",
+          "issuer_epoch": "issuer.epoch",
+          "principal_id": "b"
+        },
+        "epoch",
+        "2"
+      ]
+    },
+    {
+      "name": "普通重启不继承ready",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "换域旧邀请不能续期",
+      "expected": [
+        "expired",
+        "clock_domain_changed"
+      ],
+      "observed": [
+        "expired",
+        "clock_domain_changed"
+      ]
+    },
+    {
+      "name": "控制结构:5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请结构:accepted",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作结构:effective",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作结构:effective",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "裁决结构",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放仅切automatic仍protected",
+      "expected": [
+        "automatic",
+        null,
+        "protected"
+      ],
+      "observed": [
+        "automatic",
+        null,
+        "protected"
+      ]
+    },
+    {
+      "name": "后续控制不覆盖旧生效历史",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "控制身份限制:force_allowed",
+      "expected": "force_required",
+      "observed": "force_required"
+    },
+    {
+      "name": "控制身份限制:human",
+      "expected": "identity",
+      "observed": "identity"
+    },
+    {
+      "name": "U20不回绕",
+      "expected": "counter_exhausted",
+      "observed": "counter_exhausted"
+    },
+    {
+      "name": "接受故障副本不泄漏:reserve",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:operation",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:pending",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:offer",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:barrier_intent",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:receipt",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:audit",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:outbox",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:history",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受故障副本不泄漏:commit",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "生效故障副本不泄漏:control",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "生效故障副本不泄漏:result",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "生效故障副本不泄漏:audit",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "生效故障副本不泄漏:outbox",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "生效故障副本不泄漏:history",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "生效故障副本不泄漏:commit",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "输入结构:AcquireRequest",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝自填结果:AcquireRequest",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "输入结构:ReleaseRequest",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝自填结果:ReleaseRequest",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "输入结构:OfferRequest",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝自填结果:OfferRequest",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "输入结构:AcceptRequest",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝自填结果:AcceptRequest",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "输入结构:CancelRequest",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝自填结果:CancelRequest",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "输入结构:LookupRequest",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝自填结果:LookupRequest",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "force缺省允许",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "force缺省false规范身份相同",
+      "comparison": "完整对象等价",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "自动模式也不能绕紧急权限",
+      "expected": "force_required",
+      "observed": "force_required"
+    },
+    {
+      "name": "紧急接管须实质理由",
+      "expected": "force_required",
+      "observed": "force_required"
+    },
+    {
+      "name": "紧急权限元数据",
+      "expected": "control.emergency",
+      "observed": "control.emergency"
+    },
+    {
+      "name": "释放不得携人工目标",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格控制计数:'01'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格控制计数:'1\\n'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "严格控制计数:'100000000000000000000'",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "接受必须关联operation",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "九接口",
+      "expected": [
+        9,
+        9
+      ],
+      "observed": [
+        9,
+        9
+      ]
+    },
+    {
+      "name": "六旧操作完整替换",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "三新增操作",
+      "expected": 3,
+      "observed": 3
+    },
+    {
+      "name": "旧权限保留:getControl",
+      "expected": "control.read",
+      "observed": "control.read"
+    },
+    {
+      "name": "仅人员主体:getControl",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:getControl",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:getControl",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "旧权限保留:getControlOperation",
+      "expected": "control.read",
+      "observed": "control.read"
+    },
+    {
+      "name": "仅人员主体:getControlOperation",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:getControlOperation",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:getControlOperation",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "旧权限保留:acquireControl",
+      "expected": "control.acquire",
+      "observed": "control.acquire"
+    },
+    {
+      "name": "仅人员主体:acquireControl",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:acquireControl",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:acquireControl",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "旧权限保留:releaseControl",
+      "expected": "control.release",
+      "observed": "control.release"
+    },
+    {
+      "name": "仅人员主体:releaseControl",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:releaseControl",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:releaseControl",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "旧权限保留:offerTransfer",
+      "expected": "control.transfer",
+      "observed": "control.transfer"
+    },
+    {
+      "name": "仅人员主体:offerTransfer",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:offerTransfer",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:offerTransfer",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "旧权限保留:acceptTransfer",
+      "expected": "control.accept",
+      "observed": "control.accept"
+    },
+    {
+      "name": "仅人员主体:acceptTransfer",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:acceptTransfer",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:acceptTransfer",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "仅人员主体:getTransfer",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:getTransfer",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:getTransfer",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "仅人员主体:cancelTransfer",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:cancelTransfer",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:cancelTransfer",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "仅人员主体:lookupControlRequest",
+      "expected": [
+        "human"
+      ],
+      "observed": [
+        "human"
+      ]
+    },
+    {
+      "name": "版本与身份:lookupControlRequest",
+      "expected": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ],
+      "observed": [
+        "control-authority/0.1.0-draft.1",
+        [
+          {
+            "humanBearer": [],
+            "csrf": []
+          }
+        ]
+      ]
+    },
+    {
+      "name": "全响应禁止缓存:lookupControlRequest",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "合成屏障前提非真实取证限制",
+      "expected": "effective",
+      "observed": "effective"
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/CONTROL_AUTHORITY.md": "1c0be475ea2da0550b2ad3758acdcb5f1ee12241ba9f3f2d0512e10c3bfb33e7",
+    "docs/contracts/c08-controller/build_control_authority.py": "ed807fc69f4277494fcbf7dede906e21b435cbd5fe28ecb553283d8a570f1763",
+    "docs/contracts/c08-controller/control_authority_model.py": "03f2acf8624d43a51176cb5a95048250796d1a734b16dfb662c7ab2590d028cc",
+    "docs/contracts/c08-controller/check_control_authority.py": "6ae3bb698a6491cdcf8996f7781c53fcf28e4dfa38846fd9b5855e6558d32e27",
+    "docs/contracts/c08-controller/control-authority.schema.json": "2cb0a739b04c2dd5b7cd3983f8b4e4ee3229c787ee66e13abf97e51024a7a66d",
+    "docs/contracts/c08-controller/control-authority.openapi.json": "d103313913a9cdf916c391d9ac4861dab367089d1e4610e19c673d4c0557f8ba",
+    "docs/contracts/c08-controller/OPEN_PLAN.md": "d79c2595837fdb0fe7299253c6d39a973c723cc3da58b254763818ea8dd058dd",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-df04-storage-design.md": "07f6d11c5a2bac49967e0549a26e231a68379e503fb2e5fd5588e65d436c0069",
+    "docs/rebirth-c10-gui-design.md": "98a31620ca213a5c953ffaf221cb079977d27413970d138037eb5d0f520a2c5d",
+    "docs/contracts/draft4/first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/draft4/controller.openapi.json": "a417617c7a88e4c8d7ac1af1b8abae1656db16f72590a8c4b5a46edfe2abe868",
+    "docs/contracts/df01-source/authorization-candidate.json": "e3a72f9c4a91c3a914941b420ef2b4c6ee89eba340f7fe0fd27e4f2bcd3e55c9"
+  }
+}

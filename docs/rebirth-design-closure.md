@@ -34,6 +34,8 @@
 
 同日开放计划进展：[开放计划与原ACK契约](contracts/c08-controller/OPEN_PLAN.md)落实OpenPlan、OpenDispatch、OpenAckEvidence及ReadyCommit四对象、单向摘要引用、完整scope/域/会话与原ACK绑定、独立方向序号和可信接收时刻。68项结构及关联检查通过，8输入绑定匹配；旧有序出口和保护通知报告输入仍匹配。对象字段与持久映射不再从零设计，但所建议四表尚未创建，仍须与完整control/gate/屏障原件、提供者及SDK同版归并；当前ready持续重核状态及期限，历史ACK不授当前写权。本周期第3轮审查完整待推范围后推main；业务和实际运行均未执行，阶段0未关闭。
 
+同日控制权进展：[控制权与转交候选](contracts/c08-controller/CONTROL_AUTHORITY.md)补九HTTP声明、完整人员身份、邀请单调期限及接受操作关联、不可变请求裁决与控制历史。pending预留版本，拒绝不复用且保持protected；未知恢复同目标，旧尝试不采用，T4不自动ready。163项结构/OpenAPI与有限状态检查、13输入绑定通过；首次恢复与实际数据库事务未混为一谈。转交字段与状态语义不再从零设计；control/gate/完整屏障DDL、取证提供者、统一SDK和实际运行仍待落实。上周期main已推dba4aa4，本轮为新周期第1/3轮，阶段0未关闭。
+
 | 范围 | 已具备的设计材料，不再重复建立 | 仍须在实施前完成 | 留给实现与验收的证据 |
 | --- | --- | --- | --- |
 | C01 单源与解码 | 六文件等价提取、完整历史HTTP骨架、导出／主体矩阵、严格解码具体方案及投影定位 | 将全部新增接口和类型纳入唯一SDK源；完成严格数字接受集、逐规则调用点和具名摘要投影；处理1.2的显式替换 | 真实解析器、TS生成／消费、浏览器包隔离及跨语言执行；元数据检查不替代 |
@@ -54,7 +56,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 
 ### 1.2 已有HTTP与IPC的归并裁决
 
-已知事实：以下13份OpenAPI当前共153条操作声明；计数含两个HTTP GET形式的WS升级，不等于153项独立运行功能，也不证明全系统接口已齐备。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不是可合并身份空间。另有21处**同服务**旧／新方法路径重合（含两authority各自的两个公共时间查询），必须作明确替换。以下处置是下一统一候选的设计规则，尚未生成或部署该候选。
+已知事实：以下14份OpenAPI当前共162条操作声明；计数含两个HTTP GET形式的WS升级，不等于162项独立运行功能，也不证明全系统接口已齐备。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不是可合并身份空间。另有27处**同服务**旧／新方法路径重合（含两authority各自的两个公共时间查询），必须作明确替换。以下处置是下一统一候选的设计规则，尚未生成或部署该候选。
 
 | 当前文件（相对docs/contracts） | 声明数 | 所有者与下一版处置 |
 | --- | ---: | --- |
@@ -64,6 +66,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 | [c04-preparation/preparation.openapi.json](contracts/c04-preparation/preparation.openapi.json) | 3 | Controller内部mTLS；准备／查原／关闭，不暴露管理origin |
 | [c02-admission/admission.openapi.json](contracts/c02-admission/admission.openapi.json) | 3 | Controller；替换submitCommand，新增查原与永久拒收 |
 | [c02-command-view/command.openapi.json](contracts/c02-command-view/command.openapi.json) | 7 | Controller；替换getCommand/cancelCommand/getCommandEvidence，新增历史修订、取消查原/状态和单证据历史读取 |
+| [c08-controller/control-authority.openapi.json](contracts/c08-controller/control-authority.openapi.json) | 9 | Controller；替换六控制操作，新增getTransfer/cancelTransfer/lookupControlRequest；完整人员身份与不可变Receipt不能混入旧模型 |
 | [c05-ingress/ingress.openapi.json](contracts/c05-ingress/ingress.openapi.json) | 3 | Seamer；替换摄取，新增查原及内部账本读取 |
 | [c05-protection/protection.openapi.json](contracts/c05-protection/protection.openapi.json) | 2 | Controller内部mTLS；代次保护与查原，不是设备动作重试入口 |
 | [c09-panel-service/service.openapi.json](contracts/c09-panel-service/service.openapi.json) | 14 | 两服务分别拥有会话及writer；同一界面跨服务须两份独立会话 |
@@ -76,6 +79,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 
 - Controller：`submitCommand`占用`POST /api/v1/commands`；成功响应改为不可变RequestAdjudication。当前Command仍由原command_ref查询，永久拒收不等于取消。
 - Controller读取与取消：`getCommand`、`cancelCommand`、`getCommandEvidence`三个同路径操作切到command-view候选。完整State与公开记录摘要分开，历史显式标识，503不能回旧clear；取消回执不变、取消进度另查，证据绑定固定修订分页。旧裸expected_revision和旧动态证据页不回退接受，操作/导出/面板权限矩阵同步迁移。
+- Controller控制权：`getControl/getControlOperation/acquireControl/releaseControl/offerTransfer/acceptTransfer`六个同路径操作切到control-authority候选；原六权限保留，新主体及请求身份完整绑定，force另需control.emergency，offer接受关联operation。新增getTransfer/cancelTransfer/lookupControlRequest；GUI、面板和快照须同步采用完整holder、reserved_version与新Receipt，旧expires_at展示不能代替单调到期门控。
 - Seamer生命周期：`createDefinition`、`updateDraft`、`publishDefinition`、`getIndependenceProof`、`createRun`、`getRun`、`preflightRun`、`armRun`、`pauseRun`、`previewRecovery`、`resumeRun`、`getRecoveryOperation`共12项，同方法路径切到生命周期候选；旧请求/响应不得与新模型拼接。
 - 两服务时间查询：`getClock/getClockAssessment`各自切到reference-time-service展示模型；旧time-evidence/time-profiles/clock-samples在统一版本中退役，以四个精确历史查询替代。clock-domain仍独立保留，其他事件时间模型和跨服务年龄证明尚须统一迁移。
 - Seamer摄取：`POST /api/v1/providers/{provider_id}/events`的operationId从`ingestEvent`变为`submitProviderEvent`。现有[主体矩阵](contracts/df01-source/authorization-candidate.json)和[面板策略](contracts/c09-panel/operation-policy.json)仍引用`ingestEvent`，未完成迁移；生成器、SDK导出、权限用途、调用点及用例必须显式同步，不能只重命名HTTP符号。事件自身去重身份继续按摄取契约，不借HTTP名更改原事件身份。

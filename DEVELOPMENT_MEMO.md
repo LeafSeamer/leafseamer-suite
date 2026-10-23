@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-23 不可变占用归属与最终准入衔接（周期第3/3轮）
+
+- 本周期前两轮提交为`421f35c`、`244af35`；本轮继续main，按授权审查完整三轮待推范围后推送，远端结果另行核对。
+- [最终准入候选](docs/contracts/c08-controller/FINAL_ADMISSION.md)补齐Ownership、ExecutionIdentity与PermitAuthority的具体字段和Schema，绑定命令或取消RequestKey、完整主体、控制权、运行域、hold及精确Guard原件。普通新hold采用前态资格与完整后态资源快照，明确最终AdmissionSeal顺序，避免尚未生成的hold与前态快照循环依赖。
+- 152项结构/JCS/关联检查通过，并在原178表内存库复现旧owner_ref可自报当前active的缺口；新来源子检查拒绝改标签、旧控制复用及借父actor。旧178表199项实际回归、开放生命周期13输入绑定通过。本轮没有新SQL布局或最终签发实现，原四个临时阻断保留；不把旧缺口复现当作SQL已修复。
+- 发现全局ready拒unknown与独立保护取消之间的衔接冲突，补出限定唯一取消ExecutionPlan的保护资格候选；不清父风险、不授普通写、不显示全局ready。该范围须在下一版OPEN/ACK及物理闸和AdmissionSeal同版实现，尚未批准或放行。业务代码、真实并发、磁盘、IPC及设备均未运行，阶段0未关闭。
+
 ## 2026-10-23 开放提交与关闭恢复SQLite约束（周期第2/3轮）
 
 - 前一轮本地提交`421f35c`；本轮继续main，仅本地commit，第3轮审查完整待推范围后推送。

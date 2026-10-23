@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24失败布防退出进展：[90表候选](contracts/c04-lifecycle/ARM_EXIT.md)将停止意图、共享DENY、全目标保护、新屏障尝试和最终退出接成双向seal，125项内存检查通过；旧109项布防实际回归。原准备迟到只存历史，最新尝试全部applied才清active arm，仍paused并保留旧预算/锁存/槽；退出后显式新代次恢复成功，来源失步时R2拒绝。失败arm已具备可靠退出写集，但不等于通用disarm/retire或资源clear；剩余为真实预算消费与恢复新预算/GC、混合历史库存和正常触发全链、通用关闭、AUTH/TIME、最终准入及唯一SDK。16次是实验存储上限而非保护预算证明，真实运行/并发/磁盘/设备未验，阶段0未关闭。本轮为第3/3轮，审查本周期完整历史后推送main。
+
 2026-10-24普通布防同库进展：[83表候选](contracts/c04-lifecycle/ARM_STORAGE.md)已将共享operation身份、disarmed登记、实例四维预留及准备完成双向seal接入现有布局，109项内存检查通过。新arm后显式暂停并经reconcile R2/R4/R5回armed的正例保持可行，旧transition复用和最终槽位漂移拒绝；旧112项资格及108项预算模型实际回归。普通arm物理受理不再从零建表；剩余集中于失败arm退出、P1/PQ预算消费与恢复新预算/分层/GC、正常触发完整组合、来源恢复、AUTH/TIME及完整Controller准入和唯一SDK。提供者仍为合成，实验包络不代表磁盘保障，真实运行及设备未验，阶段0未关闭。本轮为新周期第2/3轮，仅本地提交。
 
 2026-10-24普通布防预算进展：[arm/P0候选](contracts/c04-lifecycle/ARM_BUDGET.md)将原arm有限模型与四维预算、完整profile绑定、有限保护次数和未使用退款联接，108项检查通过。实际72表确认无准备也可建armed且active_operation仅指recovery；下一物理布局必须采用共享operation身份、disarmed准备登记及预算/目标双向seal，不能先armed后补记录。调低profile保留旧保护，观察applied不退款，旧代次消费不影响新run。普通arm完整SQL、全部CostManifest与跨run/层级预算、真实库存/时钟/受监督闭锁及GC仍未落实；实验包络不是生产参数，来源恢复、AUTH/TIME、最终准入和唯一SDK继续待收敛。业务未改，运行验收未执行，阶段0未关闭。本轮为新周期第1/3轮，仅本地提交。

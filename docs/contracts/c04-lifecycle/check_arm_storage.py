@@ -8,8 +8,8 @@ import check_qualification as Q
 I=M.I;P=M.P;R=M.R;C=Q.C;B=Q.B;H=Q.H
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[2]
 INPUTS=list(dict.fromkeys(A.INPUTS+G.SOURCES+[HERE/n for n in ('ARM_STORAGE.md','arm_storage_model.py','check_arm_storage.py','seamer-arm.sql')]))
-def fixture(*,zero=False,capacity=None):
-    db=sqlite3.connect(':memory:',isolation_level=None);db.row_factory=sqlite3.Row;db.executescript(G.build().decode())
+def fixture(*,zero=False,capacity=None,sql_factory=G.build):
+    db=sqlite3.connect(':memory:',isolation_level=None);db.row_factory=sqlite3.Row;db.executescript(sql_factory().decode())
     profile=A.profile()
     if capacity:profile['capacity'].update(capacity)
     targets=[dict(controller_id='route.'+x,registration_id='registration.'+x,preparation_id='preparation.'+x,
@@ -41,16 +41,22 @@ def receive_all(db,targets):
         ident=t['registration_id'];M.apply(db,lambda ident=ident:[M.attempt_step(db,ident)])
         value=Q.F.granted(db,ident);M.receive(db,ident,value,t['controller_scope'])
 
-def reconcile(db):
-    """从真实arm就绪前态推进R2/R4；所有守卫始终启用，外部核对证据为合成。"""
+def reconcile_preflight(db):
+    """显式暂停并建立新预览；不将它与后续R2误当成同一事务。"""
     run=R.one(db,'run','run_id','r0');slot=R.one(db,'activation_slot','definition_id','d0');rev=P.inc(run['revision'])
     C.execute(db,[("UPDATE run SET lifecycle='paused',dispatch_eligible=0,revision=? WHERE run_id='r0'",(rev,)),
         I('pause_latch',latch_id='resume.latch',run_id='r0',reason='operator_pause',created_revision=rev,body=B),
         I('recovery_preview',preview_id='resume.preview',run_id='r0',run_revision=rev,slot_revision=slot['revision'],prior_execution_id=None,
           preview_digest=H,plan_digest='recovery.plan',preview_body=B,clock_body=B,issued_tick='100',expires_tick='200')])
     request=dict(operation_id='recovery.1',execution_id='recovery.execution',run_id='r0',preview_id='resume.preview',request_epoch='epoch.1',
-        actor=dict(principal_id='operator'),idempotency_key='resume.key',mode='reconcile_commit',kind='rule',plan_digest='recovery.plan',resolved_latches=['resume.latch'],targets=[])
+        actor=dict(principal_id='operator'),idempotency_key='resume.key',mode='reconcile_commit',kind='rule',plan_digest='recovery.plan',
+        resolved_latches=[x[0] for x in db.execute("SELECT latch_id FROM pause_latch WHERE run_id='r0' AND cleared_start_id IS NULL ORDER BY latch_id")],targets=[])
     gates=dict(authorized=True,current=True,old_resources_clear=True,clock_body=B,now=150)
+    return request,gates
+
+def reconcile(db):
+    """从真实arm就绪前态推进R2/R4；所有守卫始终启用，外部核对证据为合成。"""
+    request,gates=reconcile_preflight(db)
     R.reserve(db,request,gates);R.apply(db,lambda:R.ready_steps(db,request['operation_id']));Q.F.execution_plan(db,request)
     R.apply(db,lambda:R.start_steps(db,request['operation_id'],gates))
     C.execute(db,R.event('terminal','r0','STEP_TERMINAL')+[

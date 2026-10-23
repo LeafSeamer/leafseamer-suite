@@ -1,0 +1,799 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 125,
+  "seamer_tables": 90,
+  "runtime_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "90表生成字节",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出Schema字节",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "完整90表",
+      "observed": 90,
+      "expected": 90
+    },
+    {
+      "name": "停止前不得直接清active",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止可靠受理",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "准备操作仍占用且暂停",
+      "observed": [
+        "paused",
+        0,
+        "arm.1",
+        null
+      ],
+      "expected": [
+        "paused",
+        0,
+        "arm.1",
+        null
+      ]
+    },
+    {
+      "name": "关闭目标完整",
+      "observed": 2,
+      "expected": 2
+    },
+    {
+      "name": "独立拒绝旧代次",
+      "observed": "00000000000000000001",
+      "expected": "00000000000000000001"
+    },
+    {
+      "name": "同请求查原",
+      "observed": "existing",
+      "expected": "existing"
+    },
+    {
+      "name": "查原零写",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "同键异内容",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写5",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障5",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写6",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障6",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写7",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障7",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写8",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障8",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写9",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障9",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止缺写10",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止写后故障10",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "少库存",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错代次",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "跳修订",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "槽错修订",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20换行",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错目标scope",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "缺目标数",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错首尝试",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "同数换目标",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错计划正文",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "缺保护回执不能退出",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "关闭未确认不得直接清active",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止后不能完成原arm",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止后不能新尝试准备",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "pending只查原不能换屏障",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "迟到成功仅存历史",
+      "observed": "stored",
+      "expected": "stored"
+    },
+    {
+      "name": "迟到成功无arm采用",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "绕过历史接收器采用拒绝",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出缺写0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出写后故障0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出缺写1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出写后故障1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出缺写2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出写后故障2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出缺写3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出写后故障3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出缺写4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出写后故障4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "错观察摘要",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出跨代",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出跳修订",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出错plan",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出最后槽漂移",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出最后保护失效",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出明确未释放资源",
+      "observed": [
+        "paused",
+        false,
+        false
+      ],
+      "expected": [
+        "paused",
+        false,
+        false
+      ]
+    },
+    {
+      "name": "退出清active但不恢复",
+      "observed": [
+        "paused",
+        0,
+        null
+      ],
+      "expected": [
+        "paused",
+        0,
+        null
+      ]
+    },
+    {
+      "name": "退出保留锁存",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "退出保留预算",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "退出查原结果",
+      "observed": {
+        "contract_version": "arm-exit/0.1.0-draft.1",
+        "arm_operation_id": "arm.1",
+        "run_id": "r0",
+        "generation": "1",
+        "plan_id": "aa.4991e442502ceebeab22808f872b10557e1c99db88bf27d16c9f82e01502b4ea",
+        "run_revision": "4",
+        "state": "paused",
+        "resources_cleared": false,
+        "budget_released": false,
+        "observations": [
+          {
+            "target_id": "aa.4991e442502ceebeab22808f872b10557e1c99db88bf27d16c9f82e01502b4ea.t.0",
+            "status_revision": "1",
+            "observation_digest": "sha256:84b516ccabb648b64c7582b96eee2011a39e7297b0b499a60132736d8742a2ef"
+          },
+          {
+            "target_id": "aa.4991e442502ceebeab22808f872b10557e1c99db88bf27d16c9f82e01502b4ea.t.1",
+            "status_revision": "1",
+            "observation_digest": "sha256:0305fac32188a41cee8e463c6e2985a0dea09fe37f0a0350ef4cca0ec0e7bec8"
+          }
+        ]
+      },
+      "expected": {
+        "contract_version": "arm-exit/0.1.0-draft.1",
+        "arm_operation_id": "arm.1",
+        "run_id": "r0",
+        "generation": "1",
+        "plan_id": "aa.4991e442502ceebeab22808f872b10557e1c99db88bf27d16c9f82e01502b4ea",
+        "run_revision": "4",
+        "state": "paused",
+        "resources_cleared": false,
+        "budget_released": false,
+        "observations": [
+          {
+            "target_id": "aa.4991e442502ceebeab22808f872b10557e1c99db88bf27d16c9f82e01502b4ea.t.0",
+            "status_revision": "1",
+            "observation_digest": "sha256:84b516ccabb648b64c7582b96eee2011a39e7297b0b499a60132736d8742a2ef"
+          },
+          {
+            "target_id": "aa.4991e442502ceebeab22808f872b10557e1c99db88bf27d16c9f82e01502b4ea.t.1",
+            "status_revision": "1",
+            "observation_digest": "sha256:0305fac32188a41cee8e463c6e2985a0dea09fe37f0a0350ef4cca0ec0e7bec8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "退出查原零写",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "退出结果不得暗示资源clear",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止Schema拒绝expected_run_revision",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止Schema拒绝contract_version",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "停止Schema拒绝reason",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "无关闭权限",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "独立系统关闭不依赖旧人类权限",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "保护失效不能退出",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写5",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障5",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写6",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障6",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障缺写7",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障写后故障7",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "显式新屏障尝试",
+      "observed": "accepted",
+      "expected": "accepted"
+    },
+    {
+      "name": "新尝试不复用旧目标",
+      "observed": 4,
+      "expected": 4
+    },
+    {
+      "name": "新尝试未回执不能用旧applied",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新尝试重复查原",
+      "observed": "existing",
+      "expected": "existing"
+    },
+    {
+      "name": "新尝试查原零写",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "旧previous_plan拒绝",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新屏障完成保留旧失效",
+      "observed": "indeterminate",
+      "expected": "indeterminate"
+    },
+    {
+      "name": "已退出不再新尝试",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "第17次超容量保持关闭",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "尝试上限没有半计划",
+      "observed": 16,
+      "expected": 16
+    },
+    {
+      "name": "零目标可退出",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "已armed须走显式disarm协议",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源保护未被退出清除",
+      "observed": "desynchronized",
+      "expected": "desynchronized"
+    },
+    {
+      "name": "两类保护计划共存",
+      "observed": 2,
+      "expected": 2
+    },
+    {
+      "name": "来源未恢复不能跳过核验",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "资格失败退出后可新代次恢复",
+      "observed": [
+        "armed",
+        "2"
+      ],
+      "expected": [
+        "armed",
+        "2"
+      ]
+    },
+    {
+      "name": "新恢复不删除首失效",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "退出后显式恢复回armed",
+      "observed": [
+        "armed",
+        1,
+        "2"
+      ],
+      "expected": [
+        "armed",
+        1,
+        "2"
+      ]
+    },
+    {
+      "name": "恢复保留旧拒绝代次",
+      "observed": "00000000000000000001",
+      "expected": "00000000000000000001"
+    },
+    {
+      "name": "恢复保留旧退出和预算",
+      "observed": [
+        1,
+        1
+      ],
+      "expected": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "迟到旧保护失效不改新代次",
+      "observed": [
+        "armed",
+        "2"
+      ],
+      "expected": [
+        "armed",
+        "2"
+      ]
+    },
+    {
+      "name": "aa_stop不可删除",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "aa_attempt不可删除",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "aa_target不可删除",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "aa_attempt_commit不可删除",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "aa_exit不可删除",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "aa_exit_pin不可删除",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "aa_exit_commit不可删除",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "组合外键完整",
+      "observed": [],
+      "expected": []
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c05-protection/README.md": "2e4383be3d16941c39f1b3e0922598da0386098894df55e36559e2a6488316b7",
+    "docs/contracts/c05-protection/build_contracts.py": "90b7a621c30e6f17fb7747f6bcbfad4336889a9355e9cb4d28896721e8cc2274",
+    "docs/contracts/c05-protection/check_contracts.py": "31718e7a21b8a455d9088509dbf164a1ba66aaae81a5fa9c0b498a18d1fdc1d7",
+    "docs/contracts/c05-protection/protection.schema.json": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72",
+    "docs/contracts/c05-protection/run-fence.schema.json": "f75aef4becf226748234746f913aaae5c29441b2e3496817df3d415d1aa3bfc8",
+    "docs/contracts/c05-ingress/ingress.schema.json": "1126b7c81d775f1d251f7a81f30a23f98e1c9514d1afad952a8bf0b6221e8f35",
+    "docs/rebirth-c05-event-sync-design.md": "087fe4dc19e5305e5d906ce20960d56e0d77a6e7b2d7fa2dbe8ecffbce2fdd5d",
+    "docs/rebirth-c04-automation-design.md": "8dd3f4dcd15d3ec66a086e892229339992735c5ea74c3b737aa670d1635eb7da",
+    "docs/rebirth-df04-storage-design.md": "07f6d11c5a2bac49967e0549a26e231a68379e503fb2e5fd5588e65d436c0069",
+    "docs/rebirth-f04-f05-design.md": "e9ee3bd0ded4b79f0845b24c796ddb2f27b5a724b674917e8feec5beac4c5672",
+    "docs/contracts/c04-storage/DISPATCH.md": "d22d90782d7bc929f36b8b42f8e1be7968407b73880e38bd1364fa2a6a76399e",
+    "docs/contracts/c04-storage/dispatch.sql": "8f1548fa1fdf1ded95319273deac429c0be5942bb33c304bf26474d5a2c6e9bc",
+    "docs/contracts/c04-storage/check_dispatch.py": "621cd7ef4e78b2a9578f91e90710a05fa7ea24aace9988f97ecb6f2c9229e03c",
+    "docs/contracts/c04-storage/recovery.sql": "2ab514e81719f0d96642bd6a848f3dedfe7bdffbc2d7b77f3b0b18c2826df613",
+    "docs/contracts/c04-storage/check_recovery.py": "d6fcf79ffcfc2697aad739f17498eeac540e0fc0a25569799f4b6f5cc55dc98a",
+    "docs/contracts/c04-execution/execution.schema.json": "76a31f3d2786f216f3b93efac69ec64a71395b30b1378ae400bbfc5189ed5e89",
+    "docs/contracts/c04-storage/README.md": "c988ef237e881c97a39174a5402f36874ebe66ecd26a85227f275a071dfa9234",
+    "docs/contracts/c05-ingress/ingress.sql": "343b8b80ebee325e70f0f89bdcce790aa1a04cc7c3efa60d4e7a3a8a3d0e89b0",
+    "docs/contracts/c08-controller/protection-receiver.sql": "453989f1c52e1b34e5be2fa1e406b358505606fe4da956d71e5ee822d10ed7ec",
+    "docs/contracts/c08-controller/preparation-receiver.sql": "9215cfb30e04cb56f76f28bc8cd18e72f5f501da20bdbf6a06279719997620e2",
+    "docs/contracts/c05-protection/build_storage.py": "37776bd4ec3237a4817d967376a50223a6368e9014de0ac4381df0cbab549307",
+    "docs/contracts/c05-protection/storage.sql": "f2418e00229b035cf62ea8a44515227dc201b256a385f2d381b20162b9eeff28",
+    "docs/contracts/c05-protection/STORAGE.md": "f86475f0cb0681c76a4778bbd8410b350a4a81bd2fb3da1efb6efbab8dfff853",
+    "docs/contracts/c05-protection/storage_model.py": "60034bf5bf4d81fb13f370cd15088e560d071ecd990952bacea286cc89013649",
+    "docs/contracts/c05-protection/check_storage.py": "1c993d7bbdbaa1b7cba881a66fdd0a3930dfdb599c181f0bf96eeb0abaac5c95",
+    "docs/contracts/c05-protection/seamer-protection.sql": "ae1a75c4e777b51259187d12c6646479e46e2f26bc4cbf97c83af67b24d8604b",
+    "docs/contracts/c08-controller/protection_delivery_model.py": "94989829db20874117169c28bdb5001970b276f82f1acb99595cbc58a7a9f4df",
+    "docs/contracts/c08-controller/protection-delivery.schema.json": "d5d4422c27e43e498b900dd4d668048d6a7f2bb76c39f62e7c76b52d3f6b0638",
+    "docs/contracts/c08-controller/build_protection_delivery.py": "812f922613536e738ab35e6f7b90e2cac56c28953297cf8d3885a5bb0eb58abc",
+    "docs/contracts/c08-controller/preparation_delivery_model.py": "3343a39b065cc175a27fd49cdbeb9ee9e59fdfbd942da4e1e75be2cf742e81df",
+    "docs/contracts/c08-controller/preparation-delivery.schema.json": "e1ab5539f7c4806c513e198b000edbcb9f22a1d1969023b1114f578dcfdf22c1",
+    "docs/contracts/c08-controller/build_preparation_delivery.py": "c81251c516ef053407b0486db0105c9ab8024dcb0d0cc26502b6dc6c33c9680b",
+    "docs/contracts/c05-protection/build_registration.py": "a5419d11748f1c121f874003ec464dd8f8c984390479cc886827cff466893c1e",
+    "docs/contracts/c05-protection/registration.sql": "77187a512718546e151cef8635807c9e1be9164a35413ec459fe3b86471994e9",
+    "docs/contracts/c05-protection/REGISTRATION.md": "e790a4ed902d9322e2fc9a0381d044004ad12cba674e2518e6a3d2d675b6f38a",
+    "docs/contracts/c05-protection/registration_model.py": "80397703037d5e33043182cef5488b7e964f6e96afee43571fb4675f298deb66",
+    "docs/contracts/c05-protection/check_registration.py": "92542f466a4cb9f565d22828e3cb34c0da23ee5d819902aac851862773f1d7ed",
+    "docs/contracts/c05-protection/seamer-registration.sql": "5170e00f0ee607d577e1f8baabf12ce256e661313dc0db4c5f9473792167c219",
+    "docs/contracts/c05-ingress/check_storage.py": "3a182381c7b0dc60549346e2ff04f96f41e80c87936e9375c4bd08e6ba3b5b84",
+    "docs/contracts/c05-protection/build_qualification.py": "a6e4218b0080fb85230419c9bc1137b64a5a627c55ac49ec62f0ac4b816c9d5e",
+    "docs/contracts/c05-protection/qualification.sql": "8a923e0b14680cf370f8f1da63dbdfebae778ab5ec24d87d6b8966e61e7d443e",
+    "docs/contracts/c05-protection/QUALIFICATION.md": "09353c5d7e0deb3937528cfeca8c84d1c79c74f9c0ecee0318c39965c021a13d",
+    "docs/contracts/c05-protection/qualification_model.py": "26e6bb37ae0de347235df4bc083c47b67fb75db1c1ca51538c0ac13af6108dc7",
+    "docs/contracts/c05-protection/check_qualification.py": "c202cb90293830f2e814327f91dd9ba240820e03011f24fa3dbbc95d0fb7538d",
+    "docs/contracts/c05-protection/seamer-qualification.sql": "8e305bbf05ac249c29ac2dc9b9fdd3a5d8ec31377a982b545b7bd34fe68f3cd1",
+    "docs/contracts/c05-protection/preparation-qualification.schema.json": "52c18ea19e749844eb926eee8ba3505e2e118b76df8113d3c69530ac2a81190e",
+    "docs/contracts/c04-lifecycle/ARM_BUDGET.md": "66a47c3962538765e0b9da04d7f2c01ab73467682bf4a471d7930f5a9b792242",
+    "docs/contracts/c04-lifecycle/build_arm_budget.py": "e20778ac7471086f4d966d5ed123d32c87daf7ab52cdf34b101ffc3462e8e898",
+    "docs/contracts/c04-lifecycle/arm_budget_model.py": "d704cddb178af92a892c3dade14f2debf1ff6493c5b8b20f8f1423e68545cb95",
+    "docs/contracts/c04-lifecycle/check_arm_budget.py": "16d7086f0415c08ee7e559c4663129aa052a134e878d4d2c0d32209f3ee0fc42",
+    "docs/contracts/c04-lifecycle/arm-budget.schema.json": "e2b112b67569fb5fa752d5682e2e3449f8a35ab2c44d4ad017a9a43525a99612",
+    "docs/contracts/c04-lifecycle/build_arm_storage.py": "a7ee406cedf9045a6830254ab22fe01f4432f2ea2a6533d62329b9428221eb28",
+    "docs/contracts/c04-lifecycle/arm-storage.sql": "db6ec352abe9614dd6e4b99a45246c7b65a5aa741bce0d7f89d9efaf05755a6a",
+    "docs/contracts/c04-lifecycle/ARM_STORAGE.md": "e3055210cde9c68634e288a2e7404e22528a8f1ec4e846b6da47aa60bb9e5ee6",
+    "docs/contracts/c04-lifecycle/arm_storage_model.py": "68fcda70ff089b0490d04f50e6ce1a692437f655d59cdac167933d07fdc1e915",
+    "docs/contracts/c04-lifecycle/check_arm_storage.py": "453679d44b0d50fc90be13ab3d07bb79783b74134e70bcf26bfea9aa5953c78e",
+    "docs/contracts/c04-lifecycle/seamer-arm.sql": "342862e317bd9556e31ac1471654a9a8d50f797dc2e7a5eccfbe5cb756240b51",
+    "docs/contracts/c04-lifecycle/build_arm_exit.py": "472a3397e2a2708b0f3c7ae46427865c47d208319d227f7db194cb1f5ccaf242",
+    "docs/contracts/c04-lifecycle/arm-exit.sql": "0785616fab9cb50b8e611499e941bf8397201b3585854fd07d3b3d9ba279463c",
+    "docs/contracts/c04-lifecycle/ARM_EXIT.md": "99fa709ce35f21aba194518e06d30498ad3cd83b39d219c1b4f09f2081bac51c",
+    "docs/contracts/c04-lifecycle/arm-exit.schema.json": "2ead2b3ae00a6e6c7b463fd25bbf56f39a7e92120f4100cf986e30f13d4ae489",
+    "docs/contracts/c04-lifecycle/seamer-arm-exit.sql": "79707e75e11e593033fae59ccf5e5440cd29aa9cb51ec87880317cea157184f9",
+    "docs/contracts/c04-lifecycle/arm_exit_model.py": "a8e62e75cddba8a28f59854afdf6cf88229427edf0156b11e5ad8189f7a78d42",
+    "docs/contracts/c04-lifecycle/check_arm_exit.py": "da591daf6190de00c5657869f75d786db6ff256238cf38bc204fcded5e7159e3"
+  }
+}

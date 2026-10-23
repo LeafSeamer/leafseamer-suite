@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录普通布防同库交付与本周期第二轮验证 | R:code:docs/contracts/c04-lifecycle/ARM_STORAGE.md | A:设计历程与周期提交 | S:109项内存检查不代表运行验收；失败arm退出与预算消费回收仍缺，本轮仅本地提交
+DEVELOPMENT_MEMO.md[SO5L]: F:记录失败布防退出与本周期第三轮验证 | R:code:docs/contracts/c04-lifecycle/ARM_EXIT.md | A:设计历程与三轮交付 | S:125项内存检查不代表设备验收；退出保持paused，完成周期审查后推送main
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总普通布防同库联接后的设计关闭门槛 | R:code:docs/contracts/c04-lifecycle/ARM_STORAGE.md | A:C01至C12关闭状态 | S:83表109项通过未关闭阶段0；失败arm退出、实际预算消费回收、完整触发、可信AUTH及TIME、最终准入和唯一SDK仍须完成
+rebirth-design-closure.md[SQ8M]: F:汇总失败布防可靠退出后的设计剩余门槛 | R:code:docs/contracts/c04-lifecycle/ARM_EXIT.md | A:C01至C12关闭状态 | S:90表125项通过仍不关闭阶段0；通用关闭、正常触发全链、预算消费回收、可信提供者和最终SDK继续待完成
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -355,12 +355,20 @@ arm_budget_model.py[AR8S]: F:在原arm有限模型中原子预留、消费及释
 build_arm_budget.py[XV8T]: F:生成普通布防与保护预算的严格具名Schema | R:code:docs/contracts/c04-lifecycle/arm-budget.schema.json | A:schema、生成字节检查 | S:四维及六类规模均用U20字符串，末端负向前瞻排除尾随换行；不改变公共API批准版本
 check_arm_budget.py[TR8S]: F:验证布防预算边界与现有72表普通arm缺口 | R:code:docs/contracts/c04-lifecycle/arm_budget_model.py,code:docs/contracts/c05-protection/check_qualification.py | A:108项检查及50输入的暂存核验 | S:复用原生命周期模型；实际SQL只测直接armed反例、活动操作外键及两个保护写集，未实现完整arm SQL或物理磁盘预留
 ARM_STORAGE.md[SR8T]: F:定义普通布防的83表受理与完成边界及剩余冻结事项 | R:code:docs/contracts/c04-lifecycle/arm-storage.sql,code:docs/contracts/c04-lifecycle/check_arm_storage.py | A:表职责、事务时序、故障验收与未决项 | S:失败布防保留活动操作，须另补可靠退出；恢复正例只证明兼容，不能声称已有恢复新预算或可信设备证据
-arm-storage-report.json[TR7L]: F:保存109项普通布防SQLite检查与57个输入摘要 | R:code:docs/contracts/c04-lifecycle/check_arm_storage.py | A:83表离线回归结果 | S:真实运行、并发、磁盘崩溃和设备检查计数均为0；输入匹配不等于发布合格
+arm-storage-report.json[TR7L]: F:保存109项普通布防回归与57个输入摘要 | R:code:docs/contracts/c04-lifecycle/check_arm_storage.py | A:83表兼容性离线证据 | S:共享fixture扩展后重新执行；无真实运行或设备检查，普通事件触发全链仍未验
 arm-storage.sql[PR9M]: F:约束普通布防共享身份、预算预留、准备配对和完成封存 | R:code:docs/contracts/c04-lifecycle/build_arm_storage.py,code:docs/contracts/c05-protection/qualification.sql | A:11表、双向延迟外键、当前资格及run开放守卫 | S:准备期保持disarmed；最后seal重核槽修订，R5仅凭同代次活动执行成功返回armed；预算仅预留未联消费回收，摘要与可信提供者仍由writer核验
 arm_storage_model.py[AR8S]: F:构造普通布防预检、可靠受理、准备采用及完成写集 | R:code:docs/contracts/c04-lifecycle/arm_budget_model.py,code:docs/contracts/c05-protection/qualification_model.py | A:preflight_step、reserve、attempt_step、receive、complete_steps | S:查原先于新额度且异内容拒绝；同事务读写但不跨网络等待，权限库存与容量为合成输入，完成不退预算
 build_arm_storage.py[XR8T]: F:从72表资格布局确定性组合83表普通布防候选 | R:code:docs/contracts/c05-protection/build_qualification.py,code:docs/contracts/c04-lifecycle/arm-storage.sql | A:build与生成字节校验 | S:三类旧结构替换须各精确命中一次；U20后继采用文本运算，新增表不可变守卫自动追加，旧SQL产物不覆盖
-check_arm_storage.py[TR8S]: F:验收普通布防原子写集和恢复成功返回兼容 | R:code:docs/contracts/c04-lifecycle/arm_storage_model.py,code:docs/contracts/c05-protection/check_registration.py | A:fixture、reconcile、run、暂存输入摘要校验 | S:建库起启用全部守卫；109项含逐写回滚及真实R2/R4/R5写集，但外部证明合成，普通事件触发全链未验
+check_arm_storage.py[TR8S]: F:验收普通布防事务并提供恢复预览与写集夹具 | R:code:docs/contracts/c04-lifecycle/arm_storage_model.py,code:docs/contracts/c05-protection/check_registration.py | A:fixture、reconcile_preflight、reconcile、run | S:允许传入完整SQL生成器而不卸载守卫；暂停预览与R2分事务，恢复必须包含全部未清锁存；外部资源证明仍合成
 seamer-arm.sql[PR9L]: F:提供普通布防与恢复资格共存的83表组合布局 | R:code:docs/contracts/c04-lifecycle/build_arm_storage.py,code:docs/contracts/c04-lifecycle/arm-storage.sql | A:SQLite完整候选与全部关联守卫 | S:生成物不得独立编辑；run只从disarmed创建，布防完成须双向seal；候选无失败arm退出和预算消费回收协议，不能部署为生产库
+ARM_EXIT.md[SR8T]: F:规定失败布防关闭重试及可靠退出边界 | R:code:docs/contracts/c04-lifecycle/arm-exit.sql,code:docs/contracts/c04-lifecycle/check_arm_exit.py | A:状态投影、身份字段、故障序列和冻结缺口 | S:退出不证明资源clear或disarm；16次是实验存储上限，尚未联接真实保护预算消费与耗尽恢复
+arm-exit-report.json[TR7L]: F:保存125项退出检查及64个输入摘要 | R:code:docs/contracts/c04-lifecycle/check_arm_exit.py | A:90表离线结果与输入绑定 | S:approved为false；真实运行、并发、磁盘和设备计数为0，混合历史执行库存全链仍未验证
+arm-exit.schema.json[FR8M]: F:定义停止意图、屏障重试、观察固定引用与退出结果 | R:code:docs/contracts/c04-lifecycle/build_arm_exit.py | A:StopIntent、RetryIntent、ObservationPin、ExitResult | S:根对象不可实例化；退出结果固定paused且资源清空和预算退款均为false，actor字段是内部授信投影而非客户端身份
+arm-exit.sql[PR9S]: F:约束失败布防停止、完整关闭计划和最终退出 | R:code:docs/contracts/c04-lifecycle/build_arm_exit.py,code:docs/contracts/c08-controller/protection-receiver.sql | A:七表、库存集合、最新尝试和双向seal | S:pending只能查原，indeterminate可新屏障；最终seal重核全部当前观察和槽，清active后仍paused且保留锁存预算；旧退出事实不等持续授权
+arm_exit_model.py[AR8S]: F:构造失败布防停止、显式新屏障及退出的同库写集 | R:code:docs/contracts/c04-lifecycle/arm_storage_model.py,code:docs/contracts/c04-lifecycle/build_arm_exit.py | A:stop、retry、complete、receive_preparation | S:关闭权限独立授信上下文为合成；迟到成功仅存历史，查原不重新消费；退出未退款且不清锁存，后续恢复另核资源
+build_arm_exit.py[XR8T]: F:确定性生成退出Schema和90表组合布局 | R:code:docs/contracts/c04-lifecycle/build_arm_storage.py,code:docs/contracts/c04-lifecycle/arm-exit.sql | A:schema、build、生成字节检查 | S:扩展保护注册表与共享DENY须精确命中旧结构；旧83表产物保留，文本U20后继及不可变守卫统一追加
+check_arm_exit.py[TR8S]: F:验收失败布防退出、屏障重试和显式恢复 | R:code:docs/contracts/c04-lifecycle/arm_exit_model.py,code:docs/contracts/c04-lifecycle/check_arm_storage.py | A:run、observations、暂存摘要校验 | S:125项含逐写回滚、最新证据失效与新代次R2/R4/R5；外部证明合成，未以混合历史库存或实网设备验证作结论
+seamer-arm-exit.sql[PR9L]: F:提供普通布防停止与恢复共存的90表候选 | R:code:docs/contracts/c04-lifecycle/build_arm_exit.py,code:docs/contracts/c04-lifecycle/arm-exit.sql | A:完整SQLite结构与关联守卫 | S:生成物不得独立修改；停止即DENY旧代次，唯有可靠退出或原布防完成可清active arm；尚无通用资源释放和实际预算消费协议
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

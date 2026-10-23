@@ -8,7 +8,7 @@ import check_qualification as Q
 I=M.I;P=M.P;R=M.R;C=Q.C;B=Q.B;H=Q.H
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[2]
 INPUTS=list(dict.fromkeys(A.INPUTS+G.SOURCES+[HERE/n for n in ('ARM_STORAGE.md','arm_storage_model.py','check_arm_storage.py','seamer-arm.sql')]))
-def fixture(*,zero=False,capacity=None,sql_factory=G.build):
+def fixture(*,zero=False,capacity=None,sql_factory=G.build,protection_limits=None):
     db=sqlite3.connect(':memory:',isolation_level=None);db.row_factory=sqlite3.Row;db.executescript(sql_factory().decode())
     profile=A.profile()
     if capacity:profile['capacity'].update(capacity)
@@ -26,6 +26,7 @@ def fixture(*,zero=False,capacity=None,sql_factory=G.build):
         I('p1_limit',singleton=1,profile_body=B,max_dependencies=100,max_preparations=100,max_plans=10,max_runs=10,max_targets=20,max_payload_bytes=1000000),
         I('p1_dependency',dependency_id='source.run',sequence=1,source_id='source',run_id='r0',owner_kind='run',owner_ref='r0',execution_id=None,recovery_id=None,artifact_digest=H,binding_body=B),
         I('arm_capacity',singleton=1,profile_digest=M.B.digest(profile),profile_body=P.canonical(profile),max_operations=100,**{k:int(v) for k,v in profile['capacity'].items()})]
+    if protection_limits:seeds=C.mutate(seeds,'p1_limit',protection_limits)
     C.execute(db,seeds)
     ctx=dict(authorized=True,human=True,current=True,inventory_verified=True,controller_capacity_verified=True,clock_body=B,
         issued_tick='100',expires_tick='200',now_tick='150',inventory_digest=H,forecast=copy.deepcopy(A.SHAPE),target_manifest_digest=P.digest(P.canonical(targets)))

@@ -8,8 +8,8 @@ G=F.G;A=F.A;P=F.P;R=F.R;I=F.I;C=T.C;B=T.B;H=T.H
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[2]
 INPUTS=list(dict.fromkeys(E.INPUTS+G.SOURCES+[HERE/n for n in ('TRIGGER_FLOW.md','trigger_flow_model.py','check_trigger_flow.py','seamer-trigger-flow.sql')]))
 
-def fixture(*,machine=True,steps=1,sql_factory=G.build):
-    db,arm,ctx,targets=T.fixture(sql_factory=sql_factory)
+def fixture(*,machine=True,steps=1,sql_factory=G.build,protection_limits=None):
+    db,arm,ctx,targets=T.fixture(sql_factory=sql_factory,protection_limits=protection_limits)
     if machine:db.execute(*I('business_state',run_id='r0',state_id='idle',revision='1',last_commit_id=None))
     A.reserve(db,arm,ctx);T.receive_all(db,targets);A.apply(db,lambda:A.complete_steps(db,'arm.1',ctx))
     ctx.update(source_authenticated=True,age_verified=True,plan_verified=True,runtime_current=True,budget_valid=True,window_valid=True,parameters_verified=True,

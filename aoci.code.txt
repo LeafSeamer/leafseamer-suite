@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录保护失效重新关闭及本周期第三轮交付 | R:code:docs/contracts/c04-lifecycle/PROTECTION_RETRY.md | A:设计历程与三轮交付 | S:第三轮审查完整周期后推送main；68项新检查及83项回归不证明设备关闭
+DEVELOPMENT_MEMO.md[SO5L]: F:记录共享保护消费联接及新周期首轮交付 | R:code:docs/contracts/c04-lifecycle/PROTECTION_CHARGE.md | A:设计历程与三轮交付 | S:本轮仅本地提交；82项检查不证明物理容量，恢复预算与实例账户尚缺
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总保护重新关闭之后的全系统设计剩余门槛 | R:code:docs/contracts/c04-lifecycle/PROTECTION_RETRY.md | A:C01至C12关闭状态 | S:97表68项与旧83项不关闭阶段0；实际输送、保护成本和GC、耗尽退出、AUTH与TIME及最终SDK仍待落实
+rebirth-design-closure.md[SQ8M]: F:汇总共享保护消费联接后的全系统设计门槛 | R:code:docs/contracts/c04-lifecycle/PROTECTION_CHARGE.md | A:C01至C12关闭状态 | S:99表82项不关闭阶段0；恢复新预算、实例账户、完整物理成本和GC、实际输送、AUTH与TIME及最终SDK仍缺
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -391,6 +391,13 @@ protection-retry.schema.json[FR8S]: F:约束重新关闭请求身份和不回放
 protection-retry.sql[PR9T]: F:约束最新失效尝试链、完整目标重关和共享接收封存 | R:code:docs/contracts/c04-lifecycle/build_protection_retry.py,code:docs/contracts/c04-lifecycle/protection_retry_model.py | A:sr_attempt、sr_target、sr_commit、sr_latest | S:初始sf序号为0，仅最新indeterminate可连续重试；最终重核库存与目标，pending只查原；待查视图只投影最新计划但不删除旧事实
 protection_retry_model.py[AR9T]: F:构造重新关闭原子写集并按幂等域返回原尝试结果 | R:code:docs/contracts/c04-lifecycle/arm_exit_model.py,code:docs/contracts/c04-lifecycle/build_protection_retry.py | A:validate、retry_steps、retry | S:先核当前关闭权限再查原；同键异原件冲突，旧请求不回退latest；沿用受损代次选择器，不改run或预算，不执行网络重试
 seamer-protection-retry.sql[PR9L]: F:承载失败保护及重新关闭的97表生成组合 | R:code:docs/contracts/c04-lifecycle/build_protection_retry.py,code:docs/contracts/c04-lifecycle/protection-retry.sql | A:SQLite STRICT表、共享计划注册及最新投影 | S:三类重试表原件不可变且反向要求封存；旧ACK不能移植新目标，旧代次重试不扩大DENY；不证明实际出口关闭
+PROTECTION_CHARGE.md[SP8T]: F:定义五类保护计划与原代次预留消费的同库边界 | R:code:docs/contracts/c04-lifecycle/protection-charge.sql,code:docs/contracts/c04-lifecycle/protection_charge_model.py | A:账户、四维计量、事务故障及剩余事项 | S:逻辑计量不等物理页或WAL；恢复代次缺预算和零run缺实例账户明确拒绝，不能借拒绝删减最终需求
+build_protection_charge.py[XP8T]: F:生成共享保护消费99表及不可变余额投影 | R:code:docs/contracts/c04-lifecycle/build_protection_retry.py,code:docs/contracts/c04-lifecycle/protection-charge.sql | A:build、--check | S:注册表反向延迟引用消费seal；四维按原包络整份扣除，最后重新核对shape，旧97表产物独立保留
+check_protection_charge.py[TP8S]: F:验收共享保护消费82项同库边界与完整回滚 | R:code:docs/contracts/c04-lifecycle/protection_charge_model.py,code:docs/contracts/c04-lifecycle/check_protection_retry.py | A:run、--report、--check-report、--staged | S:双run实际分别扣账，五类来源共池；旧代次不借新池但恢复新预算尚无正例，计量与运行提供者均为离线前提
+protection-charge-report.json[TP7L]: F:保存82项保护消费检查及89个输入摘要 | R:code:docs/contracts/c04-lifecycle/check_protection_charge.py | A:checks、inputs、approved | S:approved为false；实际运行、并发、磁盘崩溃和设备检查均为零，输入绑定不代表直播验收
+protection-charge.sql[PP9T]: F:强制全部保护计划按完整run和代次集合消费原预留 | R:code:docs/contracts/c04-lifecycle/build_protection_charge.py,code:docs/contracts/c04-lifecycle/protection_charge_model.py | A:pb_expected_account、pb_shape、pb_use、pb_commit | S:按精确run代次找arm预算，跨run不得代付；原件不可变，耗尽拒绝新计划，缺账户不能免费提交；SQL不独立证明writer逻辑计量真实性
+protection_charge_model.py[AP9T]: F:在原保护事务内计量逻辑行并追加完整账户消费与封存 | R:code:docs/contracts/c04-lifecycle/protection_retry_model.py,code:docs/contracts/c04-lifecycle/build_protection_charge.py | A:charge_steps、apply、terminal、retry | S:每账户保守承担完整事务峰值；扣整份包络，精确重复查原零扣；外部关闭和等待资格须先合格，回滚仅保留未确认投影而非实际设备闭锁
+seamer-protection-charge.sql[PP9L]: F:承载布防与五类保护计划统一消费的99表生成布局 | R:code:docs/contracts/c04-lifecycle/build_protection_charge.py,code:docs/contracts/c04-lifecycle/protection-charge.sql | A:SQLite STRICT表、消费反向引用及余额视图 | S:旧保护writer不能漏扣账独立提交；applied不退预留，原预算原件不改写；恢复R2仍缺新代次预算，候选不可部署
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录共享签发94表候选与第三轮提交计划 | R:code:docs/contracts/c08-controller/ISSUE_LEDGER.md | A:设计历程与三轮提交计数 | S:前轮e43016f和dbf9766；本轮后审查并仅推rebirth。115项内存检查非运行证明，完整取消覆盖与TIME仍缺，业务未实现
+DEVELOPMENT_MEMO.md[SO5L]: F:记录RUN取消覆盖候选与新周期首轮交付 | R:code:docs/contracts/c08-controller/CANCEL_FENCE.md | A:设计历程与三轮提交计数 | S:上周期cb4dbcc已推；本轮仅本地提交。184项内存及旧115和78项回归不证明运行，完整执行资源与TIME仍缺，业务未实现
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统关闭条件及共享签发物理候选进度 | R:code:docs/contracts/c08-controller/ISSUE_LEDGER.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前缺口 | S:94表已统一四个水位读点，但取消覆盖仍显式阻断；不是删减功能或可部署布局。TIME与完整库及提供者和SDK未齐，离线不关闭系统设计
+rebirth-design-closure.md[SQ8M]: F:汇总系统关闭条件并登记RUN取消覆盖已替代临时阻断 | R:code:docs/contracts/c08-controller/CANCEL_FENCE.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前剩余项 | S:99表已补两类RUN覆盖，取消资源释放仍阻断；完整执行Plan和ordinary-all及其他屏障未齐，不重复建已成层。候选未批准运行，全系统设计未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -455,6 +455,12 @@ check_issue_ledger.py[TD8S]: F:验证共享签发交错事务及旧水位迁移�
 controller-issue.sql[FD9L]: F:承载94表共享签发索引与既有命令保护资源的固定组合 | R:code:docs/contracts/c08-controller/build_issue_ledger.py,code:docs/contracts/c08-controller/issue-ledger.sql | A:共享U20与双向FK及迁移阻断 | S:普通和取消共用ID序列，回滚不消费；RUN资源取消四水位统一但新覆盖未齐。取消执行原件仍为BODY，匹配取消的RUN及资源释放阻断，不是可部署迁移
 issue-ledger-report.json[SQ5L]: F:保存115项共享签发内存结果及34输入摘要 | R:code:docs/contracts/c08-controller/check_issue_ledger.py | A:混合序列故障及迁移约束报告 | S:批准为false，SQLite非产品引擎批准；高位仅算术，BODY合成，完整取消coverage及真实并发磁盘设备未验
 issue-ledger.sql[FD9S]: F:声明共享issue与独立取消传输提交三表及保护守卫 | R:code:docs/contracts/c08-controller/ISSUE_LEDGER.md,code:docs/contracts/c08-controller/build_issue_ledger.py | A:全局精确序列与类型配对及原字节固定 | S:必须与生成组合加载，ID及revision跨类型唯一；取消Requester不继承父run，未知关闭禁发。原件权威尚为BODY，RUN和资源取消覆盖未合并时阻断；非生产迁移
+CANCEL_FENCE.md[SD9T]: F:规定RUN取消完整捕获原ACK与采用及迟到强事实持久语义 | R:code:docs/contracts/c08-controller/cancel-fence.sql,code:docs/contracts/c08-controller/build_cancel_fence.py | A:99表候选与原子写集和故障验收 | S:按取消Requester不借父run；退役未决出口保留，applied不清资源。ACK封存也冻结切点窗口；原件撤回及执行Plan和其他屏障仍缺，禁止当完整迁移或运行证据
+build_cancel_fence.py[XD8T]: F:将94表与取消覆盖源组合为99表并移除RUN临时阻断 | R:code:docs/contracts/c08-controller/build_issue_ledger.py,code:docs/contracts/c08-controller/cancel-fence.sql | A:build与check及不可变守卫生成 | S:仅精确移除指定触发器，资源阻断保留；报告核销覆盖和ACK封存均受pending cut保护，防预写行后激活。原版本不改，不是产品迁移器
+cancel-fence-report.json[SQ5L]: F:保存184项RUN取消内存结果及39输入摘要 | R:code:docs/contracts/c08-controller/check_cancel_fence.py | A:三写集故障与来源边界和容量结果 | S:批准为false，BODY合成且SQLite非产品批准；真实IPC并发磁盘设备全零，输入绑定不扩大完整执行或资源证明
+cancel-fence.sql[FD9S]: F:声明取消报告核销切点与ACK采用五表及完整选择约束 | R:code:docs/contracts/c08-controller/CANCEL_FENCE.md,code:docs/contracts/c08-controller/build_cancel_fence.py | A:复合FK封存差集及强事实和未决视图 | S:须由生成器与94表组合；Requester来源精确，never_sent被已发重开。失败原ACK仍贡献强事实，采用不能降切点已发或凭退休制造未发；BODY权威与撤回外验，非生产迁移
+check_cancel_fence.py[TD8S]: F:核验RUN取消完整覆盖及ACK采用的99表故障与边界 | R:code:docs/contracts/c08-controller/build_cancel_fence.py,code:docs/contracts/c08-controller/check_issue_ledger.py,code:docs/contracts/c08-controller/check_barrier_attempt.py | A:184项参考检查与report及staged绑定 | S:集合预期手写，256和257实际插入；缺写主动异常比全库，预写覆盖后ACK的绕过被拒。BODY人工且真实并发磁盘设备未验，39输入字节核对不重跑
+controller-cancel-fence.sql[FD9L]: F:承载共享签发与RUN取消捕获ACK采用的99表组合 | R:code:docs/contracts/c08-controller/build_cancel_fence.py,code:docs/contracts/c08-controller/cancel-fence.sql | A:双类别完整覆盖与源事务及不可变历史 | S:替代RUN临时阻断而保留取消资源阻断；原ACK与采用分开，迟到强事实重开未发核销。封存窗口禁止ACK改变事实；完整执行原件及TIME尚缺，不能部署
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

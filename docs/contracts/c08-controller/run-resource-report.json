@@ -1,0 +1,749 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 71,
+  "tables": 235,
+  "sqlite_version": "3.50.4",
+  "runtime_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "235表",
+      "observed": 235,
+      "expected": 235
+    },
+    {
+      "name": "完整双政策释放",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "原回执失效",
+      "observed": "indeterminate",
+      "expected": "indeterminate"
+    },
+    {
+      "name": "资源验证同步撤回",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "释放失效保留原记录",
+      "observed": [
+        [
+          "rc"
+        ]
+      ],
+      "expected": [
+        [
+          "rc"
+        ]
+      ]
+    },
+    {
+      "name": "风险重新可见",
+      "observed": [
+        [
+          "hc"
+        ]
+      ],
+      "expected": [
+        [
+          "hc"
+        ]
+      ]
+    },
+    {
+      "name": "完整出口关闭通知",
+      "observed": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ],
+      "expected": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ]
+    },
+    {
+      "name": "原取消许可集合保留为空",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "独立重新取证可清资源风险",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "只清资源不能恢复全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "完整关闭及取证后恢复",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "恢复来源撤回重开设备保护",
+      "observed": [
+        [
+          "rc"
+        ]
+      ],
+      "expected": [
+        [
+          "rc"
+        ]
+      ]
+    },
+    {
+      "name": "已消费关闭ACK不能再次当当前关闭",
+      "observed": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ],
+      "expected": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ]
+    },
+    {
+      "name": "独立释放不被关联撤回",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "旧关闭ACK不得复用恢复全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新的独立证据与关闭可再次恢复",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "run_ack取消自身释放政策也传播",
+      "observed": [
+        [
+          "rc"
+        ]
+      ],
+      "expected": [
+        [
+          "rc"
+        ]
+      ]
+    },
+    {
+      "name": "run_application取消自身释放政策也传播",
+      "observed": [
+        [
+          "rc"
+        ]
+      ],
+      "expected": [
+        [
+          "rc"
+        ]
+      ]
+    },
+    {
+      "name": "显式零依赖不误撤独立释放",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "独立释放风险仍清",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "完整应用退役证明撤回影响资源",
+      "observed": [
+        [
+          "rc"
+        ]
+      ],
+      "expected": [
+        [
+          "rc"
+        ]
+      ]
+    },
+    {
+      "name": "已撤回退役出口不能从关闭全集消失",
+      "observed": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ],
+      "expected": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ]
+    },
+    {
+      "name": "有效退役仍登记完整历史目标",
+      "observed": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ],
+      "expected": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ]
+    },
+    {
+      "name": "有效退役无需网络关闭",
+      "observed": [
+        [
+          "exit.0"
+        ]
+      ],
+      "expected": [
+        [
+          "exit.0"
+        ]
+      ]
+    },
+    {
+      "name": "ACK与显式退役覆盖完整后恢复",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "直接恢复退役证据撤回也重新保护",
+      "observed": [
+        [
+          "rc"
+        ]
+      ],
+      "expected": [
+        [
+          "rc"
+        ]
+      ]
+    },
+    {
+      "name": "退役撤回重开旧出口与已消费ACK",
+      "observed": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ],
+      "expected": [
+        [
+          "exit.0"
+        ],
+        [
+          "exit.1"
+        ]
+      ]
+    },
+    {
+      "name": "来源缺写0全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源逐写异常回滚0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源缺写1全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源逐写异常回滚1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源缺写2全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源逐写异常回滚2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源缺写3全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源逐写异常回滚3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源缺写4全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源逐写异常回滚4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源缺写5全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源逐写异常回滚5",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源错配source_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源错配source_body全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源错配fence_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存错配provider_ref全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存错配receipt_body全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存错配manifest_digest全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "同数量错设备全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "同设备另一run不得借证明全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源数量错误全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "撤回先到不能再封存原件全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "预写来源后撤回最后seal拒绝全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源有效时预写不能跨撤回提交释放全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "撤回传播失败cr_validation_revocation全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "失败不留下半个状态通知cr_validation_revocation",
+      "observed": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "name": "撤回传播失败cr_release_invalidation全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "失败不留下半个状态通知cr_release_invalidation",
+      "observed": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "name": "撤回传播失败ro_incident全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "失败不留下半个状态通知ro_incident",
+      "observed": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "name": "撤回传播失败ro_target全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "失败不留下半个状态通知ro_target",
+      "observed": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "name": "同来源扇出全部释放",
+      "observed": [
+        [
+          "rc"
+        ],
+        [
+          "rc2"
+        ]
+      ],
+      "expected": [
+        [
+          "rc"
+        ],
+        [
+          "rc2"
+        ]
+      ]
+    },
+    {
+      "name": "双来源同验证只撤回一次",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "rr_manifest非空样本",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_manifestUPDATE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_manifestDELETE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_source非空样本",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_sourceUPDATE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_sourceDELETE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_manifest_commit非空样本",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_manifest_commitUPDATE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "rr_manifest_commitDELETE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "外键完整",
+      "observed": [],
+      "expected": []
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/build_open_plan.py": "af3f9aec5e612e51a9400152500345c3ac245286f6001586e4324376b246b950",
+    "docs/contracts/c08-controller/open_plan_model.py": "f25c978c57bc5bbaf42e4f5ff863ed4f4ba7e5b688d934bedf97bb99f1e691b7",
+    "docs/contracts/c08-controller/check_open_plan.py": "eeb82dc84f694a6d55db78c66cc6bad95464c8d844334a4794b2c4689617e9eb",
+    "docs/contracts/c08-controller/open-plan.schema.json": "e4db1c77171c540a822fb0b154b0018ac03d1ba1e001d2f700c740c227b4bc33",
+    "docs/contracts/c08-controller/OPEN_PLAN.md": "d79c2595837fdb0fe7299253c6d39a973c723cc3da58b254763818ea8dd058dd",
+    "docs/contracts/c08-controller/GATE_ORDER.md": "c223a9bf30bc3f3a9b36a73b4cd83f7e6304c8bd0eb29fc1c46651ff9c261b21",
+    "docs/contracts/c08-controller/PROTECTION_OUTBOX.md": "0c90f262df8a15121f0ac3326fcd036fdd1f80f04e59b83623301c17bb48a8bd",
+    "docs/contracts/df03-service/ipc.schema.json": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2",
+    "docs/contracts/c08-controller/OPEN_LIFECYCLE.md": "113fb88f7c75bd1221f2f8c768b9aa1ebe0c8d41f69db0eaac1034b17840a4d2",
+    "docs/contracts/c08-controller/build_open_lifecycle.py": "a477b9f796a73a2e7ac699db8e0a518f1376c35e83f7228434f622608a086e8c",
+    "docs/contracts/c08-controller/open_lifecycle_model.py": "61fb3d00a9c8cf2cc450420b10e6bbbf1c259757039483a3046124dcc0f7b4c8",
+    "docs/contracts/c08-controller/check_open_lifecycle.py": "104f73dddc913edb013e0d0a4e81f8f3fa8a9ef50cdeee4e85fac42e207226de",
+    "docs/contracts/c08-controller/open-lifecycle.schema.json": "db505ee18e30c38d2a152515113a84e0e1f1eb11b43b8bf98f87de103f20f794",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/resource.sql": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c02-command-view/storage.sql": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da",
+    "docs/contracts/c08-controller/issue-ledger.sql": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285",
+    "docs/contracts/c08-controller/build_issue_ledger.py": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/cancel-fence.sql": "559a918a21b95e4e3f293bf888f68a694b12fe6560e84c4786789d02aa5493b5",
+    "docs/contracts/c08-controller/build_cancel_fence.py": "cbba07f9548d0b09fc765ee749e74ca2d777977544782cb4200105a4d7524f1d",
+    "docs/contracts/c08-controller/cancel-resource.sql": "3ace3a1a067791527f772ba662ede9776df8e4472244f93b2ac479a6d7e0d86d",
+    "docs/contracts/c08-controller/build_cancel_resource.py": "41a36379b491898284e3dfd17f4910c61316944a4da1fc6db5e2997701b6f519",
+    "docs/contracts/c08-controller/cancel-closure.sql": "9c54e6e27aa9358dec23f662a4631c4ab8134459853de028abeb8e0489ef4d0a",
+    "docs/contracts/c08-controller/build_cancel_closure.py": "b7f95e571096830e08fa12d4eb6e6388515e2cd8a9def5b0c04ceadbdcef099e",
+    "docs/contracts/c08-controller/cancel-plan.sql": "77b941c6d6adbf0f9aea2be8ad0f733b5bebec5281c9d634e406f3b9395da601",
+    "docs/contracts/c08-controller/build_cancel_plan.py": "b23f81233561b474f53de8ab834fb9835864cbd16c259c24986712fe478a8170",
+    "docs/contracts/c08-controller/protected-hold.sql": "d9bd6bf9822188a38aba0d01a262bad94b9fd8e59da150ab2c175080668286b4",
+    "docs/contracts/c08-controller/build_protected_hold.py": "05f7dc2d9006c7e815354e07210f1e145a9650e9102f3b7c3df7d208fea0f67a",
+    "docs/contracts/c08-controller/result-dependency.sql": "c00d780d7309e94da0f4ea220ef6ced307ae09343a1060c98467e7b7e61f2c8b",
+    "docs/contracts/c08-controller/build_result_dependency.py": "76e91a4474668907af03ef16375b974993fe3e28debc083e60092256dc689dfe",
+    "docs/contracts/c08-controller/protection-outbox.sql": "2900b431e8a006bcee7ce1d760e41975403f0a3000c72bb7d6a035c140de45eb",
+    "docs/contracts/c08-controller/build_protection_outbox.py": "bac338eca473705a08b216fc41d00cbe732a0c953e881501b1923e1b39023b01",
+    "docs/contracts/c08-controller/build_control_storage.py": "766797716adb9ea8f8850c674d86247840d0637991cd9a1e0945cfddd9ffc46f",
+    "docs/contracts/c08-controller/build_control_fence.py": "99da9e8145cb4bd2d9f538926f876d2856fe4aef4e994d234ad69df1febbd0f4",
+    "docs/contracts/c08-controller/control-fence.sql": "6787ff44baa87b1118f84a32f5da6021248696e3402a2821ec44440f673eb50a",
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/check_barrier_attempt.py": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b",
+    "docs/contracts/c08-controller/RESOURCE_STORAGE.md": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa",
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
+    "docs/contracts/c08-controller/check_resource.py": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267",
+    "docs/contracts/c08-controller/check_command.py": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-command-view/check_storage.py": "ca89ed5f7ef5111ea897cf6c5f23b8dd10380afed0daf5cbc519cd092e97ae16",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c08-controller/controller-issue.sql": "1bceb2564b08afbbd5b6e1ea61f64b6c69b16bebf067cda23e239932d60d4c5b",
+    "docs/contracts/c08-controller/ISSUE_LEDGER.md": "e20988ec1d3fbcefe2eaee160c4be7a0b576c3b6aaf63e3013616deb90d6cb3c",
+    "docs/contracts/c08-controller/check_issue_ledger.py": "9345d6f1ce16150b62f77e137d917a90d07f013aab062140960e0031fceb037b",
+    "docs/contracts/c08-controller/controller-cancel-fence.sql": "54af09ffcbc6ebc959025fad1954b12bc9153fa7795016c4bcd3c42ac5c32fcd",
+    "docs/contracts/c08-controller/CANCEL_FENCE.md": "8a2a35d0dce59951a9db74b3a41cc115e8560b8170135fbb5364812aa67d68fe",
+    "docs/contracts/c08-controller/check_cancel_fence.py": "f7aab87c739236d2215bb22754e182d8e1131ae582bfd996f07925f12a83495f",
+    "docs/contracts/c08-controller/controller-cancel-resource.sql": "9305bbd31226cca764dd4bfd92e9b41f5895c6c524d41d3ff0f9e60b58429caa",
+    "docs/contracts/c08-controller/CANCEL_RESOURCE.md": "af5e2ab040a673863431f11ec40b706082c838fa63c1c6dc50ca180219f5d11c",
+    "docs/contracts/c08-controller/check_cancel_resource.py": "b7a105462c796d0c811f2530066a585cfc0c450eb04d103815aa25a2df17aa36",
+    "docs/contracts/c08-controller/controller-cancel-closure.sql": "9da2f05085edf9a504cfb3d12489f109a7b7ae15eb5d767c0ca6a5cd33f03fd2",
+    "docs/contracts/c08-controller/CANCEL_CLOSURE.md": "2fe6eeef15a2acbf2a75003384ac30e617f288c6d547bb1d6912369cc58e3ed2",
+    "docs/contracts/c08-controller/check_cancel_closure.py": "5c599e539e128c89aa200764fd4beeabfc94284507950c654afe49071ea0c12b",
+    "docs/contracts/c08-controller/controller-cancel-plan.sql": "e08ac8d2e568bd23a70447033ff51bfa6659b840a235c1c2aa16ae0d59f05a7f",
+    "docs/contracts/c08-controller/CANCEL_PLAN.md": "a6565fd8b1b60ea5c690496a50fc9e2915b501b61c61b34c97c4704173321f3b",
+    "docs/contracts/c08-controller/check_cancel_plan.py": "9ef02f2ccee3b5e9037c372315d69a7533f899a2ea089112863c2a3427df0588",
+    "docs/contracts/c08-controller/controller-protected-hold.sql": "464f6a9cdfebd2bf602b57c810c4131e66811eecdc9239930ea5f817624b1f21",
+    "docs/contracts/c08-controller/PROTECTED_HOLD.md": "9996711cc4a934207c36ad7d28a0dc3fcec903c9f7524f21b62fddb3462e92b7",
+    "docs/contracts/c08-controller/check_protected_hold.py": "7884bbd5df6f4c4b199d32b9b0974c7e350e72a08c3fd3d60475e44e49a095db",
+    "docs/contracts/c08-controller/controller-result-dependency.sql": "83fa4576c831417d6ee6a6df93457e3b904946159a6f34a6e0b2f818b2816569",
+    "docs/contracts/c08-controller/RESULT_DEPENDENCY.md": "7ae41846323bfe005a1f776f92489bcc6134f683c242745dfc5f0a631009fb8e",
+    "docs/contracts/c08-controller/check_result_dependency.py": "be0013474e5babf69d7a8e45c2107527c2bc7dde88e252f75a71cf230f5b88d3",
+    "docs/contracts/c08-controller/check_control_storage.py": "7bcd8bd90894bd6aca8af522fcc362d3f8189a27a7658a32d31cef4d2d7eb155",
+    "docs/contracts/c08-controller/check_control_fence.py": "b951c58e10b047e23c73092bc8e1ed8c401ead20b08126b1c26355fc069f3658",
+    "docs/contracts/c08-controller/controller-control-fence.sql": "f6cbfd06f20cebb717c5a6f4c104905aab3655aba6511ad18cf9a95158f12d56",
+    "docs/contracts/c08-controller/CONTROL_FENCE.md": "dc6b2c27a3e4e3b7631ebcdfcda612f778d31a17fdf86a11f042d9062595bdad",
+    "docs/contracts/c08-controller/build_open_storage.py": "c41aa31cf6b303583bf6ad8336a1dac31be4be815d04af8f0bfb01f1347e68a5",
+    "docs/contracts/c08-controller/open-storage.sql": "87f4c584b6abb1c8b5bc5abb1597d00d00c749835cd66d8519d14fcd343ef997",
+    "docs/contracts/c08-controller/OPEN_STORAGE.md": "101e637afc992393a2c66d8e2f6ff2f3cd8951cf9d544b913052b511e1e4a5cf",
+    "docs/contracts/c08-controller/check_open_storage.py": "5a1300af8cf9aee93f4e9648216f280f09c228dab74c80fe6b578967f684510e",
+    "docs/contracts/c08-controller/controller-open.sql": "cf12bfd2bb2a5f424de714ce79c61fea2447ac75571cb80e6240f1b0cf3e2ca8",
+    "docs/contracts/c08-controller/FINAL_ADMISSION.md": "93548617477367dc915f93cccb8ce20f2f959c19325881b46c7ce06b74762025",
+    "docs/contracts/c08-controller/build_hold_ownership.py": "7d5e0cf05d731e7de2a9b48cf02fdec2f593db863d5c606a77b942c11748b0ee",
+    "docs/contracts/c08-controller/hold_ownership_model.py": "5bc3540f0826be4131ca79e4257e7c4199fd7ebd21f8784ec7b8fad4ae7b4afd",
+    "docs/contracts/c08-controller/hold-ownership.schema.json": "ffb08897f535a79547466ee0080f72de3da5eff918bf6f0d80db829eccf0deba",
+    "docs/contracts/c08-controller/check_hold_ownership.py": "bf8c5ed34739e80bc9b80b6ef68f73e3be79baf2228bfb0fa342118029b96acf",
+    "docs/contracts/df03-reference/README.md": "0d29e0e977a74f3d98b5fe66acf7628230e3d1f0221efd5c64a13369a3e667b3",
+    "docs/contracts/df03-reference/build_contracts.py": "9e5801a567d8cd5f5181ccbcb68cc3be082cdac4010ff9fd737e3d0125bebb8b",
+    "docs/contracts/df03-reference/reference.schema.json": "a5265f970647ab31a2289339b3c4dac17873e17dbf74b7dc2b4f115d02946a40",
+    "docs/contracts/df03-reference/reference_model.py": "40d0dd9295c65499072a1c9fdc993d27f10b497a456334f48a8171bf59c32a2f",
+    "docs/contracts/df03-reference/check_contracts.py": "33ff456fecc9301da66d9d05bc5fad616ce58e1df1a6a7c037b2734607e9c872",
+    "docs/rebirth-df03-time-profile-design.md": "88608760e8c740bd76d264f3363f0bd9f6d123adb7fa4e4dc6d3890f200ba918",
+    "docs/contracts/c05-protection/PROTOCOL.md": "07f3b408b39e54acd90c3925b7bc8d55fa6de33db62f0c87d43460cb6f0f3afe",
+    "docs/contracts/c05-protection/build_protocol.py": "da6c252af3e6fcb580f892fce2b2051fadea1d368ca93994f8992c81e61aeae7",
+    "docs/contracts/c05-protection/check_protocol.py": "3c51df2d386c50cae17364fa3c139deb3f9caa062e826e535203e7206ca596d2",
+    "docs/contracts/c05-protection/ipc-v05.schema.json": "c4822441ecbdc034a50bc1fac1fb969551594240634a2e0d6ac2f42ea2da2277",
+    "docs/contracts/c05-protection/protection.openapi.json": "a1e9d53cd9dd4a2ac8ef5b291d23f76a5932e542651408ffe1c6c0911860f089",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c09-panel-ipc/binding.schema.json": "1a46eb10b421a98c4a971b21b57cf17400e829277de5963b77b2b47b3986b2ed",
+    "docs/contracts/c09-panel-ipc/ipc.schema.json": "48e8a646655ccf3367026bebdc8e9d599225954e9fcad67f73465dd2ef88a740",
+    "docs/contracts/c05-protection/protection.schema.json": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72",
+    "docs/contracts/c09-panel-ipc/cases.json": "8a6ff69620cefa99c2e1e92427d166f8e1918ce647373e76668d667b748bf391",
+    "docs/contracts/c09-panel/channel-v02.schema.json": "f6e71178af8ffc8a8d784aab1416a0a4e30fedbc589e2032171f9a9581b64a1f",
+    "docs/contracts/c08-controller/build_execution_ipc.py": "ae36c783e0ce39fb1b86275b3578f474e6f8eaad4080dd2f9eef3207a7daf3ae",
+    "docs/contracts/c08-controller/execution-ipc.schema.json": "23c8603fd6f05fc4c445f318a99f609c776f1fc79b5df2262d62d2591514b98b",
+    "docs/contracts/c08-controller/check_execution_ipc.py": "183943863074507eb10778cd8d90345d8927821293442090616de8b038ee021d",
+    "docs/contracts/draft4/first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c08-controller/lifecycle.schema.json": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46",
+    "docs/contracts/c02-admission/admission.schema.json": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7",
+    "docs/contracts/c02-cancellation/cancellation.schema.json": "5a2c462a3a50d23077d16818751f4d990aa3c833d19ef5548ec3c7ccb9e8cbf3",
+    "docs/contracts/c02-cancellation/ipc.schema.json": "d71b04fec2004ed351b0fb8aa43fb95db7ffc147d98741f3d266f196b7be07ad",
+    "docs/contracts/c02-command-view/README.md": "7ba6bb9790701ef2690f2a0c4882a151b99255507c7d360c8caa349350e740c1",
+    "docs/contracts/c02-cancellation/README.md": "19c0c2df545ac42fbdd62b7045dc812e0f8fd62a98cbc55c387742142cc5b8fa",
+    "docs/contracts/c02-cancellation/build_contracts.py": "137ae07e8603252998745dd6ed818f3287060541abce077301007079a145278f",
+    "docs/contracts/c02-cancellation/reference_model.py": "48926177faee6991c2dfad02099f33661f6574cfb92014d7f7c4a03ea17dea50",
+    "docs/contracts/c02-cancellation/check_contracts.py": "42d7360f87936bfebb915f23176843101d50e0f4002d2c96805ea3ea4683617e",
+    "docs/contracts/df03-service/README.md": "fc44300f1c032154a788a284ec10d8eb1ebd9029dc7502d49da2d21f90e1280f",
+    "docs/contracts/df03-service/build_contracts.py": "f5d03021aad382e08fe5d2939d33032d3d49db69dca86570245f05f14f014c08",
+    "docs/contracts/df03-service/reference_model.py": "60ed04f0216af54ffe7bffd10db2651504e49bbd1033c896820708804cc21d28",
+    "docs/contracts/df03-service/check_contracts.py": "a3294467db9857c41de304c3420208720c4efc2247df36615d341aa63335726e",
+    "docs/contracts/df03-service/time.schema.json": "fab54dd7ac9e57a4e581c74cd3049d5b855bae05e566242edd4d13e2574c2885",
+    "docs/contracts/df03-service/public.openapi.json": "e08fad77fdffacc5afd7ea8d68d0a8c5c6d04259480d4d8f8e46a0db9cd92438",
+    "docs/contracts/df03-service/internal.openapi.json": "060d8fab1d9760af0d1e15fd56280276219d7d4a7e5ca50197ad824cd291bebb",
+    "docs/contracts/df03-service/source-bindings.json": "95434ade1ecff9dc2d2a042d1799ba5bc7f7de97a05f575258bba477ef0644fe",
+    "docs/contracts/c08-controller/SCOPED_GATE.md": "5c128dcaad7a6e86b5fa24392443ad9ad8e275e32148368013c71d9c681c31ed",
+    "docs/contracts/c08-controller/build_scoped_gate.py": "e07d77a27c69198969d34c2dfa6e6c782d3e8b006a738fb2bc83af8c655677fe",
+    "docs/contracts/c08-controller/scoped_gate_model.py": "880eeb34e606c3e26dd9ba4bc86979b37667f24c3376458096e97dad2bace48d",
+    "docs/contracts/c08-controller/check_scoped_gate.py": "cd81417ec7925e7ac6bb098aab15168a27e22f1fdcaa1861b4a79815260adfd8",
+    "docs/contracts/c08-controller/scoped-gate.schema.json": "da9541b4e261aa0d78baeaf759e177cea11ca8188c3cdc067777c96a38c6b147",
+    "docs/contracts/c08-controller/scoped-gate-ipc.schema.json": "a0a318d0f463a0ee74ba1fc6eebc3e1b932a04acb38dcd501d185e56eaf2ae93",
+    "docs/contracts/c08-controller/build_ownership_storage.py": "f19dcd1d77232aaf875ef21f335ce4bec2076f868e7c7bcd9d3d9887d6d09a2a",
+    "docs/contracts/c08-controller/ownership-storage.sql": "d4895d92c901e5c8338b39067dddd6456847a18a51bd861fb0d5870c6a463e59",
+    "docs/contracts/c08-controller/build_gate_renewal.py": "5ef9b2e8eb966a50e970a3bc337579e5af3fea5a98bf7bbaf4a07f5884f2058f",
+    "docs/contracts/c08-controller/gate-renewal.sql": "c2aa65a9f9761f7dc29f51ae8e74dbdc43a68b3392d2b31ec44d50d95501c271",
+    "docs/contracts/c08-controller/GATE_RENEWAL.md": "a434586a3f0c2ab3d8c6ed1b8e6fde89b33854fb34607366d72bacf1e5c3d04b",
+    "docs/contracts/c08-controller/check_gate_renewal.py": "9fb0a19c4c76aee553011361ffd8b5c522af214c7eff64c4c8b0d5e47f8090f9",
+    "docs/contracts/c08-controller/controller-gate-renewal.sql": "0d1017e75bd0c634bbfdea43ee237dddf6414852c9a487b3f49ca7c798c83a70",
+    "docs/contracts/c08-controller/gate-renewal-ipc.schema.json": "6adc901ad87a9398cdc9dac1a454ff9df0cf15d4cd31f2480dd23266f0efeea5",
+    "docs/contracts/c08-controller/check_ownership_storage.py": "d6c84d7523fb6ea901817f1b6dbc0741b493ce7e43e6f01525b9b5cdc283efac",
+    "docs/contracts/c08-controller/controller-ownership.sql": "15f218a5746641649e91482036446f296cef7a2e2fbce9f204e965a1ed4c28e0",
+    "docs/contracts/c08-controller/OWNERSHIP_STORAGE.md": "a2c56fecc58dfb959312cc3f413903f497732e1a91eb6f9d0ff4f184494d5992",
+    "docs/contracts/c08-controller/build_scope_storage.py": "f1743ed72b8f018d0bea0b6ff8dda80be5d5a1e295bc462536cd8b72e5ac3bdc",
+    "docs/contracts/c08-controller/scope-storage.sql": "d5a290c9cccdec2d59152fea69a4273730bde66ee8edb407799154f7050b90c5",
+    "docs/contracts/c08-controller/SCOPE_STORAGE.md": "8ba2051a95860f2bf2141b56ff37a247f61b71428e8f569b9bd8573c68fb76ba",
+    "docs/contracts/c08-controller/check_scope_storage.py": "a30887fd22fbfd1ef0763e1a72fcea546b019f79bb9c2e5e8ba7752e660850de",
+    "docs/contracts/c08-controller/controller-scope.sql": "8d0ac34e5476d371f4c5d252111cd98bbfb64c4f2e77b4106240e60f4f0a4554",
+    "docs/contracts/c08-controller/build_encoding_storage.py": "44b989ba5afff60fff35aa2025600992906deacd0d479a19aecf3d00cdfb902d",
+    "docs/contracts/c08-controller/encoding-storage.sql": "42f998966397c2d557ce499995d70c8ce67cecec90513de92856e01de274f7b8",
+    "docs/contracts/c08-controller/ENCODING_STORAGE.md": "d68cebedb93c3802b8ff423e299eedb5e0cd83f5186e81a55d374bbe267f246b",
+    "docs/contracts/c08-controller/ENCODING_AUTHORITY.md": "3dfe763f0b176b39ea16cea14e35ec2c2418efd013062d6f95ce6e71adf5a66f",
+    "docs/contracts/c08-controller/check_encoding_storage.py": "c4e656a76dee02d8b0a41b7acccb6de35d02d5bc187b0ebe648db2e2983ac46c",
+    "docs/contracts/c08-controller/controller-encoding.sql": "3ad43c54c72c169aac21d0ea7efd144cfdbbb7e914b37390d4842c47030ec6fb",
+    "docs/contracts/c08-controller/encoding-authority.schema.json": "d5b362352ff2c8b5a3346491d958ab75aeead6b54d04d4f0fb526587d121c058",
+    "docs/contracts/c08-controller/encoding-authority-ipc.schema.json": "11426f37341d32e5a0a76a784cfcbf4167cdeb8c8b0cfe89a7475df541418ce0",
+    "docs/contracts/c08-controller/build_encoding_release_storage.py": "7a615df2b30986a96f9fa7128bb558bb8e4fe7265f4c6befd89be3ced5b25490",
+    "docs/contracts/c08-controller/encoding-release-storage.sql": "04980c13b6f892698510fb5d8edaf2d761addd206a11c84dad165edb41cf5cce",
+    "docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md": "58477dabf042aa7c9ff21153e007d4ba14f2e0a8d3703290e54bd38410740ab0",
+    "docs/contracts/c08-controller/ENCODING_RELEASE.md": "c36a31f048a73f0847f118c230e6e74f0ff0fe50cfa191ac19bc9909eb8eb415",
+    "docs/contracts/c08-controller/check_encoding_release_storage.py": "51a8e9e4497a6f468049100d8e73ebb40e873329de6a2439d94c18ea5ca8e20d",
+    "docs/contracts/c08-controller/controller-encoding-release.sql": "606f9c8f97cc43356ed89a7103b351b9ec8d50c38a4947e5dfa0bae07720e259",
+    "docs/contracts/c08-controller/encoding-release.schema.json": "db8542fb262000ce5a7a82573a47db89469700b47ca47c41493c244dd139e32d",
+    "docs/contracts/c08-controller/encoding-release-ipc.schema.json": "cb492937a62c8e2a3e95b8446e390ed3e1315b0eab6f2ce489b5589a82f57c00",
+    "docs/contracts/c08-controller/build_ipc_journal.py": "e19fdef8eafe5582624623e519f6e344f36f9b402d06d65444aaf597af4bd07f",
+    "docs/contracts/c08-controller/build_ipc_journal_storage.py": "5d8db8e6c236fb3a7fd6a49e49b579e1172a297649d381dbefd7bf80417e6848",
+    "docs/contracts/c08-controller/ipc-journal-storage.sql": "a62f59e18ac181e348841a01a789bd10d0e8370206a7f0bd31dc916bdb730248",
+    "docs/contracts/c08-controller/IPC_JOURNAL_STORAGE.md": "e3896c7048dd65e69802d9a74f516b5b26de501e36828c197b573aba637e8b90",
+    "docs/contracts/c08-controller/IPC_JOURNAL.md": "3dc124acce88fd0c1e0c75c3317f848562f47e4945c920f55e56fdeedf7dad2b",
+    "docs/contracts/c08-controller/check_ipc_journal_storage.py": "78bb1496b1c61e24783645d717b6f4dfa34914e0c84559ada768e88a4c63f62e",
+    "docs/contracts/c08-controller/controller-ipc-journal.sql": "1ba2e68c93492b8989586ee874e8617fdbce8138d10638ff5330004aba917da2",
+    "docs/contracts/c08-controller/ipc-journal-messages.json": "f219613cec5926ef1ace17a5d5c39c5be227d43f67943bd1977218a95fcb8026",
+    "docs/contracts/c08-controller/build_prepare_deny_storage.py": "5061f6076cb987470ef1be83c97684537253ae874421d6e0239d956a42ece220",
+    "docs/contracts/c08-controller/prepare-deny-storage.sql": "3d8dca3f2e5bd63e70bfe206a3bb755468d115188fa461af2eb7cecc09264e51",
+    "docs/contracts/c08-controller/PREPARE_DENY_STORAGE.md": "ed3430b47d3042251dc09a85289392383df81560819b3ec8217ff36f771f1f11",
+    "docs/contracts/c08-controller/check_prepare_deny_storage.py": "0ee9d221b0c28264a4b9924d339a9e240dc8c66e7f13a1bad7a977d28584dfd1",
+    "docs/contracts/c08-controller/controller-prepare-deny.sql": "e3370da4c73089a1f5c40c4c2fee4b194b3a13fe9cf66e2e9a5212b123bd731f",
+    "docs/contracts/c08-controller/PROTECTION_DELIVERY.md": "a027e3451d7bc8c0ff7482a70a86bbcbe3874b2f17a0aa0381a337e9d1c9bcc6",
+    "docs/contracts/c08-controller/protection-delivery.sql": "ca2c8ba104e8af95192e18a7edabc19520d65df6d7d8cde17167fdc4ab0498ad",
+    "docs/contracts/c08-controller/protection-receiver.sql": "453989f1c52e1b34e5be2fa1e406b358505606fe4da956d71e5ee822d10ed7ec",
+    "docs/contracts/c08-controller/build_protection_delivery.py": "812f922613536e738ab35e6f7b90e2cac56c28953297cf8d3885a5bb0eb58abc",
+    "docs/contracts/c08-controller/protection-delivery.schema.json": "d5d4422c27e43e498b900dd4d668048d6a7f2bb76c39f62e7c76b52d3f6b0638",
+    "docs/contracts/c08-controller/protection_delivery_model.py": "94989829db20874117169c28bdb5001970b276f82f1acb99595cbc58a7a9f4df",
+    "docs/contracts/c08-controller/check_protection_delivery.py": "12f0a3fba347d01c1b3a8458eb7ebc871e0e29d5449073f44f5f3980d438834d",
+    "docs/contracts/c08-controller/build_run_resource.py": "b426a75e79baffc5cc7b62ad0de9bd66b92ec947e0a892a353c058e204cbba42",
+    "docs/contracts/c08-controller/run-resource.sql": "95a3e4d9c55c0a612a0ff56ce962134099435ba0c1e3cc87d61b44caa7aa868a",
+    "docs/contracts/c08-controller/controller-protection-outbox.sql": "87217203ca5acb77974be3af6739d586a53a8823f48faf81f301cc5fd81ea581",
+    "docs/contracts/c08-controller/check_protection_outbox.py": "6c7d548ae86273e7aef5ae6342e55712c53232e9cea55078fb34dfe9a3e417ad",
+    "docs/contracts/c08-controller/RUN_RESOURCE.md": "6fe2038ee3c4bf3de27ed880335dc431b5f87436f062c833107085b62e434739",
+    "docs/contracts/c08-controller/controller-run-resource.sql": "aec44f43215d08b318884648aca18b097817d717b1a58252c88e06f90b3beb52",
+    "docs/contracts/c08-controller/check_run_resource.py": "cd89e1960e016811a51b8d7b706fc0ab1d8130d27a64758ee1779c9c034521ff"
+  }
+}

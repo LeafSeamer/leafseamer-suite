@@ -1,0 +1,2033 @@
+{
+  "all_passed": true,
+  "cases_passed": 391,
+  "approved": false,
+  "scope": "148表控制受理转交候选",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "148表共用单一scope",
+      "expected": 148,
+      "observed": 148
+    },
+    {
+      "name": "邀请不改控制记录",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受预留新版本且旧持有人不变",
+      "expected": [
+        "00000000000000000002",
+        "00000000000000000004",
+        "alice",
+        "op",
+        "fencing"
+      ],
+      "observed": [
+        "00000000000000000002",
+        "00000000000000000004",
+        "alice",
+        "op",
+        "fencing"
+      ]
+    },
+    {
+      "name": "邀请接受绑定操作",
+      "expected": [
+        "accepted",
+        "op"
+      ],
+      "observed": [
+        "accepted",
+        "op"
+      ]
+    },
+    {
+      "name": "未知恢复保持原预留版本",
+      "expected": "00000000000000000004",
+      "observed": "00000000000000000004"
+    },
+    {
+      "name": "重取证保留未知状态并换唯一尝试",
+      "expected": [
+        "indeterminate",
+        "op.attempt.2"
+      ],
+      "observed": [
+        "indeterminate",
+        "op.attempt.2"
+      ]
+    },
+    {
+      "name": "拒绝清槽不退款不换持有人",
+      "expected": [
+        "00000000000000000004",
+        "alice",
+        null,
+        "protected"
+      ],
+      "observed": [
+        "00000000000000000004",
+        "alice",
+        null,
+        "protected"
+      ]
+    },
+    {
+      "name": "下一操作不复用旧版本",
+      "expected": "00000000000000000005",
+      "observed": "00000000000000000005"
+    },
+    {
+      "name": "原回执在后续修订中不变",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "全部控制历史保留",
+      "expected": 5,
+      "observed": 5
+    },
+    {
+      "name": "初始化完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始化缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始化缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始化缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始化缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始化缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始化写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请缺写6",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请写后异常6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写6",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写7",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写8",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受缺写9",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接受缺写9全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接受写后异常9",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写6",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写7",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管缺写8",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "接管缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "接管写后异常8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写6",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写6全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常6",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写7",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写7全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常7",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放缺写8",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放缺写8全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放写后异常8",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未知缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未知缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未知缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未知缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未知缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未知缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒绝缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒绝缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒绝缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒绝缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒绝缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒绝缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重取证缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重取证缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重取证缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重取证缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重取证缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重取证缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重取证写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "取消邀请缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "取消邀请缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "取消邀请缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "取消邀请缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "取消邀请缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请缺写5",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "取消邀请缺写5全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请写后异常5",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "过期缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "过期缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "过期缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "过期缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "过期缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "过期写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启完整写集可提交",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重启缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启写后异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重启缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启写后异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重启缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启写后异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重启缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启写后异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启缺写4",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重启缺写4全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重启写后异常4",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同名跨issuer接受",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "同名跨issuer接受全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同名跨issuer代次",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "同名跨issuer代次全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始结果身份",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始结果身份全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始结果修订",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始结果修订全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始结果摘要",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "初始结果摘要全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作命名空间",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "操作命名空间全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "目标版本退款",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "目标版本退款全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "跳号预留",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "跳号预留全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "屏障前更换持有人",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "屏障前更换持有人全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "普通操作偷换epoch",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "普通操作偷换epoch全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "缺pending归属",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "缺pending归属全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "受理未进入fencing",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "受理未进入fencing全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "屏障前变effective",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "屏障前变effective全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请接受无操作",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请接受无操作全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请接受换操作",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请接受换操作全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "操作目标与接受者不同",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "操作目标与接受者不同全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "期望历史不存在",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "期望历史不存在全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "跨设备邀请",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "跨设备邀请全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "期限等号",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "期限等号全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "期限之前",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "期限之前全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "换域接受",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "换域接受全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "换descriptor接受",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "换descriptor接受全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未决阻止紧急接管",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未决阻止紧急接管全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未知仍占未决槽",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "未知仍占未决槽全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "拒绝终态不可恢复",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "拒绝终态不可恢复全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "pending不能重建尝试",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "pending不能重建尝试全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重用尝试身份",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重用尝试身份全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "邀请不能提前过期",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "邀请不能提前过期全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "换域终结邀请不释放持有人",
+      "expected": "alice",
+      "observed": "alice"
+    },
+    {
+      "name": "非发起人取消",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "非发起人取消全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "取消邀请不复活",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "取消邀请不复活全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "accepted邀请不再过期",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "accepted邀请不再过期全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "另一请求键不能再接受",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "另一请求键不能再接受全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同前态双接受封存只一方获胜",
+      "expected": "UNIQUE constraint failed: ct_change.device_id, ct_change.sequence",
+      "observed": "UNIQUE constraint failed: ct_change.device_id, ct_change.sequence"
+    },
+    {
+      "name": "同前态双接受封存只一方获胜全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "紧急接管先封存则旧接受CAS失败",
+      "expected": "UNIQUE constraint failed: ct_change.device_id, ct_change.sequence",
+      "observed": "UNIQUE constraint failed: ct_change.device_id, ct_change.sequence"
+    },
+    {
+      "name": "紧急接管先封存则旧接受CAS失败全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "尝试与操作归属不可拆开",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "尝试与操作归属不可拆开全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "封存后不增补成员",
+      "expected": "control_already_sealed",
+      "observed": "control_already_sealed"
+    },
+    {
+      "name": "封存后追加无影响",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同版本普通重启不改变邀请预期",
+      "expected": "00000000000000000002",
+      "observed": "00000000000000000002"
+    },
+    {
+      "name": "automatic可受理人工接管",
+      "expected": "op",
+      "observed": "op"
+    },
+    {
+      "name": "已有持有人禁止普通抢占",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "已有持有人禁止普通抢占全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "原持有人不重复接管自己",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "原持有人不重复接管自己全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "非持有人释放",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "非持有人释放全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "释放受理仍保留旧holder",
+      "expected": "alice",
+      "observed": "alice"
+    },
+    {
+      "name": "真实存储U20后继9999999999",
+      "expected": "00000000010000000000",
+      "observed": "00000000010000000000"
+    },
+    {
+      "name": "真实存储U20后继9223372036854775807",
+      "expected": "09223372036854775808",
+      "observed": "09223372036854775808"
+    },
+    {
+      "name": "真实存储U20后继99999999999999999998",
+      "expected": "99999999999999999999",
+      "observed": "99999999999999999999"
+    },
+    {
+      "name": "U20耗尽拒绝回绕",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "U20耗尽拒绝回绕全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "计数词法拒绝1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "计数词法拒绝1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "计数词法拒绝0000000000000000000x",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "计数词法拒绝0000000000000000000x全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "计数词法拒绝100000000000000000000",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "计数词法拒绝100000000000000000000全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重复封存拒绝",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_changeUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_changeUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_changeDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_changeDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_stateUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_stateUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_stateDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_stateDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_operationUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_operationUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_operationDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_operationDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_operation_eventUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_operation_eventUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_operation_eventDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_operation_eventDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_attemptUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_attemptUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_attemptDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_attemptDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_offerUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_offerUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_offerDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_offerDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_offer_eventUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_offer_eventUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_offer_eventDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_offer_eventDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_requestUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_requestUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_requestDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_requestDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_auditUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_auditUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_auditDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_auditDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_outboxUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_outboxUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_outboxDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_outboxDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_commitUPDATE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_commitUPDATE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "ct_commitDELETE",
+      "expected": "immutable_control_history",
+      "observed": "immutable_control_history"
+    },
+    {
+      "name": "ct_commitDELETE未变化",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "同RequestKey不同摘要仍冲突",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "同RequestKey不同摘要仍冲突全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "未封存邀请不进入当前视图",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "漏封存COMMIT拒绝并回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "禁止用占位证据标effective",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "禁止用占位证据标effective全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "没有开放证明不能标ready",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "没有开放证明不能标ready全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "合成BODY可通过仅为外部取证边界",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "全部内存库完整性",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/resource.sql": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c02-command-view/storage.sql": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da",
+    "docs/contracts/c08-controller/issue-ledger.sql": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285",
+    "docs/contracts/c08-controller/build_issue_ledger.py": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/cancel-fence.sql": "559a918a21b95e4e3f293bf888f68a694b12fe6560e84c4786789d02aa5493b5",
+    "docs/contracts/c08-controller/build_cancel_fence.py": "cbba07f9548d0b09fc765ee749e74ca2d777977544782cb4200105a4d7524f1d",
+    "docs/contracts/c08-controller/cancel-resource.sql": "3ace3a1a067791527f772ba662ede9776df8e4472244f93b2ac479a6d7e0d86d",
+    "docs/contracts/c08-controller/build_cancel_resource.py": "41a36379b491898284e3dfd17f4910c61316944a4da1fc6db5e2997701b6f519",
+    "docs/contracts/c08-controller/cancel-closure.sql": "9c54e6e27aa9358dec23f662a4631c4ab8134459853de028abeb8e0489ef4d0a",
+    "docs/contracts/c08-controller/build_cancel_closure.py": "b7f95e571096830e08fa12d4eb6e6388515e2cd8a9def5b0c04ceadbdcef099e",
+    "docs/contracts/c08-controller/cancel-plan.sql": "77b941c6d6adbf0f9aea2be8ad0f733b5bebec5281c9d634e406f3b9395da601",
+    "docs/contracts/c08-controller/build_cancel_plan.py": "b23f81233561b474f53de8ab834fb9835864cbd16c259c24986712fe478a8170",
+    "docs/contracts/c08-controller/protected-hold.sql": "d9bd6bf9822188a38aba0d01a262bad94b9fd8e59da150ab2c175080668286b4",
+    "docs/contracts/c08-controller/build_protected_hold.py": "05f7dc2d9006c7e815354e07210f1e145a9650e9102f3b7c3df7d208fea0f67a",
+    "docs/contracts/c08-controller/result-dependency.sql": "c00d780d7309e94da0f4ea220ef6ced307ae09343a1060c98467e7b7e61f2c8b",
+    "docs/contracts/c08-controller/build_result_dependency.py": "76e91a4474668907af03ef16375b974993fe3e28debc083e60092256dc689dfe",
+    "docs/contracts/c08-controller/protection-outbox.sql": "2900b431e8a006bcee7ce1d760e41975403f0a3000c72bb7d6a035c140de45eb",
+    "docs/contracts/c08-controller/build_protection_outbox.py": "bac338eca473705a08b216fc41d00cbe732a0c953e881501b1923e1b39023b01",
+    "docs/contracts/c08-controller/build_control_storage.py": "766797716adb9ea8f8850c674d86247840d0637991cd9a1e0945cfddd9ffc46f",
+    "docs/contracts/c08-controller/CONTROL_STORAGE.md": "896fbe39b4f2e81c3890a6857b4ece80e995d92a6b0a538cc223acb1d83b257a",
+    "docs/contracts/c08-controller/CONTROL_AUTHORITY.md": "1c0be475ea2da0550b2ad3758acdcb5f1ee12241ba9f3f2d0512e10c3bfb33e7",
+    "docs/contracts/c08-controller/control-authority.schema.json": "2cb0a739b04c2dd5b7cd3983f8b4e4ee3229c787ee66e13abf97e51024a7a66d",
+    "docs/contracts/c08-controller/controller-control.sql": "f1313879f09db328afcaaac8f883cce23d5a7bdbd5da92fd70c28fa91131dd72",
+    "docs/contracts/c08-controller/check_control_storage.py": "7bcd8bd90894bd6aca8af522fcc362d3f8189a27a7658a32d31cef4d2d7eb155"
+  }
+}

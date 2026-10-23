@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/encoding-release.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReleaseRequest": {
+      "type": "object",
+      "properties": {
+        "release_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "prepare_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "encoding_authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "encode_message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "encode_frame_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "revocation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "release_id",
+        "revision",
+        "binding",
+        "prepare_id",
+        "encoding_authorization_ref",
+        "encode_message_id",
+        "encode_frame_digest",
+        "revocation_ref",
+        "selected_tick_ns",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReleaseAck": {
+      "type": "object",
+      "properties": {
+        "release_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "prepare_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "release_message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "release_frame_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "disposed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "state": {
+          "const": "released"
+        },
+        "encoder_quiescent": {
+          "const": true
+        },
+        "consumers_quiescent": {
+          "const": true
+        },
+        "cache_empty": {
+          "const": true
+        }
+      },
+      "required": [
+        "release_ref",
+        "binding",
+        "prepare_id",
+        "release_message_id",
+        "release_frame_digest",
+        "disposed_tick_ns",
+        "state",
+        "encoder_quiescent",
+        "consumers_quiescent",
+        "cache_empty"
+      ],
+      "additionalProperties": false
+    },
+    "ReleaseAdoption": {
+      "type": "object",
+      "properties": {
+        "adoption_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "prepare_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "release_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ack_message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ack_frame_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "encoding_reservation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "reserved_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "received_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "committed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "adoption_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "adoption_id",
+        "revision",
+        "binding",
+        "prepare_id",
+        "release_ref",
+        "ack_message_id",
+        "ack_frame_digest",
+        "encoding_reservation_ref",
+        "reserved_bytes",
+        "received_tick_ns",
+        "committed_tick_ns",
+        "adoption_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,2417 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 360,
+  "ipc_messages": 50,
+  "scope": "释放原件关联和有限消费者及退款集合模型，不运行SQLite或真实服务",
+  "runtime_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "生成:encoding-release.schema.json",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "生成:encoding-release-ipc.schema.json",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "保留全部旧帧",
+      "observed": 48,
+      "expected": 48
+    },
+    {
+      "name": "旧帧新版本结构:HELLO",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:HELLO",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:HELLO_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:HELLO_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:OPEN_GATE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:OPEN_GATE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:OPEN_GATE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:OPEN_GATE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:DISPATCH",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:DISPATCH",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:SEND_REPORT",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:SEND_REPORT",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:EVIDENCE_CANDIDATE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:EVIDENCE_CANDIDATE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:REPORT_STORED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:REPORT_STORED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:FENCE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:FENCE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:FENCE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:FENCE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:QUERY_BARRIER",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:QUERY_BARRIER",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CLOSE_GATE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CLOSE_GATE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CLOSE_GATE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CLOSE_GATE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:GUARD_INSTALL",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:GUARD_INSTALL",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:GUARD_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:GUARD_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:AUTH_FENCE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:AUTH_FENCE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:AUTH_FENCE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:AUTH_FENCE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:TIME_FENCE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:TIME_FENCE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:TIME_FENCE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:TIME_FENCE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:RUN_FENCE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:RUN_FENCE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:RUN_FENCE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:RUN_FENCE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:ENCODE_PACKET",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:ENCODE_PACKET",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:PACKET_ENCODING_FAILED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:PACKET_ENCODING_FAILED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:PREPARE_PACKET",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:PREPARE_PACKET",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:PREPARE_PACKET_REJECTED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:PREPARE_PACKET_REJECTED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:RESEND_REQUEST",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:RESEND_REQUEST",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:RESEND_DISPATCH",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:RESEND_DISPATCH",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:RESEND_REJECTED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:RESEND_REJECTED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:BARRIER_UNAVAILABLE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:BARRIER_UNAVAILABLE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:BARRIER_STORED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:BARRIER_STORED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_FENCE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_FENCE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_FENCE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_FENCE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_GUARD",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_GUARD",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_GUARD_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_GUARD_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:ENCODE_CANCEL_PACKET",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:ENCODE_CANCEL_PACKET",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:PREPARE_CANCEL_PACKET",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:PREPARE_CANCEL_PACKET",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_ENCODING_FAILED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_ENCODING_FAILED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_PREPARE_REJECTED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_PREPARE_REJECTED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:DISPATCH_CANCEL",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:DISPATCH_CANCEL",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_RESEND_REQUEST",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_RESEND_REQUEST",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_RESEND_REJECTED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_RESEND_REJECTED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_SEND_REPORT",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_SEND_REPORT",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_REPORT_STORED",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_REPORT_STORED",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_EVIDENCE_CANDIDATE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_EVIDENCE_CANDIDATE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:QUERY_CANCEL_EXECUTION",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:QUERY_CANCEL_EXECUTION",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:CANCEL_EXECUTION_STATUS",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:CANCEL_EXECUTION_STATUS",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:GATE_FENCE",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:GATE_FENCE",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "旧帧新版本结构:GATE_FENCE_ACK",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "拒旧版本:GATE_FENCE_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "必选释放协商:HELLO",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "必选释放协商:HELLO_ACK",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "完整帧数",
+      "observed": 50,
+      "expected": 50
+    },
+    {
+      "name": "采用不导出IPC",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "完整消息集合无替换",
+      "observed": [
+        "AUTH_FENCE",
+        "AUTH_FENCE_ACK",
+        "BARRIER_STORED",
+        "BARRIER_UNAVAILABLE",
+        "CANCEL_ENCODING_FAILED",
+        "CANCEL_EVIDENCE_CANDIDATE",
+        "CANCEL_EXECUTION_STATUS",
+        "CANCEL_FENCE",
+        "CANCEL_FENCE_ACK",
+        "CANCEL_GUARD",
+        "CANCEL_GUARD_ACK",
+        "CANCEL_PREPARE_REJECTED",
+        "CANCEL_REPORT_STORED",
+        "CANCEL_RESEND_REJECTED",
+        "CANCEL_RESEND_REQUEST",
+        "CANCEL_SEND_REPORT",
+        "CLOSE_GATE",
+        "CLOSE_GATE_ACK",
+        "DISPATCH",
+        "DISPATCH_CANCEL",
+        "ENCODE_CANCEL_PACKET",
+        "ENCODE_PACKET",
+        "EVIDENCE_CANDIDATE",
+        "FENCE",
+        "FENCE_ACK",
+        "GATE_FENCE",
+        "GATE_FENCE_ACK",
+        "GUARD_ACK",
+        "GUARD_INSTALL",
+        "HELLO",
+        "HELLO_ACK",
+        "OPEN_GATE",
+        "OPEN_GATE_ACK",
+        "PACKET_ENCODING_FAILED",
+        "PREPARE_CANCEL_PACKET",
+        "PREPARE_PACKET",
+        "PREPARE_PACKET_REJECTED",
+        "QUERY_BARRIER",
+        "QUERY_CANCEL_EXECUTION",
+        "RELEASE_ENCODING",
+        "RELEASE_ENCODING_ACK",
+        "REPORT_STORED",
+        "RESEND_DISPATCH",
+        "RESEND_REJECTED",
+        "RESEND_REQUEST",
+        "RUN_FENCE",
+        "RUN_FENCE_ACK",
+        "SEND_REPORT",
+        "TIME_FENCE",
+        "TIME_FENCE_ACK"
+      ],
+      "expected": [
+        "AUTH_FENCE",
+        "AUTH_FENCE_ACK",
+        "BARRIER_STORED",
+        "BARRIER_UNAVAILABLE",
+        "CANCEL_ENCODING_FAILED",
+        "CANCEL_EVIDENCE_CANDIDATE",
+        "CANCEL_EXECUTION_STATUS",
+        "CANCEL_FENCE",
+        "CANCEL_FENCE_ACK",
+        "CANCEL_GUARD",
+        "CANCEL_GUARD_ACK",
+        "CANCEL_PREPARE_REJECTED",
+        "CANCEL_REPORT_STORED",
+        "CANCEL_RESEND_REJECTED",
+        "CANCEL_RESEND_REQUEST",
+        "CANCEL_SEND_REPORT",
+        "CLOSE_GATE",
+        "CLOSE_GATE_ACK",
+        "DISPATCH",
+        "DISPATCH_CANCEL",
+        "ENCODE_CANCEL_PACKET",
+        "ENCODE_PACKET",
+        "EVIDENCE_CANDIDATE",
+        "FENCE",
+        "FENCE_ACK",
+        "GATE_FENCE",
+        "GATE_FENCE_ACK",
+        "GUARD_ACK",
+        "GUARD_INSTALL",
+        "HELLO",
+        "HELLO_ACK",
+        "OPEN_GATE",
+        "OPEN_GATE_ACK",
+        "PACKET_ENCODING_FAILED",
+        "PREPARE_CANCEL_PACKET",
+        "PREPARE_PACKET",
+        "PREPARE_PACKET_REJECTED",
+        "QUERY_BARRIER",
+        "QUERY_CANCEL_EXECUTION",
+        "RELEASE_ENCODING",
+        "RELEASE_ENCODING_ACK",
+        "REPORT_STORED",
+        "RESEND_DISPATCH",
+        "RESEND_REJECTED",
+        "RESEND_REQUEST",
+        "RUN_FENCE",
+        "RUN_FENCE_ACK",
+        "SEND_REPORT",
+        "TIME_FENCE",
+        "TIME_FENCE_ACK"
+      ]
+    },
+    {
+      "name": "ordinaryReleaseRequest正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinaryReleaseRequest根拒绝",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:release_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:revision",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:binding",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:prepare_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:encoding_authorization_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:encode_message_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:encode_frame_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:revocation_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:selected_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest缺:request_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseRequest额外字段",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinaryReleaseAck根拒绝",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:release_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:binding",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:prepare_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:release_message_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:release_frame_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:disposed_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:state",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:encoder_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:consumers_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck缺:cache_empty",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAck额外字段",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinaryReleaseAdoption根拒绝",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:adoption_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:revision",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:binding",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:prepare_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:release_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:ack_message_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:ack_frame_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:encoding_reservation_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:reserved_bytes",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:received_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:committed_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption缺:adoption_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryReleaseAdoption额外字段",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING帧",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING非法seq:'0'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING非法seq:'01'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING非法seq:'1\\n'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING非法seq:'100000000000000000000'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING非法seq:1",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING_ACK帧",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING_ACK非法seq:'0'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING_ACK非法seq:'01'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING_ACK非法seq:'1\\n'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING_ACK非法seq:'100000000000000000000'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinaryRELEASE_ENCODING_ACK非法seq:1",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinary未清空不可ACK:encoder_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinary未清空不可ACK:consumers_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinary未清空不可ACK:cache_empty",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinary原请求关联",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "ordinary原ACK关联",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "ordinary重算请求仍错来源:prepare_id",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "ordinary重算请求仍错来源:encoding_authorization_ref",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "ordinary重算请求仍错来源:encode_message_id",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "ordinary重算请求仍错来源:encode_frame_digest",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "ordinary撤回原件错配",
+      "observed": "request_source",
+      "expected": "request_source"
+    },
+    {
+      "name": "ordinary请求跨设备会话",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "ordinaryACK错配:release_ref",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "ordinaryACK错配:prepare_id",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "ordinaryACK错配:release_message_id",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "ordinaryACK错配:release_frame_digest",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "ordinaryACK时间:49",
+      "observed": "ack_time",
+      "expected": "ack_time"
+    },
+    {
+      "name": "ordinaryACK时间:53",
+      "observed": "ack_time",
+      "expected": "ack_time"
+    },
+    {
+      "name": "ordinaryACK错误reply",
+      "observed": "direction",
+      "expected": "direction"
+    },
+    {
+      "name": "ordinaryACK跨进程",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "ordinary消费者一借用",
+      "observed": "borrowed",
+      "expected": "borrowed"
+    },
+    {
+      "name": "ordinary消费者二借用",
+      "observed": "borrowed",
+      "expected": "borrowed"
+    },
+    {
+      "name": "ordinary释放前已入流",
+      "observed": "in_flight",
+      "expected": "in_flight"
+    },
+    {
+      "name": "ordinary释放安装墓碑",
+      "observed": "closing",
+      "expected": "closing"
+    },
+    {
+      "name": "ordinary晚借用拒绝",
+      "observed": "prepare_closed",
+      "expected": "prepare_closed"
+    },
+    {
+      "name": "ordinary等待时重投仍等待",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "ordinary已借未发也阻止",
+      "observed": "prepare_closed",
+      "expected": "prepare_closed"
+    },
+    {
+      "name": "ordinary编码和双借用未清",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "ordinary编码完成丢弃",
+      "observed": "discarded",
+      "expected": "discarded"
+    },
+    {
+      "name": "ordinary仍有消费者",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "ordinary归还首消费者",
+      "observed": "returned",
+      "expected": "returned"
+    },
+    {
+      "name": "ordinary第二消费者仍阻ACK",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "ordinary归还末消费者",
+      "observed": "returned",
+      "expected": "returned"
+    },
+    {
+      "name": "ordinary全部清空原ACK",
+      "observed": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.ordinary",
+            "revision": "1",
+            "digest": "sha256:7af1d892657f1cd3bd70cfe6ade317d9a32625f2dedc10b0640e6d3e43748553"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-ordinary",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:536a59b212512f70e569ada93be2e941553fce71ac7fc5640d8ceff933c5d420",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      },
+      "expected": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.ordinary",
+            "revision": "1",
+            "digest": "sha256:7af1d892657f1cd3bd70cfe6ade317d9a32625f2dedc10b0640e6d3e43748553"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-ordinary",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:536a59b212512f70e569ada93be2e941553fce71ac7fc5640d8ceff933c5d420",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      }
+    },
+    {
+      "name": "ordinary活字节已清",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "ordinary在途设备效果仍保留",
+      "observed": [
+        "transport"
+      ],
+      "expected": [
+        "transport"
+      ]
+    },
+    {
+      "name": "ordinary重复释放只查",
+      "observed": "cached_ack",
+      "expected": "cached_ack"
+    },
+    {
+      "name": "ordinary重复ACK不改tick",
+      "observed": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.ordinary",
+            "revision": "1",
+            "digest": "sha256:7af1d892657f1cd3bd70cfe6ade317d9a32625f2dedc10b0640e6d3e43748553"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-ordinary",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:536a59b212512f70e569ada93be2e941553fce71ac7fc5640d8ceff933c5d420",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      },
+      "expected": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.ordinary",
+            "revision": "1",
+            "digest": "sha256:7af1d892657f1cd3bd70cfe6ade317d9a32625f2dedc10b0640e6d3e43748553"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-ordinary",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:536a59b212512f70e569ada93be2e941553fce71ac7fc5640d8ceff933c5d420",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      }
+    },
+    {
+      "name": "ordinary释放后永久拒借用",
+      "observed": "prepare_closed",
+      "expected": "prepare_closed"
+    },
+    {
+      "name": "ordinary换释放原帧冲突",
+      "observed": "release_conflict",
+      "expected": "release_conflict"
+    },
+    {
+      "name": "ordinary冲突关闭通道",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinary无释放不能清空",
+      "observed": "not_closing",
+      "expected": "not_closing"
+    },
+    {
+      "name": "ordinary墓碑先到",
+      "observed": "closing",
+      "expected": "closing"
+    },
+    {
+      "name": "ordinary后到设备调用无借用",
+      "observed": "no_borrow",
+      "expected": "no_borrow"
+    },
+    {
+      "name": "ordinary过去tick拒绝",
+      "observed": "clock_order",
+      "expected": "clock_order"
+    },
+    {
+      "name": "ordinary截止后仍能清理",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinary原缓存丢失不能清理证明",
+      "observed": "request_source",
+      "expected": "request_source"
+    },
+    {
+      "name": "ordinary缓存丢失后不造ACK",
+      "observed": "session_closed",
+      "expected": "session_closed"
+    },
+    {
+      "name": "ordinary无可信ACK拒退款",
+      "observed": "ack_source",
+      "expected": "ack_source"
+    },
+    {
+      "name": "ordinary无ACK保留额度",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "ordinary先满额度",
+      "observed": "capacity",
+      "expected": "capacity"
+    },
+    {
+      "name": "ordinary采用回滚",
+      "observed": "rolled_back",
+      "expected": "rolled_back"
+    },
+    {
+      "name": "ordinary回滚全状态不变",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "ordinary采用未知",
+      "observed": "commit_unknown",
+      "expected": "commit_unknown"
+    },
+    {
+      "name": "ordinary未知仍保留额度",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "ordinary未知不可重新提交",
+      "observed": "commit_unknown",
+      "expected": "commit_unknown"
+    },
+    {
+      "name": "ordinarynot_found不证明已退款",
+      "observed": "still_unknown",
+      "expected": "still_unknown"
+    },
+    {
+      "name": "ordinary查原错记录不解未知",
+      "observed": "stored_conflict",
+      "expected": "stored_conflict"
+    },
+    {
+      "name": "ordinary错记录仍保留额度",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "ordinary查原恢复既有提交",
+      "observed": "history_resolved",
+      "expected": "history_resolved"
+    },
+    {
+      "name": "ordinary已退款活集合为空",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "ordinary原ID不能复用",
+      "observed": "identity_used",
+      "expected": "identity_used"
+    },
+    {
+      "name": "ordinary正常会话复用额度",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "ordinary重复采用仅历史",
+      "observed": "query_original",
+      "expected": "query_original"
+    },
+    {
+      "name": "ordinary旧ACK不退款新准备",
+      "observed": [
+        "next"
+      ],
+      "expected": [
+        "next"
+      ]
+    },
+    {
+      "name": "ordinaryACK后退役不二次退款",
+      "observed": "already_released",
+      "expected": "already_released"
+    },
+    {
+      "name": "ordinary正常确认采用",
+      "observed": "released",
+      "expected": "released"
+    },
+    {
+      "name": "ordinary退役先到",
+      "observed": "released",
+      "expected": "released"
+    },
+    {
+      "name": "ordinary退役后迟到ACK",
+      "observed": "already_released",
+      "expected": "already_released"
+    },
+    {
+      "name": "ordinary重算采用仍错绑定:prepare_id",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "ordinary重算采用仍错绑定:reserved_bytes",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "ordinary重算采用仍错绑定:encoding_reservation_ref",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "ordinary重算采用仍错绑定:ack_frame_digest",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "ordinary元数据释放前登记",
+      "observed": "released",
+      "expected": "released"
+    },
+    {
+      "name": "ordinary活字节退款不扩元数据",
+      "observed": "metadata_full",
+      "expected": "metadata_full"
+    },
+    {
+      "name": "ordinary可信上下文全为合成的限制",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "cancelReleaseRequest正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancelReleaseRequest根拒绝",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:release_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:revision",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:binding",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:prepare_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:encoding_authorization_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:encode_message_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:encode_frame_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:revocation_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:selected_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest缺:request_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseRequest额外字段",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancelReleaseAck根拒绝",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:release_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:binding",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:prepare_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:release_message_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:release_frame_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:disposed_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:state",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:encoder_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:consumers_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck缺:cache_empty",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAck额外字段",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption正例",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancelReleaseAdoption根拒绝",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:adoption_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:revision",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:binding",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:prepare_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:release_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:ack_message_id",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:ack_frame_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:encoding_reservation_ref",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:reserved_bytes",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:received_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:committed_tick_ns",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption缺:adoption_digest",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelReleaseAdoption额外字段",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING帧",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancelRELEASE_ENCODING非法seq:'0'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING非法seq:'01'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING非法seq:'1\\n'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING非法seq:'100000000000000000000'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING非法seq:1",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING_ACK帧",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancelRELEASE_ENCODING_ACK非法seq:'0'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING_ACK非法seq:'01'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING_ACK非法seq:'1\\n'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING_ACK非法seq:'100000000000000000000'",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancelRELEASE_ENCODING_ACK非法seq:1",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancel未清空不可ACK:encoder_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancel未清空不可ACK:consumers_quiescent",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancel未清空不可ACK:cache_empty",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancel原请求关联",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "cancel原ACK关联",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "cancel重算请求仍错来源:prepare_id",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "cancel重算请求仍错来源:encoding_authorization_ref",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "cancel重算请求仍错来源:encode_message_id",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "cancel重算请求仍错来源:encode_frame_digest",
+      "observed": "prepare_source",
+      "expected": "prepare_source"
+    },
+    {
+      "name": "cancel撤回原件错配",
+      "observed": "request_source",
+      "expected": "request_source"
+    },
+    {
+      "name": "cancel请求跨设备会话",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "cancelACK错配:release_ref",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "cancelACK错配:prepare_id",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "cancelACK错配:release_message_id",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "cancelACK错配:release_frame_digest",
+      "observed": "ack_binding",
+      "expected": "ack_binding"
+    },
+    {
+      "name": "cancelACK时间:49",
+      "observed": "ack_time",
+      "expected": "ack_time"
+    },
+    {
+      "name": "cancelACK时间:53",
+      "observed": "ack_time",
+      "expected": "ack_time"
+    },
+    {
+      "name": "cancelACK错误reply",
+      "observed": "direction",
+      "expected": "direction"
+    },
+    {
+      "name": "cancelACK跨进程",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "cancel消费者一借用",
+      "observed": "borrowed",
+      "expected": "borrowed"
+    },
+    {
+      "name": "cancel消费者二借用",
+      "observed": "borrowed",
+      "expected": "borrowed"
+    },
+    {
+      "name": "cancel释放前已入流",
+      "observed": "in_flight",
+      "expected": "in_flight"
+    },
+    {
+      "name": "cancel释放安装墓碑",
+      "observed": "closing",
+      "expected": "closing"
+    },
+    {
+      "name": "cancel晚借用拒绝",
+      "observed": "prepare_closed",
+      "expected": "prepare_closed"
+    },
+    {
+      "name": "cancel等待时重投仍等待",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "cancel已借未发也阻止",
+      "observed": "prepare_closed",
+      "expected": "prepare_closed"
+    },
+    {
+      "name": "cancel编码和双借用未清",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "cancel编码完成丢弃",
+      "observed": "discarded",
+      "expected": "discarded"
+    },
+    {
+      "name": "cancel仍有消费者",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "cancel归还首消费者",
+      "observed": "returned",
+      "expected": "returned"
+    },
+    {
+      "name": "cancel第二消费者仍阻ACK",
+      "observed": "waiting",
+      "expected": "waiting"
+    },
+    {
+      "name": "cancel归还末消费者",
+      "observed": "returned",
+      "expected": "returned"
+    },
+    {
+      "name": "cancel全部清空原ACK",
+      "observed": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.cancel",
+            "revision": "1",
+            "digest": "sha256:b7e1fa2f4f1fa005c7a06009f21bea78a3cd4d534e7a7dceb501ddf048758588"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-cancel",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:f0d6d7d89d36272e9006ec952e36a614cd8bf42ab923d66b312f7549ecd4cdfb",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      },
+      "expected": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.cancel",
+            "revision": "1",
+            "digest": "sha256:b7e1fa2f4f1fa005c7a06009f21bea78a3cd4d534e7a7dceb501ddf048758588"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-cancel",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:f0d6d7d89d36272e9006ec952e36a614cd8bf42ab923d66b312f7549ecd4cdfb",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      }
+    },
+    {
+      "name": "cancel活字节已清",
+      "observed": false,
+      "expected": false
+    },
+    {
+      "name": "cancel在途设备效果仍保留",
+      "observed": [
+        "transport"
+      ],
+      "expected": [
+        "transport"
+      ]
+    },
+    {
+      "name": "cancel重复释放只查",
+      "observed": "cached_ack",
+      "expected": "cached_ack"
+    },
+    {
+      "name": "cancel重复ACK不改tick",
+      "observed": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.cancel",
+            "revision": "1",
+            "digest": "sha256:b7e1fa2f4f1fa005c7a06009f21bea78a3cd4d534e7a7dceb501ddf048758588"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-cancel",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:f0d6d7d89d36272e9006ec952e36a614cd8bf42ab923d66b312f7549ecd4cdfb",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      },
+      "expected": {
+        "controller_boot_id": "controller-boot",
+        "worker_boot_id": "worker-boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "ipc_version": "ipc/0.12.0-encoding-release-draft.1",
+        "type": "RELEASE_ENCODING_ACK",
+        "message_id": "release.ack",
+        "reply_to": "release.request",
+        "seq": "3",
+        "body": {
+          "release_ref": {
+            "id": "release.cancel",
+            "revision": "1",
+            "digest": "sha256:b7e1fa2f4f1fa005c7a06009f21bea78a3cd4d534e7a7dceb501ddf048758588"
+          },
+          "binding": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "controller_boot_id": "controller-boot",
+            "worker_boot_id": "worker-boot",
+            "writer_exit_id": "exit",
+            "ipc_session_id": "ipc",
+            "device_id": "device",
+            "device_session_id": "device-session",
+            "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+            "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+          },
+          "prepare_id": "prepare-cancel",
+          "release_message_id": "release.request",
+          "release_frame_digest": "sha256:f0d6d7d89d36272e9006ec952e36a614cd8bf42ab923d66b312f7549ecd4cdfb",
+          "disposed_tick_ns": "51",
+          "state": "released",
+          "encoder_quiescent": true,
+          "consumers_quiescent": true,
+          "cache_empty": true
+        }
+      }
+    },
+    {
+      "name": "cancel释放后永久拒借用",
+      "observed": "prepare_closed",
+      "expected": "prepare_closed"
+    },
+    {
+      "name": "cancel换释放原帧冲突",
+      "observed": "release_conflict",
+      "expected": "release_conflict"
+    },
+    {
+      "name": "cancel冲突关闭通道",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancel无释放不能清空",
+      "observed": "not_closing",
+      "expected": "not_closing"
+    },
+    {
+      "name": "cancel墓碑先到",
+      "observed": "closing",
+      "expected": "closing"
+    },
+    {
+      "name": "cancel后到设备调用无借用",
+      "observed": "no_borrow",
+      "expected": "no_borrow"
+    },
+    {
+      "name": "cancel过去tick拒绝",
+      "observed": "clock_order",
+      "expected": "clock_order"
+    },
+    {
+      "name": "cancel截止后仍能清理",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancel原缓存丢失不能清理证明",
+      "observed": "request_source",
+      "expected": "request_source"
+    },
+    {
+      "name": "cancel缓存丢失后不造ACK",
+      "observed": "session_closed",
+      "expected": "session_closed"
+    },
+    {
+      "name": "cancel无可信ACK拒退款",
+      "observed": "ack_source",
+      "expected": "ack_source"
+    },
+    {
+      "name": "cancel无ACK保留额度",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "cancel先满额度",
+      "observed": "capacity",
+      "expected": "capacity"
+    },
+    {
+      "name": "cancel采用回滚",
+      "observed": "rolled_back",
+      "expected": "rolled_back"
+    },
+    {
+      "name": "cancel回滚全状态不变",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "cancel采用未知",
+      "observed": "commit_unknown",
+      "expected": "commit_unknown"
+    },
+    {
+      "name": "cancel未知仍保留额度",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "cancel未知不可重新提交",
+      "observed": "commit_unknown",
+      "expected": "commit_unknown"
+    },
+    {
+      "name": "cancelnot_found不证明已退款",
+      "observed": "still_unknown",
+      "expected": "still_unknown"
+    },
+    {
+      "name": "cancel查原错记录不解未知",
+      "observed": "stored_conflict",
+      "expected": "stored_conflict"
+    },
+    {
+      "name": "cancel错记录仍保留额度",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "cancel查原恢复既有提交",
+      "observed": "history_resolved",
+      "expected": "history_resolved"
+    },
+    {
+      "name": "cancel已退款活集合为空",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "cancel原ID不能复用",
+      "observed": "identity_used",
+      "expected": "identity_used"
+    },
+    {
+      "name": "cancel正常会话复用额度",
+      "observed": "reserved",
+      "expected": "reserved"
+    },
+    {
+      "name": "cancel重复采用仅历史",
+      "observed": "query_original",
+      "expected": "query_original"
+    },
+    {
+      "name": "cancel旧ACK不退款新准备",
+      "observed": [
+        "next"
+      ],
+      "expected": [
+        "next"
+      ]
+    },
+    {
+      "name": "cancelACK后退役不二次退款",
+      "observed": "already_released",
+      "expected": "already_released"
+    },
+    {
+      "name": "cancel正常确认采用",
+      "observed": "released",
+      "expected": "released"
+    },
+    {
+      "name": "cancel退役先到",
+      "observed": "released",
+      "expected": "released"
+    },
+    {
+      "name": "cancel退役后迟到ACK",
+      "observed": "already_released",
+      "expected": "already_released"
+    },
+    {
+      "name": "cancel重算采用仍错绑定:prepare_id",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "cancel重算采用仍错绑定:reserved_bytes",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "cancel重算采用仍错绑定:encoding_reservation_ref",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "cancel重算采用仍错绑定:ack_frame_digest",
+      "observed": "adoption_binding",
+      "expected": "adoption_binding"
+    },
+    {
+      "name": "cancel元数据释放前登记",
+      "observed": "released",
+      "expected": "released"
+    },
+    {
+      "name": "cancel活字节退款不扩元数据",
+      "observed": "metadata_full",
+      "expected": "metadata_full"
+    },
+    {
+      "name": "cancel可信上下文全为合成的限制",
+      "observed": null,
+      "expected": null
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/build_open_plan.py": "af3f9aec5e612e51a9400152500345c3ac245286f6001586e4324376b246b950",
+    "docs/contracts/c08-controller/open_plan_model.py": "f25c978c57bc5bbaf42e4f5ff863ed4f4ba7e5b688d934bedf97bb99f1e691b7",
+    "docs/contracts/c08-controller/check_open_plan.py": "eeb82dc84f694a6d55db78c66cc6bad95464c8d844334a4794b2c4689617e9eb",
+    "docs/contracts/c08-controller/open-plan.schema.json": "e4db1c77171c540a822fb0b154b0018ac03d1ba1e001d2f700c740c227b4bc33",
+    "docs/contracts/c08-controller/OPEN_PLAN.md": "d79c2595837fdb0fe7299253c6d39a973c723cc3da58b254763818ea8dd058dd",
+    "docs/contracts/c08-controller/GATE_ORDER.md": "c223a9bf30bc3f3a9b36a73b4cd83f7e6304c8bd0eb29fc1c46651ff9c261b21",
+    "docs/contracts/c08-controller/PROTECTION_OUTBOX.md": "0c90f262df8a15121f0ac3326fcd036fdd1f80f04e59b83623301c17bb48a8bd",
+    "docs/contracts/df03-service/ipc.schema.json": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2",
+    "docs/contracts/c08-controller/OPEN_LIFECYCLE.md": "113fb88f7c75bd1221f2f8c768b9aa1ebe0c8d41f69db0eaac1034b17840a4d2",
+    "docs/contracts/c08-controller/build_open_lifecycle.py": "a477b9f796a73a2e7ac699db8e0a518f1376c35e83f7228434f622608a086e8c",
+    "docs/contracts/c08-controller/open_lifecycle_model.py": "61fb3d00a9c8cf2cc450420b10e6bbbf1c259757039483a3046124dcc0f7b4c8",
+    "docs/contracts/c08-controller/check_open_lifecycle.py": "104f73dddc913edb013e0d0a4e81f8f3fa8a9ef50cdeee4e85fac42e207226de",
+    "docs/contracts/c08-controller/open-lifecycle.schema.json": "db505ee18e30c38d2a152515113a84e0e1f1eb11b43b8bf98f87de103f20f794",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/resource.sql": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c02-command-view/storage.sql": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da",
+    "docs/contracts/c08-controller/issue-ledger.sql": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285",
+    "docs/contracts/c08-controller/build_issue_ledger.py": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/cancel-fence.sql": "559a918a21b95e4e3f293bf888f68a694b12fe6560e84c4786789d02aa5493b5",
+    "docs/contracts/c08-controller/build_cancel_fence.py": "cbba07f9548d0b09fc765ee749e74ca2d777977544782cb4200105a4d7524f1d",
+    "docs/contracts/c08-controller/cancel-resource.sql": "3ace3a1a067791527f772ba662ede9776df8e4472244f93b2ac479a6d7e0d86d",
+    "docs/contracts/c08-controller/build_cancel_resource.py": "41a36379b491898284e3dfd17f4910c61316944a4da1fc6db5e2997701b6f519",
+    "docs/contracts/c08-controller/cancel-closure.sql": "9c54e6e27aa9358dec23f662a4631c4ab8134459853de028abeb8e0489ef4d0a",
+    "docs/contracts/c08-controller/build_cancel_closure.py": "b7f95e571096830e08fa12d4eb6e6388515e2cd8a9def5b0c04ceadbdcef099e",
+    "docs/contracts/c08-controller/cancel-plan.sql": "77b941c6d6adbf0f9aea2be8ad0f733b5bebec5281c9d634e406f3b9395da601",
+    "docs/contracts/c08-controller/build_cancel_plan.py": "b23f81233561b474f53de8ab834fb9835864cbd16c259c24986712fe478a8170",
+    "docs/contracts/c08-controller/protected-hold.sql": "d9bd6bf9822188a38aba0d01a262bad94b9fd8e59da150ab2c175080668286b4",
+    "docs/contracts/c08-controller/build_protected_hold.py": "05f7dc2d9006c7e815354e07210f1e145a9650e9102f3b7c3df7d208fea0f67a",
+    "docs/contracts/c08-controller/result-dependency.sql": "c00d780d7309e94da0f4ea220ef6ced307ae09343a1060c98467e7b7e61f2c8b",
+    "docs/contracts/c08-controller/build_result_dependency.py": "76e91a4474668907af03ef16375b974993fe3e28debc083e60092256dc689dfe",
+    "docs/contracts/c08-controller/protection-outbox.sql": "2900b431e8a006bcee7ce1d760e41975403f0a3000c72bb7d6a035c140de45eb",
+    "docs/contracts/c08-controller/build_protection_outbox.py": "bac338eca473705a08b216fc41d00cbe732a0c953e881501b1923e1b39023b01",
+    "docs/contracts/c08-controller/build_control_storage.py": "766797716adb9ea8f8850c674d86247840d0637991cd9a1e0945cfddd9ffc46f",
+    "docs/contracts/c08-controller/build_control_fence.py": "99da9e8145cb4bd2d9f538926f876d2856fe4aef4e994d234ad69df1febbd0f4",
+    "docs/contracts/c08-controller/control-fence.sql": "6787ff44baa87b1118f84a32f5da6021248696e3402a2821ec44440f673eb50a",
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/check_barrier_attempt.py": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b",
+    "docs/contracts/c08-controller/RESOURCE_STORAGE.md": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa",
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
+    "docs/contracts/c08-controller/check_resource.py": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267",
+    "docs/contracts/c08-controller/check_command.py": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-command-view/check_storage.py": "ca89ed5f7ef5111ea897cf6c5f23b8dd10380afed0daf5cbc519cd092e97ae16",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c08-controller/controller-issue.sql": "1bceb2564b08afbbd5b6e1ea61f64b6c69b16bebf067cda23e239932d60d4c5b",
+    "docs/contracts/c08-controller/ISSUE_LEDGER.md": "e20988ec1d3fbcefe2eaee160c4be7a0b576c3b6aaf63e3013616deb90d6cb3c",
+    "docs/contracts/c08-controller/check_issue_ledger.py": "9345d6f1ce16150b62f77e137d917a90d07f013aab062140960e0031fceb037b",
+    "docs/contracts/c08-controller/controller-cancel-fence.sql": "54af09ffcbc6ebc959025fad1954b12bc9153fa7795016c4bcd3c42ac5c32fcd",
+    "docs/contracts/c08-controller/CANCEL_FENCE.md": "8a2a35d0dce59951a9db74b3a41cc115e8560b8170135fbb5364812aa67d68fe",
+    "docs/contracts/c08-controller/check_cancel_fence.py": "f7aab87c739236d2215bb22754e182d8e1131ae582bfd996f07925f12a83495f",
+    "docs/contracts/c08-controller/controller-cancel-resource.sql": "9305bbd31226cca764dd4bfd92e9b41f5895c6c524d41d3ff0f9e60b58429caa",
+    "docs/contracts/c08-controller/CANCEL_RESOURCE.md": "af5e2ab040a673863431f11ec40b706082c838fa63c1c6dc50ca180219f5d11c",
+    "docs/contracts/c08-controller/check_cancel_resource.py": "b7a105462c796d0c811f2530066a585cfc0c450eb04d103815aa25a2df17aa36",
+    "docs/contracts/c08-controller/controller-cancel-closure.sql": "9da2f05085edf9a504cfb3d12489f109a7b7ae15eb5d767c0ca6a5cd33f03fd2",
+    "docs/contracts/c08-controller/CANCEL_CLOSURE.md": "2fe6eeef15a2acbf2a75003384ac30e617f288c6d547bb1d6912369cc58e3ed2",
+    "docs/contracts/c08-controller/check_cancel_closure.py": "5c599e539e128c89aa200764fd4beeabfc94284507950c654afe49071ea0c12b",
+    "docs/contracts/c08-controller/controller-cancel-plan.sql": "e08ac8d2e568bd23a70447033ff51bfa6659b840a235c1c2aa16ae0d59f05a7f",
+    "docs/contracts/c08-controller/CANCEL_PLAN.md": "a6565fd8b1b60ea5c690496a50fc9e2915b501b61c61b34c97c4704173321f3b",
+    "docs/contracts/c08-controller/check_cancel_plan.py": "9ef02f2ccee3b5e9037c372315d69a7533f899a2ea089112863c2a3427df0588",
+    "docs/contracts/c08-controller/controller-protected-hold.sql": "464f6a9cdfebd2bf602b57c810c4131e66811eecdc9239930ea5f817624b1f21",
+    "docs/contracts/c08-controller/PROTECTED_HOLD.md": "9996711cc4a934207c36ad7d28a0dc3fcec903c9f7524f21b62fddb3462e92b7",
+    "docs/contracts/c08-controller/check_protected_hold.py": "7884bbd5df6f4c4b199d32b9b0974c7e350e72a08c3fd3d60475e44e49a095db",
+    "docs/contracts/c08-controller/controller-result-dependency.sql": "83fa4576c831417d6ee6a6df93457e3b904946159a6f34a6e0b2f818b2816569",
+    "docs/contracts/c08-controller/RESULT_DEPENDENCY.md": "7ae41846323bfe005a1f776f92489bcc6134f683c242745dfc5f0a631009fb8e",
+    "docs/contracts/c08-controller/check_result_dependency.py": "be0013474e5babf69d7a8e45c2107527c2bc7dde88e252f75a71cf230f5b88d3",
+    "docs/contracts/c08-controller/check_control_storage.py": "7bcd8bd90894bd6aca8af522fcc362d3f8189a27a7658a32d31cef4d2d7eb155",
+    "docs/contracts/c08-controller/check_control_fence.py": "b951c58e10b047e23c73092bc8e1ed8c401ead20b08126b1c26355fc069f3658",
+    "docs/contracts/c08-controller/controller-control-fence.sql": "f6cbfd06f20cebb717c5a6f4c104905aab3655aba6511ad18cf9a95158f12d56",
+    "docs/contracts/c08-controller/CONTROL_FENCE.md": "dc6b2c27a3e4e3b7631ebcdfcda612f778d31a17fdf86a11f042d9062595bdad",
+    "docs/contracts/c08-controller/build_open_storage.py": "c41aa31cf6b303583bf6ad8336a1dac31be4be815d04af8f0bfb01f1347e68a5",
+    "docs/contracts/c08-controller/open-storage.sql": "87f4c584b6abb1c8b5bc5abb1597d00d00c749835cd66d8519d14fcd343ef997",
+    "docs/contracts/c08-controller/OPEN_STORAGE.md": "101e637afc992393a2c66d8e2f6ff2f3cd8951cf9d544b913052b511e1e4a5cf",
+    "docs/contracts/c08-controller/check_open_storage.py": "5a1300af8cf9aee93f4e9648216f280f09c228dab74c80fe6b578967f684510e",
+    "docs/contracts/c08-controller/controller-open.sql": "cf12bfd2bb2a5f424de714ce79c61fea2447ac75571cb80e6240f1b0cf3e2ca8",
+    "docs/contracts/c08-controller/FINAL_ADMISSION.md": "93548617477367dc915f93cccb8ce20f2f959c19325881b46c7ce06b74762025",
+    "docs/contracts/c08-controller/build_hold_ownership.py": "7d5e0cf05d731e7de2a9b48cf02fdec2f593db863d5c606a77b942c11748b0ee",
+    "docs/contracts/c08-controller/hold_ownership_model.py": "5bc3540f0826be4131ca79e4257e7c4199fd7ebd21f8784ec7b8fad4ae7b4afd",
+    "docs/contracts/c08-controller/hold-ownership.schema.json": "ffb08897f535a79547466ee0080f72de3da5eff918bf6f0d80db829eccf0deba",
+    "docs/contracts/c08-controller/check_hold_ownership.py": "bf8c5ed34739e80bc9b80b6ef68f73e3be79baf2228bfb0fa342118029b96acf",
+    "docs/contracts/df03-reference/README.md": "0d29e0e977a74f3d98b5fe66acf7628230e3d1f0221efd5c64a13369a3e667b3",
+    "docs/contracts/df03-reference/build_contracts.py": "9e5801a567d8cd5f5181ccbcb68cc3be082cdac4010ff9fd737e3d0125bebb8b",
+    "docs/contracts/df03-reference/reference.schema.json": "a5265f970647ab31a2289339b3c4dac17873e17dbf74b7dc2b4f115d02946a40",
+    "docs/contracts/df03-reference/reference_model.py": "40d0dd9295c65499072a1c9fdc993d27f10b497a456334f48a8171bf59c32a2f",
+    "docs/contracts/df03-reference/check_contracts.py": "33ff456fecc9301da66d9d05bc5fad616ce58e1df1a6a7c037b2734607e9c872",
+    "docs/rebirth-df03-time-profile-design.md": "88608760e8c740bd76d264f3363f0bd9f6d123adb7fa4e4dc6d3890f200ba918",
+    "docs/contracts/c05-protection/PROTOCOL.md": "07f3b408b39e54acd90c3925b7bc8d55fa6de33db62f0c87d43460cb6f0f3afe",
+    "docs/contracts/c05-protection/build_protocol.py": "da6c252af3e6fcb580f892fce2b2051fadea1d368ca93994f8992c81e61aeae7",
+    "docs/contracts/c05-protection/check_protocol.py": "3c51df2d386c50cae17364fa3c139deb3f9caa062e826e535203e7206ca596d2",
+    "docs/contracts/c05-protection/ipc-v05.schema.json": "c4822441ecbdc034a50bc1fac1fb969551594240634a2e0d6ac2f42ea2da2277",
+    "docs/contracts/c05-protection/protection.openapi.json": "a1e9d53cd9dd4a2ac8ef5b291d23f76a5932e542651408ffe1c6c0911860f089",
+    "docs/contracts/df01-source/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c09-panel-ipc/binding.schema.json": "1a46eb10b421a98c4a971b21b57cf17400e829277de5963b77b2b47b3986b2ed",
+    "docs/contracts/c09-panel-ipc/ipc.schema.json": "48e8a646655ccf3367026bebdc8e9d599225954e9fcad67f73465dd2ef88a740",
+    "docs/contracts/c05-protection/protection.schema.json": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72",
+    "docs/contracts/c09-panel-ipc/cases.json": "8a6ff69620cefa99c2e1e92427d166f8e1918ce647373e76668d667b748bf391",
+    "docs/contracts/c09-panel/channel-v02.schema.json": "f6e71178af8ffc8a8d784aab1416a0a4e30fedbc589e2032171f9a9581b64a1f",
+    "docs/contracts/c08-controller/build_execution_ipc.py": "ae36c783e0ce39fb1b86275b3578f474e6f8eaad4080dd2f9eef3207a7daf3ae",
+    "docs/contracts/c08-controller/execution-ipc.schema.json": "23c8603fd6f05fc4c445f318a99f609c776f1fc79b5df2262d62d2591514b98b",
+    "docs/contracts/c08-controller/check_execution_ipc.py": "183943863074507eb10778cd8d90345d8927821293442090616de8b038ee021d",
+    "docs/contracts/draft4/first-loop.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+    "docs/contracts/c08-controller/lifecycle.schema.json": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46",
+    "docs/contracts/c02-admission/admission.schema.json": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7",
+    "docs/contracts/c02-cancellation/cancellation.schema.json": "5a2c462a3a50d23077d16818751f4d990aa3c833d19ef5548ec3c7ccb9e8cbf3",
+    "docs/contracts/c02-cancellation/ipc.schema.json": "d71b04fec2004ed351b0fb8aa43fb95db7ffc147d98741f3d266f196b7be07ad",
+    "docs/contracts/c02-command-view/README.md": "7ba6bb9790701ef2690f2a0c4882a151b99255507c7d360c8caa349350e740c1",
+    "docs/contracts/c02-cancellation/README.md": "19c0c2df545ac42fbdd62b7045dc812e0f8fd62a98cbc55c387742142cc5b8fa",
+    "docs/contracts/c02-cancellation/build_contracts.py": "137ae07e8603252998745dd6ed818f3287060541abce077301007079a145278f",
+    "docs/contracts/c02-cancellation/reference_model.py": "48926177faee6991c2dfad02099f33661f6574cfb92014d7f7c4a03ea17dea50",
+    "docs/contracts/c02-cancellation/check_contracts.py": "42d7360f87936bfebb915f23176843101d50e0f4002d2c96805ea3ea4683617e",
+    "docs/contracts/df03-service/README.md": "fc44300f1c032154a788a284ec10d8eb1ebd9029dc7502d49da2d21f90e1280f",
+    "docs/contracts/df03-service/build_contracts.py": "f5d03021aad382e08fe5d2939d33032d3d49db69dca86570245f05f14f014c08",
+    "docs/contracts/df03-service/reference_model.py": "60ed04f0216af54ffe7bffd10db2651504e49bbd1033c896820708804cc21d28",
+    "docs/contracts/df03-service/check_contracts.py": "a3294467db9857c41de304c3420208720c4efc2247df36615d341aa63335726e",
+    "docs/contracts/df03-service/time.schema.json": "fab54dd7ac9e57a4e581c74cd3049d5b855bae05e566242edd4d13e2574c2885",
+    "docs/contracts/df03-service/public.openapi.json": "e08fad77fdffacc5afd7ea8d68d0a8c5c6d04259480d4d8f8e46a0db9cd92438",
+    "docs/contracts/df03-service/internal.openapi.json": "060d8fab1d9760af0d1e15fd56280276219d7d4a7e5ca50197ad824cd291bebb",
+    "docs/contracts/df03-service/source-bindings.json": "95434ade1ecff9dc2d2a042d1799ba5bc7f7de97a05f575258bba477ef0644fe",
+    "docs/contracts/c08-controller/SCOPED_GATE.md": "5c128dcaad7a6e86b5fa24392443ad9ad8e275e32148368013c71d9c681c31ed",
+    "docs/contracts/c08-controller/build_scoped_gate.py": "e07d77a27c69198969d34c2dfa6e6c782d3e8b006a738fb2bc83af8c655677fe",
+    "docs/contracts/c08-controller/scoped_gate_model.py": "880eeb34e606c3e26dd9ba4bc86979b37667f24c3376458096e97dad2bace48d",
+    "docs/contracts/c08-controller/check_scoped_gate.py": "cd81417ec7925e7ac6bb098aab15168a27e22f1fdcaa1861b4a79815260adfd8",
+    "docs/contracts/c08-controller/scoped-gate.schema.json": "da9541b4e261aa0d78baeaf759e177cea11ca8188c3cdc067777c96a38c6b147",
+    "docs/contracts/c08-controller/scoped-gate-ipc.schema.json": "a0a318d0f463a0ee74ba1fc6eebc3e1b932a04acb38dcd501d185e56eaf2ae93",
+    "docs/contracts/c08-controller/ENCODING_AUTHORITY.md": "3dfe763f0b176b39ea16cea14e35ec2c2418efd013062d6f95ce6e71adf5a66f",
+    "docs/contracts/c08-controller/build_encoding_authority.py": "7d2ee16ec321ca8519dfb6ed7aa3800b3584594ad856c3e7dfda6d4ed388dc9b",
+    "docs/contracts/c08-controller/encoding_authority_model.py": "4fb997d618e84d716bcad59186275ed769f75b075f4957dc90505504843977cc",
+    "docs/contracts/c08-controller/check_encoding_authority.py": "7e2e44e135658bffc86b2d07b5b5a8cdf5e19cd6b771fb2c18994f24e919282a",
+    "docs/contracts/c08-controller/encoding-authority.schema.json": "d5b362352ff2c8b5a3346491d958ab75aeead6b54d04d4f0fb526587d121c058",
+    "docs/contracts/c08-controller/encoding-authority-ipc.schema.json": "11426f37341d32e5a0a76a784cfcbf4167cdeb8c8b0cfe89a7475df541418ce0",
+    "docs/contracts/c08-controller/gate-renewal-ipc.schema.json": "6adc901ad87a9398cdc9dac1a454ff9df0cf15d4cd31f2480dd23266f0efeea5",
+    "docs/contracts/c08-controller/ENCODING_RELEASE.md": "c36a31f048a73f0847f118c230e6e74f0ff0fe50cfa191ac19bc9909eb8eb415",
+    "docs/contracts/c08-controller/build_encoding_release.py": "6488aefdb92f07088ed1e582029e64e5972a5f2e426d97ccf3df274a91ec3224",
+    "docs/contracts/c08-controller/encoding_release_model.py": "7ac67f6e2b6f4969e56f8dbac3ec9e98131ba73be8e5e1513f1d1b7666b71af5",
+    "docs/contracts/c08-controller/check_encoding_release.py": "12e0e1f1165653c6b3c0dcbfcacf12149e1886c931406a3868a415876dd325bb",
+    "docs/contracts/c08-controller/encoding-release.schema.json": "db8542fb262000ce5a7a82573a47db89469700b47ca47c41493c244dd139e32d",
+    "docs/contracts/c08-controller/encoding-release-ipc.schema.json": "cb492937a62c8e2a3e95b8446e390ed3e1315b0eab6f2ce489b5589a82f57c00",
+    "docs/contracts/c08-controller/ENCODING_STORAGE.md": "d68cebedb93c3802b8ff423e299eedb5e0cd83f5186e81a55d374bbe267f246b",
+    "docs/contracts/c08-controller/encoding-storage.sql": "42f998966397c2d557ce499995d70c8ce67cecec90513de92856e01de274f7b8"
+  }
+}

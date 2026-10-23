@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24转交持久化进展：[117/235表候选](contracts/c04-lifecycle/CONTINUATION_STORAGE.md)已用实际SQLite原件串联来源恢复、新代R2/R4、两个Controller签发、完整采用和R5；140项写集/关系检查通过，旧219项与148项实际回归。仍未完成普通trigger到动作终结的成功链，新grant命令引用及撤回/PQ保护预算接线必须一并交付；当前计划守卫仍拒绝越界复用原准备。身份/时间/资源为合成前提，运行/磁盘/并发/设备未验，阶段0不关闭；本轮第2/3轮，仅本地提交。
+
 2026-10-24继续运行转交进展：[三份原件候选](contracts/c04-lifecycle/CONTINUATION.md)明确全目标人员审批、Controller独立run-generation grant、Seamer在R5前采用及关闭/撤权继承。219项结构和关系检查通过，包括正常新execution使用新grant的关系正例；原109表和Controller组合尚未归并，本轮未执行SQL写集或完整恢复后trigger链，不能据关系模型关闭该缺口。下一步为两库原件持久化、保护预算及逐写故障验证，保留原recovery execution限制。业务未改，阶段0不关闭；本轮第1/3轮，仅本地提交。
 
 2026-10-24来源重新同步进展：[109表候选](contracts/c04-lifecycle/SOURCE_RESYNC.md)新增基线、连续reconcile增量及ready检查点的原子事务，148项离线检查通过；旧floor/缺口和所有预算保留，source变绿不恢复run，R4还须最新来源保护计划当前applied。串联暴露恢复准备仅供原execution而R5回armed的继续运行缺口：已把越界复用拒绝前移计划seal，但必须继续补显式Controller转交/Seamer采用以及恢复后正常trigger成功正例，不能据当前拒绝用例关闭完整恢复。普通存储总容量/GC、完整订阅与观测、AUTH/TIME、真实提供者及唯一SDK仍未齐，阶段0不关闭；本轮为第3/3轮，审查完整周期后推送main。

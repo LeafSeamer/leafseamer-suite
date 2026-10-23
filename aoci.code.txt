@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录RUN资源依赖及退役恢复修订和本周期交付 | R:code:docs/contracts/c08-controller/RUN_RESOURCE.md | A:设计历程与第1轮 | S:71项内存检查不代表在途设备验收；阶段0未关闭，本轮仅本地提交
+DEVELOPMENT_MEMO.md[SO5L]: F:记录准备完成实际绑定及本周期第二轮交付 | R:code:docs/contracts/c08-controller/PREPARATION_COMPLETION.md | A:设计历程与第2轮 | S:阶段0未关闭，真实设备未验，本轮仅本地提交
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总全系统门槛及RUN资源依赖联接后的剩余设计 | R:code:docs/contracts/c08-controller/RUN_RESOURCE.md | A:C01至C12关闭状态 | S:71项内存检查不含在途设备；实际提供者SDK、恢复通知消费者、P1、AUTH/TIME和最终准入仍缺，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总全系统门槛与准备完成物理绑定后的待办 | R:code:docs/contracts/c08-controller/PREPARATION_COMPLETION.md | A:C01至C12关闭状态 | S:71项内存检查不含非空在途综合历史；通知和准备消费者、SDK、P1、AUTH/TIME及完整准入仍缺，阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -629,6 +629,12 @@ check_run_resource.py[TR8S]: F:验证RUN依赖撤回扇出事务故障及资源�
 controller-run-resource.sql[PD9L]: F:承载235表的RUN保护资格与资源来源及关闭恢复组合 | R:code:docs/contracts/c08-controller/build_run_resource.py | A:STRICT表;来源seal;撤回触发链;有效退役 | S:生成物只改源重建；来源撤回和通知同事务，旧释放原件保留；退役只免网络关闭而不省持久目标，阻断不解除
 run-resource-report.json[TR7L]: F:记录71项资源联动内存检查及199输入绑定 | R:code:docs/contracts/c08-controller/check_run_resource.py | A:checks;inputs;SQLite环境与执行范围 | S:approved为false，真实运行并发磁盘设备均未执行；空许可集合不代表在途场景已验
 run-resource.sql[PD9T]: F:封存资源验证的RUN原件来源并传播失效及修正退役恢复资格 | R:code:docs/contracts/c08-controller/protection-delivery.sql,code:docs/contracts/c08-controller/protection-outbox.sql | A:rr_manifest;rr_source;rr_manifest_commit;rr_valid_retirement | S:只采用选中的原ACK或当前完整应用，核同run代次及设备；源通知失败全事务回滚；零依赖和取消结果清单并存，旧ACK消费不退款
+PREPARATION_COMPLETION.md[SD8T]: F:规定准备完成绑定与撤回后的当前保护投影 | R:code:docs/contracts/c08-controller/preparation-completion.sql,code:docs/contracts/c08-controller/check_preparation_completion.py | A:字段与事务、故障顺序、消费者边界 | S:closed历史不复活；当前资格须另查，资源风险不因关闭完成而消失；未交付真实通知或SDK消费者
+build_preparation_completion.py[XD8T]: F:组合237表准备完成候选并检查生成漂移 | R:code:docs/contracts/c08-controller/build_run_resource.py,code:docs/contracts/c08-controller/preparation-completion.sql | A:build、TABLES、SOURCES | S:向原cp_completion注入延迟反向外键；仅追加候选与不可变守卫，不修改旧布局或执行生产迁移
+check_preparation_completion.py[TD8S]: F:验证准备完成来源隔离、撤回顺序与原子失败 | R:code:docs/contracts/c08-controller/build_preparation_completion.py,code:docs/contracts/c08-controller/check_run_resource.py | A:fixture、other_application、run、报告绑定 | S:实际复现旧235表无应用仍closed；新237表加载完整守卫，资源夹具仅未发送取消hold，不能算在途设备验收
+controller-preparation-completion.sql[PD9L]: F:提供准备完成接入RUN与资源权威的237表组合 | R:code:docs/contracts/c08-controller/build_preparation_completion.py,code:docs/contracts/c08-controller/preparation-completion.sql | A:组合表、有效视图、同事务触发器 | S:保留四最终发送阻断；closed并非当前保护或资源清空，失效追加事件且保留历史；BODY真实性仍属提供者边界，不是生产迁移
+preparation-completion-report.json[TD7L]: F:记录71项准备完成检查及204份输入字节绑定 | R:code:docs/contracts/c08-controller/check_preparation_completion.py | A:checks、inputs、运行范围 | S:approved为false；内存SQLite通过不证明真实服务、并发、磁盘崩溃或设备通过
+preparation-completion.sql[PD9T]: F:绑定本次close的有效应用并投影完成与失效 | R:code:docs/contracts/c04-preparation/preparation.sql,code:docs/contracts/c08-controller/protection-delivery.sql | A:pc_binding、pc_status_event、pc_current、pc_run_risk | S:最后complete重核当前资格；撤回与状态修订同事务，失败全回滚；同RUN另一有效来源不能替换，closed历史及资源占用独立保留
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

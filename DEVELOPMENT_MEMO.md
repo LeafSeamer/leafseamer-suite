@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-24 准备完成到当前保护资格的联接（新周期第2/3轮）
+
+- 上轮本地提交`033568c`，本轮继续main，仅本地commit，第3轮再审查完整周期并推送。五仓rebirth已合入main，其余四仓未提交改动保持原样。
+- [237表候选](docs/contracts/c08-controller/PREPARATION_COMPLETION.md)将cp_completion与本次cp_close实际有效应用双向绑定，最后complete提交再次检查准备Closure和完整出口资格。新增不可变完成状态事件及当前读模型；历史closed不复活，证明撤回投影indeterminate，资源占用单独保留。
+- 71项内存SQLite检查及204输入绑定通过，实际复现旧235表缺ce_application仍能closed。覆盖实际编码准备关闭、三类撤回及提交交错、完整写集缺写/逐写异常、同RUN其他有效HTTP或close回执拒用、状态事件失败回滚和未发送取消hold保留。原RUN资源199输入仍匹配，仅字节复核，未重跑旧用例。
+- 当前闭环不再依赖cp_completion非空BODY冒充真实应用。通知投递、GUI/API和P4准备消费者、close先到与非空在途综合历史、唯一SDK/可信提供者、P1计划、AUTH/TIME及完整AdmissionSeal/Guard/预算/时间继续待落实。四最终发送阻断保留；业务未改，真实服务/IPC/并发/磁盘/设备未验，阶段0未关闭。
+
 ## 2026-10-24 RUN证明到资源失效的联接（新周期第1/3轮）
 
 - 上周期三次提交已推送，起点为`d998d2f`。本轮继续main，仅本地commit；第3轮再审查并推送，其他四仓改动保持原样。

@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24准备完成进展：[237表候选](contracts/c08-controller/PREPARATION_COMPLETION.md)把cp_completion反向绑定本cp_close的真实当前RUN应用，最后complete提交再次核准备Closure及完整出口；证明撤回同事务追加状态修订，保留历史closed与applied回执，当前保护投影indeterminate，资源hold不隐式释放。71项内存SQLite检查及204输入绑定通过，实际复现旧235表缺应用仍能closed，并检查三类撤回、提交交错、缺写/逐写异常、同RUN不同有效来源隔离及事件失败回滚。原RUN资源199输入仍匹配，仅核字节，未重跑旧用例。准备closed的实际SQL引用不再缺失；下一步仍须接真实通知和GUI/API/P4准备消费者、唯一SDK与提供者、P1计划、AUTH/TIME、剩余共享消息和完整AdmissionSeal/Guard/预算/时间。close先到及非空在途综合历史未跑，真实服务/IPC/并发/磁盘/设备未验；四最终发送阻断保留，业务未改，阶段0未关闭。本轮为新周期第2/3轮，仅本地提交。
+
 已知事实：Q1—Q72、F02—F07、TS01—TS05、NF01—NF03及draft.4／IPC 0.3已确认。后续DF及C专题的新推荐仍待审阅；自动续跑、文档成文、参考检查通过均不产生产品批准。每轮本地commit已获授权，推送、发布、部署与真实设备操作按各自授权处理。（依据：[决策原文](rebirth-design.md)、[实施清单](rebirth-readiness.md)、[开发记录](../DEVELOPMENT_MEMO.md)。）
 
 来源盘点已覆盖18个旧bundle：设备8个、排期5个、其他系统5个。DM3的184行已形成来源清单，但参数资格、完成证据及运行支持尚未逐项批准。“已盘点”与“逐项设计冻结”分开记账，不再次安排已经完成的目录盘点。（依据：[设备表](rebirth-legacy-device-map.md)、[排期表](rebirth-legacy-schedule-map.md)、[其他系统表](rebirth-legacy-system-map.md)、[DM3清单](contracts/c11-audio/README.md)。）

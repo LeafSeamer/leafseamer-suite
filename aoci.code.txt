@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录取消资源核销与本周期第二轮交付 | R:code:docs/contracts/c08-controller/CANCEL_RESOURCE.md | A:设计历程与三轮提交计数 | S:前轮944fcc5仅本地；本轮129项及旧184和272项内存回归不证明运行。完整关闭原件与TIME仍缺，业务未实现
+DEVELOPMENT_MEMO.md[SO5L]: F:记录两阶段取消关闭与本周期三轮发布安排 | R:code:docs/contracts/c08-controller/CANCEL_CLOSURE.md | A:设计历程与三轮提交计数 | S:前两轮944fcc5与bab5178；本轮按授权审查后仅推rebirth。251项内存和旧回归不证明运行，完整Plan与TIME仍缺，业务未实现
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统关闭条件并登记取消资源核销已替代临时阻断 | R:code:docs/contracts/c08-controller/CANCEL_RESOURCE.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前剩余项 | S:103表已补完整资源成员与迟到恢复；完整执行Plan和ordinary-all及其他屏障未齐，不重复建已成层。候选未批准运行，全系统设计未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总关闭条件并登记两阶段取消关闭与编码关联进展 | R:code:docs/contracts/c08-controller/CANCEL_CLOSURE.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前剩余项 | S:119表已有关闭原件和资源层，不重复从零建设；完整Plan普通准备Decision与其他屏障仍缺。候选未批准运行，全系统设计未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -467,6 +467,12 @@ cancel-resource-report.json[SQ5L]: F:保存129项取消资源核销内存结果�
 cancel-resource.sql[FD9S]: F:声明取消关闭核销及完整释放四表并扩展失效与风险来源 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/resource.sql | A:完整集合封存与三来源失效触发器 | S:全部历史含已核销项，迟到已发推翻never_sent但不直接推翻效果核销；撤回加入同一资源恢复。关闭仅绑定已提交修订与提供者，完整屏障原件FK仍缺，非生产迁移
 check_cancel_resource.py[TD8S]: F:核验103表释放写集完整性及取消迟到失效和恢复 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/check_cancel_fence.py,code:docs/contracts/c08-controller/check_resource.py | A:129项参考检查与report和staged绑定 | S:缺写主动异常比全库，重传成员预期手写；普通路径亦在新组合验证。反例摘要须不同，BODY合成；44输入核字节不重跑，真实并发耐久未验
 controller-cancel-resource.sql[FD9L]: F:承载103表共享签发RUN覆盖及两类资源核销的固定组合 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/cancel-resource.sql | A:双类别完整释放与迟到失效恢复 | S:替代取消资源阻断但释放后仍禁发；三种强事实同事务重开风险并锁存，不改历史终态。普通all关闭原件及其他屏障与TIME未齐，不能部署
+CANCEL_CLOSURE.md[SD9T]: F:规定两阶段关闭原件及取消编码来源与撤回重取证 | R:code:docs/contracts/c08-controller/cancel-closure.sql,code:docs/contracts/c08-controller/check_cancel_closure.py | A:119表字段写集与剩余冻结边界 | S:ordinary不许公开closed，all冻结新签发；退休不造未发。普通逐出口准备和完整Plan仍缺，BODY非权威证明，不是生产迁移
+build_cancel_closure.py[XD8T]: F:组合103表与关闭原件生成119表并联接公共修订及资源失效 | R:code:docs/contracts/c08-controller/build_cancel_resource.py,code:docs/contracts/c08-controller/cancel-closure.sql | A:build及check与固定替换 | S:旧源不改；两类强事实吸收原ACK，独立失效来源防同名混淆。新ACK禁止在RUN封存窗口激活，生成不执行迁移或取真实权威
+cancel-closure-report.json[SQ5L]: F:保存251项两阶段关闭内存检查及49输入摘要 | R:code:docs/contracts/c08-controller/check_cancel_closure.py | A:119表写集关联与故障结果 | S:批准为false，SQLite非产品批准；真实IPC提供者并发磁盘设备未验，字节绑定不扩大覆盖
+cancel-closure.sql[FD9M]: F:声明关闭切点ACK选择与汇总及取消编码来源十六表约束 | R:code:docs/contracts/c08-controller/build_cancel_closure.py,code:docs/contracts/c08-controller/CANCEL_CLOSURE.md | A:双向配对全集封存与不可逆关闭关联 | S:all冻结新准备和许可，完整历史不省已核销项；失败旧ACK可存强事实但不采用。撤回不复活发送，新汇总须完整选择；普通准备及完整Plan和真实BODY外验，非生产迁移
+check_cancel_closure.py[TD8S]: F:核验关闭编码和公开修订六写集及迟到撤回的119表边界 | R:code:docs/contracts/c08-controller/build_cancel_closure.py,code:docs/contracts/c08-controller/check_cancel_resource.py | A:251项内存检查与report及staged绑定 | S:集合预期手写，缺写主动异常比全库；晚ACK与资源失效同回滚，退休不造未发。BODY合成，49输入核字节不重跑，真实并发磁盘设备未验
+controller-cancel-closure.sql[FD9L]: F:承载119表两阶段关闭编码来源及公开资源联接固定组合 | R:code:docs/contracts/c08-controller/build_cancel_closure.py,code:docs/contracts/c08-controller/cancel-closure.sql | A:共享签发RUN及取消关闭和资源恢复 | S:closed必须有效all原件，撤回隐藏当前而保留历史并重开资源；新汇总不重放动作。普通准备与完整Plan及其他屏障TIME未齐，不能部署
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/source-budget.schema.json",
+  "title": "source-budget-admission/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "Admission": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "source-budget-admission/0.1.0-draft.1"
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "expected_source_revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "source_key_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "pool_profile_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "episodes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "request_epoch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "actor": {
+          "type": "object",
+          "properties": {
+            "principal_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "principal_id"
+          ],
+          "additionalProperties": false
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "source_id",
+        "expected_source_revision",
+        "source_key_digest",
+        "pool_profile_digest",
+        "episodes",
+        "request_epoch",
+        "actor",
+        "idempotency_key"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

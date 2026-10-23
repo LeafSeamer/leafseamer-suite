@@ -20,9 +20,9 @@ def alter(steps,changes):
         values.update(changes.get(table,{}));result.append(I(table,**values))
     return result
 
-def controller_seed(p):
+def controller_seed(p,sql_factory=G.controller_sql):
     d=sqlite3.connect(':memory:',isolation_level=None);d.row_factory=sqlite3.Row
-    d.execute('PRAGMA foreign_keys=ON');d.execute('PRAGMA recursive_triggers=ON');d.executescript(G.controller_sql().decode())
+    d.execute('PRAGMA foreign_keys=ON');d.execute('PRAGMA recursive_triggers=ON');d.executescript(sql_factory().decode())
     sc=dict(authority_service_id=p['controller_authority'],database_instance_id=p['controller_database'])
     d.execute('INSERT INTO controller_scope VALUES(1,?,?,?)',(*M.M.scope_key(sc),'controller-storage/0.1.0-draft.1'));d.execute('INSERT INTO cr_limit VALUES(1,8)')
     for steps in (PRE.register(preparation=p['preparation_id'],generation=p['generation'],run=p['run_id']),PRE.change()):
@@ -40,8 +40,8 @@ def controller_seed(p):
     t=dict(controller_scope=sc,preparation_ref=ref(sc,p['preparation_id'],p['request_digest']),recovery_grant_ref=ref(sc,'grant.p',PRE.DIGEST),devices=devices)
     return d,t
 
-def fixture():
-    d,oldq,ctx,ts=S.T.fixture(sql_factory=G.seamer_sql)
+def fixture(*,seamer_factory=G.seamer_sql,controller_factory=G.controller_sql):
+    d,oldq,ctx,ts=S.T.fixture(sql_factory=seamer_factory)
     d.execute('INSERT INTO rc_limit VALUES(1,8)');d.execute("INSERT INTO rs_limit VALUES(1,'simulation',64,8)")
     ctx.update(delivery_current=True,delivery_ref=S.ref('delivery'),snapshot_verified=True,snapshot_ref=S.ref('snapshot'),continuity_verified=True,
         event_ref=S.ref('event.11'),checkpoint_verified=True,checkpoint_ref=S.ref('checkpoint'))
@@ -54,7 +54,7 @@ def fixture():
         ("UPDATE step_state SET state='finished',outcome='succeeded',terminal_id='terminal',revision='2' WHERE execution_id=?",(rq['execution_id'],))])
     q,a,receipts,s,cs,cmd=V.fixture();cds={};targets=[]
     for p in P.rows(d,"SELECT * FROM p1_preparation WHERE generation='2' ORDER BY controller_authority,controller_database"):
-        cd,t=controller_seed(p);targets.append(t);cds[M.M.scope_key(t['controller_scope'])]=(cd,None)
+        cd,t=controller_seed(p,controller_factory);targets.append(t);cds[M.M.scope_key(t['controller_scope'])]=(cd,None)
     sc=dict(authority_service_id='seamer',database_instance_id='db')
     q=M.M.seal(dict(q,origin_scope=sc,run_id='r0',generation='2',recovery_operation_id=rq['operation_id'],recovery_execution_id=rq['execution_id'],
         continuation_plan_ref=ref(sc,'continued.plan'),approval_ref=ref(sc,'continued.approval'),targets=targets),'request_digest')

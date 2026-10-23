@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24继续运行普通触发进展：[119/236表联接候选](contracts/c04-lifecycle/CONTINUATION_TRIGGER.md)已串联来源恢复、独立grant采用、恢复R5及之后连续两次双动作普通trigger；156项内存SQLite检查通过，原140项持久化检查实际回归。新计划/命令明确绑定新grant与采用，原恢复准备和run保护归属不变；Controller撤回阻止新受理/attempt，Seamer撤回原件、两Controller完整PQ计划和受损代预算同事务封存。此前“缺普通trigger成功链”的局部参考模型缺口已补，但完成证据和受理基础字段仍为合成，不能等同真实设备恢复。统一Schema/API/IPC与最终SDK、真实提供者、完整容量/GC、通用计划及全功能交付仍未齐；运行/并发/磁盘/网络/设备未验，业务未改，阶段0不关闭。本轮第3/3轮，审查完整周期后推送main。
+
 2026-10-24转交持久化进展：[117/235表候选](contracts/c04-lifecycle/CONTINUATION_STORAGE.md)已用实际SQLite原件串联来源恢复、新代R2/R4、两个Controller签发、完整采用和R5；140项写集/关系检查通过，旧219项与148项实际回归。仍未完成普通trigger到动作终结的成功链，新grant命令引用及撤回/PQ保护预算接线必须一并交付；当前计划守卫仍拒绝越界复用原准备。身份/时间/资源为合成前提，运行/磁盘/并发/设备未验，阶段0不关闭；本轮第2/3轮，仅本地提交。
 
 2026-10-24继续运行转交进展：[三份原件候选](contracts/c04-lifecycle/CONTINUATION.md)明确全目标人员审批、Controller独立run-generation grant、Seamer在R5前采用及关闭/撤权继承。219项结构和关系检查通过，包括正常新execution使用新grant的关系正例；原109表和Controller组合尚未归并，本轮未执行SQL写集或完整恢复后trigger链，不能据关系模型关闭该缺口。下一步为两库原件持久化、保护预算及逐写故障验证，保留原recovery execution限制。业务未改，阶段0不关闭；本轮第1/3轮，仅本地提交。

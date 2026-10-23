@@ -1,0 +1,464 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.org/contracts/time-fence-registry/0.1.0-draft.1/schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Ref": {
+      "$ref": "https://leafseamer.invalid/design/df03-service/ipc.schema.json#/$defs/S11__Ref"
+    },
+    "Domain": {
+      "$ref": "https://leafseamer.invalid/design/df03-service/ipc.schema.json#/$defs/S11__Domain"
+    },
+    "Binding": {
+      "$ref": "https://leafseamer.invalid/design/df03-service/ipc.schema.json#/$defs/S11__Binding"
+    },
+    "Invalidation": {
+      "$ref": "https://leafseamer.invalid/design/df03-service/ipc.schema.json#/$defs/S11__Invalidation"
+    },
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Positive": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Exit": {
+      "type": "object",
+      "properties": {
+        "exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "retired": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "exit_id",
+        "clock_domain_id",
+        "descriptor_digest",
+        "retired"
+      ],
+      "additionalProperties": false
+    },
+    "Issue": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "ordinary",
+            "cancel"
+          ]
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "transmission_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "initial_permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "business_anchor_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_required": {
+          "type": "boolean"
+        },
+        "time_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Binding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "not_sent",
+            "in_flight",
+            "unknown"
+          ]
+        },
+        "resolution": {
+          "enum": [
+            "unresolved",
+            "never_sent",
+            "effect_resolved"
+          ]
+        }
+      },
+      "required": [
+        "permit_id",
+        "kind",
+        "issued_revision",
+        "exit_id",
+        "packet_ref",
+        "transmission_ref",
+        "initial_permit_id",
+        "business_anchor_id",
+        "time_required",
+        "time_binding",
+        "disposition",
+        "resolution"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "time_required": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "time_binding": {
+                "$ref": "#/$defs/Binding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "time_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "business_anchor_id": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "business_anchor_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Registry": {
+      "type": "object",
+      "properties": {
+        "registry_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Positive"
+        },
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issued_head": {
+          "$ref": "#/$defs/Counter"
+        },
+        "exits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Exit"
+          },
+          "maxItems": 1024
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Issue"
+          },
+          "maxItems": 65536
+        },
+        "registry_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "registry_id",
+        "revision",
+        "authority_service_id",
+        "database_instance_id",
+        "issued_head",
+        "exits",
+        "issues",
+        "registry_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Target": {
+      "type": "object",
+      "properties": {
+        "exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "business_anchor_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256
+        },
+        "ordinary_permit_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256
+        },
+        "cancel_permit_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "exit_id",
+        "business_anchor_ids",
+        "ordinary_permit_ids",
+        "cancel_permit_ids"
+      ],
+      "additionalProperties": false
+    },
+    "Cut": {
+      "type": "object",
+      "properties": {
+        "cut_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "operation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "invalidation": {
+          "$ref": "#/$defs/Invalidation"
+        },
+        "registry_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "issued_cut_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Target"
+          },
+          "maxItems": 256
+        },
+        "cut_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "cut_id",
+        "revision",
+        "operation_ref",
+        "invalidation",
+        "registry_ref",
+        "issued_cut_revision",
+        "targets",
+        "cut_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Attempt": {
+      "type": "object",
+      "properties": {
+        "barrier_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "cut_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/Positive"
+        },
+        "previous_barrier_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "barrier_id",
+        "cut_ref",
+        "exit_id",
+        "ordinal",
+        "previous_barrier_id"
+      ],
+      "additionalProperties": false
+    },
+    "Coverage": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "disposition": {
+          "enum": [
+            "not_sent",
+            "in_flight",
+            "unknown"
+          ]
+        },
+        "proof": {
+          "enum": [
+            "never_received",
+            "discarded_unconsumed",
+            "transport_entered",
+            "send_uncertain"
+          ]
+        }
+      },
+      "required": [
+        "permit_id",
+        "disposition",
+        "proof"
+      ],
+      "additionalProperties": false
+    },
+    "BusinessCoverage": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "disposition": {
+          "enum": [
+            "not_sent",
+            "in_flight",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "permit_id",
+        "disposition"
+      ],
+      "additionalProperties": false
+    },
+    "Ack": {
+      "type": "object",
+      "properties": {
+        "ack_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "attempt_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "invalidation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "minimum_time_generation": {
+          "$ref": "#/$defs/Positive"
+        },
+        "effective_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "ordinary_coverage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 256
+        },
+        "cancel_coverage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 256
+        },
+        "business_coverage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BusinessCoverage"
+          },
+          "maxItems": 256
+        },
+        "ack_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "ack_id",
+        "revision",
+        "attempt_ref",
+        "invalidation_ref",
+        "minimum_time_generation",
+        "effective_tick_ns",
+        "ordinary_coverage",
+        "cancel_coverage",
+        "business_coverage",
+        "ack_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

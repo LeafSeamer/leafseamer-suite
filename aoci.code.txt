@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录入站去重修订与新周期第一轮交付 | R:code:docs/contracts/df03-collector/INBOX.md | A:设计历程与三轮提交计数 | S:上周期已推5967f6e；本轮只本地提交。162项离线非运行，业务未实现且全系统设计未关闭
+DEVELOPMENT_MEMO.md[SO5L]: F:记录TIME切点候选与本周期第二轮交付 | R:code:docs/contracts/df03-time-fence/README.md | A:设计历程与三轮提交计数 | S:前轮e43016f；本轮只本地提交。92项快照非合并SQL或运行，业务未实现且全系统设计未关闭
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -29,7 +29,7 @@ rebirth-review.md[SG8M]: F:保留需求确认和跨项冲突记录并连接实�
 rebirth-technology-selection.md[SV8S]: F:记录SDK生成、认证、SQLite与时钟技术方向及试验计划 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-df01-sdk-freeze.md | A:TS01至TS05、TV01至TV14 | S:早期TS6.0建议被DF01的5.9.3生成候选替代；精确制品未冻结，旧宿主boot建域已由受监督域取代
 rebirth-df01-sdk-freeze.md[SN9M]: F:设计SDK单一源严格解码及语义导出和逐操作主体候选 | R:code:docs/contracts/df01-source/SEMANTIC_REGISTRY.md,code:docs/contracts/df01-source/AUTHORIZATION.md | A:D1至D6、SV01至SV20与第10至14节候选 | S:条件不绕开放参数；service手动收紧须另版接受集，后台准备不等于布防；旧协议及权威未改，元数据检查非真实鉴权
 rebirth-df02-runtime-design.md[SR9S]: F:设计可信启动纳管恢复及监督回执到核心持久绑定的衔接 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-f02-f03-design.md,code:docs/contracts/df02-supervisor/README.md | A:R01至R06与bootstrap和RT及第10节候选 | S:创建时纳管且Linux分UID；HMAC绑定完整扩展意图。监督器不写业务库，准入回执先于核心Ref；组空不证未发或资源释放，同意图不重建，平台仍未验
-rebirth-df03-time-profile-design.md[SR9M]: F:记录应用参考时钟及27表入站效果原子组合设计 | R:code:docs/contracts/df03-reference/README.md,code:docs/contracts/df03-collector/INBOX.md | A:TP01至TP48及第10至16节 | S:路线已选而profile未批准；旧25表方向显式修正，162项只验离线。重复不重发布或改ACK，STOP不越缺号；完整库及TIME和跨服务SDK未齐，业务未实现
+rebirth-df03-time-profile-design.md[SR9M]: F:记录参考时钟采集入站与共享TIME切点归并候选 | R:code:docs/contracts/df03-time-fence/README.md,code:docs/contracts/df03-collector/INBOX.md | A:TP系列及第10至17节 | S:路线获准不批准profile；91表普通水位须与取消统一，27表尚无设备cutFK。162项SQL与92项TIME快照分开，完整库和真实提供者及跨服务SDK未齐，业务未实现
 rebirth-df04-storage-design.md[SD9M]: F:设计SQLite执行摄取保护及时间发布失效写集映射 | R:code:docs/contracts/c05-ingress/ingress.sql,code:docs/contracts/c02-admission/STORAGE.md,code:docs/contracts/df03-collector/STORAGE.md | A:DB与T及R和P1至P4事务及时间子域 | S:旧context身份是历史，新命令含issuer_epoch且不含context或digest；PLAN同受理锚独立，applied不清在途。十四表时间写集非完整库或TIME账本，精确加密及耐久未验
 rebirth-df05-release-design.md[SV9M]: F:设计发布清单及独立引导信任、TUF时间持久化适配和升级恢复 | R:code:docs/rebirth-platform-freeze.md,code:docs/contracts/df05/README.md,code:docs/rebirth-c12-deployment-design.md | A:AF01至AF06、RA01至RA46 | S:TUF不套业务JCS；在线key轮换可换缓存epoch但不降root或发行撤销，pending跨崩溃保留；人工时间有信任假设，6.0.0窄补丁待审阅；安装完成非ready，发行及运行未验
 rebirth-df06-internal-trust-design.md[SN9M]: F:设计内部对象授权来源采样及注销服务凭据和配对生命周期 | R:code:docs/rebirth-f04-f05-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/contracts/df01-source/AUTHORIZATION.md | A:IA01至IA06、IL01至IL06与IN及ILT验收 | S:TLS和摘要不证明对象权或新采样；注销不混撤组织run，秘密丢失不重发；新凭据不迁旧许可或恢复暂停，pending配对仅引导用途；双端各自提交且有撤销传播窗口，候选未归并批准或运行
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统关闭条件及27表时间入站组合进度 | R:code:docs/contracts/df03-collector/INBOX.md | A:C01至C12及HTTP和独立IPC裁决 | S:25表方向已显式修正，入站效果已有候选；完整库和TIME及提供者字段、跨服务时间与SDK未齐，离线通过不关闭设计或授运行资格
+rebirth-design-closure.md[SQ8M]: F:汇总系统关闭条件与时间入站及共享TIME切点进度 | R:code:docs/contracts/df03-time-fence/README.md,code:docs/contracts/df03-collector/INBOX.md | A:C01至C12及HTTP和独立IPC裁决 | S:27表已补入站，TIME有投影及原子规范但无合并SQL；完整库及提供者字段、跨服务时间与SDK未齐，离线不关闭全系统设计
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -476,7 +476,7 @@ reference_model.py[TR8M]: F:判定合成取消切点关闭计划发送及屏障�
 README.md[SR9S]: F:定义应用参考时钟字段精确区间与发布失效和守卫边界 | R:code:docs/contracts/df03-reference/build_contracts.py,code:docs/rebirth-df03-time-profile-design.md | A:reference-time0.1候选与六输入复验入口 | S:经过量包络相对观测delta而非硬件频率，NTS不证明E；交换年龄从m1起算，提交及发送均重评。重复只读历史，失效不自动恢复；公共API及IPC和DDL尚未归并，真实平台未验
 build_contracts.py[XN8S]: F:生成参考时钟来源批准交换锚点评估与守卫的领域Schema | R:code:docs/contracts/df03-reference/README.md | A:build与check | S:根拒直接实例，模型固定reference-bound；批准单向引用避免循环。失效评估的区间年龄必须null，NTS引导必有Ref；词法合法仍需词宽及当前权威另验，不改旧协议
 check_contracts.py[TR8M]: F:以人工预期验证参考时钟格式精确算术和有限发布失效模型 | R:code:docs/contracts/df03-reference/reference_model.py,code:docs/contracts/df03-reference/build_contracts.py | A:145项检查及report与staged绑定 | S:信任解析和平台误差由合成上下文给定；零误差夹具非生产默认。原件错配重算摘要仍拒，字典切点非SQLite；六输入字节核对不重跑，无真实NTP设备或运行
-reference-report.json[SQ5L]: F:记录145项参考时钟回归及六输入摘要 | R:code:docs/contracts/df03-reference/check_contracts.py | A:字段区间和有限发布失效结果 | S:主稿入站组合不扩范围；批准为false，真实NTP和SQLite及设备未验
+reference-report.json[SQ5L]: F:记录145项参考时钟回归及六输入摘要 | R:code:docs/contracts/df03-reference/check_contracts.py | A:字段区间和有限发布失效结果 | S:主稿TIME切点不扩范围；批准为false，真实NTP和SQLite及设备未验
 reference.schema.json[FN8L]: F:声明应用参考时钟证据链评估失效与UTC子守卫封闭格式 | R:code:docs/contracts/df03-reference/build_contracts.py | A:reference-time0.1具名模型库 | S:严格整数串仍需32位词及时代语义核验；unavailable不带合格区间，引用不授真实权威。UtcGuard仅时间子域，未替换公共ClockSample或旧IPC
 reference_model.py[TR8M]: F:参考计算NTP有理数UTC包络并判定关联发布失效和发送时资格 | R:code:docs/contracts/df03-reference/check_contracts.py | A:exchange_error与derive_anchor及assess和guard_error及publish和invalidate | S:原始小数不经浮点；年龄从m1和m4分别增长，发送重评而非复用旧区间。当前原件与权威是夹具，副本事务非真实CAS；重复只查历史，失效关闭不证明设备屏障完成，无I/O
 
@@ -487,7 +487,7 @@ check_contracts.py[TN8M]: F:核验时间HTTP和完整IPC结构及新增关联与
 internal.openapi.json[SN8L]: F:声明参考时间Bundle锚点评估和profile四个精确读取接口 | R:code:docs/contracts/df03-service/build_contracts.py | A:OpenAPI3.1.1内部时间查询 | S:精确版本与id修订摘要和配对mTLS必需，全部no-store；读取历史不刷新资格或授执行权，原始bytes仅引用，声明不执行对象授权
 ipc.schema.json[FN8L]: F:声明统一参考时间守卫与失效和排期绑定的完整46帧设备IPC | R:code:docs/contracts/df03-service/build_contracts.py | A:ipc0.8自包含候选 | S:三新特性必需，旧系统时间闭包不可达；取消独立时间且不能借普通排期。ACK回显和floor单调须语义另验，不包含采集器通道或真实权威
 public.openapi.json[SN8L]: F:声明公共时钟及评估两个隔离展示接口 | R:code:docs/contracts/df03-service/build_contracts.py | A:OpenAPI3.1.1与公共参考UTC | S:两authority分别提供且仅人员bearer，精确版本及no-store；区间中点半径用整数串，不可用全部清空。闭包不含内部原件，标签脱敏及实际认证另验
-reference-report.json[SQ5L]: F:记录199项时间HTTP与IPC回归及43输入摘要 | R:code:docs/contracts/df03-service/check_contracts.py | A:结构关联与有限floor结果 | S:入站组合文稿不扩范围，46帧正例仅结构；权威合成，真实设备及业务运行未验
+reference-report.json[SQ5L]: F:记录199项时间HTTP与IPC回归及43输入摘要 | R:code:docs/contracts/df03-service/check_contracts.py | A:结构关联与有限floor结果 | S:TIME切点文稿不扩范围，46帧正例仅结构；权威合成，真实设备及业务运行未验
 reference_model.py[TR8S]: F:判定时间Bundle排期关联展示历史查询及floor和ACK回显 | R:code:docs/contracts/df03-reference/reference_model.py,code:docs/contracts/df03-service/check_contracts.py | A:execution_time_error与public_clock及exact_read和install_floor | S:权威与完整原件由夹具给定；时间要求不可降级，即时仍验域和期限。发送重评区间，历史读取按当前对象权，floor不得下降；无真实网络或持久事务
 source-bindings.json[FN6T]: F:绑定时间服务生成所用十二份历史Schema原字节 | R:code:docs/contracts/df03-service/build_contracts.py | A:来源摘要与六操作46帧计数 | S:批准固定false，摘要只定位生成输入，不证明可信来源或运行兼容
 time.schema.json[FN8L]: F:定义公共UTC投影证据Bundle及执行时间排期和开闸快照 | R:code:docs/contracts/df03-service/build_contracts.py | A:reference-time-service具名模型库 | S:根拒直接实例而闭包自包含；显示不授执行权，source标签不证脱敏，精确原件和当前State及排期关联另验。不是完整公共SDK或时间数据库布局
@@ -497,7 +497,7 @@ README.md[SR9T]: F:提供旧采集协议及有序停止和27表入站修正版�
 build_contracts.py[XN8S]: F:生成采集器14帧及配置采样捕获提交回执和停止Schema | R:code:docs/contracts/df03-reference/reference.schema.json,code:docs/contracts/df03-service/build_contracts.py | A:build与check及time-collector候选 | S:按固定本地引用闭包自包含，原协议不改；candidate必有完整原件而无Anchor，failed不能夹合格交换。秘密只用受限Ref，形状不授角色或网络权
 check_contracts.py[TN8S]: F:验证采集器14帧及合成身份原件与有限消费停止快照 | R:code:docs/contracts/df03-collector/reference_model.py,code:docs/contracts/df03-collector/build_contracts.py | A:121项检查及report与staged绑定 | S:独立预期不由模型推导，权威与字节真实性为夹具；间隔等号可继续而截止等号拒绝。十二输入核字节不重跑，无真实网络OS身份IPC或SQLite
 collector.schema.json[FN8L]: F:声明独立采集器14类信封及采样证据和停止领域格式 | R:code:docs/contracts/df03-collector/build_contracts.py | A:time-collector0.1与具名入口 | S:角色固定time_provider，方向版本及三特性必需；不是设备IPC。未知捕获不带合格Exchange，published才有Anchor引用；当前权威及完整捕获和OS端点另验
-reference-report.json[SQ5L]: F:保存121项旧采集器协议回归及十二输入摘要 | R:code:docs/contracts/df03-collector/check_contracts.py | A:旧结构关联与有限采样停止结果 | S:27表入口不扩旧覆盖；批准为false，真实NTP和SQLite及设备未验
+reference-report.json[SQ5L]: F:保存121项旧采集器协议回归及十二输入摘要 | R:code:docs/contracts/df03-collector/check_contracts.py | A:旧结构关联与有限采样停止结果 | S:TIME候选文稿绑定不扩旧覆盖；批准为false，真实NTP和SQLite及设备未验
 reference_model.py[TR8S]: F:模拟采集身份配置关联及单次消费上报停止和查原 | R:code:docs/contracts/df03-reference/reference_model.py,code:docs/contracts/df03-collector/check_contracts.py | A:reserve与consume及capture_error和stop等 | S:字典状态非真实事务，先消费后I/O标记故障为unknown；cache_missing不准重发，已消费STOP不清。精确原件及批准由上下文给定，核心跨实例容量与真实调度另验
 STORAGE.md[SD9T]: F:定义十四表时间原件写集并修正采集缓存释放边界 | R:code:docs/contracts/df03-collector/storage.sql,code:docs/contracts/df03-collector/JOURNAL.md | A:五类事务与Blob及恢复 | S:核心提交后释放取证副本，采集器等精确回执；密文同库不证加密，普通失败不清锚。215例仍限十四表，25表另验；TIME及完整库与GC未齐
 check_storage.py[TD8M]: F:在内存核验十四表时间写集及故障顺序并绑定报告 | R:code:docs/contracts/df03-collector/storage.sql,code:docs/contracts/df03-collector/STORAGE.md | A:215项检查及report和staged绑定 | S:只连memory，逐写主动异常比全表而非真实掉电；BODY及密文为合成，占位通过不证加密。高位仅表达式探针，三输入字节检查不重跑，不执行生产writer或网络
@@ -505,7 +505,7 @@ storage-report.json[SQ5L]: F:记录215项十四表时间存储回归及三输入
 storage.sql[FD9S]: F:声明十四表时间采样裁决与原件发布失效的同库约束 | R:code:docs/contracts/df03-collector/STORAGE.md | A:STRICT及双向延迟外键与seal和当前状态视图 | S:seal核必需报文槽及链，发布和失效推进head而普通失败不动；原件墓碑禁改删，封存后不能增补。库内U20补零且分段递增，BODY和加密权威另验；非完整业务库或生产迁移
 CHANNEL_V02.md[SR9T]: F:规定有序停止与保留规则并连接采集日志组合 | R:code:docs/contracts/df03-collector/JOURNAL.md,code:docs/contracts/df03-collector/check_channel_v02.py | A:采集器0.2十四帧与恢复边界 | S:reported至精确回执仍占槽，旧ordinal不复活；ACK只证未来关闸，跨域未知m1从退役回执后保守等待。原92例不含25表，入站去重及运行未验
 build_channel_v02.py[XN8T]: F:从固定0.1生成有序停止及采样序号的完整0.2 Schema | R:code:docs/contracts/df03-collector/collector.schema.json,code:docs/contracts/df03-collector/CHANNEL_V02.md | A:build与check | S:只改精确具名模型和版本，旧文件不动；STOP删除集合而ACK回显切点，新增两特性必需。结构投影不执行序号或持久化，不切SDK权威
-channel-v02-report.json[SQ5L]: F:记录92项采集器0.2有限顺序回归及输入摘要 | R:code:docs/contracts/df03-collector/check_channel_v02.py | A:旧缺口复现及切点容量结果 | S:27表入口不扩原覆盖；旧缺口通过仅复现，真实IPC和NTP及SQLite设备未验
+channel-v02-report.json[SQ5L]: F:记录92项采集器0.2有限顺序回归及输入摘要 | R:code:docs/contracts/df03-collector/check_channel_v02.py | A:旧缺口复现及切点容量结果 | S:TIME切点主稿更新不扩原覆盖；旧缺口通过仅复现，真实IPC和NTP及SQLite设备未验
 channel-v02.schema.json[FN8L]: F:声明采集器0.2十四帧及有序STOP和poll序号字段 | R:code:docs/contracts/df03-collector/build_channel_v02.py | A:time-collector0.2与具名领域入口 | S:拒旧版本及旧STOP集合，ACK固定关闸但不证明历史UDP或设备关闭；连续序号和精确回显需语义核验。原件模型沿用且候选未批准
 check_channel_v02.py[TR8M]: F:复现旧停止容量缺口并核验0.2有限串行通道与释放 | R:code:docs/contracts/df03-collector/build_channel_v02.py,code:docs/contracts/df03-collector/check_contracts.py | A:ChannelModel与capacity_error及92项检查 | S:假定配置完成和可信上下文，非完整会话调度；reported保留至精确回执，旧ordinal拒绝，故障锁存且原ACK不替换。没有真实网络事务或退役，报告绑定不重跑
 JOURNAL.md[SD9T]: F:保留25表发送停止容量设计并标明后续入站修正版 | R:code:docs/contracts/df03-collector/INBOX.md,code:docs/contracts/df03-collector/journal.sql | A:六类写集及历史复验边界 | S:旧QUERY_POLL及核心QUERY_COMMIT不符真实通道，下一布局用27表；269项不扩为新组合证明。STOP不清未知，退役不退款存储，真实运行未验
@@ -520,3 +520,11 @@ check_inbox.py[TD8S]: F:核验十四帧方向及27表入站效果原子配对和
 collector-storage-v02.sql[FD9L]: F:承载时间原件发送与入站效果同库提交的27表生成组合 | R:code:docs/contracts/df03-collector/build_inbox.py,code:docs/contracts/df03-collector/inbox.sql | A:完整组合与双向延迟FK及不可变约束 | S:核心枚举改为QUERY_CAPTURE和COMMIT_STATUS；入站原件ACK查询须配套封存，attempt不是对端已处理。STOP槽不越缺号，BODY及权威外验，非生产迁移
 inbox-report.json[SQ5L]: F:保存162项入站协议对账及27表事务检查和十一输入摘要 | R:code:docs/contracts/df03-collector/check_inbox.py | A:方向关联与故障回滚结果 | S:批准为false，SQLite非产品批准；BODY合成且运行全零，字节绑定不证严格解码或真实耐久
 inbox.sql[FD9T]: F:定义入站记录与封存两表及领域效果归属和回复约束 | R:code:docs/contracts/df03-collector/build_inbox.py,code:docs/contracts/df03-collector/INBOX.md | A:双向延迟FK和精确序号及唯一origin | S:须与25表修正版组合；首次Capture和ACK先有未封存origin，existing须已封存历史。QUERY_COMMIT绑定固定应答，普通预算外仅首ACK留槽；BODY完整相等和可信端点另验
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df03-time-fence/===
+README.md[SD9T]: F:设计TIME共享签发切点三份清单及失效持久归并 | R:code:docs/contracts/df03-time-fence/registry.schema.json,code:docs/contracts/c02-cancellation/README.md | A:内部投影与原子写集及故障验收 | S:91表仅普通水位，须全部相关屏障同版切换；本轮没有合并SQL。OperationIdentity解除摘要环，迟到ACK强事实与采用分离；容量为候选，提供者和运行未验
+build_contracts.py[XN8T]: F:生成TIME共享账本切点与ACK的内部投影Schema | R:code:docs/contracts/df03-service/ipc.schema.json | A:build与check | S:固定引用IPC0.8原件类型而不修改线协议；根拒直接实例，按defs校验。投影不是执行许可，不切SDK权威或生成迁移
+check_contracts.py[TR8S]: F:核验共享序列完整集合及TIME尝试和ACK的人工预期 | R:code:docs/contracts/df03-time-fence/reference_model.py,code:docs/contracts/df03-time-fence/build_contracts.py | A:92项快照检查与report及staged绑定 | S:目标预期手写含256与257边界；合法合成Ref为来源限制反证。只校投影且不运行SQL或完整IPC，六输入核字节不重跑，真实权威和设备未验
+reference-report.json[SQ5L]: F:保存92项TIME快照参考结果及六输入字节摘要 | R:code:docs/contracts/df03-time-fence/check_contracts.py | A:共享序列集合与尝试采用结果 | S:批准为false，SQLite及IPC和NTP等运行全零；快照成功不证明原件来源或持久化原子性
+reference_model.py[TR8S]: F:判定共享签发历史与TIME完整目标及ACK和采用关系 | R:code:docs/contracts/df03-time-fence/README.md,code:docs/contracts/df03-time-fence/check_contracts.py | A:registry_error与cut_error及attempt和ack及时间子域 | S:完整Registry与批准原件为人工前提，不执行writer；原锚已核销仍保留强事实，旧ACK有效不等采用最新尝试。never_sent被已发重开，时间通过不授完整发送权
+registry.schema.json[FN8L]: F:声明共享Issue和Registry及TIME切点尝试ACK的封闭投影 | R:code:docs/contracts/df03-time-fence/build_contracts.py,code:docs/contracts/df03-service/ipc.schema.json | A:time-fence-registry0.1具名defs | S:两批准标志false且根拒直接校验；复用IPC原件类型，投影不含完整原帧。65536历史及256成员为结构上限，完整性和可信来源另验，不是网络API或SQL

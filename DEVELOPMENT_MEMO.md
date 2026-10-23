@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-24 继续运行转交契约（新周期第1/3轮）
+
+- 周期起点为已推送的`6cca12b`；五仓rebirth均已merge commit到main。本轮继续main，仅本地提交，第三轮完成后再审查推送；其他四仓未提交文件保持原样。
+- [继续运行转交候选](docs/contracts/c04-lifecycle/CONTINUATION.md)具体化Request/Receipt/Adoption、全目标审批、独立run-generation grant、R5前采用、关闭继承、资源保留和失效后的查原。原recovery准备与execution限制不变，新grant不能追发旧恢复执行。
+- 219项结构和跨原件关系检查通过，含正常新execution使用新grant的关系正例，以及接管/撤权/close、部分回执、CAS、错绑、正文限额和历史查原反例。提供者全部为合成，未实现SQL writer或真实签发；原109表没有放开越界复用。
+- 下一轮必须归并Seamer/Controller完整组合布局、预算保护和两库故障写集，补来源恢复至普通trigger完整完成的成功链。本轮关系正例不能代替该交付；业务代码、公共draft.4/IPC0.3均未改，阶段0未关闭。
+
 ## 2026-10-24 来源重新同步与恢复边界（新周期第3/3轮）
 
 - 本周期前两轮为`e1279d6`和`a3c5b94`；本轮使用main，提交后审查三轮完整历史再推送，其他四仓保持原样。

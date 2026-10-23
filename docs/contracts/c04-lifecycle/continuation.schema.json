@@ -1,0 +1,447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/continuation.schema.json",
+  "title": "run-continuation/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "object",
+          "properties": {
+            "authority_service_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            },
+            "database_instance_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "authority_service_id",
+            "database_instance_id"
+          ],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Device": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "control_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "action_set_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "device_id",
+        "control_ref",
+        "authorization_ref",
+        "action_set_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Target": {
+      "type": "object",
+      "properties": {
+        "controller_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "preparation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "recovery_grant_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Device"
+          },
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "controller_scope",
+        "preparation_ref",
+        "recovery_grant_ref",
+        "devices"
+      ],
+      "additionalProperties": false
+    },
+    "Request": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "run-continuation/0.1.0-draft.1"
+        },
+        "origin_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "generation": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "transfer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "recovery_operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "recovery_execution_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "continuation_plan_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "request_epoch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "actor": {
+          "type": "object",
+          "properties": {
+            "issuer_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            },
+            "principal_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "issuer_id",
+            "principal_id"
+          ],
+          "additionalProperties": false
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Target"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "request_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "origin_scope",
+        "run_id",
+        "generation",
+        "transfer_id",
+        "recovery_operation_id",
+        "recovery_execution_id",
+        "continuation_plan_ref",
+        "request_epoch",
+        "actor",
+        "idempotency_key",
+        "approval_ref",
+        "targets",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Receipt": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "run-continuation/0.1.0-draft.1"
+        },
+        "origin_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "generation": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "transfer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "recovery_operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "recovery_execution_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "continuation_plan_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "request_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "controller_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "receipt_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "target_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "preparation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "recovery_grant_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "continuation_grant_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "qualification_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "receipt_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "origin_scope",
+        "run_id",
+        "generation",
+        "transfer_id",
+        "recovery_operation_id",
+        "recovery_execution_id",
+        "continuation_plan_ref",
+        "request_digest",
+        "controller_scope",
+        "receipt_id",
+        "revision",
+        "target_digest",
+        "preparation_ref",
+        "recovery_grant_ref",
+        "continuation_grant_ref",
+        "qualification_ref",
+        "receipt_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Adoption": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "run-continuation/0.1.0-draft.1"
+        },
+        "origin_scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "generation": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "transfer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "recovery_operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "recovery_execution_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "continuation_plan_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "request_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "adoption_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "expected_run_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "expected_slot_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "expected_operation_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "receipt_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "release_proof_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "adoption_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "origin_scope",
+        "run_id",
+        "generation",
+        "transfer_id",
+        "recovery_operation_id",
+        "recovery_execution_id",
+        "continuation_plan_ref",
+        "request_digest",
+        "adoption_id",
+        "revision",
+        "expected_run_revision",
+        "expected_slot_revision",
+        "expected_operation_revision",
+        "receipt_refs",
+        "release_proof_ref",
+        "adoption_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

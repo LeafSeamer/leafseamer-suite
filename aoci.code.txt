@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录来源同步三阶段与本周期第三轮交付 | R:code:docs/contracts/c04-lifecycle/SOURCE_RESYNC.md | A:设计历程与三轮提交 | S:148项仅为离线证据，恢复准备转交仍缺；本周期三次提交审查后推main
+DEVELOPMENT_MEMO.md[SO5L]: F:记录继续运行转交候选与新周期首轮交付 | R:code:docs/contracts/c04-lifecycle/CONTINUATION.md | A:设计历程与三轮提交 | S:219项仅结构及关系验证，两库闭环未验；本轮只本地提交，三轮后推送
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总来源重新同步后的系统定稿缺口 | R:code:docs/contracts/c04-lifecycle/SOURCE_RESYNC.md | A:C01至C12关闭状态 | S:必须补Controller继续运行转交和恢复后正常触发成功正例；容量GC、完整订阅、AUTH和TIME及唯一SDK未齐，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总继续运行转交后的系统设计关闭缺口 | R:code:docs/contracts/c04-lifecycle/CONTINUATION.md | A:C01至C12关闭状态 | S:独立新grant及R5前采用仍待两库归并，关系正例不替代恢复后正常触发成功链；阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -435,6 +435,12 @@ source-resync-report.json[TR7L]: F:保存148项来源同步验收及122输入绑
 source-resync.schema.json[FR8L]: F:声明Baseline和Delta及Ready三个来源同步内部请求 | R:code:docs/contracts/c04-lifecycle/build_source_resync.py,code:docs/contracts/c04-lifecycle/source_resync_model.py | A:Baseline、Delta、Ready、Ref | S:不把可信提供者资格布尔值暴露为API；Ref仅声明不可变身份，真实输送连续性与快照证据仍须实现验证
 source-resync.sql[PR9S]: F:约束同步原件投影封存及恢复启动的保护观察 | R:code:docs/contracts/c04-lifecycle/build_source_resync.py,code:docs/contracts/c04-lifecycle/source_resync_model.py | A:rs_limit、rs_transition、rs_commit、rs_pending_protection | S:每基线先占完整补齐和ready额度，旧占用不回收；最新来源保护覆盖旧历史但必须当前applied，直接改绿或换floor须原件配对
 source_resync_model.py[AR8T]: F:执行来源基线补齐与同步检查点固定参考事务 | R:code:docs/contracts/c04-lifecycle/build_source_resync.py,code:docs/contracts/c04-lifecycle/instance_budget_model.py | A:validate、transition_steps、apply | S:三写项同事务全回滚，重复先查原且仍验当前授权；不修改run或触发动作，快照与输送真实性仍是合成前提
+CONTINUATION.md[SR8T]: F:规定恢复后独立继续运行授权及R5前完整采用候选 | R:code:docs/contracts/c04-lifecycle/continuation_model.py,code:docs/contracts/c04-lifecycle/SOURCE_RESYNC.md | A:请求回执采用、故障顺序与持久化映射 | S:旧recovery准备和execution限制不变；新grant继承parent关闭；关系检查不证明109表或Controller组合链已完成
+build_continuation.py[XR7T]: F:生成继续运行Request Receipt Adoption具名Schema | R:code:docs/contracts/c04-lifecycle/continuation.schema.json,code:docs/contracts/c04-lifecycle/build_arm_budget.py | A:schema/raw与check生成漂移 | S:根入口拒绝所有实例，调用者须选择具名定义；不升级公共协议
+check_continuation.py[TR8S]: F:验证继续运行三原件结构及权威关系正反例 | R:code:docs/contracts/c04-lifecycle/continuation_model.py,code:docs/contracts/c04-lifecycle/continuation-report.json | A:run、report、check-report和staged绑定 | S:错绑反例重算摘要；219项均使用合成提供者，SQL及完整恢复触发链检查数为零
+continuation-report.json[TR7L]: F:固化继续运行219项离线判定及十份输入摘要 | R:code:docs/contracts/c04-lifecycle/check_continuation.py | A:all_passed、checks与inputs | S:approved为false，SQL、组合恢复触发及运行设备检查未执行
+continuation.schema.json[FR8L]: F:约束继续运行三份不可变原件的字段和引用形状 | R:code:docs/contracts/c04-lifecycle/build_continuation.py,code:docs/contracts/c04-lifecycle/continuation_model.py | A:Request、Receipt、Adoption与Target | S:正U20用字符串；Schema不验证全目标语义或字节限额，须另做关系判定；公共根入口不可用
+continuation_model.py[DR8S]: F:判定恢复继续运行请求签发采用及新命令的跨原件资格 | R:code:docs/contracts/c04-lifecycle/build_continuation.py,code:docs/contracts/c04-lifecycle/check_continuation.py | A:request_eligible、issue_decision、receipt_eligible、adoption_eligible、command_eligible | S:纯函数不签发持久grant；历史查原不要求旧资格仍有效，新命令必须采用新grant且重核当前Controller门槛
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

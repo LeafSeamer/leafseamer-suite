@@ -1,0 +1,899 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 219,
+  "sql_tests_executed": 0,
+  "integrated_recovery_trigger_tests_executed": 0,
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "checks": [
+    {
+      "name": "生成字节",
+      "passed": true
+    },
+    {
+      "name": "Request正例",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段contract_version",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段origin_scope",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段run_id",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段generation",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段transfer_id",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段recovery_operation_id",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段continuation_plan_ref",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段request_epoch",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段actor",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段idempotency_key",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段approval_ref",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段targets",
+      "passed": true
+    },
+    {
+      "name": "Request缺字段request_digest",
+      "passed": true
+    },
+    {
+      "name": "Request未知字段",
+      "passed": true
+    },
+    {
+      "name": "Request根入口禁止公共误用",
+      "passed": true
+    },
+    {
+      "name": "Receipt正例",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段contract_version",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段origin_scope",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段run_id",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段generation",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段transfer_id",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段recovery_operation_id",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段continuation_plan_ref",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段request_digest",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段controller_scope",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段receipt_id",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段revision",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段target_digest",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段preparation_ref",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段recovery_grant_ref",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段continuation_grant_ref",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段qualification_ref",
+      "passed": true
+    },
+    {
+      "name": "Receipt缺字段receipt_digest",
+      "passed": true
+    },
+    {
+      "name": "Receipt未知字段",
+      "passed": true
+    },
+    {
+      "name": "Receipt根入口禁止公共误用",
+      "passed": true
+    },
+    {
+      "name": "Adoption正例",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段contract_version",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段origin_scope",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段run_id",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段generation",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段transfer_id",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段recovery_operation_id",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段continuation_plan_ref",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段request_digest",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段adoption_id",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段revision",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段expected_run_revision",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段expected_slot_revision",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段expected_operation_revision",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段receipt_refs",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段release_proof_ref",
+      "passed": true
+    },
+    {
+      "name": "Adoption缺字段adoption_digest",
+      "passed": true
+    },
+    {
+      "name": "Adoption未知字段",
+      "passed": true
+    },
+    {
+      "name": "Adoption根入口禁止公共误用",
+      "passed": true
+    },
+    {
+      "name": "持续运行审批合格",
+      "passed": true
+    },
+    {
+      "name": "新签发资格controller.a",
+      "passed": true
+    },
+    {
+      "name": "独立回执资格controller.a",
+      "passed": true
+    },
+    {
+      "name": "新签发资格controller.b",
+      "passed": true
+    },
+    {
+      "name": "独立回执资格controller.b",
+      "passed": true
+    },
+    {
+      "name": "完整采用资格",
+      "passed": true
+    },
+    {
+      "name": "R5后新execution使用新grant的关系正例",
+      "passed": true
+    },
+    {
+      "name": "U20拒绝'0'",
+      "passed": true
+    },
+    {
+      "name": "U20拒绝'01'",
+      "passed": true
+    },
+    {
+      "name": "U20拒绝'-1'",
+      "passed": true
+    },
+    {
+      "name": "U20拒绝'1e2'",
+      "passed": true
+    },
+    {
+      "name": "U20拒绝'1\\n'",
+      "passed": true
+    },
+    {
+      "name": "U20拒绝2",
+      "passed": true
+    },
+    {
+      "name": "U20拒绝'111111111111111111111'",
+      "passed": true
+    },
+    {
+      "name": "大整数结构精确9007199254740993",
+      "passed": true
+    },
+    {
+      "name": "大整数结构精确99999999999999999999",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛read_authorized",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛write_authorized",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛approval_current",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛approval_human",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛recovery_steps_complete",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛recovery_resources_clear",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛recovery_lock_held",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛source_current",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛time_current",
+      "passed": true
+    },
+    {
+      "name": "Seamer门槛budget_reserved",
+      "passed": true
+    },
+    {
+      "name": "恢复快照pause_latched",
+      "passed": true
+    },
+    {
+      "name": "恢复快照run_state",
+      "passed": true
+    },
+    {
+      "name": "恢复快照operation_state",
+      "passed": true
+    },
+    {
+      "name": "恢复快照execution_state",
+      "passed": true
+    },
+    {
+      "name": "恢复快照approval_subject",
+      "passed": true
+    },
+    {
+      "name": "恢复快照required_targets",
+      "passed": true
+    },
+    {
+      "name": "运行绑定origin_scope",
+      "passed": true
+    },
+    {
+      "name": "运行绑定run_id",
+      "passed": true
+    },
+    {
+      "name": "运行绑定generation",
+      "passed": true
+    },
+    {
+      "name": "运行绑定recovery_operation_id",
+      "passed": true
+    },
+    {
+      "name": "运行绑定recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "运行绑定continuation_plan_ref",
+      "passed": true
+    },
+    {
+      "name": "签发前失效authorization_current",
+      "passed": true
+    },
+    {
+      "name": "采用前失效authorization_current",
+      "passed": true
+    },
+    {
+      "name": "R5后失效authorization_current",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史authorization_current",
+      "passed": true
+    },
+    {
+      "name": "签发前失效automatic_control",
+      "passed": true
+    },
+    {
+      "name": "采用前失效automatic_control",
+      "passed": true
+    },
+    {
+      "name": "R5后失效automatic_control",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史automatic_control",
+      "passed": true
+    },
+    {
+      "name": "签发前失效pending_takeover",
+      "passed": true
+    },
+    {
+      "name": "采用前失效pending_takeover",
+      "passed": true
+    },
+    {
+      "name": "R5后失效pending_takeover",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史pending_takeover",
+      "passed": true
+    },
+    {
+      "name": "签发前失效runtime_current",
+      "passed": true
+    },
+    {
+      "name": "采用前失效runtime_current",
+      "passed": true
+    },
+    {
+      "name": "R5后失效runtime_current",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史runtime_current",
+      "passed": true
+    },
+    {
+      "name": "签发前失效time_current",
+      "passed": true
+    },
+    {
+      "name": "采用前失效time_current",
+      "passed": true
+    },
+    {
+      "name": "R5后失效time_current",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史time_current",
+      "passed": true
+    },
+    {
+      "name": "签发前失效capacity_reserved",
+      "passed": true
+    },
+    {
+      "name": "采用前失效capacity_reserved",
+      "passed": true
+    },
+    {
+      "name": "R5后失效capacity_reserved",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史capacity_reserved",
+      "passed": true
+    },
+    {
+      "name": "签发前失效closed",
+      "passed": true
+    },
+    {
+      "name": "采用前失效closed",
+      "passed": true
+    },
+    {
+      "name": "R5后失效closed",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史closed",
+      "passed": true
+    },
+    {
+      "name": "签发前失效preparation_state",
+      "passed": true
+    },
+    {
+      "name": "采用前失效preparation_state",
+      "passed": true
+    },
+    {
+      "name": "R5后失效preparation_state",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史preparation_state",
+      "passed": true
+    },
+    {
+      "name": "签发前失效deny_through_generation",
+      "passed": true
+    },
+    {
+      "name": "采用前失效deny_through_generation",
+      "passed": true
+    },
+    {
+      "name": "R5后失效deny_through_generation",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史deny_through_generation",
+      "passed": true
+    },
+    {
+      "name": "签发前失效plan_verified",
+      "passed": true
+    },
+    {
+      "name": "采用前失效plan_verified",
+      "passed": true
+    },
+    {
+      "name": "R5后失效plan_verified",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史plan_verified",
+      "passed": true
+    },
+    {
+      "name": "签发前失效mode",
+      "passed": true
+    },
+    {
+      "name": "采用前失效mode",
+      "passed": true
+    },
+    {
+      "name": "R5后失效mode",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史mode",
+      "passed": true
+    },
+    {
+      "name": "签发前失效generation",
+      "passed": true
+    },
+    {
+      "name": "采用前失效generation",
+      "passed": true
+    },
+    {
+      "name": "R5后失效generation",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史generation",
+      "passed": true
+    },
+    {
+      "name": "签发前失效recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "采用前失效recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "R5后失效recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "失效后同请求只查历史recovery_execution_id",
+      "passed": true
+    },
+    {
+      "name": "查原仍需读取授权",
+      "passed": true
+    },
+    {
+      "name": "同代不能换转交身份",
+      "passed": true
+    },
+    {
+      "name": "同身份异内容查原冲突",
+      "passed": true
+    },
+    {
+      "name": "Controller签发权限write_authorized",
+      "passed": true
+    },
+    {
+      "name": "Controller签发权限approval_verified",
+      "passed": true
+    },
+    {
+      "name": "Controller审批错绑approval_ref",
+      "passed": true
+    },
+    {
+      "name": "Controller审批错绑approval_subject",
+      "passed": true
+    },
+    {
+      "name": "Controller顺序唯一2",
+      "passed": true
+    },
+    {
+      "name": "Controller顺序唯一3",
+      "passed": true
+    },
+    {
+      "name": "设备重复",
+      "passed": true
+    },
+    {
+      "name": "准备跨库",
+      "passed": true
+    },
+    {
+      "name": "总设备超过256",
+      "passed": true
+    },
+    {
+      "name": "超字节夹具仍满足数量和结构上限",
+      "passed": true
+    },
+    {
+      "name": "结构合法但正文超过字节上限",
+      "passed": true
+    },
+    {
+      "name": "签发不得使用请求之外的目标",
+      "passed": true
+    },
+    {
+      "name": "设备当前资格改变control_ref",
+      "passed": true
+    },
+    {
+      "name": "设备当前资格改变authorization_ref",
+      "passed": true
+    },
+    {
+      "name": "设备当前资格改变action_set_ref",
+      "passed": true
+    },
+    {
+      "name": "权威原件与签发者durable_receipt",
+      "passed": true
+    },
+    {
+      "name": "权威原件与签发者qualification_ref",
+      "passed": true
+    },
+    {
+      "name": "权威原件与签发者scope",
+      "passed": true
+    },
+    {
+      "name": "权威原件与签发者plan_ref",
+      "passed": true
+    },
+    {
+      "name": "权威原件与签发者origin_scope",
+      "passed": true
+    },
+    {
+      "name": "重摘要回执错配target_digest",
+      "passed": true
+    },
+    {
+      "name": "重摘要回执错配preparation_ref",
+      "passed": true
+    },
+    {
+      "name": "重摘要回执错配request_digest",
+      "passed": true
+    },
+    {
+      "name": "重摘要回执错配generation",
+      "passed": true
+    },
+    {
+      "name": "重摘要回执错配continuation_grant_ref",
+      "passed": true
+    },
+    {
+      "name": "真实grant原件错配ref",
+      "passed": true
+    },
+    {
+      "name": "真实grant原件错配scope",
+      "passed": true
+    },
+    {
+      "name": "真实grant原件错配request_digest",
+      "passed": true
+    },
+    {
+      "name": "真实grant原件错配target_digest",
+      "passed": true
+    },
+    {
+      "name": "真实grant原件错配plan_ref",
+      "passed": true
+    },
+    {
+      "name": "真实grant原件错配parent_preparation_ref",
+      "passed": true
+    },
+    {
+      "name": "真实grant原件错配activation",
+      "passed": true
+    },
+    {
+      "name": "采用CASexpected_run_revision",
+      "passed": true
+    },
+    {
+      "name": "采用CASexpected_slot_revision",
+      "passed": true
+    },
+    {
+      "name": "采用CASexpected_operation_revision",
+      "passed": true
+    },
+    {
+      "name": "部分重复乱序回执1",
+      "passed": true
+    },
+    {
+      "name": "部分重复乱序回执2",
+      "passed": true
+    },
+    {
+      "name": "部分重复乱序回执3",
+      "passed": true
+    },
+    {
+      "name": "释放证明错配ref",
+      "passed": true
+    },
+    {
+      "name": "释放证明错配operation_id",
+      "passed": true
+    },
+    {
+      "name": "释放证明错配execution_id",
+      "passed": true
+    },
+    {
+      "name": "释放证明错配request_digest",
+      "passed": true
+    },
+    {
+      "name": "释放证明错配receipt_refs",
+      "passed": true
+    },
+    {
+      "name": "释放证明错配resources_clear",
+      "passed": true
+    },
+    {
+      "name": "释放证明错配retained_parent_refs",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行adopted",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行adopted_request",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行r5_adoption_digest",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行armed_generation",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行execution_current",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行plan_current",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行source_current",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行time_current",
+      "passed": true
+    },
+    {
+      "name": "采用R5及当前执行pause_latched",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝continuation_grant_ref",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝adoption_digest",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝execution_id",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝device_id",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝generation",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝origin_scope",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝run_id",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝plan_ref",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝step_verified",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝action_verified",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝parameters_verified",
+      "passed": true
+    },
+    {
+      "name": "新触发拒绝final_exit_verified",
+      "passed": true
+    },
+    {
+      "name": "所有检查未修改权威夹具",
+      "passed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c04-lifecycle/build_arm_budget.py": "e20778ac7471086f4d966d5ed123d32c87daf7ab52cdf34b101ffc3462e8e898",
+    "docs/contracts/c04-lifecycle/build_continuation.py": "755295788f69dda95aa501adf9a756811a128f3b00bf2818b21093a8abc38f0a",
+    "docs/contracts/c04-lifecycle/continuation.schema.json": "0b3232188a3260c4987afca9a862ff50046f90af6d306b952f6078427483d1ba",
+    "docs/contracts/c04-lifecycle/continuation_model.py": "92b9b3ed24bfe95892fc44d55328cbe430996f7b5b91a249519436aca9b2fc61",
+    "docs/contracts/c04-lifecycle/check_continuation.py": "3d8e26eef62b54ebc4e7570722ee0f83b23044f0f9862e4ee85425e846c7c309",
+    "docs/contracts/c04-lifecycle/CONTINUATION.md": "67e6eda1fb0eb86b2b1e087f35451e48b2cedc824390f6d29a524bcd3093ce04",
+    "docs/contracts/c04-preparation/README.md": "56c58371e22e8881e96138889ddf9f37a918c0e57d77c22c9a5ed515eadbb5a1",
+    "docs/contracts/c04-storage/README.md": "c988ef237e881c97a39174a5402f36874ebe66ecd26a85227f275a071dfa9234",
+    "docs/contracts/c04-lifecycle/source-resync.sql": "059a057b3503d383c9e316dc05af08c7532f18cc6ad988ca68c72a418218f535",
+    "docs/contracts/c04-lifecycle/SOURCE_RESYNC.md": "091b20f70ca646f44d6fbbf48cbd4d1dee55754abfaa95144434231ee7404158"
+  }
+}

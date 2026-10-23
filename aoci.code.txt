@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录TIME切点候选与本周期第二轮交付 | R:code:docs/contracts/df03-time-fence/README.md | A:设计历程与三轮提交计数 | S:前轮e43016f；本轮只本地提交。92项快照非合并SQL或运行，业务未实现且全系统设计未关闭
+DEVELOPMENT_MEMO.md[SO5L]: F:记录共享签发94表候选与第三轮提交计划 | R:code:docs/contracts/c08-controller/ISSUE_LEDGER.md | A:设计历程与三轮提交计数 | S:前轮e43016f和dbf9766；本轮后审查并仅推rebirth。115项内存检查非运行证明，完整取消覆盖与TIME仍缺，业务未实现
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统关闭条件与时间入站及共享TIME切点进度 | R:code:docs/contracts/df03-time-fence/README.md,code:docs/contracts/df03-collector/INBOX.md | A:C01至C12及HTTP和独立IPC裁决 | S:27表已补入站，TIME有投影及原子规范但无合并SQL；完整库及提供者字段、跨服务时间与SDK未齐，离线不关闭全系统设计
+rebirth-design-closure.md[SQ8M]: F:汇总系统关闭条件及共享签发物理候选进度 | R:code:docs/contracts/c08-controller/ISSUE_LEDGER.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前缺口 | S:94表已统一四个水位读点，但取消覆盖仍显式阻断；不是删减功能或可部署布局。TIME与完整库及提供者和SDK未齐，离线不关闭系统设计
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -449,6 +449,12 @@ COMMAND_STORAGE.md[SD9T]: F:设计命令固定终态报告身份与资源联接�
 check_command.py[TD8M]: F:在77表内存组合核验命令终态核对枚举报告及资源写集 | R:code:docs/contracts/c08-controller/command.sql,code:docs/contracts/c08-controller/check_resource.py,code:docs/contracts/c08-controller/COMMAND_STORAGE.md | A:320项检查及report与staged绑定 | S:缺写和主动异常比全库快照，预期手写；not_sent核对不自动clear，unknown不是确定Resolution。BODY与摘要为占位，不同出口可复用本地报告ID；25输入核字节不重跑，非真实writer或耐久
 command-report.json[SQ5L]: F:记录320项命令资源组合内存检查及二十五输入摘要 | R:code:docs/contracts/c08-controller/check_command.py | A:77表结果及Resolution枚举回归 | S:批准为false；SQLite非产品批准，BODY和摘要为夹具，真实并发磁盘IPC及设备未验
 command.sql[FD9L]: F:定义命令政策修订核对与报告接收的十一表附属约束 | R:code:docs/contracts/c08-controller/resource.sql,code:docs/contracts/c08-controller/COMMAND_STORAGE.md | A:77表双向延迟配对与当前投影视图 | S:终态和锁存不可改，Resolution须同修订选择且拒unknown；T2绑定新hold，终态禁止普通许可。资源释放不替代命令核对；报告同状态提交，迟到保护遮蔽旧clear。SQL不计算JCS或核可信BODY，非生产迁移
+ISSUE_LEDGER.md[SD9T]: F:定义共享签发序列与94表配对及迁移阻断边界 | R:code:docs/contracts/c08-controller/issue-ledger.sql,code:docs/contracts/c08-controller/build_issue_ledger.py | A:普通取消同序列与四切点迁移及故障验收 | S:只冻结物理索引，完整执行原件和取消coverage未齐；阻断不能作为产品降级。非空BODY不证权威，旧91表保留；不得部署，真实并发耐久未验
+build_issue_ledger.py[XD8T]: F:从固定91表与签发源生成94表组合并校验替换数量 | R:code:docs/contracts/c08-controller/issue-ledger.sql,code:docs/contracts/c08-controller/build_layout.py | A:build及check | S:移除旧普通分配器且四水位同版替换，原文件不改；新增反向FK及不可变触发器。不是通用迁移器，生成不授运行资格
+check_issue_ledger.py[TD8S]: F:验证共享签发交错事务及旧水位迁移与缺覆盖阻断 | R:code:docs/contracts/c08-controller/build_issue_ledger.py,code:docs/contracts/c02-command-view/check_storage.py | A:115项内存检查及report和staged绑定 | S:缺写与主动异常比较94表，原字节及资源双顺序另验；高位仅算术探针。BODY人工且完整取消coverage未齐，34输入字节核对不重跑，真实并发设备未验
+controller-issue.sql[FD9L]: F:承载94表共享签发索引与既有命令保护资源的固定组合 | R:code:docs/contracts/c08-controller/build_issue_ledger.py,code:docs/contracts/c08-controller/issue-ledger.sql | A:共享U20与双向FK及迁移阻断 | S:普通和取消共用ID序列，回滚不消费；RUN资源取消四水位统一但新覆盖未齐。取消执行原件仍为BODY，匹配取消的RUN及资源释放阻断，不是可部署迁移
+issue-ledger-report.json[SQ5L]: F:保存115项共享签发内存结果及34输入摘要 | R:code:docs/contracts/c08-controller/check_issue_ledger.py | A:混合序列故障及迁移约束报告 | S:批准为false，SQLite非产品引擎批准；高位仅算术，BODY合成，完整取消coverage及真实并发磁盘设备未验
+issue-ledger.sql[FD9S]: F:声明共享issue与独立取消传输提交三表及保护守卫 | R:code:docs/contracts/c08-controller/ISSUE_LEDGER.md,code:docs/contracts/c08-controller/build_issue_ledger.py | A:全局精确序列与类型配对及原字节固定 | S:必须与生成组合加载，ID及revision跨类型唯一；取消Requester不继承父run，未知关闭禁发。原件权威尚为BODY，RUN和资源取消覆盖未合并时阻断；非生产迁移
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

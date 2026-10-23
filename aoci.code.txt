@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录开放前态与持续资格修订及新周期提交边界 | R:code:docs/contracts/c08-controller/OPEN_LIFECYCLE.md | A:设计历程与新周期第1轮 | S:103项副本及68项旧回归非运行；本轮仅本地commit，开放DDL与保护恢复和SDK仍缺
+DEVELOPMENT_MEMO.md[SO5L]: F:记录开放存储关闭恢复候选及本周期提交边界 | R:code:docs/contracts/c08-controller/OPEN_STORAGE.md | A:设计历程与本周期第2轮 | S:199项内存和327项旧回归非运行；前一提交421f35c，本轮不推。最终许可及保护来源和SDK仍缺
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛及开放资格修订后的当前缺口 | R:code:docs/contracts/c08-controller/OPEN_LIFECYCLE.md,code:docs/contracts/c08-controller/CONTROL_FENCE.md | A:C01至C12与十四OpenAPI替换清单 | S:162声明非独立功能，27处同服务重复须显式替换；T3及T4已有布局，103项副本不证持久化。开放与两安全代次及保护恢复DDL仍缺，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛及开放存储后的当前归并缺口 | R:code:docs/contracts/c08-controller/OPEN_STORAGE.md,code:docs/contracts/c08-controller/CONTROL_FENCE.md | A:C01至C12与十四OpenAPI替换清单 | S:162声明非独立功能，27处同服务重复须替换；开放T5不再从零建设，178表不含最终许可与统一保护来源。新签发仍暂阻，199项内存非运行，阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -531,6 +531,12 @@ check_open_lifecycle.py[TR8S]: F:复现旧ready自失效并核验前后资格资
 open-lifecycle-report.json[SQ5L]: F:保存103项开放资格参考结果及13输入原字节摘要 | R:code:docs/contracts/c08-controller/check_open_lifecycle.py | A:结构关联与副本故障记录 | S:批准为false，SQLite与运行并发磁盘设备均零；字节绑定不证明真实提供者或完整持久布局
 open-lifecycle.schema.json[FN8M]: F:声明开放前后控制闸投影与资格及资源证据封闭模型 | R:code:docs/contracts/c08-controller/build_open_lifecycle.py | A:gate-open-lifecycle0.2具名defs | S:根拒直接实例，旧原件引用不变；Gate只带ready原始ID避免摘要环。安全Ref与active字段不授权，全集与真实来源另验，不是公共SDK或数据库
 open_lifecycle_model.py[TR8S]: F:判定开放前态完整CAS与提交后资格及资源全集并模拟发布 | R:code:docs/contracts/c08-controller/open_plan_model.py,code:docs/contracts/c08-controller/check_open_lifecycle.py | A:proposal_error及transition_error和current_error与publish | S:先Schema且权威来自夹具；旧committed布尔仅供待写集验证。公开修订允许推进但不退回，正常hold非故障；提交未知保护，发布回退保留历史，无I/O或真实事务
+OPEN_STORAGE.md[SD9T]: F:规定开放T5与关闭恢复写集及安全代次的持久候选 | R:code:docs/contracts/c08-controller/open-storage.sql,code:docs/contracts/c08-controller/OPEN_LIFECYCLE.md | A:178表字段及故障和冻结边界 | S:恢复新代次与新快照同提交；新出口必须登记全量关闭，ACK只消费一次。ready_candidate不含实时tick，新签发仍暂阻；旧保护来源及全消息序号与归属提供者待联接，不能部署
+build_open_storage.py[XD8T]: F:生成开放178表组合及安全来源钩子和历史保护约束 | R:code:docs/contracts/c08-controller/build_control_fence.py,code:docs/contracts/c08-controller/open-storage.sql | A:build与check及17表组合 | S:只精确升级ready和gate_protect控制分支，原161表不改；真实来源同事务分配U20代次，恢复有反向提交FK。保留旧最终签发阻断，不是迁移器
+check_open_storage.py[TD8M]: F:核验开放关闭恢复及新出口写集与安全水位的内存约束 | R:code:docs/contracts/c08-controller/build_open_storage.py,code:docs/contracts/c08-controller/check_control_fence.py | A:199项检查及report和staged绑定 | S:六写集缺写与主动异常比全库；17表实际非空验证不可变，两轮恢复用新ACK。BODY及Ref合成，79输入核字节不重跑；没有真实并发磁盘或设备
+controller-open.sql[FD9L]: F:承载共享控制执行与开放关闭恢复的178表固定组合 | R:code:docs/contracts/c08-controller/build_open_storage.py,code:docs/contracts/c08-controller/open-storage.sql | A:T5原件配对与安全事件和恢复完整封存 | S:候选视图不等实时ready，正常快照更新不撤控制安全历史；保护与新出口登记同事务，恢复不能复用ACK。旧新签发阻断仍在，完整提供者和统一保护来源未齐，不可部署
+open-storage-report.json[SQ5L]: F:保存199项开放存储内存结果及79输入原字节摘要 | R:code:docs/contracts/c08-controller/check_open_storage.py | A:178表约束和故障参考记录 | S:批准为false，SQLite非产品批准；真实运行并发磁盘设备全零，BODY合成，输入绑定不扩大覆盖
+open-storage.sql[FD9M]: F:声明开放快照原件T5及逐出口关闭恢复的17表约束 | R:code:docs/contracts/c08-controller/build_open_storage.py,code:docs/contracts/c08-controller/OPEN_STORAGE.md | A:前后态配对与安全水位及最新关闭消费 | S:恢复先推进代次再同事务新快照；完整hold含正常占用但分类需提供者。T5最后重核，开放ACK可迟到但不放行；候选视图须外验当前tick，保护目标统一及最终许可未完成
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

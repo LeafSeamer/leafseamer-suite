@@ -12,6 +12,8 @@
 
 ### 1.1 当前关闭状态，优先于历轮进展中的旧待办
 
+2026-10-23限定范围持久化进展：[194表候选](contracts/c08-controller/SCOPE_STORAGE.md)在原唯一物理闸联接政策、完整Assessment、GateAccess、OPEN原ACK及ScopeCommit，取消采用保持protected，普通ReadyCommit不放宽；父unknown和旧Owner保留，独立取消取当前Requester。287项内存约束检查及156输入绑定通过，范围模型308项与换闸255项实际回归；修正初始评估先采样后选择的边界。父普通发送是明确标注的合成历史前态，所有原件权威仍外验，不能声称最终普通准入或真实IPC已完成。两安全Ref独立存储但可信提供者映射未完成；后续集中于完整AdmissionSeal、统一全部关闭来源与全消息日志、SDK同版归并。四签发阻断保持，阶段0未关闭。本轮为新周期第1/3轮，仅本地提交。
+
 2026-10-23换闸来源进展：[独立换闸屏障候选](contracts/c08-controller/GATE_RENEWAL.md)用新请求/原ACK/采用/撤回四表和完整48帧IPC0.10，修复旧控制ACK可被借用来提高闸修订的缺口；共享go_gate关联精确来源，未知请求不退款修订或token，独立屏障不伪造接管、资源释放或GUIready。255项内存与结构检查、148输入绑定通过，旧归属302项和范围306项实际回归；新屏障接普通恢复/T5并在撤回后失效有检查。完整原件真实性及JSON到SQL提供者仍为外验边界，旧46帧仅结构升级。后续重点是ScopeCommit/ReadyCommit分型、完整Assessment/AdmissionSeal、两安全Ref映射、统一关闭来源及全消息日志和唯一SDK；不重复建立已成的物理屏障来源。四个最终签发阻断保持，业务和真实并发磁盘IPC设备未验，阶段0不关闭。本轮为第3/3轮，按授权审查完整本周期历史后推main。
 
 2026-10-23归属持久化进展：[182表归属候选](contracts/c08-controller/OWNERSHIP_STORAGE.md)已将来源回执、Ownership、封存及撤回接入实际RequestKey/namespace、取消Plan、共享hold和控制历史；快照Owner改为三元外键且精确绑定原authority，接管后不能重新标记旧hold。302项内存SQLite检查及86输入绑定通过，旧开放199项、归属152项实际回归通过。人员/自动化取消独立来源、逐写缺失/主动异常、T3/T4保留风险、期限与撤回及词表映射已有证据；普通来源只验未提交投影，四个最终签发阻断保持。Ownership物理关系不再从零设计，剩余为同一物理闸的ScopeCommit/ReadyCommit分型、完整Assessment/AdmissionSeal、真实原件投影、统一关闭与全消息seq和SDK。BODY不证明JCS或提供者资格；真实并发磁盘IPC设备未验，阶段0未关闭。本轮为第2/3轮本地提交。

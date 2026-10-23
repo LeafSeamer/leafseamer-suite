@@ -30,7 +30,9 @@ def assessment_error(a,e,c,now):
     receipt=c['assessment_receipts'].get(e['provider_receipt_ref']['id'])
     if receipt is None or receipt!=dict(ref=e['provider_receipt_ref'],content=expected) or revoked(e['provider_receipt_ref'],c):return 'assessment_receipt'
     if eref(e)!=c['current_assessment_ref'] or e['resource_ref']!=c['resource_ref']:return 'stale_assessment'
-    if not int(a['selected_tick_ns'])<=int(e['sampled_tick_ns'])<=now<min(int(e['expires_tick_ns']),int(a['expires_tick_ns'])):return 'assessment_expired'
+    initial=c['assessments'].get(a['initial_assessment_ref']['id'])
+    if initial is None or not O.intact(initial,'assessment_digest') or eref(initial)!=a['initial_assessment_ref'] or int(initial['sampled_tick_ns'])>int(a['selected_tick_ns']):return 'initial_assessment'
+    if not int(initial['sampled_tick_ns'])<=int(e['sampled_tick_ns'])<=now<min(int(e['expires_tick_ns']),int(a['expires_tick_ns'])):return 'assessment_expired'
     p=e['protection'];identity=p['identity']
     if p!=c['approved_protection']:return 'protection_source'
     error=H.identity_error(identity,c)
@@ -65,6 +67,7 @@ def open_error(a,e,c,now):
     if error:return error
     if a['purpose']=='ordinary':return None if c['ordinary_ready'] and e is None else 'ordinary_not_ready'
     if e is None or a['initial_assessment_ref']!=eref(e):return 'initial_assessment'
+    if int(e['sampled_tick_ns'])>int(a['selected_tick_ns']):return 'assessment_after_selection'
     return assessment_error(a,e,c,now)
 def use_error(a,u,e,c,now):
     error=current_error(a,c,now)

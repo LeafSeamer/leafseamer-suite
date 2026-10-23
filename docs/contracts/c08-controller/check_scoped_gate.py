@@ -40,7 +40,7 @@ def fixture(kind='cancel',parent=True,origin='manual'):
             command_ref=po['identity']['command_ref'],execution_ref=None,classification='unknown'))
     risks.sort(key=lambda r:r['hold_ref']['id']);c['risk_observations']=clone(risks);c['risk_hold_ids']=[r['hold_ref']['id'] for r in risks]
     a=dict(format_version='gate-access/0.1.0-draft.1',access_id='access.'+kind,revision='1',purpose='ordinary' if kind=='ordinary' else 'cancel_only',
-        **common,protection=p if kind=='cancel' else None,initial_assessment_ref=None,selected_tick_ns='50',expires_tick_ns='80')
+        **common,protection=p if kind=='cancel' else None,initial_assessment_ref=None,selected_tick_ns='51',expires_tick_ns='80')
     e=None if kind=='ordinary' else dict(format_version='protection-assessment/0.1.0-draft.1',assessment_id='assessment',revision='1',
         **common,protection=p,resource_ref=c['resource_ref'],risks=risks,sampled_tick_ns='51',expires_tick_ns='70',provider_receipt_ref=ref('assessment.provider'))
     c['approved_protection']=clone(p)
@@ -99,6 +99,10 @@ def run(frames):
                 bad=clone(v);del bad[key];check(kind+n+'缺字段:'+key,valid(n,bad),False)
             bad=clone(v);bad['extra']=True;check(kind+n+'额外字段',valid(n,bad),False)
     check('父未发无需普通hold',evaluate(fixture(parent=False)),None)
+    a,e,u,c=fixture();e['sampled_tick_ns']='49';bind(a,e,u,c)
+    check('先采样再选择开放计划',M.open_error(a,e,c,53),None)
+    a,e,u,c=fixture();e['sampled_tick_ns']='52';bind(a,e,u,c)
+    check('计划不得引用选择后才采样的初始评估',M.open_error(a,e,c,53),'assessment_after_selection')
     for kind in ('ordinary','cancel'):
         x=fixture(kind,origin='automation');check(kind+'服务主体独立资格',evaluate(x),None)
         check(kind+'服务来源开闸',M.open_error(x[0],x[1],x[3],53),None)

@@ -1,0 +1,543 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 103,
+  "scope": "开放提交前后引用及资源安全代次候选",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "sqlite_tests_executed": 0,
+  "checks": [
+    {
+      "name": "原子写集完整关联",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "提交后新ControlRecord不使自身ready失效",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "旧模型重用前态比较确实自失效",
+      "observed": "state_changed",
+      "expected": "state_changed"
+    },
+    {
+      "name": "提交后不能重跑提交前检查",
+      "observed": "projection_changed",
+      "expected": "projection_changed"
+    },
+    {
+      "name": "正常T5不转交控制权",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "提交前资格改变:control_authority",
+      "observed": "eligibility_changed",
+      "expected": "eligibility_changed"
+    },
+    {
+      "name": "提交后资格改变:control_authority",
+      "observed": "eligibility_changed",
+      "expected": "eligibility_changed"
+    },
+    {
+      "name": "提交前资格改变:resource_safety",
+      "observed": "eligibility_changed",
+      "expected": "eligibility_changed"
+    },
+    {
+      "name": "提交后资格改变:resource_safety",
+      "observed": "eligibility_changed",
+      "expected": "eligibility_changed"
+    },
+    {
+      "name": "提交前资格改变:authorization",
+      "observed": "eligibility_changed",
+      "expected": "eligibility_changed"
+    },
+    {
+      "name": "提交后资格改变:authorization",
+      "observed": "eligibility_changed",
+      "expected": "eligibility_changed"
+    },
+    {
+      "name": "输入完整Ref的CAS:control",
+      "observed": "state_changed",
+      "expected": "state_changed"
+    },
+    {
+      "name": "输入完整Ref的CAS:gate",
+      "observed": "state_changed",
+      "expected": "state_changed"
+    },
+    {
+      "name": "输入完整Ref的CAS:resource",
+      "observed": "resource_snapshot",
+      "expected": "resource_snapshot"
+    },
+    {
+      "name": "输入完整Ref的CAS:authorization",
+      "observed": "state_changed",
+      "expected": "state_changed"
+    },
+    {
+      "name": "实际控制事实改变:control_epoch",
+      "observed": "control_changed",
+      "expected": "control_changed"
+    },
+    {
+      "name": "实际控制事实改变:effective_version",
+      "observed": "control_changed",
+      "expected": "control_changed"
+    },
+    {
+      "name": "实际控制事实改变:mode",
+      "observed": "control_changed",
+      "expected": "control_changed"
+    },
+    {
+      "name": "实际控制事实改变:holder",
+      "observed": "control_changed",
+      "expected": "control_changed"
+    },
+    {
+      "name": "实际控制事实改变:pending_operation_id",
+      "observed": "control_changed",
+      "expected": "control_changed"
+    },
+    {
+      "name": "当前绑定改变:controller_boot_id",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "当前绑定改变:worker_boot_id",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "当前绑定改变:writer_exit_id",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "当前绑定改变:ipc_session_id",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "当前绑定改变:device_session_id",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "当前绑定改变:clock_domain_id",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "当前绑定改变:descriptor_digest",
+      "observed": "binding",
+      "expected": "binding"
+    },
+    {
+      "name": "闸记录改变:phase",
+      "observed": "gate_changed",
+      "expected": "gate_changed"
+    },
+    {
+      "name": "闸记录改变:gate_token",
+      "observed": "gate_changed",
+      "expected": "gate_changed"
+    },
+    {
+      "name": "闸记录改变:gate_revision",
+      "observed": "gate_changed",
+      "expected": "gate_changed"
+    },
+    {
+      "name": "闸记录改变:barrier_id",
+      "observed": "gate_changed",
+      "expected": "gate_changed"
+    },
+    {
+      "name": "闸记录改变:ready_activation_id",
+      "observed": "gate_changed",
+      "expected": "gate_changed"
+    },
+    {
+      "name": "闸记录改变:lease_until_tick_ns",
+      "observed": "gate_changed",
+      "expected": "gate_changed"
+    },
+    {
+      "name": "仅公开投影修订更新不撤销控制权",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "控制历史身份或修订错配:other.control3",
+      "observed": "control_history",
+      "expected": "control_history"
+    },
+    {
+      "name": "控制历史身份或修订错配:control1",
+      "observed": "control_history",
+      "expected": "control_history"
+    },
+    {
+      "name": "控制历史身份或修订错配:control2",
+      "observed": "control_history",
+      "expected": "control_history"
+    },
+    {
+      "name": "当前引用提供者不能脱节:control",
+      "observed": "current_refs",
+      "expected": "current_refs"
+    },
+    {
+      "name": "当前引用提供者不能脱节:gate",
+      "observed": "current_refs",
+      "expected": "current_refs"
+    },
+    {
+      "name": "当前引用提供者不能脱节:authorization",
+      "observed": "current_refs",
+      "expected": "current_refs"
+    },
+    {
+      "name": "公开投影不能把闸隐藏成保护",
+      "observed": "control_not_ready",
+      "expected": "control_not_ready"
+    },
+    {
+      "name": "实际提供者失效:storage_healthy",
+      "observed": "unavailable",
+      "expected": "unavailable"
+    },
+    {
+      "name": "实际提供者失效:runtime_current",
+      "observed": "unavailable",
+      "expected": "unavailable"
+    },
+    {
+      "name": "实际提供者失效:authority_current",
+      "observed": "unavailable",
+      "expected": "unavailable"
+    },
+    {
+      "name": "实际提供者失效:basis_valid",
+      "observed": "unavailable",
+      "expected": "unavailable"
+    },
+    {
+      "name": "实际提供者失效:barrier_valid",
+      "observed": "unavailable",
+      "expected": "unavailable"
+    },
+    {
+      "name": "当前有保护不能ready",
+      "observed": "unavailable",
+      "expected": "unavailable"
+    },
+    {
+      "name": "发布期限边界:39",
+      "observed": "expired",
+      "expected": "expired"
+    },
+    {
+      "name": "发布期限边界:40",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "发布期限边界:89",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "发布期限边界:90",
+      "observed": "expired",
+      "expected": "expired"
+    },
+    {
+      "name": "发布期限边界:100",
+      "observed": "expired",
+      "expected": "expired"
+    },
+    {
+      "name": "重算新快照不能延用ready:run_deny_snapshot",
+      "observed": "snapshot_changed",
+      "expected": "snapshot_changed"
+    },
+    {
+      "name": "重算新快照不能延用ready:command_deny_snapshot",
+      "observed": "snapshot_changed",
+      "expected": "snapshot_changed"
+    },
+    {
+      "name": "重算新快照不能延用ready:reference_time_snapshot",
+      "observed": "snapshot_changed",
+      "expected": "snapshot_changed"
+    },
+    {
+      "name": "输出修订严格后继:control_after1",
+      "observed": "projection_successor",
+      "expected": "projection_successor"
+    },
+    {
+      "name": "输出修订严格后继:control_after3",
+      "observed": "projection_successor",
+      "expected": "projection_successor"
+    },
+    {
+      "name": "输出修订严格后继:control_after100000000000000000000",
+      "observed": "schema",
+      "expected": "schema"
+    },
+    {
+      "name": "输出必须新摘要:control_after",
+      "observed": "projection_successor",
+      "expected": "projection_successor"
+    },
+    {
+      "name": "输出修订严格后继:gate_after1",
+      "observed": "projection_successor",
+      "expected": "projection_successor"
+    },
+    {
+      "name": "输出修订严格后继:gate_after3",
+      "observed": "projection_successor",
+      "expected": "projection_successor"
+    },
+    {
+      "name": "输出修订严格后继:gate_after100000000000000000000",
+      "observed": "schema",
+      "expected": "schema"
+    },
+    {
+      "name": "输出必须新摘要:gate_after",
+      "observed": "projection_successor",
+      "expected": "projection_successor"
+    },
+    {
+      "name": "T5不得改变holder",
+      "observed": "control_transition",
+      "expected": "control_transition"
+    },
+    {
+      "name": "T5不得改变gate修订",
+      "observed": "gate_transition",
+      "expected": "gate_transition"
+    },
+    {
+      "name": "gate只带ready原始身份防循环引用",
+      "observed": "gate_activation",
+      "expected": "gate_activation"
+    },
+    {
+      "name": "不得把旧Plan摘要当新包络Ref",
+      "observed": "proposal_ref",
+      "expected": "proposal_ref"
+    },
+    {
+      "name": "ACK未持久不能提交",
+      "observed": "not_committed",
+      "expected": "not_committed"
+    },
+    {
+      "name": "接收器未验证不能提交",
+      "observed": "observer",
+      "expected": "observer"
+    },
+    {
+      "name": "正常当前命令占用保持ready",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "正常取消与父命令占用可共存",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "异常占用不借正常分配豁免:unknown",
+      "observed": "resource_blocked",
+      "expected": "resource_blocked"
+    },
+    {
+      "name": "异常占用不借正常分配豁免:failed_unresolved",
+      "observed": "resource_blocked",
+      "expected": "resource_blocked"
+    },
+    {
+      "name": "异常占用不借正常分配豁免:orphaned",
+      "observed": "resource_blocked",
+      "expected": "resource_blocked"
+    },
+    {
+      "name": "异常占用不借正常分配豁免:proof_revoked",
+      "observed": "resource_blocked",
+      "expected": "resource_blocked"
+    },
+    {
+      "name": "旧持有人未决占用不能称正常",
+      "observed": "resource_blocked",
+      "expected": "resource_blocked"
+    },
+    {
+      "name": "当前全集不可漏隐藏hold",
+      "observed": "resource_hold_set",
+      "expected": "resource_hold_set"
+    },
+    {
+      "name": "当前全集不可重复hold",
+      "observed": "resource_hold_set",
+      "expected": "resource_hold_set"
+    },
+    {
+      "name": "提供者Ref不能伪造",
+      "observed": "resource_provider",
+      "expected": "resource_provider"
+    },
+    {
+      "name": "只更新分配Ref而不重取全集拒绝",
+      "observed": "resource_snapshot",
+      "expected": "resource_snapshot"
+    },
+    {
+      "name": "正常占用释放不需重开闸",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "故障恢复即使再次无占用也不复活旧ready",
+      "observed": "eligibility_changed",
+      "expected": "eligibility_changed"
+    },
+    {
+      "name": "提交结果:failed",
+      "observed": "commit_failed",
+      "expected": "commit_failed"
+    },
+    {
+      "name": "不可靠提交保持保护:failed",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不可靠提交不替换原控制:failed",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "提交结果:unknown",
+      "observed": "commit_uncertain",
+      "expected": "commit_uncertain"
+    },
+    {
+      "name": "不可靠提交保持保护:unknown",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不可靠提交不替换原控制:unknown",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "副本写集故障:0",
+      "observed": "rollback",
+      "expected": "rollback"
+    },
+    {
+      "name": "副本写集全量未变:0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "副本写集故障:1",
+      "observed": "rollback",
+      "expected": "rollback"
+    },
+    {
+      "name": "副本写集全量未变:1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "副本写集故障:2",
+      "observed": "rollback",
+      "expected": "rollback"
+    },
+    {
+      "name": "副本写集全量未变:2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "COMMIT跨截止保留历史但不发布ready",
+      "observed": "expired",
+      "expected": "expired"
+    },
+    {
+      "name": "历史提交仍可查",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "COMMIT发布时单调时钟回退拒绝",
+      "observed": "clock_regressed",
+      "expected": "clock_regressed"
+    },
+    {
+      "name": "时钟异常保留已提交历史",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "时钟异常立即保护",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "发布时刻等于校验时刻允许",
+      "observed": null,
+      "expected": null
+    },
+    {
+      "name": "重复提交不生成第二次状态转换",
+      "observed": "projection_changed",
+      "expected": "projection_changed"
+    },
+    {
+      "name": "重复提交完整状态不变",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "伪造全部可信上下文可通过仅为模型限制",
+      "observed": null,
+      "expected": null
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/build_open_plan.py": "af3f9aec5e612e51a9400152500345c3ac245286f6001586e4324376b246b950",
+    "docs/contracts/c08-controller/open_plan_model.py": "f25c978c57bc5bbaf42e4f5ff863ed4f4ba7e5b688d934bedf97bb99f1e691b7",
+    "docs/contracts/c08-controller/check_open_plan.py": "eeb82dc84f694a6d55db78c66cc6bad95464c8d844334a4794b2c4689617e9eb",
+    "docs/contracts/c08-controller/open-plan.schema.json": "e4db1c77171c540a822fb0b154b0018ac03d1ba1e001d2f700c740c227b4bc33",
+    "docs/contracts/c08-controller/OPEN_PLAN.md": "d79c2595837fdb0fe7299253c6d39a973c723cc3da58b254763818ea8dd058dd",
+    "docs/contracts/c08-controller/GATE_ORDER.md": "c223a9bf30bc3f3a9b36a73b4cd83f7e6304c8bd0eb29fc1c46651ff9c261b21",
+    "docs/contracts/c08-controller/PROTECTION_OUTBOX.md": "0c90f262df8a15121f0ac3326fcd036fdd1f80f04e59b83623301c17bb48a8bd",
+    "docs/contracts/df03-service/ipc.schema.json": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2",
+    "docs/contracts/c08-controller/OPEN_LIFECYCLE.md": "113fb88f7c75bd1221f2f8c768b9aa1ebe0c8d41f69db0eaac1034b17840a4d2",
+    "docs/contracts/c08-controller/build_open_lifecycle.py": "a477b9f796a73a2e7ac699db8e0a518f1376c35e83f7228434f622608a086e8c",
+    "docs/contracts/c08-controller/open_lifecycle_model.py": "61fb3d00a9c8cf2cc450420b10e6bbbf1c259757039483a3046124dcc0f7b4c8",
+    "docs/contracts/c08-controller/check_open_lifecycle.py": "104f73dddc913edb013e0d0a4e81f8f3fa8a9ef50cdeee4e85fac42e207226de",
+    "docs/contracts/c08-controller/open-lifecycle.schema.json": "db505ee18e30c38d2a152515113a84e0e1f1eb11b43b8bf98f87de103f20f794"
+  }
+}

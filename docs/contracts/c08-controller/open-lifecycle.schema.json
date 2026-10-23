@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/open-lifecycle.schema.json",
+  "title": "gate-open-lifecycle/0.2.0-draft.1",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "EligibilityRefs": {
+      "type": "object",
+      "properties": {
+        "control_authority": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "resource_safety": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "authorization": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        }
+      },
+      "required": [
+        "control_authority",
+        "resource_safety",
+        "authorization"
+      ],
+      "additionalProperties": false
+    },
+    "Holder": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "ControlProjection": {
+      "type": "object",
+      "properties": {
+        "record_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "authority_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Counter"
+        },
+        "mode": {
+          "enum": [
+            "automatic",
+            "manual"
+          ]
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Holder"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_operation_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_state": {
+          "enum": [
+            "protected",
+            "fencing",
+            "ready"
+          ]
+        }
+      },
+      "required": [
+        "record_ref",
+        "authority_ref",
+        "control_epoch",
+        "effective_version",
+        "mode",
+        "holder",
+        "pending_operation_id",
+        "gate_state"
+      ],
+      "additionalProperties": false
+    },
+    "GateProjection": {
+      "type": "object",
+      "properties": {
+        "record_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "binding": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Binding"
+        },
+        "gate_revision": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Counter"
+        },
+        "gate_token": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        },
+        "barrier_id": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        },
+        "phase": {
+          "enum": [
+            "fenced",
+            "protected",
+            "ready"
+          ]
+        },
+        "ready_activation_id": {
+          "anyOf": [
+            {
+              "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lease_until_tick_ns": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Counter"
+        }
+      },
+      "required": [
+        "record_ref",
+        "binding",
+        "gate_revision",
+        "gate_token",
+        "barrier_id",
+        "phase",
+        "ready_activation_id",
+        "lease_until_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "OpenPlanV02": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "gate-open-plan/0.2.0-draft.1"
+        },
+        "plan": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/OpenPlan"
+        },
+        "eligibility_refs": {
+          "$ref": "#/$defs/EligibilityRefs"
+        },
+        "control_before": {
+          "$ref": "#/$defs/ControlProjection"
+        },
+        "gate_before": {
+          "$ref": "#/$defs/GateProjection"
+        },
+        "proposal_digest": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "plan",
+        "eligibility_refs",
+        "control_before",
+        "gate_before",
+        "proposal_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ReadyTransition": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "gate-ready-transition/0.2.0-draft.1"
+        },
+        "ready": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/ReadyCommit"
+        },
+        "proposal_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "control_after": {
+          "$ref": "#/$defs/ControlProjection"
+        },
+        "gate_after": {
+          "$ref": "#/$defs/GateProjection"
+        },
+        "eligibility_refs": {
+          "$ref": "#/$defs/EligibilityRefs"
+        },
+        "transition_digest": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "ready",
+        "proposal_ref",
+        "control_after",
+        "gate_after",
+        "eligibility_refs",
+        "transition_digest"
+      ],
+      "additionalProperties": false
+    },
+    "HoldObservation": {
+      "type": "object",
+      "properties": {
+        "hold_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "owner_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "state": {
+          "enum": [
+            "active",
+            "unknown",
+            "failed_unresolved",
+            "orphaned",
+            "proof_revoked"
+          ]
+        }
+      },
+      "required": [
+        "hold_ref",
+        "owner_ref",
+        "control_authority_ref",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceSafetyEvidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "device_id": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Id"
+        },
+        "observed_resource_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "resource_safety_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "holds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HoldObservation"
+          },
+          "maxItems": 65536
+        },
+        "provider_receipt_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Ref"
+        },
+        "evidence_digest": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/open-plan.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "revision",
+        "device_id",
+        "observed_resource_ref",
+        "resource_safety_ref",
+        "control_authority_ref",
+        "holds",
+        "provider_receipt_ref",
+        "evidence_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

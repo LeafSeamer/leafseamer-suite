@@ -1,0 +1,362 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 68,
+  "scope": "开放计划原件关联候选",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "checks": [
+    {
+      "name": "结构正例:OpenPlan",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构正例:OpenDispatch",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构正例:OpenAckEvidence",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结构正例:ReadyCommit",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "完整关联阶段0",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "完整关联阶段1",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "完整关联阶段2",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "完整关联阶段3",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "根Schema拒绝直接对象",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "ACK方向序号不与出站共用",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "当前前提失效:storage_healthy",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "当前前提失效:runtime_current",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "当前前提失效:basis_valid",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "当前前提失效:barrier_valid",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "当前前提失效:resources_clear",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "当前前提失效:authority_current",
+      "expected": "unavailable",
+      "observed": "unavailable"
+    },
+    {
+      "name": "保护重新出现",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "引用修订变化:control",
+      "expected": "state_changed",
+      "observed": "state_changed"
+    },
+    {
+      "name": "引用修订变化:gate",
+      "expected": "state_changed",
+      "observed": "state_changed"
+    },
+    {
+      "name": "引用修订变化:authorization",
+      "expected": "state_changed",
+      "observed": "state_changed"
+    },
+    {
+      "name": "引用修订变化:resource",
+      "expected": "state_changed",
+      "observed": "state_changed"
+    },
+    {
+      "name": "恢复依据换代",
+      "expected": "state_changed",
+      "observed": "state_changed"
+    },
+    {
+      "name": "当前绑定变化:writer_exit_id",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "当前绑定变化:ipc_session_id",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "当前绑定变化:worker_boot_id",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "当前绑定变化:device_session_id",
+      "expected": "binding",
+      "observed": "binding"
+    },
+    {
+      "name": "计划期限等号",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "选择前不得生效",
+      "expected": "expired",
+      "observed": "expired"
+    },
+    {
+      "name": "租期超过批准上限",
+      "expected": "lease_limit",
+      "observed": "lease_limit"
+    },
+    {
+      "name": "旧计划字段篡改未重算",
+      "expected": "digest",
+      "observed": "digest"
+    },
+    {
+      "name": "重算计划不授新控制版本",
+      "expected": "control_binding",
+      "observed": "control_binding"
+    },
+    {
+      "name": "正常开放无需伪造资源事故:activation",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "正常开放无需伪造资源事故:gate_recovery",
+      "expected": null,
+      "observed": null
+    },
+    {
+      "name": "正文时钟必须绑定信封域",
+      "expected": "body_binding",
+      "observed": "body_binding"
+    },
+    {
+      "name": "重算且保存快照仍拒绝跨库scope",
+      "expected": "snapshot_scope",
+      "observed": "snapshot_scope"
+    },
+    {
+      "name": "重算时间快照仍拒绝跨时钟域",
+      "expected": "time_domain",
+      "observed": "time_domain"
+    },
+    {
+      "name": "当前快照不同:run_deny_snapshot",
+      "expected": "snapshot_changed",
+      "observed": "snapshot_changed"
+    },
+    {
+      "name": "当前快照不同:command_deny_snapshot",
+      "expected": "snapshot_changed",
+      "observed": "snapshot_changed"
+    },
+    {
+      "name": "当前快照不同:reference_time_snapshot",
+      "expected": "snapshot_changed",
+      "observed": "snapshot_changed"
+    },
+    {
+      "name": "重算已存派发仍须原计划正文",
+      "expected": "frame_binding",
+      "observed": "frame_binding"
+    },
+    {
+      "name": "派发不可借同id不同修订计划",
+      "expected": "plan_ref",
+      "observed": "plan_ref"
+    },
+    {
+      "name": "出站seq不匹配",
+      "expected": "outbound_identity",
+      "observed": "outbound_identity"
+    },
+    {
+      "name": "observer资格不可由摘要证明",
+      "expected": "observer",
+      "observed": "observer"
+    },
+    {
+      "name": "ACK证据必须绑定精确派发",
+      "expected": "evidence_ref",
+      "observed": "evidence_ref"
+    },
+    {
+      "name": "重算ACK证据不得改写接收时刻",
+      "expected": "observer",
+      "observed": "observer"
+    },
+    {
+      "name": "可信原件仍需ACK关联:reply_to",
+      "expected": "ack_binding",
+      "observed": "ack_binding"
+    },
+    {
+      "name": "可信原件仍需ACK关联:ipc_session_id",
+      "expected": "ack_binding",
+      "observed": "ack_binding"
+    },
+    {
+      "name": "可信原件仍需ACK关联:worker_boot_id",
+      "expected": "ack_binding",
+      "observed": "ack_binding"
+    },
+    {
+      "name": "可信原件仍需ACK关联:descriptor_digest",
+      "expected": "ack_binding",
+      "observed": "ack_binding"
+    },
+    {
+      "name": "重算ACK仍需精确回显:gate_token",
+      "expected": "ack_gate",
+      "observed": "ack_gate"
+    },
+    {
+      "name": "重算ACK仍需精确回显:gate_revision",
+      "expected": "ack_gate",
+      "observed": "ack_gate"
+    },
+    {
+      "name": "重算ACK仍需精确回显:run_deny_snapshot_digest",
+      "expected": "ack_snapshot",
+      "observed": "ack_snapshot"
+    },
+    {
+      "name": "重算ACK仍需精确回显:command_deny_snapshot_revision",
+      "expected": "ack_snapshot",
+      "observed": "ack_snapshot"
+    },
+    {
+      "name": "时间快照ACK不可只比id",
+      "expected": "ack_snapshot",
+      "observed": "ack_snapshot"
+    },
+    {
+      "name": "ACK不早于预留发送",
+      "expected": "ack_time",
+      "observed": "ack_time"
+    },
+    {
+      "name": "入站seq来自独立接收器",
+      "expected": "inbound_identity",
+      "observed": "inbound_identity"
+    },
+    {
+      "name": "ACK未落库不得ready",
+      "expected": "not_committed",
+      "observed": "not_committed"
+    },
+    {
+      "name": "ready提交未知不得ready",
+      "expected": "not_committed",
+      "observed": "not_committed"
+    },
+    {
+      "name": "持久ACK必须是精确原件",
+      "expected": "not_committed",
+      "observed": "not_committed"
+    },
+    {
+      "name": "持久ready必须是精确原件",
+      "expected": "not_committed",
+      "observed": "not_committed"
+    },
+    {
+      "name": "ready不借新资源引用",
+      "expected": "ready_state",
+      "observed": "ready_state"
+    },
+    {
+      "name": "ready不能采用别的ACK证据",
+      "expected": "ready_ref",
+      "observed": "ready_ref"
+    },
+    {
+      "name": "严格新计数字段:'01'",
+      "expected": "schema",
+      "observed": "schema"
+    },
+    {
+      "name": "严格新计数字段:'1\\n'",
+      "expected": "schema",
+      "observed": "schema"
+    },
+    {
+      "name": "严格新计数字段:'100000000000000000000'",
+      "expected": "schema",
+      "observed": "schema"
+    },
+    {
+      "name": "未知计划字段拒绝",
+      "expected": "schema",
+      "observed": "schema"
+    },
+    {
+      "name": "旧IPC写版本拒绝",
+      "expected": "schema",
+      "observed": "schema"
+    },
+    {
+      "name": "合成权威限制反证",
+      "expected": null,
+      "observed": null
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/build_open_plan.py": "af3f9aec5e612e51a9400152500345c3ac245286f6001586e4324376b246b950",
+    "docs/contracts/c08-controller/open_plan_model.py": "f25c978c57bc5bbaf42e4f5ff863ed4f4ba7e5b688d934bedf97bb99f1e691b7",
+    "docs/contracts/c08-controller/check_open_plan.py": "eeb82dc84f694a6d55db78c66cc6bad95464c8d844334a4794b2c4689617e9eb",
+    "docs/contracts/c08-controller/open-plan.schema.json": "e4db1c77171c540a822fb0b154b0018ac03d1ba1e001d2f700c740c227b4bc33",
+    "docs/contracts/c08-controller/OPEN_PLAN.md": "d79c2595837fdb0fe7299253c6d39a973c723cc3da58b254763818ea8dd058dd",
+    "docs/contracts/c08-controller/GATE_ORDER.md": "c223a9bf30bc3f3a9b36a73b4cd83f7e6304c8bd0eb29fc1c46651ff9c261b21",
+    "docs/contracts/c08-controller/PROTECTION_OUTBOX.md": "0c90f262df8a15121f0ac3326fcd036fdd1f80f04e59b83623301c17bb48a8bd",
+    "docs/contracts/df03-service/ipc.schema.json": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2"
+  }
+}

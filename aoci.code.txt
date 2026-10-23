@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录最终有序出口设计与有限顺序检查和提交周期 | R:code:docs/contracts/c08-controller/GATE_ORDER.md | A:设计历程与本周期第2轮 | S:前轮403fc72，本轮仅本地提交；67项模型非真实并发。报告保存独立快照，持久字段和SDK归并仍缺
+DEVELOPMENT_MEMO.md[SO5L]: F:记录开放计划原件关联设计与验证及第三轮发布周期 | R:code:docs/contracts/c08-controller/OPEN_PLAN.md | A:设计历程与本周期第3轮 | S:前两轮403fc72和9183ea4；68项合成检查非运行验收。完整控制屏障DDL与SDK仍缺，远端发布以实际核对为准
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛并登记最终有序出口与关闭候选 | R:code:docs/contracts/c08-controller/GATE_ORDER.md,code:docs/contracts/c08-controller/PROTECTION_OUTBOX.md | A:C01至C12与实施前剩余项 | S:最终出口所有者和时序已有方案，仍缺开放计划持久字段与完整屏障、提供者和SDK归并。67项有限模型不授运行批准，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛并登记开放计划原件与ready候选 | R:code:docs/contracts/c08-controller/OPEN_PLAN.md,code:docs/contracts/c08-controller/GATE_ORDER.md | A:C01至C12与实施前剩余项 | S:四对象及持久映射已有方案，四表尚未创建；完整控制屏障及提供者和SDK仍待归并。68项合成检查不授运行批准，阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -501,6 +501,12 @@ GATE_ORDER.md[SR9T]: F:固定关闭恢复与开放的发送所有者及四个顺
 check_gate_order.py[TR8S]: F:核验最终出口有限时序与六种排列及原IPC字段并绑定报告 | R:code:docs/contracts/c08-controller/gate_order_model.py,code:docs/contracts/df03-service/ipc.schema.json | A:67项检查及report和staged绑定 | S:手工预期区分本地保护和worker传播；断言保存深副本防后续变异。八输入核字节不重跑，排列非真实并发，重启不证明监督退役或设备行为
 gate-order-report.json[SQ5L]: F:保存67项最终出口参考检查与六种排列及八输入摘要 | R:code:docs/contracts/c08-controller/check_gate_order.py | A:单设备有限模型结果 | S:批准为false，真实运行并发磁盘设备全零；快照与字段对照不证明完整Guard或真实IPC
 gate_order_model.py[TR8S]: F:模拟持久前提IPC入流worker关闸和ACK采用的独立顺序 | R:code:docs/contracts/c08-controller/GATE_ORDER.md,code:docs/contracts/c08-controller/check_gate_order.py | A:Gate与冻结Frame及Rejected | S:只有单设备会话，资源和屏障为合成前提；重启假定旧出口已退役。关闭重复不改闸，协议冲突关闭会话，ACK过期不ready；无数据库或网络，不实现续租及完整Guard
+OPEN_PLAN.md[SR9T]: F:规定开放计划派发原ACK与ready对象字段和可信提供者及持久映射 | R:code:docs/contracts/c08-controller/build_open_plan.py,code:docs/contracts/c08-controller/GATE_ORDER.md | A:四对象及来源期限与故障边界 | S:历史ACK不授当前ready，接收时刻须可信原件绑定；两方向序号独立。首次开放不伪造资源事故，预留后故障终止旧会话；四表仅映射尚未建DDL，实际运行未验
+build_open_plan.py[XN8T]: F:生成开放计划原件链四对象的局部候选Schema | R:code:docs/contracts/df03-service/ipc.schema.json,code:docs/contracts/c08-controller/OPEN_PLAN.md | A:build与check | S:直接引用固定IPC正文和两帧，不改旧协议；根拒直接实例，新计数严格U20而非uint64。不可变对象修订固定1，未切SDK权威或生成服务
+check_open_plan.py[TR8S]: F:核验四对象结构及原件身份期限和ready关联并绑定报告 | R:code:docs/contracts/c08-controller/open_plan_model.py,code:docs/contracts/c08-controller/build_open_plan.py | A:68项参考检查与report及staged绑定 | S:JSON往返拆开权威与被测对象，预期手写；重算摘要仍验scope会话与接收时刻。八输入核字节不重跑，全部权威为夹具，未执行真实存储或IPC
+open-plan-report.json[SQ5M]: F:保存68项开放计划结构关联结果及八输入原字节摘要 | R:code:docs/contracts/c08-controller/check_open_plan.py | A:四阶段参考检查结果 | S:批准为false，运行并发磁盘设备均零；合成权威通过是限制反证，不证明实际接收或持久提交
+open-plan.schema.json[FN8M]: F:声明开放计划派发ACK证据与ready提交四种封闭候选模型 | R:code:docs/contracts/c08-controller/build_open_plan.py,code:docs/contracts/df03-service/ipc.schema.json | A:gate-open-plan0.1具名defs | S:根不可直接校验；原帧引用IPC0.8，四状态与basis单向Ref无摘要环。合法字段不证明来源当前性或真实提交，不是完整数据库或公共SDK
+open_plan_model.py[TR8T]: F:判定开放计划到ready的摘要原件与当前状态完整关联 | R:code:docs/contracts/c08-controller/check_open_plan.py,code:docs/contracts/c08-controller/OPEN_PLAN.md | A:plan_error及dispatch_error与evidence_error和ready_error | S:须先做Schema校验，stored与observer和当前状态均为合成上下文；只排自身顶层摘要。期限等号拒绝，可信接收时刻精确相等；无I/O或实际权威提供者
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

@@ -10,9 +10,9 @@ def request(d,source='source',episodes='2'):
     s=R.one(d,'ingress_source','source_id',source);p=R.one(d,'ib_pool','singleton',1)
     return dict(contract_version=G.VERSION,source_id=source,expected_source_revision=s['revision'],source_key_digest=P.digest(s['source_key']),pool_profile_digest=p['profile_digest'],
         episodes=episodes,request_epoch='source.epoch',actor=dict(principal_id='operator'),idempotency_key='admit.'+source)
-def fixture(*,activate=('source','empty.a'),arm=True,episodes=4):
+def fixture(*,activate=('source','empty.a'),arm=True,episodes=4,sql_factory=G.build):
     # 只从旧夹具取得公开合成种子，新库按先实例池、后来源启用再运行登记的顺序执行所有守卫。
-    old,q,c,ts=AT.fixture();d=sqlite3.connect(':memory:',isolation_level=None);d.row_factory=sqlite3.Row;d.executescript(G.build().decode())
+    old,q,c,ts=AT.fixture();d=sqlite3.connect(':memory:',isolation_level=None);d.row_factory=sqlite3.Row;d.executescript(sql_factory().decode())
     try:
         tables=('storage_scope','ingress_storage_profile','ingest_epoch','ingress_source','published_version','run','activation_slot','run_ingest_progress','p1_limit','arm_capacity')
         C.execute(d,[I(table,**row) for table in tables for row in P.rows(old,'SELECT * FROM '+table)])

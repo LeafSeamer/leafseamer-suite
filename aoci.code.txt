@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录来源独享准入与新周期首轮交付 | R:code:docs/contracts/c04-lifecycle/SOURCE_BUDGET.md | A:设计历程与三轮交付 | S:本轮仅本地提交；90项是内存证据，持续容量准入和GC未完成
+DEVELOPMENT_MEMO.md[SO5L]: F:记录完整计划增长准入与周期第二轮交付 | R:code:docs/contracts/c04-lifecycle/WORKLOAD_BUDGET.md | A:设计历程与三轮交付 | S:本轮仅本地提交；86项及90项回归均是离线证据，长期容量与GC未完成
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总来源独享预算之后的系统设计关闭门槛 | R:code:docs/contracts/c04-lifecycle/SOURCE_BUDGET.md | A:C01至C12关闭状态 | S:106表90项不关闭阶段0；持续库存增长、层级预算、CostManifest和GC、AUTH与TIME及唯一SDK继续待完成
+rebirth-design-closure.md[SQ8M]: F:汇总运行增长准入后的全系统设计关闭门槛 | R:code:docs/contracts/c04-lifecycle/WORKLOAD_BUDGET.md | A:C01至C12关闭状态 | S:六维库存前置检查已有候选，长期字节容量与GC、来源恢复、AUTH和TIME及唯一SDK仍未定稿；86项不关闭阶段0
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -415,12 +415,18 @@ instance_budget_model.py[AP9T]: F:原子联接P1完整写集与实例及run预�
 seamer-instance-budget.sql[PP9L]: F:组合104表实例分区、恢复预算及完整保护布局 | R:code:docs/contracts/c04-lifecycle/build_instance_budget.py,code:docs/contracts/c04-lifecycle/instance-budget.sql | A:完整SQLite候选布局 | S:生成物不得独立修改；固定总容量等于run区加来源区，消费与applied不释放；额度耗尽阻arm就绪与R4，未实现持续增长准入或GC
 SOURCE_BUDGET.md[SP8T]: F:规定来源启用、独享保护预留及耗尽门槛 | R:code:docs/contracts/c04-lifecycle/source-budget.sql,code:docs/contracts/c04-lifecycle/source_budget_model.py | A:字段、不变量、事务、验收及剩余冻结 | S:source配置不等于启用；消费或关闭不释放分配，已在途证据仍可记账；独享份额不保证磁盘可写或完整运行成本
 build_source_budget.py[XP8T]: F:生成来源准入Schema与106表预算门槛组合 | R:code:docs/contracts/c04-lifecycle/build_instance_budget.py,code:docs/contracts/c04-lifecycle/source-budget.sql | A:schema、build、--check | S:保留104表产物；registry反向引用来源seal，ib_use引用独享预留；新增门槛覆盖摄取与运行新写而不阻历史证据
-check_source_budget.py[TP8S]: F:验证独享预留原子性、超卖隔离及正常执行到R5 | R:code:docs/contracts/c04-lifecycle/source_budget_model.py,code:docs/contracts/c04-lifecycle/check_instance_budget.py | A:fixture、request、run、--check-report | S:只复用合成种子，在新库依序执行全部守卫；缓存摄取提交和attempt逐项反证，迟到accepted不被预算门槛拒绝；无真实并发证据
+check_source_budget.py[TP8S]: F:验证来源独享预留、超卖隔离及正常执行到R5 | R:code:docs/contracts/c04-lifecycle/source_budget_model.py,code:docs/contracts/c04-lifecycle/check_instance_budget.py | A:fixture、request、run、--check-report | S:sql_factory只替换建库SQL，种子仍按完整启用顺序通过守卫；迟到accepted不被新工作预算门槛拒绝，无实际并发证据
 seamer-source-budget.sql[PP9L]: F:组合106表来源独享分配与完整保护执行布局 | R:code:docs/contracts/c04-lifecycle/build_source_budget.py,code:docs/contracts/c04-lifecycle/source-budget.sql | A:完整SQLite候选布局 | S:生成物不单独编辑；全池分配包括held和spent，已消费不得重新出售；运行全部来源依赖均需有余额，不实现GC与持续增长准入
-source-budget-report.json[TP7L]: F:保存90项来源预算检查及109输入摘要 | R:code:docs/contracts/c04-lifecycle/check_source_budget.py | A:checks、inputs、approved | S:approved为false，实际运行并发磁盘设备验收均未执行；不能据合成R5通过宣布直播可用
+source-budget-report.json[TP7L]: F:保存来源夹具扩展后的90项回归及109输入摘要 | R:code:docs/contracts/c04-lifecycle/check_source_budget.py | A:checks、inputs、approved | S:只证明原来源布局的离线回归，不据此认定新增长布局或真实运行完整覆盖
 source-budget.schema.json[FP8T]: F:定义来源启用Admission的具名请求结构 | R:code:docs/contracts/c04-lifecycle/build_source_budget.py,code:docs/contracts/c04-lifecycle/source_budget_model.py | A:Admission | S:根不可直接实例化；U20结构之后仍须有界份数、当前scope及实例剩余分配语义校验
 source-budget.sql[PP9T]: F:约束来源预留注册封存及按来源的实际消费 | R:code:docs/contracts/c04-lifecycle/instance-budget.sql,code:docs/contracts/c04-lifecycle/build_source_budget.py | A:sb_reservation、sb_commit、sb_balance、sb_unallocated、sb_run_eligible | S:三写项延迟外键共同提交；来源不可充值或换身份抢池，关闭不退款；消费另加准入三行及14336字节，SQL行界包含BLOB编码扩张但不证明规范摘要真实性
 source_budget_model.py[AP9T]: F:核验来源身份并原子登记独享额度和启用原件 | R:code:docs/contracts/c04-lifecycle/instance_budget_model.py,code:docs/contracts/c04-lifecycle/build_source_budget.py | A:validate、reserve_steps、reserve | S:当前授权后先查持久身份，满额和来源后续状态不阻原请求；新请求必须核source_key摘要和修订，元数据行界也在writer核验；真实提供者仍为合成
+WORKLOAD_BUDGET.md[SP8T]: F:规定运行库存及完整动作计划的预算准入边界 | R:code:docs/contracts/c04-lifecycle/workload-budget.sql,code:docs/contracts/c04-lifecycle/check_workload_budget.py | A:六维形状、原子顺序、故障验收 | S:新代次不可破坏旧账户的全run依赖额度；计划槽完成后不退款，固定库存限制不能证明无限期运行容量
+build_workload_budget.py[XP8T]: F:生成包含完整计划占位与增长守卫的106表布局 | R:code:docs/contracts/c04-lifecycle/build_source_budget.py,code:docs/contracts/c04-lifecycle/workload-budget.sql | A:build、DIMENSIONS、--check | S:逐增长表在AFTER INSERT检查NEW后的库存，两个最后seal补查暂态R2；未替换旧SQL产物
+check_workload_budget.py[TP8S]: F:验证完整动作占位、六维增长拒绝及恢复代次隔离 | R:code:docs/contracts/c04-lifecycle/build_workload_budget.py,code:docs/contracts/c04-lifecycle/check_source_budget.py,code:docs/contracts/c04-lifecycle/check_recovery_budget.py | A:fixture、recovery、run、--check-report | S:8次双动作R5后拒第9次并实际执行P1，异常比对全库快照；恢复预览绑定真实active execution而非假定空，合成提供者不代表设备验收
+seamer-workload-budget.sql[PP9L]: F:组合来源独享预算与运行增长准入的Seamer候选布局 | R:code:docs/contracts/c04-lifecycle/build_workload_budget.py,code:docs/contracts/c04-lifecycle/workload-budget.sql | A:106表、wb_shape、wb_overflow、增长及seal触发器 | S:动作计划与实际提交按执行步骤目标集合去重，新旧剩余账户同时检查；R2缺账户只允许精确未封存暂态且必须最终补seal，writer须整笔回滚
+workload-budget-report.json[TP7L]: F:保存86项增长准入检查与114输入绑定 | R:code:docs/contracts/c04-lifecycle/check_workload_budget.py | A:checks、inputs、approved | S:approved为false，运行并发磁盘设备计数均零；相同106表数量不代表与旧来源布局语义相同
+workload-budget.sql[PP9T]: F:定义计划命令占位、账户库存及当前代次准入约束 | R:code:docs/contracts/c04-lifecycle/build_workload_budget.py,code:docs/contracts/c04-lifecycle/source-budget.sql | A:wb_command_slot、wb_shape、wb_current_account、计划和提交守卫 | S:依赖按run全量计，其他库存按小于等于代次计；action先占位后提交不重复计数，旧账户耗尽不释放历史；R2暂时缺账不能用于普通trigger
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

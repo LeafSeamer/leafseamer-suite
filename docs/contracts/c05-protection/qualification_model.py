@@ -53,7 +53,7 @@ def invalidate_steps(db,registration_id,kind,value):
     return steps
 
 
-def receive(db,registration_id,value,authenticated_controller,fail_after=None):
+def receive(db,registration_id,value,authenticated_controller,fail_after=None,adopt=None):
     O.validate(value);R.require(value['binding']['controller_scope']==authenticated_controller,'authenticated_controller')
     db.execute('BEGIN IMMEDIATE')
     try:
@@ -70,7 +70,7 @@ def receive(db,registration_id,value,authenticated_controller,fail_after=None):
               audit_body=P.canonical(dict(registration_id=registration_id)),notification_body=P.canonical(dict(kind='preparation_observed',registration_id=registration_id)))]
             if value['state'] not in ('accepted','applied'):steps+=invalidate_steps(db,registration_id,'unavailable',value)
             elif value['state']=='applied' and not db.execute('SELECT 1 FROM pq_fault WHERE registration_id=?',(registration_id,)).fetchone():
-                steps+=R.receipt_steps(db,registration_id,value,authenticated_controller)
+                steps+=(adopt or R.receipt_steps)(db,registration_id,value,authenticated_controller)
             result='stored'
         for i,(sql,args) in enumerate(steps):
             db.execute(sql,args)

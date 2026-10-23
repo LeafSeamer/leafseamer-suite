@@ -1,6 +1,6 @@
 # 保护计划与预留消费同库候选
 
-状态：`approved=false`，承接[97表重新关闭](PROTECTION_RETRY.md)与[原布防预算](ARM_BUDGET.md)。新增[消费约束](protection-charge.sql)、[99表组合](seamer-protection-charge.sql)、[生成器](build_protection_charge.py)、[参考事务](protection_charge_model.py)、[检查](check_protection_charge.py)及[报告](protection-charge-report.json)。原预算Schema和旧SQL产物保留，未归并公共draft.4／IPC0.3，不实现业务服务。
+状态：`approved=false`，承接[97表重新关闭](PROTECTION_RETRY.md)与[原布防预算](ARM_BUDGET.md)。新增[消费约束](protection-charge.sql)、[99表组合](seamer-protection-charge.sql)、[生成器](build_protection_charge.py)、[参考事务](protection_charge_model.py)、[检查](check_protection_charge.py)及[报告](protection-charge-report.json)。原预算Schema和旧SQL产物保留，未归并公共draft.4／IPC0.3，不实现业务服务。后续[102表恢复预算](RECOVERY_BUDGET.md)已补R2新账户；本文的缺预算反例继续描述保留的99表布局。参考消费writer按实际布局选择共享视图或旧arm查询，旧82项已回归。
 
 ## 已知事实
 

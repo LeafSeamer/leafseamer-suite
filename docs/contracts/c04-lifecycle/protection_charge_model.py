@@ -7,6 +7,13 @@ SHAPE=('dependencies','runs','executions','preparations','submissions','controll
 def encoded(row):return P.canonical([dict(blob=x.hex()) if isinstance(x,bytes) else x for x in row])
 def snapshot(db):
     return {t[0]:{encoded(row) for row in db.execute('SELECT * FROM "'+t[0]+'"')} for t in db.execute("SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
+def budgets(db,run,generation):
+    # 新布局显式共享两类原件；旧99表仍只允许arm，不从当前run推测账户。
+    if db.execute("SELECT 1 FROM sqlite_schema WHERE type='view' AND name='protection_budget_reservation'").fetchone():
+        query='SELECT b.*,c.profile_body FROM protection_budget_reservation b JOIN arm_capacity c ON c.profile_digest=b.profile_digest WHERE b.run_id=? AND b.generation=?'
+    else:
+        query='SELECT o.operation_id,b.*,c.profile_body FROM arm_operation o JOIN arm_budget_reservation b USING(operation_id) JOIN arm_capacity c ON c.profile_digest=b.profile_digest WHERE o.run_id=? AND o.generation=?'
+    return P.rows(db,query,(run,generation))
 def charge_steps(db,plans,before,ctx):
     R.require(db.in_transaction,'transaction_required');R.require(ctx['volatile_close_verified'] and ctx['clock_wait_verified'],'protection_runtime_unconfirmed')
     elapsed=ctx['elapsed_wait_ns'];A.u20(elapsed)
@@ -18,7 +25,7 @@ def charge_steps(db,plans,before,ctx):
         changed_tables={t:sum(k==t for k,_ in changed) for t in sorted({t for t,_ in changed})},account_overhead=8192,seal_overhead=4096)
     writes=[];ordinals={}
     for acc in accounts:
-        found=P.rows(db,'SELECT o.operation_id,b.*,c.profile_body FROM arm_operation o JOIN arm_budget_reservation b USING(operation_id) JOIN arm_capacity c ON c.profile_digest=b.profile_digest WHERE o.run_id=? AND o.generation=?',(acc['run_id'],acc['generation']))
+        found=budgets(db,acc['run_id'],acc['generation'])
         R.require(len(found)==1,'generation_budget_missing');b=found[0];ticket=json.loads(b['budget_body']);profile=json.loads(b['profile_body']);episodes=int(profile['episodes'])
         shape=R.one(db,'pb_shape','plan_id',acc['plan_id']) if len(accounts)==1 else next(x for x in P.rows(db,'SELECT * FROM pb_shape WHERE plan_id=?',(acc['plan_id'],)) if x['run_id']==acc['run_id'] and x['generation']==acc['generation'])
         ordinal=ordinals.get(b['operation_id'],db.execute('SELECT count(*) FROM pb_use WHERE operation_id=?',(b['operation_id'],)).fetchone()[0])+1;ordinals[b['operation_id']]=ordinal

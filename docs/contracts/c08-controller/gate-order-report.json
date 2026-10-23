@@ -1,0 +1,497 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 67,
+  "explored_orderings": [
+    [
+      "dispatch",
+      "protect",
+      "drain"
+    ],
+    [
+      "dispatch",
+      "drain",
+      "protect"
+    ],
+    [
+      "protect",
+      "dispatch",
+      "drain"
+    ],
+    [
+      "protect",
+      "drain",
+      "dispatch"
+    ],
+    [
+      "drain",
+      "dispatch",
+      "protect"
+    ],
+    [
+      "drain",
+      "protect",
+      "dispatch"
+    ]
+  ],
+  "scope": "单设备最终有序出口有限参考模型",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "checks": [
+    {
+      "name": "握手默认关闭",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "握手不授开放权",
+      "expected": "open_precondition",
+      "observed": "open_precondition"
+    },
+    {
+      "name": "IPC入流不等worker关闭确认",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "没有接收原件不得制造ACK",
+      "expected": "no_worker_receipt",
+      "observed": "no_worker_receipt"
+    },
+    {
+      "name": "关闭ACK不清资源",
+      "expected": "recovery_precondition",
+      "observed": "recovery_precondition"
+    },
+    {
+      "name": "恢复提交仍未ready",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "恢复不跳过完整屏障",
+      "expected": "open_precondition",
+      "observed": "open_precondition"
+    },
+    {
+      "name": "worker已OPEN但未存ACK不发许可",
+      "expected": "not_ready",
+      "observed": "not_ready"
+    },
+    {
+      "name": "正常闭环只进入一次设备传输",
+      "expected": [
+        "p"
+      ],
+      "observed": [
+        "p"
+      ]
+    },
+    {
+      "name": "同permit不得再次进入传输",
+      "expected": "permit_consumed",
+      "observed": "permit_consumed"
+    },
+    {
+      "name": "重复permit无新增副作用",
+      "expected": [
+        "p"
+      ],
+      "observed": [
+        "p"
+      ]
+    },
+    {
+      "name": "未入流旧尝试淘汰",
+      "expected": "stale_attempt",
+      "observed": "stale_attempt"
+    },
+    {
+      "name": "淘汰不消耗流序号",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "跳号不能取代原尝试",
+      "expected": "attempt_successor",
+      "observed": "attempt_successor"
+    },
+    {
+      "name": "已入流旧ACK不代新尝试",
+      "expected": "fresh_close_required",
+      "observed": "fresh_close_required"
+    },
+    {
+      "name": "最新关闭可恢复但不ready",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "未入流旧开放计划淘汰",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "保护后无旧OPEN入流",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "已入流OPEN的传播窗口如实保留",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "传播窗口不接纳新许可",
+      "expected": "not_ready",
+      "observed": "not_ready"
+    },
+    {
+      "name": "迟到OPEN_ACK不得重新ready",
+      "expected": "stale_ack",
+      "observed": "stale_ack"
+    },
+    {
+      "name": "后续关闭最终到达worker",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "相关快照更新使开放计划过期",
+      "expected": "stale_open",
+      "observed": "stale_open"
+    },
+    {
+      "name": "资源失效后不创建开放计划",
+      "expected": "open_precondition",
+      "observed": "open_precondition"
+    },
+    {
+      "name": "资源失效后旧开放计划不入流",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "旧屏障ACK不提供新开放资格",
+      "expected": "stale_ack",
+      "observed": "stale_ack"
+    },
+    {
+      "name": "ACK前资源事实变化不发布ready",
+      "expected": "open_ack_precondition",
+      "observed": "open_ack_precondition"
+    },
+    {
+      "name": "逻辑关闭重复只回历史ACK不再次关闸",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "重复ACK仍指原逻辑正文",
+      "expected": [
+        "target",
+        1
+      ],
+      "observed": [
+        "target",
+        1
+      ]
+    },
+    {
+      "name": "同close_id异正文关闭会话",
+      "expected": "close_content_conflict",
+      "observed": "close_content_conflict"
+    },
+    {
+      "name": "协议故障不可保留开放",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "恢复用过的ACK不可重新恢复",
+      "expected": "fresh_close_required",
+      "observed": "fresh_close_required"
+    },
+    {
+      "name": "重新关闭和新屏障允许新OPEN",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "多目标不能漏掉已消费的另一关闭",
+      "expected": "fresh_close_required",
+      "observed": "fresh_close_required"
+    },
+    {
+      "name": "全部目标有新关闭才允许恢复",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "数据库故障立即撤销本地ready",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "故障时禁止普通发送",
+      "expected": "not_ready",
+      "observed": "not_ready"
+    },
+    {
+      "name": "故障时禁止OPEN",
+      "expected": "protected",
+      "observed": "protected"
+    },
+    {
+      "name": "无数据库仍可紧急关闸",
+      "expected": false,
+      "observed": false
+    },
+    {
+      "name": "故障不能制造durable ACK",
+      "expected": "storage_failed",
+      "observed": "storage_failed"
+    },
+    {
+      "name": "OPEN_ACK与存储故障竞争不发布ready",
+      "expected": "storage_failed",
+      "observed": "storage_failed"
+    },
+    {
+      "name": "缓存丢失不得继续原会话",
+      "expected": "session_closed",
+      "observed": "session_closed"
+    },
+    {
+      "name": "已退役后重启不重放队列和许可",
+      "expected": [
+        [],
+        [],
+        false
+      ],
+      "observed": [
+        [],
+        [],
+        false
+      ]
+    },
+    {
+      "name": "旧会话ACK不能恢复新实例",
+      "expected": "ack_origin",
+      "observed": "ack_origin"
+    },
+    {
+      "name": "输入缺号关闭会话",
+      "expected": "sequence_gap",
+      "observed": "sequence_gap"
+    },
+    {
+      "name": "缺号不能进入设备传输",
+      "expected": [
+        [],
+        false
+      ],
+      "observed": [
+        [],
+        false
+      ]
+    },
+    {
+      "name": "旧会话帧不能进入新会话",
+      "expected": "wrong_session",
+      "observed": "wrong_session"
+    },
+    {
+      "name": "ACK到期等号不发布ready",
+      "expected": "open_ack_precondition",
+      "observed": "open_ack_precondition"
+    },
+    {
+      "name": "发送到期等号不进传输",
+      "expected": "worker_closed",
+      "observed": "worker_closed"
+    },
+    {
+      "name": "Controller到期等号不投递新许可",
+      "expected": "not_ready",
+      "observed": "not_ready"
+    },
+    {
+      "name": "到期后迟到续约不复活原闸",
+      "expected": "worker_open_binding",
+      "observed": "worker_open_binding"
+    },
+    {
+      "name": "关闭正文保持原三字段",
+      "expected": [
+        "close_id",
+        "reason",
+        "scope"
+      ],
+      "observed": [
+        "close_id",
+        "reason",
+        "scope"
+      ]
+    },
+    {
+      "name": "关闭ACK保持原两字段",
+      "expected": [
+        "close_id",
+        "closed_device_ids"
+      ],
+      "observed": [
+        "close_id",
+        "closed_device_ids"
+      ]
+    },
+    {
+      "name": "开放仍要求三类完整快照",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "开放ACK仍绑定token与修订",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "有序前缀排列:dispatch,protect,drain",
+      "expected": [
+        "p"
+      ],
+      "observed": [
+        "p"
+      ]
+    },
+    {
+      "name": "排列终态关闭:dispatch,protect,drain",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "有序前缀排列:dispatch,drain,protect",
+      "expected": [
+        "p"
+      ],
+      "observed": [
+        "p"
+      ]
+    },
+    {
+      "name": "排列终态关闭:dispatch,drain,protect",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "有序前缀排列:protect,dispatch,drain",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "排列终态关闭:protect,dispatch,drain",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "有序前缀排列:protect,drain,dispatch",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "排列终态关闭:protect,drain,dispatch",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "有序前缀排列:drain,dispatch,protect",
+      "expected": [
+        "p"
+      ],
+      "observed": [
+        "p"
+      ]
+    },
+    {
+      "name": "排列终态关闭:drain,dispatch,protect",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "有序前缀排列:drain,protect,dispatch",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "排列终态关闭:drain,protect,dispatch",
+      "expected": [
+        false,
+        false
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/GATE_ORDER.md": "c223a9bf30bc3f3a9b36a73b4cd83f7e6304c8bd0eb29fc1c46651ff9c261b21",
+    "docs/contracts/c08-controller/gate_order_model.py": "d54cf0353f435bd019767ebcce11af4c5e80f8835430d31090c8c9f467157637",
+    "docs/contracts/c08-controller/check_gate_order.py": "e452f4c4b2b4df5f7a0f4393f03ee3c7ab839f8ac089f20e74c9fe25e3b603b8",
+    "docs/contracts/c08-controller/PROTECTION_OUTBOX.md": "0c90f262df8a15121f0ac3326fcd036fdd1f80f04e59b83623301c17bb48a8bd",
+    "docs/contracts/c08-controller/protection-outbox.sql": "2900b431e8a006bcee7ce1d760e41975403f0a3000c72bb7d6a035c140de45eb",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/df03-service/ipc.schema.json": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc"
+  }
+}

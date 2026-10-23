@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录资源保护通知及历史关闭证明复用修正和提交周期 | R:code:docs/contracts/c08-controller/PROTECTION_OUTBOX.md | A:设计历程与新周期第1轮 | S:上周期main已推6143944；本轮仅本地提交。73项内存非运行证明，ACK一次恢复消费，最终出口和统一SDK仍缺
+DEVELOPMENT_MEMO.md[SO5L]: F:记录最终有序出口设计与有限顺序检查和提交周期 | R:code:docs/contracts/c08-controller/GATE_ORDER.md | A:设计历程与本周期第2轮 | S:前轮403fc72，本轮仅本地提交；67项模型非真实并发。报告保存独立快照，持久字段和SDK归并仍缺
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛并登记持久关闭与历史ACK消费候选 | R:code:docs/contracts/c08-controller/PROTECTION_OUTBOX.md,code:docs/contracts/df03-time-fence/README.md | A:C01至C12与实施前剩余项 | S:137表保护outbox已有设计，不从零建设；仍缺最终发送与worker去重提供者、其他屏障TIME、Decision和统一SDK。候选非运行批准，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总系统定稿门槛并登记最终有序出口与关闭候选 | R:code:docs/contracts/c08-controller/GATE_ORDER.md,code:docs/contracts/c08-controller/PROTECTION_OUTBOX.md | A:C01至C12与实施前剩余项 | S:最终出口所有者和时序已有方案，仍缺开放计划持久字段与完整屏障、提供者和SDK归并。67项有限模型不授运行批准，阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -497,6 +497,10 @@ check_protection_outbox.py[TD8S]: F:核验保护通知原子写集及关闭证�
 controller-protection-outbox.sql[FD9L]: F:承载结果依赖与资源关闭通知和恢复证据的137表组合 | R:code:docs/contracts/c08-controller/build_protection_outbox.py,code:docs/contracts/c08-controller/protection-outbox.sql | A:失效通知同事务与完整目标恢复 | S:旧源不改；已消费ACK不能再次恢复，重新保护捕获该设备全部历史事件活出口，最新尝试排除旧ACK。历史恢复不因消费立即自我失效；最终发送和完整屏障TIME仍缺，不可部署
 protection-outbox-report.json[SQ5L]: F:保存73项资源保护通知内存结果及69输入原字节摘要 | R:code:docs/contracts/c08-controller/check_protection_outbox.py | A:137表约束及重新关闭回归结果 | S:批准为false，SQLite非产品引擎批准；BODY合成且真实运行并发磁盘设备全零，字节绑定不扩大覆盖
 protection-outbox.sql[FD9S]: F:声明五表关闭通知及有效ACK和恢复采用约束 | R:code:docs/contracts/c08-controller/build_protection_outbox.py,code:docs/contracts/c08-controller/PROTECTION_OUTBOX.md | A:完整捕获及待关闭视图和封存触发器 | S:失效通知同事务失败全回滚；恢复ACK只消费一次，退役可复用但不清许可风险。新失效和证明撤回补历史活出口，旧恢复精确引用不被新ACK替换；BODY权威另验，非生产迁移
+GATE_ORDER.md[SR9T]: F:固定关闭恢复与开放的发送所有者及四个顺序点 | R:code:docs/contracts/c08-controller/gate_order_model.py,code:docs/contracts/c08-controller/PROTECTION_OUTBOX.md | A:所有者字段及故障容量与实现验收边界 | S:未入流旧计划淘汰，已入流前缀保留传播窗口；相同关闭只回原ACK。恢复不OPEN，ready另落库；缓存丢失终止会话，重启不重放。有限单设备模型不证明多设备ACK或真实退出，持久字段和完整屏障仍待归并
+check_gate_order.py[TR8S]: F:核验最终出口有限时序与六种排列及原IPC字段并绑定报告 | R:code:docs/contracts/c08-controller/gate_order_model.py,code:docs/contracts/df03-service/ipc.schema.json | A:67项检查及report和staged绑定 | S:手工预期区分本地保护和worker传播；断言保存深副本防后续变异。八输入核字节不重跑，排列非真实并发，重启不证明监督退役或设备行为
+gate-order-report.json[SQ5L]: F:保存67项最终出口参考检查与六种排列及八输入摘要 | R:code:docs/contracts/c08-controller/check_gate_order.py | A:单设备有限模型结果 | S:批准为false，真实运行并发磁盘设备全零；快照与字段对照不证明完整Guard或真实IPC
+gate_order_model.py[TR8S]: F:模拟持久前提IPC入流worker关闸和ACK采用的独立顺序 | R:code:docs/contracts/c08-controller/GATE_ORDER.md,code:docs/contracts/c08-controller/check_gate_order.py | A:Gate与冻结Frame及Rejected | S:只有单设备会话，资源和屏障为合成前提；重启假定旧出口已退役。关闭重复不改闸，协议冲突关闭会话，ACK过期不ready；无数据库或网络，不实现续租及完整Guard
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

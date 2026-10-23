@@ -1,0 +1,633 @@
+{
+  "all_passed": true,
+  "cases_passed": 82,
+  "approved": false,
+  "scope": "132表结果依赖及撤回扇出候选",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "sqlite_version": "3.50.4",
+  "checks": [
+    {
+      "name": "132表完整组合",
+      "expected": 132,
+      "observed": 132
+    },
+    {
+      "name": "递归采用含祖先",
+      "expected": [
+        [
+          "test"
+        ]
+      ],
+      "observed": [
+        [
+          "test"
+        ]
+      ]
+    },
+    {
+      "name": "直接结果仍可独立定位",
+      "expected": [
+        [
+          "test"
+        ]
+      ],
+      "observed": [
+        [
+          "test"
+        ]
+      ]
+    },
+    {
+      "name": "三层祖先完整闭包",
+      "expected": [
+        [
+          "result.1"
+        ],
+        [
+          "result.2"
+        ],
+        [
+          "result.3"
+        ]
+      ],
+      "observed": [
+        [
+          "result.1"
+        ],
+        [
+          "result.2"
+        ],
+        [
+          "result.3"
+        ]
+      ]
+    },
+    {
+      "name": "三层撤回到验证",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "直接及间接同源去重",
+      "expected": [
+        [
+          "both"
+        ]
+      ],
+      "observed": [
+        [
+          "both"
+        ]
+      ]
+    },
+    {
+      "name": "重复直接来源",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "重复直接来源全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集缺写0",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "来源写集缺写0全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集主动异常0",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集缺写1",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "来源写集缺写1全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集主动异常1",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集缺写2",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "来源写集缺写2全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集主动异常2",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集缺写3",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "来源写集缺写3全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "来源写集主动异常3",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错父命令",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "错父命令全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错设备",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "错设备全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错结果摘要",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "错结果摘要全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错提供者",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "错提供者全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错回执",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "错回执全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "错清单摘要",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "错清单摘要全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "少来源",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "少来源全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "结果来源伪装独立",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "结果来源伪装独立全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "非独立空清单",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "非独立空清单全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "failed不授释放来源",
+      "expected": "dependency_result_binding",
+      "observed": "dependency_result_binding"
+    },
+    {
+      "name": "failed不授释放来源全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "unknown不授释放来源",
+      "expected": "dependency_result_binding",
+      "observed": "dependency_result_binding"
+    },
+    {
+      "name": "unknown不授释放来源全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "祖先已撤回不能封存",
+      "expected": "dependency_revoked",
+      "observed": "dependency_revoked"
+    },
+    {
+      "name": "祖先已撤回不能封存全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "成员预写后祖先撤回",
+      "expected": "dependency_revoked",
+      "observed": "dependency_revoked"
+    },
+    {
+      "name": "成员预写后祖先撤回全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "封存后不能补来源",
+      "expected": "dependency_manifest_frozen",
+      "observed": "dependency_manifest_frozen"
+    },
+    {
+      "name": "封存后不能补来源全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不可更改cd_manifest",
+      "expected": "immutable_dependency",
+      "observed": "immutable_dependency"
+    },
+    {
+      "name": "不可更改cd_manifest全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不可删除cd_manifest",
+      "expected": "immutable_dependency",
+      "observed": "immutable_dependency"
+    },
+    {
+      "name": "不可删除cd_manifest全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不可更改cd_result_source",
+      "expected": "immutable_dependency",
+      "observed": "immutable_dependency"
+    },
+    {
+      "name": "不可更改cd_result_source全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不可删除cd_result_source",
+      "expected": "immutable_dependency",
+      "observed": "immutable_dependency"
+    },
+    {
+      "name": "不可删除cd_result_source全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不可更改cd_manifest_commit",
+      "expected": "immutable_dependency",
+      "observed": "immutable_dependency"
+    },
+    {
+      "name": "不可更改cd_manifest_commit全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "不可删除cd_manifest_commit",
+      "expected": "immutable_dependency",
+      "observed": "immutable_dependency"
+    },
+    {
+      "name": "不可删除cd_manifest_commit全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "初始两占用已释放",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "撤回扇出异常全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "祖先撤回影响两种释放",
+      "expected": [
+        [
+          "h"
+        ],
+        [
+          "hc"
+        ]
+      ],
+      "observed": [
+        [
+          "h"
+        ],
+        [
+          "hc"
+        ]
+      ]
+    },
+    {
+      "name": "两个释放均持久锁存",
+      "expected": [
+        [
+          "rc"
+        ],
+        [
+          "rp"
+        ]
+      ],
+      "observed": [
+        [
+          "rc"
+        ],
+        [
+          "rp"
+        ]
+      ]
+    },
+    {
+      "name": "撤回直接与间接验证",
+      "expected": [
+        [
+          "own.rc"
+        ],
+        [
+          "v.rp"
+        ]
+      ],
+      "observed": [
+        [
+          "own.rc"
+        ],
+        [
+          "v.rp"
+        ]
+      ]
+    },
+    {
+      "name": "独立关闭验证不被误撤",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "原结果终态未被改写",
+      "expected": [
+        [
+          "succeeded"
+        ],
+        [
+          "succeeded"
+        ]
+      ],
+      "observed": [
+        [
+          "succeeded"
+        ],
+        [
+          "succeeded"
+        ]
+      ]
+    },
+    {
+      "name": "多个撤回原因永久保留",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "失效后不能复用旧结果新释放",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "失效后不能复用旧结果新释放全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "独立取证清风险",
+      "expected": [],
+      "observed": []
+    },
+    {
+      "name": "清风险仍须恢复",
+      "expected": 2,
+      "observed": 2
+    },
+    {
+      "name": "显式恢复消费完整旧失效",
+      "expected": 0,
+      "observed": 0
+    },
+    {
+      "name": "旧恢复不覆盖新失效",
+      "expected": [
+        [
+          "rc2"
+        ]
+      ],
+      "observed": [
+        [
+          "rc2"
+        ]
+      ]
+    },
+    {
+      "name": "直接子结果撤回不误伤祖先独立释放",
+      "expected": [
+        [
+          "hc"
+        ]
+      ],
+      "observed": [
+        [
+          "hc"
+        ]
+      ]
+    },
+    {
+      "name": "祖先来源验证仍有效",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "经关闭证明间接撤回释放",
+      "expected": [
+        [
+          "rc"
+        ]
+      ],
+      "observed": [
+        [
+          "rc"
+        ]
+      ]
+    },
+    {
+      "name": "释放封存窗口祖先撤回",
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "name": "释放封存窗口祖先撤回全库回滚",
+      "expected": true,
+      "observed": true
+    },
+    {
+      "name": "晚撤回保留三个风险占用",
+      "expected": [
+        [
+          "h"
+        ],
+        [
+          "hc"
+        ],
+        [
+          "oh"
+        ]
+      ],
+      "observed": [
+        [
+          "h"
+        ],
+        [
+          "hc"
+        ],
+        [
+          "oh"
+        ]
+      ]
+    },
+    {
+      "name": "不丢新holder许可",
+      "expected": 1,
+      "observed": 1
+    },
+    {
+      "name": "全部内存库完整性",
+      "expected": true,
+      "observed": true
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/check_barrier_attempt.py": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b",
+    "docs/contracts/c08-controller/resource.sql": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d",
+    "docs/contracts/c08-controller/RESOURCE_STORAGE.md": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa",
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
+    "docs/contracts/c08-controller/check_resource.py": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267",
+    "docs/contracts/c08-controller/check_command.py": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4",
+    "docs/contracts/c02-command-view/storage.sql": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-command-view/check_storage.py": "ca89ed5f7ef5111ea897cf6c5f23b8dd10380afed0daf5cbc519cd092e97ae16",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c08-controller/issue-ledger.sql": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285",
+    "docs/contracts/c08-controller/build_issue_ledger.py": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d",
+    "docs/contracts/c08-controller/controller-issue.sql": "1bceb2564b08afbbd5b6e1ea61f64b6c69b16bebf067cda23e239932d60d4c5b",
+    "docs/contracts/c08-controller/ISSUE_LEDGER.md": "e20988ec1d3fbcefe2eaee160c4be7a0b576c3b6aaf63e3013616deb90d6cb3c",
+    "docs/contracts/c08-controller/check_issue_ledger.py": "9345d6f1ce16150b62f77e137d917a90d07f013aab062140960e0031fceb037b",
+    "docs/contracts/c08-controller/cancel-fence.sql": "559a918a21b95e4e3f293bf888f68a694b12fe6560e84c4786789d02aa5493b5",
+    "docs/contracts/c08-controller/build_cancel_fence.py": "cbba07f9548d0b09fc765ee749e74ca2d777977544782cb4200105a4d7524f1d",
+    "docs/contracts/c08-controller/controller-cancel-fence.sql": "54af09ffcbc6ebc959025fad1954b12bc9153fa7795016c4bcd3c42ac5c32fcd",
+    "docs/contracts/c08-controller/CANCEL_FENCE.md": "8a2a35d0dce59951a9db74b3a41cc115e8560b8170135fbb5364812aa67d68fe",
+    "docs/contracts/c08-controller/check_cancel_fence.py": "f7aab87c739236d2215bb22754e182d8e1131ae582bfd996f07925f12a83495f",
+    "docs/contracts/c08-controller/cancel-resource.sql": "3ace3a1a067791527f772ba662ede9776df8e4472244f93b2ac479a6d7e0d86d",
+    "docs/contracts/c08-controller/build_cancel_resource.py": "41a36379b491898284e3dfd17f4910c61316944a4da1fc6db5e2997701b6f519",
+    "docs/contracts/c08-controller/controller-cancel-resource.sql": "9305bbd31226cca764dd4bfd92e9b41f5895c6c524d41d3ff0f9e60b58429caa",
+    "docs/contracts/c08-controller/CANCEL_RESOURCE.md": "af5e2ab040a673863431f11ec40b706082c838fa63c1c6dc50ca180219f5d11c",
+    "docs/contracts/c08-controller/check_cancel_resource.py": "b7a105462c796d0c811f2530066a585cfc0c450eb04d103815aa25a2df17aa36",
+    "docs/contracts/c08-controller/cancel-closure.sql": "9c54e6e27aa9358dec23f662a4631c4ab8134459853de028abeb8e0489ef4d0a",
+    "docs/contracts/c08-controller/build_cancel_closure.py": "b7f95e571096830e08fa12d4eb6e6388515e2cd8a9def5b0c04ceadbdcef099e",
+    "docs/contracts/c08-controller/controller-cancel-closure.sql": "9da2f05085edf9a504cfb3d12489f109a7b7ae15eb5d767c0ca6a5cd33f03fd2",
+    "docs/contracts/c08-controller/CANCEL_CLOSURE.md": "2fe6eeef15a2acbf2a75003384ac30e617f288c6d547bb1d6912369cc58e3ed2",
+    "docs/contracts/c08-controller/check_cancel_closure.py": "5c599e539e128c89aa200764fd4beeabfc94284507950c654afe49071ea0c12b",
+    "docs/contracts/c08-controller/cancel-plan.sql": "77b941c6d6adbf0f9aea2be8ad0f733b5bebec5281c9d634e406f3b9395da601",
+    "docs/contracts/c08-controller/build_cancel_plan.py": "b23f81233561b474f53de8ab834fb9835864cbd16c259c24986712fe478a8170",
+    "docs/contracts/c08-controller/controller-cancel-plan.sql": "e08ac8d2e568bd23a70447033ff51bfa6659b840a235c1c2aa16ae0d59f05a7f",
+    "docs/contracts/c08-controller/CANCEL_PLAN.md": "a6565fd8b1b60ea5c690496a50fc9e2915b501b61c61b34c97c4704173321f3b",
+    "docs/contracts/c08-controller/check_cancel_plan.py": "9ef02f2ccee3b5e9037c372315d69a7533f899a2ea089112863c2a3427df0588",
+    "docs/contracts/c08-controller/protected-hold.sql": "d9bd6bf9822188a38aba0d01a262bad94b9fd8e59da150ab2c175080668286b4",
+    "docs/contracts/c08-controller/build_protected_hold.py": "05f7dc2d9006c7e815354e07210f1e145a9650e9102f3b7c3df7d208fea0f67a",
+    "docs/contracts/c08-controller/controller-protected-hold.sql": "464f6a9cdfebd2bf602b57c810c4131e66811eecdc9239930ea5f817624b1f21",
+    "docs/contracts/c08-controller/PROTECTED_HOLD.md": "9996711cc4a934207c36ad7d28a0dc3fcec903c9f7524f21b62fddb3462e92b7",
+    "docs/contracts/c08-controller/check_protected_hold.py": "7884bbd5df6f4c4b199d32b9b0974c7e350e72a08c3fd3d60475e44e49a095db",
+    "docs/contracts/c08-controller/result-dependency.sql": "c00d780d7309e94da0f4ea220ef6ced307ae09343a1060c98467e7b7e61f2c8b",
+    "docs/contracts/c08-controller/build_result_dependency.py": "76e91a4474668907af03ef16375b974993fe3e28debc083e60092256dc689dfe",
+    "docs/contracts/c08-controller/controller-result-dependency.sql": "83fa4576c831417d6ee6a6df93457e3b904946159a6f34a6e0b2f818b2816569",
+    "docs/contracts/c08-controller/RESULT_DEPENDENCY.md": "7ae41846323bfe005a1f776f92489bcc6134f683c242745dfc5f0a631009fb8e",
+    "docs/contracts/c08-controller/check_result_dependency.py": "be0013474e5babf69d7a8e45c2107527c2bc7dde88e252f75a71cf230f5b88d3"
+  }
+}

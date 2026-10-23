@@ -1,0 +1,813 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c08-controller/preparation-delivery.schema.json",
+  "title": "preparation-delivery/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "controller_scope": {
+          "type": "object",
+          "properties": {
+            "authority_service_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            "database_instance_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "authority_service_id",
+            "database_instance_id"
+          ],
+          "additionalProperties": false
+        },
+        "origin_scope": {
+          "type": "object",
+          "properties": {
+            "authority_service_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            "database_instance_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "authority_service_id",
+            "database_instance_id"
+          ],
+          "additionalProperties": false
+        },
+        "preparation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+        },
+        "generation": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+        },
+        "mode": {
+          "enum": [
+            "arm",
+            "recovery"
+          ]
+        },
+        "execution_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "request_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "controller_scope",
+        "origin_scope",
+        "preparation_id",
+        "run_id",
+        "generation",
+        "mode",
+        "execution_id",
+        "request_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "arm"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "execution_id": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "execution_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "preparation-delivery/0.1.0-draft.1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "preparation_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+        },
+        "previous_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "accepted",
+            "applied",
+            "rejected",
+            "indeterminate",
+            "closing",
+            "closed"
+          ]
+        },
+        "applied_receipt_ref": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                },
+                "bytes_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                }
+              },
+              "required": [
+                "id",
+                "bytes_digest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "close_ref": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                },
+                "operation_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                },
+                "operation_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                },
+                "bytes_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                }
+              },
+              "required": [
+                "id",
+                "operation_id",
+                "operation_digest",
+                "bytes_digest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                },
+                "fence_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                },
+                "cut_ref": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                    },
+                    "bytes_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "bytes_digest"
+                  ],
+                  "additionalProperties": false
+                },
+                "receipt_ref": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                    },
+                    "bytes_digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "bytes_digest"
+                  ],
+                  "additionalProperties": false
+                },
+                "prepare_closure_ref": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                    },
+                    "digest": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "digest"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "fence_id",
+                "cut_ref",
+                "receipt_ref",
+                "prepare_closure_ref"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "protection_revision": {
+          "enum": [
+            "0",
+            "1",
+            "2"
+          ]
+        },
+        "protection_state": {
+          "enum": [
+            "not_applicable",
+            "pending",
+            "applied",
+            "indeterminate"
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "initial",
+                    "prepare_closure",
+                    "run_barrier_ack",
+                    "retirement"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                }
+              },
+              "required": [
+                "kind",
+                "object_id"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observation_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "contract_version",
+        "binding",
+        "preparation_revision",
+        "previous_revision",
+        "state",
+        "applied_receipt_ref",
+        "close_ref",
+        "completion",
+        "protection_revision",
+        "protection_state",
+        "cause",
+        "observation_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "accepted"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "close_ref": {
+                "type": "null"
+              },
+              "completion": {
+                "type": "null"
+              },
+              "cause": {
+                "type": "null"
+              },
+              "protection_revision": {
+                "const": "0"
+              },
+              "protection_state": {
+                "const": "not_applicable"
+              },
+              "applied_receipt_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "applied"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "close_ref": {
+                "type": "null"
+              },
+              "completion": {
+                "type": "null"
+              },
+              "cause": {
+                "type": "null"
+              },
+              "protection_revision": {
+                "const": "0"
+              },
+              "protection_state": {
+                "const": "not_applicable"
+              },
+              "applied_receipt_ref": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  },
+                  "bytes_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                  }
+                },
+                "required": [
+                  "id",
+                  "bytes_digest"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "rejected"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "close_ref": {
+                "type": "null"
+              },
+              "completion": {
+                "type": "null"
+              },
+              "cause": {
+                "type": "null"
+              },
+              "protection_revision": {
+                "const": "0"
+              },
+              "protection_state": {
+                "const": "not_applicable"
+              },
+              "applied_receipt_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "indeterminate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "close_ref": {
+                "type": "null"
+              },
+              "completion": {
+                "type": "null"
+              },
+              "cause": {
+                "type": "null"
+              },
+              "protection_revision": {
+                "const": "0"
+              },
+              "protection_state": {
+                "const": "not_applicable"
+              },
+              "applied_receipt_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "closing"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "close_ref": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  },
+                  "operation_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  },
+                  "operation_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                  },
+                  "bytes_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                  }
+                },
+                "required": [
+                  "id",
+                  "operation_id",
+                  "operation_digest",
+                  "bytes_digest"
+                ],
+                "additionalProperties": false
+              },
+              "completion": {
+                "type": "null"
+              },
+              "cause": {
+                "type": "null"
+              },
+              "protection_revision": {
+                "const": "0"
+              },
+              "protection_state": {
+                "const": "pending"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "closed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "close_ref": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  },
+                  "operation_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  },
+                  "operation_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                  },
+                  "bytes_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                  }
+                },
+                "required": [
+                  "id",
+                  "operation_id",
+                  "operation_digest",
+                  "bytes_digest"
+                ],
+                "additionalProperties": false
+              },
+              "completion": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  },
+                  "fence_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  },
+                  "cut_ref": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                      },
+                      "bytes_digest": {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "bytes_digest"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "receipt_ref": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                      },
+                      "bytes_digest": {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "bytes_digest"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "prepare_closure_ref": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                      },
+                      "digest": {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "digest"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "fence_id",
+                  "cut_ref",
+                  "receipt_ref",
+                  "prepare_closure_ref"
+                ],
+                "additionalProperties": false
+              },
+              "cause": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "initial",
+                      "prepare_closure",
+                      "run_barrier_ack",
+                      "retirement"
+                    ]
+                  },
+                  "object_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "object_id"
+                ],
+                "additionalProperties": false
+              },
+              "protection_revision": {
+                "enum": [
+                  "1",
+                  "2"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "protection_revision": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "state": {
+                "const": "closed"
+              },
+              "protection_state": {
+                "const": "applied"
+              },
+              "cause": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "initial"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "protection_revision": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "state": {
+                "const": "closed"
+              },
+              "protection_state": {
+                "const": "indeterminate"
+              },
+              "cause": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "prepare_closure",
+                      "run_barrier_ack",
+                      "retirement"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

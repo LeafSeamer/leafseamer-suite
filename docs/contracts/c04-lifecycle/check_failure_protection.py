@@ -6,8 +6,8 @@ import check_trigger_flow as T
 F=M.F;G=M.G;A=M.A;R=M.R;P=M.P;I=M.I;C=T.C;SP=T.E.SP;B=T.B
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[2]
 INPUTS=list(dict.fromkeys(T.INPUTS+G.SOURCES+[HERE/n for n in ('FAILURE_PROTECTION.md','failure_protection_model.py','check_failure_protection.py','seamer-failure-protection.sql')]))
-def fixture(*,optional=False,history=False,machine=True,limits=None):
-    db,c,q=T.fixture(steps=4,machine=machine,sql_factory=G.build,protection_limits=limits);c['trusted_system_closer']=True
+def fixture(*,optional=False,history=False,machine=True,limits=None,sql_factory=G.build):
+    db,c,q=T.fixture(steps=4,machine=machine,sql_factory=sql_factory,protection_limits=limits);c['trusted_system_closer']=True
     c['evaluations']['r0']['steps'][0]['required']=not optional
     if history:
         F.receive_event(db,q,c);old=T.active(db);A.apply(db,lambda:F.anchor_steps(db,old,c))

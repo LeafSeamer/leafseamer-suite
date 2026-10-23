@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "RetryIntent": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "failure-protection-retry/0.1.0-draft.1"
+        },
+        "root_plan_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "previous_plan_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "request_epoch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "actor": {
+          "type": "object",
+          "properties": {
+            "principal_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "principal_id"
+          ],
+          "additionalProperties": false
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "reason": {
+          "const": "proof_invalidated"
+        }
+      },
+      "required": [
+        "contract_version",
+        "root_plan_id",
+        "previous_plan_id",
+        "request_epoch",
+        "actor",
+        "idempotency_key",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "RetryResult": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "failure-protection-retry/0.1.0-draft.1"
+        },
+        "root_plan_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "plan_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "attempt_index": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "actions_replayed": {
+          "const": false
+        },
+        "resources_cleared": {
+          "const": false
+        },
+        "budget_released": {
+          "const": false
+        }
+      },
+      "required": [
+        "contract_version",
+        "root_plan_id",
+        "plan_id",
+        "attempt_index",
+        "actions_replayed",
+        "resources_cleared",
+        "budget_released"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "not": {}
+}

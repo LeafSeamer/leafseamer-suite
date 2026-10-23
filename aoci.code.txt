@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录共享IPC候选验证及本周期第三轮交付安排 | R:code:docs/contracts/c08-controller/IPC_JOURNAL.md | A:设计历程与第3轮 | S:763项离线及164输入绑定；新SQL未联接，阶段0未关闭
+DEVELOPMENT_MEMO.md[SO5L]: F:记录共享消息同库配对成果与新周期首轮交付 | R:code:docs/contracts/c08-controller/IPC_JOURNAL_STORAGE.md | A:设计历程与第1轮 | S:211项内存检查不证明真实IPC；阶段0未关闭，本轮只本地提交
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总定稿门槛及共享IPC候选后的剩余持久联接 | R:code:docs/contracts/c08-controller/IPC_JOURNAL.md,code:docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md | A:C01至C12当前关闭状态 | S:763项离线不证运行；52帧格式已有但共享日志和准备Closure未接207表，完整seal与SDK仍缺，四最终签发阻断保持，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总定稿门槛及共享日志同库后的剩余契约联接 | R:code:docs/contracts/c08-controller/IPC_JOURNAL_STORAGE.md,code:docs/contracts/c08-controller/IPC_JOURNAL.md | A:C01至C12关闭状态 | S:八类原件已联接不代表全部52领域完成；DENY与Closure、完整AdmissionSeal和SDK仍缺，211项内存检查不关闭阶段0
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -603,6 +603,12 @@ ipc-journal-report.json[SQ5L]: F:保存763项共享IPC参考结果及164输入�
 ipc-journal.schema.json[FN8L]: F:声明准备拒绝原件与日志提交及完整准备闭合的内部模型 | R:code:docs/contracts/c08-controller/build_ipc_journal.py | A:Deny与FrameRecord和EffectCommit及PreparationClosure | S:根拒直接实例；Closure是内部大集合而非线上帧，字段合法不证全集或来源。DenyAck无清空证明，不替代释放ACK或SQL配对
 ipc_journal_model.py[TR8S]: F:模拟双向日志副本事务及终止关闭和准备拒绝覆盖 | R:code:docs/contracts/c08-controller/build_ipc_journal.py,code:docs/contracts/c08-controller/open_plan_model.py | A:Journal与deny_error及Prepares和closure_error | S:入口须已可信解码，apply结果和选择投影均为夹具；同原wire不重效果。紧急不改普通水位且禁止新执行，拒绝后已发历史保留；无真实I/O或数据库
 journal-ipc.schema.json[FN8L]: F:声明共享日志和逐准备拒绝的完整52帧IPC0.13 | R:code:docs/contracts/c08-controller/build_ipc_journal.py | A:新版本及三项必选特性 | S:正常seq严格正U20，volatile_close仅全worker关闭与ACK且seq为null；方向注解需接收器另验。Deny只阻未来使用不证缓存退出，旧版本不改，运行未批准
+IPC_JOURNAL_STORAGE.md[SR8T]: F:规定共享日志与编码释放开放换闸的原子配对和终止恢复边界 | R:code:docs/contracts/c08-controller/ipc-journal-storage.sql,code:docs/contracts/c08-controller/check_ipc_journal_storage.py | A:219表候选写集与未冻结项 | S:52类型登记不代表全领域落库；wire预算不含磁盘开销，合成BODY不证可信原件，四最终准入阻断保留
+build_ipc_journal_storage.py[XD8S]: F:固定组合207表与共享日志并生成领域双向封存和会话候选守卫 | R:code:docs/contracts/c08-controller/build_encoding_release_storage.py,code:docs/contracts/c08-controller/ipc-journal-storage.sql | A:build;--check | S:拆走ep_request帧序号，保留旧业务约束；仅已映射领域可采用，其他类型不能凭通用effect_body落地
+check_ipc_journal_storage.py[TR8M]: F:验证219表共享日志写集回滚序号恢复及开放采用边界 | R:code:docs/contracts/c08-controller/build_ipc_journal_storage.py,code:docs/contracts/c08-controller/check_encoding_release_storage.py | A:run;--report;--check-report;--staged | S:真实内存SQLite开启全部守卫，限定取消正反采用均执行；报告绑定检查不重跑用例，BODY仍是合成前提
+controller-ipc-journal.sql[PD9L]: F:承载完整219表共享消息日志及八类原领域记录的原子存储候选 | R:code:docs/contracts/c08-controller/build_ipc_journal_storage.py,code:docs/contracts/c08-controller/ipc-journal-storage.sql | A:STRICT表;双向seal;候选视图;发送前重核 | S:生成物只改源重建；握手与正常序号共用方向水位，尝试不重投，终止使历史ready和scope失效；不是产品数据库迁移，四最终准入阻断保持
+ipc-journal-storage-report.json[TR7L]: F:保存211项共享日志SQLite检查结果及180项输入摘要 | R:code:docs/contracts/c08-controller/check_ipc_journal_storage.py | A:checks;inputs;sqlite_version | S:approved为false，真实IPC并发磁盘与设备测试均为零；内存引擎版本不表示产品批准
+ipc-journal-storage.sql[PD9S]: F:定义共享会话帧日志发送尝试终止事实及连续序号和容量约束 | R:code:docs/contracts/c08-controller/build_ipc_journal_storage.py | A:十二表;方向回复守卫;ij_recovery | S:不能独立加载，生成器补领域封存与不可变守卫；完整入流不证对端处理，结束不退款，正常序号不得跳过或回绕
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c02-command-view/===
 README.md[SN9S]: F:设计七个命令读取取消证据接口并连接持久化与保护IPC | R:code:docs/contracts/c02-command-view/STORAGE.md,code:docs/contracts/c02-cancellation/README.md | A:command-view候选与取消及证据边界 | S:每父命令一条取消且未知不重开，回执单向引用。仅all关闭可公开closed，confirmed不改终态或释放资源；91表不含保护物理写集，候选非运行

@@ -1,0 +1,2074 @@
+{
+  "all_passed": true,
+  "approved": false,
+  "cases_passed": 302,
+  "tables": 182,
+  "sqlite_version": "3.50.4",
+  "scope": "占用来源封存与当前资源归属的内存持久化约束",
+  "runtime_tests_executed": 0,
+  "device_tests_executed": 0,
+  "concurrency_tests_executed": 0,
+  "disk_crash_tests_executed": 0,
+  "checks": [
+    {
+      "name": "182表仍共用原资源与控制权威",
+      "observed": 182,
+      "expected": 182
+    },
+    {
+      "name": "取消独立归属已提交",
+      "observed": [
+        [
+          "owner",
+          "bob",
+          "manual"
+        ]
+      ],
+      "expected": [
+        [
+          "owner",
+          "bob",
+          "manual"
+        ]
+      ]
+    },
+    {
+      "name": "父命令保留不同服务主体",
+      "observed": [
+        [
+          "person"
+        ]
+      ],
+      "expected": [
+        [
+          "person"
+        ]
+      ]
+    },
+    {
+      "name": "父命令未发不伪造attempt",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "当前真实归属可进入资源候选",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "四个最终签发阻断保持",
+      "observed": 4,
+      "expected": 4
+    },
+    {
+      "name": "自动化Requester独立取服务来源",
+      "observed": [
+        [
+          "seamer",
+          "automation"
+        ]
+      ],
+      "expected": [
+        [
+          "seamer",
+          "automation"
+        ]
+      ]
+    },
+    {
+      "name": "占用事务缺写0",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写0全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常0",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写1",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写1全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常1",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写2",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写2全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常2",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写3",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写3全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常3",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写4",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写4全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常4",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写5",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写5全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常5",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写6",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写6全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常6",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写7",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写7全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常7",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写8",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写8全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常8",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写9",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写9全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常9",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写10",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写10全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常10",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写11",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写11全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常11",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写12",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写12全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常12",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写13",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写13全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常13",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写14",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写14全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常14",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务缺写15",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "占用事务缺写15全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "占用事务主动异常15",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:hold_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:hold_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:hold_digest",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:hold_digest全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:command_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:command_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:device_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:device_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:cancellation_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:cancellation_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:execution_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:execution_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:namespace_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:namespace_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:cancel_key_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:cancel_key_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:request_digest",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:request_digest全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:issuer_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:issuer_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:issuer_epoch",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:issuer_epoch全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:principal_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:principal_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:authority_state_id",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:authority_state_id全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:control_epoch",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:control_epoch全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:effective_version",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:effective_version全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:clock_domain",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:clock_domain全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:descriptor",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:descriptor全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:acquired_tick",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:acquired_tick全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源或归属错配:expires_tick",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "来源或归属错配:expires_tick全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_ownership{'hold_id': 'other'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_ownership{'hold_id': 'other'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_ownership{'source_id': 'other'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_ownership{'source_id': 'other'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_commit{'hold_id': 'other'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_commit{'hold_id': 'other'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_commit{'ownership_id': 'other'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_commit{'ownership_id': 'other'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_commit{'committed_tick': '00000000000000000009'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_commit{'committed_tick': '00000000000000000009'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_commit{'committed_tick': '00000000000000000030'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_commit{'committed_tick': '00000000000000000030'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_source{'attempt_id': 'a'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_source{'attempt_id': 'a'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "封存关联:ow_source{'principal_kind': 'service'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "封存关联:ow_source{'principal_kind': 'service'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "来源期限前一刻可封存",
+      "observed": [
+        [
+          "00000000000000000029"
+        ]
+      ],
+      "expected": [
+        [
+          "00000000000000000029"
+        ]
+      ]
+    },
+    {
+      "name": "封存前撤回来源",
+      "observed": "ownership_source_or_authority",
+      "expected": "ownership_source_or_authority"
+    },
+    {
+      "name": "封存前撤回来源全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20严格词法:'01'",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "U20严格词法:'01'全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20严格词法:'-1'",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "U20严格词法:'-1'全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20严格词法:'1\\n'",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "U20严格词法:'1\\n'全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20严格词法:'100000000000000000000'",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "U20严格词法:'100000000000000000000'全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "U20严格词法:None",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "U20严格词法:None全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "当前模式不能互换:automation",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "当前模式不能互换:automation全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "当前模式不能互换:manual",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "当前模式不能互换:manual全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "快照不能自报owner:{'owner_ref': 'self.reported'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "快照不能自报owner:{'owner_ref': 'self.reported'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "快照不能自报owner:{'owner_revision': '00000000000000000002'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "快照不能自报owner:{'owner_revision': '00000000000000000002'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "快照不能自报owner:{'owner_digest': 'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "快照不能自报owner:{'owner_digest': 'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "快照不能自报owner:{'authority_state_id': 'missing'}",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "快照不能自报owner:{'authority_state_id': 'missing'}全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "接管pending立即撤当前主体资格",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "T4保持完整原归属历史",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "新holder不继承旧占用",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "接管后把旧hold标成新authority",
+      "observed": "ownership_snapshot_binding",
+      "expected": "ownership_snapshot_binding"
+    },
+    {
+      "name": "接管后把旧hold标成新authority全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "诚实旧归属快照仍不普通ready",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "接管保留实际风险",
+      "observed": [
+        [
+          "hc"
+        ]
+      ],
+      "expected": [
+        [
+          "hc"
+        ]
+      ]
+    },
+    {
+      "name": "撤回与安全代次主动异常同回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "撤回推进同一安全代次",
+      "observed": 3,
+      "expected": 3
+    },
+    {
+      "name": "撤回保留归属历史",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "撤回不授当前资格",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "撤回不释放实际占用",
+      "observed": [
+        [
+          "hc"
+        ]
+      ],
+      "expected": [
+        [
+          "hc"
+        ]
+      ]
+    },
+    {
+      "name": "相同撤回不得新增代次",
+      "observed": "rejected",
+      "expected": "rejected"
+    },
+    {
+      "name": "相同撤回不得新增代次全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不能伪造归属撤回代次",
+      "observed": "hazard_source",
+      "expected": "hazard_source"
+    },
+    {
+      "name": "不能伪造归属撤回代次全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不可变验证确有行:ow_source",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:UPDATE ow_source SET source_id=source_id",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:DELETE FROM ow_source",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:INSERT OR REPLACE INTO ow_source SELECT * FROM ow_source",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不可变验证确有行:ow_ownership",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:UPDATE ow_ownership SET ownership_id=ownership_id",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:DELETE FROM ow_ownership",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:INSERT OR REPLACE INTO ow_ownership SELECT * FROM ow_ownership",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不可变验证确有行:ow_commit",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:UPDATE ow_commit SET ownership_id=ownership_id",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:DELETE FROM ow_commit",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:INSERT OR REPLACE INTO ow_commit SELECT * FROM ow_commit",
+      "observed": "ownership_source_or_authority",
+      "expected": "ownership_source_or_authority"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "不可变验证确有行:ow_revocation",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:UPDATE ow_revocation SET source_id=source_id",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:DELETE FROM ow_revocation",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "原件不可变:INSERT OR REPLACE INTO ow_revocation SELECT * FROM ow_revocation",
+      "observed": "immutable_ownership",
+      "expected": "immutable_ownership"
+    },
+    {
+      "name": "原件不可变后全库保持",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "风险词表显式映射:active",
+      "observed": "active",
+      "expected": "active"
+    },
+    {
+      "name": "风险词表显式映射:unknown",
+      "observed": "unknown",
+      "expected": "unknown"
+    },
+    {
+      "name": "风险词表显式映射:failed_unresolved",
+      "observed": "unresolved",
+      "expected": "unresolved"
+    },
+    {
+      "name": "风险词表显式映射:orphaned",
+      "observed": "stale",
+      "expected": "stale"
+    },
+    {
+      "name": "风险词表显式映射:proof_revoked",
+      "observed": "stale",
+      "expected": "stale"
+    },
+    {
+      "name": "普通来源实际请求关联:None",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "普通来源投影不提交半边占用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通来源实际请求关联:namespace_id",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "普通来源投影不提交半边占用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通来源实际请求关联:issuer_epoch",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "普通来源投影不提交半边占用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通来源实际请求关联:request_digest",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "普通来源投影不提交半边占用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通来源实际请求关联:origin",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "普通来源投影不提交半边占用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通来源真实外键:command_key_id",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "普通来源投影不提交半边占用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "普通来源真实外键:attempt_id",
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "name": "普通来源投影不提交半边占用",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "归属成功不绕最终签发阻断",
+      "observed": "control_gate_not_ready",
+      "expected": "control_gate_not_ready"
+    },
+    {
+      "name": "归属成功不绕最终签发阻断全库回滚",
+      "observed": true,
+      "expected": true
+    },
+    {
+      "name": "BODY占位通过仅为来源真实性限制",
+      "observed": 1,
+      "expected": 1
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    },
+    {
+      "name": "外键完整性",
+      "observed": [],
+      "expected": []
+    },
+    {
+      "name": "数据库完整性",
+      "observed": [
+        [
+          "ok"
+        ]
+      ],
+      "expected": [
+        [
+          "ok"
+        ]
+      ]
+    }
+  ],
+  "inputs": {
+    "docs/contracts/c08-controller/controller.sql": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4",
+    "docs/contracts/c08-controller/fence.sql": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f",
+    "docs/contracts/c08-controller/barrier-attempt.sql": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb",
+    "docs/contracts/c08-controller/resource.sql": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d",
+    "docs/contracts/c08-controller/command.sql": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd",
+    "docs/contracts/c02-command-view/storage.sql": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da",
+    "docs/contracts/c08-controller/issue-ledger.sql": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285",
+    "docs/contracts/c08-controller/build_issue_ledger.py": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d",
+    "docs/contracts/c08-controller/build_layout.py": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9",
+    "docs/contracts/c08-controller/cancel-fence.sql": "559a918a21b95e4e3f293bf888f68a694b12fe6560e84c4786789d02aa5493b5",
+    "docs/contracts/c08-controller/build_cancel_fence.py": "cbba07f9548d0b09fc765ee749e74ca2d777977544782cb4200105a4d7524f1d",
+    "docs/contracts/c08-controller/cancel-resource.sql": "3ace3a1a067791527f772ba662ede9776df8e4472244f93b2ac479a6d7e0d86d",
+    "docs/contracts/c08-controller/build_cancel_resource.py": "41a36379b491898284e3dfd17f4910c61316944a4da1fc6db5e2997701b6f519",
+    "docs/contracts/c08-controller/cancel-closure.sql": "9c54e6e27aa9358dec23f662a4631c4ab8134459853de028abeb8e0489ef4d0a",
+    "docs/contracts/c08-controller/build_cancel_closure.py": "b7f95e571096830e08fa12d4eb6e6388515e2cd8a9def5b0c04ceadbdcef099e",
+    "docs/contracts/c08-controller/cancel-plan.sql": "77b941c6d6adbf0f9aea2be8ad0f733b5bebec5281c9d634e406f3b9395da601",
+    "docs/contracts/c08-controller/build_cancel_plan.py": "b23f81233561b474f53de8ab834fb9835864cbd16c259c24986712fe478a8170",
+    "docs/contracts/c08-controller/protected-hold.sql": "d9bd6bf9822188a38aba0d01a262bad94b9fd8e59da150ab2c175080668286b4",
+    "docs/contracts/c08-controller/build_protected_hold.py": "05f7dc2d9006c7e815354e07210f1e145a9650e9102f3b7c3df7d208fea0f67a",
+    "docs/contracts/c08-controller/result-dependency.sql": "c00d780d7309e94da0f4ea220ef6ced307ae09343a1060c98467e7b7e61f2c8b",
+    "docs/contracts/c08-controller/build_result_dependency.py": "76e91a4474668907af03ef16375b974993fe3e28debc083e60092256dc689dfe",
+    "docs/contracts/c08-controller/protection-outbox.sql": "2900b431e8a006bcee7ce1d760e41975403f0a3000c72bb7d6a035c140de45eb",
+    "docs/contracts/c08-controller/build_protection_outbox.py": "bac338eca473705a08b216fc41d00cbe732a0c953e881501b1923e1b39023b01",
+    "docs/contracts/c08-controller/build_control_storage.py": "766797716adb9ea8f8850c674d86247840d0637991cd9a1e0945cfddd9ffc46f",
+    "docs/contracts/c08-controller/build_control_fence.py": "99da9e8145cb4bd2d9f538926f876d2856fe4aef4e994d234ad69df1febbd0f4",
+    "docs/contracts/c08-controller/control-fence.sql": "6787ff44baa87b1118f84a32f5da6021248696e3402a2821ec44440f673eb50a",
+    "docs/contracts/c08-controller/common.sql": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4",
+    "docs/contracts/c02-admission/admission.sql": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32",
+    "docs/contracts/c04-preparation/preparation.sql": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b",
+    "docs/contracts/c08-controller/README.md": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d",
+    "docs/contracts/c08-controller/check_layout.py": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b",
+    "docs/contracts/c04-preparation/check_storage.py": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf",
+    "docs/contracts/c02-admission/check_storage.py": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073",
+    "docs/contracts/c05-protection/protocol.schema.json": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657",
+    "docs/contracts/c08-controller/FENCE.md": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042",
+    "docs/contracts/c08-controller/check_fence.py": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1",
+    "docs/rebirth-f02-f03-design.md": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc",
+    "docs/rebirth-c11-obs-atem-design.md": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57",
+    "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358",
+    "docs/contracts/c08-controller/check_barrier_attempt.py": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b",
+    "docs/contracts/c08-controller/RESOURCE_STORAGE.md": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa",
+    "docs/contracts/c08-controller/LIFECYCLE.md": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d",
+    "docs/contracts/c08-controller/check_resource.py": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849",
+    "docs/contracts/c08-controller/COMMAND_STORAGE.md": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267",
+    "docs/contracts/c08-controller/check_command.py": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4",
+    "docs/contracts/c02-command-view/STORAGE.md": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc",
+    "docs/contracts/c02-command-view/check_storage.py": "ca89ed5f7ef5111ea897cf6c5f23b8dd10380afed0daf5cbc519cd092e97ae16",
+    "docs/contracts/c02-command-view/command.schema.json": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e",
+    "docs/contracts/c08-controller/controller-issue.sql": "1bceb2564b08afbbd5b6e1ea61f64b6c69b16bebf067cda23e239932d60d4c5b",
+    "docs/contracts/c08-controller/ISSUE_LEDGER.md": "e20988ec1d3fbcefe2eaee160c4be7a0b576c3b6aaf63e3013616deb90d6cb3c",
+    "docs/contracts/c08-controller/check_issue_ledger.py": "9345d6f1ce16150b62f77e137d917a90d07f013aab062140960e0031fceb037b",
+    "docs/contracts/c08-controller/controller-cancel-fence.sql": "54af09ffcbc6ebc959025fad1954b12bc9153fa7795016c4bcd3c42ac5c32fcd",
+    "docs/contracts/c08-controller/CANCEL_FENCE.md": "8a2a35d0dce59951a9db74b3a41cc115e8560b8170135fbb5364812aa67d68fe",
+    "docs/contracts/c08-controller/check_cancel_fence.py": "f7aab87c739236d2215bb22754e182d8e1131ae582bfd996f07925f12a83495f",
+    "docs/contracts/c08-controller/controller-cancel-resource.sql": "9305bbd31226cca764dd4bfd92e9b41f5895c6c524d41d3ff0f9e60b58429caa",
+    "docs/contracts/c08-controller/CANCEL_RESOURCE.md": "af5e2ab040a673863431f11ec40b706082c838fa63c1c6dc50ca180219f5d11c",
+    "docs/contracts/c08-controller/check_cancel_resource.py": "b7a105462c796d0c811f2530066a585cfc0c450eb04d103815aa25a2df17aa36",
+    "docs/contracts/c08-controller/controller-cancel-closure.sql": "9da2f05085edf9a504cfb3d12489f109a7b7ae15eb5d767c0ca6a5cd33f03fd2",
+    "docs/contracts/c08-controller/CANCEL_CLOSURE.md": "2fe6eeef15a2acbf2a75003384ac30e617f288c6d547bb1d6912369cc58e3ed2",
+    "docs/contracts/c08-controller/check_cancel_closure.py": "5c599e539e128c89aa200764fd4beeabfc94284507950c654afe49071ea0c12b",
+    "docs/contracts/c08-controller/controller-cancel-plan.sql": "e08ac8d2e568bd23a70447033ff51bfa6659b840a235c1c2aa16ae0d59f05a7f",
+    "docs/contracts/c08-controller/CANCEL_PLAN.md": "a6565fd8b1b60ea5c690496a50fc9e2915b501b61c61b34c97c4704173321f3b",
+    "docs/contracts/c08-controller/check_cancel_plan.py": "9ef02f2ccee3b5e9037c372315d69a7533f899a2ea089112863c2a3427df0588",
+    "docs/contracts/c08-controller/controller-protected-hold.sql": "464f6a9cdfebd2bf602b57c810c4131e66811eecdc9239930ea5f817624b1f21",
+    "docs/contracts/c08-controller/PROTECTED_HOLD.md": "9996711cc4a934207c36ad7d28a0dc3fcec903c9f7524f21b62fddb3462e92b7",
+    "docs/contracts/c08-controller/check_protected_hold.py": "7884bbd5df6f4c4b199d32b9b0974c7e350e72a08c3fd3d60475e44e49a095db",
+    "docs/contracts/c08-controller/controller-result-dependency.sql": "83fa4576c831417d6ee6a6df93457e3b904946159a6f34a6e0b2f818b2816569",
+    "docs/contracts/c08-controller/RESULT_DEPENDENCY.md": "7ae41846323bfe005a1f776f92489bcc6134f683c242745dfc5f0a631009fb8e",
+    "docs/contracts/c08-controller/check_result_dependency.py": "be0013474e5babf69d7a8e45c2107527c2bc7dde88e252f75a71cf230f5b88d3",
+    "docs/contracts/c08-controller/check_control_storage.py": "7bcd8bd90894bd6aca8af522fcc362d3f8189a27a7658a32d31cef4d2d7eb155",
+    "docs/contracts/c08-controller/check_control_fence.py": "b951c58e10b047e23c73092bc8e1ed8c401ead20b08126b1c26355fc069f3658",
+    "docs/contracts/c08-controller/controller-control-fence.sql": "f6cbfd06f20cebb717c5a6f4c104905aab3655aba6511ad18cf9a95158f12d56",
+    "docs/contracts/c08-controller/CONTROL_FENCE.md": "dc6b2c27a3e4e3b7631ebcdfcda612f778d31a17fdf86a11f042d9062595bdad",
+    "docs/contracts/c08-controller/build_open_storage.py": "c41aa31cf6b303583bf6ad8336a1dac31be4be815d04af8f0bfb01f1347e68a5",
+    "docs/contracts/c08-controller/open-storage.sql": "87f4c584b6abb1c8b5bc5abb1597d00d00c749835cd66d8519d14fcd343ef997",
+    "docs/contracts/c08-controller/OPEN_STORAGE.md": "101e637afc992393a2c66d8e2f6ff2f3cd8951cf9d544b913052b511e1e4a5cf",
+    "docs/contracts/c08-controller/OPEN_LIFECYCLE.md": "113fb88f7c75bd1221f2f8c768b9aa1ebe0c8d41f69db0eaac1034b17840a4d2",
+    "docs/contracts/c08-controller/check_open_storage.py": "5a1300af8cf9aee93f4e9648216f280f09c228dab74c80fe6b578967f684510e",
+    "docs/contracts/c08-controller/controller-open.sql": "cf12bfd2bb2a5f424de714ce79c61fea2447ac75571cb80e6240f1b0cf3e2ca8",
+    "docs/contracts/c08-controller/build_ownership_storage.py": "f19dcd1d77232aaf875ef21f335ce4bec2076f868e7c7bcd9d3d9887d6d09a2a",
+    "docs/contracts/c08-controller/ownership-storage.sql": "d4895d92c901e5c8338b39067dddd6456847a18a51bd861fb0d5870c6a463e59",
+    "docs/contracts/c08-controller/check_ownership_storage.py": "d6c84d7523fb6ea901817f1b6dbc0741b493ce7e43e6f01525b9b5cdc283efac",
+    "docs/contracts/c08-controller/controller-ownership.sql": "15f218a5746641649e91482036446f296cef7a2e2fbce9f204e965a1ed4c28e0",
+    "docs/contracts/c08-controller/OWNERSHIP_STORAGE.md": "a2c56fecc58dfb959312cc3f413903f497732e1a91eb6f9d0ff4f184494d5992",
+    "docs/contracts/c08-controller/hold-ownership.schema.json": "ffb08897f535a79547466ee0080f72de3da5eff918bf6f0d80db829eccf0deba",
+    "docs/contracts/c08-controller/scoped-gate.schema.json": "da9541b4e261aa0d78baeaf759e177cea11ca8188c3cdc067777c96a38c6b147"
+  }
+}

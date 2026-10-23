@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-23 不可变归属与共享资源持久化（新周期第2/3轮）
+
+- 前一轮本地提交`5cc52ec`；main已含双父merge commit，本轮不重复合并。继续main，仅本地commit；第3轮审查完整待推历史后再推送。
+- [182表归属候选](docs/contracts/c08-controller/OWNERSHIP_STORAGE.md)加入来源回执、Ownership、封存和撤回四表，复用实际RequestKey/namespace、取消Plan、cr_hold和ct_state。所有hold须同事务配对归属；go_hold改为三元Owner外键并核原authority，不能将旧占用重新标记为新holder的active。
+- 302项内存SQLite检查通过，覆盖人员/自动化独立取消来源、完整写集缺写与主动异常回滚、实际T3/T4、期限等号、来源撤回与安全代次、四表不可变及风险词表映射；报告绑定86项输入。旧开放199项及归属152项实际回归通过。取消父未发不伪造普通attempt；普通来源仅验证未提交投影后回滚，未跑通完整普通派发。
+- 四个最终签发阻断保持，并实际验证Owner封存后取消签发仍被阻断。下一步仍是同一go_gate中的ScopeCommit/ReadyCommit分型、完整Assessment和AdmissionSeal、统一关闭与全消息seq及SDK；不能将当前主体视图当完整发送资格。BODY/JCS及提供者资格外验，真实并发、磁盘、IPC和设备未执行；业务代码未改，阶段0未关闭。
+
 ## 2026-10-23 限定取消发送范围与完整IPC（新周期第1/3轮）
 
 - 上周期三轮已推main并核对`0fb724c`；既有merge commit包含rebirth。本轮继续main，仅本地commit，第3轮再审查完整待推历史并推送。

@@ -12,6 +12,8 @@
 
 ### 1.1 当前关闭状态，优先于历轮进展中的旧待办
 
+2026-10-23归属持久化进展：[182表归属候选](contracts/c08-controller/OWNERSHIP_STORAGE.md)已将来源回执、Ownership、封存及撤回接入实际RequestKey/namespace、取消Plan、共享hold和控制历史；快照Owner改为三元外键且精确绑定原authority，接管后不能重新标记旧hold。302项内存SQLite检查及86输入绑定通过，旧开放199项、归属152项实际回归通过。人员/自动化取消独立来源、逐写缺失/主动异常、T3/T4保留风险、期限与撤回及词表映射已有证据；普通来源只验未提交投影，四个最终签发阻断保持。Ownership物理关系不再从零设计，剩余为同一物理闸的ScopeCommit/ReadyCommit分型、完整Assessment/AdmissionSeal、真实原件投影、统一关闭与全消息seq和SDK。BODY不证明JCS或提供者资格；真实并发磁盘IPC设备未验，阶段0未关闭。本轮为第2/3轮本地提交。
+
 2026-10-23限定保护闸进展：[范围化取消资格与IPC0.9候选](contracts/c08-controller/SCOPED_GATE.md)已有GateAccess、完整风险Assessment和GateUse子投影Schema，以及46帧完整新版IPC的OPEN/ACK、Guard/许可/报告和覆盖引用。单设备只保留一个范围，切换须新屏障，父unknown保持原风险及owner，取消可用不等普通ready；当前评估可随正常释放更新，初始证明撤回仍撤资格。306项结构与关联及有限时序通过，140输入绑定，旧67/152/199项分别回归。限定范围字段与顺序不再从零设计；剩余是ScopeCommit与ReadyCommit分型、Ownership/Assessment/AdmissionSeal同版物理联接、统一关闭来源、全消息seq、完整提供者及SDK。旧178表四个签发阻断保持；完整Guard为合成前提，真实运行及新SQL未验，候选未批准且阶段0未关闭。
 
 2026-10-23最终准入审阅：[不可变占用归属与主体投影](contracts/c08-controller/FINAL_ADMISSION.md)已有Schema和152项离线检查，明确命令与取消各取自身RequestKey、Ownership不可迁移、Guard逐传输精确绑定，以及普通新hold的前态校验/后态快照/最终seal写集顺序。原178表的归属标签缺口已复现，主体子契约补足来源关系，但尚未合入SQL，四个签发临时阻断保持。另发现全局ready拒unknown会挡住父命令保护取消，推荐新增仅绑定指定取消执行的保护资格；不得全局放宽ready，也不能删除保护功能。此项仍待同版IPC及物理闸范围、AdmissionSeal/完整Guard提供者、统一保护来源与SDK归并；未批准运行或关闭阶段0。

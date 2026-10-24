@@ -1,0 +1,842 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/final-authorization.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "AuthorizationSnapshot": {
+      "type": "object",
+      "properties": {
+        "snapshot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "audience": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "credential_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "subject_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "session_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "challenge_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "validity": {
+          "type": "object",
+          "properties": {
+            "not_before": {
+              "$ref": "#/$defs/Timestamp"
+            },
+            "expires_at": {
+              "$ref": "#/$defs/Timestamp"
+            }
+          },
+          "required": [
+            "not_before",
+            "expires_at"
+          ],
+          "additionalProperties": false
+        },
+        "fresh_for_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60000
+        },
+        "state": {
+          "enum": [
+            "active",
+            "revoked",
+            "expired"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "issuer_id",
+        "issuer_epoch",
+        "issuer_revision",
+        "audience",
+        "principal_kind",
+        "principal_id",
+        "session_id",
+        "credential_id",
+        "subject_revision",
+        "session_revision",
+        "policy_revision",
+        "permissions",
+        "scope_digest",
+        "challenge_id",
+        "validity",
+        "fresh_for_ms",
+        "state"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "principal_kind": {
+                "const": "human"
+              }
+            },
+            "required": [
+              "principal_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "session_revision": {
+                "$ref": "#/$defs/Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_id": {
+                "type": "null"
+              },
+              "session_revision": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Revision": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "AuthorizationBinding": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "audience": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "credential_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "subject_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "session_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "grant_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "grant_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arm_generation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extension_instance_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extension_approval_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "audience",
+        "principal_kind",
+        "principal_id",
+        "origin",
+        "session_id",
+        "credential_id",
+        "subject_revision",
+        "session_revision",
+        "policy_revision",
+        "scope_digest",
+        "grant_id",
+        "grant_revision",
+        "arm_generation",
+        "extension_instance_id",
+        "extension_approval_revision"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "principal_kind": {
+                "const": "human"
+              }
+            },
+            "required": [
+              "principal_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "session_revision": {
+                "$ref": "#/$defs/Revision"
+              },
+              "origin": {
+                "const": "manual"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_id": {
+                "type": "null"
+              },
+              "session_revision": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "principal_kind": {
+                "const": "service"
+              },
+              "grant_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "grant_revision": {
+                "$ref": "#/$defs/Revision"
+              },
+              "arm_generation": {
+                "$ref": "#/$defs/Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "grant_id": {
+                "type": "null"
+              },
+              "grant_revision": {
+                "type": "null"
+              },
+              "arm_generation": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "extension_instance_id": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "extension_instance_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "extension_approval_revision": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "extension_approval_revision": {
+                "$ref": "#/$defs/Revision"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "RevocationSelector": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "session",
+            "principal",
+            "credential",
+            "grant",
+            "extension",
+            "trust"
+          ]
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "target_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision_floor": {
+          "$ref": "#/$defs/Revision"
+        }
+      },
+      "required": [
+        "kind",
+        "issuer_id",
+        "issuer_epoch",
+        "target_id",
+        "revision_floor"
+      ],
+      "additionalProperties": false
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Principal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "kind",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionIdentity": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "ordinary",
+            "cancel"
+          ]
+        },
+        "command_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "attempt_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancellation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "execution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "kind",
+        "command_ref",
+        "attempt_ref",
+        "cancellation_ref",
+        "execution_ref",
+        "requester",
+        "origin",
+        "source_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attempt_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "cancellation_ref": {
+                "type": "null"
+              },
+              "execution_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "attempt_ref": {
+                "type": "null"
+              },
+              "cancellation_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "execution_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "service"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "human"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AuthorizationUse": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authorization-use/1"
+        },
+        "use_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "authorization_binding": {
+          "$ref": "#/$defs/AuthorizationBinding"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/AuthorizationSnapshot"
+        },
+        "challenge_sent_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "received_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "local_freshness_limit_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60000
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "authorization_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "authority_evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope_evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "validity_evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "use_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "use_id",
+        "revision",
+        "binding",
+        "identity",
+        "authorization_binding",
+        "snapshot",
+        "challenge_sent_tick_ns",
+        "received_tick_ns",
+        "local_freshness_limit_ms",
+        "not_before_tick_ns",
+        "authorization_before_tick_ns",
+        "authority_evidence_ref",
+        "scope_evidence_ref",
+        "validity_evidence_ref",
+        "use_digest"
+      ],
+      "additionalProperties": false
+    },
+    "FloorEvent": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "selector": {
+          "$ref": "#/$defs/RevocationSelector"
+        },
+        "operation_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "event_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "event_id",
+        "scope",
+        "selector",
+        "operation_ref",
+        "event_digest"
+      ],
+      "additionalProperties": false
+    },
+    "AuthorizationCut": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authorization-cut/1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "use_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "sealed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "floor_refs": {
+          "type": "array",
+          "maxItems": 24576,
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "use_ref",
+        "transaction_id",
+        "selected_tick_ns",
+        "sealed_tick_ns",
+        "floor_refs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

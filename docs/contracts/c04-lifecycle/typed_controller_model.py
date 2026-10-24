@@ -73,7 +73,7 @@ def commit_rows(commit,key_id,kind,creation,rid,body):
       I('ca_audit',commit_id=commit,key_id=key_id,kind=kind,redacted_body=raw(dict(kind=kind,key_id=key_id))),
       I('ca_notification',commit_id=commit,key_id=key_id,kind=kind,event_id=commit+'_event',payload_body=raw(dict(key_id=key_id,kind=kind)))]
 
-def creation_steps(db,identity,content,ns,transport,provider=None,rejection=None):
+def creation_steps(db,identity,content,ns,transport,provider=None,rejection=None,initial_factory=None):
     key=identity['key'];kid=uid('key',key);accepted=rejection is None;kind='accept' if accepted else 'reject_new'
     commit=uid('commit',dict(key=key,kind=kind));command=uid('command',key) if accepted else None
     command_body=dict(command_id=command,identity=identity,content=content) if accepted else None
@@ -88,7 +88,7 @@ def creation_steps(db,identity,content,ns,transport,provider=None,rejection=None
         issue,e,adoption=verify_new(db,key,transport,provider);ab=content['automation_binding'];prep=R.one(db,'cp_receipt','prep_key',issue['prep_key'])
         out += [I('ca_command_initial',command_id=command,key_id=kid,decision='accepted',revision='1',command_digest=digest(command_body),command_body=raw(command_body),admission_binding_body=raw(ab)),
           I('ce_command',command_id=command,device_id=content['device_id'],origin=content['origin'],prep_key=issue['prep_key'],receipt_id=prep['receipt_id'],binding_body=raw(ab))]
-        out += initial_rows(command,kid,content,a,provider)
+        out += (initial_factory or initial_rows)(command,kid,content,a,provider)
         out += [I('typed_command_source',command_id=command,execution_body=raw(e),adoption_body=raw(adoption),evidence_body=raw(provider)),
           I('cn_command',command_id=command,transfer_id=issue['transfer_id'],execution_id=ab['execution_id'],step_id=ab['step_id'],request_digest=identity['request_digest'],adoption_digest=adoption['adoption_digest'],grant_ref_body=raw(ab['continuation']['grant_ref']),binding_body=raw(ab))]
     rid=rejection['rejection_id'] if rejection else None
@@ -96,7 +96,7 @@ def creation_steps(db,identity,content,ns,transport,provider=None,rejection=None
     if rejection:out.append(I('ca_rejection',**dict(rejection,key_id=kid,commit_id=commit)))
     return out,a
 
-def decide(db,identity,body,auth,provider=None,operation=None,fail_after=None):
+def decide(db,identity,body,auth,provider=None,operation=None,fail_after=None,initial_factory=None):
     S.validate('RequestIdentity',identity);key=identity['key'];submit=operation is None;action='submit' if submit else 'reject'
     ns=authorize(db,key,auth,action);need(auth['storage_readable'],'indeterminate')
     S.validate('CommandRequest' if submit else 'CommandContent',body);content=B.content(body) if submit else body
@@ -123,6 +123,6 @@ def decide(db,identity,body,auth,provider=None,operation=None,fail_after=None):
         need(auth['capacity_reserved'],'capacity')
         if submit:
             need(auth['namespace_writable'] and not db.execute('SELECT 1 FROM ca_namespace_closure WHERE namespace_id=?',(current_ns['namespace_id'],)).fetchone(),'namespace_closed')
-        writes,a=creation_steps(db,identity,content,current_ns,body if submit else None,provider,rejection);output.append(a);return writes
+        writes,a=creation_steps(db,identity,content,current_ns,body if submit else None,provider,rejection,initial_factory);output.append(a);return writes
     T.apply(db,builder,fail_after)
     need(auth['response_authorized'],'response_authority');return output[0]

@@ -7,8 +7,8 @@ import typed_controller_model as M
 import build_typed_controller as G
 X=A.X;I=X.I;C=X.C;R=X.R;P=X.P;SC=X.SC;AT=X.AT;HERE=G.HERE;ROOT=X.ROOT
 
-def fixture(*,sql_factory=A.G.build,include_context=False,record_attempts=True):
-    d,q,cds,ctx=X.fixture(sql_factory=sql_factory,controller_factory=G.build,expected_control=dict(epoch='control.epoch',version='2'))
+def fixture(*,sql_factory=A.G.build,include_context=False,record_attempts=True,controller_factory=G.build):
+    d,q,cds,ctx=X.fixture(sql_factory=sql_factory,controller_factory=controller_factory,expected_control=dict(epoch='control.epoch',version='2'))
     ns=ctx['command_namespace'];owner={k:ns[k] for k in M.OWNER}
     for cd,cc in cds.values():
         SC.execute(cd,[I('ca_namespace',namespace_id='typed_namespace',scope_id=1,**owner,owner_evidence_id='synthetic_owner',owner_evidence_body=M.raw(dict(synthetic=True)))])

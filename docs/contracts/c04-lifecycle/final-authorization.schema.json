@@ -798,6 +798,181 @@
       ],
       "additionalProperties": false
     },
+    "ScopedRef": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "AuthorizationChallenge": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authorization-challenge/1"
+        },
+        "challenge_id": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "credential_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "audience": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "requested_permission": {
+          "const": "device.command"
+        },
+        "sent_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "challenge_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "challenge_id",
+        "revision",
+        "binding",
+        "requester",
+        "credential_id",
+        "audience",
+        "scope_digest",
+        "requested_permission",
+        "sent_tick_ns",
+        "challenge_digest"
+      ],
+      "additionalProperties": false
+    },
+    "AuthorityResponse": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authorization-response/1"
+        },
+        "response_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "challenge_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/AuthorizationSnapshot"
+        },
+        "received_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "channel_evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "response_id",
+        "revision",
+        "scope",
+        "challenge_ref",
+        "snapshot",
+        "received_tick_ns",
+        "channel_evidence_ref",
+        "response_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ContinuationAuthorization": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "continuation-authorization/1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "action_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "capability_version": {
+          "$ref": "#/$defs/Id"
+        },
+        "transfer_ref": {
+          "$ref": "#/$defs/ScopedRef"
+        },
+        "grant_ref": {
+          "$ref": "#/$defs/ScopedRef"
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/Counter"
+        },
+        "target_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "command_ref",
+        "request_ref",
+        "device_id",
+        "action_id",
+        "capability_version",
+        "transfer_ref",
+        "grant_ref",
+        "arm_generation",
+        "target_digest"
+      ],
+      "additionalProperties": false
+    },
     "AuthorizationCut": {
       "type": "object",
       "properties": {
@@ -819,6 +994,19 @@
         "sealed_tick_ns": {
           "$ref": "#/$defs/Counter"
         },
+        "authority_response_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "continuation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "floor_refs": {
           "type": "array",
           "maxItems": 24576,
@@ -834,6 +1022,8 @@
         "transaction_id",
         "selected_tick_ns",
         "sealed_tick_ns",
+        "authority_response_ref",
+        "continuation_ref",
         "floor_refs"
       ],
       "additionalProperties": false

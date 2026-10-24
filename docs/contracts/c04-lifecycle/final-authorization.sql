@@ -19,3 +19,18 @@ CREATE TRIGGER authorization_use_no_update BEFORE UPDATE ON authorization_use BE
 CREATE TRIGGER authorization_use_no_delete BEFORE DELETE ON authorization_use BEGIN SELECT RAISE(ABORT,'immutable authorization use'); END;
 CREATE TRIGGER authorization_floor_no_update BEFORE UPDATE ON authorization_floor_event BEGIN SELECT RAISE(ABORT,'immutable authorization floor'); END;
 CREATE TRIGGER authorization_floor_no_delete BEFORE DELETE ON authorization_floor_event BEGIN SELECT RAISE(ABORT,'immutable authorization floor'); END;
+CREATE TABLE authorization_challenge (
+ challenge_id TEXT PRIMARY KEY NOT NULL,
+ digest TEXT NOT NULL,
+ body BLOB NOT NULL CHECK(length(body)>0 AND length(body)<=16777216)
+) STRICT;
+CREATE TABLE authorization_response (
+ response_id TEXT PRIMARY KEY NOT NULL,
+ challenge_id TEXT NOT NULL UNIQUE REFERENCES authorization_challenge(challenge_id),
+ digest TEXT NOT NULL,
+ body BLOB NOT NULL CHECK(length(body)>0 AND length(body)<=16777216)
+) STRICT;
+CREATE TRIGGER authorization_challenge_no_update BEFORE UPDATE ON authorization_challenge BEGIN SELECT RAISE(ABORT,'immutable authorization challenge'); END;
+CREATE TRIGGER authorization_challenge_no_delete BEFORE DELETE ON authorization_challenge BEGIN SELECT RAISE(ABORT,'immutable authorization challenge'); END;
+CREATE TRIGGER authorization_response_no_update BEFORE UPDATE ON authorization_response BEGIN SELECT RAISE(ABORT,'immutable authorization response'); END;
+CREATE TRIGGER authorization_response_no_delete BEFORE DELETE ON authorization_response BEGIN SELECT RAISE(ABORT,'immutable authorization response'); END;

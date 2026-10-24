@@ -7,11 +7,15 @@ import check_final_encoding_source as T
 import final_authorization_model as M
 G=M.G;HERE=G.HERE;ROOT=T.ROOT;clone=copy.deepcopy
 
-def use(v):
+def use(v,db=None):
     identity=clone(v['identity']);p=identity['requester'];manual=identity['origin']=='manual'
     a=dict(**{k:p[k] for k in ('issuer_id','issuer_epoch','principal_id')},audience=v['binding']['scope']['authority_service_id'],principal_kind=p['kind'],origin=identity['origin'],
         session_id='session' if manual else None,credential_id='credential',subject_revision='4',session_revision='4' if manual else None,policy_revision='2',scope_digest=M.F.digest('scope'),
         grant_id=None if manual else 'grant',grant_revision=None if manual else '4',arm_generation=None if manual else '1',extension_instance_id=None,extension_approval_revision=None)
+    if not manual:
+        row=db.execute('SELECT k.content_body FROM ca_request_key k JOIN ca_command_initial i USING(key_id) WHERE i.command_id=?',(identity['command_ref']['id'],)).fetchone()
+        run=json.loads(row[0])['run_binding']
+        a.update({k:run[k] for k in ('grant_id','grant_revision','arm_generation')})
     s={k:x for k,x in a.items() if k in M.SCHEMA['$defs']['AuthorizationSnapshot']['properties']}
     s.update(snapshot_id='snapshot',issuer_revision='8',challenge_id='challenge',permissions=['device.command'],
         validity=dict(not_before='2026-01-01T00:00:00.000Z',expires_at='2026-01-01T01:00:00.000Z'),fresh_for_ms=1,state='active')
@@ -20,6 +24,19 @@ def use(v):
         authority_evidence_ref=T.V.ref('authority'),scope_evidence_ref=T.V.ref('scope'),validity_evidence_ref=T.V.ref('validity')),'use_digest')
 
 def use_ref(u):return M.E.ref(u['use_id'],u['revision'],u['use_digest'])
+
+def capture(u):
+    """构造新的合成认证传输记录；不能用于把已经保存的错误来源修成正确。"""
+    s=u['snapshot'];s['challenge_id']=M.F.digest(u['use_id'])[7:]
+    c=M.sealed(dict(format_version='authorization-challenge/1',challenge_id=s['challenge_id'],revision='1',binding=clone(u['binding']),
+        requester=dict(kind=s['principal_kind'],**{k:s[k] for k in ('issuer_id','issuer_epoch','principal_id')}),credential_id=s['credential_id'],audience=s['audience'],
+        scope_digest=s['scope_digest'],requested_permission='device.command',sent_tick_ns=u['challenge_sent_tick_ns']),'challenge_digest')
+    r=M.sealed(dict(format_version='authorization-response/1',response_id=u['use_id']+'.response',revision='1',scope=u['binding']['scope'],
+        challenge_ref=M.reference(c,'challenge_id','challenge_digest'),snapshot=clone(s),received_tick_ns=u['received_tick_ns'],channel_evidence_ref=T.V.ref('fixture.channel')),'response_digest')
+    u['authority_evidence_ref']=M.reference(r,'response_id','response_digest');u.update(M.sealed(u,'use_digest'));return c,r
+
+def publish_use(db,u):
+    c,r=capture(u);M.store_challenge(db,c);M.store_response(db,r);M.store_use(db,u)
 def floor(u,kind='principal',revision='5',eid='event',**changes):
     a=u['authorization_binding'];target={'principal':a['principal_id'],'credential':a['credential_id'],'session':a['session_id'],'grant':a['grant_id'],'trust':'trust.domain','extension':'extension'}[kind]
     s=dict(kind=kind,issuer_id=a['issuer_id'],issuer_epoch=a['issuer_epoch'],target_id=target,revision_floor=revision);s.update(changes)
@@ -52,12 +69,50 @@ def run():
         db,connections,cmd,auth,pid,provider,response=T.fixture();dbs.extend(connections)
         T.E.O.execute(db,T.T.preview(db,lambda:T.E.receive(db,pid,response,provider)))
         db.executescript((HERE/'final-authorization.sql').read_text('utf-8'))
-        v,o,cut=T.T.preview(db,lambda:T.candidate(db,pid,provider));u=use(v)
+        v,o,cut=T.T.preview(db,lambda:T.candidate(db,pid,provider));u=use(v,db)
         # 采样回执到达后才产生有效资格；此fixture接收tick为50，仍早于选取51。
-        u=M.sealed(dict(u,received_tick_ns='50'),'use_digest');ur=use_ref(u)
-        tx(db,lambda:M.store_use(db,u));auth_projection=T.T.preview(db,lambda:M.read(db,ur,v));attach(v,o,auth_projection)
-        check('244表含真实编码原件及本地撤销候选',len(T.T.V.SC.snapshot(db))==244)
+        u=M.sealed(dict(u,received_tick_ns='50'),'use_digest')
+        tx(db,lambda:publish_use(db,u));ur=use_ref(u);auth_projection=T.T.preview(db,lambda:M.read(db,ur,v));attach(v,o,auth_projection)
+        check('246表含真实编码原件及授权来源',len(T.T.V.SC.snapshot(db))==246)
         check('普通自动化可规划19条附属封存写集',len(T.T.preview(db,lambda:M.planned(db,v,o,cut,pid,provider,ur)))==19)
+        check('授权使用的grant来自实际已受理请求',u['authorization_binding']['grant_id']=='transfer.grant' and u['authorization_binding']['grant_revision']=='1' and u['authorization_binding']['arm_generation']=='2')
+        for key,value in (('grant_id','another.grant'),('grant_revision','2'),('arm_generation','3')):
+            c=fork(db);bad=clone(u);bad['use_id']='bad.grant.'+key;bad['authorization_binding'][key]=value;bad=M.sealed(bad,'use_digest')
+            tx(c,lambda:M.store_use(c,bad))
+            reject('最终绑定不得换用自报授权:'+key,lambda:T.T.preview(c,lambda:M.planned(c,v,o,cut,pid,provider,use_ref(bad))),'authorization_current_grant')
+        c=fork(db);T.E.O.execute(c,[T.E.I('cr_revocation',transfer_id='transfer',proof_body=T.E.B,audit_body=T.E.B,outbox_body=T.E.B)])
+        reject('转交grant原件撤销使授权使用失效',lambda:T.T.preview(c,lambda:M.read(c,ur,v)))
+        challenge=json.loads(db.execute('SELECT body FROM authorization_challenge').fetchone()[0])
+        response_record=json.loads(db.execute('SELECT body FROM authorization_response').fetchone()[0])
+        c=fork(db);tx(c,lambda:M.store_challenge(c,challenge));tx(c,lambda:M.store_response(c,response_record))
+        check('challenge及响应重复保持原记录',c.execute('SELECT count(*) FROM authorization_challenge').fetchone()[0]==c.execute('SELECT count(*) FROM authorization_response').fetchone()[0]==1)
+        changed=M.sealed(dict(challenge,sent_tick_ns='2'),'challenge_digest')
+        reject('重发challenge不能刷新首次发送时间',lambda:tx(c,lambda:M.store_challenge(c,changed)),'authorization_challenge_identity')
+        changed=M.sealed(dict(response_record,received_tick_ns='51'),'response_digest')
+        reject('同challenge不能覆盖首次响应',lambda:tx(c,lambda:M.store_response(c,changed)),'authorization_response_identity')
+        for key,value in (('credential_id','credential.other'),('audience','other.controller'),('principal_id','other.principal'),('issuer_epoch','other.epoch'),('scope_digest',M.F.digest('other.scope')),('challenge_id','other.challenge')):
+            changed=clone(response_record);changed['snapshot'][key]=value;changed=M.sealed(changed,'response_digest')
+            reject('响应与待决请求不符:'+key,lambda changed=changed:tx(c,lambda:M.store_response(c,changed)),'authorization_response_')
+        changed=clone(response_record);changed['challenge_ref']['id']='never.sent';changed=M.sealed(changed,'response_digest')
+        reject('未登记challenge的响应不可保存',lambda:tx(c,lambda:M.store_response(c,changed)),'authorization_challenge_missing')
+        for name,mutate,reason in [
+            ('重新填写发送tick',lambda x:x.update(challenge_sent_tick_ns='2'),'authorization_capture_ticks'),
+            ('重新填写接收tick',lambda x:x.update(received_tick_ns='51'),'authorization_capture_ticks'),
+            ('同主体更换凭据',lambda x:(x['authorization_binding'].update(credential_id='rotated'),x['snapshot'].update(credential_id='rotated')),'authorization_response_snapshot'),
+            ('更换快照challenge',lambda x:x['snapshot'].update(challenge_id='replayed'),'authorization_response_snapshot'),
+            ('仅知道response ID但摘要错误',lambda x:x['authority_evidence_ref'].update(digest=M.F.digest('fake')),'authorization_response_ref'),
+            ('权威原件不存在',lambda x:x['authority_evidence_ref'].update(id='missing'),'authorization_response_missing')]:
+            c=fork(db);bad=clone(u);bad['use_id']='rebound';mutate(bad);bad=M.sealed(bad,'use_digest');tx(c,lambda:M.store_use(c,bad))
+            reject(name,lambda:T.T.preview(c,lambda:M.read(c,use_ref(bad),v)),reason)
+        c=fork(db)
+        for table in ('authorization_challenge','authorization_response'):
+            reject('已捕获来源禁止删除:'+table,lambda table=table:tx(c,lambda:c.execute('DELETE FROM '+table)))
+        for name,body,key in [('AuthorizationChallenge',challenge,'challenge_digest'),('AuthorityResponse',response_record,'response_digest')]:
+            M.decode(name,M.raw(body),body[key],key);check('来源完整Schema和摘要:'+name)
+            reject('来源重复JSON键:'+name,lambda name=name,body=body,key=key:M.decode(name,b'{"revision":"0",'+M.raw(body)[1:],body[key],key),'authorization_duplicate_key')
+        for nonce in ('short','A'*64,'a'*64+'\n'):
+            bad=M.sealed(dict(challenge,challenge_id=nonce),'challenge_digest')
+            reject('challenge须为固定256位小写hex:'+repr(nonce),lambda bad=bad:tx(db,lambda:M.store_challenge(db,bad)))
         reject('事务外读取拒绝',lambda:M.read(db,ur,v),'authorization_transaction_required')
         for kind in ('principal','grant','credential','trust'):
             c=fork(db);tx(c,lambda:M.install_floor(c,floor(u,kind)))
@@ -86,7 +141,7 @@ def run():
         # 两个相邻大整数不能经float合并；下界相等与低一位必须得到不同结果。
         c=fork(db);large=clone(u);large['use_id']='large'
         for owner in ('authorization_binding','snapshot'):large[owner]['subject_revision']='9007199254740993'
-        large=M.sealed(large,'use_digest');tx(c,lambda:M.store_use(c,large))
+        large=M.sealed(large,'use_digest');tx(c,lambda:publish_use(c,large))
         tx(c,lambda:M.install_floor(c,floor(large,revision='9007199254740993')))
         T.T.preview(c,lambda:M.read(c,use_ref(large),v));check('大整数下界精确相等可读')
         tx(c,lambda:M.install_floor(c,floor(large,revision='9007199254740994',eid='next')))
@@ -101,12 +156,12 @@ def run():
             ('发送challenge后才计新鲜度',lambda x:x.update(received_tick_ns='1000001',authorization_before_tick_ns='2000000'),'authorization_window'),
             ('新clockdomain不能复用',lambda x:x['binding'].update(clock_domain_id='clock_'+'9'*64),'authorization_use_binding'),
             ('委托不能降级普通入口',lambda x:x['authorization_binding'].update(extension_instance_id='extension',extension_approval_revision='1'),'authorization_delegation_not_integrated')]:
-            c=fork(db);bad=clone(u);bad['use_id']='bad';mutate(bad);bad=M.sealed(bad,'use_digest');tx(c,lambda:M.store_use(c,bad))
+            c=fork(db);bad=clone(u);bad['use_id']='bad';mutate(bad);bad=M.sealed(bad,'use_digest');tx(c,lambda:publish_use(c,bad))
             reject(name,lambda:T.T.preview(c,lambda:M.read(c,use_ref(bad),v)),reason)
         for b,reason in [(b' '+M.raw(u),'authorization_body_digest'),(b'{"use_id":"duplicate",'+M.raw(u)[1:],'authorization_duplicate_key')]:
             reject('严格正文:'+reason,lambda b=b:M.decode('AuthorizationUse',b,u['use_digest'],'use_digest'),reason)
         c=fork(db);late=clone(u);late.update(use_id='late',authorization_before_tick_ns='2000000',received_tick_ns='999999')
-        late=M.sealed(late,'use_digest');tx(c,lambda:M.store_use(c,late))
+        late=M.sealed(late,'use_digest');tx(c,lambda:publish_use(c,late))
         lv=clone(v);lv.update(selected_tick_ns='1000000',sealed_tick_ns='1000000');lv=M.F.seal(lv)
         actual=T.T.preview(c,lambda:M.read(c,use_ref(late),lv))
         check('慢响应仍以发送tick计算剩余新鲜度',actual['body']['before_tick_ns']=='1000001')
@@ -136,7 +191,7 @@ def run():
         mv,mo,mc=T.V.fixture();mu=use(mv);mu=M.sealed(dict(mu,received_tick_ns='50'),'use_digest')
         manual=sqlite3.connect(':memory:',isolation_level=None);dbs.append(manual)
         manual.executescript('CREATE TABLE controller_scope(singleton,authority_service_id,database_instance_id); INSERT INTO controller_scope VALUES(1,\'controller\',\'database\');'+(HERE/'final-authorization.sql').read_text('utf-8'))
-        tx(manual,lambda:M.store_use(manual,mu));tx(manual,lambda:M.read(manual,use_ref(mu),mv));check('manual完整会话绑定可读取')
+        tx(manual,lambda:publish_use(manual,mu));tx(manual,lambda:M.read(manual,use_ref(mu),mv));check('manual完整会话绑定可读取')
         tx(manual,lambda:M.install_floor(manual,floor(mu,'session')))
         reject('会话撤销阻断manual使用',lambda:tx(manual,lambda:M.read(manual,use_ref(mu),mv)),'authorization_revision_floor')
         check('组织自动化不依赖人员session',all(x[0]!='session' for x in M.dependencies(u['authorization_binding'])))
@@ -153,8 +208,9 @@ if __name__=='__main__':
     hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs()}
     if a.check_report:assert json.loads(target.read_bytes())['inputs']==hashes;print(json.dumps(dict(all_passed=True,matched_bindings=len(hashes))))
     else:
-        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=244,local_file_two_writer_order_verified=True,
-            authority_authenticity_verified=False,scope_evidence_verified=False,utc_validity_evidence_verified=False,full_final_issue_executed=False,
+        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=246,local_file_two_writer_order_verified=True,
+            stored_challenge_response_binding_verified=True,stored_continuation_grant_binding_verified=True,
+            authority_authenticity_verified=False,request_context_credential_chain_verified=False,scope_evidence_verified=False,utc_validity_evidence_verified=False,full_final_issue_executed=False,
             runtime_tests_executed=0,device_tests_executed=0,disk_crash_tests_executed=0,checks=checks,inputs=hashes)
         if a.report:target.write_bytes(M.raw(report))
         print(json.dumps({k:v for k,v in report.items() if k not in ('checks','inputs')}))

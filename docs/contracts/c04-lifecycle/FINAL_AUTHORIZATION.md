@@ -10,13 +10,19 @@
 
 `AuthorizationUse`完整保存既有AuthorizationSnapshot与AuthorizationBinding，并绑定完整ExecutionIdentity、出口/运行域、challenge发送tick、响应接收tick、本地新鲜度上限、授权生效/截止tick，以及权威、对象范围和有效期取证Ref。使用`use_digest`覆盖全部正文，存为严格JCS字节。引用全部采用精确ID、revision和digest。授权有效期的UTC判定仍由认证时钟取证负责，此记录不能自证那些Ref的真实性。
 
-`authorization_use`是Controller内部的不可变使用证据；`authorization_floor_event`是同一库内已接收撤销的不可变事件。两者附加在242表候选后用于实验，不新增签发方或独立授权数据库，不作为生产迁移发布。新鲜度截止取`challenge_sent + min(snapshot.fresh_for_ms, local_limit_ms)`，再与上游授权截止取最小值，禁止从响应接收时刻刷新TTL。所有tick保持十进制字符串。
+`authorization_use`是Controller内部的不可变使用证据；`authorization_floor_event`是同一库内已接收撤销的不可变事件；`authorization_challenge`与`authorization_response`保存首次查询和唯一响应。四表附加在242表候选后用于实验，不新增签发方或独立授权数据库，不作为生产迁移发布。新鲜度截止取`challenge_sent + min(snapshot.fresh_for_ms, local_limit_ms)`，再与上游授权截止取最小值，禁止从响应接收时刻刷新TTL。所有tick保持十进制字符串。
+
+`AuthorizationChallenge`固定完整出口/运行域、requester、credential、audience、scope_digest、device.command用途和首次发送tick；challenge_id为64位小写hex，未来发送端必须用256位CSPRNG，不能从用户输入或业务ID派生。本地先持久登记再发送。同ID同正文重试只读原记录，同ID重填时间拒绝。测试使用确定的合成nonce，不证明随机数生成器运行。
+
+`AuthorityResponse`固定完整challenge_ref、原AuthorizationSnapshot、接收tick和channel_evidence_ref；每challenge至多一条响应。接收端逐项核对issuer/epoch/principal、credential、audience、scope_digest、challenge与时间顺序，首次响应可靠保存后不得覆盖；响应重传也不能刷新年龄。最终使用再按authority_evidence_ref解析实际响应，核对完整snapshot和原发送/接收时间。因此凭据轮换或复制快照不能直接重用旧响应。channel_evidence_ref仍待接入真实认证通道，数据库中存在这些记录不证明TLS或签发者真实。
 
 判定器先取得同库writer锁，再查实际授权使用正文、主体/用途/audience、快照共同字段和device.command权限；要求响应接收及最终封存均处在授权有效窗内，且接收不晚于选取。普通人工必须human/manual并有session，自动化必须service/automation并有grant和arm。取消和面板委托尚未接通，明确拒绝此入口，不能去掉委托字段复用旧证据。
 
+自动化还须从实际ca_request_key/ca_command_initial、cn_live_command、cr_current、cr_device及typed_command_source读取原件。重新验证转交请求与回执摘要、完整grant正文与Ref、Seamer执行/采用、目标Controller及设备全集，并逐项对齐AuthorizationBinding中的grant_id、grant_revision、arm_generation与原命令run_binding。不能用另一个格式合法的grant或代次替换；原grant撤销、准备关闭或控制变化后，当前视图失效即拒绝。`ContinuationAuthorization`是这些本地原件的具名投影，其action_id和capability_version来自原命令，不表示action_set_ref的授权内容已经验证。该关联复用[继续运行绑定](continuation_binding_model.py)，不另造grant。
+
 撤销依赖从已核对的绑定字段推导，不接受调用者提供可任意删减的依赖列表。principal/session/grant/extension比较实际绑定revision与所有已见下界；相等只表示未被该下界拒绝，仍需其余资格。credential无条件拒绝匹配ID；trust按issuer/epoch查询，不能换target_id规避。乱序较低事件可以保存审计，但不能降低实际拒绝下界。同event_id同正文幂等，不同正文拒绝。事件不可修改或删除。
 
-最终授权source_ref是明确命名的`authorization-cut/1`内部派生描述的摘要，覆盖use_ref、scope、事务、选取/封存tick及实际匹配的撤销事件Ref；不是原AuthorizationSnapshot的摘要。`planned`在同一事务重新读取该切点并核对授权投影，再调用[编码原件封存检查](FINAL_ENCODING_SOURCE.md)。较高下界直接拒绝；相等下界仍改变切点，旧投影必须重选。不得把这个附属写集独立提交视为完整T2成功。
+最终授权source_ref是明确命名的`authorization-cut/1`内部派生描述的摘要，覆盖use_ref、scope、事务、选取/封存tick、实际authority_response_ref、continuation_ref（manual为null）及实际匹配的撤销事件Ref；不是原AuthorizationSnapshot的摘要。`planned`在同一事务重新读取该切点并核对授权投影，再调用[编码原件封存检查](FINAL_ENCODING_SOURCE.md)。较高下界直接拒绝；相等下界仍改变切点，旧投影必须重选。不得把这个附属写集独立提交视为完整T2成功。
 
 查询每种依赖最多读取4097条，超过4096则保护拒绝，不截断成成功；后续生产须实现单调压缩与保留证明，不能无界扫描或删除仍被引用的拒绝依据。UPDATE零行用于在实际读取前取得writer锁；陈旧DEFERRED快照升级失败属于事务失败，调用者必须整事务回滚。
 
@@ -26,12 +32,14 @@
 2. 封存事务先取writer锁：另一个撤销writer不能插入该事务中途；释放锁后撤销可提交，下一次规划必须重读。该顺序不代替提交后的AUTH_FENCE、入流前复核和worker守卫。
 3. 响应迟到、到期等号、主体/epoch/audience错配、权限撤回、正文重复键或摘要不符：拒绝，不延长缓存、不重签或重发设备动作。
 4. 同操作重复/乱序：同事件不重复插入；较低下界不恢复权限；其他主体或issuer/epoch的撤销不误伤当前绑定。
+5. 相同主体换凭据、快照换challenge、授权使用重新填写发送/接收tick：必须与已存原响应一致，否则拒绝。签发新响应也不自动证明原RequestContext允许继承凭据链。
+6. grant格式正确但ID、修订或arm_generation与已受理命令不符：拒绝，不能只根据本地不存在匹配撤销就认定有效。
 
-检查覆盖真实244表普通自动化编码来源和19条最终附属写集规划，并使用临时文件SQLite双连接验证writer顺序；manual会话场景只验证局部授权存储，尚未声明完整manual编码闭环。四个最终签发阻断保留，ci_issue和fa_seal均为零。原有引用模型不因新增候选自动获得发送资格。
+检查覆盖真实246表普通自动化编码来源和19条最终附属写集规划，并使用临时文件SQLite双连接验证writer顺序；manual会话场景只验证局部授权存储，尚未声明完整manual编码闭环。Schema、来源正文与转交原件均严格检查规范JSON和摘要；SQL不代替这些检查。四个最终签发阻断保留，ci_issue和fa_seal均为零。原有引用模型不因新增候选自动获得发送资格。
 
 ## 剩余冻结与接通事项
 
-authority/scope/validity取证Ref仍未解析，真实凭据、配对、scope匹配、认证时钟和grant/arm批准尚未由此候选证明；授权来源保留为合成测试输入。事件入口的管理权限、固定撤销目标集与逐出口ACK也未实现，本地下界存在不代表全服务撤销applied。下一步须把这些来源绑定到现有身份与时间权威，并与完整控制、资源、Guard、预算及deny来源一起组成完整T2，随后验证入流前复核和AUTH_FENCE。阶段0仍未关闭，业务实现仍未开始。
+authority_evidence_ref已解析到持久响应与challenge，但上游channel_evidence_ref、scope_evidence_ref及validity_evidence_ref仍未解析。真实凭据/配对、原RequestContext的凭据链归属、权限与动作范围的交集、认证时钟及grant/arm批准真实性仍未由此候选证明；认证传输来源保留为合成测试输入。事件入口的管理权限、固定撤销目标集与逐出口ACK也未实现，本地下界存在不代表全服务撤销applied。下一步须把这些来源绑定到现有身份与时间权威，并与完整控制、资源、Guard、预算及deny来源一起组成完整T2，随后验证入流前复核和AUTH_FENCE。阶段0仍未关闭，业务实现仍未开始。
 
 ```powershell
 docs/contracts/.venv/Scripts/python.exe docs/contracts/c04-lifecycle/build_final_authorization.py --check

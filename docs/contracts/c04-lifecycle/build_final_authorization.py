@@ -29,8 +29,18 @@ def build():
         not_before_tick_ns=ref('Counter'),authorization_before_tick_ns=ref('Counter'),
         authority_evidence_ref=ref('Ref'),scope_evidence_ref=ref('Ref'),validity_evidence_ref=ref('Ref'),use_digest=ref('Digest'))
     d['FloorEvent']=obj(event_id=ref('Id'),scope=ref('Scope'),selector=ref('RevocationSelector'),operation_ref=ref('Ref'),event_digest=ref('Digest'))
+    d['ScopedRef']=obj(scope=ref('Scope'),**copy.deepcopy(d['Ref']['properties']))
+    d['AuthorizationChallenge']=obj(format_version={'const':'authorization-challenge/1'},challenge_id=dict(type='string',minLength=64,maxLength=64,pattern='^[0-9a-f]{64}(?![\\s\\S])'),revision={'const':'1'},
+        binding=ref('Binding'),requester=ref('Principal'),credential_id=ref('Id'),audience=ref('Id'),scope_digest=ref('Digest'),
+        requested_permission={'const':'device.command'},sent_tick_ns=ref('Counter'),challenge_digest=ref('Digest'))
+    d['AuthorityResponse']=obj(format_version={'const':'authorization-response/1'},response_id=ref('Id'),revision={'const':'1'},scope=ref('Scope'),
+        challenge_ref=ref('Ref'),snapshot=ref('AuthorizationSnapshot'),received_tick_ns=ref('Counter'),channel_evidence_ref=ref('Ref'),response_digest=ref('Digest'))
+    d['ContinuationAuthorization']=obj(format_version={'const':'continuation-authorization/1'},scope=ref('Scope'),command_ref=ref('Ref'),
+        request_ref=ref('Ref'),device_id=ref('Id'),action_id=ref('Id'),capability_version=ref('Id'),transfer_ref=ref('ScopedRef'),
+        grant_ref=ref('ScopedRef'),arm_generation=ref('Counter'),target_digest=ref('Digest'))
     d['AuthorizationCut']=obj(format_version={'const':'authorization-cut/1'},scope=ref('Scope'),use_ref=ref('Ref'),transaction_id=ref('Id'),
-        selected_tick_ns=ref('Counter'),sealed_tick_ns=ref('Counter'),floor_refs=dict(type='array',maxItems=24576,items=ref('Ref')))
+        selected_tick_ns=ref('Counter'),sealed_tick_ns=ref('Counter'),authority_response_ref=ref('Ref'),
+        continuation_ref=A.optional(ref('Ref')),floor_refs=dict(type='array',maxItems=24576,items=ref('Ref')))
     return {'$schema':'https://json-schema.org/draft/2020-12/schema','$id':'https://leafseamer.invalid/design/c04-lifecycle/final-authorization.schema.json',
         'x-approved':False,'x-runtime-approved':False,'not':{},'$defs':d}
 

@@ -86,3 +86,12 @@ CREATE TRIGGER authorization_clock_no_update BEFORE UPDATE ON authorization_cloc
 CREATE TRIGGER authorization_clock_no_delete BEFORE DELETE ON authorization_clock_record BEGIN SELECT RAISE(ABORT,'immutable authorization clock'); END;
 CREATE TRIGGER authorization_validity_no_update BEFORE UPDATE ON authorization_validity BEGIN SELECT RAISE(ABORT,'immutable authorization validity'); END;
 CREATE TRIGGER authorization_validity_no_delete BEFORE DELETE ON authorization_validity BEGIN SELECT RAISE(ABORT,'immutable authorization validity'); END;
+-- 每个Controller认证时钟域只保留首次故障，换设备或worker不能清锁。
+CREATE TABLE authorization_clock_fault (
+ domain_digest TEXT PRIMARY KEY NOT NULL,
+ fault_id TEXT UNIQUE NOT NULL,
+ digest TEXT NOT NULL,
+ body BLOB NOT NULL CHECK(length(body)>0 AND length(body)<=16777216)
+) STRICT;
+CREATE TRIGGER authorization_clock_fault_no_update BEFORE UPDATE ON authorization_clock_fault BEGIN SELECT RAISE(ABORT,'immutable authentication clock fault'); END;
+CREATE TRIGGER authorization_clock_fault_no_delete BEFORE DELETE ON authorization_clock_fault BEGIN SELECT RAISE(ABORT,'immutable authentication clock fault'); END;

@@ -2,6 +2,7 @@
 import re
 from datetime import datetime,timezone
 import final_authorization_model as M
+import authorization_clock_ingress_model as I
 N=1000000000
 MAX=2**64-1
 
@@ -42,6 +43,7 @@ def store_clock(db,sample):
     """由采集端登记，保护由本地历史推导；相同运行绑定没有自动解锁入口。"""
     M.writer(db);M.validate('AuthenticationClockSample',sample)
     M.need(sample['binding']['scope']==M.E.A.scope(db),'authorization_clock_scope')
+    M.need(I.fault(db,sample['binding']) is None,'authorization_clock_fault_latched')
     old=db.execute('SELECT * FROM authorization_clock_record WHERE record_id=?',(sample['sample_id'],)).fetchone()
     if old:
         value=checked_clock(old);M.need(value['sample']==sample,'authorization_clock_identity');return cref(value)
@@ -82,6 +84,7 @@ def window(record,not_before,expires):
     return lower,min(upper,int(s['valid_before_tick_ns']))
 
 def resolve(db,u,seal):
+    M.need(I.fault(db,u['binding']) is None,'authorization_clock_fault_latched')
     ref_value=u['validity_evidence_ref']
     row=db.execute('SELECT digest,body FROM authorization_validity WHERE validity_id=?',(ref_value['id'],)).fetchone()
     M.need(row is not None,'authorization_validity_missing');v=M.decode('AuthorizationValidity',row[1],row[0],'validity_digest')

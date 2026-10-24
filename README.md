@@ -48,7 +48,7 @@ LeafSeamer 是直播软硬件控制与自动化项目。各组件独立仓库、
 - [旧版交接记录](docs/LEGACY_HANDOVER.md)
 - [开发记录](DEVELOPMENT_MEMO.md)
 
-新版运行库采用 SQLite，支持指定 NTP 时间源，GUI 脱离 NodeCG；播出图文通过可选 NodeCG 桥接提供。以上为设计约束，尚未实现。五仓均使用 `rebirth` 作为实施准备分支。
+新版运行库采用 SQLite，支持指定 NTP 时间源，GUI 脱离 NodeCG；播出图文通过可选 NodeCG 桥接提供。以上为设计约束，尚未实现。五仓的 `rebirth` 已通过 merge commit 合入 `main`，后续在 `main` 推进设计与实施。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

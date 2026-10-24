@@ -57,6 +57,14 @@ def build():
     d['AuthenticationClockRecord']=obj(format_version={'const':'authentication-clock-record/1'},record_id=ref('Id'),revision={'const':'1'},
         sequence=ref('Counter'),sample=ref('AuthenticationClockSample'),parent_ref=A.optional(ref('Ref')),
         effective_lower_ns=ref('Counter'),effective_upper_ns=ref('Counter'),protected=dict(type='boolean'),record_digest=ref('Digest'))
+    d['AuthenticationClockDomain']=obj(scope=ref('Scope'),controller_boot_id=ref('Id'),clock_domain_id=copy.deepcopy(d['Binding']['properties']['clock_domain_id']))
+    d['AuthenticationClockFault']=obj(format_version={'const':'authentication-clock-fault/1'},fault_id=ref('Id'),revision={'const':'1'},domain=ref('AuthenticationClockDomain'),binding=ref('Binding'),
+        reason={'enum':['invalid_sample','acquisition_failed','clock_unusable']},input_digest=A.optional(ref('Digest')),input_bytes=A.optional(ref('Counter')),fault_digest=ref('Digest'))
+    d['ClockIngestResult']=obj(format_version={'const':'clock-ingest-result/1'},binding=ref('Binding'),outcome={'enum':['stored','protected']},
+        record_ref=A.optional(ref('Ref')),fault_ref=A.optional(ref('Ref')))
+    d['ClockIngestResult']['allOf']=[{'if':{'properties':{'outcome':{'const':'stored'}}},
+        'then':{'properties':{'record_ref':ref('Ref'),'fault_ref':{'type':'null'}}},
+        'else':{'properties':{'fault_ref':ref('Ref')}}}]
     d['ValidityComponent']=obj(kind={'enum':['credential','session','grant']},target_id=ref('Id'),source_ref=ref('Ref'),
         validity=copy.deepcopy(d['AuthorizationSnapshot']['properties']['validity']))
     d['AuthorizationValidity']=obj(format_version={'const':'authorization-validity/1'},validity_id=ref('Id'),revision={'const':'1'},

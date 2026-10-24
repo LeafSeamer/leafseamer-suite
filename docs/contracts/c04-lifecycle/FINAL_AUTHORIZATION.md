@@ -10,7 +10,7 @@
 
 `AuthorizationUse`完整保存既有AuthorizationSnapshot与AuthorizationBinding，并绑定完整ExecutionIdentity、出口/运行域、challenge发送tick、响应接收tick、本地新鲜度上限、授权生效/截止tick，以及权威、对象范围和有效期取证Ref。使用`use_digest`覆盖全部正文，存为严格JCS字节。引用全部采用精确ID、revision和digest。授权有效期的UTC判定仍由认证时钟取证负责，此记录不能自证那些Ref的真实性。
 
-`authorization_use`是Controller内部的不可变使用证据；`authorization_floor_event`是同一库内已接收撤销的不可变事件；`authorization_challenge`与`authorization_response`保存首次查询和唯一响应；`authorization_context`与`authorization_command_scope`保存初次受理所依赖的凭据归属及动作范围；`authorization_clock_record`与`authorization_validity`保存认证时钟日志和有效期原件。八表附加在242表候选后用于实验，不新增签发方或独立授权数据库，不作为生产迁移发布。新鲜度截止取`challenge_sent + min(snapshot.fresh_for_ms, local_limit_ms)`，再与上游授权截止取最小值，禁止从响应接收时刻刷新TTL。所有tick保持十进制字符串。
+`authorization_use`是Controller内部的不可变使用证据；`authorization_floor_event`是同一库内已接收撤销的不可变事件；`authorization_challenge`与`authorization_response`保存首次查询和唯一响应；`authorization_context`与`authorization_command_scope`保存初次受理所依赖的凭据归属及动作范围；`authorization_clock_record`与`authorization_validity`保存认证时钟日志和有效期原件；`authorization_clock_fault`保存认证采集入口的首个域故障。九表附加在242表候选后用于实验，不新增签发方或独立授权数据库，不作为生产迁移发布。新鲜度截止取`challenge_sent + min(snapshot.fresh_for_ms, local_limit_ms)`，再与上游授权截止取最小值，禁止从响应接收时刻刷新TTL。所有tick保持十进制字符串。
 
 `AuthorizationChallenge`固定完整出口/运行域、requester、credential、audience、scope_digest、device.command用途和首次发送tick；challenge_id为64位小写hex，未来发送端必须用256位CSPRNG，不能从用户输入或业务ID派生。本地先持久登记再发送。同ID同正文重试只读原记录，同ID重填时间拒绝。测试使用确定的合成nonce，不证明随机数生成器运行。
 
@@ -43,6 +43,16 @@
 - 最终读取同时验证原采样在响应接收和封存时的UTC区间，以及当前最新采样在封存时的区间：下界须不小于nbf，上界须严格小于exp。原采样映射下界为`m+max(0,ceil((nbf-L)N/(N-r)))`；严格上界为`m+floor((exp-1-U)N/(N+r))+1`。最后与原/当前采样截止、首次challenge的新鲜度截止及原使用记录的更短截止取交集。自报截止只能收窄，不能替代这些来源；任何负值、空区间、溢出或到期等号均拒绝。
 - `AuthorizationTimeCut`保存validity_ref、原/当前clock_ref和最终窗口，进入授权切点摘要。新合法采样也会使旧最终投影失配，需要在当前事务重新选取；不能事后覆写已封存证据。当前采样不得晚于选取tick；选取之后出现新采样须以新切点重新选取，不能把未来原件填入旧选择。写闸、Guard和其他最终门控仍须共同取交集，不允许只提交授权附属写集。
 
+认证采集失败边界由[入口事务模型](authorization_clock_ingress_model.py)描述，[入口检查器](check_authentication_clock_ingress.py)实际验证本地SQLite路径：
+
+- `ingest(db, binding, body)`只供已认证的本地采集入口调用。`binding`必须来自安装并验证过的入口，不能从解析失败的body推导；该入口来源真实性仍待运行时接线。body是有界严格JCS字节，`None`表示采集失败。它拥有整个`BEGIN IMMEDIATE`事务；不允许借外部事务后提前返回成功，也不擅自回滚调用者已有事务。
+- `AuthenticationClockFault`保存首次故障的原入口绑定，以及独立的`AuthenticationClockDomain={scope,controller_boot_id,clock_domain_id}`。同域共享一条不可变故障，换设备、worker、IPC会话或descriptor不能清锁。跨Controller启动/时钟域不混用，未来恢复必须证明新受监督运行域真实，不能允许客户端自填新ID。
+- 原因限定为`invalid_sample`、`acquisition_failed`、`clock_unusable`。不保存坏正文、异常消息或伪造的可信时间；有界原始字节仅保存SHA-256和长度，超16 MiB仅保存长度，非字节/采集失败二者均为null。相同域只保留首因，不随重复故障扩成无界队列，后续诊断另走非授权性日志。
+- 入口用savepoint隔离采样解析与保存。格式错误、重复JSON键、非规范编码、错入口绑定、范围溢出或同ID变内容，回滚该子步骤后，在同一外层事务保存域故障。合法格式但保护状态锁存时，同时保存采样原件与域故障。最终授权解析及低层采样保存都查询域故障；存在即拒绝，正常采样不能解除。
+- `ClockIngestResult`只有`stored`与`protected`，前者必有record_ref且fault_ref为null，后者必有持久fault_ref，允许附带同事务保存的异常采样Ref。必须在commit成功返回后才能返回此结果。`stored`仅表示原件保存成功，重复旧采样也可能返回其历史Ref，不授予发送或当前认证资格。
+- SQLite锁竞争、写入错误、提交前失败、提交后回执丢失、配置/程序错误及回滚失败均抛`ClockIngressStop`，不能报告`protected`、猜测已经回滚或沿用旧可信状态。集成端必须立即阻止该域后续写入，启动既定保护/终止出口路径，并在新可信运行域重新认证；读取数据库只能补齐故障事实，不能自动解除停止要求。本模型不执行宿主终止，报告`physical_exit_termination_verified=false`。数据库无法提交时，单靠数据库读取器不能证明出口已安全停止。
+- 并发顺序由同库writer决定：已持锁的最终事务可能先完成，故障提交后所有新事务必须看到保护。采集端发现故障到成功落库之间，以及已提交许可到入流之间，仍须依赖运行时保护与AUTH_FENCE；本文不把SQLite顺序等同于物理撤回。
+
 1. 撤销先提交：后续最终规划读取已见下界，拒绝旧授权；原packet、历史授权和在途事实保留。
 2. 封存事务先取writer锁：另一个撤销writer不能插入该事务中途；释放锁后撤销可提交，下一次规划必须重读。该顺序不代替提交后的AUTH_FENCE、入流前复核和worker守卫。
 3. 响应迟到、到期等号、主体/epoch/audience错配、权限撤回、正文重复键或摘要不符：拒绝，不延长缓存、不重签或重发设备动作。
@@ -51,11 +61,11 @@
 6. grant格式正确但ID、修订或arm_generation与已受理命令不符：拒绝，不能只根据本地不存在匹配撤销就认定有效。
 7. context未登记、操作不在交集、目标超出原scope：在新命令受理前由同库约束拒绝；最终规划还须检查当前scope收窄、组合拆分及能力版本变化，保留原请求与在途事实。
 
-检查覆盖实际250表候选普通自动化编码来源和19条最终附属写集规划，并使用临时文件SQLite双连接验证writer顺序；fixture在首次decide前登记合成scope/context，验证新受理约束实际运行。时窗检查逐tick枚举核对整数舍入，覆盖大于2^53的相邻UTC纳秒、缺失/错误期限依赖、前跳/回拨锁存及正常采样不能解锁、NTP profile混用拒绝、当前切点重选和追加事务回滚。manual会话场景只验证局部授权存储，context/动作scope和完整manual编码闭环尚未接通。Schema、来源正文与转交原件均严格检查规范JSON和摘要；SQL不代替这些检查。四个最终签发阻断保留，ci_issue和fa_seal均为零。原有引用模型不因新增候选自动获得发送资格。
+检查覆盖实际251表候选普通自动化编码来源和19条最终附属写集规划，并使用临时文件SQLite双连接验证撤销及采集故障的writer顺序；fixture在首次decide前登记合成scope/context，验证新受理约束实际运行。时窗检查逐tick枚举核对整数舍入，覆盖大于2^53的相邻UTC纳秒、缺失/错误期限依赖、前跳/回拨锁存及正常采样不能解锁、NTP profile混用拒绝、当前切点重选和追加事务回滚。入口检查覆盖非法输入、同域换绑定、首因保留、写入失败、提交不确定和嵌套事务拒绝。manual会话场景只验证局部授权存储，context/动作scope和完整manual编码闭环尚未接通。Schema、来源正文与转交原件均严格检查规范JSON和摘要；SQL不代替这些检查。四个最终签发阻断保留，ci_issue和fa_seal均为零。原有引用模型不因新增候选自动获得发送资格。
 
 ## 剩余冻结与接通事项
 
-authority_evidence_ref已解析到持久响应与challenge，自动化scope_evidence_ref已解析到实际原/当前scope及context；validity_evidence_ref已解析到本地期限和认证时钟日志。上游channel_evidence_ref、context的issuance_evidence_ref、期限component的source_ref以及时钟policy_ref/acquisition_ref仍未解析。真实凭据/配对、context签发认证与容量/期限、上游scope与action_set/参数规则的真实性、系统时间采集/回拨检测及grant/arm批准真实性仍未由此候选证明；认证传输和采集来源保留为合成测试输入。格式非法或采集异常尚不能由运行时自动转化成保护事件；未来采集器必须保证该失败路径，不能仅丢弃坏样本后沿用旧可信状态。当前保守日志不提供长期误差收敛、清锁或压缩删除策略。
+authority_evidence_ref已解析到持久响应与challenge，自动化scope_evidence_ref已解析到实际原/当前scope及context；validity_evidence_ref已解析到本地期限和认证时钟日志。上游channel_evidence_ref、context的issuance_evidence_ref、期限component的source_ref以及时钟policy_ref/acquisition_ref仍未解析。真实凭据/配对、context签发认证与容量/期限、上游scope与action_set/参数规则的真实性、系统时间采集/回拨检测及grant/arm批准真实性仍未由此候选证明；认证传输和采集来源保留为合成测试输入。非法采样的本地事务保护已验证，实际采集器调用、故障即停出口和AUTH_FENCE尚待运行时接线，不得把候选异常类当作物理停止证明。当前保守日志不提供长期误差收敛、清锁或压缩删除策略。
 
 报告分别列出本地stored绑定、整数推导、保护锁存验证为true和完整真实性验证为false，不能互相替代。事件入口的管理权限、固定撤销目标集与逐出口ACK也未实现，本地下界存在不代表全服务撤销applied。下一步须把这些来源绑定到现有身份与认证时间权威，并与完整控制、资源、Guard、预算及deny来源一起组成完整T2，随后验证入流前复核和AUTH_FENCE。阶段0仍未关闭，业务实现仍未开始。
 

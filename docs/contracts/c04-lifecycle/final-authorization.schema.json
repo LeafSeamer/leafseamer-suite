@@ -1301,6 +1301,162 @@
       ],
       "additionalProperties": false
     },
+    "AuthenticationClockDomain": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "clock_domain_id"
+      ],
+      "additionalProperties": false
+    },
+    "AuthenticationClockFault": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authentication-clock-fault/1"
+        },
+        "fault_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "domain": {
+          "$ref": "#/$defs/AuthenticationClockDomain"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "reason": {
+          "enum": [
+            "invalid_sample",
+            "acquisition_failed",
+            "clock_unusable"
+          ]
+        },
+        "input_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input_bytes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fault_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "fault_id",
+        "revision",
+        "domain",
+        "binding",
+        "reason",
+        "input_digest",
+        "input_bytes",
+        "fault_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ClockIngestResult": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "clock-ingest-result/1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "outcome": {
+          "enum": [
+            "stored",
+            "protected"
+          ]
+        },
+        "record_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fault_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "format_version",
+        "binding",
+        "outcome",
+        "record_ref",
+        "fault_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "stored"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "record_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "fault_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "fault_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
     "ValidityComponent": {
       "type": "object",
       "properties": {

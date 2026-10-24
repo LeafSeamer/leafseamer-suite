@@ -38,9 +38,21 @@ def build():
     d['ContinuationAuthorization']=obj(format_version={'const':'continuation-authorization/1'},scope=ref('Scope'),command_ref=ref('Ref'),
         request_ref=ref('Ref'),device_id=ref('Id'),action_id=ref('Id'),capability_version=ref('Id'),transfer_ref=ref('ScopedRef'),
         grant_ref=ref('ScopedRef'),arm_generation=ref('Counter'),target_digest=ref('Digest'))
+    d['CommandTarget']=obj(device_id=ref('Id'),action_id=ref('Id'),capability_version=ref('Id'))
+    d['CommandScope']=obj(format_version={'const':'command-scope/1'},scope=ref('Scope'),requester=ref('Principal'),credential_id=ref('Id'),
+        permissions=dict(type='array',items=ref('Id'),maxItems=256,uniqueItems=True),
+        targets=dict(type='array',items=ref('CommandTarget'),maxItems=4096,uniqueItems=True))
+    d['RequestContextBinding']=obj(format_version={'const':'request-context-binding/1'},context_id=ref('Id'),revision={'const':'1'},scope=ref('Scope'),
+        namespace_id=ref('Id'),request_epoch=ref('Id'),requester=ref('Principal'),credential_id=ref('Id'),session_id=A.optional(ref('Id')),
+        operations=dict(type='array',items=ref('Id'),minItems=1,maxItems=32,uniqueItems=True),
+        original_scope_ref=ref('Ref'),issuance_evidence_ref=ref('Ref'),context_digest=ref('Digest'))
+    d['RequestContextBinding']['allOf']=[{'if':{'properties':{'requester':{'properties':{'kind':{'const':'human'}}}}},
+        'then':{'properties':{'session_id':ref('Id')}},'else':{'properties':{'session_id':{'type':'null'}}}}]
+    d['CommandScopeProof']=obj(format_version={'const':'command-scope-proof/1'},scope=ref('Scope'),command_ref=ref('Ref'),request_ref=ref('Ref'),
+        context_ref=ref('Ref'),original_scope_ref=ref('Ref'),current_scope_ref=ref('Ref'),authority_response_ref=ref('Ref'),target=ref('CommandTarget'))
     d['AuthorizationCut']=obj(format_version={'const':'authorization-cut/1'},scope=ref('Scope'),use_ref=ref('Ref'),transaction_id=ref('Id'),
         selected_tick_ns=ref('Counter'),sealed_tick_ns=ref('Counter'),authority_response_ref=ref('Ref'),
-        continuation_ref=A.optional(ref('Ref')),floor_refs=dict(type='array',maxItems=24576,items=ref('Ref')))
+        continuation_ref=A.optional(ref('Ref')),scope_proof_ref=A.optional(ref('Ref')),floor_refs=dict(type='array',maxItems=24576,items=ref('Ref')))
     return {'$schema':'https://json-schema.org/draft/2020-12/schema','$id':'https://leafseamer.invalid/design/c04-lifecycle/final-authorization.schema.json',
         'x-approved':False,'x-runtime-approved':False,'not':{},'$defs':d}
 

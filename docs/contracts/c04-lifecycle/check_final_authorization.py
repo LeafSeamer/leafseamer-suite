@@ -1,11 +1,30 @@
 """授权撤销与最终编码来源的局部SQLite实验；身份取证均为合成。"""
 import argparse,copy,hashlib,json,sqlite3,tempfile
 from pathlib import Path
+from unittest.mock import patch
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
 import check_final_encoding_source as T
 import final_authorization_model as M
 G=M.G;HERE=G.HERE;ROOT=T.ROOT;clone=copy.deepcopy
+
+def fixture():
+    """在首次受理前登记合成scope/context，旧库不允许事后补写归属。"""
+    original=T.T.V.M.decide
+    def before(db,identity,body,auth,*args,**kwargs):
+        db.executescript((HERE/'final-authorization.sql').read_text('utf-8'))
+        key=identity['key'];ns=db.execute('SELECT namespace_id FROM ca_namespace WHERE issuer_id=? AND issuer_epoch=? AND principal_id=? AND request_epoch=?',tuple(key[k] for k in ('issuer_id','issuer_epoch','principal_id','request_epoch'))).fetchone()[0]
+        who=dict(kind=auth['principal_kind'],**{k:key[k] for k in ('issuer_id','issuer_epoch','principal_id')})
+        scope=dict(format_version='command-scope/1',scope=key['target_scope'],requester=who,credential_id='credential',permissions=['device.command'],
+            targets=[{k:body[k] for k in ('device_id','action_id','capability_version')}])
+        def register():
+            scope_ref=M.store_scope(db,scope)
+            context=M.sealed(dict(format_version='request-context-binding/1',context_id=body['context_id'],revision='1',scope=key['target_scope'],namespace_id=ns,request_epoch=key['request_epoch'],
+                requester=who,credential_id='credential',session_id=None,operations=['createCommand'],original_scope_ref=scope_ref,issuance_evidence_ref=T.V.ref('fixture.context.issuance')),'context_digest')
+            M.store_context(db,context)
+        tx(db,register)
+        return original(db,identity,body,auth,*args,**kwargs)
+    with patch.object(T.T.V.M,'decide',side_effect=before):return T.fixture()
 
 def use(v,db=None):
     identity=clone(v['identity']);p=identity['requester'];manual=identity['origin']=='manual'
@@ -16,6 +35,7 @@ def use(v,db=None):
         row=db.execute('SELECT k.content_body FROM ca_request_key k JOIN ca_command_initial i USING(key_id) WHERE i.command_id=?',(identity['command_ref']['id'],)).fetchone()
         run=json.loads(row[0])['run_binding']
         a.update({k:run[k] for k in ('grant_id','grant_revision','arm_generation')})
+        context=json.loads(db.execute('SELECT body FROM authorization_context').fetchone()[0]);a['scope_digest']=context['original_scope_ref']['digest']
     s={k:x for k,x in a.items() if k in M.SCHEMA['$defs']['AuthorizationSnapshot']['properties']}
     s.update(snapshot_id='snapshot',issuer_revision='8',challenge_id='challenge',permissions=['device.command'],
         validity=dict(not_before='2026-01-01T00:00:00.000Z',expires_at='2026-01-01T01:00:00.000Z'),fresh_for_ms=1,state='active')
@@ -36,7 +56,9 @@ def capture(u):
     u['authority_evidence_ref']=M.reference(r,'response_id','response_digest');u.update(M.sealed(u,'use_digest'));return c,r
 
 def publish_use(db,u):
-    c,r=capture(u);M.store_challenge(db,c);M.store_response(db,r);M.store_use(db,u)
+    c,r=capture(u);M.store_challenge(db,c);M.store_response(db,r)
+    if u['identity']['origin']=='automation':u['scope_evidence_ref']=M.scope_proof_reference(M.scope_details(db,u)[3]);u.update(M.sealed(u,'use_digest'))
+    M.store_use(db,u)
 def floor(u,kind='principal',revision='5',eid='event',**changes):
     a=u['authorization_binding'];target={'principal':a['principal_id'],'credential':a['credential_id'],'session':a['session_id'],'grant':a['grant_id'],'trust':'trust.domain','extension':'extension'}[kind]
     s=dict(kind=kind,issuer_id=a['issuer_id'],issuer_epoch=a['issuer_epoch'],target_id=target,revision_floor=revision);s.update(changes)
@@ -66,15 +88,73 @@ def run():
     try:
         check('Schema生成字节一致',(HERE/'final-authorization.schema.json').read_bytes()==G.raw(G.build()))
         Draft202012Validator.check_schema(M.SCHEMA);check('根拒绝实例',not Draft202012Validator(M.SCHEMA).is_valid({}))
-        db,connections,cmd,auth,pid,provider,response=T.fixture();dbs.extend(connections)
+        db,connections,cmd,auth,pid,provider,response=fixture();dbs.extend(connections)
         T.E.O.execute(db,T.T.preview(db,lambda:T.E.receive(db,pid,response,provider)))
-        db.executescript((HERE/'final-authorization.sql').read_text('utf-8'))
         v,o,cut=T.T.preview(db,lambda:T.candidate(db,pid,provider));u=use(v,db)
         # 采样回执到达后才产生有效资格；此fixture接收tick为50，仍早于选取51。
         u=M.sealed(dict(u,received_tick_ns='50'),'use_digest')
         tx(db,lambda:publish_use(db,u));ur=use_ref(u);auth_projection=T.T.preview(db,lambda:M.read(db,ur,v));attach(v,o,auth_projection)
-        check('246表含真实编码原件及授权来源',len(T.T.V.SC.snapshot(db))==246)
+        check('248表含受理前上下文及最终授权来源',len(T.T.V.SC.snapshot(db))==248)
         check('普通自动化可规划19条附属封存写集',len(T.T.preview(db,lambda:M.planned(db,v,o,cut,pid,provider,ur)))==19)
+        context=json.loads(db.execute('SELECT body FROM authorization_context').fetchone()[0])
+        original_scope=T.T.preview(db,lambda:M.command_scope(db,context['original_scope_ref']))
+        proof=T.T.preview(db,lambda:M.scope_details(db,u)[3])
+        check('scope证明绑定实际上下文和请求',proof['context_ref']['id']==context['context_id'] and proof['request_ref']==u['identity']['source_ref'])
+        keyrow=M.E.one(db,'SELECT * FROM ca_request_key WHERE key_id=?',(u['identity']['source_ref']['id'],))
+        def new_request(c,context_id):
+            value=dict(keyrow);transport=json.loads(value['transport_body']);key=json.loads(value['request_key_body'])
+            transport.update(context_id=context_id,idempotency_key='new.request');key['idempotency_key']='new.request'
+            value.update(key_id='new.key',idempotency_key='new.request',transport_body=M.raw(transport),request_key_body=M.raw(key))
+            c.execute(*T.E.I('ca_request_key',**value))
+        c=fork(db)
+        reject('首次受理必须先有上下文',lambda:tx(c,lambda:new_request(c,'missing.context')),'request_context_not_registered')
+        for name,mutate in [
+            ('空动作范围',lambda s:s.update(targets=[])),
+            ('缺device.command权限',lambda s:s.update(permissions=[])),
+            ('仅另一动作',lambda s:s['targets'][0].update(action_id='other.action'))]:
+            c=fork(db);limited=clone(original_scope);mutate(limited)
+            ctx=clone(context);ctx['context_id']='limited.context'
+            def register():
+                ctx['original_scope_ref']=M.store_scope(c,limited);ctx.update(M.sealed(ctx,'context_digest'));M.store_context(c,ctx)
+            tx(c,register)
+            reject('初次受理不超出原始范围:'+name,lambda:tx(c,lambda:new_request(c,ctx['context_id'])),'request_context_scope_rejected')
+        c=fork(db);ctx=clone(context);ctx.update(context_id='read.only.context',operations=['lookupCommand']);ctx=M.sealed(ctx,'context_digest')
+        tx(c,lambda:M.store_context(c,ctx))
+        reject('上下文操作交集不能扩为createCommand',lambda:tx(c,lambda:new_request(c,ctx['context_id'])),'request_context_scope_rejected')
+        for name,mutate in [
+            ('移除目标',lambda s:s.update(targets=[])),
+            ('更换能力版本',lambda s:s['targets'][0].update(capability_version='other.version')),
+            ('组合拆开后不允许笛卡尔积',lambda s:s.update(targets=[dict(s['targets'][0],action_id='other.action'),dict(s['targets'][0],device_id='other.device')]))]:
+            c=fork(db);current=clone(original_scope);mutate(current);current['targets'].sort(key=lambda x:(x['device_id'],x['action_id'],x['capability_version']))
+            sr=tx(c,lambda:M.store_scope(c,current));bad=clone(u);bad['use_id']='narrowed'
+            for field in ('authorization_binding','snapshot'):bad[field]['scope_digest']=sr['digest']
+            tx(c,lambda:publish_use(c,bad))
+            reject('最终发送核对当前完整目标:'+name,lambda:T.T.preview(c,lambda:M.read(c,use_ref(bad),v)),'authorization_target_not_allowed')
+        c=fork(db);expanded=clone(original_scope);expanded['targets'].append(dict(expanded['targets'][0],device_id='other.device'))
+        sr=tx(c,lambda:M.store_scope(c,expanded));renewed=clone(u);renewed['use_id']='renewed'
+        for field in ('authorization_binding','snapshot'):renewed[field]['scope_digest']=sr['digest']
+        tx(c,lambda:publish_use(c,renewed));T.T.preview(c,lambda:M.read(c,use_ref(renewed),v));check('新范围增加目标不改变原上下文且原目标可用')
+        check('上下文原始scope不因刷新改写',json.loads(c.execute('SELECT body FROM authorization_context').fetchone()[0])==context)
+        c=fork(db);rotated=clone(original_scope);rotated['credential_id']='credential.rotated';sr=tx(c,lambda:M.store_scope(c,rotated))
+        bad=clone(u);bad['use_id']='rotated'
+        for field in ('authorization_binding','snapshot'):bad[field].update(credential_id='credential.rotated',scope_digest=sr['digest'])
+        tx(c,lambda:publish_use(c,bad))
+        reject('即使新challenge响应有效也不继承旧context凭据',lambda:T.T.preview(c,lambda:M.read(c,use_ref(bad),v)),'authorization_context_credential_chain')
+        c=fork(db);bad=clone(u);bad['use_id']='scope.ref.forged';bad['scope_evidence_ref']['digest']=M.F.digest('forged');bad=M.sealed(bad,'use_digest');tx(c,lambda:M.store_use(c,bad))
+        reject('scope证明必须是原件重建的完整引用',lambda:T.T.preview(c,lambda:M.read(c,use_ref(bad),v)),'authorization_scope_proof_ref')
+        for table in ('authorization_context','authorization_command_scope'):
+            reject('归属及范围不可事后删除:'+table,lambda table=table:tx(c,lambda:c.execute('DELETE FROM '+table)))
+        changed=M.sealed(dict(context,operations=['lookupCommand']),'context_digest')
+        reject('相同context不得更换操作集合',lambda:tx(c,lambda:M.store_context(c,changed)),'authorization_context_identity')
+        changed=clone(context);changed['requester']['issuer_epoch']='other';changed=M.sealed(changed,'context_digest')
+        reject('上下文不可跨主体世代',lambda:tx(c,lambda:M.store_context(c,changed)),'authorization_context_owner')
+        wrong=clone(original_scope);wrong['targets']=[clone(original_scope['targets'][0]),clone(original_scope['targets'][0])]
+        reject('动作scope不接受重复组合',lambda:tx(c,lambda:M.store_scope(c,wrong)))
+        wrong=clone(original_scope);wrong['permissions']=['device.command','auth.manage']
+        reject('权限集合须按规范排序',lambda:tx(c,lambda:M.store_scope(c,wrong)),'authorization_scope_permission_order')
+        legacy,old_connections,*_=T.fixture();dbs.extend(old_connections);legacy.executescript((HERE/'final-authorization.sql').read_text('utf-8'))
+        tx(legacy,lambda:M.store_scope(legacy,original_scope))
+        reject('旧命令不能事后补造上下文归属',lambda:tx(legacy,lambda:M.store_context(legacy,context)),'authorization_context_late_registration')
         check('授权使用的grant来自实际已受理请求',u['authorization_binding']['grant_id']=='transfer.grant' and u['authorization_binding']['grant_revision']=='1' and u['authorization_binding']['arm_generation']=='2')
         for key,value in (('grant_id','another.grant'),('grant_revision','2'),('arm_generation','3')):
             c=fork(db);bad=clone(u);bad['use_id']='bad.grant.'+key;bad['authorization_binding'][key]=value;bad=M.sealed(bad,'use_digest')
@@ -190,7 +270,7 @@ def run():
         # manual会话撤销独立于组织run；这里只读实际持久授权行，不声称manual完整编码已贯通。
         mv,mo,mc=T.V.fixture();mu=use(mv);mu=M.sealed(dict(mu,received_tick_ns='50'),'use_digest')
         manual=sqlite3.connect(':memory:',isolation_level=None);dbs.append(manual)
-        manual.executescript('CREATE TABLE controller_scope(singleton,authority_service_id,database_instance_id); INSERT INTO controller_scope VALUES(1,\'controller\',\'database\');'+(HERE/'final-authorization.sql').read_text('utf-8'))
+        manual.executescript('CREATE TABLE controller_scope(singleton,authority_service_id,database_instance_id); CREATE TABLE ca_namespace(namespace_id TEXT PRIMARY KEY); CREATE TABLE ca_request_key(transport_body BLOB,namespace_id TEXT); INSERT INTO controller_scope VALUES(1,\'controller\',\'database\');'+(HERE/'final-authorization.sql').read_text('utf-8'))
         tx(manual,lambda:publish_use(manual,mu));tx(manual,lambda:M.read(manual,use_ref(mu),mv));check('manual完整会话绑定可读取')
         tx(manual,lambda:M.install_floor(manual,floor(mu,'session')))
         reject('会话撤销阻断manual使用',lambda:tx(manual,lambda:M.read(manual,use_ref(mu),mv)),'authorization_revision_floor')
@@ -208,8 +288,9 @@ if __name__=='__main__':
     hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs()}
     if a.check_report:assert json.loads(target.read_bytes())['inputs']==hashes;print(json.dumps(dict(all_passed=True,matched_bindings=len(hashes))))
     else:
-        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=246,local_file_two_writer_order_verified=True,
+        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=248,local_file_two_writer_order_verified=True,
             stored_challenge_response_binding_verified=True,stored_continuation_grant_binding_verified=True,
+            stored_request_context_binding_verified=True,stored_command_scope_intersection_verified=True,
             authority_authenticity_verified=False,request_context_credential_chain_verified=False,scope_evidence_verified=False,utc_validity_evidence_verified=False,full_final_issue_executed=False,
             runtime_tests_executed=0,device_tests_executed=0,disk_crash_tests_executed=0,checks=checks,inputs=hashes)
         if a.report:target.write_bytes(M.raw(report))

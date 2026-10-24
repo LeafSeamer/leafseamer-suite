@@ -27,6 +27,69 @@ def writer(db):
 
 def reference(v,id_key,digest_key):return E.ref(v[id_key],v['revision'],v[digest_key])
 
+def scope_reference(value):
+    digest=E.digest(value);return E.ref('command_scope_'+digest[7:],1,digest)
+
+def validate_scope(value):
+    validate('CommandScope',value)
+    need(value['permissions']==sorted(value['permissions']),'authorization_scope_permission_order')
+    need(value['targets']==sorted(value['targets'],key=lambda x:(x['device_id'],x['action_id'],x['capability_version'])),'authorization_scope_target_order')
+
+def store_scope(db,value):
+    writer(db);validate_scope(value);need(value['scope']==E.A.scope(db),'authorization_scope_authority')
+    ref_value=scope_reference(value)
+    old=db.execute('SELECT body FROM authorization_command_scope WHERE digest=?',(ref_value['digest'],)).fetchone()
+    if old:need(old[0]==raw(value),'authorization_scope_identity');return ref_value
+    db.execute('INSERT INTO authorization_command_scope VALUES(?,?,?)',(ref_value['id'],ref_value['digest'],raw(value)));return ref_value
+
+def command_scope(db,ref_value):
+    validate('Ref',ref_value)
+    row=db.execute('SELECT scope_id,digest,body FROM authorization_command_scope WHERE scope_id=?',(ref_value['id'],)).fetchone();need(row is not None,'authorization_scope_missing')
+    value=document(row[2]);validate_scope(value)
+    need(scope_reference(value)==ref_value and row[0]==ref_value['id'] and row[1]==ref_value['digest'],'authorization_scope_digest');return value
+
+def store_context(db,value):
+    writer(db);validate('RequestContextBinding',value);need(sealed(value,'context_digest')==value,'authorization_context_digest')
+    need(value['scope']==E.A.scope(db),'authorization_context_scope')
+    n=E.one(db,'SELECT * FROM ca_namespace WHERE namespace_id=?',(value['namespace_id'],))
+    need(all(value['requester'][key]==n[key] for key in ('issuer_id','issuer_epoch','principal_id')) and value['request_epoch']==n['request_epoch'],'authorization_context_owner')
+    original=command_scope(db,value['original_scope_ref'])
+    need(original['scope']==value['scope'] and original['requester']==value['requester'] and original['credential_id']==value['credential_id'],'authorization_context_original_scope')
+    old=db.execute('SELECT body FROM authorization_context WHERE context_id=?',(value['context_id'],)).fetchone()
+    if old:need(old[0]==raw(value),'authorization_context_identity');return
+    need(not db.execute('SELECT 1 FROM ca_request_key WHERE namespace_id=? AND json_extract(transport_body,\'$.context_id\')=?',(value['namespace_id'],value['context_id'])).fetchone(),'authorization_context_late_registration')
+    db.execute('INSERT INTO authorization_context VALUES(?,?,?,?)',(value['context_id'],value['namespace_id'],value['context_digest'],raw(value)))
+
+def scope_details(db,u):
+    """查原并形成具名描述；是否允许目标由scope_proof另行判断。"""
+    identity=u['identity'];cid=identity['command_ref']['id']
+    request=E.one(db,'SELECT k.* FROM ca_request_key k JOIN ca_command_initial i USING(key_id) WHERE i.command_id=?',(cid,))
+    transport=document(request['transport_body']);content=document(request['content_body'])
+    row=db.execute('SELECT namespace_id,digest,body FROM authorization_context WHERE context_id=?',(transport['context_id'],)).fetchone();need(row is not None,'authorization_context_missing')
+    context=decode('RequestContextBinding',row[2],row[1],'context_digest')
+    need(context['context_id']==transport['context_id'] and context['namespace_id']==row[0]==request['namespace_id'],'authorization_context_columns')
+    current_row=db.execute('SELECT scope_id,digest FROM authorization_command_scope WHERE digest=?',(u['snapshot']['scope_digest'],)).fetchone();need(current_row is not None,'authorization_current_scope_missing')
+    current_ref=E.ref(current_row[0],1,current_row[1]);original=command_scope(db,context['original_scope_ref']);current=command_scope(db,current_ref)
+    proof=dict(format_version='command-scope-proof/1',scope=E.A.scope(db),command_ref=identity['command_ref'],request_ref=identity['source_ref'],
+        context_ref=reference(context,'context_id','context_digest'),original_scope_ref=context['original_scope_ref'],current_scope_ref=current_ref,
+        authority_response_ref=u['authority_evidence_ref'],target={key:content[key] for key in ('device_id','action_id','capability_version')})
+    validate('CommandScopeProof',proof)
+    return context,original,current,proof,document(request['request_key_body'])
+
+def scope_proof_reference(proof):return E.ref('scope_proof_'+E.digest(proof)[7:],1,E.digest(proof))
+
+def scope_proof(db,u):
+    context,original,current,proof,key=scope_details(db,u);a=u['authorization_binding'];s=u['snapshot']
+    need(context['scope']==u['binding']['scope']==key['target_scope'] and context['request_epoch']==key['request_epoch'],'authorization_context_request')
+    need(context['requester']==u['identity']['requester'] and all(context['requester'][k]==key[k] for k in ('issuer_id','issuer_epoch','principal_id')),'authorization_context_requester')
+    need(context['credential_id']==a['credential_id'] and context['session_id']==a['session_id'],'authorization_context_credential_chain')
+    need(key['operation_id'] in context['operations'],'authorization_context_operation')
+    for scope in (original,current):
+        need(scope['scope']==u['binding']['scope'] and scope['requester']==u['identity']['requester'] and scope['credential_id']==a['credential_id'],'authorization_target_scope_binding')
+        need('device.command' in scope['permissions'] and proof['target'] in scope['targets'],'authorization_target_not_allowed')
+    need(current['permissions']==sorted(s['permissions']),'authorization_scope_permissions')
+    ref_value=scope_proof_reference(proof);need(u['scope_evidence_ref']==ref_value,'authorization_scope_proof_ref');return ref_value
+
 def store_challenge(db,value):
     writer(db);validate('AuthorizationChallenge',value);need(sealed(value,'challenge_digest')==value,'authorization_challenge_digest')
     need(value['binding']['scope']==E.A.scope(db),'authorization_challenge_scope')
@@ -148,6 +211,7 @@ def read(db,use_ref,seal):
     need(sent<=received<=selected<=now and lower<=received and lower<=now<upper and received<upper,'authorization_window')
     response_ref=authority_response(db,u)
     continuation_ref=continuation(db,u) if u['identity']['origin']=='automation' else None
+    scope_ref=scope_proof(db,u) if u['identity']['origin']=='automation' else None
     floors=[]
     for kind,target,revision in dependencies(a):
         query='SELECT event_id,kind,issuer_id,issuer_epoch,target_id,revision_floor,digest,body FROM authorization_floor_event WHERE kind=? AND issuer_id=? AND issuer_epoch=?'
@@ -162,7 +226,7 @@ def read(db,use_ref,seal):
             floors.append(E.ref(event['event_id'],1,event['event_digest']))
     source=dict(format_version='authorization-cut/1',scope=E.A.scope(db),use_ref=use_ref,transaction_id=seal['transaction_id'],
         selected_tick_ns=seal['selected_tick_ns'],sealed_tick_ns=seal['sealed_tick_ns'],authority_response_ref=response_ref,
-        continuation_ref=continuation_ref,floor_refs=sorted(floors,key=lambda x:x['id']))
+        continuation_ref=continuation_ref,scope_proof_ref=scope_ref,floor_refs=sorted(floors,key=lambda x:x['id']))
     validate('AuthorizationCut',source)
     source_ref=E.ref('authorization_cut_'+F.digest(source)[7:],1,F.digest(source))
     return E.original('authorization',seal['transaction_id'],seal['binding'],seal['identity'],source_ref,not_before_tick_ns=str(lower),before_tick_ns=str(upper))

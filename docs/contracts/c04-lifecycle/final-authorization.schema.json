@@ -973,6 +973,214 @@
       ],
       "additionalProperties": false
     },
+    "CommandTarget": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "action_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "capability_version": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "device_id",
+        "action_id",
+        "capability_version"
+      ],
+      "additionalProperties": false
+    },
+    "CommandScope": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "command-scope/1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "credential_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CommandTarget"
+          },
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "requester",
+        "credential_id",
+        "permissions",
+        "targets"
+      ],
+      "additionalProperties": false
+    },
+    "RequestContextBinding": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "request-context-binding/1"
+        },
+        "context_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "namespace_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "credential_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "original_scope_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "issuance_evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "context_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "context_id",
+        "revision",
+        "scope",
+        "namespace_id",
+        "request_epoch",
+        "requester",
+        "credential_id",
+        "session_id",
+        "operations",
+        "original_scope_ref",
+        "issuance_evidence_ref",
+        "context_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "human"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CommandScopeProof": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "command-scope-proof/1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "request_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "context_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "original_scope_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "current_scope_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authority_response_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "target": {
+          "$ref": "#/$defs/CommandTarget"
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "command_ref",
+        "request_ref",
+        "context_ref",
+        "original_scope_ref",
+        "current_scope_ref",
+        "authority_response_ref",
+        "target"
+      ],
+      "additionalProperties": false
+    },
     "AuthorizationCut": {
       "type": "object",
       "properties": {
@@ -1007,6 +1215,16 @@
             }
           ]
         },
+        "scope_proof_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "floor_refs": {
           "type": "array",
           "maxItems": 24576,
@@ -1024,6 +1242,7 @@
         "sealed_tick_ns",
         "authority_response_ref",
         "continuation_ref",
+        "scope_proof_ref",
         "floor_refs"
       ],
       "additionalProperties": false

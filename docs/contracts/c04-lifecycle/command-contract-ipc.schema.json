@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/command-contract-ipc.schema.json",
+  "title": "ipc/0.14.0-continuation-draft.1",
+  "description": "仅结构规范；不能据此证明权限、真实屏障或持久化成立。",
+  "oneOf": [
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__HELLO"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__HELLO_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__OPEN_GATE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__OPEN_GATE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__DISPATCH"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__SEND_REPORT"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__EVIDENCE_CANDIDATE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__REPORT_STORED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__FENCE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__FENCE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__QUERY_BARRIER"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CLOSE_GATE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CLOSE_GATE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__GUARD_INSTALL"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__GUARD_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__AUTH_FENCE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__AUTH_FENCE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__TIME_FENCE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__TIME_FENCE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__RUN_FENCE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__RUN_FENCE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__ENCODE_PACKET"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__PACKET_ENCODING_FAILED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__PREPARE_PACKET"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__PREPARE_PACKET_REJECTED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__RESEND_REQUEST"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__RESEND_DISPATCH"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__RESEND_REJECTED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__BARRIER_UNAVAILABLE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__BARRIER_STORED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_FENCE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_FENCE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_GUARD"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_GUARD_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__ENCODE_CANCEL_PACKET"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__PREPARE_CANCEL_PACKET"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_ENCODING_FAILED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_PREPARE_REJECTED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__DISPATCH_CANCEL"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_RESEND_REQUEST"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_RESEND_REJECTED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_SEND_REPORT"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_REPORT_STORED"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_EVIDENCE_CANDIDATE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__QUERY_CANCEL_EXECUTION"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/S9__CANCEL_EXECUTION_STATUS"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/GF__GATE_FENCE"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/GF__GATE_FENCE_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/ER__RELEASE_ENCODING"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/ER__RELEASE_ENCODING_ACK"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/J__DENY_ENCODING"
+    },
+    {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/J__DENY_ENCODING_ACK"
+    }
+  ],
+  "x-approved": false,
+  "x-runtime-approved": false
+}

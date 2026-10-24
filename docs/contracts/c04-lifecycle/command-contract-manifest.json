@@ -1,0 +1,107 @@
+{
+  "contract_version": "command-contract/0.1.0-draft.1",
+  "approved": false,
+  "scope": "command-api-and-ipc-only",
+  "canonical_schema": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json",
+  "ipc_version": "ipc/0.14.0-continuation-draft.1",
+  "required_feature": "continuation_grant_binding",
+  "exports": {
+    "ExecutionBinding": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/ExecutionBinding",
+    "ContinuationSelection": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/ContinuationSelection",
+    "ContinuationTarget": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/ContinuationTarget",
+    "CommandRequest": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CommandRequest",
+    "CommandContent": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CommandContent",
+    "AutomationOriginBinding": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/AutomationOriginBinding",
+    "ExecutionGuard": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/ExecutionGuard",
+    "TransmissionPermit": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/TransmissionPermit",
+    "GuardAck": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/GuardAck",
+    "DispatchBody": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/DispatchBody",
+    "DispatchIntent": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/DispatchIntent",
+    "RunBinding": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/RunBinding",
+    "Scope": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/Scope",
+    "RequestKey": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/RequestKey",
+    "RequestIdentity": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/RequestIdentity",
+    "RequestAdjudication": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/RequestAdjudication",
+    "LookupResult": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/LookupResult",
+    "RejectRequest": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/RejectRequest",
+    "CommandRead": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CommandRead",
+    "CommandRecord": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CommandRecord",
+    "CancelRequest": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CancelRequest",
+    "CancelReceipt": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CancelReceipt",
+    "CancelLookup": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CancelLookup",
+    "CancelOperation": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/CancelOperation",
+    "EvidencePage": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/EvidencePage",
+    "EvidenceRecord": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json#/$defs/EvidenceRecord"
+  },
+  "operations": [
+    {
+      "path": "/api/v1/commands",
+      "method": "post",
+      "operation_id": "submitCommand"
+    },
+    {
+      "path": "/api/v1/commands/lookup",
+      "method": "post",
+      "operation_id": "lookupCommandAdmission"
+    },
+    {
+      "path": "/api/v1/commands/reject",
+      "method": "post",
+      "operation_id": "rejectCommandAdmission"
+    },
+    {
+      "path": "/api/v1/commands/{command_id}",
+      "method": "get",
+      "operation_id": "getCommand"
+    },
+    {
+      "path": "/api/v1/commands/{command_id}/revisions/{revision}",
+      "method": "get",
+      "operation_id": "getCommandRevision"
+    },
+    {
+      "path": "/api/v1/commands/{command_id}/cancel",
+      "method": "post",
+      "operation_id": "cancelCommand"
+    },
+    {
+      "path": "/api/v1/commands/{command_id}/cancellations/lookup",
+      "method": "post",
+      "operation_id": "lookupCommandCancellation"
+    },
+    {
+      "path": "/api/v1/commands/{command_id}/cancellations/{cancellation_id}",
+      "method": "get",
+      "operation_id": "getCommandCancellation"
+    },
+    {
+      "path": "/api/v1/commands/{command_id}/evidence",
+      "method": "get",
+      "operation_id": "getCommandEvidence"
+    },
+    {
+      "path": "/api/v1/commands/{command_id}/evidence/{evidence_id}/revisions/{revision}",
+      "method": "get",
+      "operation_id": "getCommandEvidenceRevision"
+    }
+  ],
+  "generation_entrypoint": "build_command_contract.py",
+  "runtime_codegen_executed": false,
+  "source_inputs": {
+    "c08-controller\\journal-ipc.schema.json": "3d3fcb4d46a785e7999da43baf44d39c10c878d442bb16c92d3d86f726859a3a",
+    "c04-lifecycle\\lifecycle.schema.json": "a2438f0986af5b75ed64f20cc3d9b42992c3f5cfd9f39ded92bfb746c3e2d93d",
+    "c04-program\\program.schema.json": "43612d114488d165605ccdcc801274874e44d6312c58c89f7c1963cf85b1f8b9",
+    "c04-lifecycle\\continuation-protocol.schema.json": "d658c1e0b613dc92c3517a508f61084f55a3a612eb72b5f20082b6aa4fe9af07",
+    "c04-lifecycle\\build_command_contract.py": "574ad2567d3e484197082dd3ab03e3a6837728b74e63c45ce8a09e0d25db6f14",
+    "c04-lifecycle\\build_continuation_binding.py": "45dc0d619511f8d22493a7cdc77b3010d740d7cb235683535a1efa3b2a92ad24",
+    "c02-admission\\admission.openapi.json": "a2e77e729c4dc2173e8848bdde937f10ff6a5b3bdd76984deaa6d160e4ffb28b",
+    "c02-command-view\\command.openapi.json": "e0adbcf5454324b5eda50b0c98205a71282cd9bce5ba550256038d8cc3172bfa"
+  },
+  "artifacts": {
+    "command-contract.schema.json": "049a66b80bea06247aef806447b2c9ef3de347106c8dfd964664386adb9270f6",
+    "command-contract.openapi.json": "b477777049f1f2d6c0f5140e4c7b2b9937097e0505f3bc937d554af6dfbbf986",
+    "command-contract-ipc.schema.json": "c758a2a1b06011901282e2780c8e92d62d050c2ab02d65a3254da5a9a266e082"
+  },
+  "storage_ready": false,
+  "final_admission_ready": false
+}

@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录继续运行绑定归并和本周期第二轮交付 | R:code:docs/contracts/c04-lifecycle/CONTINUATION_BINDING.md | A:设计历程及三轮提交 | S:169项仅离线检查，最终准入与业务服务未验；本轮只本地提交
+DEVELOPMENT_MEMO.md[SO5L]: F:记录公共命令消费包及周期第三轮交付 | R:code:docs/contracts/c04-lifecycle/COMMAND_CONTRACT.md | A:设计进度和三轮提交 | S:263项仅离线验证，存储六类差异仍阻断上线；第三轮完成后审查整个周期再推送
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:汇总执行绑定和完整IPC归并后的系统关闭缺口 | R:code:docs/contracts/c04-lifecycle/CONTINUATION_BINDING.md | A:C01至C12关闭状态 | S:52帧机器契约已有，完整SQL映射、AdmissionSeal和SDK等仍缺，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:汇总公共命令消费归并后的系统定稿缺口 | R:code:docs/contracts/c04-lifecycle/COMMAND_CONTRACT.md | A:C01至C12关闭视图 | S:命令域已同源，SQL迁移、最终准入和全系统SDK仍待落实；阶段0未关闭
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -471,6 +471,15 @@ continuation-binding-manifest.json[FN7T]: F:列出新绑定导出消息集合及
 continuation-binding-report.json[TR7L]: F:固化169项绑定检查及350份输入摘要 | R:code:docs/contracts/c04-lifecycle/check_continuation_binding.py | A:checks、inputs及52帧计数 | S:最终准入、运行及设备检查均为零；approved为false
 continuation-binding.schema.json[FN8L]: F:定义执行清单命令选择与完整授权链具名闭包 | R:code:docs/contracts/c04-lifecycle/build_continuation_binding.py | A:ExecutionBinding、CommandRequest、ExecutionGuard、TransmissionPermit、DispatchIntent | S:根拒绝直接实例；preparation清单为空，continuation只能用于新trigger；执行Ref固定kind且不携submission身份
 continuation_binding_model.py[DR8T]: F:判定继续运行执行正文及普通重传授权链跨原件一致性 | R:code:docs/contracts/c04-lifecycle/continuation_protocol_model.py,code:docs/contracts/c04-lifecycle/build_continuation_binding.py | A:execution、validate_chain、validate_resend | S:重传要求新许可新Guard且保留原命令packet归属；成功只证明授权子域，完整时间资源预算及最终出口仍另验
+COMMAND_CONTRACT.md[SN8T]: F:定义公共命令单一消费来源和完整SQL写集要求 | R:code:docs/contracts/c04-lifecycle/build_command_contract.py,code:docs/contracts/c04-lifecycle/command_storage_mapping.py | A:API兼容、39字段及持久身份要求 | S:执行计划摘要与批准计划Ref分开；新合法键只用于全新提交，旧尝试不得改键重发；类型包不等于全系统SDK或存储迁移
+build_command_contract.py[XN8T]: F:从单一类型图派生公共命令API和完整IPC入口 | R:code:docs/contracts/c04-lifecycle/build_continuation_binding.py,code:docs/contracts/c02-admission/admission.openapi.json,code:docs/contracts/c02-command-view/command.openapi.json | A:build、OVERRIDES及--check | S:显式重定向绑定Scope与身份别名，保留全部十操作和认证；IPC引用同一图，产物摘要进入清单，旧版本不改
+check_command_contract.py[TR8S]: F:验证公共API与IPC同源以及SQL完整输入和列映射 | R:code:docs/contracts/c04-lifecycle/build_command_contract.py,code:docs/contracts/c04-lifecycle/command_storage_mapping.py | A:run、生成一致和报告绑定 | S:实际三库只读诊断六类差异；新写集为合成正例，拒绝嫁接旧行；263项不证明DDL迁移或真实服务
+command-contract-ipc.schema.json[FN8S]: F:提供完整52帧IPC的单一类型图入口 | R:code:docs/contracts/c04-lifecycle/command-contract.schema.json | A:oneOf外部具名引用 | S:URI由清单映射本地解析，不访问示例域名；沿IPC0.14和既有握手能力，无独立复制消息定义
+command-contract-manifest.json[FN7S]: F:登记命令包导出操作及源与产物摘要 | R:code:docs/contracts/c04-lifecycle/build_command_contract.py | A:canonical_schema、exports、operations及artifacts | S:范围仅命令API与IPC；storage_ready和final_admission_ready为false，未生成运行SDK
+command-contract-report.json[TR7L]: F:保存263项检查及361输入摘要和字段差异 | R:code:docs/contracts/c04-lifecycle/check_command_contract.py | A:checks、storage_findings、field_mapping及inputs | S:存储迁移和SDK生成均为false，运行设备测试为零；Schema通过不能抹去六类旧库差异
+command-contract.openapi.json[FN8L]: F:定义统一版本的十个公共命令操作 | R:code:docs/contracts/c04-lifecycle/command-contract.schema.json,code:docs/contracts/c04-lifecycle/build_command_contract.py | A:提交查原拒收读取取消及证据接口 | S:components由单一图生成，原认证CSRF响应码保留；新绑定不能用旧头降级，尚无真实HTTP实现
+command-contract.schema.json[FN8L]: F:汇合命令API和完整IPC的权威消费类型图 | R:code:docs/contracts/c04-lifecycle/build_command_contract.py | A:具名导出和精确别名 | S:根拒绝直接实例；新公共Scope接纳既定带点身份，RequestKey共享受理读取定义，不宣称全局ID和全SDK已统一
+command_storage_mapping.py[PD8S]: F:对账完整执行请求身份字段及实际SQLite原件 | R:code:docs/contracts/c04-lifecycle/build_command_contract.py,code:docs/contracts/c04-lifecycle/continuation_binding_model.py | A:coverage、findings及verify_originals | S:缺issuer_epoch和非法旧键不补默认值；请求与行同时篡改仍核转交原件；typed_projection_valid仅证明映射子域，不签发或重写旧正文
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

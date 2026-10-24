@@ -1,0 +1,6631 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "完整公共命令消费契约候选",
+    "version": "command-contract/0.1.0-draft.1"
+  },
+  "paths": {
+    "/api/v1/commands": {
+      "post": {
+        "operationId": "submitCommand",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/A__S0_CommandRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_RequestAdjudication"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_RequestAdjudication"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "device.command",
+        "x-subject-profiles": [
+          "human_manual",
+          "seamer_automation"
+        ],
+        "x-retry-policy": "never-auto-retry",
+        "x-original-operation-id": "createCommand",
+        "x-source-contract": "command-admission/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/lookup": {
+      "post": {
+        "operationId": "lookupCommandAdmission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/A__S0_RequestIdentity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_LookupResult"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.read",
+        "x-subject-profiles": [
+          "human_own_namespace",
+          "seamer_own_namespace"
+        ],
+        "x-retry-policy": "read-only",
+        "x-original-operation-id": "createCommand",
+        "x-source-contract": "command-admission/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/reject": {
+      "post": {
+        "operationId": "rejectCommandAdmission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/A__S0_RejectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "持久裁决或查询；不表示设备完成或停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_RequestAdjudication"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "无永久裁决保证；不授权动作重发",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/A__S0_Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.cancel",
+        "x-subject-profiles": [
+          "human_own_namespace",
+          "seamer_own_automation"
+        ],
+        "x-retry-policy": "same-identity-monotonic-denial-only",
+        "x-original-operation-id": "createCommand",
+        "x-source-contract": "command-admission/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/{command_id}": {
+      "get": {
+        "operationId": "getCommand",
+        "security": [
+          {
+            "humanBearer": []
+          },
+          {
+            "serviceBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_CommandRead"
+                    },
+                    {
+                      "properties": {
+                        "view": {
+                          "const": "current"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unauthenticated"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "forbidden"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "state_conflict",
+                            "identity_conflict",
+                            "cancellation_exists",
+                            "snapshot_conflict"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "snapshot_gone",
+                            "context_expired"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "payload_too_large"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid_semantics"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "capacity"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unavailable",
+                            "state_projection_pending"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.read",
+        "x-retry-policy": "read-current",
+        "x-authority": "controller",
+        "x-subject-profiles": [
+          "human_device_scope",
+          "paired_seamer_own_automation"
+        ],
+        "x-source-contract": "command-view/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/{command_id}/revisions/{revision}": {
+      "get": {
+        "operationId": "getCommandRevision",
+        "security": [
+          {
+            "humanBearer": []
+          },
+          {
+            "serviceBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_PositiveCounter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_CommandRead"
+                    },
+                    {
+                      "properties": {
+                        "view": {
+                          "const": "historical"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unauthenticated"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "forbidden"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "state_conflict",
+                            "identity_conflict",
+                            "cancellation_exists",
+                            "snapshot_conflict"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "snapshot_gone",
+                            "context_expired"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "payload_too_large"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid_semantics"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "capacity"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unavailable"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.read",
+        "x-retry-policy": "read-history",
+        "x-authority": "controller",
+        "x-subject-profiles": [
+          "human_device_scope",
+          "paired_seamer_own_automation"
+        ],
+        "x-source-contract": "command-view/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/{command_id}/cancel": {
+      "post": {
+        "operationId": "cancelCommand",
+        "security": [
+          {
+            "humanBearer": [],
+            "csrfToken": []
+          },
+          {
+            "serviceBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V__S0_CancelReceipt"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V__S0_CancelReceipt"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unauthenticated"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "forbidden"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "state_conflict",
+                            "identity_conflict",
+                            "cancellation_exists",
+                            "snapshot_conflict"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "snapshot_gone",
+                            "context_expired"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "payload_too_large"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid_semantics"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "capacity"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unavailable"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.cancel",
+        "x-retry-policy": "never-auto-retry",
+        "x-authority": "controller",
+        "x-subject-profiles": [
+          "human_device_scope",
+          "paired_seamer_own_automation"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/V__S0_CancelRequest"
+              }
+            }
+          }
+        },
+        "x-source-contract": "command-view/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/{command_id}/cancellations/lookup": {
+      "post": {
+        "operationId": "lookupCommandCancellation",
+        "security": [
+          {
+            "humanBearer": []
+          },
+          {
+            "serviceBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V__S0_CancelLookup"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unauthenticated"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "forbidden"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "state_conflict",
+                            "identity_conflict",
+                            "cancellation_exists",
+                            "snapshot_conflict"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "snapshot_gone",
+                            "context_expired"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "payload_too_large"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid_semantics"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "capacity"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unavailable"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.read",
+        "x-retry-policy": "read-original",
+        "x-authority": "controller",
+        "x-subject-profiles": [
+          "human_device_scope",
+          "paired_seamer_own_automation"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/V__S0_CancelIdentity"
+              }
+            }
+          }
+        },
+        "x-source-contract": "command-view/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/{command_id}/cancellations/{cancellation_id}": {
+      "get": {
+        "operationId": "getCommandCancellation",
+        "security": [
+          {
+            "humanBearer": []
+          },
+          {
+            "serviceBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          },
+          {
+            "name": "cancellation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V__S0_CancelOperation"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unauthenticated"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "forbidden"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "state_conflict",
+                            "identity_conflict",
+                            "cancellation_exists",
+                            "snapshot_conflict"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "snapshot_gone",
+                            "context_expired"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "payload_too_large"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid_semantics"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "capacity"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unavailable"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.read",
+        "x-retry-policy": "read-current",
+        "x-authority": "controller",
+        "x-subject-profiles": [
+          "human_device_scope",
+          "paired_seamer_own_automation"
+        ],
+        "x-source-contract": "command-view/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/{command_id}/evidence": {
+      "get": {
+        "operationId": "getCommandEvidence",
+        "security": [
+          {
+            "humanBearer": []
+          },
+          {
+            "serviceBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          },
+          {
+            "name": "state_revision",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_PositiveCounter"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Cursor"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V__S0_EvidencePage"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unauthenticated"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "forbidden"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "state_conflict",
+                            "identity_conflict",
+                            "cancellation_exists",
+                            "snapshot_conflict"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "snapshot_gone",
+                            "context_expired"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "payload_too_large"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid_semantics"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "capacity"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unavailable"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.evidence.read",
+        "x-retry-policy": "read-snapshot",
+        "x-authority": "controller",
+        "x-subject-profiles": [
+          "human_device_scope",
+          "paired_seamer_own_automation"
+        ],
+        "x-source-contract": "command-view/0.1.0-draft.1"
+      }
+    },
+    "/api/v1/commands/{command_id}/evidence/{evidence_id}/revisions/{revision}": {
+      "get": {
+        "operationId": "getCommandEvidenceRevision",
+        "security": [
+          {
+            "humanBearer": []
+          },
+          {
+            "serviceBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-LeafSeamer-Contract",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "command-contract/0.1.0-draft.1"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_PositiveCounter"
+            }
+          },
+          {
+            "name": "evidence_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "持久记录；受理或历史视图均不表示设备已停止或当前可写",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V__S0_EvidenceRecord"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unauthenticated"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "forbidden"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "not_found"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "state_conflict",
+                            "identity_conflict",
+                            "cancellation_exists",
+                            "snapshot_conflict"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "snapshot_gone",
+                            "context_expired"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "payload_too_large"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "invalid_semantics"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "capacity"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "错误不授予写入重试；按retry_action仅查询",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/V__S0_Error"
+                    },
+                    {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "unavailable"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "command.evidence.read",
+        "x-retry-policy": "read-history",
+        "x-authority": "controller",
+        "x-subject-profiles": [
+          "human_device_scope",
+          "paired_seamer_own_automation"
+        ],
+        "x-source-contract": "command-view/0.1.0-draft.1"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "A__S0_CommandRequest": {
+        "$ref": "#/components/schemas/CommandRequest"
+      },
+      "CommandRequest": {
+        "$ref": "#/components/schemas/S2__CommandRequest"
+      },
+      "S2__CommandRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "capability_version": {
+            "$ref": "#/components/schemas/S0__Version"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/S0__Payload"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/S0__ControlVersion"
+          },
+          "origin": {
+            "enum": [
+              "manual",
+              "automation"
+            ]
+          },
+          "run_binding": {
+            "$ref": "#/components/schemas/S2__RunBinding"
+          },
+          "required_completion": {
+            "$ref": "#/components/schemas/S0__CompletionLevel"
+          },
+          "preconditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S0__Predicate"
+            },
+            "minItems": 0,
+            "maxItems": 64
+          },
+          "dispatch": {
+            "$ref": "#/components/schemas/S0__Dispatch"
+          },
+          "evidence_timeout_ms": {
+            "$ref": "#/components/schemas/S0__Duration"
+          },
+          "correlation_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "automation_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S2__AutomationOriginBinding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "device_id",
+          "action_id",
+          "capability_version",
+          "parameters",
+          "expected_control",
+          "origin",
+          "required_completion",
+          "preconditions",
+          "dispatch",
+          "evidence_timeout_ms",
+          "automation_binding"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "required": [
+                "run_binding"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "run_binding"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action_id": {
+                  "const": "obs.program_scene.set"
+                }
+              },
+              "required": [
+                "action_id"
+              ]
+            },
+            "then": {
+              "properties": {
+                "parameters": {
+                  "$ref": "#/components/schemas/S0__ObsSceneParameters"
+                },
+                "required_completion": {
+                  "const": "effect_verified"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "properties": {
+                "automation_binding": {
+                  "$ref": "#/components/schemas/S2__AutomationOriginBinding"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "automation_binding": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "S0__Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9._-]+$"
+      },
+      "S0__Version": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$"
+      },
+      "S0__Payload": {
+        "type": "object",
+        "maxProperties": 256,
+        "additionalProperties": {
+          "$ref": "#/components/schemas/S0__JsonValue"
+        },
+        "description": "开放容器仅用于动态能力数据，须再通过固定摘要的能力Schema；不是免校验任意写入。"
+      },
+      "S0__JsonValue": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string",
+            "maxLength": 16384
+          },
+          {
+            "type": "number",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S0__JsonValue"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          {
+            "type": "object",
+            "maxProperties": 256,
+            "additionalProperties": {
+              "$ref": "#/components/schemas/S0__JsonValue"
+            }
+          }
+        ]
+      },
+      "S0__ControlVersion": {
+        "type": "object",
+        "properties": {
+          "epoch": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "version": {
+            "$ref": "#/components/schemas/S0__Revision"
+          }
+        },
+        "required": [
+          "epoch",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "S0__Revision": {
+        "type": "string",
+        "maxLength": 20,
+        "pattern": "^(0|[1-9][0-9]*)$"
+      },
+      "S2__RunBinding": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "definition_version": {
+            "$ref": "#/components/schemas/S2__PositiveCounter"
+          },
+          "grant_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "grant_revision": {
+            "$ref": "#/components/schemas/S2__Counter"
+          },
+          "arm_generation": {
+            "$ref": "#/components/schemas/S2__Counter"
+          },
+          "step_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "logical_action_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          }
+        },
+        "required": [
+          "run_id",
+          "definition_version",
+          "grant_id",
+          "grant_revision",
+          "arm_generation",
+          "step_id",
+          "logical_action_id"
+        ],
+        "additionalProperties": false
+      },
+      "S2__PositiveCounter": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+      },
+      "S2__Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "S0__CompletionLevel": {
+        "enum": [
+          "sent",
+          "acknowledged",
+          "effect_verified"
+        ]
+      },
+      "S0__Predicate": {
+        "type": "object",
+        "properties": {
+          "predicate_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "field": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "operator": {
+            "enum": [
+              "eq",
+              "ne",
+              "lt",
+              "lte",
+              "gt",
+              "gte"
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/S0__JsonValue"
+          },
+          "max_age_ms": {
+            "$ref": "#/components/schemas/S0__Duration"
+          }
+        },
+        "required": [
+          "predicate_id",
+          "device_id",
+          "field",
+          "operator",
+          "value",
+          "max_age_ms"
+        ],
+        "additionalProperties": false
+      },
+      "S0__Duration": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 86400000
+      },
+      "S0__Dispatch": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "const": "immediate"
+              },
+              "max_queue_ms": {
+                "$ref": "#/components/schemas/S0__Duration"
+              }
+            },
+            "required": [
+              "mode",
+              "max_queue_ms"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "const": "scheduled"
+              },
+              "occurrence_id": {
+                "$ref": "#/components/schemas/S0__Id"
+              },
+              "not_before": {
+                "$ref": "#/components/schemas/S0__Timestamp"
+              },
+              "not_after": {
+                "$ref": "#/components/schemas/S0__Timestamp"
+              },
+              "clock_policy_revision": {
+                "$ref": "#/components/schemas/S0__Revision"
+              },
+              "max_queue_ms": {
+                "$ref": "#/components/schemas/S0__Duration"
+              }
+            },
+            "required": [
+              "mode",
+              "occurrence_id",
+              "not_before",
+              "not_after",
+              "clock_policy_revision",
+              "max_queue_ms"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "S0__Timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+      },
+      "S2__AutomationOriginBinding": {
+        "type": "object",
+        "properties": {
+          "origin_scope": {
+            "$ref": "#/components/schemas/CN__Scope"
+          },
+          "run_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "definition_version": {
+            "$ref": "#/components/schemas/S1__PositiveCounter"
+          },
+          "arm_generation": {
+            "$ref": "#/components/schemas/S1__Counter"
+          },
+          "execution_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "execution_binding_ref": {
+            "$ref": "#/components/schemas/CN__ExecutionRef"
+          },
+          "step_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "logical_action_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "binding_version": {
+            "const": "continuation-execution/0.1.0-draft.1"
+          },
+          "authorization_mode": {
+            "enum": [
+              "preparation",
+              "continuation"
+            ]
+          },
+          "continuation": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CN__Selection"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "origin_scope",
+          "run_id",
+          "definition_version",
+          "arm_generation",
+          "execution_id",
+          "execution_binding_ref",
+          "step_id",
+          "logical_action_id",
+          "binding_version",
+          "authorization_mode",
+          "continuation"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "authorization_mode": {
+                  "const": "continuation"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "continuation": {
+                  "$ref": "#/components/schemas/CN__Selection"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "continuation": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "CN__Scope": {
+        "type": "object",
+        "properties": {
+          "authority_service_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "database_instance_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "authority_service_id",
+          "database_instance_id"
+        ],
+        "additionalProperties": false
+      },
+      "S1__PositiveCounter": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+      },
+      "S1__Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "CN__ExecutionRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "execution_binding"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/CN__Scope"
+          },
+          "object_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/S0__Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0__Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "CN__Selection": {
+        "type": "object",
+        "properties": {
+          "transfer_ref": {
+            "$ref": "#/components/schemas/CN__Ref"
+          },
+          "adoption_ref": {
+            "$ref": "#/components/schemas/CN__Ref"
+          },
+          "receipt_ref": {
+            "$ref": "#/components/schemas/CN__Ref"
+          },
+          "grant_ref": {
+            "$ref": "#/components/schemas/CN__Ref"
+          },
+          "plan_ref": {
+            "$ref": "#/components/schemas/CN__Ref"
+          },
+          "parent_preparation_ref": {
+            "$ref": "#/components/schemas/CN__Ref"
+          }
+        },
+        "required": [
+          "transfer_ref",
+          "adoption_ref",
+          "receipt_ref",
+          "grant_ref",
+          "plan_ref",
+          "parent_preparation_ref"
+        ],
+        "additionalProperties": false
+      },
+      "CN__Ref": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "object",
+            "properties": {
+              "authority_service_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+              },
+              "database_instance_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+              }
+            },
+            "required": [
+              "authority_service_id",
+              "database_instance_id"
+            ],
+            "additionalProperties": false
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "scope",
+          "id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "S0__ObsSceneParameters": {
+        "type": "object",
+        "properties": {
+          "scene_ref": {
+            "$ref": "#/components/schemas/S0__SceneRef"
+          }
+        },
+        "required": [
+          "scene_ref"
+        ],
+        "additionalProperties": false
+      },
+      "S0__SceneRef": {
+        "type": "object",
+        "properties": {
+          "collection_ref": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "scene_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "catalog_revision": {
+            "$ref": "#/components/schemas/S0__Revision"
+          },
+          "collection_generation": {
+            "$ref": "#/components/schemas/S0__Revision"
+          },
+          "binding_revision": {
+            "$ref": "#/components/schemas/S0__Revision"
+          }
+        },
+        "required": [
+          "collection_ref",
+          "scene_id",
+          "catalog_revision",
+          "collection_generation",
+          "binding_revision"
+        ],
+        "additionalProperties": false
+      },
+      "A__S0_RequestAdjudication": {
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "const": "command-admission/0.1.0-draft.1"
+          },
+          "adjudication_id": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "revision": {
+            "const": "1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/A__S0_RequestIdentity"
+          },
+          "decision": {
+            "enum": [
+              "accepted",
+              "rejected"
+            ]
+          },
+          "command_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/A__S0_CommandRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "commit_ref": {
+            "$ref": "#/components/schemas/A__S0_CommitRef"
+          },
+          "adjudication_digest": {
+            "$ref": "#/components/schemas/A__S0_Digest"
+          }
+        },
+        "required": [
+          "contract_version",
+          "adjudication_id",
+          "revision",
+          "identity",
+          "decision",
+          "command_ref",
+          "commit_ref",
+          "adjudication_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "decision": {
+                  "const": "accepted"
+                }
+              },
+              "required": [
+                "decision"
+              ]
+            },
+            "then": {
+              "properties": {
+                "command_ref": {
+                  "$ref": "#/components/schemas/A__S0_CommandRef"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "command_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "A__S0_Id": {
+        "$ref": "#/components/schemas/A__S1_Id"
+      },
+      "A__S1_Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "A__S0_RequestIdentity": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/A__S0_RequestKey"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/A__S0_Digest"
+          }
+        },
+        "required": [
+          "key",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "A__S0_RequestKey": {
+        "type": "object",
+        "properties": {
+          "target_scope": {
+            "$ref": "#/components/schemas/A__S0_Scope"
+          },
+          "issuer_id": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "issuer_epoch": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "principal_id": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "request_epoch": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "operation_id": {
+            "const": "createCommand"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          }
+        },
+        "required": [
+          "target_scope",
+          "issuer_id",
+          "issuer_epoch",
+          "principal_id",
+          "request_epoch",
+          "operation_id",
+          "idempotency_key"
+        ],
+        "additionalProperties": false
+      },
+      "A__S0_Scope": {
+        "$ref": "#/components/schemas/Scope"
+      },
+      "Scope": {
+        "$ref": "#/components/schemas/CN__Scope"
+      },
+      "A__S0_Digest": {
+        "$ref": "#/components/schemas/A__S1_Digest"
+      },
+      "A__S1_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+      },
+      "A__S0_CommandRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "command"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/A__S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/A__S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/A__S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "A__S0_Counter": {
+        "$ref": "#/components/schemas/A__S1_Counter"
+      },
+      "A__S1_Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "A__S0_CommitRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "controller_commit"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/A__S0_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/A__S0_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/A__S0_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "A__S0_Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid",
+              "unauthenticated",
+              "forbidden",
+              "conflict",
+              "capacity",
+              "unavailable",
+              "version"
+            ]
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          }
+        },
+        "required": [
+          "code",
+          "request_id"
+        ],
+        "additionalProperties": false
+      },
+      "A__S0_LookupResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "found"
+              },
+              "adjudication": {
+                "$ref": "#/components/schemas/A__S0_RequestAdjudication"
+              }
+            },
+            "required": [
+              "state",
+              "adjudication"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "indeterminate"
+                ]
+              },
+              "adjudication": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "adjudication"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "A__S0_RejectRequest": {
+        "type": "object",
+        "properties": {
+          "rejection_operation_id": {
+            "$ref": "#/components/schemas/A__S0_Id"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/A__S0_RequestIdentity"
+          },
+          "content": {
+            "$ref": "#/components/schemas/A__S0_CommandContent"
+          }
+        },
+        "required": [
+          "rejection_operation_id",
+          "identity",
+          "content"
+        ],
+        "additionalProperties": false
+      },
+      "A__S0_CommandContent": {
+        "$ref": "#/components/schemas/CommandContent"
+      },
+      "CommandContent": {
+        "$ref": "#/components/schemas/CN__CommandContent"
+      },
+      "CN__CommandContent": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/S0__Id"
+          },
+          "capability_version": {
+            "$ref": "#/components/schemas/S0__Version"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/S0__Payload"
+          },
+          "expected_control": {
+            "$ref": "#/components/schemas/S0__ControlVersion"
+          },
+          "origin": {
+            "enum": [
+              "manual",
+              "automation"
+            ]
+          },
+          "run_binding": {
+            "$ref": "#/components/schemas/S2__RunBinding"
+          },
+          "required_completion": {
+            "$ref": "#/components/schemas/S0__CompletionLevel"
+          },
+          "preconditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/S0__Predicate"
+            },
+            "minItems": 0,
+            "maxItems": 64
+          },
+          "dispatch": {
+            "$ref": "#/components/schemas/S0__Dispatch"
+          },
+          "evidence_timeout_ms": {
+            "$ref": "#/components/schemas/S0__Duration"
+          },
+          "automation_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S2__AutomationOriginBinding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "device_id",
+          "action_id",
+          "capability_version",
+          "parameters",
+          "expected_control",
+          "origin",
+          "required_completion",
+          "preconditions",
+          "dispatch",
+          "evidence_timeout_ms",
+          "automation_binding"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "required": [
+                "run_binding"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "run_binding"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action_id": {
+                  "const": "obs.program_scene.set"
+                }
+              },
+              "required": [
+                "action_id"
+              ]
+            },
+            "then": {
+              "properties": {
+                "parameters": {
+                  "$ref": "#/components/schemas/S0__ObsSceneParameters"
+                },
+                "required_completion": {
+                  "const": "effect_verified"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "automation"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "then": {
+              "properties": {
+                "automation_binding": {
+                  "$ref": "#/components/schemas/S2__AutomationOriginBinding"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "automation_binding": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S0_Id": {
+        "$ref": "#/components/schemas/V__S1_Id"
+      },
+      "V__S1_Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9._:/-]+$(?![\\s\\S])"
+      },
+      "V__S0_CommandRead": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "enum": [
+              "current",
+              "historical"
+            ]
+          },
+          "record": {
+            "$ref": "#/components/schemas/V__S0_CommandRecord"
+          }
+        },
+        "required": [
+          "view",
+          "record"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_CommandRecord": {
+        "type": "object",
+        "properties": {
+          "command_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S0_Scope"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/V__S0_PositiveCounter"
+          },
+          "initial_command_ref": {
+            "$ref": "#/components/schemas/V__S0_InitialCommandRef"
+          },
+          "request_identity": {
+            "$ref": "#/components/schemas/V__S0_RequestIdentity"
+          },
+          "target": {
+            "type": "object",
+            "properties": {
+              "device_id": {
+                "$ref": "#/components/schemas/V__S0_Id"
+              },
+              "action_id": {
+                "$ref": "#/components/schemas/V__S0_Id"
+              },
+              "capability_version": {
+                "$ref": "#/components/schemas/V__S0_Version"
+              }
+            },
+            "required": [
+              "device_id",
+              "action_id",
+              "capability_version"
+            ],
+            "additionalProperties": false
+          },
+          "actor": {
+            "$ref": "#/components/schemas/V__S0_Actor"
+          },
+          "origin": {
+            "enum": [
+              "manual",
+              "automation"
+            ]
+          },
+          "run_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_RunBinding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "automation_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_AutomationOriginBinding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accepted_at": {
+            "$ref": "#/components/schemas/V__S0_Timestamp"
+          },
+          "dispatch": {
+            "$ref": "#/components/schemas/V__S0_Dispatch"
+          },
+          "control_binding": {
+            "$ref": "#/components/schemas/V__S0_ControlVersion"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/V__S0_Policy"
+          },
+          "state_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "state": {
+            "$ref": "#/components/schemas/V__S0_State"
+          },
+          "completion": {
+            "$ref": "#/components/schemas/V__S0_CompletionView"
+          },
+          "attempts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_AttemptView"
+            },
+            "minItems": 0,
+            "maxItems": 16
+          },
+          "cancellation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_CancellationView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_index": {
+            "$ref": "#/components/schemas/V__S0_EvidenceIndex"
+          },
+          "record_digest": {
+            "$ref": "#/components/schemas/V__S0_Digest"
+          }
+        },
+        "required": [
+          "command_id",
+          "scope",
+          "revision",
+          "initial_command_ref",
+          "request_identity",
+          "target",
+          "actor",
+          "origin",
+          "run_binding",
+          "automation_binding",
+          "accepted_at",
+          "dispatch",
+          "control_binding",
+          "policy",
+          "state_ref",
+          "state",
+          "completion",
+          "attempts",
+          "cancellation",
+          "evidence_index",
+          "record_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "origin": {
+                  "const": "manual"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "run_binding": {
+                  "type": "null"
+                },
+                "automation_binding": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "run_binding": {
+                  "$ref": "#/components/schemas/V__S0_RunBinding"
+                },
+                "automation_binding": {
+                  "$ref": "#/components/schemas/V__S0_AutomationOriginBinding"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S0_Scope": {
+        "$ref": "#/components/schemas/Scope"
+      },
+      "V__S0_PositiveCounter": {
+        "$ref": "#/components/schemas/V__S1_PositiveCounter"
+      },
+      "V__S1_PositiveCounter": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+      },
+      "V__S0_InitialCommandRef": {
+        "$ref": "#/components/schemas/V__S2_CommandRef"
+      },
+      "V__S2_CommandRef": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "command"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S2_Scope"
+          },
+          "object_id": {
+            "$ref": "#/components/schemas/V__S2_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/V__S2_Counter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/V__S2_Digest"
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "object_id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S2_Scope": {
+        "$ref": "#/components/schemas/Scope"
+      },
+      "V__S2_Id": {
+        "$ref": "#/components/schemas/V__S3_Id"
+      },
+      "V__S3_Id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+      },
+      "V__S2_Counter": {
+        "$ref": "#/components/schemas/V__S3_Counter"
+      },
+      "V__S3_Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+      },
+      "V__S2_Digest": {
+        "$ref": "#/components/schemas/V__S3_Digest"
+      },
+      "V__S3_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+      },
+      "V__S0_RequestIdentity": {
+        "$ref": "#/components/schemas/V__S2_RequestIdentity"
+      },
+      "V__S2_RequestIdentity": {
+        "$ref": "#/components/schemas/RequestIdentity"
+      },
+      "RequestIdentity": {
+        "$ref": "#/components/schemas/A__S0_RequestIdentity"
+      },
+      "V__S0_Version": {
+        "$ref": "#/components/schemas/V__S5_Version"
+      },
+      "V__S5_Version": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$"
+      },
+      "V__S0_Actor": {
+        "$ref": "#/components/schemas/V__S5_Actor"
+      },
+      "V__S5_Actor": {
+        "type": "object",
+        "properties": {
+          "principal_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S5_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authorization_revision": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "issuer_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "issuer_epoch": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "local_subject_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          }
+        },
+        "required": [
+          "principal_id",
+          "session_id",
+          "authorization_revision",
+          "issuer_id",
+          "issuer_epoch",
+          "local_subject_id"
+        ],
+        "additionalProperties": false
+      },
+      "V__S5_Id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[A-Za-z0-9._-]+$"
+      },
+      "V__S5_Revision": {
+        "type": "string",
+        "maxLength": 20,
+        "pattern": "^(0|[1-9][0-9]*)$"
+      },
+      "V__S0_RunBinding": {
+        "$ref": "#/components/schemas/RunBinding"
+      },
+      "RunBinding": {
+        "$ref": "#/components/schemas/S2__RunBinding"
+      },
+      "V__S0_AutomationOriginBinding": {
+        "$ref": "#/components/schemas/AutomationOriginBinding"
+      },
+      "AutomationOriginBinding": {
+        "$ref": "#/components/schemas/S2__AutomationOriginBinding"
+      },
+      "V__S0_Timestamp": {
+        "$ref": "#/components/schemas/V__S5_Timestamp"
+      },
+      "V__S5_Timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+      },
+      "V__S0_Dispatch": {
+        "$ref": "#/components/schemas/V__S5_Dispatch"
+      },
+      "V__S5_Dispatch": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "const": "immediate"
+              },
+              "max_queue_ms": {
+                "$ref": "#/components/schemas/V__S5_Duration"
+              }
+            },
+            "required": [
+              "mode",
+              "max_queue_ms"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "const": "scheduled"
+              },
+              "occurrence_id": {
+                "$ref": "#/components/schemas/V__S5_Id"
+              },
+              "not_before": {
+                "$ref": "#/components/schemas/V__S5_Timestamp"
+              },
+              "not_after": {
+                "$ref": "#/components/schemas/V__S5_Timestamp"
+              },
+              "clock_policy_revision": {
+                "$ref": "#/components/schemas/V__S5_Revision"
+              },
+              "max_queue_ms": {
+                "$ref": "#/components/schemas/V__S5_Duration"
+              }
+            },
+            "required": [
+              "mode",
+              "occurrence_id",
+              "not_before",
+              "not_after",
+              "clock_policy_revision",
+              "max_queue_ms"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "V__S5_Duration": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 86400000
+      },
+      "V__S0_ControlVersion": {
+        "$ref": "#/components/schemas/V__S5_ControlVersion"
+      },
+      "V__S5_ControlVersion": {
+        "type": "object",
+        "properties": {
+          "epoch": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "version": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          }
+        },
+        "required": [
+          "epoch",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_Policy": {
+        "$ref": "#/components/schemas/V__S1_Policy"
+      },
+      "V__S1_Policy": {
+        "type": "object",
+        "properties": {
+          "command_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S1_Scope"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "admission_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "required_completion": {
+            "$ref": "#/components/schemas/V__S1_CompletionLevel"
+          },
+          "completion_policy_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "release_policy_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "retry_policy_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S1_Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_attempts": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "original_deadline_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "conflict_scope": {
+            "const": "whole_device"
+          }
+        },
+        "required": [
+          "command_id",
+          "scope",
+          "device_id",
+          "admission_ref",
+          "required_completion",
+          "completion_policy_ref",
+          "release_policy_ref",
+          "retry_policy_ref",
+          "max_attempts",
+          "original_deadline_ref",
+          "conflict_scope"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "retry_policy_ref": {
+                  "type": "null"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "max_attempts": {
+                  "const": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S1_Scope": {
+        "$ref": "#/components/schemas/Scope"
+      },
+      "V__S1_Ref": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/V__S1_PositiveCounter"
+          },
+          "digest": {
+            "$ref": "#/components/schemas/V__S1_Digest"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S1_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+      },
+      "V__S1_CompletionLevel": {
+        "enum": [
+          "sent",
+          "acknowledged",
+          "effect_verified"
+        ]
+      },
+      "V__S0_Ref": {
+        "$ref": "#/components/schemas/V__S1_Ref"
+      },
+      "V__S0_State": {
+        "$ref": "#/components/schemas/V__S1_State"
+      },
+      "V__S1_State": {
+        "type": "object",
+        "properties": {
+          "command_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S1_Scope"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/V__S1_PositiveCounter"
+          },
+          "phase": {
+            "enum": [
+              "queued",
+              "dispatching",
+              "awaiting_evidence",
+              "finished"
+            ]
+          },
+          "outcome": {
+            "enum": [
+              "pending",
+              "succeeded",
+              "failed",
+              "unknown",
+              "cancelled",
+              "expired",
+              "blocked"
+            ]
+          },
+          "effect_status": {
+            "$ref": "#/components/schemas/V__S1_Effect"
+          },
+          "resource_status": {
+            "enum": [
+              "held",
+              "clear",
+              "unresolved"
+            ]
+          },
+          "automation_continuation": {
+            "enum": [
+              "eligible",
+              "paused_latched"
+            ]
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S1_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "terminal_revision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S1_PositiveCounter"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "resolution_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S1_Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "completion_evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S1_Ref"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          "resource_evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S1_Ref"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          "attempt_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S1_Id"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          }
+        },
+        "required": [
+          "command_id",
+          "scope",
+          "revision",
+          "phase",
+          "outcome",
+          "effect_status",
+          "resource_status",
+          "automation_continuation",
+          "reason_code",
+          "terminal_revision",
+          "resolution_ref",
+          "completion_evidence_refs",
+          "resource_evidence_refs",
+          "attempt_ids"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "finished"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "outcome": {
+                  "not": {
+                    "const": "pending"
+                  }
+                },
+                "terminal_revision": {
+                  "$ref": "#/components/schemas/V__S1_PositiveCounter"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "outcome": {
+                  "const": "pending"
+                },
+                "terminal_revision": {
+                  "type": "null"
+                },
+                "resolution_ref": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "outcome": {
+                  "enum": [
+                    "failed",
+                    "unknown",
+                    "cancelled",
+                    "expired",
+                    "blocked"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "$ref": "#/components/schemas/V__S1_Id"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "outcome": {
+                  "enum": [
+                    "unknown",
+                    "blocked",
+                    "expired"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "automation_continuation": {
+                  "const": "paused_latched"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "outcome": {
+                  "const": "unknown"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "effect_status": {
+                  "not": {
+                    "const": "not_sent"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "outcome": {
+                  "const": "unknown"
+                },
+                "resource_status": {
+                  "const": "clear"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "resolution_ref": {
+                  "$ref": "#/components/schemas/V__S1_Ref"
+                },
+                "resource_evidence_refs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/V__S1_Ref"
+                  },
+                  "minItems": 1,
+                  "maxItems": 256
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S1_Effect": {
+        "enum": [
+          "not_sent",
+          "possible",
+          "acknowledged",
+          "verified",
+          "partial"
+        ]
+      },
+      "V__S0_CompletionView": {
+        "type": "object",
+        "properties": {
+          "required": {
+            "$ref": "#/components/schemas/V__S0_CompletionLevel"
+          },
+          "achieved": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_CompletionLevel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "policy_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_Ref"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          }
+        },
+        "required": [
+          "required",
+          "achieved",
+          "policy_ref",
+          "evidence_refs"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_CompletionLevel": {
+        "$ref": "#/components/schemas/V__S1_CompletionLevel"
+      },
+      "V__S0_AttemptView": {
+        "type": "object",
+        "properties": {
+          "attempt_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "ordinal": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "prepared_state_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "packet_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_PacketRef"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          "exits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_AttemptExit"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          "outcome": {
+            "enum": [
+              "pending",
+              "succeeded",
+              "failed",
+              "unknown",
+              "cancelled",
+              "not_sent"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_Ref"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          }
+        },
+        "required": [
+          "attempt_id",
+          "ordinal",
+          "prepared_state_ref",
+          "packet_refs",
+          "exits",
+          "outcome",
+          "evidence_refs"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_PacketRef": {
+        "$ref": "#/components/schemas/V__S1_PacketRef"
+      },
+      "V__S1_PacketRef": {
+        "type": "object",
+        "properties": {
+          "packet_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "packet_digest": {
+            "$ref": "#/components/schemas/V__S1_Digest"
+          }
+        },
+        "required": [
+          "packet_id",
+          "packet_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_AttemptExit": {
+        "type": "object",
+        "properties": {
+          "exit_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "worker_boot_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "ipc_session_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "device_session_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "clock_domain_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "descriptor_digest": {
+            "$ref": "#/components/schemas/V__S0_Digest"
+          },
+          "send_started_at": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_Timestamp"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocol_request_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_Id"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          }
+        },
+        "required": [
+          "exit_ref",
+          "worker_boot_id",
+          "ipc_session_id",
+          "device_session_id",
+          "clock_domain_id",
+          "descriptor_digest",
+          "send_started_at",
+          "protocol_request_ids"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_Digest": {
+        "$ref": "#/components/schemas/V__S1_Digest"
+      },
+      "V__S0_CancellationView": {
+        "type": "object",
+        "properties": {
+          "operation_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "state": {
+            "$ref": "#/components/schemas/V__S0_CancellationState"
+          },
+          "future_writes": {
+            "enum": [
+              "pending",
+              "closed",
+              "indeterminate"
+            ]
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "operation_ref",
+          "state",
+          "future_writes",
+          "reason_code"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_CancellationState": {
+        "enum": [
+          "requested",
+          "confirmed",
+          "unsupported",
+          "failed",
+          "indeterminate",
+          "too_late"
+        ]
+      },
+      "V__S0_EvidenceIndex": {
+        "type": "object",
+        "properties": {
+          "snapshot_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "state_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "total": {
+            "$ref": "#/components/schemas/V__S0_Counter"
+          }
+        },
+        "required": [
+          "snapshot_ref",
+          "state_ref",
+          "total"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_Counter": {
+        "$ref": "#/components/schemas/V__S1_Counter"
+      },
+      "V__S1_Counter": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+      },
+      "V__S0_Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid",
+              "unauthenticated",
+              "forbidden",
+              "not_found",
+              "state_conflict",
+              "identity_conflict",
+              "cancellation_exists",
+              "snapshot_conflict",
+              "snapshot_gone",
+              "context_expired",
+              "payload_too_large",
+              "invalid_semantics",
+              "capacity",
+              "unavailable",
+              "state_projection_pending"
+            ]
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "retry_action": {
+            "enum": [
+              "none",
+              "read_original",
+              "read_current"
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "request_id",
+          "retry_action"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "code": {
+                  "const": "state_projection_pending"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "retry_action": {
+                  "const": "read_current"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S0_CancelReceipt": {
+        "type": "object",
+        "properties": {
+          "identity": {
+            "$ref": "#/components/schemas/V__S0_CancelIdentity"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S0_Scope"
+          },
+          "cancellation_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "initial_operation_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "accepted_state_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "receipt_digest": {
+            "$ref": "#/components/schemas/V__S0_Digest"
+          }
+        },
+        "required": [
+          "identity",
+          "command_id",
+          "scope",
+          "cancellation_id",
+          "initial_operation_ref",
+          "accepted_state_ref",
+          "receipt_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_CancelIdentity": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/V__S0_CancelKey"
+          },
+          "request_digest": {
+            "$ref": "#/components/schemas/V__S0_Digest"
+          }
+        },
+        "required": [
+          "key",
+          "request_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_CancelKey": {
+        "type": "object",
+        "properties": {
+          "target_scope": {
+            "$ref": "#/components/schemas/V__S0_Scope"
+          },
+          "issuer_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "issuer_epoch": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "principal_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "request_epoch": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "operation_id": {
+            "const": "cancelCommand"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          }
+        },
+        "required": [
+          "target_scope",
+          "issuer_id",
+          "issuer_epoch",
+          "principal_id",
+          "request_epoch",
+          "operation_id",
+          "idempotency_key"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_CancelRequest": {
+        "type": "object",
+        "properties": {
+          "context_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "idempotency_key": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "expected_state_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "context_id",
+          "idempotency_key",
+          "expected_state_ref",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_CancelLookup": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "const": "found"
+              },
+              "receipt": {
+                "$ref": "#/components/schemas/V__S0_CancelReceipt"
+              }
+            },
+            "required": [
+              "state",
+              "receipt"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_found",
+                  "indeterminate"
+                ]
+              },
+              "receipt": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "state",
+              "receipt"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "V__S0_CancelOperation": {
+        "type": "object",
+        "properties": {
+          "cancellation_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S0_Scope"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/V__S0_PositiveCounter"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/V__S0_CancelIdentity"
+          },
+          "state": {
+            "$ref": "#/components/schemas/V__S0_CancellationState"
+          },
+          "mode": {
+            "enum": [
+              "before_dispatch_only",
+              "cooperative"
+            ]
+          },
+          "future_writes": {
+            "enum": [
+              "pending",
+              "closed",
+              "indeterminate"
+            ]
+          },
+          "command_state_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_Ref"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "operation_digest": {
+            "$ref": "#/components/schemas/V__S0_Digest"
+          }
+        },
+        "required": [
+          "cancellation_id",
+          "scope",
+          "command_id",
+          "revision",
+          "identity",
+          "state",
+          "mode",
+          "future_writes",
+          "command_state_ref",
+          "evidence_refs",
+          "reason_code",
+          "operation_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_Cursor": {
+        "type": "string",
+        "minLength": 16,
+        "maxLength": 4096,
+        "pattern": "^[A-Za-z0-9_-]+$(?![\\s\\S])"
+      },
+      "V__S0_EvidencePage": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/V__S0_Scope"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "snapshot_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "state_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "offset": {
+            "$ref": "#/components/schemas/V__S0_Counter"
+          },
+          "total": {
+            "$ref": "#/components/schemas/V__S0_Counter"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S0_EvidenceRecord"
+            },
+            "minItems": 0,
+            "maxItems": 64
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S0_Cursor"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "page_digest": {
+            "$ref": "#/components/schemas/V__S0_Digest"
+          }
+        },
+        "required": [
+          "scope",
+          "command_id",
+          "snapshot_ref",
+          "state_ref",
+          "offset",
+          "total",
+          "items",
+          "next_cursor",
+          "page_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_EvidenceRecord": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/V__S0_Scope"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "source_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/V__S0_EvidenceKind"
+          },
+          "body": {},
+          "view_digest": {
+            "$ref": "#/components/schemas/V__S0_Digest"
+          }
+        },
+        "required": [
+          "scope",
+          "command_id",
+          "source_ref",
+          "kind",
+          "body",
+          "view_digest"
+        ],
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "properties": {
+              "kind": {
+                "const": "observation"
+              },
+              "body": {
+                "$ref": "#/components/schemas/V__S0_Observation"
+              }
+            }
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "decision"
+              },
+              "body": {
+                "$ref": "#/components/schemas/V__S0_DecisionEvidence"
+              }
+            }
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "release"
+              },
+              "body": {
+                "$ref": "#/components/schemas/V__S0_ReleaseEvidence"
+              }
+            }
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "resolution"
+              },
+              "body": {
+                "$ref": "#/components/schemas/V__S0_Resolution"
+              }
+            }
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "invalidation"
+              },
+              "body": {
+                "$ref": "#/components/schemas/V__S0_Invalidation"
+              }
+            }
+          }
+        ]
+      },
+      "V__S0_EvidenceKind": {
+        "enum": [
+          "observation",
+          "decision",
+          "release",
+          "resolution",
+          "invalidation"
+        ]
+      },
+      "V__S0_Observation": {
+        "$ref": "#/components/schemas/V__S5_CompletionEvidence"
+      },
+      "V__S5_CompletionEvidence": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "attempt_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "kind": {
+            "enum": [
+              "transport_submission",
+              "device_ack",
+              "fresh_query",
+              "device_event",
+              "cancel_ack"
+            ]
+          },
+          "worker_boot_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "device_session_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "observation_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S5_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocol_request_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S5_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "captured_at": {
+            "$ref": "#/components/schemas/V__S5_Timestamp"
+          },
+          "clock": {
+            "$ref": "#/components/schemas/V__S5_ClockStatus"
+          },
+          "predicate_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S5_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "predicate_result": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "durable": {
+            "const": true
+          },
+          "obs_bundle": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S5_ObsCompletionBundle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "clock_domain_id": {
+            "type": "string",
+            "pattern": "^clock_[0-9a-f]{64}$"
+          },
+          "descriptor_digest": {
+            "$ref": "#/components/schemas/V__S5_Digest"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "command_id",
+          "attempt_id",
+          "kind",
+          "worker_boot_id",
+          "device_session_id",
+          "observation_id",
+          "protocol_request_id",
+          "captured_at",
+          "clock",
+          "predicate_id",
+          "predicate_result",
+          "durable",
+          "obs_bundle",
+          "clock_domain_id",
+          "descriptor_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S5_ClockStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "synchronized",
+              "degraded",
+              "unsynchronized"
+            ]
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S5_Id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sampled_at": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S5_Timestamp"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "offset_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uncertainty_ms": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sample_age_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 86400000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "policy_revision": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          }
+        },
+        "required": [
+          "status",
+          "source_ref",
+          "sampled_at",
+          "offset_ms",
+          "uncertainty_ms",
+          "sample_age_ms",
+          "policy_revision"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "synchronized"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "source_ref": {
+                  "$ref": "#/components/schemas/V__S5_Id"
+                },
+                "sampled_at": {
+                  "$ref": "#/components/schemas/V__S5_Timestamp"
+                },
+                "offset_ms": {
+                  "type": "number"
+                },
+                "uncertainty_ms": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "sample_age_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 86400000
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S5_ObsCompletionBundle": {
+        "type": "object",
+        "properties": {
+          "policy_id": {
+            "const": "obs.program_scene.cut.v1"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "attempt_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "worker_boot_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "device_session_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "collection_generation": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "catalog_revision": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "target_scene_uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "set_request_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "query_request_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "frames": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S5_ObsEvidenceFrame"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "evaluation_tick_ns": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "deadline_tick_ns": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "max_query_age_ms": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "catalog_current": {
+            "type": "boolean"
+          },
+          "fixture_current": {
+            "type": "boolean"
+          },
+          "durable": {
+            "const": true
+          },
+          "clock_domain_id": {
+            "type": "string",
+            "pattern": "^clock_[0-9a-f]{64}$"
+          },
+          "descriptor_digest": {
+            "$ref": "#/components/schemas/V__S5_Digest"
+          }
+        },
+        "required": [
+          "policy_id",
+          "command_id",
+          "attempt_id",
+          "worker_boot_id",
+          "device_session_id",
+          "collection_generation",
+          "catalog_revision",
+          "target_scene_uuid",
+          "set_request_id",
+          "query_request_id",
+          "frames",
+          "evaluation_tick_ns",
+          "deadline_tick_ns",
+          "max_query_age_ms",
+          "catalog_current",
+          "fixture_current",
+          "durable",
+          "clock_domain_id",
+          "descriptor_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S5_ObsEvidenceFrame": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "attempt_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "worker_boot_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "device_session_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "collection_generation": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "catalog_revision": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "protocol_request_id": {
+            "$ref": "#/components/schemas/V__S5_Id"
+          },
+          "kind": {
+            "enum": [
+              "set_send",
+              "set_ack",
+              "query_send",
+              "query_result"
+            ]
+          },
+          "io_seq": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "tick_ns": {
+            "$ref": "#/components/schemas/V__S5_Revision"
+          },
+          "success": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scene_uuid": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "clock_domain_id": {
+            "type": "string",
+            "pattern": "^clock_[0-9a-f]{64}$"
+          },
+          "descriptor_digest": {
+            "$ref": "#/components/schemas/V__S5_Digest"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "command_id",
+          "attempt_id",
+          "worker_boot_id",
+          "device_session_id",
+          "collection_generation",
+          "catalog_revision",
+          "protocol_request_id",
+          "kind",
+          "io_seq",
+          "tick_ns",
+          "success",
+          "scene_uuid",
+          "clock_domain_id",
+          "descriptor_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S5_Digest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "V__S0_DecisionEvidence": {
+        "$ref": "#/components/schemas/V__S1_DecisionEvidence"
+      },
+      "V__S1_DecisionEvidence": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S1_Scope"
+          },
+          "kind": {
+            "enum": [
+              "completion",
+              "failure",
+              "cancellation",
+              "resolution"
+            ]
+          },
+          "policy_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "retry_policy_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S1_Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "attempt_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S1_Id"
+            },
+            "minItems": 0,
+            "maxItems": 256
+          },
+          "achieved": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S1_CompletionLevel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effect_status": {
+            "$ref": "#/components/schemas/V__S1_Effect"
+          },
+          "resolved_outcome": {
+            "anyOf": [
+              {
+                "enum": [
+                  "succeeded",
+                  "failed",
+                  "cancelled",
+                  "not_sent"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_digest": {
+            "$ref": "#/components/schemas/V__S1_Digest"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "command_id",
+          "scope",
+          "kind",
+          "policy_ref",
+          "retry_policy_ref",
+          "attempt_ids",
+          "achieved",
+          "effect_status",
+          "resolved_outcome",
+          "evidence_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "completion"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "achieved": {
+                  "$ref": "#/components/schemas/V__S1_CompletionLevel"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "achieved": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "resolution"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "resolved_outcome": {
+                  "enum": [
+                    "succeeded",
+                    "failed",
+                    "cancelled",
+                    "not_sent"
+                  ]
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "resolved_outcome": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S0_ReleaseEvidence": {
+        "$ref": "#/components/schemas/V__S1_ReleaseEvidence"
+      },
+      "V__S1_ReleaseEvidence": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S1_Scope"
+          },
+          "device_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "hold_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "cut_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "kind": {
+            "enum": [
+              "never_sent",
+              "module_settled",
+              "maintenance_fenced"
+            ]
+          },
+          "policy_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "future_writes_closed_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "settlement_proof_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/V__S1_Ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_digest": {
+            "$ref": "#/components/schemas/V__S1_Digest"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "command_id",
+          "scope",
+          "device_id",
+          "hold_id",
+          "cut_ref",
+          "kind",
+          "policy_ref",
+          "future_writes_closed_ref",
+          "settlement_proof_ref",
+          "evidence_digest"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "never_sent"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "settlement_proof_ref": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "settlement_proof_ref": {
+                  "$ref": "#/components/schemas/V__S1_Ref"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "V__S0_Resolution": {
+        "$ref": "#/components/schemas/V__S1_Resolution"
+      },
+      "V__S1_Resolution": {
+        "type": "object",
+        "properties": {
+          "resolution_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S1_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S1_Scope"
+          },
+          "original_terminal_revision": {
+            "$ref": "#/components/schemas/V__S1_PositiveCounter"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/V__S1_PositiveCounter"
+          },
+          "resolved_outcome": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "cancelled",
+              "not_sent"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V__S1_Ref"
+            },
+            "minItems": 1,
+            "maxItems": 256
+          },
+          "resolver_ref": {
+            "$ref": "#/components/schemas/V__S1_Ref"
+          },
+          "resolution_digest": {
+            "$ref": "#/components/schemas/V__S1_Digest"
+          }
+        },
+        "required": [
+          "resolution_id",
+          "command_id",
+          "scope",
+          "original_terminal_revision",
+          "revision",
+          "resolved_outcome",
+          "evidence_refs",
+          "resolver_ref",
+          "resolution_digest"
+        ],
+        "additionalProperties": false
+      },
+      "V__S0_Invalidation": {
+        "type": "object",
+        "properties": {
+          "invalidation_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/V__S0_Scope"
+          },
+          "command_id": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "subject_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          },
+          "reason_code": {
+            "$ref": "#/components/schemas/V__S0_Id"
+          },
+          "protection_ref": {
+            "$ref": "#/components/schemas/V__S0_Ref"
+          }
+        },
+        "required": [
+          "invalidation_id",
+          "scope",
+          "command_id",
+          "subject_ref",
+          "reason_code",
+          "protection_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "humanBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "serviceBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-Token"
+      }
+    }
+  },
+  "x-approved": false,
+  "x-canonical-schema": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json"
+}

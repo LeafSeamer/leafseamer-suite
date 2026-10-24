@@ -1,0 +1,2040 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/final-admission.schema.json",
+  "title": "final-admission/0.1.0-draft.1",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Principal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "kind",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionIdentity": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "ordinary",
+            "cancel"
+          ]
+        },
+        "command_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "attempt_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancellation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "execution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "kind",
+        "command_ref",
+        "attempt_ref",
+        "cancellation_ref",
+        "execution_ref",
+        "requester",
+        "origin",
+        "source_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attempt_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "cancellation_ref": {
+                "type": "null"
+              },
+              "execution_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "attempt_ref": {
+                "type": "null"
+              },
+              "cancellation_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "execution_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "service"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "human"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Inputs": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "$ref": "#/$defs/Ref"
+        },
+        "capability": {
+          "$ref": "#/$defs/Ref"
+        },
+        "encoding": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authorization": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_commit": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_access": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ownership": {
+          "$ref": "#/$defs/Ref"
+        },
+        "permit_authority": {
+          "$ref": "#/$defs/Ref"
+        },
+        "guard": {
+          "$ref": "#/$defs/Ref"
+        },
+        "budget": {
+          "$ref": "#/$defs/Ref"
+        },
+        "time": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_before": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_after": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_safety": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_safety": {
+          "$ref": "#/$defs/Ref"
+        },
+        "run_deny": {
+          "$ref": "#/$defs/Ref"
+        },
+        "command_deny": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ordinary_closure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "protection_assessment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "primitive_dependency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "origin",
+        "capability",
+        "encoding",
+        "authorization",
+        "control",
+        "gate_commit",
+        "gate_access",
+        "ownership",
+        "permit_authority",
+        "guard",
+        "budget",
+        "time",
+        "resource_before",
+        "resource_after",
+        "resource_safety",
+        "gate_safety",
+        "run_deny",
+        "command_deny",
+        "ordinary_closure",
+        "protection_assessment",
+        "primitive_dependency"
+      ],
+      "additionalProperties": false
+    },
+    "Window": {
+      "type": "object",
+      "properties": {
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_origin": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "command_state_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "command_state_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Original_origin": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "origin"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_origin"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_capability": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "encoding_source_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "encoding_source_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Original_capability": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "capability"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_capability"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_encoding": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "packet_record_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "packet_ref": {
+          "type": "object",
+          "properties": {
+            "packet_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "packet_digest": {
+              "$ref": "#/$defs/Digest"
+            }
+          },
+          "required": [
+            "packet_id",
+            "packet_digest"
+          ],
+          "additionalProperties": false
+        },
+        "received_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "packet_record_ref",
+        "packet_ref",
+        "received_tick_ns",
+        "expires_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Original_encoding": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "encoding"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_encoding"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_authorization": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Original_authorization": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "authorization"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_authorization"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_control": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "pending_operation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "mode": {
+          "enum": [
+            "automatic",
+            "manual"
+          ]
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Principal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "pending_operation_id",
+        "control_epoch",
+        "effective_version",
+        "mode",
+        "holder"
+      ],
+      "additionalProperties": false
+    },
+    "Original_control": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "control"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_control"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_gate_commit": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "access_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "access_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Original_gate_commit": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "gate_commit"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_gate_commit"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_gate_access": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "purpose": {
+          "enum": [
+            "ordinary",
+            "cancel_only"
+          ]
+        },
+        "restricted_identity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExecutionIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "purpose",
+        "restricted_identity",
+        "control_authority_ref",
+        "control_epoch",
+        "effective_version",
+        "authorization_ref",
+        "resource_safety_ref",
+        "gate_safety_ref",
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Original_gate_access": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "gate_access"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_gate_access"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_ownership": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "hold_ref",
+        "control_authority_ref",
+        "control_epoch",
+        "effective_version"
+      ],
+      "additionalProperties": false
+    },
+    "Original_ownership": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "ownership"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_ownership"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_permit_authority": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/Counter"
+        },
+        "transmission_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "guard_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "hold_ref",
+        "permit_id",
+        "issued_revision",
+        "ordinal",
+        "transmission_id",
+        "ownership_ref",
+        "control_authority_ref",
+        "authorization_ref",
+        "guard_ref",
+        "packet_ref",
+        "control_epoch",
+        "effective_version"
+      ],
+      "additionalProperties": false
+    },
+    "Original_permit_authority": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "permit_authority"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_permit_authority"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_guard": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "packet_ref": {
+          "type": "object",
+          "properties": {
+            "packet_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "packet_digest": {
+              "$ref": "#/$defs/Digest"
+            }
+          },
+          "required": [
+            "packet_id",
+            "packet_digest"
+          ],
+          "additionalProperties": false
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "protection_assessment_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "permit_id",
+        "issued_revision",
+        "packet_ref",
+        "gate_access_ref",
+        "ownership_ref",
+        "protection_assessment_ref",
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Original_guard": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "guard"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_guard"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_budget": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "charge_kind": {
+          "const": "new_transmission"
+        },
+        "charged_permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "permit_id",
+        "issued_revision",
+        "charge_kind",
+        "charged_permit_id",
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Original_budget": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "budget"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_budget"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_time": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "permit_id",
+        "issued_revision",
+        "clock_domain_id",
+        "descriptor_digest",
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "Original_time": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "time"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_time"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_resource_before": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "resource_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "holds": {
+          "type": "array",
+          "maxItems": 65536,
+          "items": {
+            "type": "object",
+            "properties": {
+              "hold_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "ownership_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "classification": {
+                "enum": [
+                  "active",
+                  "unknown",
+                  "unresolved",
+                  "stale"
+                ]
+              }
+            },
+            "required": [
+              "hold_ref",
+              "ownership_ref",
+              "classification"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "resource_safety_ref",
+        "holds"
+      ],
+      "additionalProperties": false
+    },
+    "Original_resource_before": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "resource_before"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_resource_before"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_resource_safety": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        }
+      },
+      "required": [
+        "binding",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "Original_resource_safety": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "resource_safety"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_resource_safety"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_gate_safety": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        }
+      },
+      "required": [
+        "binding",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "Original_gate_safety": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "gate_safety"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_gate_safety"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_run_deny": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        }
+      },
+      "required": [
+        "binding",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "Original_run_deny": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "run_deny"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_run_deny"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_command_deny": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        }
+      },
+      "required": [
+        "binding",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "Original_command_deny": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "command_deny"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_command_deny"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_ordinary_closure": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "stage": {
+          "const": "ordinary"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "stage"
+      ],
+      "additionalProperties": false
+    },
+    "Original_ordinary_closure": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "ordinary_closure"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_ordinary_closure"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_protection_assessment": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "resource_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "resource_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Original_protection_assessment": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "protection_assessment"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_protection_assessment"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_primitive_dependency": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "execution_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "transmission_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "execution_ref",
+        "transmission_id"
+      ],
+      "additionalProperties": false
+    },
+    "Original_primitive_dependency": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "primitive_dependency"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_primitive_dependency"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Projection_resource_after": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "resource_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "holds": {
+          "type": "array",
+          "maxItems": 65536,
+          "items": {
+            "type": "object",
+            "properties": {
+              "hold_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "ownership_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "classification": {
+                "enum": [
+                  "active",
+                  "unknown",
+                  "unresolved",
+                  "stale"
+                ]
+              }
+            },
+            "required": [
+              "hold_ref",
+              "ownership_ref",
+              "classification"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "binding",
+        "identity",
+        "resource_safety_ref",
+        "holds"
+      ],
+      "additionalProperties": false
+    },
+    "Original_resource_after": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "const": "resource_after"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "body": {
+          "$ref": "#/$defs/Projection_resource_after"
+        }
+      },
+      "required": [
+        "role",
+        "ref",
+        "source_ref",
+        "scope",
+        "transaction_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "Seal": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "final-admission/0.1.0-draft.1"
+        },
+        "seal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "command_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "transmission_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/Counter"
+        },
+        "transmission_kind": {
+          "enum": [
+            "initial",
+            "protocol_resend"
+          ]
+        },
+        "previous_permit_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "packet_ref": {
+          "type": "object",
+          "properties": {
+            "packet_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "packet_digest": {
+              "$ref": "#/$defs/Digest"
+            }
+          },
+          "required": [
+            "packet_id",
+            "packet_digest"
+          ],
+          "additionalProperties": false
+        },
+        "encoding_packet_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "hold_transition": {
+          "enum": [
+            "create",
+            "reuse"
+          ]
+        },
+        "inputs": {
+          "$ref": "#/$defs/Inputs"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "sealed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "send_window": {
+          "$ref": "#/$defs/Window"
+        },
+        "seal_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "seal_id",
+        "revision",
+        "transaction_id",
+        "binding",
+        "identity",
+        "command_state_ref",
+        "permit_id",
+        "transmission_id",
+        "issued_revision",
+        "ordinal",
+        "transmission_kind",
+        "previous_permit_ref",
+        "packet_ref",
+        "encoding_packet_ref",
+        "hold_ref",
+        "hold_transition",
+        "inputs",
+        "selected_tick_ns",
+        "sealed_tick_ns",
+        "send_window",
+        "seal_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "identity": {
+                "properties": {
+                  "kind": {
+                    "const": "ordinary"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "inputs": {
+                "properties": {
+                  "ordinary_closure": {
+                    "type": "null"
+                  },
+                  "protection_assessment": {
+                    "type": "null"
+                  },
+                  "primitive_dependency": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "inputs": {
+                "properties": {
+                  "ordinary_closure": {
+                    "$ref": "#/$defs/Ref"
+                  },
+                  "protection_assessment": {
+                    "$ref": "#/$defs/Ref"
+                  },
+                  "primitive_dependency": {
+                    "$ref": "#/$defs/Ref"
+                  }
+                }
+              },
+              "hold_transition": {
+                "const": "reuse"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "transmission_kind": {
+                "const": "initial"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ordinal": {
+                "const": "0"
+              },
+              "previous_permit_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "previous_permit_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "hold_transition": {
+                "const": "reuse"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CommitObservation": {
+      "type": "object",
+      "properties": {
+        "observation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "seal_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "outcome": {
+          "enum": [
+            "committed",
+            "rolled_back",
+            "unknown"
+          ]
+        },
+        "observed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "observer_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "observation_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "observation_id",
+        "transaction_id",
+        "scope",
+        "seal_ref",
+        "permit_id",
+        "outcome",
+        "observed_tick_ns",
+        "observer_ref",
+        "observation_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

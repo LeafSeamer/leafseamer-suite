@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录固定attempt库存持久化与本周期第二轮交付 | R:code:docs/contracts/c04-lifecycle/ATTEMPT_INVENTORY.md | A:开发进展及三轮提交推送节奏 | S:97项库存检查及69、133、86项实际回归；本轮只本地提交，完整发送链与真实提供者未完成
+DEVELOPMENT_MEMO.md[SO5L]: F:记录最终准入封存候选及本周期第三轮交付 | R:code:docs/contracts/c04-lifecycle/FINAL_ADMISSION_SEAL.md | A:开发进展及三轮审查推送节奏 | S:167项离线检查不授发送资格；四临时签发守卫保留；按各提交自己的输入审查后推送
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:记录固定attempt库存持久化后的系统设计缺口 | R:code:docs/contracts/c04-lifecycle/ATTEMPT_INVENTORY.md | A:C01至C12收敛视图 | S:238表存储和97项检查不关闭最终发送链、全部生命周期writer、真实资格与TIME提供者、成本及GC；阶段0未完成
+rebirth-design-closure.md[SQ8M]: F:记录最终准入封存字段形成后的系统收敛边界 | R:code:docs/contracts/c04-lifecycle/FINAL_ADMISSION_SEAL.md | A:C01至C12收敛视图 | S:167项离线关系检查不关闭实际投影器、同库最终写集、唯一出口及设备验收；四临时阻断保持，第三轮审查后推送main
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -535,6 +535,12 @@ attempt_inventory_model.py[PD9S]: F:从SQLite原件采集、封存并读取指�
 build_attempt_inventory.py[XV7T]: F:追加固定库存约束生成238表Controller参考布局 | R:code:docs/contracts/c04-lifecycle/build_typed_command_view.py,code:docs/contracts/c04-lifecycle/attempt-inventory.sql,code:docs/contracts/c04-lifecycle/controller-attempt-inventory.sql | A:SOURCES、build及字节一致检查 | S:继承全部旧组合守卫并追加新表，不修改旧组合DDL；SOURCES包含传递构建输入
 check_attempt_inventory.py[TR9M]: F:验证固定库存事务封存、历史来源与分页一致性 | R:code:docs/contracts/c04-lifecycle/attempt_inventory_model.py,code:docs/contracts/c04-lifecycle/check_attempt_projection.py,code:docs/contracts/c04-lifecycle/check_continuation_binding.py | A:238表夹具、逐写异常与漏写、原件和容量反例及输入绑定 | S:新出口履行原关闭义务和零准备cut；持久合成decision只改变attempt投影不伪造全命令终态；完整许可向量不等于实际发送链，未删除最终发送守卫
 controller-attempt-inventory.sql[PD9L]: F:组合238表Controller布局与固定库存公开提交约束 | R:code:docs/contracts/c04-lifecycle/build_attempt_inventory.py,code:docs/contracts/c04-lifecycle/attempt-inventory.sql | A:完整参考DDL及既有事务守卫 | S:由237表组合追加生成，保留原发送和登记守卫；新库存不能替代最终准入、真实资格或设备完成证据
+FINAL_ADMISSION_SEAL.md[SR9T]: F:定义最终封存输入、无环事务及三处重核边界 | R:code:docs/contracts/c04-lifecycle/final-admission.schema.json,code:docs/contracts/c04-lifecycle/final_admission_model.py | A:Seal字段、18或21项来源、提交观察、故障及未验项 | S:归一化投影不冒充完整领域原件；committed仍须当前重核，unknown仅查原；临时阻断须完整DDL和提供者接通后才可替换，阶段0未关闭
+build_final_admission.py[LR8T]: F:生成最终封存、提交观察及逐角色投影Schema | R:code:docs/contracts/c08-controller/scoped-gate.schema.json,code:docs/contracts/c04-lifecycle/final-admission.schema.json | A:build与字节一致检查 | S:沿用严格Counter和执行身份；普通取消输入分支闭合，重传要求前封存Ref；根拒直接实例，不修改HTTP或IPC版本
+check_final_admission.py[TR9S]: F:验证封存跨原件关系与提交观察的167项离线向量 | R:code:docs/contracts/c04-lifecycle/final_admission_model.py,code:docs/contracts/c04-lifecycle/build_final_admission.py | A:八类正例、重新摘要错配、风险及窗口边界、输入绑定 | S:重传反例重新绑定前件摘要后核指定拒绝原因；全提供者一致伪造的通过仅作为真实性限制反证；不执行SQL签发或设备
+final-admission-report.json[TR7L]: F:保存167项封存检查与12份输入摘要 | R:code:docs/contracts/c04-lifecycle/check_final_admission.py | A:逐项结果、来源绑定及未验声明 | S:sql_issue_path_executed、provider_authenticity_verified及production_clearance均为false；不是生产放行证据
+final-admission.schema.json[LR9L]: F:约束最终Seal、提交观察及21类来源投影的字段 | R:code:docs/contracts/c04-lifecycle/build_final_admission.py | A:具名defs及封闭分支 | S:普通18项与取消21项原件不能省略；Seal不接受未来ACK或提交观察引用；结构合法不证明真实来源、当前授权或发送资格
+final_admission_model.py[DR9S]: F:核对封存主体、控制、资源前后态及逐传输来源关系 | R:code:docs/contracts/c04-lifecycle/build_final_admission.py | A:verify、observe及规范摘要 | S:只返回跨原件绑定一致；新增hold不得删改旧风险，取消保留父unknown，重传须新Guard和预算；窗口取交集且当前资格已生效，提交未知只查原
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

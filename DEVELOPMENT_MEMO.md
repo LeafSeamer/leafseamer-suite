@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-24 Seamer完整裁决接收（新周期第1/3轮）
+
+- 上周期已推送`38bfef9`；本轮继续main，仅本地提交，第三轮完成后审查整个周期再推送，其他四仓不动。
+- [123表接收候选](docs/contracts/c04-lifecycle/ADJUDICATION_RECEIVE.md)以完整RequestIdentity和原attempt绑定本地观察，实际接收两Controller持久裁决。unknown后的迟到accepted/rejected只补历史，accepted不是完成；并行动作的迟到受理不解除暂停。裁决、审计、步骤终态、完整保护和预算同事务。
+- 227项内存SQLite检查通过，原Controller103项实际回归。逐写异常与漏写覆盖受理、not_found及永久拒收；本地sa_commit先于计量，观察与审计封存进入实际差集，缺预算仍由延期外键拒绝提交。
+- 实测旧16 KiB单行合成包络不足以容纳完整保护库存，保留拒绝反例；正例在初始化前选择128 KiB合成profile并正常生成全部预留，未改旧预算/守卫。这不是正式CostManifest或容量放行。真实提供者、物理磁盘/并发/HTTP/IPC/设备、其他执行模式及最终AdmissionSeal仍待完成；业务未改，阶段0未关闭。
+
 ## 2026-10-24 Controller完整请求受理与查原（本周期第3/3轮）
 
 - 前两轮本地提交为`3ff6114`、`fc0fdab`；本轮继续main，完成第三次提交后审查整个周期并推送，其他四仓不动。

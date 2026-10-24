@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24Seamer裁决接收进展：[123表候选](contracts/c04-lifecycle/ADJUDICATION_RECEIVE.md)已接入两Controller完整裁决，227项检查及原Controller103项回归通过。观察绑定原attempt/完整身份，未知后的迟到裁决只补历史，不解除暂停或复活R5；裁决、步骤/运行保护、审计封存与完整预算同事务。实测旧16 KiB合成包络拒绝完整保护库存，正例使用初始化前明确配置的128 KiB合成profile，正式成本仍待证明。真实提供者、其他执行模式、最终AdmissionSeal及全系统SDK仍未闭合，业务未改、阶段0不关闭；本轮新周期第1/3轮，只本地提交。
+
 2026-10-24Controller类型化进展：[237表候选](contracts/c04-lifecycle/TYPED_CONTROLLER.md)已由实际Seamer完整请求进入两个独立Controller，完整身份/正文/裁决和原初始状态写集同事务；103项检查通过，原76项及70项回归。新受理核本地转交与控制原件，历史查原不重新要求grant有效，永久拒收不能改写accepted；cn_command不再依赖未公开submission_id。新路径仍依赖合成可信证据，公共完整命令记录、Seamer裁决接收、其他执行模式、完整成本和最终发送准入未完成。业务未改，阶段0不关闭；本轮第3/3轮，审查三轮后推送main。
 
 2026-10-24摄取封存修订：[121表候选](contracts/c04-lifecycle/ATOMIC_INGRESS.md)以独立不可变封存行替换可变自引用外键，70项检查通过，旧76项实际回归；accepted、no_match、suppressed_busy和重复查原均覆盖。旧三表合成结构在本机Python及Node内置SQLite 3.50.4均可提交孤儿，新结构拒绝漏父记录/漏封存/漏终态；完整组合库在移除显式原件守卫后仍由外键拒绝缺原件。已定位触发结构，内部机理、正式原生制品和磁盘恢复尚未验证。完整成本、Controller受理和最终准入等原缺口继续保留，业务未改、阶段0不关闭；本周期第2/3轮，仅本地提交。

@@ -7,8 +7,8 @@ import typed_controller_model as M
 import build_typed_controller as G
 X=A.X;I=X.I;C=X.C;R=X.R;P=X.P;SC=X.SC;AT=X.AT;HERE=G.HERE;ROOT=X.ROOT
 
-def fixture():
-    d,q,cds,ctx=X.fixture(sql_factory=A.G.build,controller_factory=G.build,expected_control=dict(epoch='control.epoch',version='2'))
+def fixture(*,sql_factory=A.G.build,include_context=False,record_attempts=True):
+    d,q,cds,ctx=X.fixture(sql_factory=sql_factory,controller_factory=G.build,expected_control=dict(epoch='control.epoch',version='2'))
     ns=ctx['command_namespace'];owner={k:ns[k] for k in M.OWNER}
     for cd,cc in cds.values():
         SC.execute(cd,[I('ca_namespace',namespace_id='typed_namespace',scope_id=1,**owner,owner_evidence_id='synthetic_owner',owner_evidence_body=M.raw(dict(synthetic=True)))])
@@ -16,7 +16,8 @@ def fixture():
     requests=[]
     for step in ['step.0','step.1']:
         C.tx(d,lambda step=step:X.T.F.ready_steps(d,ex,step,ctx));X.M.submit(d,ex,step,ctx)
-        sid=X.T.F.step(d,ex,step)['submission_id'];X.T.F.attempt(d,sid,ctx)
+        sid=X.T.F.step(d,ex,step)['submission_id']
+        if record_attempts:X.T.F.attempt(d,sid,ctx)
         s=R.one(d,'command_submission','submission_id',sid);request=json.loads(s['request_body']);key=json.loads(s['request_key_body']);cd,cc=cds[(s['target_authority'],s['target_database'])]
         e=R.one(d,'execution','execution_id',ex);q,adoption,receipts=X.M.originals(d,e['run_id'],e['arm_generation'])
         auth=dict(authenticated=True,permissions=dict(submit=True,reject=True,lookup=True),historical_owner_verified=True,read_scope_verified=True,target_scope=key['target_scope'],owner=owner,
@@ -27,7 +28,7 @@ def fixture():
           capacity=dict(profile=dict(synthetic=True),dimensions=dict(synthetic=True)),initial_state_evidence=dict(provider_ref='synthetic_state',synthetic=True))
         provider.update({k:True for k in ('authorization_current','control_current','source_current','time_current','budget_current','adoption_current','r5_committed','execution_original_verified','plan_original_verified')})
         requests.append((cd,dict(key=key,request_digest=s['request_digest']),request,auth,provider))
-    return d,cds,requests
+    return (d,cds,requests,ctx) if include_context else (d,cds,requests)
 
 def run():
     checks=[];dbs=[]

@@ -1,0 +1,384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/adjudication-receive.schema.json",
+  "$defs": {
+    "RequestIdentity": {
+      "$ref": "#/$defs/A__S0_RequestIdentity"
+    },
+    "A__S0_RequestIdentity": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/A__S0_RequestKey"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/A__S0_Digest"
+        }
+      },
+      "required": [
+        "key",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "A__S0_RequestKey": {
+      "type": "object",
+      "properties": {
+        "target_scope": {
+          "$ref": "#/$defs/A__S0_Scope"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/A__S0_Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/A__S0_Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/A__S0_Id"
+        },
+        "request_epoch": {
+          "$ref": "#/$defs/A__S0_Id"
+        },
+        "operation_id": {
+          "const": "createCommand"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/A__S0_Id"
+        }
+      },
+      "required": [
+        "target_scope",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id",
+        "request_epoch",
+        "operation_id",
+        "idempotency_key"
+      ],
+      "additionalProperties": false
+    },
+    "A__S0_Scope": {
+      "$ref": "#/$defs/Scope"
+    },
+    "Scope": {
+      "$ref": "#/$defs/CN__Scope"
+    },
+    "CN__Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "A__S0_Id": {
+      "$ref": "#/$defs/A__S1_Id"
+    },
+    "A__S1_Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+    },
+    "A__S0_Digest": {
+      "$ref": "#/$defs/A__S1_Digest"
+    },
+    "A__S1_Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "LookupResult": {
+      "$ref": "#/$defs/A__S0_LookupResult"
+    },
+    "A__S0_LookupResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "found"
+            },
+            "adjudication": {
+              "$ref": "#/$defs/A__S0_RequestAdjudication"
+            }
+          },
+          "required": [
+            "state",
+            "adjudication"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "not_found",
+                "indeterminate"
+              ]
+            },
+            "adjudication": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "state",
+            "adjudication"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "A__S0_RequestAdjudication": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "command-admission/0.1.0-draft.1"
+        },
+        "adjudication_id": {
+          "$ref": "#/$defs/A__S0_Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "identity": {
+          "$ref": "#/$defs/A__S0_RequestIdentity"
+        },
+        "decision": {
+          "enum": [
+            "accepted",
+            "rejected"
+          ]
+        },
+        "command_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/A__S0_CommandRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commit_ref": {
+          "$ref": "#/$defs/A__S0_CommitRef"
+        },
+        "adjudication_digest": {
+          "$ref": "#/$defs/A__S0_Digest"
+        }
+      },
+      "required": [
+        "contract_version",
+        "adjudication_id",
+        "revision",
+        "identity",
+        "decision",
+        "command_ref",
+        "commit_ref",
+        "adjudication_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "accepted"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "command_ref": {
+                "$ref": "#/$defs/A__S0_CommandRef"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "command_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "A__S0_CommandRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "command"
+        },
+        "scope": {
+          "$ref": "#/$defs/A__S0_Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/A__S0_Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/A__S0_Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/A__S0_Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "A__S0_Counter": {
+      "$ref": "#/$defs/A__S1_Counter"
+    },
+    "A__S1_Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+    },
+    "A__S0_CommitRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "controller_commit"
+        },
+        "scope": {
+          "$ref": "#/$defs/A__S0_Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/A__S0_Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/A__S0_Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/A__S0_Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "observation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[A-Za-z0-9_.:-]+$"
+        },
+        "submission_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[A-Za-z0-9_.:-]+$"
+        },
+        "source": {
+          "enum": [
+            "create_response",
+            "lookup",
+            "transport_timeout",
+            "transport_error"
+          ]
+        },
+        "identity": {
+          "$ref": "#/$defs/RequestIdentity"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LookupResult"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "observation_id",
+        "submission_id",
+        "source",
+        "identity",
+        "result"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "source": {
+                "enum": [
+                  "transport_timeout",
+                  "transport_error"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "result": {
+                "$ref": "#/$defs/LookupResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source": {
+                "const": "create_response"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "properties": {
+                  "state": {
+                    "const": "found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$ref": "#/$defs/Observation",
+  "title": "adjudication-receive/0.1.0-draft.1",
+  "x-approved": false,
+  "x-boundary": "trusted-local-observer-not-public-http"
+}

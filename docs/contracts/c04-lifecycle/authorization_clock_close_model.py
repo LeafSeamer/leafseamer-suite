@@ -14,11 +14,11 @@ def source_ref(kind,value):
 
 def columns(row):return {k:(M.document(v) if isinstance(v,bytes) else v) for k,v in row.items()}
 
-def target(db,exit_row,fault):
+def route_target(db,exit_row,fault_ref):
     # 绑定来自ce_exit实际列；原runtime正文被纳入摘要但不宣称其来源可信。
     binding=dict(scope=M.E.A.scope(db),writer_exit_id=exit_row['exit_id'],**{k:exit_row[k] for k in
         ('controller_boot_id','worker_boot_id','ipc_session_id','device_id','device_session_id','clock_domain_id','descriptor_digest')})
-    M.validate('Binding',binding);M.need(I.domain(binding)==fault['domain'],'authorization_close_exit_domain')
+    M.validate('Binding',binding)
     sessions=db.execute('SELECT session_id FROM ij_exit WHERE exit_id=?',(exit_row['exit_id'],)).fetchall()
     M.need(len(sessions)<=1,'authorization_close_ambiguous_route')
     sid=sessions[0][0] if sessions else None;sr=None;action='verify_termination';body=None
@@ -28,10 +28,14 @@ def target(db,exit_row,fault):
         M.need(session['protocol_version']=='ipc/0.14.0-continuation-draft.1','authorization_close_protocol')
         sr=source_ref('clock_session',columns(session))
         if not db.execute('SELECT 1 FROM ij_end WHERE session_id=?',(sid,)).fetchone():
-            action='close_gate';body=dict(close_id='clock_close_'+M.F.digest(dict(fault_ref=I.fault_ref(fault),binding=binding))[7:],reason='authentication_clock_untrusted',scope='device')
+            action='close_gate';body=dict(close_id='clock_close_'+M.F.digest(dict(fault_ref=fault_ref,binding=binding))[7:],reason='authentication_clock_untrusted',scope='device')
             Draft202012Validator({'$defs':IPC['$defs'],'$ref':'#/$defs/S9__CLOSE_GATEBody'}).validate(body)
     value=dict(binding=binding,exit_source_ref=source_ref('clock_exit',columns(exit_row)),session_id=sid,session_source_ref=sr,required_action=action,close_body=body)
     M.validate('ClockCloseTarget',value);return value
+
+def target(db,exit_row,fault):
+    value=route_target(db,exit_row,I.fault_ref(fault))
+    M.need(I.domain(value['binding'])==fault['domain'],'authorization_close_exit_domain');return value
 
 def inventory(db,fault):
     M.need(fault['domain']['scope']==M.E.A.scope(db),'authorization_close_scope')

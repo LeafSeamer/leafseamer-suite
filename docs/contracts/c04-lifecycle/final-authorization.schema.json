@@ -1609,6 +1609,145 @@
       ],
       "additionalProperties": false
     },
+    "ClockProtectionTiming": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "device_id",
+        "clock_domain_id",
+        "descriptor_digest",
+        "selected_tick_ns",
+        "source_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ClockDeviceProtection": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "before_control_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "after_control_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "timing": {
+          "$ref": "#/$defs/ClockProtectionTiming"
+        }
+      },
+      "required": [
+        "device_id",
+        "before_control_ref",
+        "after_control_ref",
+        "timing"
+      ],
+      "additionalProperties": false
+    },
+    "ClockProtectedExit": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/ClockCloseTarget"
+        },
+        "same_device_expansion": {
+          "type": "boolean"
+        },
+        "close_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "cut_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "prepare_refs": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        }
+      },
+      "required": [
+        "target",
+        "same_device_expansion",
+        "close_id",
+        "cut_ref",
+        "prepare_refs"
+      ],
+      "additionalProperties": false
+    },
+    "ClockProtectionCommit": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authentication-clock-protection/1"
+        },
+        "protection_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "fault_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "state": {
+          "const": "durable_protection"
+        },
+        "devices": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": {
+            "$ref": "#/$defs/ClockDeviceProtection"
+          }
+        },
+        "exits": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": {
+            "$ref": "#/$defs/ClockProtectedExit"
+          }
+        },
+        "protection_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "protection_id",
+        "revision",
+        "plan_ref",
+        "fault_ref",
+        "state",
+        "devices",
+        "exits",
+        "protection_digest"
+      ],
+      "additionalProperties": false
+    },
     "ValidityComponent": {
       "type": "object",
       "properties": {

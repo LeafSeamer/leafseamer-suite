@@ -75,6 +75,15 @@ def build():
     d['ClockClosePlan']=obj(format_version={'const':'authentication-clock-close-plan/1'},plan_id=ref('Id'),revision={'const':'1'},
         fault_ref=ref('Ref'),domain=ref('AuthenticationClockDomain'),state={'const':'planned'},
         targets=dict(type='array',minItems=1,maxItems=4096,items=ref('ClockCloseTarget')),plan_digest=ref('Digest'))
+    d['ClockProtectionTiming']=obj(device_id=ref('Id'),clock_domain_id=copy.deepcopy(d['Binding']['properties']['clock_domain_id']),
+        descriptor_digest=ref('Digest'),selected_tick_ns=ref('Counter'),source_ref=ref('Ref'))
+    d['ClockDeviceProtection']=obj(device_id=ref('Id'),before_control_ref=ref('Ref'),after_control_ref=ref('Ref'),timing=ref('ClockProtectionTiming'))
+    d['ClockProtectedExit']=obj(target=ref('ClockCloseTarget'),same_device_expansion=dict(type='boolean'),close_id=ref('Id'),cut_ref=ref('Ref'),
+        prepare_refs=dict(type='array',maxItems=4096,items=ref('Ref')))
+    d['ClockProtectionCommit']=obj(format_version={'const':'authentication-clock-protection/1'},protection_id=ref('Id'),revision={'const':'1'},
+        plan_ref=ref('Ref'),fault_ref=ref('Ref'),state={'const':'durable_protection'},
+        devices=dict(type='array',minItems=1,maxItems=4096,items=ref('ClockDeviceProtection')),
+        exits=dict(type='array',minItems=1,maxItems=4096,items=ref('ClockProtectedExit')),protection_digest=ref('Digest'))
     d['ValidityComponent']=obj(kind={'enum':['credential','session','grant']},target_id=ref('Id'),source_ref=ref('Ref'),
         validity=copy.deepcopy(d['AuthorizationSnapshot']['properties']['validity']))
     d['AuthorizationValidity']=obj(format_version={'const':'authorization-validity/1'},validity_id=ref('Id'),revision={'const':'1'},

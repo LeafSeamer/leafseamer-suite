@@ -108,6 +108,14 @@ CREATE TRIGGER authorization_clock_plan_no_delete BEFORE DELETE ON authorization
 CREATE TRIGGER authorization_clock_exit_registration BEFORE INSERT ON ce_exit
 WHEN EXISTS(SELECT 1 FROM authorization_clock_fault f WHERE json_extract(f.body,'$.domain.controller_boot_id')=NEW.controller_boot_id AND json_extract(f.body,'$.domain.clock_domain_id')=NEW.clock_domain_id)
 BEGIN SELECT RAISE(ABORT,'authentication_clock_domain_closed'); END;
+CREATE TABLE authorization_clock_protection (
+ protection_id TEXT PRIMARY KEY NOT NULL,
+ plan_id TEXT UNIQUE NOT NULL REFERENCES authorization_clock_close_plan(plan_id),
+ digest TEXT NOT NULL,
+ body BLOB NOT NULL CHECK(length(body)>0 AND length(body)<=16777216)
+) STRICT;
+CREATE TRIGGER authorization_clock_protection_no_update BEFORE UPDATE ON authorization_clock_protection BEGIN SELECT RAISE(ABORT,'immutable authentication protection'); END;
+CREATE TRIGGER authorization_clock_protection_no_delete BEFORE DELETE ON authorization_clock_protection BEGIN SELECT RAISE(ABORT,'immutable authentication protection'); END;
 CREATE TRIGGER authorization_clock_session_registration BEFORE INSERT ON ij_session
 WHEN EXISTS(SELECT 1 FROM authorization_clock_fault f WHERE json_extract(f.body,'$.domain.controller_boot_id')=NEW.controller_boot_id AND json_extract(f.body,'$.domain.clock_domain_id')=NEW.clock_domain_id)
 BEGIN SELECT RAISE(ABORT,'authentication_clock_domain_closed'); END;

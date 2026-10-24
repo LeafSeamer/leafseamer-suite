@@ -109,7 +109,7 @@ def run():
         # 采样回执到达后才产生有效资格；此fixture接收tick为50，仍早于选取51。
         u=M.sealed(dict(u,received_tick_ns='50'),'use_digest')
         tx(db,lambda:publish_use(db,u));ur=use_ref(u);auth_projection=T.T.preview(db,lambda:M.read(db,ur,v));attach(v,o,auth_projection)
-        check('252表含认证时钟故障与固定关闭计划',len(T.T.V.SC.snapshot(db))==252)
+        check('253表含认证故障设备保护回执',len(T.T.V.SC.snapshot(db))==253)
         check('普通自动化可规划19条附属封存写集',len(T.T.preview(db,lambda:M.planned(db,v,o,cut,pid,provider,ur)))==19)
         context=json.loads(db.execute('SELECT body FROM authorization_context').fetchone()[0])
         original_scope=T.T.preview(db,lambda:M.command_scope(db,context['original_scope_ref']))
@@ -268,6 +268,8 @@ def run():
         ingress_checks.run(sys.modules[__name__],check,reject,db,fork,u,v)
         import check_authentication_clock_close as close_checks
         close_checks.run(sys.modules[__name__],check,reject,db,fork,u)
+        import check_authentication_clock_protection as protection_checks
+        protection_checks.run(sys.modules[__name__],check,reject,db,fork,u)
         c=fork(db)
         def fill():
             for i in range(4097):M.install_floor(c,floor(u,revision='4',eid='bounded.'+str(i)))
@@ -306,19 +308,22 @@ def run():
     finally:
         for c in dbs:c.close()
 
-def inputs():return list(dict.fromkeys(T.inputs()+G.SOURCES+[HERE/n for n in ('final-authorization.schema.json','final-authorization.sql','final_authorization_model.py','authorization_validity_model.py','authorization_clock_ingress_model.py','authorization_clock_close_model.py','check_final_authorization.py','check_authorization_validity.py','check_authentication_clock_ingress.py','check_authentication_clock_close.py','FINAL_AUTHORIZATION.md')]+[ROOT/'docs/rebirth-f04-f05-design.md',ROOT/'docs/rebirth-df04-storage-design.md']))
+def inputs():
+    import check_authentication_clock_protection as protection_checks
+    return list(dict.fromkeys(T.inputs()+G.SOURCES+protection_checks.INPUTS+[HERE/n for n in ('final-authorization.schema.json','final-authorization.sql','final_authorization_model.py','authorization_validity_model.py','authorization_clock_ingress_model.py','authorization_clock_close_model.py','authorization_clock_protection_model.py','check_final_authorization.py','check_authorization_validity.py','check_authentication_clock_ingress.py','check_authentication_clock_close.py','check_authentication_clock_protection.py','FINAL_AUTHORIZATION.md')]+[ROOT/'docs/rebirth-f04-f05-design.md',ROOT/'docs/rebirth-df04-storage-design.md']))
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--report',action='store_true');p.add_argument('--check-report',action='store_true');a=p.parse_args();target=HERE/'final-authorization-report.json'
     hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs()}
     if a.check_report:assert json.loads(target.read_bytes())['inputs']==hashes;print(json.dumps(dict(all_passed=True,matched_bindings=len(hashes))))
     else:
-        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=252,local_file_two_writer_order_verified=True,
+        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=253,local_file_two_writer_order_verified=True,
             stored_challenge_response_binding_verified=True,stored_continuation_grant_binding_verified=True,
             stored_request_context_binding_verified=True,stored_command_scope_intersection_verified=True,
             stored_validity_binding_verified=True,integer_authentication_interval_verified=True,local_clock_protection_latch_verified=True,
             system_clock_acquisition_verified=False,validity_component_authenticity_verified=False,
             malformed_clock_input_protection_verified=True,clock_fault_transaction_boundary_verified=True,physical_exit_termination_verified=False,
             registered_clock_exit_inventory_verified=True,close_gate_body_compatibility_verified=True,clock_close_plan_executed=False,
+            clock_device_protection_transaction_verified=True,clock_preparation_cut_verified=True,
             authority_authenticity_verified=False,request_context_credential_chain_verified=False,scope_evidence_verified=False,utc_validity_evidence_verified=False,full_final_issue_executed=False,
             runtime_tests_executed=0,device_tests_executed=0,disk_crash_tests_executed=0,checks=checks,inputs=hashes)
         if a.report:target.write_bytes(M.raw(report))

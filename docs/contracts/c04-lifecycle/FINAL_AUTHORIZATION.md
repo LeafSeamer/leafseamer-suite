@@ -10,7 +10,7 @@
 
 `AuthorizationUse`完整保存既有AuthorizationSnapshot与AuthorizationBinding，并绑定完整ExecutionIdentity、出口/运行域、challenge发送tick、响应接收tick、本地新鲜度上限、授权生效/截止tick，以及权威、对象范围和有效期取证Ref。使用`use_digest`覆盖全部正文，存为严格JCS字节。引用全部采用精确ID、revision和digest。授权有效期的UTC判定仍由认证时钟取证负责，此记录不能自证那些Ref的真实性。
 
-`authorization_use`是Controller内部的不可变使用证据；`authorization_floor_event`是同一库内已接收撤销的不可变事件；`authorization_challenge`与`authorization_response`保存首次查询和唯一响应；`authorization_context`与`authorization_command_scope`保存初次受理所依赖的凭据归属及动作范围；`authorization_clock_record`与`authorization_validity`保存认证时钟日志和有效期原件；`authorization_clock_fault`保存认证采集入口的首个域故障；`authorization_clock_close_plan`保存该故障的固定出口关闭计划。十表附加在242表候选后用于实验，不新增签发方或独立授权数据库，不作为生产迁移发布。新鲜度截止取`challenge_sent + min(snapshot.fresh_for_ms, local_limit_ms)`，再与上游授权截止取最小值，禁止从响应接收时刻刷新TTL。所有tick保持十进制字符串。
+`authorization_use`是Controller内部的不可变使用证据；`authorization_floor_event`是同一库内已接收撤销的不可变事件；`authorization_challenge`与`authorization_response`保存首次查询和唯一响应；`authorization_context`与`authorization_command_scope`保存初次受理所依赖的凭据归属及动作范围；`authorization_clock_record`与`authorization_validity`保存认证时钟日志和有效期原件；`authorization_clock_fault`保存认证采集入口的首个域故障；`authorization_clock_close_plan`保存该故障的固定出口关闭计划。`authorization_clock_protection`保存设备保护与准备cut的事务回执。十一表附加在242表候选后用于实验，不新增签发方或独立授权数据库，不作为生产迁移发布。新鲜度截止取`challenge_sent + min(snapshot.fresh_for_ms, local_limit_ms)`，再与上游授权截止取最小值，禁止从响应接收时刻刷新TTL。所有tick保持十进制字符串。
 
 `AuthorizationChallenge`固定完整出口/运行域、requester、credential、audience、scope_digest、device.command用途和首次发送tick；challenge_id为64位小写hex，未来发送端必须用256位CSPRNG，不能从用户输入或业务ID派生。本地先持久登记再发送。同ID同正文重试只读原记录，同ID重填时间拒绝。测试使用确定的合成nonce，不证明随机数生成器运行。
 
@@ -61,7 +61,7 @@
 - 故障落库后，SQL拒绝该域新增`ce_exit`、新增`ij_session`及为已有出口补写`ij_exit`，防止固定目标集之后再出现可用路由。其他明确区分的运行域不混入此清单；新运行域的可信身份仍须受监督安装流程证明，不能靠自填ID绕过。
 - 派发前`recheck`再核全部登记ID、指定目标的原件和会话Ref。会话已结束时将本次动作提升为待确认终止，保留原计划；禁止把原待终止目标重新变为可发送路由。发现目标集或绑定漂移、查原失败时停止派发并走出口停止要求，不补造缺失目标或覆盖历史。
 - 候选默认最多4096个出口且整份计划不超过16 MiB；取上限加一以识别超量，拒绝全集而非截断成功。这是表达/保护上限，不是已测生产容量。检查通过缩小本地测试预算、查询真实多出口SQLite库存验证越界分支，没有宣称完成4096出口负载测试。
-- 尚未把此计划转换成现有`go_close/ct_change/pd_cut`及P0日志的完整领域写集，也没有生成完整有序IPC信封、获得ACK或执行终止。实际交付须同时关闭同设备全部相关出口、固定全部准备、核销Deny/Release/退役证据，并采用既定PreparationClosure；单条CLOSE_GATE_ACK、会话断开或计划提交都不能升级为全域applied。入流前保护、停止信号到真实监督终止的边界仍须验证。
+- 此计划已接入下述本地设备保护与准备cut事务；P0预算与完整有序IPC信封、ACK及实际终止仍未接通。实际交付须核销Deny/Release/退役证据，并采用既定PreparationClosure；单条CLOSE_GATE_ACK、会话断开或保护提交都不能升级为全域applied。入流前保护、停止信号到真实监督终止的边界仍须验证。
 
 1. 撤销先提交：后续最终规划读取已见下界，拒绝旧授权；原packet、历史授权和在途事实保留。
 2. 封存事务先取writer锁：另一个撤销writer不能插入该事务中途；释放锁后撤销可提交，下一次规划必须重读。该顺序不代替提交后的AUTH_FENCE、入流前复核和worker守卫。
@@ -71,7 +71,19 @@
 6. grant格式正确但ID、修订或arm_generation与已受理命令不符：拒绝，不能只根据本地不存在匹配撤销就认定有效。
 7. context未登记、操作不在交集、目标超出原scope：在新命令受理前由同库约束拒绝；最终规划还须检查当前scope收窄、组合拆分及能力版本变化，保留原请求与在途事实。
 
-检查覆盖实际252表候选普通自动化编码来源和19条最终附属写集规划，并使用临时文件SQLite双连接验证撤销及采集故障的writer顺序；fixture在首次decide前登记合成scope/context，验证新受理约束实际运行。时窗检查逐tick枚举核对整数舍入，覆盖大于2^53的相邻UTC纳秒、缺失/错误期限依赖、前跳/回拨锁存及正常采样不能解锁、NTP profile混用拒绝、当前切点重选和追加事务回滚。入口检查覆盖非法输入、同域换绑定、首因保留、写入失败、提交不确定和嵌套事务拒绝；关闭检查覆盖完整已登记目标、缺会话/失联、禁止新增路由、原计划不可变及容量拒绝。新增测试出口沿用既有登记关闭义务，并为同设备原出口补全关闭及准备cut，未跳过延迟外键或守卫。manual会话场景只验证局部授权存储，context/动作scope和完整manual编码闭环尚未接通。Schema、来源正文与转交原件均严格检查规范JSON和摘要；SQL不代替这些检查。四个最终签发阻断保留，ci_issue和fa_seal均为零。原有引用模型不因新增候选自动获得发送资格。
+检查覆盖实际253表候选普通自动化编码来源和19条最终附属写集规划，并使用临时文件SQLite双连接验证撤销及采集故障的writer顺序；fixture在首次decide前登记合成scope/context，验证新受理约束实际运行。时窗检查逐tick枚举核对整数舍入，覆盖大于2^53的相邻UTC纳秒、缺失/错误期限依赖、前跳/回拨锁存及正常采样不能解锁、NTP profile混用拒绝、当前切点重选和追加事务回滚。入口检查覆盖非法输入、同域换绑定、首因保留、写入失败、提交不确定和嵌套事务拒绝；关闭检查覆盖完整已登记目标、缺会话/失联、禁止新增路由、原计划不可变及容量拒绝。新增测试出口沿用既有登记关闭义务，并为同设备原出口补全关闭及准备cut，未跳过延迟外键或守卫。manual会话场景只验证局部授权存储，context/动作scope和完整manual编码闭环尚未接通。Schema、来源正文与转交原件均严格检查规范JSON和摘要；SQL不代替这些检查。四个最终签发阻断保留，ci_issue和fa_seal均为零。原有引用模型不因新增候选自动获得发送资格。
+
+## 认证故障的设备保护事务
+
+[保护写集参考模型](authorization_clock_protection_model.py)及[故障检查](check_authentication_clock_protection.py)接入实际候选SQL约束。以下是离线已验证的范围，尚不构成运行时完成证明：
+
+1. 独占`BEGIN IMMEDIATE`后，按完整plan_ref查原计划和首故障，核对当前故障域库存。对每个目标设备读取全部登记出口；跨时钟域出口显式标记`same_device_expansion`，不能只关闭故障域而遗漏同设备出口。当前候选保守保留全部历史出口，尚未优化可靠退役后的排除。
+2. `ClockProtectionTiming`逐设备绑定控制时钟域、descriptor、单调tick与source_ref，必须完整且无重复，tick不能早于当前控制变化。该source_ref目前为合成来源；当前检查证明域/列/时间顺序一致，不能证明宿主真实采样。认证UTC故障不等于控制单调时钟失效；无法取得有效控制时间时要求停止出口。
+3. 每设备追加`gate_protect`、完整ControlStorageRecord及审计/outbox/commit。保持持有人、mode、control_epoch、effective/reserved_version和pending operation；仅关闭闸并推进记录修订。旧合成正文不被冒充为已核验的公共原件，before_control_ref是完整旧列/正文的内部派生引用。
+4. 每出口写`go_close`和固定head的`pd_cut`，从实际`pd_expected`取得全部成员，补充缺少的`ep_revocation`及`pd_cut_commit`；既有撤回原件保持不变。每份回执最多4096个出口、累计4096个prepare、16 MiB；超限整事务拒绝，不能截断。cut_ref与prepare_refs是具名内部派生描述，不冒充其他领域的标准正文摘要。
+5. `ClockProtectionCommit`与领域行同事务保存，state仅为`durable_protection`。同plan重试查原完整回执，不刷新时间或再次撤回；写入/提交观察异常均要求停止出口。提交后回执丢失可查原恢复，但不能据异常猜测回滚。外部事务拒绝且不擅自回滚调用者事务。
+
+实验覆盖逐写故障的全库回滚、实际省略必要领域行、持有人不变、同设备跨域出口扩展、重复调用、错误时间绑定、容量拒绝、提交前失败及提交后回执丢失。省略注入器还断言目标SQL确实命中。已发送、返回packet和未知事实保留，不生成Release、关闭ACK、准备核销或最终issue。现有SQL守卫约束领域写集；回执与领域行的一致提交目前由参考writer保证，未声称新增回执表已具备覆盖所有直接SQL绕写的反向约束。`clock_close_plan_executed=false`继续表示实际IPC关闭未执行。
 
 ## 剩余冻结与接通事项
 

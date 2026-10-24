@@ -8,34 +8,36 @@ import check_prepare_deny_storage as PD
 clone=copy.deepcopy
 
 
+def register_exit(c,original,identity,**changes):
+    # 沿用现有登记关闭义务及准备cut，不能为测试出口库存跳过延迟外键。
+    names={'inventory_registration':'clock.registration.'+identity,'unassigned_exit':identity,
+        'registration.unassigned_exit':'registration.'+identity,'inventory_registration_cut':'clock.registration.cut.'+identity}
+    steps=[];now=max(100,int(c.execute('SELECT now_tick FROM ct_current_change WHERE device_id=?',(original['device_id'],)).fetchone()[0])+1)
+    for step in AI.register_exit(c,original['device_id']):
+        table,row=AI.M.data(step);row={k:names.get(x,x) if isinstance(x,str) else x for k,x in row.items()}
+        if table=='ce_exit':row=dict(original,exit_id=identity,device_session_id=identity+'.device');row.update(changes)
+        if table=='ct_change':row['now_tick']=str(now).zfill(20)
+        if table=='pd_cut':row['selected_tick']=str(now).zfill(20)
+        if table=='pd_cut_commit':row['committed_tick']=str(now).zfill(20)
+        steps.append((table,row))
+    # 同设备已有出口也必须同批关闭，准备cut包含它们的全部历史准备。
+    head=int(c.execute("SELECT coalesce(max(sequence),'0') FROM pd_registration").fetchone()[0])
+    for old in c.execute('SELECT exit_id FROM ce_exit WHERE device_id=? ORDER BY exit_id',(original['device_id'],)).fetchall():
+        oldid=old[0];close='clock.registration.'+identity+'.'+oldid
+        gate=c.execute('SELECT gate_id FROM go_current_gate WHERE exit_id=?',(oldid,)).fetchone()
+        rev=int(c.execute("SELECT coalesce(max(revision),'0') FROM go_close WHERE exit_id=?",(oldid,)).fetchone()[0])+1
+        row=dict(prepare_cut_id='pending',close_id=close,device_id=original['device_id'],exit_id=oldid,revision=str(rev).zfill(20),
+            protection_change_id=names['inventory_registration'],gate_id=gate[0] if gate else None,reason_ref='new_exit',body=PD.B,outbox_body=PD.B,audit_body=PD.B)
+        steps.insert(-1,('go_close',row))
+        pids=[r[0] for r in c.execute('SELECT prepare_id FROM ep_request WHERE exit_id=? ORDER BY prepare_id',(oldid,))]
+        steps=PD.capture(c,steps,'close',close,pids,head,now)
+    for table,row in steps:c.execute(*AI.I(table,**row))
+
 def run(T,check,reject,db,fork,u):
     binding=u['binding'];eid=binding['writer_exit_id']
     original=M.E.one(db,'SELECT * FROM ce_exit WHERE exit_id=?',(eid,))
     session=M.E.one(db,'SELECT s.* FROM ij_session s JOIN ij_exit e USING(session_id) WHERE e.exit_id=?',(eid,))
-    def add_exit(c,identity,**changes):
-        # 沿用现有登记关闭义务及准备cut，不能为测试出口库存跳过延迟外键。
-        names={'inventory_registration':'clock.registration.'+identity,'unassigned_exit':identity,
-            'registration.unassigned_exit':'registration.'+identity,'inventory_registration_cut':'clock.registration.cut.'+identity}
-        steps=[];now=max(100,int(c.execute('SELECT now_tick FROM ct_current_change WHERE device_id=?',(original['device_id'],)).fetchone()[0])+1)
-        for step in AI.register_exit(c,original['device_id']):
-            table,row=AI.M.data(step);row={k:names.get(x,x) if isinstance(x,str) else x for k,x in row.items()}
-            if table=='ce_exit':row=dict(original,exit_id=identity,device_session_id=identity+'.device');row.update(changes)
-            if table=='ct_change':row['now_tick']=str(now).zfill(20)
-            if table=='pd_cut':row['selected_tick']=str(now).zfill(20)
-            if table=='pd_cut_commit':row['committed_tick']=str(now).zfill(20)
-            steps.append((table,row))
-        # 同设备已有出口也必须同批关闭，准备cut包含它们的全部历史准备。
-        head=int(c.execute("SELECT coalesce(max(sequence),'0') FROM pd_registration").fetchone()[0])
-        for old in c.execute('SELECT exit_id FROM ce_exit WHERE device_id=? ORDER BY exit_id',(original['device_id'],)).fetchall():
-            oldid=old[0];close='clock.registration.'+identity+'.'+oldid
-            gate=c.execute('SELECT gate_id FROM go_current_gate WHERE exit_id=?',(oldid,)).fetchone()
-            rev=int(c.execute("SELECT coalesce(max(revision),'0') FROM go_close WHERE exit_id=?",(oldid,)).fetchone()[0])+1
-            row=dict(prepare_cut_id='pending',close_id=close,device_id=original['device_id'],exit_id=oldid,revision=str(rev).zfill(20),
-                protection_change_id=names['inventory_registration'],gate_id=gate[0] if gate else None,reason_ref='new_exit',body=PD.B,outbox_body=PD.B,audit_body=PD.B)
-            steps.insert(-1,('go_close',row))
-            pids=[r[0] for r in c.execute('SELECT prepare_id FROM ep_request WHERE exit_id=? ORDER BY prepare_id',(oldid,))]
-            steps=PD.capture(c,steps,'close',close,pids,head,now)
-        for table,row in steps:c.execute(*AI.I(table,**row))
+    def add_exit(c,identity,**changes):register_exit(c,original,identity,**changes)
     def fail(c):return C.I.ingest(c,binding,b'{')
     def plan(c):return T.tx(c,lambda:C.plan(c,binding))
     def recheck(c,p,target=eid):return T.tx(c,lambda:C.recheck(c,C.pref(p),target))

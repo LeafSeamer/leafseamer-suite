@@ -1,0 +1,734 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/final-source-bodies.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Principal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "kind",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionIdentity": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "ordinary",
+            "cancel"
+          ]
+        },
+        "command_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "attempt_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancellation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "execution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "kind",
+        "command_ref",
+        "attempt_ref",
+        "cancellation_ref",
+        "execution_ref",
+        "requester",
+        "origin",
+        "source_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attempt_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "cancellation_ref": {
+                "type": "null"
+              },
+              "execution_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "attempt_ref": {
+                "type": "null"
+              },
+              "cancellation_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "execution_ref": {
+                "$ref": "#/$defs/Ref"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "service"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "requester": {
+                "properties": {
+                  "kind": {
+                    "const": "human"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Ownership": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "hold-ownership/0.1.0-draft.1"
+        },
+        "ownership_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "acquired_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "source_receipt_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ownership_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "ownership_id",
+        "revision",
+        "scope",
+        "device_id",
+        "hold_ref",
+        "identity",
+        "control_authority_ref",
+        "control_epoch",
+        "effective_version",
+        "clock_domain_id",
+        "descriptor_digest",
+        "acquired_tick_ns",
+        "source_receipt_ref",
+        "ownership_digest"
+      ],
+      "additionalProperties": false
+    },
+    "OwnershipContent": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "acquired_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "scope",
+        "device_id",
+        "hold_ref",
+        "identity",
+        "control_authority_ref",
+        "control_epoch",
+        "effective_version",
+        "clock_domain_id",
+        "descriptor_digest",
+        "acquired_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "OwnershipReceipt": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "ownership-source/1"
+        },
+        "source_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "provider_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sampled_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "content": {
+          "$ref": "#/$defs/OwnershipContent"
+        },
+        "receipt_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "source_id",
+        "revision",
+        "provider_id",
+        "sampled_tick_ns",
+        "expires_tick_ns",
+        "content",
+        "receipt_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ControlStorageRecord": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "control-storage-body/1"
+        },
+        "change_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "change_kind": {
+          "$ref": "#/$defs/Id"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "reserved_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "mode": {
+          "enum": [
+            "automatic",
+            "manual"
+          ]
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Principal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_operation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_state": {
+          "enum": [
+            "protected",
+            "fencing",
+            "ready"
+          ]
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "observed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "record_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "change_id",
+        "revision",
+        "scope",
+        "device_id",
+        "change_kind",
+        "control_epoch",
+        "effective_version",
+        "reserved_version",
+        "mode",
+        "holder",
+        "pending_operation_id",
+        "gate_state",
+        "clock_domain_id",
+        "descriptor_digest",
+        "observed_tick_ns",
+        "record_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "automatic"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "holder": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "holder": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/Principal"
+                  },
+                  {
+                    "properties": {
+                      "kind": {
+                        "const": "human"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SafetyHead": {
+      "type": "object",
+      "properties": {
+        "source_kind": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "recovery_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source_kind",
+        "source_id",
+        "recovery_id"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceSafetyCut": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "resource-safety-cut/1"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "head": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafetyHead"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cut_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "device_id",
+        "revision",
+        "head",
+        "cut_digest"
+      ],
+      "additionalProperties": false
+    },
+    "HoldObservation": {
+      "type": "object",
+      "properties": {
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "state": {
+          "enum": [
+            "active",
+            "unknown",
+            "failed_unresolved",
+            "orphaned",
+            "proof_revoked"
+          ]
+        }
+      },
+      "required": [
+        "hold_ref",
+        "owner_ref",
+        "control_authority_ref",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceSnapshotRecord": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "resource-snapshot-body/1"
+        },
+        "snapshot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authorization_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "resource_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "run_snapshot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "command_snapshot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "time_snapshot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sampled_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "provider_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "holds": {
+          "type": "array",
+          "maxItems": 65536,
+          "items": {
+            "$ref": "#/$defs/HoldObservation"
+          }
+        },
+        "evidence_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "snapshot_id",
+        "revision",
+        "binding",
+        "control_authority_ref",
+        "control_state_ref",
+        "resource_safety_ref",
+        "authorization_id",
+        "resource_id",
+        "run_snapshot_id",
+        "command_snapshot_id",
+        "time_snapshot_id",
+        "sampled_tick_ns",
+        "expires_tick_ns",
+        "provider_id",
+        "holds",
+        "evidence_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

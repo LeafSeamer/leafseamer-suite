@@ -1,0 +1,13 @@
+{
+  "purpose": "synthetic_deferred_fk_seal_probe",
+  "schemas": {
+    "mutable_self": "PRAGMA foreign_keys=ON; CREATE TABLE parent(id TEXT PRIMARY KEY); CREATE TABLE child(id TEXT PRIMARY KEY,parent_id TEXT REFERENCES parent(id) DEFERRABLE INITIALLY DEFERRED); CREATE TABLE seal(id TEXT PRIMARY KEY,required_seal INTEGER NOT NULL DEFAULT 1,sealed INTEGER NOT NULL DEFAULT 0,UNIQUE(id,sealed),FOREIGN KEY(id,required_seal) REFERENCES seal(id,sealed) DEFERRABLE INITIALLY DEFERRED);",
+    "split_seal": "PRAGMA foreign_keys=ON; CREATE TABLE parent(id TEXT PRIMARY KEY); CREATE TABLE child(id TEXT PRIMARY KEY,parent_id TEXT REFERENCES parent(id) DEFERRABLE INITIALLY DEFERRED); CREATE TABLE seal(id TEXT PRIMARY KEY,required_seal INTEGER NOT NULL DEFAULT 1,sealed INTEGER NOT NULL DEFAULT 0,UNIQUE(id,sealed),FOREIGN KEY(id,required_seal) REFERENCES seal_commit(id,sealed) DEFERRABLE INITIALLY DEFERRED); CREATE TABLE seal_commit(id TEXT PRIMARY KEY,sealed INTEGER NOT NULL DEFAULT 1 CHECK(sealed=1),UNIQUE(id,sealed),FOREIGN KEY(id,sealed) REFERENCES seal(id,sealed) DEFERRABLE INITIALLY DEFERRED);"
+  },
+  "cases": [
+    {"name":"complete","parent":true,"child":true,"marker":true,"seal":true,"expected_commit":true},
+    {"name":"orphan","parent":false,"child":true,"marker":true,"seal":true,"expected_commit":false},
+    {"name":"unsealed","parent":true,"child":true,"marker":true,"seal":false,"expected_commit":false},
+    {"name":"missing_marker","parent":true,"child":true,"marker":false,"seal":true,"expected_commit":false}
+  ]
+}

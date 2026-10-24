@@ -7,8 +7,8 @@ import check_continuation_trigger as T
 import check_continuation_binding as Q
 G=M.G;C=T.C;R=T.R;P=T.P;I=T.I;SC=T.SC;AT=T.AT
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[2]
-def fixture():
-    d,q,s,cds,ctx=T.T.fixture(seamer_factory=G.build,controller_factory=T.G.controller_sql)
+def fixture(*,sql_factory=G.build):
+    d,q,s,cds,ctx=T.T.fixture(seamer_factory=sql_factory,controller_factory=T.G.controller_sql)
     old,_,_=Q.J.fixtures();template=Q.upgraded(old)['DISPATCH']['body']['request']
     steps=copy.deepcopy(ctx['evaluations']['r0']['steps'])
     for n,step in enumerate(steps):

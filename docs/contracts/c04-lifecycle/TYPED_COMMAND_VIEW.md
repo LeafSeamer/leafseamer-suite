@@ -2,6 +2,8 @@
 
 状态：`approved=false`。本轮复用[公共命令单一类型图](COMMAND_CONTRACT.md)，将[完整受理](TYPED_CONTROLLER.md)中的简化内部投影替换为可校验的初始CommandRecord。交付[237表组合DDL](controller-command-view.sql)、[字段约束](typed-command-view.sql)、[生成器](build_typed_command_view.py)、[参考writer/reader](typed_command_view_model.py)、[检查](check_typed_command_view.py)及[报告](typed-command-view-report.json)。没有实现HTTP服务或设备发送。
 
+2026-10-24后续：[attempt独立原件映射](ATTEMPT_PROJECTION.md)替代非空attempt自比对，current/历史及证据页需本地固定来源；没有来源时拒绝执行态读取。已提供全部公开字段的独立重建与实际prepared读取接线，完整库存物理适配器及真实提供者仍待实现。下文“只核身份/序号”的描述保留为本稿初始版本边界，不代表当前reader继续接受无来源的非空attempt。
+
 ## 已知事实与变更依据
 
 此前cm_revision.state_body只有命令身份、修订及四个状态字段，cv_record.record_body只有metadata/state/snapshot摘要，缺公开State和CommandRecord的必需字段。原受理Ref指向不可变初始命令对象，不能改成当前CommandRecord摘要；当前读取必须联接cm_current，不能用历史最大修订绕过风险遮蔽。（来源：[旧受理writer](typed_controller_model.py)、[公开记录契约](../c02-command-view/README.md)、[公开存储](../c02-command-view/STORAGE.md)。）

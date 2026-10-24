@@ -80,7 +80,7 @@ def decode(token,keys):
     key=keys.get(claims.get('key_id'));need(type(key) is bytes and len(key)>=32,'cursor_key_unavailable')
     need(hmac.compare_digest(b[-32:],hmac.digest(key,b'leafseamer-evidence-cursor/1\0'+body,'sha256')),'cursor_authentication')
     return claims
-def page(db,command,state_revision,limit,auth,clock,keyring,cursor=None):
+def page(db,command,state_revision,limit,auth,clock,keyring,cursor=None,*,attempt_source=None):
     need(not db.in_transaction,'read_requires_committed_snapshot');M.U(state_revision)
     need(type(limit) is int and 1<=limit<=64,'page_limit')
     subject=auth['cursor_subject'];need(type(subject) is dict and set(subject)=={'issuer_id','issuer_epoch','principal_id','session_id','authorization_revision'},'cursor_subject')
@@ -92,7 +92,7 @@ def page(db,command,state_revision,limit,auth,clock,keyring,cursor=None):
         rows=P.rows(db,'SELECT * FROM cv_history WHERE command_id=? AND revision=?',(command,M.U(state_revision)));need(bool(rows),'snapshot_gone')
         row=rows[0];snapshot=R.one(db,'cv_snapshot','snapshot_id',row['snapshot_id'])
         capacity=keyring['max_snapshot_members'];need(type(capacity) is int and 1<=capacity<=65536 and int(snapshot['total'])<=capacity,'snapshot_capacity')
-        record=M.complete_record(db,row);index=record['evidence_index'];total=counter(index['total'])
+        record=M.complete_record(db,row,attempt_source=attempt_source);index=record['evidence_index'];total=counter(index['total'])
         binding=dict(version='evidence-cursor/1',contract_version=CONTRACT,scope=scope,command_id=command,state_ref=record['state_ref'],snapshot_ref=index['snapshot_ref'],
             subject=auth['cursor_subject'],limit=limit,clock_domain_id=clock['clock_domain_id'],descriptor_digest=clock['descriptor_digest'])
         if cursor is None:

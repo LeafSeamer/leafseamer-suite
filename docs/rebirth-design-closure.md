@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24attempt原件进展：[独立映射候选](contracts/c04-lifecycle/ATTEMPT_PROJECTION.md)补全部公开attempt字段的固定来源、明确结果选择和Schema；67项检查通过，原133/86项实际回归。非空attempt不再自比对，current/历史及证据页缺来源时拒绝；实际237表prepared读取接线通过，旧历史不混新attempt。完整库存/有效性物理封存、最终发送与完整生命周期writer仍缺，传输/结果/时间提供者为合成，不能据此关闭真实服务或设备验收；业务未改、阶段0未关闭。本轮新周期第1/3轮，只本地提交。
+
 2026-10-24固定证据读取进展：[分页候选](contracts/c04-lifecycle/COMMAND_EVIDENCE.md)以实际SQLite封存证据成员与公开修订，86项检查通过。指定State修订分页、单条原件读取和HMAC游标已作本地参考验证，主体/授权修订/时钟域/limit错绑拒绝，迟到证据不污染旧页，续页不延长TTL。前轮133/103/227项报告输入仍匹配，未把绑定核对当作重跑。生产者与提供者为合成，其他证据类型完整上游链、生命周期writer、HTTP、密钥部署、真实时间/身份及最终准入仍缺，业务未改、阶段0不关闭；本轮第3/3轮，审查完整周期后推送main。
 
 2026-10-24公开命令记录进展：[237表完整公开记录候选](contracts/c04-lifecycle/TYPED_COMMAND_VIEW.md)把完整CommandRecord/State/policy与实际受理同事务持久，133项检查通过，原103项和227项实际回归。current读取禁止回退历史；有权历史读取不依赖旧grant继续有效，queued阻断/过期另建完整终态修订且保留原Ref和deadline。完整执行态attempt/设备证据、取消和分页、真实AUTH/TIME/容量及最终AdmissionSeal仍待归并，未声称全部生命周期可部署；业务未改、阶段0不关闭。本轮第2/3轮，只本地提交。

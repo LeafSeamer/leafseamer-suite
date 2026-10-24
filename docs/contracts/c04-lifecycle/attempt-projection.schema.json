@@ -1,0 +1,346 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/attempt-projection.schema.json",
+  "title": "attempt-projection/0.1.0-draft.1",
+  "x-approved": false,
+  "x-source-contract": "https://leafseamer.invalid/design/c04-lifecycle/command-contract.schema.json",
+  "$ref": "#/$defs/AttemptProjection",
+  "$defs": {
+    "Scope": {
+      "$ref": "#/$defs/CN__Scope"
+    },
+    "CN__Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_Id": {
+      "$ref": "#/$defs/V__S1_Id"
+    },
+    "V__S1_Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9._:/-]+$(?![\\s\\S])"
+    },
+    "V__S0_Ref": {
+      "$ref": "#/$defs/V__S1_Ref"
+    },
+    "V__S1_Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/V__S1_Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/V__S1_PositiveCounter"
+        },
+        "digest": {
+          "$ref": "#/$defs/V__S1_Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "V__S1_PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "V__S1_Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "V__S0_AttemptView": {
+      "type": "object",
+      "properties": {
+        "attempt_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "prepared_state_ref": {
+          "$ref": "#/$defs/V__S0_Ref"
+        },
+        "packet_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S0_PacketRef"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "exits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S0_AttemptExit"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "unknown",
+            "cancelled",
+            "not_sent"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S0_Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "attempt_id",
+        "ordinal",
+        "prepared_state_ref",
+        "packet_refs",
+        "exits",
+        "outcome",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_PacketRef": {
+      "$ref": "#/$defs/V__S1_PacketRef"
+    },
+    "V__S1_PacketRef": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/V__S1_Id"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/V__S1_Digest"
+        }
+      },
+      "required": [
+        "packet_id",
+        "packet_digest"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_AttemptExit": {
+      "type": "object",
+      "properties": {
+        "exit_ref": {
+          "$ref": "#/$defs/V__S0_Ref"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "clock_domain_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/V__S0_Digest"
+        },
+        "send_started_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/V__S0_Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "protocol_request_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S0_Id"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "exit_ref",
+        "worker_boot_id",
+        "ipc_session_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest",
+        "send_started_at",
+        "protocol_request_ids"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_Digest": {
+      "$ref": "#/$defs/V__S1_Digest"
+    },
+    "V__S0_Timestamp": {
+      "$ref": "#/$defs/V__S5_Timestamp"
+    },
+    "V__S5_Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "Selection": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "pending",
+            "unknown",
+            "decision"
+          ]
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/V__S0_Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "pending"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ref": {
+                "$ref": "#/$defs/V__S0_Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "OriginalRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "state",
+            "evidence",
+            "packet",
+            "exit",
+            "transmission",
+            "report",
+            "time_projection",
+            "prepared_state"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/V__S0_Ref"
+        }
+      },
+      "required": [
+        "kind",
+        "source_ref"
+      ],
+      "additionalProperties": false
+    },
+    "AttemptProjection": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/V__S0_Ref"
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S0_AttemptView"
+          },
+          "maxItems": 16
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OriginalRef"
+          },
+          "maxItems": 16384,
+          "uniqueItems": true
+        },
+        "selections": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/V__S0_Id"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/Selection"
+          },
+          "maxProperties": 16
+        },
+        "projection_digest": {
+          "$ref": "#/$defs/V__S0_Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "command_id",
+        "state_ref",
+        "attempts",
+        "source_refs",
+        "selections",
+        "projection_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

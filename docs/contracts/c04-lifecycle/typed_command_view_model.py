@@ -60,7 +60,7 @@ def authorize(metadata,auth,permission='command.read'):
         need(auth['subject_kind']=='service' and auth['paired'] and metadata['origin']=='automation','service_pair')
         need(auth['service_scope']==metadata['automation_binding']['origin_scope'],'service_origin')
 
-def complete_record(db,row):
+def complete_record(db,row,*,attempt_source=None):
     v=json.loads(row['record_body']);validate('CommandRecord',v);command=row['command_id'];revision=row['revision']
     m=R.one(db,'cv_metadata','command_id',command);p=R.one(db,'cm_policy','command_id',command)
     s=P.rows(db,'SELECT * FROM cm_revision WHERE command_id=? AND revision=?',(command,revision))[0]
@@ -90,6 +90,7 @@ def complete_record(db,row):
     # 每次公开attempt必须指向实际prepared State；出口和packet的完整提供者映射另在写入边界验证。
     need(len(v['attempts'])==len(attempts),'attempt_projection_set')
     for view,a in zip(v['attempts'],attempts):
+        need(a['command_id']==command and R.one(db,'ce_attempt','attempt_id',a['attempt_id'])['command_id']==command,'attempt_original_owner')
         prepared=P.rows(db,'SELECT state_digest FROM cm_revision WHERE command_id=? AND revision=?',(command,a['prepared_revision']))[0]
         need(view['attempt_id']==a['attempt_id'] and view['ordinal']==a['ordinal'] and view['prepared_state_ref']==dict(id=command,revision=str(int(a['prepared_revision'])),digest=prepared['state_digest']),'prepared_state_reference')
     levels={'sent':0,'acknowledged':1,'effect_verified':2};achieved=[]
@@ -103,13 +104,20 @@ def complete_record(db,row):
         ca=cancels[0];body=json.loads(ca['operation_body']);validate('CancelOperation',body)
         need(body['operation_digest']==ca['operation_digest'] and V.valid_digest(body,'operation_digest'),'cancel_digest')
         cancel=dict(operation_ref=dict(id=ca['cancellation_id'],revision=str(int(ca['revision'])),digest=ca['operation_digest']),state=ca['state'],future_writes=ca['future_writes'],reason_code=body['reason_code'])
+    original_attempts=[]
+    if attempts:
+        # 来源适配器是本地依赖注入，不能来自API参数。所有输入仍由独立映射器复核。
+        need(callable(attempt_source),'attempt_originals_unavailable')
+        from attempt_projection_model import verify
+        inventory,selections,projection=attempt_source(db,command,str(int(revision)))
+        original_attempts=verify(v,inventory,selections,projection)
     context=dict(scope=metadata['scope'],command_id=command,state=state,policy=policy,initial_command_ref=metadata['initial_command_ref'],request_identity=metadata['request_identity'],
         immutable={k:metadata[k] for k in ('target','actor','origin','run_binding','automation_binding','accepted_at','dispatch','control_binding')},
-        attempts=v['attempts'],completion=completion,cancellation=cancel,evidence_index=index)
+        attempts=original_attempts,completion=completion,cancellation=cancel,evidence_index=index)
     need(V.record_error(v,context) is None,'record_semantics')
     return v
 
-def read(db,command,auth,revision=None):
+def read(db,command,auth,revision=None,*,attempt_source=None):
     need(not db.in_transaction,'read_requires_committed_snapshot');need(auth['storage_readable'],'unavailable')
     need(auth['authenticated'] and auth['authorization_current'] and 'command.read' in auth['permissions'] and auth['scope']==C.scope(db),'read_authority')
     if revision is not None:U(revision)
@@ -117,7 +125,7 @@ def read(db,command,auth,revision=None):
     try:
         metadata=json.loads(R.one(db,'cv_metadata','command_id',command)['metadata_body']);authorize(metadata,auth)
         rows=P.rows(db,'SELECT * FROM cv_current WHERE command_id=?',(command,)) if revision is None else P.rows(db,'SELECT * FROM cv_history WHERE command_id=? AND revision=?',(command,U(revision)))
-        need(bool(rows),'state_projection_pending' if revision is None else 'not_found');v=complete_record(db,rows[0]);db.commit()
+        need(bool(rows),'state_projection_pending' if revision is None else 'not_found');v=complete_record(db,rows[0],attempt_source=attempt_source);db.commit()
     except BaseException:db.rollback();raise
     need(auth['response_authorized'],'response_authority');return dict(view='current' if revision is None else 'historical',record=v)
 

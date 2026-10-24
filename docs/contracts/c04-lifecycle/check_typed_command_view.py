@@ -108,7 +108,7 @@ def run():
         for d in dbs:d.close()
 
 def inputs():
-    return list(dict.fromkeys(AR.inputs()+G.SOURCES+[HERE/n for n in ('adjudication-receive-report.json','controller-command-view.sql','typed_command_view_model.py','check_typed_command_view.py','TYPED_COMMAND_VIEW.md')]+[HERE.parent/'c02-command-view/reference_model.py']))
+    return list(dict.fromkeys(AR.inputs()+G.SOURCES+[HERE/n for n in ('adjudication-receive-report.json','controller-command-view.sql','typed_command_view_model.py','check_typed_command_view.py','TYPED_COMMAND_VIEW.md','attempt_projection_model.py','build_attempt_projection.py','attempt-projection.schema.json','command_evidence_model.py')]+[HERE.parent/'c02-command-view/reference_model.py']))
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--report',action='store_true');p.add_argument('--check-report',action='store_true');a=p.parse_args()
     hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs()};path=HERE/'typed-command-view-report.json'

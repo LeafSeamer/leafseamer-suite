@@ -2,6 +2,8 @@
 
 状态：`approved=false`。本轮在[完整公开记录](TYPED_COMMAND_VIEW.md)上增加[证据装配与读取参考模型](command_evidence_model.py)、[检查](check_command_evidence.py)及[报告](command-evidence-report.json)。复用[既有七接口及类型图](COMMAND_CONTRACT.md)，不增加HTTP路由或改旧Schema，不运行服务和设备。
 
+2026-10-24后续：[attempt原件映射](ATTEMPT_PROJECTION.md)已接入分页内部完整记录核验；非空attempt必须具有同修订本地来源，不能通过证据页绕开原件校验。没有attempt的旧空快照维持原行为；单条证据查询仍按自身来源验证。
+
 ## 已知事实与本轮边界
 
 公共证据页已有固定state_revision、limit 1–64、独立command.evidence.read、不可变snapshot和五类EvidenceRecord契约。单独command.read不能授权读取证据正文，current不可发布不妨碍明确的历史证据查询。（来源：[公开读取契约](../c02-command-view/README.md)、[OpenAPI](command-contract.openapi.json)。）

@@ -69,3 +69,20 @@ WHEN NEW.transport_body IS NOT NULL
  AND json_extract(t.value,'$.action_id')=json_extract(NEW.content_body,'$.action_id')
  AND json_extract(t.value,'$.capability_version')=json_extract(NEW.content_body,'$.capability_version')))
 BEGIN SELECT RAISE(ABORT,'request_context_scope_rejected'); END;
+CREATE TABLE authorization_clock_record (
+ record_id TEXT PRIMARY KEY NOT NULL,
+ binding_digest TEXT NOT NULL,
+ sequence TEXT NOT NULL CHECK(length(sequence)=20 AND sequence NOT GLOB '*[^0-9]*'),
+ digest TEXT NOT NULL,
+ body BLOB NOT NULL CHECK(length(body)>0 AND length(body)<=16777216),
+ UNIQUE(binding_digest,sequence)
+) STRICT;
+CREATE TABLE authorization_validity (
+ validity_id TEXT PRIMARY KEY NOT NULL,
+ digest TEXT NOT NULL,
+ body BLOB NOT NULL CHECK(length(body)>0 AND length(body)<=16777216)
+) STRICT;
+CREATE TRIGGER authorization_clock_no_update BEFORE UPDATE ON authorization_clock_record BEGIN SELECT RAISE(ABORT,'immutable authorization clock'); END;
+CREATE TRIGGER authorization_clock_no_delete BEFORE DELETE ON authorization_clock_record BEGIN SELECT RAISE(ABORT,'immutable authorization clock'); END;
+CREATE TRIGGER authorization_validity_no_update BEFORE UPDATE ON authorization_validity BEGIN SELECT RAISE(ABORT,'immutable authorization validity'); END;
+CREATE TRIGGER authorization_validity_no_delete BEFORE DELETE ON authorization_validity BEGIN SELECT RAISE(ABORT,'immutable authorization validity'); END;

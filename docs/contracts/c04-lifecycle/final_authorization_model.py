@@ -5,6 +5,7 @@ import build_final_authorization as G
 import final_encoding_source_model as E
 import continuation_binding_model as CB
 F=E.F;need=F.need;raw=E.raw;SCHEMA=G.build()
+import authorization_validity_model as V
 
 def validate(name,value):Draft202012Validator({'$defs':SCHEMA['$defs'],'$ref':'#/$defs/'+name},format_checker=FormatChecker()).validate(value)
 def sealed(v,key):return F.seal(v,key)
@@ -212,6 +213,8 @@ def read(db,use_ref,seal):
     response_ref=authority_response(db,u)
     continuation_ref=continuation(db,u) if u['identity']['origin']=='automation' else None
     scope_ref=scope_proof(db,u) if u['identity']['origin']=='automation' else None
+    validity_cut=V.resolve(db,u,seal)
+    lower=int(validity_cut['not_before_tick_ns']);upper=int(validity_cut['before_tick_ns'])
     floors=[]
     for kind,target,revision in dependencies(a):
         query='SELECT event_id,kind,issuer_id,issuer_epoch,target_id,revision_floor,digest,body FROM authorization_floor_event WHERE kind=? AND issuer_id=? AND issuer_epoch=?'
@@ -226,7 +229,7 @@ def read(db,use_ref,seal):
             floors.append(E.ref(event['event_id'],1,event['event_digest']))
     source=dict(format_version='authorization-cut/1',scope=E.A.scope(db),use_ref=use_ref,transaction_id=seal['transaction_id'],
         selected_tick_ns=seal['selected_tick_ns'],sealed_tick_ns=seal['sealed_tick_ns'],authority_response_ref=response_ref,
-        continuation_ref=continuation_ref,scope_proof_ref=scope_ref,floor_refs=sorted(floors,key=lambda x:x['id']))
+        validity_cut=validity_cut,continuation_ref=continuation_ref,scope_proof_ref=scope_ref,floor_refs=sorted(floors,key=lambda x:x['id']))
     validate('AuthorizationCut',source)
     source_ref=E.ref('authorization_cut_'+F.digest(source)[7:],1,F.digest(source))
     return E.original('authorization',seal['transaction_id'],seal['binding'],seal['identity'],source_ref,not_before_tick_ns=str(lower),before_tick_ns=str(upper))

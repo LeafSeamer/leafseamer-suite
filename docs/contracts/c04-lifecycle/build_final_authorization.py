@@ -50,8 +50,24 @@ def build():
         'then':{'properties':{'session_id':ref('Id')}},'else':{'properties':{'session_id':{'type':'null'}}}}]
     d['CommandScopeProof']=obj(format_version={'const':'command-scope-proof/1'},scope=ref('Scope'),command_ref=ref('Ref'),request_ref=ref('Ref'),
         context_ref=ref('Ref'),original_scope_ref=ref('Ref'),current_scope_ref=ref('Ref'),authority_response_ref=ref('Ref'),target=ref('CommandTarget'))
+    d['AuthenticationClockSample']=obj(format_version={'const':'authentication-clock-sample/1'},sample_id=ref('Id'),revision={'const':'1'},
+        profile={'const':'trusted-system-interval/1'},binding=ref('Binding'),anchor_tick_ns=ref('Counter'),
+        utc_lower_ns=ref('Counter'),utc_upper_ns=ref('Counter'),drift_ppb=dict(type='integer',minimum=0,maximum=1000000),
+        valid_before_tick_ns=ref('Counter'),quality={'enum':['trusted','untrusted']},policy_ref=ref('Ref'),acquisition_ref=ref('Ref'))
+    d['AuthenticationClockRecord']=obj(format_version={'const':'authentication-clock-record/1'},record_id=ref('Id'),revision={'const':'1'},
+        sequence=ref('Counter'),sample=ref('AuthenticationClockSample'),parent_ref=A.optional(ref('Ref')),
+        effective_lower_ns=ref('Counter'),effective_upper_ns=ref('Counter'),protected=dict(type='boolean'),record_digest=ref('Digest'))
+    d['ValidityComponent']=obj(kind={'enum':['credential','session','grant']},target_id=ref('Id'),source_ref=ref('Ref'),
+        validity=copy.deepcopy(d['AuthorizationSnapshot']['properties']['validity']))
+    d['AuthorizationValidity']=obj(format_version={'const':'authorization-validity/1'},validity_id=ref('Id'),revision={'const':'1'},
+        binding=ref('Binding'),identity=ref('ExecutionIdentity'),authorization_binding=ref('AuthorizationBinding'),
+        authority_response_ref=ref('Ref'),clock_ref=ref('Ref'),components=dict(type='array',minItems=1,maxItems=3,items=ref('ValidityComponent')),
+        validity_digest=ref('Digest'))
+    d['AuthorizationTimeCut']=obj(format_version={'const':'authorization-time-cut/1'},validity_ref=ref('Ref'),
+        origin_clock_ref=ref('Ref'),current_clock_ref=ref('Ref'),not_before_tick_ns=ref('Counter'),before_tick_ns=ref('Counter'))
     d['AuthorizationCut']=obj(format_version={'const':'authorization-cut/1'},scope=ref('Scope'),use_ref=ref('Ref'),transaction_id=ref('Id'),
         selected_tick_ns=ref('Counter'),sealed_tick_ns=ref('Counter'),authority_response_ref=ref('Ref'),
+        validity_cut=ref('AuthorizationTimeCut'),
         continuation_ref=A.optional(ref('Ref')),scope_proof_ref=A.optional(ref('Ref')),floor_refs=dict(type='array',maxItems=24576,items=ref('Ref')))
     return {'$schema':'https://json-schema.org/draft/2020-12/schema','$id':'https://leafseamer.invalid/design/c04-lifecycle/final-authorization.schema.json',
         'x-approved':False,'x-runtime-approved':False,'not':{},'$defs':d}

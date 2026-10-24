@@ -1181,6 +1181,252 @@
       ],
       "additionalProperties": false
     },
+    "AuthenticationClockSample": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authentication-clock-sample/1"
+        },
+        "sample_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "profile": {
+          "const": "trusted-system-interval/1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "anchor_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "utc_lower_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "utc_upper_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "drift_ppb": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "valid_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "quality": {
+          "enum": [
+            "trusted",
+            "untrusted"
+          ]
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "acquisition_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "format_version",
+        "sample_id",
+        "revision",
+        "profile",
+        "binding",
+        "anchor_tick_ns",
+        "utc_lower_ns",
+        "utc_upper_ns",
+        "drift_ppb",
+        "valid_before_tick_ns",
+        "quality",
+        "policy_ref",
+        "acquisition_ref"
+      ],
+      "additionalProperties": false
+    },
+    "AuthenticationClockRecord": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authentication-clock-record/1"
+        },
+        "record_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "sequence": {
+          "$ref": "#/$defs/Counter"
+        },
+        "sample": {
+          "$ref": "#/$defs/AuthenticationClockSample"
+        },
+        "parent_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective_lower_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "effective_upper_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "protected": {
+          "type": "boolean"
+        },
+        "record_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "record_id",
+        "revision",
+        "sequence",
+        "sample",
+        "parent_ref",
+        "effective_lower_ns",
+        "effective_upper_ns",
+        "protected",
+        "record_digest"
+      ],
+      "additionalProperties": false
+    },
+    "ValidityComponent": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "credential",
+            "session",
+            "grant"
+          ]
+        },
+        "target_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "validity": {
+          "type": "object",
+          "properties": {
+            "not_before": {
+              "$ref": "#/$defs/Timestamp"
+            },
+            "expires_at": {
+              "$ref": "#/$defs/Timestamp"
+            }
+          },
+          "required": [
+            "not_before",
+            "expires_at"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "target_id",
+        "source_ref",
+        "validity"
+      ],
+      "additionalProperties": false
+    },
+    "AuthorizationValidity": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authorization-validity/1"
+        },
+        "validity_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "authorization_binding": {
+          "$ref": "#/$defs/AuthorizationBinding"
+        },
+        "authority_response_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "clock_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/ValidityComponent"
+          }
+        },
+        "validity_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "validity_id",
+        "revision",
+        "binding",
+        "identity",
+        "authorization_binding",
+        "authority_response_ref",
+        "clock_ref",
+        "components",
+        "validity_digest"
+      ],
+      "additionalProperties": false
+    },
+    "AuthorizationTimeCut": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authorization-time-cut/1"
+        },
+        "validity_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "origin_clock_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "current_clock_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "format_version",
+        "validity_ref",
+        "origin_clock_ref",
+        "current_clock_ref",
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
     "AuthorizationCut": {
       "type": "object",
       "properties": {
@@ -1204,6 +1450,9 @@
         },
         "authority_response_ref": {
           "$ref": "#/$defs/Ref"
+        },
+        "validity_cut": {
+          "$ref": "#/$defs/AuthorizationTimeCut"
         },
         "continuation_ref": {
           "anyOf": [
@@ -1241,6 +1490,7 @@
         "selected_tick_ns",
         "sealed_tick_ns",
         "authority_response_ref",
+        "validity_cut",
         "continuation_ref",
         "scope_proof_ref",
         "floor_refs"

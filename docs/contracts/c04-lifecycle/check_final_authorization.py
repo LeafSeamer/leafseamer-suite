@@ -109,7 +109,7 @@ def run():
         # 采样回执到达后才产生有效资格；此fixture接收tick为50，仍早于选取51。
         u=M.sealed(dict(u,received_tick_ns='50'),'use_digest')
         tx(db,lambda:publish_use(db,u));ur=use_ref(u);auth_projection=T.T.preview(db,lambda:M.read(db,ur,v));attach(v,o,auth_projection)
-        check('251表含认证时钟记录及独立故障保护',len(T.T.V.SC.snapshot(db))==251)
+        check('252表含认证时钟故障与固定关闭计划',len(T.T.V.SC.snapshot(db))==252)
         check('普通自动化可规划19条附属封存写集',len(T.T.preview(db,lambda:M.planned(db,v,o,cut,pid,provider,ur)))==19)
         context=json.loads(db.execute('SELECT body FROM authorization_context').fetchone()[0])
         original_scope=T.T.preview(db,lambda:M.command_scope(db,context['original_scope_ref']))
@@ -266,6 +266,8 @@ def run():
         time_checks.run(sys.modules[__name__],check,reject,db,fork,u,v,o,cut,pid,provider)
         import check_authentication_clock_ingress as ingress_checks
         ingress_checks.run(sys.modules[__name__],check,reject,db,fork,u,v)
+        import check_authentication_clock_close as close_checks
+        close_checks.run(sys.modules[__name__],check,reject,db,fork,u)
         c=fork(db)
         def fill():
             for i in range(4097):M.install_floor(c,floor(u,revision='4',eid='bounded.'+str(i)))
@@ -289,7 +291,10 @@ def run():
         # manual会话撤销独立于组织run；这里只读实际持久授权行，不声称manual完整编码已贯通。
         mv,mo,mc=T.V.fixture();mu=use(mv);mu=M.sealed(dict(mu,received_tick_ns='50'),'use_digest')
         manual=sqlite3.connect(':memory:',isolation_level=None);dbs.append(manual)
-        manual.executescript('CREATE TABLE controller_scope(singleton,authority_service_id,database_instance_id); CREATE TABLE ca_namespace(namespace_id TEXT PRIMARY KEY); CREATE TABLE ca_request_key(transport_body BLOB,namespace_id TEXT); INSERT INTO controller_scope VALUES(1,\'controller\',\'database\');'+(HERE/'final-authorization.sql').read_text('utf-8'))
+        manual.executescript('''CREATE TABLE controller_scope(singleton,authority_service_id,database_instance_id);
+          CREATE TABLE ca_namespace(namespace_id TEXT PRIMARY KEY); CREATE TABLE ca_request_key(transport_body BLOB,namespace_id TEXT);
+          CREATE TABLE ce_exit(exit_id,controller_boot_id,clock_domain_id); CREATE TABLE ij_session(controller_boot_id,clock_domain_id); CREATE TABLE ij_exit(exit_id);
+          INSERT INTO controller_scope VALUES(1,'controller','database');'''+(HERE/'final-authorization.sql').read_text('utf-8'))
         tx(manual,lambda:publish_use(manual,mu));tx(manual,lambda:M.read(manual,use_ref(mu),mv));check('manual完整会话绑定可读取')
         tx(manual,lambda:M.install_floor(manual,floor(mu,'session')))
         reject('会话撤销阻断manual使用',lambda:tx(manual,lambda:M.read(manual,use_ref(mu),mv)),'authorization_revision_floor')
@@ -301,18 +306,19 @@ def run():
     finally:
         for c in dbs:c.close()
 
-def inputs():return list(dict.fromkeys(T.inputs()+G.SOURCES+[HERE/n for n in ('final-authorization.schema.json','final-authorization.sql','final_authorization_model.py','authorization_validity_model.py','authorization_clock_ingress_model.py','check_final_authorization.py','check_authorization_validity.py','check_authentication_clock_ingress.py','FINAL_AUTHORIZATION.md')]+[ROOT/'docs/rebirth-f04-f05-design.md',ROOT/'docs/rebirth-df04-storage-design.md']))
+def inputs():return list(dict.fromkeys(T.inputs()+G.SOURCES+[HERE/n for n in ('final-authorization.schema.json','final-authorization.sql','final_authorization_model.py','authorization_validity_model.py','authorization_clock_ingress_model.py','authorization_clock_close_model.py','check_final_authorization.py','check_authorization_validity.py','check_authentication_clock_ingress.py','check_authentication_clock_close.py','FINAL_AUTHORIZATION.md')]+[ROOT/'docs/rebirth-f04-f05-design.md',ROOT/'docs/rebirth-df04-storage-design.md']))
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--report',action='store_true');p.add_argument('--check-report',action='store_true');a=p.parse_args();target=HERE/'final-authorization-report.json'
     hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs()}
     if a.check_report:assert json.loads(target.read_bytes())['inputs']==hashes;print(json.dumps(dict(all_passed=True,matched_bindings=len(hashes))))
     else:
-        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=251,local_file_two_writer_order_verified=True,
+        checks=run();report=dict(all_passed=True,approved=False,cases_passed=len(checks),candidate_tables=252,local_file_two_writer_order_verified=True,
             stored_challenge_response_binding_verified=True,stored_continuation_grant_binding_verified=True,
             stored_request_context_binding_verified=True,stored_command_scope_intersection_verified=True,
             stored_validity_binding_verified=True,integer_authentication_interval_verified=True,local_clock_protection_latch_verified=True,
             system_clock_acquisition_verified=False,validity_component_authenticity_verified=False,
             malformed_clock_input_protection_verified=True,clock_fault_transaction_boundary_verified=True,physical_exit_termination_verified=False,
+            registered_clock_exit_inventory_verified=True,close_gate_body_compatibility_verified=True,clock_close_plan_executed=False,
             authority_authenticity_verified=False,request_context_credential_chain_verified=False,scope_evidence_verified=False,utc_validity_evidence_verified=False,full_final_issue_executed=False,
             runtime_tests_executed=0,device_tests_executed=0,disk_crash_tests_executed=0,checks=checks,inputs=hashes)
         if a.report:target.write_bytes(M.raw(report))

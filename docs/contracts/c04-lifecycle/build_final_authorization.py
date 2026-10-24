@@ -4,7 +4,8 @@ from pathlib import Path
 import build_final_admission as A
 HERE=Path(__file__).resolve().parent
 PUBLIC=HERE.parent/'df01-source/source/public.schema.json'
-SOURCES=[Path(__file__),PUBLIC,HERE/'final-admission.schema.json']
+IPC=HERE/'continuation-binding-ipc.schema.json'
+SOURCES=[Path(__file__),PUBLIC,HERE/'final-admission.schema.json',IPC]
 obj=A.obj;ref=A.ref
 
 def build():
@@ -65,6 +66,15 @@ def build():
     d['ClockIngestResult']['allOf']=[{'if':{'properties':{'outcome':{'const':'stored'}}},
         'then':{'properties':{'record_ref':ref('Ref'),'fault_ref':{'type':'null'}}},
         'else':{'properties':{'fault_ref':ref('Ref')}}}]
+    d['ClockCloseBody']=obj(close_id=ref('Id'),reason={'const':'authentication_clock_untrusted'},scope={'const':'device'})
+    d['ClockCloseTarget']=obj(binding=ref('Binding'),exit_source_ref=ref('Ref'),session_id=A.optional(ref('Id')),
+        session_source_ref=A.optional(ref('Ref')),required_action={'enum':['close_gate','verify_termination']},close_body=A.optional(ref('ClockCloseBody')))
+    d['ClockCloseTarget']['allOf']=[{'if':{'properties':{'required_action':{'const':'close_gate'}}},
+        'then':{'properties':{'session_id':ref('Id'),'session_source_ref':ref('Ref'),'close_body':ref('ClockCloseBody')}},
+        'else':{'properties':{'close_body':{'type':'null'}}}}]
+    d['ClockClosePlan']=obj(format_version={'const':'authentication-clock-close-plan/1'},plan_id=ref('Id'),revision={'const':'1'},
+        fault_ref=ref('Ref'),domain=ref('AuthenticationClockDomain'),state={'const':'planned'},
+        targets=dict(type='array',minItems=1,maxItems=4096,items=ref('ClockCloseTarget')),plan_digest=ref('Digest'))
     d['ValidityComponent']=obj(kind={'enum':['credential','session','grant']},target_id=ref('Id'),source_ref=ref('Ref'),
         validity=copy.deepcopy(d['AuthorizationSnapshot']['properties']['validity']))
     d['AuthorizationValidity']=obj(format_version={'const':'authorization-validity/1'},validity_id=ref('Id'),revision={'const':'1'},

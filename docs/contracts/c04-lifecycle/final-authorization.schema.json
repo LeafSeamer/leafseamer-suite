@@ -1457,6 +1457,158 @@
         }
       ]
     },
+    "ClockCloseBody": {
+      "type": "object",
+      "properties": {
+        "close_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reason": {
+          "const": "authentication_clock_untrusted"
+        },
+        "scope": {
+          "const": "device"
+        }
+      },
+      "required": [
+        "close_id",
+        "reason",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "ClockCloseTarget": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "exit_source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "session_source_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "required_action": {
+          "enum": [
+            "close_gate",
+            "verify_termination"
+          ]
+        },
+        "close_body": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClockCloseBody"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "binding",
+        "exit_source_ref",
+        "session_id",
+        "session_source_ref",
+        "required_action",
+        "close_body"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "required_action": {
+                "const": "close_gate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "session_source_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "close_body": {
+                "$ref": "#/$defs/ClockCloseBody"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "close_body": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ClockClosePlan": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "authentication-clock-close-plan/1"
+        },
+        "plan_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "fault_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "domain": {
+          "$ref": "#/$defs/AuthenticationClockDomain"
+        },
+        "state": {
+          "const": "planned"
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": {
+            "$ref": "#/$defs/ClockCloseTarget"
+          }
+        },
+        "plan_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "plan_id",
+        "revision",
+        "fault_ref",
+        "domain",
+        "state",
+        "targets",
+        "plan_digest"
+      ],
+      "additionalProperties": false
+    },
     "ValidityComponent": {
       "type": "object",
       "properties": {

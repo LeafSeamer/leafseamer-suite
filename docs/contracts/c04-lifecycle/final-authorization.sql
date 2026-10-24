@@ -95,3 +95,22 @@ CREATE TABLE authorization_clock_fault (
 ) STRICT;
 CREATE TRIGGER authorization_clock_fault_no_update BEFORE UPDATE ON authorization_clock_fault BEGIN SELECT RAISE(ABORT,'immutable authentication clock fault'); END;
 CREATE TRIGGER authorization_clock_fault_no_delete BEFORE DELETE ON authorization_clock_fault BEGIN SELECT RAISE(ABORT,'immutable authentication clock fault'); END;
+CREATE INDEX authorization_clock_fault_domain ON authorization_clock_fault(json_extract(body,'$.domain.controller_boot_id'),json_extract(body,'$.domain.clock_domain_id'));
+CREATE TABLE authorization_clock_close_plan (
+ plan_id TEXT PRIMARY KEY NOT NULL,
+ fault_id TEXT UNIQUE NOT NULL REFERENCES authorization_clock_fault(fault_id),
+ digest TEXT NOT NULL,
+ body BLOB NOT NULL CHECK(length(body)>0 AND length(body)<=16777216)
+) STRICT;
+CREATE TRIGGER authorization_clock_plan_no_update BEFORE UPDATE ON authorization_clock_close_plan BEGIN SELECT RAISE(ABORT,'immutable authentication close plan'); END;
+CREATE TRIGGER authorization_clock_plan_no_delete BEFORE DELETE ON authorization_clock_close_plan BEGIN SELECT RAISE(ABORT,'immutable authentication close plan'); END;
+-- 失败域禁止新增或重绑出口/会话。旧会话结束记录仍可写入以补事实，不代表已经物理停止。
+CREATE TRIGGER authorization_clock_exit_registration BEFORE INSERT ON ce_exit
+WHEN EXISTS(SELECT 1 FROM authorization_clock_fault f WHERE json_extract(f.body,'$.domain.controller_boot_id')=NEW.controller_boot_id AND json_extract(f.body,'$.domain.clock_domain_id')=NEW.clock_domain_id)
+BEGIN SELECT RAISE(ABORT,'authentication_clock_domain_closed'); END;
+CREATE TRIGGER authorization_clock_session_registration BEFORE INSERT ON ij_session
+WHEN EXISTS(SELECT 1 FROM authorization_clock_fault f WHERE json_extract(f.body,'$.domain.controller_boot_id')=NEW.controller_boot_id AND json_extract(f.body,'$.domain.clock_domain_id')=NEW.clock_domain_id)
+BEGIN SELECT RAISE(ABORT,'authentication_clock_domain_closed'); END;
+CREATE TRIGGER authorization_clock_exit_route BEFORE INSERT ON ij_exit
+WHEN EXISTS(SELECT 1 FROM ce_exit e JOIN authorization_clock_fault f ON json_extract(f.body,'$.domain.controller_boot_id')=e.controller_boot_id AND json_extract(f.body,'$.domain.clock_domain_id')=e.clock_domain_id WHERE e.exit_id=NEW.exit_id)
+BEGIN SELECT RAISE(ABORT,'authentication_clock_domain_closed'); END;

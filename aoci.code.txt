@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录完整公开记录及本周期第二轮交付 | R:code:docs/contracts/c04-lifecycle/TYPED_COMMAND_VIEW.md | A:开发进展与本地提交节奏 | S:133项本轮检查与103和227项回归仅离线；执行态证据仍缺，第三轮后审查整个周期再推送
+DEVELOPMENT_MEMO.md[SO5L]: F:记录固定证据分页与本周期第三轮交付 | R:code:docs/contracts/c04-lifecycle/COMMAND_EVIDENCE.md | A:开发进展及三轮历史审查推送 | S:本轮86项实际检查，前轮仅核报告绑定；生产者合成且生命周期未闭合，提交后审查整个周期再推送
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:记录完整公开初始命令记录后的系统定稿剩余缺口 | R:code:docs/contracts/c04-lifecycle/TYPED_COMMAND_VIEW.md | A:C01至C12定稿视图 | S:执行态attempt和设备完成证据、取消分页、真实身份时间容量与最终准入未闭合，阶段0不因133项离线检查关闭
+rebirth-design-closure.md[SQ8M]: F:记录固定证据分页后的全系统设计剩余缺口 | R:code:docs/contracts/c04-lifecycle/COMMAND_EVIDENCE.md | A:C01至C12定稿视图 | S:本地分页行为不关闭五类完整证据生产链、全部生命周期、真实身份时间及最终发送准入；阶段0仍未完成
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -518,6 +518,10 @@ controller-command-view.sql[PD9L]: F:在237表组合库约束完整公开State�
 typed-command-view-report.json[TR7L]: F:保存133项公开记录验收及400份输入绑定 | R:code:docs/contracts/c04-lifecycle/check_typed_command_view.py | A:检查结果、布局表数和未完成标记 | S:all_lifecycle_writers_typed与production_clearance均为false；没有真实服务、设备或应用时钟验收
 typed-command-view.sql[PD8T]: F:核对完整状态、受理元数据和公开记录的列与JSON关系 | R:code:docs/contracts/c04-lifecycle/typed_command_view_model.py,code:docs/contracts/c02-command-view/storage.sql | A:tv_state、tv_metadata、tv_publish | S:SQL负责列对账和集合约束，不计算JCS或验证时间证明；旧简化正文即使非空也不能作为新公开记录发布
 typed_command_view_model.py[AD9S]: F:持久完整初始CommandRecord并查询已提交的当前及历史修订 | R:code:docs/contracts/c04-lifecycle/typed_controller_model.py,code:docs/contracts/c02-command-view/reference_model.py | A:initial_rows、complete_record、read及stop_steps | S:禁止从writer事务响应；current缺失不回退历史；stop仅无attempt无证据的排队命令，deadline与StateRef须绑定原件；执行态packet和出口完整映射未闭合
+COMMAND_EVIDENCE.md[SR8T]: F:规定固定证据快照读取与认证游标边界 | R:code:docs/contracts/c04-lifecycle/command_evidence_model.py | A:发布装配、字段绑定、历史读取与验收限制 | S:游标编码是参考候选，不是生产密钥方案批准；旧分页不混新证据，数据库正例主要为decision，其他完整生产链待归并
+check_command_evidence.py[TR8S]: F:验证真实持久证据集合和HMAC游标的只读分页行为 | R:code:docs/contracts/c04-lifecycle/command_evidence_model.py,code:docs/contracts/c04-lifecycle/check_typed_command_view.py | A:合成生产者、逐写故障、分页绑定与报告 | S:cm_decision正例不代表设备结果判定；游标key和时钟是公开合成值，缺写检查使用原SQL提交而非仅应用预检查
+command-evidence-report.json[TR7L]: F:保存86项证据分页检查及404份输入绑定 | R:code:docs/contracts/c04-lifecycle/check_command_evidence.py | A:结果、生产者声明和未验范围 | S:synthetic_lifecycle_producer为true，approved与production_clearance为false；没有真实HTTP或设备测试
+command_evidence_model.py[AD9S]: F:装配完整证据快照并提供认证游标分页和单条历史读取 | R:code:docs/contracts/c04-lifecycle/typed_command_view_model.py,code:docs/contracts/c02-command-view/storage.sql | A:evidence_steps、evidence、single、sign、decode、page | S:权限独立于command.read；续页绑定原State和主体授权修订并保留原TTL；新证据另建快照；容量先核整集，真实原件与脱敏仍依赖提供者
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

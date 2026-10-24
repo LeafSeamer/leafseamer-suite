@@ -1,0 +1,3206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/continuation-binding.schema.json",
+  "title": "continuation-execution/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "ExecutionBinding": {
+      "$ref": "#/$defs/EB__ExecutionBinding"
+    },
+    "EB__ExecutionBinding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/EB__Scope"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "artifact_ref": {
+          "$ref": "#/$defs/EB__ArtifactRef"
+        },
+        "origin": {
+          "$ref": "#/$defs/EB__ExecutionOrigin"
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/EB__Revision"
+        },
+        "source_state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EB__BusinessState"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_state_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EB__Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input_snapshot_ref": {
+          "$ref": "#/$defs/EB__InputSnapshotRef"
+        },
+        "resolved_parameters_ref": {
+          "$ref": "#/$defs/EB__ResolvedParametersRef"
+        },
+        "grants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EB__GrantRef"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "clock": {
+          "$ref": "#/$defs/EB__ClockRef"
+        },
+        "plan_digest": {
+          "$ref": "#/$defs/EB__Digest"
+        },
+        "binding_digest": {
+          "$ref": "#/$defs/EB__Digest"
+        },
+        "binding_version": {
+          "const": "continuation-execution/0.1.0-draft.1"
+        },
+        "authorization_mode": {
+          "enum": [
+            "preparation",
+            "continuation"
+          ]
+        },
+        "continuations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CN__Target"
+          },
+          "maxItems": 32,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "scope",
+        "execution_id",
+        "run_id",
+        "artifact_ref",
+        "origin",
+        "arm_generation",
+        "source_state",
+        "target_state_id",
+        "input_snapshot_ref",
+        "resolved_parameters_ref",
+        "grants",
+        "clock",
+        "plan_digest",
+        "binding_digest",
+        "binding_version",
+        "authorization_mode",
+        "continuations"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "authorization_mode": {
+                "const": "continuation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "continuations": {
+                "minItems": 1
+              },
+              "origin": {
+                "properties": {
+                  "kind": {
+                    "const": "trigger"
+                  }
+                }
+              },
+              "arm_generation": {
+                "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "continuations": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "EB__Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/EB__Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "EB__Id": {
+      "$ref": "#/$defs/PG__Id"
+    },
+    "PG__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "EB__ArtifactRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "artifact"
+        },
+        "scope": {
+          "$ref": "#/$defs/EB__Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/EB__Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/EB__Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "EB__Revision": {
+      "$ref": "#/$defs/PG__Revision"
+    },
+    "PG__Revision": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "EB__Digest": {
+      "$ref": "#/$defs/PG__Digest"
+    },
+    "PG__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "EB__ExecutionOrigin": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "trigger"
+            },
+            "decision_id": {
+              "$ref": "#/$defs/EB__Id"
+            },
+            "decision_digest": {
+              "$ref": "#/$defs/EB__Digest"
+            }
+          },
+          "required": [
+            "kind",
+            "decision_id",
+            "decision_digest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "recovery"
+            },
+            "operation_id": {
+              "$ref": "#/$defs/EB__Id"
+            },
+            "preview_id": {
+              "$ref": "#/$defs/EB__Id"
+            },
+            "preview_digest": {
+              "$ref": "#/$defs/EB__Digest"
+            },
+            "prior_execution_id": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/EB__Id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "operation_id",
+            "preview_id",
+            "preview_digest",
+            "prior_execution_id"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "EB__BusinessState": {
+      "type": "object",
+      "properties": {
+        "state_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/EB__Revision"
+        }
+      },
+      "required": [
+        "state_id",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "EB__InputSnapshotRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "input_snapshot"
+        },
+        "scope": {
+          "$ref": "#/$defs/EB__Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/EB__Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/EB__Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "EB__ResolvedParametersRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "resolved_parameters"
+        },
+        "scope": {
+          "$ref": "#/$defs/EB__Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/EB__Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/EB__Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "EB__GrantRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "grant"
+        },
+        "scope": {
+          "$ref": "#/$defs/EB__Scope"
+        },
+        "object_id": {
+          "$ref": "#/$defs/EB__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/EB__Revision"
+        },
+        "digest": {
+          "$ref": "#/$defs/EB__Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "EB__ClockRef": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/EB__Digest"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CN__Target": {
+      "type": "object",
+      "properties": {
+        "controller_scope": {
+          "$ref": "#/$defs/CN__Scope"
+        },
+        "selection": {
+          "$ref": "#/$defs/CN__Selection"
+        },
+        "device_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+          },
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "controller_scope",
+        "selection",
+        "device_ids"
+      ],
+      "additionalProperties": false
+    },
+    "CN__Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "CN__Selection": {
+      "type": "object",
+      "properties": {
+        "transfer_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "adoption_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "receipt_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "grant_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "parent_preparation_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        }
+      },
+      "required": [
+        "transfer_ref",
+        "adoption_ref",
+        "receipt_ref",
+        "grant_ref",
+        "plan_ref",
+        "parent_preparation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "CN__Ref": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "object",
+          "properties": {
+            "authority_service_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            },
+            "database_instance_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "authority_service_id",
+            "database_instance_id"
+          ],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ContinuationSelection": {
+      "$ref": "#/$defs/CN__Selection"
+    },
+    "ContinuationTarget": {
+      "$ref": "#/$defs/CN__Target"
+    },
+    "CommandRequest": {
+      "$ref": "#/$defs/S2__CommandRequest"
+    },
+    "S2__CommandRequest": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "action_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "capability_version": {
+          "$ref": "#/$defs/S0__Version"
+        },
+        "parameters": {
+          "$ref": "#/$defs/S0__Payload"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/S0__ControlVersion"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "run_binding": {
+          "$ref": "#/$defs/S2__RunBinding"
+        },
+        "required_completion": {
+          "$ref": "#/$defs/S0__CompletionLevel"
+        },
+        "preconditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S0__Predicate"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "dispatch": {
+          "$ref": "#/$defs/S0__Dispatch"
+        },
+        "evidence_timeout_ms": {
+          "$ref": "#/$defs/S0__Duration"
+        },
+        "correlation_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "context_id",
+        "idempotency_key",
+        "device_id",
+        "action_id",
+        "capability_version",
+        "parameters",
+        "expected_control",
+        "origin",
+        "required_completion",
+        "preconditions",
+        "dispatch",
+        "evidence_timeout_ms",
+        "automation_binding"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "required": [
+              "run_binding"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "run_binding"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "action_id": {
+                "const": "obs.program_scene.set"
+              }
+            },
+            "required": [
+              "action_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/S0__ObsSceneParameters"
+              },
+              "required_completion": {
+                "const": "effect_verified"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S0__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "S0__Version": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$"
+    },
+    "S0__Payload": {
+      "type": "object",
+      "maxProperties": 256,
+      "additionalProperties": {
+        "$ref": "#/$defs/S0__JsonValue"
+      },
+      "description": "开放容器仅用于动态能力数据，须再通过固定摘要的能力Schema；不是免校验任意写入。"
+    },
+    "S0__JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "maxLength": 16384
+        },
+        {
+          "type": "number",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S0__JsonValue"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        {
+          "type": "object",
+          "maxProperties": 256,
+          "additionalProperties": {
+            "$ref": "#/$defs/S0__JsonValue"
+          }
+        }
+      ]
+    },
+    "S0__ControlVersion": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "version": {
+          "$ref": "#/$defs/S0__Revision"
+        }
+      },
+      "required": [
+        "epoch",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Revision": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "S2__RunBinding": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "definition_version": {
+          "$ref": "#/$defs/S2__PositiveCounter"
+        },
+        "grant_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "grant_revision": {
+          "$ref": "#/$defs/S2__Counter"
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/S2__Counter"
+        },
+        "step_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "logical_action_id": {
+          "$ref": "#/$defs/S0__Id"
+        }
+      },
+      "required": [
+        "run_id",
+        "definition_version",
+        "grant_id",
+        "grant_revision",
+        "arm_generation",
+        "step_id",
+        "logical_action_id"
+      ],
+      "additionalProperties": false
+    },
+    "S2__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+    },
+    "S2__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+    },
+    "S0__CompletionLevel": {
+      "enum": [
+        "sent",
+        "acknowledged",
+        "effect_verified"
+      ]
+    },
+    "S0__Predicate": {
+      "type": "object",
+      "properties": {
+        "predicate_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "field": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "operator": {
+          "enum": [
+            "eq",
+            "ne",
+            "lt",
+            "lte",
+            "gt",
+            "gte"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/S0__JsonValue"
+        },
+        "max_age_ms": {
+          "$ref": "#/$defs/S0__Duration"
+        }
+      },
+      "required": [
+        "predicate_id",
+        "device_id",
+        "field",
+        "operator",
+        "value",
+        "max_age_ms"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Duration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400000
+    },
+    "S0__Dispatch": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "immediate"
+            },
+            "max_queue_ms": {
+              "$ref": "#/$defs/S0__Duration"
+            }
+          },
+          "required": [
+            "mode",
+            "max_queue_ms"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "scheduled"
+            },
+            "occurrence_id": {
+              "$ref": "#/$defs/S0__Id"
+            },
+            "not_before": {
+              "$ref": "#/$defs/S0__Timestamp"
+            },
+            "not_after": {
+              "$ref": "#/$defs/S0__Timestamp"
+            },
+            "clock_policy_revision": {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            "max_queue_ms": {
+              "$ref": "#/$defs/S0__Duration"
+            }
+          },
+          "required": [
+            "mode",
+            "occurrence_id",
+            "not_before",
+            "not_after",
+            "clock_policy_revision",
+            "max_queue_ms"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "S0__Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "S2__AutomationOriginBinding": {
+      "type": "object",
+      "properties": {
+        "origin_scope": {
+          "$ref": "#/$defs/CN__Scope"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "definition_version": {
+          "$ref": "#/$defs/S1__PositiveCounter"
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/S1__Counter"
+        },
+        "execution_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "execution_binding_ref": {
+          "$ref": "#/$defs/CN__ExecutionRef"
+        },
+        "step_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "logical_action_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "binding_version": {
+          "const": "continuation-execution/0.1.0-draft.1"
+        },
+        "authorization_mode": {
+          "enum": [
+            "preparation",
+            "continuation"
+          ]
+        },
+        "continuation": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/CN__Selection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "origin_scope",
+        "run_id",
+        "definition_version",
+        "arm_generation",
+        "execution_id",
+        "execution_binding_ref",
+        "step_id",
+        "logical_action_id",
+        "binding_version",
+        "authorization_mode",
+        "continuation"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "authorization_mode": {
+                "const": "continuation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "continuation": {
+                "$ref": "#/$defs/CN__Selection"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "continuation": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S1__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+    },
+    "S1__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+    },
+    "CN__ExecutionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "execution_binding"
+        },
+        "scope": {
+          "$ref": "#/$defs/CN__Scope"
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "S0__ObsSceneParameters": {
+      "type": "object",
+      "properties": {
+        "scene_ref": {
+          "$ref": "#/$defs/S0__SceneRef"
+        }
+      },
+      "required": [
+        "scene_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S0__SceneRef": {
+      "type": "object",
+      "properties": {
+        "collection_ref": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "scene_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "catalog_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "collection_generation": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "binding_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        }
+      },
+      "required": [
+        "collection_ref",
+        "scene_id",
+        "catalog_revision",
+        "collection_generation",
+        "binding_revision"
+      ],
+      "additionalProperties": false
+    },
+    "CommandContent": {
+      "$ref": "#/$defs/CN__CommandContent"
+    },
+    "CN__CommandContent": {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "action_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "capability_version": {
+          "$ref": "#/$defs/S0__Version"
+        },
+        "parameters": {
+          "$ref": "#/$defs/S0__Payload"
+        },
+        "expected_control": {
+          "$ref": "#/$defs/S0__ControlVersion"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "run_binding": {
+          "$ref": "#/$defs/S2__RunBinding"
+        },
+        "required_completion": {
+          "$ref": "#/$defs/S0__CompletionLevel"
+        },
+        "preconditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S0__Predicate"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "dispatch": {
+          "$ref": "#/$defs/S0__Dispatch"
+        },
+        "evidence_timeout_ms": {
+          "$ref": "#/$defs/S0__Duration"
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "device_id",
+        "action_id",
+        "capability_version",
+        "parameters",
+        "expected_control",
+        "origin",
+        "required_completion",
+        "preconditions",
+        "dispatch",
+        "evidence_timeout_ms",
+        "automation_binding"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "required": [
+              "run_binding"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "run_binding"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "action_id": {
+                "const": "obs.program_scene.set"
+              }
+            },
+            "required": [
+              "action_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/S0__ObsSceneParameters"
+              },
+              "required_completion": {
+                "const": "effect_verified"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AutomationOriginBinding": {
+      "$ref": "#/$defs/S2__AutomationOriginBinding"
+    },
+    "ExecutionGuard": {
+      "$ref": "#/$defs/S2__ExecutionGuard"
+    },
+    "S2__ExecutionGuard": {
+      "type": "object",
+      "properties": {
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "binding": {
+          "$ref": "#/$defs/S0__AuthorizationBinding"
+        },
+        "authorization_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "authorization_deadline_tick_ns": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "time_required": {
+          "type": "boolean"
+        },
+        "capacity_reservation_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "admission_origin": {
+          "enum": [
+            "panel",
+            "non_panel"
+          ]
+        },
+        "panel_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S3__PanelExecutionBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reference_time": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__ExecutionTime"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        }
+      },
+      "required": [
+        "guard_id",
+        "permit_id",
+        "command_id",
+        "device_id",
+        "controller_boot_id",
+        "worker_boot_id",
+        "ipc_session_id",
+        "binding",
+        "authorization_revision",
+        "authorization_deadline_tick_ns",
+        "clock_domain_id",
+        "time_required",
+        "capacity_reservation_id",
+        "guard_digest",
+        "descriptor_digest",
+        "admission_origin",
+        "panel_binding",
+        "automation_binding",
+        "reference_time",
+        "gate_access_ref",
+        "ownership_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "panel_binding": {
+                "$ref": "#/$defs/S3__PanelExecutionBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "panel_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "binding": {
+                "properties": {
+                  "principal_kind": {
+                    "const": "human"
+                  },
+                  "origin": {
+                    "const": "manual"
+                  },
+                  "extension_instance_id": {
+                    "$ref": "#/$defs/S0__Id"
+                  },
+                  "extension_approval_revision": {
+                    "$ref": "#/$defs/S0__Revision"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding": {
+                "properties": {
+                  "origin": {
+                    "const": "automation"
+                  }
+                },
+                "required": [
+                  "origin"
+                ]
+              }
+            },
+            "required": [
+              "binding"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding": {
+                "properties": {
+                  "origin": {
+                    "const": "automation"
+                  }
+                },
+                "required": [
+                  "origin"
+                ]
+              }
+            },
+            "required": [
+              "binding"
+            ]
+          },
+          "then": {
+            "properties": {
+              "binding": {
+                "properties": {
+                  "principal_kind": {
+                    "const": "service"
+                  }
+                }
+              },
+              "admission_origin": {
+                "const": "non_panel"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "time_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "time_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reference_time": {
+                "$ref": "#/$defs/S12__ExecutionTime"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reference_time": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S0__AuthorizationBinding": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "audience": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "principal_kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "principal_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "credential_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "subject_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "session_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "grant_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "grant_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arm_generation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extension_instance_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extension_approval_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "audience",
+        "principal_kind",
+        "principal_id",
+        "origin",
+        "session_id",
+        "credential_id",
+        "subject_revision",
+        "session_revision",
+        "policy_revision",
+        "scope_digest",
+        "grant_id",
+        "grant_revision",
+        "arm_generation",
+        "extension_instance_id",
+        "extension_approval_revision"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "principal_kind": {
+                "const": "human"
+              }
+            },
+            "required": [
+              "principal_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "#/$defs/S0__Id"
+              },
+              "session_revision": {
+                "$ref": "#/$defs/S0__Revision"
+              },
+              "origin": {
+                "const": "manual"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_id": {
+                "type": "null"
+              },
+              "session_revision": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "principal_kind": {
+                "const": "service"
+              },
+              "grant_id": {
+                "$ref": "#/$defs/S0__Id"
+              },
+              "grant_revision": {
+                "$ref": "#/$defs/S0__Revision"
+              },
+              "arm_generation": {
+                "$ref": "#/$defs/S0__Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "grant_id": {
+                "type": "null"
+              },
+              "grant_revision": {
+                "type": "null"
+              },
+              "arm_generation": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "extension_instance_id": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "extension_instance_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "extension_approval_revision": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "extension_approval_revision": {
+                "$ref": "#/$defs/S0__Revision"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S3__PanelExecutionBinding": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/S10__Guard"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "extension_instance_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "artifact_digest": {
+          "$ref": "#/$defs/S10__Digest"
+        },
+        "scope_ref": {
+          "$ref": "#/$defs/S10__ObjectRef"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/S10__ObjectRef"
+        },
+        "lease_revision": {
+          "$ref": "#/$defs/S10__Counter"
+        },
+        "lifetime": {
+          "$ref": "#/$defs/S10__Lifetime"
+        }
+      },
+      "required": [
+        "context",
+        "principal_id",
+        "extension_instance_id",
+        "artifact_digest",
+        "scope_ref",
+        "policy_ref",
+        "lease_revision",
+        "lifetime"
+      ],
+      "additionalProperties": false
+    },
+    "S10__Guard": {
+      "type": "object",
+      "properties": {
+        "panel_session_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/S10__PositiveCounter"
+        },
+        "panel_delegation_ref": {
+          "$ref": "#/$defs/S10__DelegationRef"
+        },
+        "installation_ref": {
+          "$ref": "#/$defs/S10__ObjectRef"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/S10__ObjectRef"
+        },
+        "auth_session_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "request_identity": {
+          "$ref": "#/$defs/S10__RequestIdentity"
+        },
+        "activation_ref": {
+          "$ref": "#/$defs/S10__ActivationRef"
+        }
+      },
+      "required": [
+        "panel_session_id",
+        "document_generation",
+        "panel_delegation_ref",
+        "installation_ref",
+        "approval_ref",
+        "auth_session_id",
+        "request_identity",
+        "activation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S10__Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,128}(?![\\s\\S])"
+    },
+    "S10__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*(?![\\s\\S])",
+      "maxLength": 20
+    },
+    "S10__DelegationRef": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "delegation_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S10__Counter"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "delegation_id",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "S10__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(?![\\s\\S])",
+      "maxLength": 20
+    },
+    "S10__ObjectRef": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "entity_kind": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "entity_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "entity_epoch": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S10__Counter"
+        },
+        "content_digest": {
+          "$ref": "#/$defs/S10__Digest"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "entity_kind",
+        "entity_id",
+        "entity_epoch",
+        "revision",
+        "content_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S10__Digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "S10__RequestIdentity": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "auth_session_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "panel_session_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "document_generation": {
+          "$ref": "#/$defs/S10__PositiveCounter"
+        },
+        "request_id": {
+          "$ref": "#/$defs/S10__Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "issuer_id",
+        "issuer_epoch",
+        "auth_session_id",
+        "panel_session_id",
+        "document_generation",
+        "request_id"
+      ],
+      "additionalProperties": false
+    },
+    "S10__ActivationRef": {
+      "type": "object",
+      "properties": {
+        "activation_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "registry_ref": {
+          "$ref": "#/$defs/S10__RevisionRef"
+        },
+        "scope_revision": {
+          "$ref": "#/$defs/S10__Counter"
+        },
+        "bundle_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S10__BundleRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activation_id",
+        "registry_ref",
+        "scope_revision",
+        "bundle_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S10__RevisionRef": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/S10__Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/S10__Digest"
+        }
+      },
+      "required": [
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S10__BundleRef": {
+      "type": "object",
+      "properties": {
+        "bundle_id": {
+          "$ref": "#/$defs/S10__Id"
+        },
+        "manifest_digest": {
+          "$ref": "#/$defs/S10__Digest"
+        }
+      },
+      "required": [
+        "bundle_id",
+        "manifest_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S10__Lifetime": {
+      "type": "object",
+      "properties": {
+        "domain_ref": {
+          "$ref": "#/$defs/S10__DomainRef"
+        },
+        "hard_deadline_tick": {
+          "$ref": "#/$defs/S10__Counter"
+        },
+        "lease_deadline_tick": {
+          "$ref": "#/$defs/S10__Counter"
+        }
+      },
+      "required": [
+        "domain_ref",
+        "hard_deadline_tick",
+        "lease_deadline_tick"
+      ],
+      "additionalProperties": false
+    },
+    "S10__DomainRef": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S12__ExecutionTime": {
+      "type": "object",
+      "properties": {
+        "context_ref": {
+          "$ref": "#/$defs/S12__Ref"
+        },
+        "utc_guard": {
+          "$ref": "#/$defs/S11__UtcGuard"
+        },
+        "schedule_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "context_ref",
+        "utc_guard",
+        "schedule_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S12__Ref": {
+      "$ref": "#/$defs/S11__Ref"
+    },
+    "S11__Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "S11__Positive": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S11__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "S11__UtcGuard": {
+      "type": "object",
+      "properties": {
+        "guard_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "model_id": {
+          "const": "reference-bound/1"
+        },
+        "model_revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/S11__Binding"
+        },
+        "anchor_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "assessment_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "window": {
+          "$ref": "#/$defs/S11__Window"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/S11__Positive"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        }
+      },
+      "required": [
+        "guard_id",
+        "revision",
+        "model_id",
+        "model_revision",
+        "binding",
+        "anchor_ref",
+        "assessment_ref",
+        "window",
+        "expires_tick_ns",
+        "guard_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Binding": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "$ref": "#/$defs/S11__Domain"
+        },
+        "source_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "profile_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "time_generation": {
+          "$ref": "#/$defs/S11__Positive"
+        }
+      },
+      "required": [
+        "domain",
+        "source_ref",
+        "profile_ref",
+        "approval_ref",
+        "policy_ref",
+        "time_generation"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Domain": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "provider_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "provider_boot_id": {
+          "$ref": "#/$defs/S11__Id"
+        },
+        "runtime_binding_ref": {
+          "$ref": "#/$defs/S11__Ref"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S11__Digest"
+        },
+        "clock_generation": {
+          "$ref": "#/$defs/S11__Positive"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id",
+        "provider_id",
+        "provider_boot_id",
+        "runtime_binding_ref",
+        "clock_domain_id",
+        "descriptor_digest",
+        "clock_generation"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Window": {
+      "type": "object",
+      "properties": {
+        "not_before_utc_ns": {
+          "$ref": "#/$defs/S11__Signed"
+        },
+        "not_after_utc_ns": {
+          "$ref": "#/$defs/S11__Signed"
+        }
+      },
+      "required": [
+        "not_before_utc_ns",
+        "not_after_utc_ns"
+      ],
+      "additionalProperties": false
+    },
+    "S11__Signed": {
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]{0,29})$(?![\\s\\S])"
+    },
+    "SG__Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/SG__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/SG__Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/SG__Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "SG__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "SG__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "SG__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "TransmissionPermit": {
+      "$ref": "#/$defs/S9__TransmissionPermit"
+    },
+    "S9__TransmissionPermit": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "dispatch_intent_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "control_version": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "authorization_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "grant_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arm_generation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "deadline_policy": {
+          "$ref": "#/$defs/S0__Dispatch"
+        },
+        "content_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "admission_origin": {
+          "enum": [
+            "panel",
+            "non_panel"
+          ]
+        },
+        "panel_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transmission": {
+          "$ref": "#/$defs/S9__TransmissionRef"
+        },
+        "budget_revision": {
+          "$ref": "#/$defs/S9__PositiveCounter"
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        }
+      },
+      "required": [
+        "permit_id",
+        "command_id",
+        "attempt_id",
+        "dispatch_intent_id",
+        "controller_boot_id",
+        "worker_boot_id",
+        "device_session_id",
+        "control_epoch",
+        "control_version",
+        "authorization_revision",
+        "origin",
+        "grant_revision",
+        "arm_generation",
+        "gate_revision",
+        "deadline_policy",
+        "content_digest",
+        "guard_id",
+        "guard_digest",
+        "clock_domain_id",
+        "descriptor_digest",
+        "admission_origin",
+        "panel_binding_digest",
+        "automation_binding",
+        "transmission",
+        "budget_revision",
+        "gate_access_ref",
+        "ownership_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "grant_revision": {
+                "$ref": "#/$defs/S0__Revision"
+              },
+              "arm_generation": {
+                "$ref": "#/$defs/S0__Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "grant_revision": {
+                "type": "null"
+              },
+              "arm_generation": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "panel_binding_digest": {
+                "$ref": "#/$defs/S0__Digest"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "panel_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "origin": {
+                "const": "manual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "admission_origin": {
+                "const": "non_panel"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S9__TransmissionRef": {
+      "type": "object",
+      "properties": {
+        "transmission_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/S9__PacketRef"
+        },
+        "primitive_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "intent": {
+          "$ref": "#/$defs/S9__IntentRef"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/S9__Counter"
+        },
+        "kind": {
+          "enum": [
+            "initial",
+            "protocol_resend"
+          ]
+        },
+        "cause": {
+          "enum": [
+            "dispatch",
+            "timeout",
+            "peer_request"
+          ]
+        },
+        "trigger_observation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S9__ContentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parent_dispatch_intent_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "initial_permit_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/S9__PositiveCounter"
+        },
+        "send_window": {
+          "$ref": "#/$defs/S9__SendWindow"
+        }
+      },
+      "required": [
+        "transmission_id",
+        "packet_ref",
+        "primitive_id",
+        "intent",
+        "ordinal",
+        "kind",
+        "cause",
+        "trigger_observation_ref",
+        "parent_dispatch_intent_id",
+        "initial_permit_id",
+        "issued_revision",
+        "send_window"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "initial"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ordinal": {
+                "const": "0"
+              },
+              "cause": {
+                "const": "dispatch"
+              },
+              "trigger_observation_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ordinal": {
+                "$ref": "#/$defs/S9__PositiveCounter"
+              },
+              "cause": {
+                "enum": [
+                  "timeout",
+                  "peer_request"
+                ]
+              },
+              "trigger_observation_ref": {
+                "$ref": "#/$defs/S9__ContentRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S9__Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+    },
+    "S9__PacketRef": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/S9__Digest"
+        }
+      },
+      "required": [
+        "packet_id",
+        "packet_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S9__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "S9__IntentRef": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "dispatch_intent_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "admission_origin": {
+          "enum": [
+            "panel",
+            "non_panel"
+          ]
+        },
+        "panel_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "permit_id",
+        "command_id",
+        "attempt_id",
+        "dispatch_intent_id",
+        "worker_boot_id",
+        "device_session_id",
+        "guard_id",
+        "guard_digest",
+        "clock_domain_id",
+        "descriptor_digest",
+        "controller_boot_id",
+        "ipc_session_id",
+        "device_id",
+        "admission_origin",
+        "panel_binding_digest",
+        "origin",
+        "automation_binding",
+        "automation_binding_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "panel_binding_digest": {
+                "$ref": "#/$defs/S0__Digest"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "panel_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding_digest": {
+                "$ref": "#/$defs/S2__Digest"
+              },
+              "admission_origin": {
+                "const": "non_panel"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S2__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "S9__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "S9__ContentRef": {
+      "type": "object",
+      "properties": {
+        "object_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "digest": {
+          "$ref": "#/$defs/S9__Digest"
+        }
+      },
+      "required": [
+        "object_id",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S9__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S9__SendWindow": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "earliest_tick_ns": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "latest_tick_ns": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "earliest_tick_ns",
+        "latest_tick_ns",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "GuardAck": {
+      "$ref": "#/$defs/S9__GUARD_ACKBody"
+    },
+    "S9__GUARD_ACKBody": {
+      "type": "object",
+      "properties": {
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "content_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "permit_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "installed_authorization_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "state": {
+          "const": "installed"
+        },
+        "panel_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reference_time_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schedule_guard_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S12__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        }
+      },
+      "required": [
+        "guard_id",
+        "guard_digest",
+        "content_digest",
+        "permit_id",
+        "command_id",
+        "installed_authorization_revision",
+        "state",
+        "panel_binding_digest",
+        "automation_binding_digest",
+        "reference_time_digest",
+        "schedule_guard_digest",
+        "gate_access_ref",
+        "ownership_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S12__Digest": {
+      "$ref": "#/$defs/S11__Digest"
+    },
+    "DispatchBody": {
+      "$ref": "#/$defs/S9__DISPATCHBody"
+    },
+    "S9__DISPATCHBody": {
+      "type": "object",
+      "properties": {
+        "permit": {
+          "$ref": "#/$defs/S9__TransmissionPermit"
+        },
+        "gate_token": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "send_window": {
+          "$ref": "#/$defs/S9__SendWindow"
+        },
+        "request": {
+          "$ref": "#/$defs/S2__CommandRequest"
+        },
+        "parameters_schema_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "prepare_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "packet": {
+          "$ref": "#/$defs/S9__TransportPacket"
+        },
+        "resend_request_id": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "permit",
+        "gate_token",
+        "send_window",
+        "request",
+        "parameters_schema_digest",
+        "guard_id",
+        "guard_digest",
+        "prepare_id",
+        "packet",
+        "resend_request_id"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "properties": {
+            "permit": {
+              "properties": {
+                "transmission": {
+                  "properties": {
+                    "kind": {
+                      "const": "initial"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S9__TransportPacket": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/S9__Digest"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "primitive_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "socket_instance_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "protocol_session": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S9__Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "wire_packet_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S9__Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tracking_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S9__Id"
+          },
+          "maxItems": 256
+        },
+        "immutable_bytes_ref": {
+          "$ref": "#/$defs/S9__ContentRef"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "sha256": {
+          "$ref": "#/$defs/S9__Digest"
+        },
+        "transport_profile_ref": {
+          "$ref": "#/$defs/S9__ContentRef"
+        },
+        "primitive_plan_ref": {
+          "$ref": "#/$defs/S9__ContentRef"
+        }
+      },
+      "required": [
+        "packet_id",
+        "packet_digest",
+        "command_id",
+        "attempt_id",
+        "primitive_id",
+        "writer_exit_id",
+        "device_session_id",
+        "socket_instance_id",
+        "protocol_session",
+        "wire_packet_id",
+        "tracking_ids",
+        "immutable_bytes_ref",
+        "byte_length",
+        "sha256",
+        "transport_profile_ref",
+        "primitive_plan_ref"
+      ],
+      "additionalProperties": false
+    },
+    "DispatchIntent": {
+      "$ref": "#/$defs/S9__IntentRef"
+    }
+  }
+}

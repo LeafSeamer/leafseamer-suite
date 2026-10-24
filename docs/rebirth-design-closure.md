@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-24继续运行执行绑定进展：[同版候选](contracts/c04-lifecycle/CONTINUATION_BINDING.md)提供执行级完整授权清单与命令级选择、具名导出及完整52帧IPC0.14；169项离线检查通过。消除submission_id回嵌执行绑定的依赖环，修正带点身份与执行Ref的词法错配；普通/重传Guard、Permit、Intent及ACK使用同一绑定和精确摘要。实际转交SQL原件及撤回参与检查，完整类型化执行与其他权威字段仍为合成，不能视作最终准入成功。公共命令API/SDK、旧简化SQL投影等价迁移及完整AdmissionSeal、真实提供者和容量/GC继续待完成；业务未改、阶段0不关闭。本轮第2/3轮，仅本地提交。
+
 2026-10-24继续运行接口进展：[内部协议候选](contracts/c04-lifecycle/CONTINUATION_PROTOCOL.md)提供八个操作、具名Schema及两份自包含OpenAPI；244项结构和实际内存SQL投影检查通过。明确历史记录不授当前资格、Controller通知ACK范围、请求域与issuer_epoch可信回绑，以及局部R5正文摘要不得冒充完整提交Ref。已将撤回通知接入原完整保护预算writer；HTTP和真实身份/网络仍未实现。公共CommandRequest及ExecutionBinding/Guard/Permit/Intent尚须同版归并，SDK唯一来源、完整容量/GC和其他契约缺口继续保留。业务未改、阶段0不关闭；本轮第1/3轮，仅本地提交。
 
 2026-10-24继续运行普通触发进展：[119/236表联接候选](contracts/c04-lifecycle/CONTINUATION_TRIGGER.md)已串联来源恢复、独立grant采用、恢复R5及之后连续两次双动作普通trigger；156项内存SQLite检查通过，原140项持久化检查实际回归。新计划/命令明确绑定新grant与采用，原恢复准备和run保护归属不变；Controller撤回阻止新受理/attempt，Seamer撤回原件、两Controller完整PQ计划和受损代预算同事务封存。此前“缺普通trigger成功链”的局部参考模型缺口已补，但完成证据和受理基础字段仍为合成，不能等同真实设备恢复。统一Schema/API/IPC与最终SDK、真实提供者、完整容量/GC、通用计划及全功能交付仍未齐；运行/并发/磁盘/网络/设备未验，业务未改，阶段0不关闭。本轮第3/3轮，审查完整周期后推送main。

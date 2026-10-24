@@ -7,12 +7,13 @@ import check_continuation_trigger as T
 import check_continuation_binding as Q
 G=M.G;C=T.C;R=T.R;P=T.P;I=T.I;SC=T.SC;AT=T.AT
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[2]
-def fixture(*,sql_factory=G.build):
-    d,q,s,cds,ctx=T.T.fixture(seamer_factory=sql_factory,controller_factory=T.G.controller_sql)
+def fixture(*,sql_factory=G.build,controller_factory=T.G.controller_sql,expected_control=None):
+    d,q,s,cds,ctx=T.T.fixture(seamer_factory=sql_factory,controller_factory=controller_factory)
     old,_,_=Q.J.fixtures();template=Q.upgraded(old)['DISPATCH']['body']['request']
     steps=copy.deepcopy(ctx['evaluations']['r0']['steps'])
     for n,step in enumerate(steps):
         fixed={k:copy.deepcopy(template[k]) for k in ('capability_version','expected_control','required_completion','preconditions','dispatch','evidence_timeout_ms')}
+        if expected_control is not None:fixed['expected_control']=copy.deepcopy(expected_control)
         fixed.update(action_id='synthetic.set',device_id='dev.1',parameters=dict(value=n))
         step.update(request=fixed,logical_action_id='action.'+str(n))
     plan=dict(ref=T.T.ref(q['origin_scope'],'continued.plan',T.M.M.digest(steps)),steps=steps)

@@ -1,5 +1,12 @@
 # 开发记录
 
+## 2026-10-24 Controller完整请求受理与查原（本周期第3/3轮）
+
+- 前两轮本地提交为`3ff6114`、`fc0fdab`；本轮继续main，完成第三次提交后审查整个周期并推送，其他四仓不动。
+- [237表Controller候选](docs/contracts/c04-lifecycle/TYPED_CONTROLLER.md)直接消费实际Seamer完整请求，以本地转交/准备/控制原件和显式可信提供者核验，writer不读取Seamer数据库。完整RequestKey、首次运输、CommandContent和裁决同事务持久；移除未公开的submission_id依赖，归并新automation_binding路径。
+- 103项检查通过，384输入摘要绑定；原76项与70项实际回归。覆盖两Controller受理、逐写缺漏/异常、拒收墓碑、命名空间关闭、撤权后查原及attempt阻断、响应失权、issuer代次隔离和Ref对持久原件。accepted后的永久拒收只记操作，不能冒充取消。
+- 当前仅继续运行automation受理，普通arm/recovery/manual、公开CommandRecord、Seamer完整裁决接收、最终AdmissionSeal与发送链仍待归并。真实AUTH/TIME/容量、原生制品、磁盘/并发/网络/设备未验证；业务未改，阶段0未关闭。
+
 ## 2026-10-24 摄取事务独立封存（本周期第2/3轮）
 
 - 前轮本地提交为`3ff6114`；本轮继续main，仅本地提交，第三轮后审查整个周期再推送。

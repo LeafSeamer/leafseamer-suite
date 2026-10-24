@@ -4,7 +4,7 @@
 .gitattributes[FV5T]: F:统一文本检出的LF行尾以稳定AOCI字节基线 | R:- | A:Git文本属性 | S:覆盖autocrlf；二进制自动识别并保持原样
 .gitignore[FS6T]: F:排除依赖产物、运行数据、秘密和本地主机配置 | R:- | A:Git忽略规则 | S:允许.env.example；AOCI正式资产由目录内白名单管理，主机Codex配置仍忽略
 AGENTS.md[SC7S]: F:约束Agent读取完整认知、按证据创作及维护收尾 | R:- | A:AOCI会话与维护纪律 | S:压缩后重载完整Overview；批次须完整提交；纯只读任务无需Maintain
-DEVELOPMENT_MEMO.md[SO5L]: F:记录独立摄取封存修订及本周期第二轮 | R:code:docs/contracts/c04-lifecycle/ATOMIC_INGRESS.md | A:开发进展与提交节奏 | S:本轮仅本地提交；70项新检查与76项回归不代表正式原生制品通过
+DEVELOPMENT_MEMO.md[SO5L]: F:记录Controller类型化受理及第三轮交付 | R:code:docs/contracts/c04-lifecycle/TYPED_CONTROLLER.md | A:开发进展和三轮推送节奏 | S:103项本轮检查及76和70项回归仅离线；阶段0未关闭，本轮后审查三轮再推送
 LICENSE[SV5M]: F:保存仓库Apache-2.0完整许可文本 | R:code:README.md | A:许可授予与再分发条款 | S:-
 README.md[SG7T]: F:提供五仓职责及系统设计、定稿收敛和验收入口 | R:code:docs/rebirth-design-closure.md | A:Suite总入口 | S:仅设计资料，无可运行系统；五仓独立版本且首期无强制Submodule
 THIRD_PARTY_NOTICES.md[SV6T]: F:记录继承设计文档及DM3目录转录的来源与许可边界 | R:code:LICENSES/legacy-MIT.txt,code:docs/contracts/c11-audio/dm3-legacy-catalog.json | A:来源与许可声明 | S:保留旧MIT及Bitfocus来源链，不改授旧历史或厂商材料许可；不等于已审查后续代码
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8M]: F:记录独立封存修订后的系统定稿缺口 | R:code:docs/contracts/c04-lifecycle/ATOMIC_INGRESS.md | A:C01至C12定稿视图 | S:本机替代约束通过不关闭正式制品和磁盘门槛；完整成本、Controller受理及最终准入仍缺，阶段0未关闭
+rebirth-design-closure.md[SQ8M]: F:记录Controller完整受理后的系统定稿剩余缺口 | R:code:docs/contracts/c04-lifecycle/TYPED_CONTROLLER.md | A:C01至C12定稿视图 | S:继续运行受理已落库，其他模式、Seamer裁决接收、公开记录及最终准入仍缺；合成提供者不关闭阶段0
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -482,7 +482,7 @@ command-contract.schema.json[FN8L]: F:汇合命令API和完整IPC的权威消费
 command_storage_mapping.py[PD8S]: F:对账完整执行请求身份字段及实际SQLite原件 | R:code:docs/contracts/c04-lifecycle/build_command_contract.py,code:docs/contracts/c04-lifecycle/continuation_binding_model.py | A:coverage、findings及verify_originals | S:缺issuer_epoch和非法旧键不补默认值；请求与行同时篡改仍核转交原件；typed_projection_valid仅证明映射子域，不签发或重写旧正文
 TYPED_SEAMER.md[SP8T]: F:规定完整执行与请求原子持久化及剩余边界 | R:code:docs/contracts/c04-lifecycle/typed_seamer_model.py,code:docs/contracts/c04-lifecycle/typed-seamer.sql | A:PLAN、SUBMISSION、查原与验收 | S:完整请求在执行封存后生成避免摘要环；异常探针不能外推正式制品，Controller和其他路径及新增成本仍未完成
 build_typed_seamer.py[XP8T]: F:生成含完整身份与原件关联的120表Seamer候选 | R:code:docs/contracts/c04-lifecycle/build_continuation_trigger.py,code:docs/contracts/c04-lifecycle/typed-seamer.sql | A:amend和build | S:仅精确修订execution与command_submission并断言命中，原七列唯一键升级含issuer_epoch的八列，旧布局不改
-check_typed_seamer.py[TR8S]: F:验证类型化SQLite写集并提供可替换布局夹具 | R:code:docs/contracts/c04-lifecycle/typed_seamer_model.py,code:docs/contracts/c04-lifecycle/check_atomic_ingress.py | A:fixture、run、deferred_probe及报告 | S:默认仍是旧120表候选并保留异常探针；注入sql_factory不改变默认回归范围，Controller完整受理未验
+check_typed_seamer.py[TR8S]: F:验证类型化Seamer写集并提供两侧布局及控制预期夹具 | R:code:docs/contracts/c04-lifecycle/typed_seamer_model.py,code:docs/contracts/c04-lifecycle/check_typed_controller.py | A:fixture、run及deferred_probe | S:控制预期覆盖发生在批准计划摘要前；默认旧120表回归保持，旧外键异常探针不代表新布局
 seamer-typed.sql[PD8L]: F:组合120表类型化Seamer存储布局 | R:code:docs/contracts/c04-lifecycle/build_typed_seamer.py,code:docs/contracts/c04-lifecycle/typed-seamer.sql | A:完整DDL与原有状态预算约束 | S:继续运行执行必须有原件行；新增请求身份和正文不可变，未升级的其他提交器会被拒绝，非可部署完整布局
 typed-seamer-report.json[TR7L]: F:保存旧类型化布局76项回归及368输入绑定 | R:code:docs/contracts/c04-lifecycle/check_typed_seamer.py | A:checks、deferred_fk_probe和inputs | S:保留旧布局本机漏原件提交异常，cause字段未判定；不能把新封存报告结论嫁接为此旧布局已修复
 typed-seamer.sql[PD8T]: F:约束类型化执行依赖原件及完整请求身份 | R:code:docs/contracts/c04-lifecycle/build_typed_seamer.py | A:typed_execution_source和封存身份守卫 | S:原件与执行双向关联，另有计划封存存在性检查，不仅依赖延迟外键；SQL不承担完整Schema和JCS计算
@@ -496,6 +496,13 @@ check_atomic_ingress.py[TR8S]: F:验证双运行时向量及完整摄取故障�
 check_fk_seal_node.cjs[TR7T]: F:在Node内置SQLite执行两种封存结构的合成向量 | R:code:docs/contracts/c04-lifecycle/fk-seal-vectors.json | A:运行时及引擎身份和提交结果JSON | S:原自引用结构不存在独立marker，其missing_marker期望单独设为成功；仅外键拒绝算正常负例
 fk-seal-vectors.json[TR7T]: F:定义自引用及独立封存的双运行时共享向量 | R:code:docs/contracts/c04-lifecycle/check_atomic_ingress.py,code:docs/contracts/c04-lifecycle/check_fk_seal_node.cjs | A:两种DDL及四类写集期望 | S:不含应用触发器；孤儿用例规范期望拒绝，即使旧结构实际提交也不得改写期望掩盖异常
 seamer-atomic-ingress.sql[PD9L]: F:组合完整类型化执行与独立摄取封存的121表布局 | R:code:docs/contracts/c04-lifecycle/build_atomic_ingress.py,code:docs/contracts/c04-lifecycle/atomic_ingress_model.py | A:摄取到执行及命令持久化DDL | S:新增封存行与最终sealed更新必须同事务；旧未升级writer无法直接使用此布局，新增成本尚未纳入最终准入
+TYPED_CONTROLLER.md[SR8T]: F:规定Controller完整请求本地受理及历史裁决边界 | R:code:docs/contracts/c04-lifecycle/typed_controller_model.py,code:docs/contracts/c04-lifecycle/typed-controller.sql | A:身份与写集、墓碑、剩余冻结事项 | S:accepted后拒收不取消；初始命令Ref不等于当前记录摘要；目前仅继续运行automation，最终准入和真实提供者未完成
+build_typed_controller.py[XD7T]: F:生成完整身份正文及新转交路径的Controller布局 | R:code:docs/contracts/c04-lifecycle/build_continuation_trigger.py,code:docs/contracts/c04-lifecycle/typed-controller.sql | A:build与生成字节核对 | S:精确移除cn_command内部submission_id依赖，改为公开Ref路径；旧候选与旧数据不转换
+check_typed_controller.py[TR8S]: F:验证实际Seamer请求进入双Controller受理与拒收查原 | R:code:docs/contracts/c04-lifecycle/typed_controller_model.py,code:docs/contracts/c04-lifecycle/check_typed_seamer.py | A:fixture、run及报告摘要绑定 | S:提供者均为合成；响应失权发生在提交后，断言可查原而不期望回滚；issuer代次隔离以实际命名空间落库验证
+controller-typed.sql[PD9L]: F:组合237表完整请求受理及转交授权约束 | R:code:docs/contracts/c04-lifecycle/build_typed_controller.py,code:docs/contracts/c04-lifecycle/typed_controller_model.py | A:请求身份、执行原件、受理封存和既有执行账本 | S:保留本地准备控制撤权与发送守卫；新seal要求类型化继续运行原件，未升级manual及其他执行路径不可部署
+typed-controller-report.json[TR7L]: F:保存103项Controller写集验证及384输入绑定 | R:code:docs/contracts/c04-lifecycle/check_typed_controller.py | A:检查结果、表数与未验范围 | S:final_admission_seal和public_command_record_typed均为false；没有真实运行或设备验收
+typed-controller.sql[PD8T]: F:约束完整请求身份及执行原件与受理封存 | R:code:docs/contracts/c04-lifecycle/build_typed_controller.py,code:docs/contracts/c04-lifecycle/typed_controller_model.py | A:typed_command_source及三类插入守卫 | S:SQL只对账JSON字段，不替代Schema/JCS和证据真实性；完整原件须在ca_commit前同事务写入
+typed_controller_model.py[PD8S]: F:在Controller本地事务核完整请求并持久裁决与拒收操作 | R:code:docs/contracts/c04-lifecycle/command_storage_mapping.py,code:docs/contracts/c04-lifecycle/continuation_binding_model.py,code:docs/contracts/c04-lifecycle/typed-controller.sql | A:authorize、lookup、verify_new、creation_steps及decide | S:不读Seamer库；查原不重核旧grant但重核当前读取权限；accepted后拒收只登记，响应失权不撤销提交；cm/cv仅内部投影
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/c04-execution/===
 README.md[SW9S]: F:设计R4开始逐步提交及延迟边沿和分层预算记录 | R:code:docs/contracts/c04-execution/build_contracts.py,code:docs/contracts/c04-lifecycle/README.md,code:docs/rebirth-f06-f07-design.md | A:执行候选与XRT01至XRT12 | S:提交后才固定执行锚，直接后继窗口不累积全部旧截止；条件跨域换算依赖采样与速率界。标记后不重发，边沿抑制仍消费，预算不退款；完整DDL及IPC未归并，运行未验

@@ -23,6 +23,8 @@ def project(record,inventory,selections):
     state=inventory['state'];command=record['command_id'];scope=record['scope']
     attempts=inventory['attempts'];packets=unique(inventory['packets'],'packet_id');exits=unique(inventory['exits'],'exit_id')
     reports=unique(inventory['reports'],'report_id');transmissions=unique(inventory['transmissions'],'permit_id')
+    report_origins=[(r['worker_boot_id'],r['ipc_session_id'],r['worker_report_id']) for r in reports.values()]
+    need(len(report_origins)==len(set(report_origins)),'duplicate_worker_report')
     need(len(attempts)<=record['policy']['max_attempts'] and len(packets)<=4096 and len(reports)<=4096,'inventory_capacity')
     need([a['attempt_id'] for a in attempts]==state['attempt_ids'] and [a['ordinal'] for a in attempts]==list(range(1,len(attempts)+1)),'attempt_set')
     need(len(set(state['attempt_ids']))==len(attempts) and set(selections)==set(state['attempt_ids']),'attempt_selection_set')
@@ -59,7 +61,7 @@ def project(record,inventory,selections):
     need(len(identities)==len(set(identities)),'duplicate_transmission_ordinal')
     for r in reports.values():
         b=r['body'];M.validate('S9__SEND_REPORTBody',b)
-        need(r['report_id']==b['report_id'] and b['permit_id'] in transmissions,'report_original')
+        need(r['worker_report_id']==b['report_id'] and b['permit_id'] in transmissions,'report_original')
         t=transmissions[b['permit_id']];p=packets[t['packet_id']];ex=exits[t['exit_id']]
         need(b['attempt_id']==t['attempt_id'] and b['packet_ref']==dict(packet_id=p['packet_id'],packet_digest=p['packet_digest']) and b['ordinal']==str(t['ordinal']),'report_packet')
         need(b['transmission_id']==t['transmission_id'] and b['dispatch_intent_id']==t['dispatch_intent_id'],'report_transmission')

@@ -5,8 +5,8 @@ import check_adjudication_receive as AR
 import typed_command_view_model as M
 G=M.G;TC=AR.TC;SC=TC.SC;R=M.R;P=M.P;I=M.I;HERE=G.HERE;ROOT=TC.ROOT
 
-def fixture():
-    d,cds,items,c=TC.fixture(controller_factory=G.build,include_context=True)
+def fixture(*,controller_factory=G.build):
+    d,cds,items,c=TC.fixture(controller_factory=controller_factory,include_context=True)
     for cd,identity,request,auth,provider in items:
         actor={k:identity['key'][k] for k in ('principal_id','issuer_id','issuer_epoch')}
         actor.update(session_id='synthetic.service.session',authorization_revision='1',local_subject_id='synthetic.subject')

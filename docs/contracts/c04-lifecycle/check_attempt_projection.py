@@ -28,7 +28,7 @@ def fixture():
             inv['transmissions'].append(dict(permit_id=permit,packet_id=packet['packet_id'],attempt_id='attempt_a',exit_id=ex['exit_id'],ordinal=n,transmission_id='transmission_'+ident,dispatch_intent_id='intent_'+ident))
             body=dict(report_id=rid,permit_id=permit,attempt_id='attempt_a',dispatch_intent_id='intent_'+ident,device_session_id=ex['device_session_id'],disposition='in_flight',proof='transport_entered',protocol_request_id='request_'+ident,
                 transmission_id='transmission_'+ident,packet_ref={k:packet[k] for k in ('packet_id','packet_digest')},ordinal=str(n),gate_io_seq=str(n+1),transport_entered_tick_ns=tick,socket_callback_observation_ref=None)
-            r=dict(report_id=rid,exit_id=ex['exit_id'],worker_boot_id=ex['worker_boot_id'],ipc_session_id=ex['ipc_session_id'],body=body);inv['reports'].insert(0,r)
+            r=dict(report_id=rid,worker_report_id=rid,exit_id=ex['exit_id'],worker_boot_id=ex['worker_boot_id'],ipc_session_id=ex['ipc_session_id'],body=body);inv['reports'].insert(0,r)
             inv['time_projections'].append(dict(report_id=rid,report_ref=A.ref(rid,r),entered_tick_ns=tick,clock_domain_id=ex['clock_domain_id'],descriptor_digest=ex['descriptor_digest'],verified=True,utc='2026-10-24T00:00:00.00'+str(n)+'Z'))
     choose={'attempt_a':dict(kind='pending',ref=None)}
     projection=A.project(record,inv,choose);record['attempts']=copy.deepcopy(projection['attempts']);sealed(record,'record_digest')
@@ -79,6 +79,14 @@ def run():
     unordered=copy.deepcopy(inv)
     for field in ('packets','exits','reports','transmissions','time_projections'):unordered[field].reverse()
     check('库存遍历顺序不改固定投影',A.project(record,unordered,choice)==projection)
+    reused=copy.deepcopy(inv)
+    for report in reused['reports']:
+        report['worker_report_id']='wire_'+report['body']['ordinal'];report['body']['report_id']=report['worker_report_id']
+    for stamp in reused['time_projections']:
+        original=next(r for r in reused['reports'] if r['report_id']==stamp['report_id']);stamp['report_ref']=A.ref(original['report_id'],original)
+    check('不同会话可复用线路报告ID',A.project(record,reused,choice)['attempts']==projection['attempts'])
+    duplicate=copy.deepcopy(inv);extra=copy.deepcopy(duplicate['reports'][0]);extra['report_id']='another_local_report';duplicate['reports'].append(extra)
+    reject('同会话线路ID不得重复入账',lambda:A.project(record,duplicate,choice),'duplicate_worker_report')
     mutations=[('packet摘要',lambda v:v['packet_refs'][0].update(packet_digest=M.digest('wrong'))),('packet漏项',lambda v:v['packet_refs'].pop()),
         ('出口漏项',lambda v:v['exits'].pop()),('出口会话',lambda v:v['exits'][0].update(ipc_session_id='other')),
         ('发送时间',lambda v:v['exits'][0].update(send_started_at='2026-10-24T00:00:01.000Z')),('协议请求',lambda v:v['exits'][0].update(protocol_request_ids=['wrong'])),

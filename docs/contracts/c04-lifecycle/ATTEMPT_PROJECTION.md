@@ -2,6 +2,8 @@
 
 状态：`approved=false`；内部候选`attempt-projection/0.1.0-draft.1`。本轮交付[Schema生成器](build_attempt_projection.py)、[Schema](attempt-projection.schema.json)、[独立映射器](attempt_projection_model.py)、[检查](check_attempt_projection.py)与[报告](attempt-projection-report.json)。公共HTTP和IPC版本不变，不新增设备控制入口。
 
+2026-10-24后续：[238表固定库存](ATTEMPT_INVENTORY.md)已提供实际SQLite来源适配器及prepared/观察修订正例；完整传输生产链仍未验证。报告来源明确分离本地report_id与worker_report_id，前者用于固定库存引用，后者与worker/IPC会话共同去重，新增两项边界检查后本映射套件为69项。下文“适配器尚未实现”保留为本稿最初交付边界；本套件仍使用独立库存夹具，不以新存储实现冒充本套件已覆盖完整生产链。
+
 ## 已知事实与修正
 
 原完整记录reader核对cm_attempt身份、序号和prepared StateRef，但将待验证的attempts同时传作期望值；因此packet/出口/时间/结果字段不能仅靠完整记录摘要得到原件保证。本轮保留原读取授权和事务边界，增加独立来源适配器及逐字段重建验证。没有来源时，非空attempt读取返回内部`attempt_originals_unavailable`；HTTP适配层仍须映射既定不可用错误，不泄漏内部提供者信息。（来源：[完整记录reader](typed_command_view_model.py)、[公共语义校验](../c02-command-view/reference_model.py)、[既有字段定义](command-contract.schema.json)。）

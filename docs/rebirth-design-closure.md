@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26开放授权取证边界进展：[授权来源候选](contracts/c04-lifecycle/OPEN_AUTHORIZATION.md)区分设备开闸资格与逐命令授权，明确ordinary/manual的当前持有人证据、automatic的内部评估器来源及cancel_only的独立取消授权链。新增需求Schema与52项正反例，不新增公共gate.open权限，不将device.command或旧T4当作设备授权；合成Ref仍可通过格式的反例明确保留。当前授权状态／撤销切点完整原件、同库读取及保护传播、完整OPEN仍未接通，未改306表来源和批准API／IPC。阶段0与业务边界保持；本周期第3/3轮，审查各提交当时输入后推送main。
+
 2026-10-26提供者恢复来源进展：[306表完整组合](contracts/c04-lifecycle/OPEN_PROVIDER_SOURCE.md)从当前State和完整采用原件确定时间Domain，取消调用方expected_provider_domain入口，并与非空运行／命令拒绝快照及worker原件同库读取。撤回后只保留提高的拒绝下界，新恢复可选择它而不复活UTC资格；旧恢复引用和较高水位回退拒绝，实际WAL旧读／最终writer重读边界已验。跨库监督闭锁、批准与核心身份、TIME保护及完整OPEN仍未完成，业务未改、阶段0未关闭。本周期第2/3轮，仅本地提交。
 
 2026-10-26时间提供者同库采用进展：[30表采用与撤回候选](contracts/df03-provider/README.md)将完整监督原件、Channel／Configuration、初始State及其持久身份纳入十步原子采用；撤回同时封存不可用State、递增时间代次和STOP意图。逐写／漏写、提交观察丢失、固定身份重投及历史查原均有验收；实际串行交错复现监督读取后退役而核心仍可提交，明确本地current不证明持续活性。跨库监督闭锁、当前批准和核心身份、完整恢复／OPEN仍待完成，阶段0未关闭、业务未改。本周期第1/3轮，仅本地提交。

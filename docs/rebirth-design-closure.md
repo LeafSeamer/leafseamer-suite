@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26准备核销进展：[完整准备核销候选](contracts/c04-lifecycle/AUTHORIZATION_PREPARE_CLOSURE.md)在255表组合中接通实际授权与撤回、DENY_ENCODING原件、ACK及完整PreparationClosure，107项离线检查通过。双成员夹具分别使用deny_ack与never_attempted，逐写异常、缺写、漏成员、提交观察故障、时间错配和证明撤回均有反例；核销不退款、不恢复持有人、不签发最终许可。released/retired证明提供者、完整T5/T2、真实IPC/设备、P0及历史登记回收仍缺，阶段0未关闭、业务实现未开始。本轮为新周期第1/3轮，仅本地提交。
+
 2026-10-24认证关闭ACK进展：[ACK与准备核销候选](contracts/c04-lifecycle/AUTHORIZATION_CLOSE_ACK.md)在255表组合中接通完整ACK线路原件、领域采用及日志seal，63项检查通过。迟到/失效ACK只存历史，结束或撤回使当前资格失效；采用条件与后续可用性分离，避免正常恢复使自身关闭依据失效。后者另用隔离视图实验验证，未执行完整T5。非空准备cut缺证明或伪造never_attempted仍拒绝；真实IPC/设备、准备核销正向全链、完整P0及最终T2仍缺，阶段0未关闭、业务实现未开始。本轮周期第3/3轮，逐提交审查后推送三轮成果。
 
 2026-10-24认证关闭日志进展：[关闭预约候选](contracts/c04-lifecycle/AUTHORIZATION_CLOSE_DISPATCH.md)在254表实际组合中接通go_close到完整CLOSE_GATE帧、唯一领域记录及共享日志seal，52项检查通过。保护帧/字节预留按实际日志原子消费，重试查原不重复占用，提交不确定及会话结束要求停止。入流只登记一次尝试，未执行真实IPC；日志applied不是关闭完成。完整P0分层预留/磁盘预算、ACK与PreparationClosure、真实监督终止和最终T2仍未交付，四个阻断保持；阶段0与业务实现仍未开始。本轮新周期第2/3轮，仅本地提交。

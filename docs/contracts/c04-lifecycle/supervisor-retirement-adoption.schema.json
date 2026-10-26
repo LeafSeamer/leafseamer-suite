@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/c04-lifecycle/supervisor-retirement-adoption.schema.json",
+  "$defs": {
+    "RuntimeExitBinding": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "runtime-exit-binding/0.1.0-draft.1"
+        },
+        "binding_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Binding"
+        },
+        "source": {
+          "$ref": "https://leafseamer.invalid/contracts/df02-supervisor/retirement-source.schema.json#/$defs/SourceIdentity"
+        },
+        "intent": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ExtensionLaunchIntent"
+        },
+        "admission_receipt": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/AdmissionReceipt"
+        },
+        "authorization_evidence_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+        },
+        "binding_digest": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "binding_id",
+        "revision",
+        "binding",
+        "source",
+        "intent",
+        "admission_receipt",
+        "authorization_evidence_ref",
+        "binding_digest"
+      ],
+      "additionalProperties": false
+    },
+    "RetirementAdoption": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "supervisor-retirement-adoption/0.1.0-draft.1"
+        },
+        "adoption_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Binding"
+        },
+        "runtime_binding_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+        },
+        "source_bundle": {
+          "$ref": "https://leafseamer.invalid/contracts/df02-supervisor/retirement-source.schema.json#/$defs/Bundle"
+        },
+        "adoption_digest": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "adoption_id",
+        "revision",
+        "binding",
+        "runtime_binding_ref",
+        "source_bundle",
+        "adoption_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

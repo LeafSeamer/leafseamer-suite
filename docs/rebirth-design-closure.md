@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26提供者恢复来源进展：[306表完整组合](contracts/c04-lifecycle/OPEN_PROVIDER_SOURCE.md)从当前State和完整采用原件确定时间Domain，取消调用方expected_provider_domain入口，并与非空运行／命令拒绝快照及worker原件同库读取。撤回后只保留提高的拒绝下界，新恢复可选择它而不复活UTC资格；旧恢复引用和较高水位回退拒绝，实际WAL旧读／最终writer重读边界已验。跨库监督闭锁、批准与核心身份、TIME保护及完整OPEN仍未完成，业务未改、阶段0未关闭。本周期第2/3轮，仅本地提交。
+
 2026-10-26时间提供者同库采用进展：[30表采用与撤回候选](contracts/df03-provider/README.md)将完整监督原件、Channel／Configuration、初始State及其持久身份纳入十步原子采用；撤回同时封存不可用State、递增时间代次和STOP意图。逐写／漏写、提交观察丢失、固定身份重投及历史查原均有验收；实际串行交错复现监督读取后退役而核心仍可提交，明确本地current不证明持续活性。跨库监督闭锁、当前批准和核心身份、完整恢复／OPEN仍待完成，阶段0未关闭、业务未改。本周期第1/3轮，仅本地提交。
 
 2026-10-26时间提供者身份进展：[完整准入来源候选](contracts/df02-supervisor/TIME_PROVIDER_SOURCE.md)从受信15表监督日志读取固定time_provider意图、保护配置、bootstrap/准入回执和完整进程观察，生成确定性RuntimeBinding候选并核时间Domain七项身份。54项专项、75项监督原件与88项日志回归通过，补读取提交后退役的串行交错反例，明确候选不证明当前OS活性；clock_generation不从不透明runtime_generation转换。核心原子采用/撤回、真实监督闭锁及完整OPEN仍未完成，阶段0与业务边界保持。本周期第3/3轮，按各提交当时输入逐一审查三轮成果后推送main。

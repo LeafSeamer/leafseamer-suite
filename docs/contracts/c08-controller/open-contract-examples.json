@@ -1,0 +1,1454 @@
+{
+  "ordinary": {
+    "proposal": {
+      "format_version": "gate-open-proposal/0.3.0-draft.1",
+      "plan": {
+        "plan_id": "plan",
+        "revision": "1",
+        "binding": {
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "controller_boot_id": "controller.boot",
+          "worker_boot_id": "worker.boot",
+          "writer_exit_id": "exit",
+          "ipc_session_id": "ipc",
+          "device_id": "device",
+          "device_session_id": "device.session",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+        },
+        "state_refs": {
+          "control": {
+            "id": "control",
+            "revision": "2",
+            "digest": "sha256:6f9e9f2dcac095c2e0665e298f498a9f7345c8e020dd72e48c9f0210977ade84"
+          },
+          "gate": {
+            "id": "gate",
+            "revision": "1",
+            "digest": "sha256:4f83d3c80ad2f21ad63b667d20cd8aa7465eaa6cd9ee8314fe632504d6083582"
+          },
+          "authorization": {
+            "id": "authorization",
+            "revision": "1",
+            "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+          },
+          "resource": {
+            "id": "resources",
+            "revision": "1",
+            "digest": "sha256:28979fc8a5490bd792823d6cbc8166d591c30ef93b327a357f1b97c38b93b844"
+          }
+        },
+        "basis": {
+          "kind": "gate_recovery",
+          "record_ref": {
+            "id": "recovery",
+            "revision": "1",
+            "digest": "sha256:9353a9e7a4eb275c2c78b57da46d966ccf0274b7eff258dde7871aa88ccae311"
+          }
+        },
+        "body": {
+          "barrier_id": "barrier",
+          "gate_token": "gate.token",
+          "device_session_id": "device.session",
+          "control_epoch": "control.epoch",
+          "control_version": "2",
+          "gate_revision": "3",
+          "authorization_revision": "1",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "lease_until_tick_ns": "100",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+          "run_deny_snapshot": {
+            "controller_scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "snapshot_revision": "4",
+            "entries": [],
+            "snapshot_digest": "sha256:7ab7b21066247a426abb96e8330b8f59d499b27a9d3e7c47fbe2f8218fe168cf"
+          },
+          "command_deny_snapshot": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "device_id": "device",
+            "snapshot_revision": "3",
+            "entries": [],
+            "snapshot_digest": "sha256:997f09624e515994420514c4c81eb0d3ce7afb895f6fe2dd2aa3b32c2a80cae8"
+          },
+          "reference_time_snapshot": {
+            "snapshot_id": "time",
+            "domain": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database",
+              "provider_id": "provider",
+              "provider_boot_id": "provider.boot",
+              "runtime_binding_ref": {
+                "id": "runtime",
+                "revision": "1",
+                "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+              },
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+              "clock_generation": "1"
+            },
+            "snapshot_revision": "2",
+            "minimum_time_generation": "1",
+            "state_ref": {
+              "id": "time.state",
+              "revision": "1",
+              "digest": "sha256:7425f54de191fb59b84214e1c4fa18d302eea909dc0811369c24d5f5e1985eb1"
+            },
+            "snapshot_digest": "sha256:ecd5315858fffadd281f2b08109109cd7642f98fd788620371ca0c709de7d3ca"
+          },
+          "gate_access": {
+            "format_version": "gate-access/0.1.0-draft.1",
+            "access_id": "access.ordinary",
+            "revision": "1",
+            "purpose": "ordinary",
+            "binding": {
+              "scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "controller_boot_id": "controller.boot",
+              "worker_boot_id": "worker.boot",
+              "writer_exit_id": "exit",
+              "ipc_session_id": "ipc",
+              "device_id": "device",
+              "device_session_id": "device.session",
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+            },
+            "control_authority_ref": {
+              "id": "authority",
+              "revision": "1",
+              "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+            },
+            "control_epoch": "control.epoch",
+            "effective_version": "2",
+            "authorization_ref": {
+              "id": "authorization",
+              "revision": "1",
+              "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+            },
+            "resource_safety_ref": {
+              "id": "resource.safety",
+              "revision": "1",
+              "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+            },
+            "gate_safety_ref": {
+              "id": "gate.safety",
+              "revision": "1",
+              "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+            },
+            "protection": null,
+            "initial_assessment_ref": null,
+            "selected_tick_ns": "51",
+            "expires_tick_ns": "80",
+            "access_digest": "sha256:ad13b77a9e1b873265e7c3d83621d2251b4b7d3e8b1d7b8a7f976ab7c6aa736e"
+          },
+          "protection_assessment": null
+        },
+        "selected_tick_ns": "52",
+        "expires_tick_ns": "69",
+        "plan_digest": "sha256:4ac9601bb74b9dc5afe7a19980e340d1cb6c54224ffd07323aa8b3c696cfbbf7",
+        "format_version": "gate-open-plan/0.3.0-draft.1"
+      },
+      "eligibility_refs": {
+        "control_authority": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "authorization": {
+          "id": "authorization",
+          "revision": "1",
+          "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+        },
+        "resource_safety": {
+          "id": "resource.safety",
+          "revision": "1",
+          "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+        },
+        "gate_safety": {
+          "id": "gate.safety",
+          "revision": "1",
+          "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+        }
+      },
+      "control_before": {
+        "record_ref": {
+          "id": "control",
+          "revision": "2",
+          "digest": "sha256:6f9e9f2dcac095c2e0665e298f498a9f7345c8e020dd72e48c9f0210977ade84"
+        },
+        "authority_ref": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "control_epoch": "control.epoch",
+        "effective_version": "2",
+        "mode": "manual",
+        "holder": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "epoch",
+          "principal_id": "bob"
+        },
+        "pending_operation_id": null,
+        "gate_state": "protected"
+      },
+      "gate_before": {
+        "record_ref": {
+          "id": "gate",
+          "revision": "1",
+          "digest": "sha256:4f83d3c80ad2f21ad63b667d20cd8aa7465eaa6cd9ee8314fe632504d6083582"
+        },
+        "binding": {
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "controller_boot_id": "controller.boot",
+          "worker_boot_id": "worker.boot",
+          "writer_exit_id": "exit",
+          "ipc_session_id": "ipc",
+          "device_id": "device",
+          "device_session_id": "device.session",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+        },
+        "gate_revision": "3",
+        "gate_token": "gate.token",
+        "barrier_id": "barrier",
+        "phase": "fenced",
+        "lease_until_tick_ns": "100",
+        "activation_id": null
+      },
+      "proposal_digest": "sha256:00193e2259f89e1f20631af81fc752048f703664b264ef5be44de05c128d499f"
+    },
+    "dispatch": {
+      "dispatch_id": "dispatch",
+      "revision": "1",
+      "plan_ref": {
+        "id": "plan",
+        "revision": "1",
+        "digest": "sha256:4ac9601bb74b9dc5afe7a19980e340d1cb6c54224ffd07323aa8b3c696cfbbf7"
+      },
+      "frame": {
+        "ipc_version": "ipc/0.14.0-continuation-draft.1",
+        "type": "OPEN_GATE",
+        "message_id": "open.message",
+        "reply_to": null,
+        "controller_boot_id": "controller.boot",
+        "worker_boot_id": "worker.boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "seq": "2",
+        "body": {
+          "barrier_id": "barrier",
+          "gate_token": "gate.token",
+          "device_session_id": "device.session",
+          "control_epoch": "control.epoch",
+          "control_version": "2",
+          "gate_revision": "3",
+          "authorization_revision": "1",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "lease_until_tick_ns": "100",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+          "run_deny_snapshot": {
+            "controller_scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "snapshot_revision": "4",
+            "entries": [],
+            "snapshot_digest": "sha256:7ab7b21066247a426abb96e8330b8f59d499b27a9d3e7c47fbe2f8218fe168cf"
+          },
+          "command_deny_snapshot": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "device_id": "device",
+            "snapshot_revision": "3",
+            "entries": [],
+            "snapshot_digest": "sha256:997f09624e515994420514c4c81eb0d3ce7afb895f6fe2dd2aa3b32c2a80cae8"
+          },
+          "reference_time_snapshot": {
+            "snapshot_id": "time",
+            "domain": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database",
+              "provider_id": "provider",
+              "provider_boot_id": "provider.boot",
+              "runtime_binding_ref": {
+                "id": "runtime",
+                "revision": "1",
+                "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+              },
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+              "clock_generation": "1"
+            },
+            "snapshot_revision": "2",
+            "minimum_time_generation": "1",
+            "state_ref": {
+              "id": "time.state",
+              "revision": "1",
+              "digest": "sha256:7425f54de191fb59b84214e1c4fa18d302eea909dc0811369c24d5f5e1985eb1"
+            },
+            "snapshot_digest": "sha256:ecd5315858fffadd281f2b08109109cd7642f98fd788620371ca0c709de7d3ca"
+          },
+          "gate_access": {
+            "format_version": "gate-access/0.1.0-draft.1",
+            "access_id": "access.ordinary",
+            "revision": "1",
+            "purpose": "ordinary",
+            "binding": {
+              "scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "controller_boot_id": "controller.boot",
+              "worker_boot_id": "worker.boot",
+              "writer_exit_id": "exit",
+              "ipc_session_id": "ipc",
+              "device_id": "device",
+              "device_session_id": "device.session",
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+            },
+            "control_authority_ref": {
+              "id": "authority",
+              "revision": "1",
+              "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+            },
+            "control_epoch": "control.epoch",
+            "effective_version": "2",
+            "authorization_ref": {
+              "id": "authorization",
+              "revision": "1",
+              "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+            },
+            "resource_safety_ref": {
+              "id": "resource.safety",
+              "revision": "1",
+              "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+            },
+            "gate_safety_ref": {
+              "id": "gate.safety",
+              "revision": "1",
+              "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+            },
+            "protection": null,
+            "initial_assessment_ref": null,
+            "selected_tick_ns": "51",
+            "expires_tick_ns": "80",
+            "access_digest": "sha256:ad13b77a9e1b873265e7c3d83621d2251b4b7d3e8b1d7b8a7f976ab7c6aa736e"
+          },
+          "protection_assessment": null
+        },
+        "journal_mode": "durable"
+      },
+      "reserved_tick_ns": "53",
+      "dispatch_digest": "sha256:4dd793cdec3737122438ad9cfa000e2d5e3dcd4accc6f1df4cc779aaea369601",
+      "format_version": "gate-open-dispatch/0.3.0-draft.1"
+    },
+    "evidence": {
+      "evidence_id": "evidence",
+      "revision": "1",
+      "plan_ref": {
+        "id": "plan",
+        "revision": "1",
+        "digest": "sha256:4ac9601bb74b9dc5afe7a19980e340d1cb6c54224ffd07323aa8b3c696cfbbf7"
+      },
+      "dispatch_ref": {
+        "id": "dispatch",
+        "revision": "1",
+        "digest": "sha256:4dd793cdec3737122438ad9cfa000e2d5e3dcd4accc6f1df4cc779aaea369601"
+      },
+      "frame": {
+        "ipc_version": "ipc/0.14.0-continuation-draft.1",
+        "type": "OPEN_GATE_ACK",
+        "message_id": "ack.message",
+        "reply_to": "open.message",
+        "controller_boot_id": "controller.boot",
+        "worker_boot_id": "worker.boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "seq": "1",
+        "body": {
+          "gate_token": "gate.token",
+          "gate_revision": "3",
+          "state": "open",
+          "run_deny_snapshot_revision": "4",
+          "run_deny_snapshot_digest": "sha256:7ab7b21066247a426abb96e8330b8f59d499b27a9d3e7c47fbe2f8218fe168cf",
+          "command_deny_snapshot_revision": "3",
+          "command_deny_snapshot_digest": "sha256:997f09624e515994420514c4c81eb0d3ce7afb895f6fe2dd2aa3b32c2a80cae8",
+          "reference_time_snapshot_ref": {
+            "id": "time",
+            "revision": "2",
+            "digest": "sha256:ecd5315858fffadd281f2b08109109cd7642f98fd788620371ca0c709de7d3ca"
+          },
+          "gate_access_ref": {
+            "id": "access.ordinary",
+            "revision": "1",
+            "digest": "sha256:ad13b77a9e1b873265e7c3d83621d2251b4b7d3e8b1d7b8a7f976ab7c6aa736e"
+          }
+        },
+        "journal_mode": "durable"
+      },
+      "received_tick_ns": "54",
+      "observer_receipt_ref": {
+        "id": "observer",
+        "revision": "1",
+        "digest": "sha256:4f73b463c81e12752d12634d9f4fdde701a99d2851927124eb9773d6d49df416"
+      },
+      "evidence_digest": "sha256:37dda5a980699858847b94903b58ab6364af0b9415960584f4e106d5e2e61f32",
+      "format_version": "gate-open-evidence/0.3.0-draft.1"
+    },
+    "adoption": {
+      "format_version": "gate-open-adoption/0.3.0-draft.1",
+      "commit_id": "adopt",
+      "revision": "1",
+      "purpose": "ordinary",
+      "proposal_ref": {
+        "id": "plan",
+        "revision": "1",
+        "digest": "sha256:00193e2259f89e1f20631af81fc752048f703664b264ef5be44de05c128d499f"
+      },
+      "dispatch_ref": {
+        "id": "dispatch",
+        "revision": "1",
+        "digest": "sha256:4dd793cdec3737122438ad9cfa000e2d5e3dcd4accc6f1df4cc779aaea369601"
+      },
+      "evidence_ref": {
+        "id": "evidence",
+        "revision": "1",
+        "digest": "sha256:37dda5a980699858847b94903b58ab6364af0b9415960584f4e106d5e2e61f32"
+      },
+      "gate_access_ref": {
+        "id": "access.ordinary",
+        "revision": "1",
+        "digest": "sha256:ad13b77a9e1b873265e7c3d83621d2251b4b7d3e8b1d7b8a7f976ab7c6aa736e"
+      },
+      "protection_assessment_ref": null,
+      "eligibility_refs": {
+        "control_authority": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "authorization": {
+          "id": "authorization",
+          "revision": "1",
+          "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+        },
+        "resource_safety": {
+          "id": "resource.safety",
+          "revision": "1",
+          "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+        },
+        "gate_safety": {
+          "id": "gate.safety",
+          "revision": "1",
+          "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+        }
+      },
+      "control_after": {
+        "record_ref": {
+          "id": "control.after",
+          "revision": "3",
+          "digest": "sha256:455fce02866c39fa46f781d86f0e2fc083b29204b12b8a72a577fc5279d452ef"
+        },
+        "authority_ref": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "control_epoch": "control.epoch",
+        "effective_version": "2",
+        "mode": "manual",
+        "holder": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "epoch",
+          "principal_id": "bob"
+        },
+        "pending_operation_id": null,
+        "gate_state": "ready"
+      },
+      "gate_after": {
+        "record_ref": {
+          "id": "gate.after",
+          "revision": "2",
+          "digest": "sha256:6a68dc23bb8665903eb5001f4750fe71b412329365b32be23f7a14c1407f7ccc"
+        },
+        "binding": {
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "controller_boot_id": "controller.boot",
+          "worker_boot_id": "worker.boot",
+          "writer_exit_id": "exit",
+          "ipc_session_id": "ipc",
+          "device_id": "device",
+          "device_session_id": "device.session",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+        },
+        "gate_revision": "3",
+        "gate_token": "gate.token",
+        "barrier_id": "barrier",
+        "phase": "ready",
+        "lease_until_tick_ns": "100",
+        "activation_id": "adopt"
+      },
+      "committed_tick_ns": "55",
+      "adoption_digest": "sha256:d52d0e02d1bc3a38993e4c8a355f3ea78bafc9d2b5c210613aaf58acd4a220c9"
+    }
+  },
+  "cancel": {
+    "proposal": {
+      "format_version": "gate-open-proposal/0.3.0-draft.1",
+      "plan": {
+        "plan_id": "plan",
+        "revision": "1",
+        "binding": {
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "controller_boot_id": "controller.boot",
+          "worker_boot_id": "worker.boot",
+          "writer_exit_id": "exit",
+          "ipc_session_id": "ipc",
+          "device_id": "device",
+          "device_session_id": "device.session",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+        },
+        "state_refs": {
+          "control": {
+            "id": "control",
+            "revision": "2",
+            "digest": "sha256:6f9e9f2dcac095c2e0665e298f498a9f7345c8e020dd72e48c9f0210977ade84"
+          },
+          "gate": {
+            "id": "gate",
+            "revision": "1",
+            "digest": "sha256:4f83d3c80ad2f21ad63b667d20cd8aa7465eaa6cd9ee8314fe632504d6083582"
+          },
+          "authorization": {
+            "id": "authorization",
+            "revision": "1",
+            "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+          },
+          "resource": {
+            "id": "resources",
+            "revision": "1",
+            "digest": "sha256:28979fc8a5490bd792823d6cbc8166d591c30ef93b327a357f1b97c38b93b844"
+          }
+        },
+        "basis": {
+          "kind": "scope",
+          "record_ref": {
+            "id": "assessment",
+            "revision": "1",
+            "digest": "sha256:0616eeef10de67fdef8115a03902c327b898207a790096f5be2b3b27dfe0bc69"
+          }
+        },
+        "body": {
+          "barrier_id": "barrier",
+          "gate_token": "gate.token",
+          "device_session_id": "device.session",
+          "control_epoch": "control.epoch",
+          "control_version": "2",
+          "gate_revision": "3",
+          "authorization_revision": "1",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "lease_until_tick_ns": "100",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+          "run_deny_snapshot": {
+            "controller_scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "snapshot_revision": "4",
+            "entries": [],
+            "snapshot_digest": "sha256:7ab7b21066247a426abb96e8330b8f59d499b27a9d3e7c47fbe2f8218fe168cf"
+          },
+          "command_deny_snapshot": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "device_id": "device",
+            "snapshot_revision": "3",
+            "entries": [],
+            "snapshot_digest": "sha256:997f09624e515994420514c4c81eb0d3ce7afb895f6fe2dd2aa3b32c2a80cae8"
+          },
+          "reference_time_snapshot": {
+            "snapshot_id": "time",
+            "domain": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database",
+              "provider_id": "provider",
+              "provider_boot_id": "provider.boot",
+              "runtime_binding_ref": {
+                "id": "runtime",
+                "revision": "1",
+                "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+              },
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+              "clock_generation": "1"
+            },
+            "snapshot_revision": "2",
+            "minimum_time_generation": "1",
+            "state_ref": {
+              "id": "time.state",
+              "revision": "1",
+              "digest": "sha256:7425f54de191fb59b84214e1c4fa18d302eea909dc0811369c24d5f5e1985eb1"
+            },
+            "snapshot_digest": "sha256:ecd5315858fffadd281f2b08109109cd7642f98fd788620371ca0c709de7d3ca"
+          },
+          "gate_access": {
+            "format_version": "gate-access/0.1.0-draft.1",
+            "access_id": "access.cancel",
+            "revision": "1",
+            "purpose": "cancel_only",
+            "binding": {
+              "scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "controller_boot_id": "controller.boot",
+              "worker_boot_id": "worker.boot",
+              "writer_exit_id": "exit",
+              "ipc_session_id": "ipc",
+              "device_id": "device",
+              "device_session_id": "device.session",
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+            },
+            "control_authority_ref": {
+              "id": "authority",
+              "revision": "1",
+              "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+            },
+            "control_epoch": "control.epoch",
+            "effective_version": "2",
+            "authorization_ref": {
+              "id": "authorization",
+              "revision": "1",
+              "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+            },
+            "resource_safety_ref": {
+              "id": "resource.safety",
+              "revision": "1",
+              "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+            },
+            "gate_safety_ref": {
+              "id": "gate.safety",
+              "revision": "1",
+              "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+            },
+            "protection": {
+              "identity": {
+                "kind": "cancel",
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "attempt_ref": null,
+                "cancellation_ref": {
+                  "id": "cancel",
+                  "revision": "1",
+                  "digest": "sha256:521e887d93ad8574c89833345f2202ab39053c72980c5e5ba16ebabed1b9b6f7"
+                },
+                "execution_ref": {
+                  "id": "execution",
+                  "revision": "1",
+                  "digest": "sha256:c3056356f102f2031181b08075128ac3e95beed83e0f626dd097fddf5ea52340"
+                },
+                "requester": {
+                  "kind": "human",
+                  "issuer_id": "issuer",
+                  "issuer_epoch": "epoch",
+                  "principal_id": "bob"
+                },
+                "origin": "manual",
+                "source_ref": {
+                  "id": "source.cancel",
+                  "revision": "1",
+                  "digest": "sha256:be5098faff0b79ad2cd7f72102e9ede4d5ed6af9bc0fe302e1e40535ff636103"
+                }
+              },
+              "policy_ref": {
+                "id": "policy",
+                "revision": "1",
+                "digest": "sha256:b6a16f9757322fe7336763dcaa302235a8838ea5ac1cfc1695276b3cf0915577"
+              },
+              "ordinary_closure_ref": {
+                "id": "ordinary.closure",
+                "revision": "1",
+                "digest": "sha256:fa74431b9fbf3bbcb183451e67d920221a1c89da15a367b6aca125828ef0efba"
+              },
+              "hold_ref": {
+                "id": "hold",
+                "revision": "1",
+                "digest": "sha256:8a45dbfd7882fbb0a2c2475f002b645e577aed68e56569601cd63e1303a1ee83"
+              },
+              "ownership_ref": {
+                "id": "ownership",
+                "revision": "1",
+                "digest": "sha256:01ace600235bdc881dde859208b459dc621be1d4230a246646063d8d1ae35d3f"
+              }
+            },
+            "initial_assessment_ref": {
+              "id": "assessment",
+              "revision": "1",
+              "digest": "sha256:0616eeef10de67fdef8115a03902c327b898207a790096f5be2b3b27dfe0bc69"
+            },
+            "selected_tick_ns": "51",
+            "expires_tick_ns": "80",
+            "access_digest": "sha256:6f40065518630aab5ef99300dbc82be9d31189908c37c534ba88152b08f80b5a"
+          },
+          "protection_assessment": {
+            "format_version": "protection-assessment/0.1.0-draft.1",
+            "assessment_id": "assessment",
+            "revision": "1",
+            "binding": {
+              "scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "controller_boot_id": "controller.boot",
+              "worker_boot_id": "worker.boot",
+              "writer_exit_id": "exit",
+              "ipc_session_id": "ipc",
+              "device_id": "device",
+              "device_session_id": "device.session",
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+            },
+            "control_authority_ref": {
+              "id": "authority",
+              "revision": "1",
+              "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+            },
+            "control_epoch": "control.epoch",
+            "effective_version": "2",
+            "authorization_ref": {
+              "id": "authorization",
+              "revision": "1",
+              "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+            },
+            "resource_safety_ref": {
+              "id": "resource.safety",
+              "revision": "1",
+              "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+            },
+            "gate_safety_ref": {
+              "id": "gate.safety",
+              "revision": "1",
+              "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+            },
+            "protection": {
+              "identity": {
+                "kind": "cancel",
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "attempt_ref": null,
+                "cancellation_ref": {
+                  "id": "cancel",
+                  "revision": "1",
+                  "digest": "sha256:521e887d93ad8574c89833345f2202ab39053c72980c5e5ba16ebabed1b9b6f7"
+                },
+                "execution_ref": {
+                  "id": "execution",
+                  "revision": "1",
+                  "digest": "sha256:c3056356f102f2031181b08075128ac3e95beed83e0f626dd097fddf5ea52340"
+                },
+                "requester": {
+                  "kind": "human",
+                  "issuer_id": "issuer",
+                  "issuer_epoch": "epoch",
+                  "principal_id": "bob"
+                },
+                "origin": "manual",
+                "source_ref": {
+                  "id": "source.cancel",
+                  "revision": "1",
+                  "digest": "sha256:be5098faff0b79ad2cd7f72102e9ede4d5ed6af9bc0fe302e1e40535ff636103"
+                }
+              },
+              "policy_ref": {
+                "id": "policy",
+                "revision": "1",
+                "digest": "sha256:b6a16f9757322fe7336763dcaa302235a8838ea5ac1cfc1695276b3cf0915577"
+              },
+              "ordinary_closure_ref": {
+                "id": "ordinary.closure",
+                "revision": "1",
+                "digest": "sha256:fa74431b9fbf3bbcb183451e67d920221a1c89da15a367b6aca125828ef0efba"
+              },
+              "hold_ref": {
+                "id": "hold",
+                "revision": "1",
+                "digest": "sha256:8a45dbfd7882fbb0a2c2475f002b645e577aed68e56569601cd63e1303a1ee83"
+              },
+              "ownership_ref": {
+                "id": "ownership",
+                "revision": "1",
+                "digest": "sha256:01ace600235bdc881dde859208b459dc621be1d4230a246646063d8d1ae35d3f"
+              }
+            },
+            "resource_ref": {
+              "id": "resources",
+              "revision": "1",
+              "digest": "sha256:28979fc8a5490bd792823d6cbc8166d591c30ef93b327a357f1b97c38b93b844"
+            },
+            "risks": [
+              {
+                "hold_ref": {
+                  "id": "hold",
+                  "revision": "1",
+                  "digest": "sha256:8a45dbfd7882fbb0a2c2475f002b645e577aed68e56569601cd63e1303a1ee83"
+                },
+                "ownership_ref": {
+                  "id": "ownership",
+                  "revision": "1",
+                  "digest": "sha256:01ace600235bdc881dde859208b459dc621be1d4230a246646063d8d1ae35d3f"
+                },
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "execution_ref": {
+                  "id": "execution",
+                  "revision": "1",
+                  "digest": "sha256:c3056356f102f2031181b08075128ac3e95beed83e0f626dd097fddf5ea52340"
+                },
+                "classification": "active"
+              },
+              {
+                "hold_ref": {
+                  "id": "parent.hold",
+                  "revision": "1",
+                  "digest": "sha256:0a2c0ce1cd6bc033a818f1f8a72657fe43ae3ab78a953b7891c92509bdc01cce"
+                },
+                "ownership_ref": {
+                  "id": "parent.owner",
+                  "revision": "1",
+                  "digest": "sha256:317917320144f52106123e5e913d0921683ddb2a8970acb5c7f1cb9945217323"
+                },
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "execution_ref": null,
+                "classification": "unknown"
+              }
+            ],
+            "sampled_tick_ns": "51",
+            "expires_tick_ns": "70",
+            "provider_receipt_ref": {
+              "id": "assessment.provider",
+              "revision": "1",
+              "digest": "sha256:670ae8a539f190724c8611fbab1ee4f1a9be361aa1b1669f669122b6ca7b5cb8"
+            },
+            "assessment_digest": "sha256:0616eeef10de67fdef8115a03902c327b898207a790096f5be2b3b27dfe0bc69"
+          }
+        },
+        "selected_tick_ns": "52",
+        "expires_tick_ns": "69",
+        "plan_digest": "sha256:076d9454c4205b0fbb679d6f46b71b3941f747ca1359bc5eaf63ad8dcbf51dd2",
+        "format_version": "gate-open-plan/0.3.0-draft.1"
+      },
+      "eligibility_refs": {
+        "control_authority": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "authorization": {
+          "id": "authorization",
+          "revision": "1",
+          "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+        },
+        "resource_safety": {
+          "id": "resource.safety",
+          "revision": "1",
+          "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+        },
+        "gate_safety": {
+          "id": "gate.safety",
+          "revision": "1",
+          "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+        }
+      },
+      "control_before": {
+        "record_ref": {
+          "id": "control",
+          "revision": "2",
+          "digest": "sha256:6f9e9f2dcac095c2e0665e298f498a9f7345c8e020dd72e48c9f0210977ade84"
+        },
+        "authority_ref": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "control_epoch": "control.epoch",
+        "effective_version": "2",
+        "mode": "manual",
+        "holder": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "epoch",
+          "principal_id": "bob"
+        },
+        "pending_operation_id": null,
+        "gate_state": "protected"
+      },
+      "gate_before": {
+        "record_ref": {
+          "id": "gate",
+          "revision": "1",
+          "digest": "sha256:4f83d3c80ad2f21ad63b667d20cd8aa7465eaa6cd9ee8314fe632504d6083582"
+        },
+        "binding": {
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "controller_boot_id": "controller.boot",
+          "worker_boot_id": "worker.boot",
+          "writer_exit_id": "exit",
+          "ipc_session_id": "ipc",
+          "device_id": "device",
+          "device_session_id": "device.session",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+        },
+        "gate_revision": "3",
+        "gate_token": "gate.token",
+        "barrier_id": "barrier",
+        "phase": "fenced",
+        "lease_until_tick_ns": "100",
+        "activation_id": null
+      },
+      "proposal_digest": "sha256:638d8ea86d59b22b4890c3ceada87f1506d356cca4f9428d44fd3cf229ec101e"
+    },
+    "dispatch": {
+      "dispatch_id": "dispatch",
+      "revision": "1",
+      "plan_ref": {
+        "id": "plan",
+        "revision": "1",
+        "digest": "sha256:076d9454c4205b0fbb679d6f46b71b3941f747ca1359bc5eaf63ad8dcbf51dd2"
+      },
+      "frame": {
+        "ipc_version": "ipc/0.14.0-continuation-draft.1",
+        "type": "OPEN_GATE",
+        "message_id": "open.message",
+        "reply_to": null,
+        "controller_boot_id": "controller.boot",
+        "worker_boot_id": "worker.boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "seq": "2",
+        "body": {
+          "barrier_id": "barrier",
+          "gate_token": "gate.token",
+          "device_session_id": "device.session",
+          "control_epoch": "control.epoch",
+          "control_version": "2",
+          "gate_revision": "3",
+          "authorization_revision": "1",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "lease_until_tick_ns": "100",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+          "run_deny_snapshot": {
+            "controller_scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "snapshot_revision": "4",
+            "entries": [],
+            "snapshot_digest": "sha256:7ab7b21066247a426abb96e8330b8f59d499b27a9d3e7c47fbe2f8218fe168cf"
+          },
+          "command_deny_snapshot": {
+            "scope": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database"
+            },
+            "device_id": "device",
+            "snapshot_revision": "3",
+            "entries": [],
+            "snapshot_digest": "sha256:997f09624e515994420514c4c81eb0d3ce7afb895f6fe2dd2aa3b32c2a80cae8"
+          },
+          "reference_time_snapshot": {
+            "snapshot_id": "time",
+            "domain": {
+              "authority_service_id": "controller",
+              "database_instance_id": "database",
+              "provider_id": "provider",
+              "provider_boot_id": "provider.boot",
+              "runtime_binding_ref": {
+                "id": "runtime",
+                "revision": "1",
+                "digest": "sha256:2d52cd9073053426a522ce4fb85745902ca2f9482e61774b7c1fa6c44a68931d"
+              },
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+              "clock_generation": "1"
+            },
+            "snapshot_revision": "2",
+            "minimum_time_generation": "1",
+            "state_ref": {
+              "id": "time.state",
+              "revision": "1",
+              "digest": "sha256:7425f54de191fb59b84214e1c4fa18d302eea909dc0811369c24d5f5e1985eb1"
+            },
+            "snapshot_digest": "sha256:ecd5315858fffadd281f2b08109109cd7642f98fd788620371ca0c709de7d3ca"
+          },
+          "gate_access": {
+            "format_version": "gate-access/0.1.0-draft.1",
+            "access_id": "access.cancel",
+            "revision": "1",
+            "purpose": "cancel_only",
+            "binding": {
+              "scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "controller_boot_id": "controller.boot",
+              "worker_boot_id": "worker.boot",
+              "writer_exit_id": "exit",
+              "ipc_session_id": "ipc",
+              "device_id": "device",
+              "device_session_id": "device.session",
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+            },
+            "control_authority_ref": {
+              "id": "authority",
+              "revision": "1",
+              "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+            },
+            "control_epoch": "control.epoch",
+            "effective_version": "2",
+            "authorization_ref": {
+              "id": "authorization",
+              "revision": "1",
+              "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+            },
+            "resource_safety_ref": {
+              "id": "resource.safety",
+              "revision": "1",
+              "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+            },
+            "gate_safety_ref": {
+              "id": "gate.safety",
+              "revision": "1",
+              "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+            },
+            "protection": {
+              "identity": {
+                "kind": "cancel",
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "attempt_ref": null,
+                "cancellation_ref": {
+                  "id": "cancel",
+                  "revision": "1",
+                  "digest": "sha256:521e887d93ad8574c89833345f2202ab39053c72980c5e5ba16ebabed1b9b6f7"
+                },
+                "execution_ref": {
+                  "id": "execution",
+                  "revision": "1",
+                  "digest": "sha256:c3056356f102f2031181b08075128ac3e95beed83e0f626dd097fddf5ea52340"
+                },
+                "requester": {
+                  "kind": "human",
+                  "issuer_id": "issuer",
+                  "issuer_epoch": "epoch",
+                  "principal_id": "bob"
+                },
+                "origin": "manual",
+                "source_ref": {
+                  "id": "source.cancel",
+                  "revision": "1",
+                  "digest": "sha256:be5098faff0b79ad2cd7f72102e9ede4d5ed6af9bc0fe302e1e40535ff636103"
+                }
+              },
+              "policy_ref": {
+                "id": "policy",
+                "revision": "1",
+                "digest": "sha256:b6a16f9757322fe7336763dcaa302235a8838ea5ac1cfc1695276b3cf0915577"
+              },
+              "ordinary_closure_ref": {
+                "id": "ordinary.closure",
+                "revision": "1",
+                "digest": "sha256:fa74431b9fbf3bbcb183451e67d920221a1c89da15a367b6aca125828ef0efba"
+              },
+              "hold_ref": {
+                "id": "hold",
+                "revision": "1",
+                "digest": "sha256:8a45dbfd7882fbb0a2c2475f002b645e577aed68e56569601cd63e1303a1ee83"
+              },
+              "ownership_ref": {
+                "id": "ownership",
+                "revision": "1",
+                "digest": "sha256:01ace600235bdc881dde859208b459dc621be1d4230a246646063d8d1ae35d3f"
+              }
+            },
+            "initial_assessment_ref": {
+              "id": "assessment",
+              "revision": "1",
+              "digest": "sha256:0616eeef10de67fdef8115a03902c327b898207a790096f5be2b3b27dfe0bc69"
+            },
+            "selected_tick_ns": "51",
+            "expires_tick_ns": "80",
+            "access_digest": "sha256:6f40065518630aab5ef99300dbc82be9d31189908c37c534ba88152b08f80b5a"
+          },
+          "protection_assessment": {
+            "format_version": "protection-assessment/0.1.0-draft.1",
+            "assessment_id": "assessment",
+            "revision": "1",
+            "binding": {
+              "scope": {
+                "authority_service_id": "controller",
+                "database_instance_id": "database"
+              },
+              "controller_boot_id": "controller.boot",
+              "worker_boot_id": "worker.boot",
+              "writer_exit_id": "exit",
+              "ipc_session_id": "ipc",
+              "device_id": "device",
+              "device_session_id": "device.session",
+              "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+              "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+            },
+            "control_authority_ref": {
+              "id": "authority",
+              "revision": "1",
+              "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+            },
+            "control_epoch": "control.epoch",
+            "effective_version": "2",
+            "authorization_ref": {
+              "id": "authorization",
+              "revision": "1",
+              "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+            },
+            "resource_safety_ref": {
+              "id": "resource.safety",
+              "revision": "1",
+              "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+            },
+            "gate_safety_ref": {
+              "id": "gate.safety",
+              "revision": "1",
+              "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+            },
+            "protection": {
+              "identity": {
+                "kind": "cancel",
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "attempt_ref": null,
+                "cancellation_ref": {
+                  "id": "cancel",
+                  "revision": "1",
+                  "digest": "sha256:521e887d93ad8574c89833345f2202ab39053c72980c5e5ba16ebabed1b9b6f7"
+                },
+                "execution_ref": {
+                  "id": "execution",
+                  "revision": "1",
+                  "digest": "sha256:c3056356f102f2031181b08075128ac3e95beed83e0f626dd097fddf5ea52340"
+                },
+                "requester": {
+                  "kind": "human",
+                  "issuer_id": "issuer",
+                  "issuer_epoch": "epoch",
+                  "principal_id": "bob"
+                },
+                "origin": "manual",
+                "source_ref": {
+                  "id": "source.cancel",
+                  "revision": "1",
+                  "digest": "sha256:be5098faff0b79ad2cd7f72102e9ede4d5ed6af9bc0fe302e1e40535ff636103"
+                }
+              },
+              "policy_ref": {
+                "id": "policy",
+                "revision": "1",
+                "digest": "sha256:b6a16f9757322fe7336763dcaa302235a8838ea5ac1cfc1695276b3cf0915577"
+              },
+              "ordinary_closure_ref": {
+                "id": "ordinary.closure",
+                "revision": "1",
+                "digest": "sha256:fa74431b9fbf3bbcb183451e67d920221a1c89da15a367b6aca125828ef0efba"
+              },
+              "hold_ref": {
+                "id": "hold",
+                "revision": "1",
+                "digest": "sha256:8a45dbfd7882fbb0a2c2475f002b645e577aed68e56569601cd63e1303a1ee83"
+              },
+              "ownership_ref": {
+                "id": "ownership",
+                "revision": "1",
+                "digest": "sha256:01ace600235bdc881dde859208b459dc621be1d4230a246646063d8d1ae35d3f"
+              }
+            },
+            "resource_ref": {
+              "id": "resources",
+              "revision": "1",
+              "digest": "sha256:28979fc8a5490bd792823d6cbc8166d591c30ef93b327a357f1b97c38b93b844"
+            },
+            "risks": [
+              {
+                "hold_ref": {
+                  "id": "hold",
+                  "revision": "1",
+                  "digest": "sha256:8a45dbfd7882fbb0a2c2475f002b645e577aed68e56569601cd63e1303a1ee83"
+                },
+                "ownership_ref": {
+                  "id": "ownership",
+                  "revision": "1",
+                  "digest": "sha256:01ace600235bdc881dde859208b459dc621be1d4230a246646063d8d1ae35d3f"
+                },
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "execution_ref": {
+                  "id": "execution",
+                  "revision": "1",
+                  "digest": "sha256:c3056356f102f2031181b08075128ac3e95beed83e0f626dd097fddf5ea52340"
+                },
+                "classification": "active"
+              },
+              {
+                "hold_ref": {
+                  "id": "parent.hold",
+                  "revision": "1",
+                  "digest": "sha256:0a2c0ce1cd6bc033a818f1f8a72657fe43ae3ab78a953b7891c92509bdc01cce"
+                },
+                "ownership_ref": {
+                  "id": "parent.owner",
+                  "revision": "1",
+                  "digest": "sha256:317917320144f52106123e5e913d0921683ddb2a8970acb5c7f1cb9945217323"
+                },
+                "command_ref": {
+                  "id": "command",
+                  "revision": "1",
+                  "digest": "sha256:cd85544f4d15bfcfeeba6f9f76015a42562383c432bbff3e7b5fbc3bed540351"
+                },
+                "execution_ref": null,
+                "classification": "unknown"
+              }
+            ],
+            "sampled_tick_ns": "51",
+            "expires_tick_ns": "70",
+            "provider_receipt_ref": {
+              "id": "assessment.provider",
+              "revision": "1",
+              "digest": "sha256:670ae8a539f190724c8611fbab1ee4f1a9be361aa1b1669f669122b6ca7b5cb8"
+            },
+            "assessment_digest": "sha256:0616eeef10de67fdef8115a03902c327b898207a790096f5be2b3b27dfe0bc69"
+          }
+        },
+        "journal_mode": "durable"
+      },
+      "reserved_tick_ns": "53",
+      "dispatch_digest": "sha256:4994bcfd9cdf6cc9b30ba9081ff5d3e1c5993e718fd312e0349f43fa0723db88",
+      "format_version": "gate-open-dispatch/0.3.0-draft.1"
+    },
+    "evidence": {
+      "evidence_id": "evidence",
+      "revision": "1",
+      "plan_ref": {
+        "id": "plan",
+        "revision": "1",
+        "digest": "sha256:076d9454c4205b0fbb679d6f46b71b3941f747ca1359bc5eaf63ad8dcbf51dd2"
+      },
+      "dispatch_ref": {
+        "id": "dispatch",
+        "revision": "1",
+        "digest": "sha256:4994bcfd9cdf6cc9b30ba9081ff5d3e1c5993e718fd312e0349f43fa0723db88"
+      },
+      "frame": {
+        "ipc_version": "ipc/0.14.0-continuation-draft.1",
+        "type": "OPEN_GATE_ACK",
+        "message_id": "ack.message",
+        "reply_to": "open.message",
+        "controller_boot_id": "controller.boot",
+        "worker_boot_id": "worker.boot",
+        "ipc_session_id": "ipc",
+        "device_id": "device",
+        "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+        "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1",
+        "seq": "1",
+        "body": {
+          "gate_token": "gate.token",
+          "gate_revision": "3",
+          "state": "open",
+          "run_deny_snapshot_revision": "4",
+          "run_deny_snapshot_digest": "sha256:7ab7b21066247a426abb96e8330b8f59d499b27a9d3e7c47fbe2f8218fe168cf",
+          "command_deny_snapshot_revision": "3",
+          "command_deny_snapshot_digest": "sha256:997f09624e515994420514c4c81eb0d3ce7afb895f6fe2dd2aa3b32c2a80cae8",
+          "reference_time_snapshot_ref": {
+            "id": "time",
+            "revision": "2",
+            "digest": "sha256:ecd5315858fffadd281f2b08109109cd7642f98fd788620371ca0c709de7d3ca"
+          },
+          "gate_access_ref": {
+            "id": "access.cancel",
+            "revision": "1",
+            "digest": "sha256:6f40065518630aab5ef99300dbc82be9d31189908c37c534ba88152b08f80b5a"
+          }
+        },
+        "journal_mode": "durable"
+      },
+      "received_tick_ns": "54",
+      "observer_receipt_ref": {
+        "id": "observer",
+        "revision": "1",
+        "digest": "sha256:4f73b463c81e12752d12634d9f4fdde701a99d2851927124eb9773d6d49df416"
+      },
+      "evidence_digest": "sha256:5c2e51515d03daba7c85e14dad350de1487a312de6529d3116ffd63e328269d8",
+      "format_version": "gate-open-evidence/0.3.0-draft.1"
+    },
+    "adoption": {
+      "format_version": "gate-open-adoption/0.3.0-draft.1",
+      "commit_id": "adopt",
+      "revision": "1",
+      "purpose": "cancel_only",
+      "proposal_ref": {
+        "id": "plan",
+        "revision": "1",
+        "digest": "sha256:638d8ea86d59b22b4890c3ceada87f1506d356cca4f9428d44fd3cf229ec101e"
+      },
+      "dispatch_ref": {
+        "id": "dispatch",
+        "revision": "1",
+        "digest": "sha256:4994bcfd9cdf6cc9b30ba9081ff5d3e1c5993e718fd312e0349f43fa0723db88"
+      },
+      "evidence_ref": {
+        "id": "evidence",
+        "revision": "1",
+        "digest": "sha256:5c2e51515d03daba7c85e14dad350de1487a312de6529d3116ffd63e328269d8"
+      },
+      "gate_access_ref": {
+        "id": "access.cancel",
+        "revision": "1",
+        "digest": "sha256:6f40065518630aab5ef99300dbc82be9d31189908c37c534ba88152b08f80b5a"
+      },
+      "protection_assessment_ref": {
+        "id": "assessment",
+        "revision": "1",
+        "digest": "sha256:0616eeef10de67fdef8115a03902c327b898207a790096f5be2b3b27dfe0bc69"
+      },
+      "eligibility_refs": {
+        "control_authority": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "authorization": {
+          "id": "authorization",
+          "revision": "1",
+          "digest": "sha256:3896f03ebd0772c06ddc071a279308e4c954dfe52cc1728a9eb0e556fdcf6728"
+        },
+        "resource_safety": {
+          "id": "resource.safety",
+          "revision": "1",
+          "digest": "sha256:c329f693e319440d29bf7263b19e6aaa74c8fba2ea9fcdfe1cd86a04ec16931f"
+        },
+        "gate_safety": {
+          "id": "gate.safety",
+          "revision": "1",
+          "digest": "sha256:9a98c1beccf727b1b60568546be869e4a4cd411e0754f2bc1f760484416ad149"
+        }
+      },
+      "control_after": {
+        "record_ref": {
+          "id": "control.after",
+          "revision": "3",
+          "digest": "sha256:455fce02866c39fa46f781d86f0e2fc083b29204b12b8a72a577fc5279d452ef"
+        },
+        "authority_ref": {
+          "id": "authority",
+          "revision": "1",
+          "digest": "sha256:4b187e045a0331350212020646c92e9cea108d4e5cc83172febb5c8d15cd33c9"
+        },
+        "control_epoch": "control.epoch",
+        "effective_version": "2",
+        "mode": "manual",
+        "holder": {
+          "issuer_id": "issuer",
+          "issuer_epoch": "epoch",
+          "principal_id": "bob"
+        },
+        "pending_operation_id": null,
+        "gate_state": "protected"
+      },
+      "gate_after": {
+        "record_ref": {
+          "id": "gate.after",
+          "revision": "2",
+          "digest": "sha256:6a68dc23bb8665903eb5001f4750fe71b412329365b32be23f7a14c1407f7ccc"
+        },
+        "binding": {
+          "scope": {
+            "authority_service_id": "controller",
+            "database_instance_id": "database"
+          },
+          "controller_boot_id": "controller.boot",
+          "worker_boot_id": "worker.boot",
+          "writer_exit_id": "exit",
+          "ipc_session_id": "ipc",
+          "device_id": "device",
+          "device_session_id": "device.session",
+          "clock_domain_id": "clock_1111111111111111111111111111111111111111111111111111111111111111",
+          "descriptor_digest": "sha256:64c2f3c71bd1fcadc967962f13a3e5e03ead24c400dbddb815d0235f5f2129d1"
+        },
+        "gate_revision": "3",
+        "gate_token": "gate.token",
+        "barrier_id": "barrier",
+        "phase": "scoped",
+        "lease_until_tick_ns": "100",
+        "activation_id": "adopt"
+      },
+      "committed_tick_ns": "55",
+      "adoption_digest": "sha256:a733e8fab533df3bc5271e7749afc50088924f00ba429d63defc495b59999c1a"
+    }
+  }
+}

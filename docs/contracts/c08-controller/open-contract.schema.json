@@ -1,0 +1,670 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/c08-controller/open-contract.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "StateRefs": {
+      "type": "object",
+      "properties": {
+        "control": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authorization": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "control",
+        "gate",
+        "authorization",
+        "resource"
+      ],
+      "additionalProperties": false
+    },
+    "Basis": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "activation",
+            "resource_recovery",
+            "gate_recovery",
+            "scope"
+          ]
+        },
+        "record_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "kind",
+        "record_ref"
+      ],
+      "additionalProperties": false
+    },
+    "OpenPlan": {
+      "type": "object",
+      "properties": {
+        "plan_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "state_refs": {
+          "$ref": "#/$defs/StateRefs"
+        },
+        "basis": {
+          "$ref": "#/$defs/Basis"
+        },
+        "body": {
+          "$ref": "https://leafseamer.invalid/design/c04-lifecycle/continuation-binding-ipc.schema.json#/$defs/S9__OPEN_GATEBody"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "plan_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "format_version": {
+          "const": "gate-open-plan/0.3.0-draft.1"
+        }
+      },
+      "required": [
+        "plan_id",
+        "revision",
+        "binding",
+        "state_refs",
+        "basis",
+        "body",
+        "selected_tick_ns",
+        "expires_tick_ns",
+        "plan_digest",
+        "format_version"
+      ],
+      "additionalProperties": false
+    },
+    "OpenDispatch": {
+      "type": "object",
+      "properties": {
+        "dispatch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "frame": {
+          "$ref": "https://leafseamer.invalid/design/c04-lifecycle/continuation-binding-ipc.schema.json#/$defs/S9__OPEN_GATE"
+        },
+        "reserved_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "dispatch_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "format_version": {
+          "const": "gate-open-dispatch/0.3.0-draft.1"
+        }
+      },
+      "required": [
+        "dispatch_id",
+        "revision",
+        "plan_ref",
+        "frame",
+        "reserved_tick_ns",
+        "dispatch_digest",
+        "format_version"
+      ],
+      "additionalProperties": false
+    },
+    "OpenAckEvidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "dispatch_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "frame": {
+          "$ref": "https://leafseamer.invalid/design/c04-lifecycle/continuation-binding-ipc.schema.json#/$defs/S9__OPEN_GATE_ACK"
+        },
+        "received_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "observer_receipt_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "evidence_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "format_version": {
+          "const": "gate-open-evidence/0.3.0-draft.1"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "revision",
+        "plan_ref",
+        "dispatch_ref",
+        "frame",
+        "received_tick_ns",
+        "observer_receipt_ref",
+        "evidence_digest",
+        "format_version"
+      ],
+      "additionalProperties": false
+    },
+    "Holder": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "ControlProjection": {
+      "type": "object",
+      "properties": {
+        "record_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "effective_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "mode": {
+          "enum": [
+            "automatic",
+            "manual"
+          ]
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Holder"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_operation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_state": {
+          "enum": [
+            "protected",
+            "fencing",
+            "ready"
+          ]
+        }
+      },
+      "required": [
+        "record_ref",
+        "authority_ref",
+        "control_epoch",
+        "effective_version",
+        "mode",
+        "holder",
+        "pending_operation_id",
+        "gate_state"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceSafetyEvidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "observed_resource_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_safety_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "holds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HoldObservation"
+          },
+          "maxItems": 65536
+        },
+        "provider_receipt_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "evidence_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "revision",
+        "device_id",
+        "observed_resource_ref",
+        "resource_safety_ref",
+        "control_authority_ref",
+        "holds",
+        "provider_receipt_ref",
+        "evidence_digest"
+      ],
+      "additionalProperties": false
+    },
+    "HoldObservation": {
+      "type": "object",
+      "properties": {
+        "hold_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "state": {
+          "enum": [
+            "active",
+            "unknown",
+            "failed_unresolved",
+            "orphaned",
+            "proof_revoked"
+          ]
+        }
+      },
+      "required": [
+        "hold_ref",
+        "owner_ref",
+        "control_authority_ref",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "GateProjection": {
+      "type": "object",
+      "properties": {
+        "record_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "gate_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "gate_token": {
+          "$ref": "#/$defs/Id"
+        },
+        "barrier_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "phase": {
+          "enum": [
+            "fenced",
+            "ready",
+            "scoped"
+          ]
+        },
+        "activation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lease_until_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "record_ref",
+        "binding",
+        "gate_revision",
+        "gate_token",
+        "barrier_id",
+        "phase",
+        "activation_id",
+        "lease_until_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "EligibilityRefs": {
+      "type": "object",
+      "properties": {
+        "control_authority": {
+          "$ref": "#/$defs/Ref"
+        },
+        "resource_safety": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_safety": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authorization": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "control_authority",
+        "resource_safety",
+        "gate_safety",
+        "authorization"
+      ],
+      "additionalProperties": false
+    },
+    "OpenProposal": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "gate-open-proposal/0.3.0-draft.1"
+        },
+        "plan": {
+          "$ref": "#/$defs/OpenPlan"
+        },
+        "eligibility_refs": {
+          "$ref": "#/$defs/EligibilityRefs"
+        },
+        "control_before": {
+          "$ref": "#/$defs/ControlProjection"
+        },
+        "gate_before": {
+          "$ref": "#/$defs/GateProjection"
+        },
+        "proposal_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "plan",
+        "eligibility_refs",
+        "control_before",
+        "gate_before",
+        "proposal_digest"
+      ],
+      "additionalProperties": false
+    },
+    "OpenAdoption": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "gate-open-adoption/0.3.0-draft.1"
+        },
+        "commit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "purpose": {
+          "enum": [
+            "ordinary",
+            "cancel_only"
+          ]
+        },
+        "proposal_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "dispatch_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "protection_assessment_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eligibility_refs": {
+          "$ref": "#/$defs/EligibilityRefs"
+        },
+        "control_after": {
+          "$ref": "#/$defs/ControlProjection"
+        },
+        "gate_after": {
+          "$ref": "#/$defs/GateProjection"
+        },
+        "committed_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "adoption_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "commit_id",
+        "revision",
+        "purpose",
+        "proposal_ref",
+        "dispatch_ref",
+        "evidence_ref",
+        "gate_access_ref",
+        "protection_assessment_ref",
+        "eligibility_refs",
+        "control_after",
+        "gate_after",
+        "committed_tick_ns",
+        "adoption_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "purpose": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "protection_assessment_ref": {
+                "type": "null"
+              },
+              "control_after": {
+                "properties": {
+                  "gate_state": {
+                    "const": "ready"
+                  }
+                }
+              },
+              "gate_after": {
+                "properties": {
+                  "phase": {
+                    "const": "ready"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "protection_assessment_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "control_after": {
+                "properties": {
+                  "gate_state": {
+                    "const": "protected"
+                  }
+                }
+              },
+              "gate_after": {
+                "properties": {
+                  "phase": {
+                    "const": "scoped"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

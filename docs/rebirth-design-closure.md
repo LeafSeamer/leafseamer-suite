@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26开放契约归并进展：[当前IPC完整OPEN候选](contracts/c08-controller/OPEN_CONTRACT.md)把计划、发送、ACK与采用对象统一到IPC 0.14，补GateAccess、限定评估、durable日志模式与四资格Ref；旧候选原样保留。普通用途仅进入ready，限定取消保持protected/scoped；物理控制和闸原件使用新ID与严格后继修订，开放不转移控制权。110项合成检查及479项相关旧模型回归通过，提交后的完整引用链、重算摘要错配和时序有反例。SQLite完整来源、Ready/Scope原子采用、新grant与最终AdmissionSeal仍未接通，真实提供者和设备未验证，阶段0未关闭、业务未改。本轮新周期第1/3轮，仅本地提交。
+
 2026-10-26换闸原件进展：[完整GATE_FENCE候选](contracts/c04-lifecycle/TYPED_GATE_FENCE.md)在269表组合中从健康关闭、准备核销和混合恢复接通完整换闸请求、ACK及fenced采用，112项离线检查通过。原关闭与核销经双向延迟外键绑定请求，原始事务缺写不能提交；到期边界、错绑、逐写故障、提交观察故障、迟到历史和撤回失效均覆盖。换闸不改变protected控制状态，不签发许可；OPEN_GATE、ReadyCommit、新grant、新命令/attempt和新域非空prepare仍待贯通，真实物理屏障与最终AdmissionSeal未验证，阶段0未关闭、业务未改。本轮周期第3/3轮，逐提交审查后推送三轮成果。
 
 2026-10-26关闭证据接入进展：[统一原件访问候选](contracts/c04-lifecycle/CLOSE_EVIDENCE.md)按唯一持久来源读取普通或认证关闭，健康新域ACK已贯通完整PreparationClosure与混合RecoveryCloseChoice，78项离线检查通过。空cut保留非空旧注册表，新ACK与旧worker退役集合共同恢复；逐写/漏写、提交观察故障、外事务拒绝、撤回及会话结束的失效传播和历史查原均覆盖。恢复后仍为protected，未生成最终许可。新域非空prepare、完整GATE_FENCE/OPEN_GATE、新grant和最终AdmissionSeal仍待完成，实际提供者、线路及设备未验证；阶段0未关闭、业务未改。本轮新周期第2/3轮，仅本地提交。

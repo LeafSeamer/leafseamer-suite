@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/c04-lifecycle/snapshot-domain-order.schema.json",
+  "$defs": {
+    "ProtectedDomainTransition": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "protected-domain-transition/0.1.0-draft.1"
+        },
+        "transition_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "before_control_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+        },
+        "after_control_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+        },
+        "new_clock_descriptor": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainDescriptor"
+        },
+        "provider_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+        },
+        "selected_tick_ns": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "transition_digest": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "transition_id",
+        "revision",
+        "before_control_ref",
+        "after_control_ref",
+        "new_clock_descriptor",
+        "provider_ref",
+        "selected_tick_ns",
+        "transition_digest"
+      ],
+      "additionalProperties": false
+    },
+    "SnapshotDomainOrder": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "snapshot-domain-order/0.1.0-draft.1"
+        },
+        "binding": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Binding"
+        },
+        "snapshot_ref": {
+          "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+        },
+        "ordinal": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        }
+      },
+      "required": [
+        "format_version",
+        "binding",
+        "snapshot_ref",
+        "ordinal"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

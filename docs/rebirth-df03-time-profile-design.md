@@ -342,3 +342,13 @@ STOP_ACK不释放未知采样；监督退役后可以核销活动槽，但保留
 2026-10-23新增[TIME持久归并候选](contracts/df03-time-fence/README.md)。现有91表只从普通ce_permit取高水位，不能覆盖IPC0.8的独立取消许可；27表失效与设备cut亦尚无完整外键。本候选要求普通/取消共用一个连续签发序列，失效、全出口及普通业务锚/普通传输/取消传输、拒绝下界和保护outbox同事务。其他依赖签发水位的屏障也须同版切换，不能只补TIME形成两套权威。
 
 内部投影Schema与92项合成快照检查落实完整目标选择、256/257边界、精确代次、尝试后继、迟到强事实与最新采用分离、floor不回退；没有执行合并SQL或真实I/O。原件来源、完整IPC到投影提供者、失效写集缺写/崩溃验证及共享分配器反向外键仍待物理组合，未把参考模型通过当作全库或平台冻结。
+
+## 18. OPEN时间下界的持久来源与运行身份
+
+已知事实：现行IPC的GateSnapshot包含完整时间Domain和State引用；时间Domain的runtime_binding_ref属于时间提供者，设备出口有自己的worker运行身份。现有时间SQL验收使用合成占位BODY，不能直接当作完整来源。对应字段及物理表见[时间服务契约](contracts/df03-service/README.md)和[时间存储](contracts/df03-collector/STORAGE.md)。
+
+推荐候选：按[时间下界来源](contracts/df03-service/GATE_SNAPSHOT_SOURCE.md)从已封存State及Binding、Anchor或Invalidation原件确定性重建快照；snapshot_revision直接取State修订，minimum_time_generation直接取Binding代次，ID由具名版本、完整Domain和State Ref的JCS摘要生成。由此无需另建可变floor权威或额外快照表。旧State查原保持同一身份，但不恢复OPEN资格。
+
+OPEN保留完整提供者Domain，仅与出口比较共同authority/database/clock_domain_id/descriptor_digest，并分别核两份真实当前运行原件。不得把worker Ref填入时间原件，也不得因两者runtime_binding_ref不同而拒绝合法共享时钟。collecting/unavailable依旧提供拒绝下界，绝不提供UTC许可；qualified也不能省略每动作的误差、年龄及窗口判定。时间失效先提交则旧快照OPEN失败，接收端已保存更高floor时不能降低。
+
+首期时间State继续由Controller自己的writer维护，OPEN最终裁决同库重读；独立读事务、远程读取或普通查询结果不构成最终资格。新增离线读取器和正反例覆盖完整元数据与物理列、现行IPC投影、失效/历史顺序及不同成员共享时钟。完整采集/批准/加密来源、真实监督解析、与Controller恢复布局的同库组合及OPEN/ACK/Ready仍未接通；详细验收矩阵及输入绑定报告见上述链接。本候选待审阅，不改变已批准基线或业务代码。

@@ -16,4 +16,6 @@ snapshot_body按指定拒绝水位读取完整Cut并派生符合当前IPC的Deny
 
 本轮正例在119表取消布局叠加拒绝水位及socket绑定形成121表，覆盖非空普通许可、取消准备和取消许可。该来源验证不等同当前包含准备cut、IPC日志和监督认证的完整运行布局写入；capture在后者仍须接入对应准备核销写集，不能跳过原守卫。完整DenySnapshot封存、OPEN前态引用、当前授权/时间及最终AdmissionSeal继续待完成。
 
+后续进展：[命令拒绝快照封存](COMMAND_SNAPSHOT.md)已增加持久身份、历史重建及局部OPEN绑定检查，补齐上述“尚无封存”的部分；完整运行布局的非空接线仍未完成。完整布局安装检查发现附加ep_request守卫缺SQL终止符，已修正；旧标识格式和准备cut写集仍须逐项接通，不能据安装成功宣布运行来源已验证。
+
 交付：[Schema生成器](build_cancel_source.py)、[Schema](cancel-source.schema.json)、[SQL](cancel_source.sql)、[原件模型](cancel_source_model.py)、[验收](check_cancel_source.py)、[报告](cancel-source-report.json)。复现：`docs/contracts/.venv/Scripts/python.exe docs/contracts/c04-lifecycle/check_cancel_source.py --report`。

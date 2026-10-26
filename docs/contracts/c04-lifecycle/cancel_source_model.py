@@ -15,7 +15,7 @@ def decode(name,body,key=None,expected=None):
 def install(db):
     need(not db.in_transaction and db.execute('PRAGMA foreign_keys').fetchone()[0]==1 and db.execute('PRAGMA recursive_triggers').fetchone()[0]==1,'cancel_source_install')
     need(db.execute("SELECT 1 FROM sqlite_schema WHERE name='cd_event'").fetchone() is not None,'cancel_source_frontier_required')
-    extra="CREATE TRIGGER cs_socket_prepare_guard BEFORE INSERT ON cs_socket WHEN EXISTS(SELECT 1 FROM ep_request WHERE exit_id=NEW.exit_id) BEGIN SELECT RAISE(ABORT,'cancel_socket_registered_too_late'); END" if db.execute("SELECT 1 FROM sqlite_schema WHERE name='ep_request'").fetchone() else ''
+    extra="CREATE TRIGGER cs_socket_prepare_guard BEFORE INSERT ON cs_socket WHEN EXISTS(SELECT 1 FROM ep_request WHERE exit_id=NEW.exit_id) BEGIN SELECT RAISE(ABORT,'cancel_socket_registered_too_late'); END;" if db.execute("SELECT 1 FROM sqlite_schema WHERE name='ep_request'").fetchone() else ''
     try:
         db.executescript('BEGIN IMMEDIATE;\n'+(G.HERE/'cancel_source.sql').read_text('utf-8')+'\n'+extra+'\nCOMMIT;')
     except Exception:

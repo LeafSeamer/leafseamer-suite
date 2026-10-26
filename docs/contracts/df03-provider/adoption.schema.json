@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/df03-provider/adoption.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "$defs": {
+    "Adoption": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "time-provider-adoption/0.1.0-draft.1"
+        },
+        "adoption_id": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "runtime": {
+          "$ref": "https://leafseamer.invalid/contracts/df02-supervisor/time-provider-source.schema.json"
+        },
+        "channel": {
+          "$ref": "https://leafseamer.invalid/design/df03-collector/channel-v02.schema.json#/$defs/Channel"
+        },
+        "configuration": {
+          "$ref": "https://leafseamer.invalid/design/df03-collector/channel-v02.schema.json#/$defs/Configuration"
+        },
+        "bootstrap_state_ref": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Ref"
+        },
+        "source_slot_id": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Id"
+        },
+        "binding_storage_id": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Id"
+        },
+        "bootstrap_commit_id": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Id"
+        },
+        "interval_receipt_ref": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Ref"
+        },
+        "adoption_digest": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "adoption_id",
+        "revision",
+        "runtime",
+        "channel",
+        "configuration",
+        "bootstrap_state_ref",
+        "source_slot_id",
+        "binding_storage_id",
+        "bootstrap_commit_id",
+        "interval_receipt_ref",
+        "adoption_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Revocation": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "time-provider-revocation/0.1.0-draft.1"
+        },
+        "revocation_id": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "adoption_ref": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Ref"
+        },
+        "invalidation_ref": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Ref"
+        },
+        "cause_ref": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Ref"
+        },
+        "invalidation_commit_id": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Id"
+        },
+        "next_binding_storage_id": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Id"
+        },
+        "revocation_digest": {
+          "$ref": "https://leafseamer.invalid/design/df03-reference/reference.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "revocation_id",
+        "revision",
+        "adoption_ref",
+        "invalidation_ref",
+        "cause_ref",
+        "invalidation_commit_id",
+        "next_binding_storage_id",
+        "revocation_digest"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Adoption"
+    },
+    {
+      "$ref": "#/$defs/Revocation"
+    }
+  ]
+}

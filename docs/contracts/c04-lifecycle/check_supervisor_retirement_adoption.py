@@ -17,14 +17,14 @@ def source_fixture_module():
             if v is not None:sys.modules[n]=v
 F=source_fixture_module()
 def inputs():return list(dict.fromkeys(Q.inputs()+F.INPUTS+[R.G.SOURCE,R.G.SUP,R.G.ENC]+[HERE/n for n in ('build_supervisor_retirement_adoption.py','supervisor-retirement-adoption.schema.json','supervisor-retirement-adoption.sql','supervisor_retirement_adoption_model.py','check_supervisor_retirement_adoption.py','SUPERVISOR_RETIREMENT_ADOPTION.md')]))
-def fixture():
+def fixture(worker_devices=None):
     execute=E.O.execute;CS=T.T.T.T.CS;control_execute=CS.C.execute;sources={};connections=[]
     def source(db,device):
-        scope=M.E.A.scope(db);key=(scope['authority_service_id'],scope['database_instance_id'],device)
+        scope=M.E.A.scope(db);key=(scope['authority_service_id'],scope['database_instance_id'],'shared' if worker_devices else device)
         if key not in sources:
             original=F.C.fixtures
             def customized():
-                f=original();f['scope'].update(service_id=scope['authority_service_id'],database_instance_id=scope['database_instance_id']);f['assignment']['clock_domain_descriptor']['authority_service_id']=scope['authority_service_id'];f['intent'].update(service_id=scope['authority_service_id'],device_ids=[device]);return f
+                f=original();f['scope'].update(service_id=scope['authority_service_id'],database_instance_id=scope['database_instance_id']);f['assignment']['clock_domain_descriptor']['authority_service_id']=scope['authority_service_id'];f['intent'].update(service_id=scope['authority_service_id'],device_ids=worker_devices or [device]);return f
             with patch.object(F.C,'fixtures',side_effect=customized):sd,identity,domain=F.fixture()
             connections.append(sd);bundle=R.S.capture(sd,'old','retirement.complete',identity,domain,'3');sources[key]=(sd,identity,domain,bundle)
         return sources[key]
@@ -45,7 +45,7 @@ def fixture():
     def initial_runtime(db,steps,*args,**kw):return control_execute(db,transformed(db,steps),*args,**kw)
     with patch.object(E.O,'execute',side_effect=full_runtime),patch.object(CS.C,'execute',side_effect=initial_runtime):db,other,command,auth,pid,provider,response=T.fixture()
     connections.extend([db]+other);D.install(db);A.install(db);R.install(db)
-    binding=provider['binding'];eid=binding['writer_exit_id'];scope=binding['scope'];sd,identity,domain,bundle=sources[(scope['authority_service_id'],scope['database_instance_id'],binding['device_id'])]
+    binding=provider['binding'];eid=binding['writer_exit_id'];scope=binding['scope'];sd,identity,domain,bundle=sources[(scope['authority_service_id'],scope['database_instance_id'],'shared' if worker_devices else binding['device_id'])]
     fault=D.C.I.ingest(db,binding,b'{');plan=D.C.prepare(db,binding,fault['fault_ref']);state=M.E.one(db,'SELECT * FROM ct_current_change WHERE device_id=?',(binding['device_id'],))
     timing=dict(device_id=binding['device_id'],clock_domain_id=state['clock_domain'],descriptor_digest=state['descriptor'],selected_tick_ns='200',source_ref=T.T.V.ref('synthetic.retirement.tick'))
     protection,_=P.apply(db,D.C.pref(plan),[timing]);cid=protection['exits'][0]['close_id'];D.queue(db,D.pref(protection),cid,'201')

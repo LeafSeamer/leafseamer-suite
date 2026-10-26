@@ -16,7 +16,9 @@
 
 交付：[字段生成器](build_supervisor_retirement_adoption.py)、[Schema](supervisor-retirement-adoption.schema.json)、[附属SQL](supervisor-retirement-adoption.sql)、[参考模型](supervisor_retirement_adoption_model.py)、[检查器](check_supervisor_retirement_adoption.py)、[报告](supervisor-retirement-adoption-report.json)。夹具在首次INSERT时注入完整合成启动绑定，监督原件在真实15表保存，控制器使用257表组合；它不证明真实启动审批、HMAC、OS终止或IPC执行。
 
-剩余事项：真实启动绑定writer及审批当前性、受信监督连接提供者、控制器退役采用撤回的保护传播全链、同worker多出口完整集合、retired准备证明与替代关闭完成、后继新出口准入、完整T5/T2与P0验证。阶段0未关闭，业务实现未开始。
+后续进展：[退役关闭集合候选](RETIRED_CLOSE_SET.md)补齐同worker多出口和全部准备的独立核销、永久worker禁写及证明撤回后的集合失效。它尚未接入go_recovery_target，不能据此宣称恢复路径已闭合。
+
+剩余事项：真实启动绑定writer及审批当前性、受信监督连接提供者、控制器退役采用撤回的保护传播全链、恢复对独立退役完成的消费、后继新出口准入、完整T5/T2与P0验证。阶段0未关闭，业务实现未开始。
 
 ```powershell
 docs/contracts/.venv/Scripts/python.exe docs/contracts/c04-lifecycle/build_supervisor_retirement_adoption.py --check

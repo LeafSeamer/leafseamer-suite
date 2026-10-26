@@ -24,10 +24,10 @@ rebirth-f04-f05-design.md[SR8M]: F:设计精确身份撤销、时间区间门控
 rebirth-f06-f07-design.md[SR8M]: F:设计OBS完成证据、保守依赖证明与单次恢复消费 | R:code:docs/contracts/f06-f07/README.md | A:OB01至OB16、AU01至AU20 | S:设置ACK加同会话新查询只证协议效果；仅明确failed且独立可继续，恢复CAS不重放成功或未知动作
 rebirth-first-loop-contract.md[SN8M]: F:定义draft.2首闭环API、命令生命周期、接管时序及验收设计 | R:code:docs/contracts/README.md | A:FC01至FC24 | S:202仅受理；完整屏障与持久事务才生效，unknown不重放；本稿保留历史字段，不与新版预发布模型拼接
 rebirth-platform-freeze.md[SR8M]: F:记录运行域原生制品方向及NF02应用参考时钟修订 | R:code:docs/rebirth-draft4-review.md,code:docs/rebirth-df03-time-profile-design.md | A:NF01至NF03和PF01至PF18 | S:NF02新路线已选，旧chrony与W32模型保留历史；字段另版归并。运行nonce不冒充OS启动身份，安装不隐式编译下载，签名可复现及运行分开，PF未执行
-rebirth-readiness.md[SQ8S]: F:映射决策到全系统设计门槛并登记时间模型已选状态 | R:code:docs/rebirth-design-closure.md,code:docs/ROADMAP.md | A:C01至C12与A01至A22及6.1门槛 | S:十八模块盘点非契约冻结；reference-bound路线获准不批准精确profile或新机器基线。旧HTTP统计为历史，当前以收敛清单为准，跨authority路径不共享权限
+rebirth-readiness.md[SQ8S]: F:映射全系统设计与验收门槛并登记SDK资料交接和当前提交授权 | R:code:docs/rebirth-design-closure.md,code:docs/contracts/sdk-handoff/README.md,code:docs/ROADMAP.md | A:C01至C12、A01至A22及6.1门槛 | S:纯数据迁入不等于协议冻结；reference-bound获准不批准精确profile。每轮main提交每三轮推送的现授权有效，设计未决与实施后取证分开
 rebirth-review.md[SG8M]: F:保留需求确认和跨项冲突记录并连接实施冻结建议 | R:code:docs/rebirth-readiness.md,code:docs/rebirth-df01-sdk-freeze.md | A:Q系列决策、T01至T15 | S:Q72只容许简单顺序中的独立明确失败继续；DF01候选TS版本修正不等于完整工具链获准
 rebirth-technology-selection.md[SV8S]: F:记录SDK生成、认证、SQLite与时钟技术方向及试验计划 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-df01-sdk-freeze.md | A:TS01至TS05、TV01至TV14 | S:早期TS6.0建议被DF01的5.9.3生成候选替代；精确制品未冻结，旧宿主boot建域已由受监督域取代
-rebirth-df01-sdk-freeze.md[SN9M]: F:设计SDK单一源严格解码及语义导出和逐操作主体候选 | R:code:docs/contracts/df01-source/SEMANTIC_REGISTRY.md,code:docs/contracts/df01-source/AUTHORIZATION.md | A:D1至D6、SV01至SV20与第10至14节候选 | S:条件不绕开放参数；service手动收紧须另版接受集，后台准备不等于布防；旧协议及权威未改，元数据检查非真实鉴权
+rebirth-df01-sdk-freeze.md[SN9M]: F:规定SDK单一源严格解码及语义导出候选并登记独立资料迁入 | R:code:docs/contracts/df01-source/SEMANTIC_REGISTRY.md,code:docs/contracts/df01-source/AUTHORIZATION.md,code:docs/contracts/sdk-handoff/README.md | A:D1至D6与SV01至SV20、固定SDK迁入和预览状态 | S:条件不绕开放参数，service手动收紧仍需另版接受集；独立重组并非独立语义实现。旧基线保持，完整生成、跨平台与真实鉴权未验收
 rebirth-df02-runtime-design.md[SR9S]: F:设计可信启动、运行域恢复与提供者原件采用边界 | R:code:docs/rebirth-platform-freeze.md,code:docs/rebirth-f02-f03-design.md,code:docs/contracts/df02-supervisor/TIME_PROVIDER_SOURCE.md | A:R01至R06、bootstrap及第10至11节候选 | S:创建时纳管且Linux分UID；监督器不写业务库，准入候选先于核心Ref，完整回执不证持续活性。组空不证未发送或资源释放；同意图不重建，双库采用和真实平台仍未验
 rebirth-df03-time-profile-design.md[SR9M]: F:归并应用参考时钟、采集存储及同库恢复时间来源设计 | R:code:docs/contracts/c04-lifecycle/OPEN_TIME_SOURCE.md,code:docs/contracts/df03-service/GATE_SNAPSHOT_SOURCE.md,code:docs/contracts/df03-time-fence/README.md | A:TP系列及第10至18节候选与接线边界 | S:路线批准不批准profile；290表离线读取已联接，时间ID首次登记且失效后最终重读拒绝。真实提供者身份、采集批准原件、TIME原子保护与完整OPEN继续未齐，不代表业务实现或运行资格
 rebirth-df04-storage-design.md[SD9M]: F:设计SQLite执行摄取保护及时间发布失效写集映射 | R:code:docs/contracts/c05-ingress/ingress.sql,code:docs/contracts/c02-admission/STORAGE.md,code:docs/contracts/df03-collector/STORAGE.md | A:DB与T及R和P1至P4事务及时间子域 | S:旧context身份是历史，新命令含issuer_epoch且不含context或digest；PLAN同受理锚独立，applied不清在途。十四表时间写集非完整库或TIME账本，精确加密及耐久未验
@@ -46,7 +46,7 @@ rebirth-c11-audio-design.md[SH9L]: F:设计音频控制参数资格和DM3协议�
 rebirth-c10-gui-design.md[SU9S]: F:设计GUI身份投影转交实时编辑恢复及设备与兼容编辑入口 | R:code:docs/contracts/draft4/first-loop.schema.json,code:docs/rebirth-c09-extension-design.md,code:docs/rebirth-c12-deployment-design.md | A:UI01至UI07、UIT01至UIT40 | S:accepted非effective或ready；手势结束不补发，刷新只查。兼容面板须批准且导航检测非即时，已受理在途保留；外部入口不继承仲裁，工具链及运行未验
 rebirth-c12-deployment-design.md[SO9M]: F:设计部署代理、宿主生命周期、图文输出及安装信任和备份恢复 | R:code:docs/rebirth-df02-runtime-design.md,code:docs/rebirth-df04-storage-design.md,code:docs/rebirth-df05-release-design.md,code:docs/rebirth-c11-nodecg-design.md | A:DEP01至DEP08、DPT01至DPT48 | S:代理不重试写，容器退役须证明；三路输出非通用NodeCG隔离。安装库只原子选择引用，TUF缓存换代不清发行与撤销；文件耐久另验，备份不恢复旧资格；候选待审阅且运行未验
 rebirth-toolchain-lock-design.md[SV8T]: F:收敛SDK与GUI日历运维依赖及TUF适配的候选和冻结验证步骤 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-c10-gui-design.md,code:docs/rebirth-df05-release-design.md,code:docs/contracts/toolchain/metadata-observation.json | A:六步冻结流程与TL01至TL14 | S:仅metadata非完整闭包；组件挂载不发命令，原生构建另验；TUF6.0.0缺时间注入和缓存轮换路径，窄补丁待审阅未实施，不能称原包已满足
-rebirth-design-closure.md[SQ8L]: F:汇总全系统关闭条件及授权九表原子采用进展 | R:code:docs/contracts/c04-lifecycle/DEVICE_AUTHORIZATION_STORAGE.md,code:docs/rebirth-df06-internal-trust-design.md | A:C01至C12关闭视图、275项持久验证及第三轮推送边界 | S:刷新不能通过清空指针绕过到期，撤权覆盖已刷新的当前选择。九表未并入完整库，保护意图不代表设备关闭；阶段0和业务仍未放行，按各提交输入审查三轮后推送
+rebirth-design-closure.md[SQ8L]: F:汇总全系统关闭条件并纳入独立SDK源和接口归并的当前交付 | R:code:docs/contracts/sdk-handoff/README.md,code:docs/rebirth-df01-sdk-freeze.md,code:docs/rebirth-readiness.md | A:C01至C12视图、15份输入及177操作预览、当前IPC0.14选源 | S:双authority不共享身份；server挂载显式消费；原九表保护意图非设备关闭。资料已迁入但协商、语义与IPC未冻结，设计完成前不进入业务实现
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/===
 .gitignore[FV3T]: F:排除契约校验的Python缓存和本地虚拟环境 | R:- | A:目录级Git忽略规则 | S:-
@@ -128,7 +128,7 @@ validation-report.json[SQ5T]: F:保存F06/F07离线检查数量与输入摘要 |
 README.md[SN6T]: F:说明DF01固定向量及解码元数据描述的复验入口和证据范围 | R:code:docs/contracts/df01/check_reference_vectors.py | A:参考检查与计划用例说明 | S:三十原始用例只验描述；预算非生产批准，绑定检查不证明完整OpenAPI或SDK生成
 check_integer_vectors.mjs[TN6T]: F:用Node BigInt核验固定字符串边界与数学向下向上除法 | R:code:docs/contracts/df01/vectors.json | A:Node参考向量检查 | S:不实现JSON入口或JCS；有符号负零算术为零但不改写wire原文
 check_reference_vectors.py[TN7T]: F:汇总JCS算术差异探针和解码元数据检查并生成输入绑定报告 | R:code:docs/contracts/df01/check_decoder_design.py | A:固定预期检查与LF报告 | S:Node算术对照非JS JCS；原始数字仅验数学值，不执行SDK解析器或真实生成链
-reference-report.json[SO5S]: F:记录DF01算术规范化与元数据结果及实际工具和输入摘要 | R:code:docs/contracts/df01/check_reference_vectors.py | A:参考检查证据 | S:Node24.11.1非候选验收；三十原始报文只查描述，SDK解析器与生成链未执行
+reference-report.json[SO5S]: F:记录DF01算术规范化及元数据实际结果并绑定更新设计稿 | R:code:docs/contracts/df01/check_reference_vectors.py | A:参考工具版本、固定向量结果及输入摘要 | S:Node24.11.1非候选验收；三十原始报文仅核描述，SDK解析器与生成链未执行
 vectors.json[TN7T]: F:固定JCS文本、整数边界、精确除法与基线缺口的人工预期 | R:code:docs/contracts/df01/check_reference_vectors.py | A:canonical、integers、division与原始输入用例 | S:通用JCS浮点不授权协议整数；六项报文拒绝仅计划，负零和尾部LF差异保持可见
 check_decoder_design.py[TN7T]: F:核验局部预算及HTTP和WS绑定的结构关联与人工预期 | R:code:docs/contracts/df01/decoder-design.schema.json | A:metadata_errors与check | S:原始用例只查承载和Schema格式，不运行扫描器或解析OpenAPI源；预期不由判定器生成
 decoder-design-cases.json[TN7T]: F:提供二十个局部元数据正反例和三十个原始JSON预期 | R:code:docs/contracts/df01/check_decoder_design.py | A:metadata_cases与raw_cases_planned | S:升级操作和模型引用为合成，原始报文尚未执行；integer与number及条件分支接受结果不同
@@ -173,7 +173,7 @@ parameter-profile-report.json[SQ5S]: F:保存24项参数目录检查与兼容差
 metadata-observation.json[SV6L]: F:保存18个固定npm版本及age和Go官方元数据观察 | R:code:docs/rebirth-toolchain-lock-design.md | A:候选兼容声明与证据层次 | S:响应hash和registry integrity声明不证明下载字节；未解析完整依赖或安装构建
 
 ===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/df01-source/===
-README.md[SN6T]: F:提供源提取语义注册及导出和主体候选的独立复验入口 | R:code:docs/contracts/df01-source/AUTHORIZATION.md | A:候选资料与五份独立报告 | S:来源重绑先核34文件字节一致，不改旧接受集；未切SDK权威，真实业务和授权用例仍含计划项，许可追溯非独立发行齐备
+README.md[SN6T]: F:保留源提取语义注册及导出主体候选的历史复验入口 | R:code:docs/contracts/df01-source/AUTHORIZATION.md,code:docs/contracts/sdk-handoff/README.md | A:历史实验和独立SDK交接说明 | S:九份原件已迁SDK且不双向同步；历史接受集未改，语义导出及真实授权验收未完成，不能称产品权威切换齐备
 assemble_candidate.py[XN8M]: F:从完整HTTP骨架及唯一模型重组并核对六份历史机器文件 | R:code:docs/contracts/df01-source/source/source-manifest.json | A:load_source、assemble与verify_outputs | S:只适用受检固定结构，不是通用Schema转换器；本地ref封闭且不联网；输出目录必须新建，历史摘要不能随候选变异重算
 check_candidate.py[TN8S]: F:校验固定Git来源逐节点字节等价及独立副本双生成和变异拒绝 | R:code:docs/contracts/df01-source/assemble_candidate.py,code:docs/contracts/draft4/validate_contracts.py | A:run、--report与--check-report及--staged | S:双副本仅Python路径隔离而非OS隔离；232例仍用历史验证器，报告绑定不重跑检查，不证明TS或平台运行
 extract_candidate.py[XN7T]: F:一次性拆出历史六文件的模型与完整HTTP骨架和投影配方 | R:code:docs/contracts/df01-source/assemble_candidate.py | A:extract及来源提交参数 | S:先在内存核对原字节再写新目录；commit参数仅声明，真实性由检查器回读Git证明
@@ -1180,3 +1180,9 @@ adoption_model.py[PR9S]: F:从监督原件执行Controller首次采用和撤回�
 build_provider_adoption.py[XR8T]: F:生成提供者采用和撤回的单一Schema候选 | R:code:docs/contracts/df02-supervisor/time-provider-source.schema.json,code:docs/contracts/df03-collector/channel-v02.schema.json,code:docs/contracts/df03-reference/reference.schema.json | A:schema、encoded及生成物逐字节检查 | S:保留外部完整类型引用及未批准标志；独立模块名避免监督夹具同名build_contracts污染
 check_adoption.py[TR8S]: F:验收30表采用撤回的完整写集和身份边界 | R:code:docs/contracts/df03-provider/adoption_model.py,code:docs/contracts/df02-supervisor/check_time_provider_source.py,code:docs/contracts/df03-collector/check_contracts.py | A:129项检查、41项输入和合成完整原件 | S:所有字段首次写入前绑定；逐写漏写比较全库，错交付原件在首次INSERT注入。监督读后退役是串行交错反例，证明本地current不等于持续活性，不冒充真实并发
 storage.sql[PR9T]: F:在27表采集布局追加运行原件、采用和撤回约束 | R:code:docs/contracts/df03-collector/collector-storage-v02.sql,code:docs/contracts/df03-provider/adoption_model.py | A:tp_runtime、tp_adoption、tp_revocation及反向触发器 | S:bootstrap seal先于Channel，延迟反向外键阻止缺Channel提交；撤回与STOP相互绑定。原件不可改删，本SQL不校验JSON语义或解决跨库监督竞争
+
+===D:/git-repo/LeafSeamer/leafseamer-suite/docs/contracts/sdk-handoff/===
+README.md[SV8T]: F:交接SDK独立数据源和接口归并预览并区分剩余冻结门槛 | R:code:docs/rebirth-df01-sdk-freeze.md,code:docs/contracts/sdk-handoff/manifest.json,code:docs/rebirth-design-closure.md | A:三轮跨仓提交、责任归属及推送顺序 | S:SDK先推Suite后推；Suite留历史而非第二可变源；资料迁入不完成全系统语义、阶段0或真实验收
+check_handoff.py[TQ7S]: F:核固定SDK报告文件、Suite来源锚点及交接统计和本仓绑定 | R:code:docs/contracts/sdk-handoff/manifest.json,code:docs/contracts/sdk-handoff/report.json | A:固定Git核验、九拒绝用例及check-report | S:按每包当时提交核输入，SDK main须包含两提交；另核嵌套历史验收输入；只读证据不重跑SDK或证明远端发布
+manifest.json[FV8L]: F:固定两轮SDK消费提交、三轮归属、三十文件和六十三Suite来源锚点 | R:code:docs/contracts/sdk-handoff/check_handoff.py,code:docs/contracts/sdk-handoff/README.md | A:packages、suite_source_anchors、统计期待和阶段边界 | S:各报告绑定自身提交字节，第三轮用包含本清单的Suite提交避免自引用；不以链接或清单声明推送成功
+report.json[TQ6T]: F:记录跨仓固定对象核验及本轮Suite输入摘要 | R:code:docs/contracts/sdk-handoff/check_handoff.py,code:docs/contracts/sdk-handoff/manifest.json | A:三十SDK文件、二十八输入、六十三来源锚点和九项拒绝结果 | S:235与232为固定历史报告结果，不是本检查器重跑的行为用例；阶段0仍未完成

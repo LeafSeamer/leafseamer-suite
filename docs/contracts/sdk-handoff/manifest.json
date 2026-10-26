@@ -1,0 +1,416 @@
+{
+  "format": "leafseamer-sdk-handoff/1",
+  "sdk_repository": "https://github.com/LeafSeamer/leafseamer-sdk.git",
+  "sdk_main_commit": "027f1fc75d9113da9dd5dae93e075ca3082e5e4e",
+  "packages": [
+    {
+      "name": "draft4",
+      "commit": "9bfe014d3730e83442b5fe062f40b56463eeb68a",
+      "report": "contracts/draft4/migration-report.json",
+      "input_prefix": "",
+      "files": {
+        ".gitattributes": "21fa16a2122e2b0360b47502c577428b645437e08e9e87ffba661f84853cb476",
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "README.md": "2d920d45dcf032d10ba34b3ccfd9d08b6ff9d81009c493e976a0d11f47d1e99a",
+        "THIRD_PARTY_NOTICES.md": "3415663e34bdda045e97bceef1b31b7967bfd061b123c51cc73ab5c296edf7b5",
+        "contracts/draft4/README.md": "d2610f244d6d78df1cd51809af3849617e3b553c7d85161af6c7de0235cd7fd7",
+        "contracts/draft4/assemble_candidate.py": "a468830ddb3f86e5b98dd69fc876eb8631b6cbf2aee134dd3f73691038471573",
+        "contracts/draft4/check_migration.py": "94f7e5bfedf820655d65a4655483904e4720e7a64239191ef03527fd70cd93e8",
+        "contracts/draft4/migration.json": "c3310ae4270207509ee332feecbf0d225f3bc4314412fb8e036ccfd4dd146776",
+        "contracts/draft4/source/fixtures.json": "8f08c2bf8fca80db323b3a5017e8d950a3a97f9611127bf08e1088a7f4d20f1c",
+        "contracts/draft4/source/http/controller.operations.json": "603e6f3555fd19e76761bbb0dbe808dbd880036dbe119b11f3f98c2009eb72cb",
+        "contracts/draft4/source/http/seamer.operations.json": "3840cca04f99c00942897a42b08293db8727d93c0c1151d10ff339376a188136",
+        "contracts/draft4/source/ipc.schema.json": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705",
+        "contracts/draft4/source/public.schema.json": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18",
+        "contracts/draft4/source/route-projection.json": "c2502e277535ec3d03e737328997559b8dc7a8ce7f10555ff8b3bd4c0c4dd221",
+        "contracts/draft4/source/schema-registry.json": "2cf3310a339b47e5285f35dc75fd0bc2bb58098dca295dee23746e56478e67bc",
+        "contracts/draft4/source/source-manifest.json": "fdeb4f6f8c34ad612cc454ecf857dbca39d9d5483504f241d75b6b16efb83351",
+        "contracts/draft4/migration-report.json": "e3b2498a2ee431632e092b7850571d2b6a6bf4a4472e7be40b2beb043a8fbb7d"
+      }
+    },
+    {
+      "name": "composition",
+      "commit": "027f1fc75d9113da9dd5dae93e075ca3082e5e4e",
+      "report": "contracts/composition/report.json",
+      "input_prefix": "contracts/composition/",
+      "files": {
+        "contracts/composition/check_composition.py": "2e8f31f8c0a665dd00309a5919c51fe033f8ab35c68fd9ad82eaabb6355e6fd9",
+        "contracts/composition/compose.py": "a23b0ecf89824956a8194e8ecead8208ef7507bebb7e5d8d2bdd3f99b0c9eeb7",
+        "contracts/composition/import_sources.py": "695b991d83e39565fb74a9911aafd0cd537b8fa065d1e3ca77cd277c0a5f49dd",
+        "contracts/composition/policy.json": "90899f9f2c2c8923cd1450506e15d3a9f35f5d6197ccc67d003e8c34301a705a",
+        "contracts/composition/preview/controller.preview.openapi.json": "892bf2f2bf90942cefb4e9f3908182a9c753cbfcfdc0daf509a59cff13e0be3c",
+        "contracts/composition/preview/inventory.json": "847a3a53a5743a5c451e589c5f798422e08b20e9d9e875931af7c574c0c1af7c",
+        "contracts/composition/preview/model-identities.json": "ec1d7fffac08b2b90447a223e4d3c979eed1927a9b5a9cf903d1b606ad4021a4",
+        "contracts/composition/preview/models.schema.json": "1ec909588c34ff25657878107e89786d5f77a36d77507e0eb555b9dcfda54e65",
+        "contracts/composition/preview/seamer.preview.openapi.json": "c952846ce5c80ec8f72ad80e2c521343fada3208f6bbf8ddd46781364731c312",
+        "contracts/composition/README.md": "e933fa46a8b6f74e42439565d7ea301333e209ff5da1957a3907e9a4baec9329",
+        "contracts/composition/requirements-validation.txt": "a336de65ce30f3e834980f7ba382b336a92ff98c2189272409b88d55058b7e1b",
+        "contracts/composition/source.json": "c34828282e8b3ab5c2d1d90b1dbfc01bf1c9daebf4066249a6836ddedf875ed7",
+        "contracts/composition/report.json": "cc329108a6673cd61d5b7eee687e07fc148616b2241629356c1e635e894fc0cd"
+      }
+    }
+  ],
+  "suite_source_anchors": [
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/assemble_candidate.py",
+      "sha256": "a468830ddb3f86e5b98dd69fc876eb8631b6cbf2aee134dd3f73691038471573"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/fixtures.json",
+      "sha256": "8f08c2bf8fca80db323b3a5017e8d950a3a97f9611127bf08e1088a7f4d20f1c"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/http/controller.operations.json",
+      "sha256": "603e6f3555fd19e76761bbb0dbe808dbd880036dbe119b11f3f98c2009eb72cb"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/http/seamer.operations.json",
+      "sha256": "3840cca04f99c00942897a42b08293db8727d93c0c1151d10ff339376a188136"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/ipc.schema.json",
+      "sha256": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/public.schema.json",
+      "sha256": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/route-projection.json",
+      "sha256": "c2502e277535ec3d03e737328997559b8dc7a8ce7f10555ff8b3bd4c0c4dd221"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/schema-registry.json",
+      "sha256": "2cf3310a339b47e5285f35dc75fd0bc2bb58098dca295dee23746e56478e67bc"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/source/source-manifest.json",
+      "sha256": "fdeb4f6f8c34ad612cc454ecf857dbca39d9d5483504f241d75b6b16efb83351"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df01-source/check_candidate.py",
+      "sha256": "f4f8d96723ef8c458ecd6dfc0bdfbe17610dd270e7ba361e76e55277375b467f"
+    },
+    {
+      "commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+      "path": "docs/contracts/draft4/first-loop.schema.json",
+      "sha256": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+    },
+    {
+      "commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+      "path": "docs/contracts/draft4/ipc.schema.json",
+      "sha256": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705"
+    },
+    {
+      "commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+      "path": "docs/contracts/draft4/controller.openapi.json",
+      "sha256": "a417617c7a88e4c8d7ac1af1b8abae1656db16f72590a8c4b5a46edfe2abe868"
+    },
+    {
+      "commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+      "path": "docs/contracts/draft4/seamer.openapi.json",
+      "sha256": "9aa33dfe3245c4eb8ec66f6d8418d421c90fbe0136e0d98d2c5c996b7f83afbe"
+    },
+    {
+      "commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+      "path": "docs/contracts/draft4/routes.json",
+      "sha256": "151ce96b802c9f4163e1fe91e62b21320fa0752fab1715a2e42794d3cf966d67"
+    },
+    {
+      "commit": "595a6b772fed2dce48e3a28511111b41ad3e7fc3",
+      "path": "docs/contracts/draft4/examples.json",
+      "sha256": "8f08c2bf8fca80db323b3a5017e8d950a3a97f9611127bf08e1088a7f4d20f1c"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/controller.openapi.json",
+      "sha256": "a417617c7a88e4c8d7ac1af1b8abae1656db16f72590a8c4b5a46edfe2abe868"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/seamer.openapi.json",
+      "sha256": "9aa33dfe3245c4eb8ec66f6d8418d421c90fbe0136e0d98d2c5c996b7f83afbe"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c04-lifecycle/lifecycle.openapi.json",
+      "sha256": "9f82eaf77e7500b28d138867f0ef68dd8c9e347deb49c4cf8d715f57236052cd"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c04-preparation/preparation.openapi.json",
+      "sha256": "1ca9b3780be99b881004237520f013df1060512c8030a4c0bfc367c057af9d87"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c04-lifecycle/command-contract.openapi.json",
+      "sha256": "b477777049f1f2d6c0f5140e4c7b2b9937097e0505f3bc937d554af6dfbbf986"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c08-controller/control-authority.openapi.json",
+      "sha256": "d103313913a9cdf916c391d9ac4861dab367089d1e4610e19c673d4c0557f8ba"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c05-ingress/ingress.openapi.json",
+      "sha256": "c2155c044c1602e16a3086d0fbcf42181a6729079d9531412dfa0bdc00f32cab"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c05-protection/protection.openapi.json",
+      "sha256": "a1e9d53cd9dd4a2ac8ef5b291d23f76a5932e542651408ffe1c6c0911860f089"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c09-panel-service/service.openapi.json",
+      "sha256": "e23df6c0901b29418ddef92923b78cd969d225b737f4be45a458bc241cdd9253"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c09-panel-subscriptions/subscriptions.openapi.json",
+      "sha256": "089dfc267713cc48c50f9210d8fe5f79fdda4cb86ebf2e1b143a5607479d45a7"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c09-installation/installation-v02.openapi.json",
+      "sha256": "ae2ac4c1049f5bd102535e2b507b250a9a638634914ff67dad6fa10d5ab9fc5d"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df03-service/public.openapi.json",
+      "sha256": "e08fad77fdffacc5afd7ea8d68d0a8c5c6d04259480d4d8f8e46a0db9cd92438"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/df03-service/internal.openapi.json",
+      "sha256": "060d8fab1d9760af0d1e15fd56280276219d7d4a7e5ca50197ad824cd291bebb"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c04-lifecycle/continuation-controller.openapi.json",
+      "sha256": "8e7cc64a39e6009d56a8606fe17fdf80c83ce7091332db0a8fe7261caf9f03af"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/c04-lifecycle/continuation-seamer.openapi.json",
+      "sha256": "045a4e874d248edd4ee3ef6011e5a50885ca95d0370150a3d001d8f1e701f638"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/build_contracts.py",
+      "sha256": "7a29c0f764455394711cac6d598185418c15e11563f55812ed41b7c0fec8d21a"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/build_examples.py",
+      "sha256": "ea525e24705cf71b7ac4181f566e5d6108df32384376019218e837890dd26423"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/build_contracts.py",
+      "sha256": "5dcaa5d118a1b38bfdbf309da99789cae780fca85010ca267176875617edef3d"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/build_examples.py",
+      "sha256": "837f6fb31f9c8899a3d8af58ac88f85e0c79317e9ec4e9d077c6ebb39b67562d"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/controller.openapi.json",
+      "sha256": "521ac7a8e4e99ea36bf5a22b253cb992d43ddd5f9681b09d560d42264326da1c"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/examples.json",
+      "sha256": "b0024a140d375f6b2bd52e9173230298a7a566fc0197f9c7b9ad12d65409dbf0"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/first-loop.schema.json",
+      "sha256": "3fc907e803938b1763d4ebfbd3b3c76f4efdd2450466f92c49eb205f8ef8a35c"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/ipc.schema.json",
+      "sha256": "95b254bbb804cf451a9bbb857e1f09a62b3c0d47d51b5f4de2313be8670ac498"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/routes.json",
+      "sha256": "87279131a1d2df5392cb96e2ef9850dceea0f692909bf51adc68d494632f317c"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/seamer.openapi.json",
+      "sha256": "724f5cd8dfe39f0e4ef3dc84b2c2bca25772643cbaa6a003250fe6ce2c4c6442"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft3/validate_contracts.py",
+      "sha256": "92ffcad6708576b11b688a2528684558d5727663a83a9b7af20ff4379b583fec"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/build_contracts.py",
+      "sha256": "8054a84318d99d01321ab50dee3ee905ed24c8003fc9d4f781b2ddfe40586e19"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/build_examples.py",
+      "sha256": "37372922fc487ab65817dc3f325fbbf805872ec3cda162f267c4d5a759951482"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/examples.json",
+      "sha256": "8f08c2bf8fca80db323b3a5017e8d950a3a97f9611127bf08e1088a7f4d20f1c"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/first-loop.schema.json",
+      "sha256": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/ipc.schema.json",
+      "sha256": "d5c420feb718f0051f4b693e2cb12a1159f8a01bba29e38352255622b18d2705"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/README.md",
+      "sha256": "b9ee6de86e28e20e477505bd93677d2aaffba5690e8f0e48db777e2b00e3f33f"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/routes.json",
+      "sha256": "151ce96b802c9f4163e1fe91e62b21320fa0752fab1715a2e42794d3cf966d67"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/draft4/validate_contracts.py",
+      "sha256": "a867a11e959fdddd44b7918339e303aaaaa772fde0b2bcc73afa12ca30620b27"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f02-f03/build_cases.py",
+      "sha256": "3f54512ec77f91ae0fa580fe77be628712fb9931c652176c1f635470101d9c1a"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f02-f03/build_ipc.py",
+      "sha256": "47c06d25fb3f9d54dab5f454f7d742d285d42e3d8a832fd78b377e6434d715d9"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f02-f03/validate_ipc.py",
+      "sha256": "1e77fe74bb75cf0ae8e273ea1a41a4ae7138e448906a532229c40b6061ea54dd"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f04-f05/build_cases.py",
+      "sha256": "3433cb017f8b7f74c17e12443b32024cc027765239a7959789865bfeeacf9e5b"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f04-f05/build_contracts.py",
+      "sha256": "5109792f07f212a80c84619c15678dc2532ddc832faf726ce7313981a32d1e98"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f04-f05/simulation-profile.json",
+      "sha256": "633d082e12ff250e766bd04b4bdbf7f6c85511c18640fc4bae45f02c9679dd61"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f04-f05/validate_contracts.py",
+      "sha256": "9c2aba6c1c1f63bbfe3ff192c45826d916a437002358a3370ae22087a55114fd"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f06-f07/build_cases.py",
+      "sha256": "690a312d855cfbeb6fd63c269c59dde2a9212b05cf2f7278e43d1e33f4aa59cd"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f06-f07/build_contracts.py",
+      "sha256": "f74991aac53bd4d933cb94042cad3fa25eda02ce9c35028279c30e75ee7c4c98"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/f06-f07/validate_contracts.py",
+      "sha256": "4a7b932d11750375fc6ff65e56e128123e986593ac24fbebc1d879deedd7e6a9"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/contracts/validate_contracts.py",
+      "sha256": "353a2063a784558ecdb61a482d5659e5a6580a1bba52b0da03a568ab121ec56b"
+    },
+    {
+      "commit": "5a2847524316a80cf5d6e2e663d91854d4d15675",
+      "path": "docs/rebirth-draft4-review.md",
+      "sha256": "b16519a15e16a4c239957efb9a3c83e7f42dd50470190d88c1006b99261e0656"
+    }
+  ],
+  "expectations": {
+    "baseline_outputs": 6,
+    "baseline_models": 185,
+    "baseline_ipc": 19,
+    "historical_cases": 232,
+    "composition_cases": 235,
+    "models": 927,
+    "source_documents": 15,
+    "source_operations": 170,
+    "authority_operations": 210,
+    "selected_operations": 177,
+    "controller_operations": 90,
+    "seamer_operations": 87,
+    "replacements": 27,
+    "retirements": 6
+  },
+  "boundaries": {
+    "stage0_complete": false,
+    "production_sdk_ready": false,
+    "business_implementation_started": false,
+    "runtime_protocol_frozen": false,
+    "runtime_acceptance_executed": 0
+  },
+  "cycle": {
+    "rounds": [
+      {
+        "round": 1,
+        "repository": "leafseamer-sdk",
+        "commit": "9bfe014d3730e83442b5fe062f40b56463eeb68a"
+      },
+      {
+        "round": 2,
+        "repository": "leafseamer-sdk",
+        "commit": "027f1fc75d9113da9dd5dae93e075ca3082e5e4e"
+      },
+      {
+        "round": 3,
+        "repository": "leafseamer-suite",
+        "commit": "containing-commit"
+      }
+    ],
+    "push_order": [
+      "leafseamer-sdk",
+      "leafseamer-suite"
+    ]
+  }
+}

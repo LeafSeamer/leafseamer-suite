@@ -1,10 +1,12 @@
 # DF01：SDK契约源、生成工具链与跨语言规范化冻结方案
 
-日期：2026-10-17。用户已同意公共 `1.0.0-draft.4`／`ipc/0.3.0-draft.1` 归并基线。本轮更新设计与离线验证资料，不迁移SDK源、不安装工具链、不生成产品SDK或修改业务代码。下文D1—D6为本轮推荐，版本候选不等于发行物或运行验证已批准。
+建立日期：2026-10-17；状态更新：2026-10-27。用户已同意公共 `1.0.0-draft.4`／`ipc/0.3.0-draft.1` 归并基线。SDK独立纯数据源现已迁入，另有HTTP机械归并审阅预览；未生成产品SDK或修改业务代码。下文D1—D6及带日期的实验记录保留其原适用范围，版本候选不等于发行物或运行验证已批准。
+
+当前交接以[SDK固定提交记录](contracts/sdk-handoff/README.md)为准：`9bfe014`完成九份原件迁入及六产物逐节点／字节对账，原232例通过且独立干净检出可重组；`027f1fc`以927个命名空间模型和15份操作骨架生成双authority共177项操作预览，235项资料检查通过。Suite旧source仅作历史对账，不再双向同步。SV01的独立资料归属取得证据，但完整语义和导出权威切换尚未完成；SV03独立语义、SV04跨平台、TS/Ajv/原始解码/JCS工具链及运行门槛仍未通过。下一步按现有SV编号归并协商、当前IPC0.14、跨域Ref、权限及具名投影，不重复立项纯数据迁移。
 
 ## 1. 已知事实及本轮发现
 
-项目当前的draft4生成器读取draft3生成物，判定器继续复用旧轮Python规则；SDK仓库仍是施工入口。当前已有185个公共类型、19类IPC消息、71个HTTP／WS操作和232个离线用例。这些是迁移的核对基线，不是SDK已拥有唯一权威源。（项目依据：[生成资料](contracts/draft4/README.md)、[归并审阅](rebirth-draft4-review.md)）
+原Suite draft4生成器读取draft3生成物，判定器继续复用旧轮Python规则；这条历史生成链保留作对账。已有185个公共类型、19类IPC消息、71个HTTP／WS操作和232个离线用例，现已作为SDK独立纯数据重组的冻结基线；它仍不是生产SDK完整语义的唯一实现。（项目依据：[生成资料](contracts/draft4/README.md)、[归并审阅](rebirth-draft4-review.md)、[SDK交接](contracts/sdk-handoff/README.md)）
 
 官方 `openapi-typescript@7.13.0` 的peer约束为 TypeScript `^5.x`，并使用JS编译器API；不能按前稿的6.0试验起点直接宣称兼容。它生成声明，不替代运行校验；条件分支、整数精度及ref兄弟约束仍需单独验证。（来源：[固定版本package](https://raw.githubusercontent.com/openapi-ts/openapi-typescript/openapi-typescript@7.13.0/packages/openapi-typescript/package.json)、[固定版本转换实现](https://raw.githubusercontent.com/openapi-ts/openapi-typescript/openapi-typescript@7.13.0/packages/openapi-typescript/src/transform/schema-object.ts)）
 

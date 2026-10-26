@@ -1,8 +1,10 @@
 # 全系统设计定稿收敛清单
 
-建立日期：2026-10-18；本次收敛审阅：2026-10-24。本文落实用户“先完成所有系统方案设计后进行业务实现”的阶段决定，是[readiness 6.1](rebirth-readiness.md#61-全系统设计完成门槛)的统一关闭视图，沿用C／DF／T／A编号，不另建待办体系。本文不是全系统已定稿声明，也不改变draft.4／IPC 0.3。
+建立日期：2026-10-18；本次收敛审阅：2026-10-27。本文落实用户“先完成所有系统方案设计后进行业务实现”的阶段决定，是[readiness 6.1](rebirth-readiness.md#61-全系统设计完成门槛)的统一关闭视图，沿用C／DF／T／A编号，不另建待办体系。本文不是全系统已定稿声明，也不改变draft.4／IPC 0.3。
 
 ## 1. 当前事实与推荐分界
+
+2026-10-27跨仓交接：SDK `main` 的 `9bfe014` 已交付独立draft.4纯数据源及等价重组，`027f1fc` 已交付15份接口输入的归并审阅预览，生成Controller 90项与Seamer 87项操作。前者原232例及独立检出验证通过，后者235项离线资料检查通过；固定来源、逐文件摘要与本周期提交归属见[SDK交接记录](contracts/sdk-handoff/README.md)。Suite保留历史与设计依据，后续SDK候选在SDK仓库演进，不进行双向源同步。统一协商、当前IPC0.14及其他通道、跨域Ref／数字接受集、授权／面板／快照和摘要／DDL仍未完整绑定；两项交付均不等于生产SDK或阶段0完成。本轮为本周期第3/3轮，审查SDK两次提交与Suite本次提交后按授权推送，未修改业务代码。
 
 2026-10-26设备授权持久采用进展：[九表SQLite候选](contracts/c04-lifecycle/DEVICE_AUTHORIZATION_STORAGE.md)以双向延迟外键封存State、恢复授权消费、Evidence、当前head及四份交付正文；首次取证绑定已消费恢复授权的完整运行身份，刷新必须从库取得旧证据。275项验收通过，含逐写／漏写全库回滚、COMMIT观察丢失、历史查原、禁止清空指针，以及DELETE／WAL双连接竞争。protect只比较State并捕获实际最新选择，刷新先提交也不阻挡撤权。真实来源、完整库和保护IPC未接通，失效拒绝不伪称完成设备保护，业务及阶段0边界保持。本周期第3/3轮，按各提交当时输入审查后推送main。
 
@@ -206,7 +208,7 @@
 
 | 范围 | 已具备的设计材料，不再重复建立 | 仍须在实施前完成 | 留给实现与验收的证据 |
 | --- | --- | --- | --- |
-| C01 单源与解码 | 六文件等价提取、完整历史HTTP骨架、导出／主体矩阵、严格解码具体方案及投影定位 | 将全部新增接口和类型纳入唯一SDK源；完成严格数字接受集、逐规则调用点和具名摘要投影；处理1.2的显式替换 | 真实解析器、TS生成／消费、浏览器包隔离及跨语言执行；元数据检查不替代 |
+| C01 单源与解码 | SDK独立纯数据迁入、六产物等价及原232例；15份输入的177操作归并预览已完成1.2显式替换；历史导出／主体矩阵、严格解码方案及投影定位 | 统一协商与当前IPC；完成跨域Ref、严格数字接受集、逐规则调用点、权限／面板映射及具名摘要投影；将尚无机器模型的设计补入SDK | 真实解析器、TS生成／消费、浏览器包隔离及跨语言执行；元数据检查不替代 |
 | C02/C03 命令与接管 | 三命令裁决接口及11表受理子域、三准备接口及14表准备/关闭子域；[51表组合与30帧IPC候选](contracts/c08-controller/BARRIER_ATTEMPTS.md)登记逐primitive/逐传输许可及同cut尝试/ACK/采用关系；[77表命令组合](contracts/c08-controller/COMMAND_STORAGE.md)联接资源、固定终态、Resolution/T6和原报告身份；[七命令HTTP](contracts/c02-command-view/README.md)定义公开修订、取消查原/进度及固定证据分页和503投影错误；[91表公开持久化](contracts/c02-command-view/STORAGE.md)补取消原子受理/拒绝、完整捕获及不可变证据清单；[IPC0.7完整46帧](contracts/c02-cancellation/README.md)增加ordinary/all关闭、独立取消执行及四屏障覆盖；监督控制／bootstrap及15表journal | 转交关联；RequestKey全链映射；取消保护执行物理写集、共享签发分配器与closure/result及证据原件完整FK；prepare/observe及其他三类屏障表；guard/预算和packet准备持久提供者；统一SDK归并 | writer并发、最终发送竞态、进程纳管和重启、磁盘耐久、设备效果 |
 | C04/C05 执行与摄取 | 程序／证明、24操作生命周期、执行记录、40表恢复／提交／摄取组合；保护HTTP、RUN_FENCE和拒绝快照；Controller双入口共享拒绝、P2完整登记集合/queued切点、P3逐出口及汇总应用候选 | 准备回执替换预填grant；P1/P4布局、P3到准备closed的真实引用与资源证据；完整来源依赖、跨source_epoch替换／GC／P0；边沿、预算和依赖边消费写集 | 真实编译器、提供者、事务执行器、跨服务故障、负载与恢复竞争 |
 | C06 时间与排期 | 固定日历、场次身份、激活／受理边界；DF03的reference-bound/1路线于2026-10-20获确认；[参考时钟字段候选](contracts/df03-reference/README.md)定义采样／证据／锚点／评估、发布失效及UTC子守卫与精确算术；[时间服务与IPC0.8](contracts/df03-service/README.md)补六查询、完整46帧及逐步排期来源绑定；[采集器0.2十四帧](contracts/df03-collector/CHANNEL_V02.md)补有序停止及持久回执前保留；[27表时间与入站日志](contracts/df03-collector/INBOX.md)联接原件发布、STOP、发送和容量及入站效果原子提交，显式修正旧25表消息方向；[TIME切点与共享水位候选](contracts/df03-time-fence/README.md)补两类许可完整捕获、ACK采用与失效原子写集规范及内部投影Schema | 跨服务EventAgeProof及其他公共事件时间字段与SDK统一迁移；时间子域到完整库的组合、TIME设备屏障账本、加密/采集提供者与完整字段映射、实际容量profile与GC、场次／日历约束；冻结协议库、引导信任及误差profile | 两平台采样、休眠／换源、NTP误差前提和日历并发运行 |
@@ -230,7 +232,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 
 ### 1.2 已有HTTP与IPC的归并裁决
 
-已知事实：以下14份OpenAPI当前共162条操作声明；计数含两个HTTP GET形式的WS升级，不等于162项独立运行功能，也不证明全系统接口已齐备。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不是可合并身份空间。另有27处**同服务**旧／新方法路径重合（含两authority各自的两个公共时间查询），必须作明确替换。以下处置是下一统一候选的设计规则，尚未生成或部署该候选。
+已知事实：当前SDK归并预览选择以下15份OpenAPI，共170条原始操作声明；按宿主authority展开为210条。27项显式旧／新替换及6项旧时间查询退役后，生成177项操作，其中Controller 90项、Seamer 87项，含两个HTTP GET形式的WS升级。这不是177项已实现功能。`draft4`两服务本来有18处同方法／路径；它们属于不同authority，不可合并身份空间。固定输入与验收见[跨仓交接](contracts/sdk-handoff/README.md)。机械归并预览已生成并验证，但统一版本协商及全系统语义尚未冻结，不可部署。
 
 | 当前文件（相对docs/contracts） | 声明数 | 所有者与下一版处置 |
 | --- | ---: | --- |
@@ -238,8 +240,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 | [draft4/seamer.openapi.json](contracts/draft4/seamer.openapi.json) | 32 | Seamer旧基线；12项生命周期及1项摄取被替换，其余继续逐项迁移 |
 | [c04-lifecycle/lifecycle.openapi.json](contracts/c04-lifecycle/lifecycle.openapi.json) | 24 | Seamer；12项替换旧操作，12项新增 |
 | [c04-preparation/preparation.openapi.json](contracts/c04-preparation/preparation.openapi.json) | 3 | Controller内部mTLS；准备／查原／关闭，不暴露管理origin |
-| [c02-admission/admission.openapi.json](contracts/c02-admission/admission.openapi.json) | 3 | Controller；替换submitCommand，新增查原与永久拒收 |
-| [c02-command-view/command.openapi.json](contracts/c02-command-view/command.openapi.json) | 7 | Controller；替换getCommand/cancelCommand/getCommandEvidence，新增历史修订、取消查原/状态和单证据历史读取 |
+| [c04-lifecycle/command-contract.openapi.json](contracts/c04-lifecycle/command-contract.openapi.json) | 10 | Controller；采用已有统一命令消费包，包含提交／查原／永久拒收、读取／取消／证据；不再直接拼入早期admission和command-view两份输入 |
 | [c08-controller/control-authority.openapi.json](contracts/c08-controller/control-authority.openapi.json) | 9 | Controller；替换六控制操作，新增getTransfer/cancelTransfer/lookupControlRequest；完整人员身份与不可变Receipt不能混入旧模型 |
 | [c05-ingress/ingress.openapi.json](contracts/c05-ingress/ingress.openapi.json) | 3 | Seamer；替换摄取，新增查原及内部账本读取 |
 | [c05-protection/protection.openapi.json](contracts/c05-protection/protection.openapi.json) | 2 | Controller内部mTLS；代次保护与查原，不是设备动作重试入口 |
@@ -248,11 +249,15 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 | [c09-installation/installation-v02.openapi.json](contracts/c09-installation/installation-v02.openapi.json) | 15 | 目标扩展宿主拥有实例；安装0.2替代旧安装0.1，不因包相同共享批准；设备与数据源角色按C09区分 |
 | [df03-service/public.openapi.json](contracts/df03-service/public.openapi.json) | 2 | 两authority各自替换getClock/getClockAssessment，展示不授执行权 |
 | [df03-service/internal.openapi.json](contracts/df03-service/internal.openapi.json) | 4 | 两authority各自精确读取历史证据；旧三时间证据端点退役，不双格式回退 |
+| [c04-lifecycle/continuation-controller.openapi.json](contracts/c04-lifecycle/continuation-controller.openapi.json) | 2 | Controller内部继续运行签发及查原；不与Seamer同路径共享身份 |
+| [c04-lifecycle/continuation-seamer.openapi.json](contracts/c04-lifecycle/continuation-seamer.openapi.json) | 6 | Seamer内部登记／查原／回执／采用／结束／撤回；继续运行不由历史记录自动授予 |
+
+控制权输入采用`servers: /api/v1`及相对`/devices/...`路径，其他多数输入把前缀写入paths。SDK已按固定来源显式消费这一个挂载，再判断同服务冲突；不得漏掉替换或拼成`/api/v1/api/v1/...`。安装0.2同样分别归Controller设备宿主和Seamer数据源宿主，不能因接口模板相同共享批准。
 
 同服务替换全集如下，不能按文件加载顺序“后者覆盖前者”：
 
 - Controller：`submitCommand`占用`POST /api/v1/commands`；成功响应改为不可变RequestAdjudication。当前Command仍由原command_ref查询，永久拒收不等于取消。
-- Controller读取与取消：`getCommand`、`cancelCommand`、`getCommandEvidence`三个同路径操作切到command-view候选。完整State与公开记录摘要分开，历史显式标识，503不能回旧clear；取消回执不变、取消进度另查，证据绑定固定修订分页。旧裸expected_revision和旧动态证据页不回退接受，操作/导出/面板权限矩阵同步迁移。
+- Controller读取与取消：`getCommand`、`cancelCommand`、`getCommandEvidence`三个同路径操作采用当前统一命令消费包中由command-view归并的模型。完整State与公开记录摘要分开，历史显式标识，503不能回旧clear；取消回执不变、取消进度另查，证据绑定固定修订分页。旧裸expected_revision和旧动态证据页不回退接受，操作/导出/面板权限矩阵同步迁移。
 - Controller控制权：`getControl/getControlOperation/acquireControl/releaseControl/offerTransfer/acceptTransfer`六个同路径操作切到control-authority候选；原六权限保留，新主体及请求身份完整绑定，force另需control.emergency，offer接受关联operation。新增getTransfer/cancelTransfer/lookupControlRequest；GUI、面板和快照须同步采用完整holder、reserved_version与新Receipt，旧expires_at展示不能代替单调到期门控。
 - Seamer生命周期：`createDefinition`、`updateDraft`、`publishDefinition`、`getIndependenceProof`、`createRun`、`getRun`、`preflightRun`、`armRun`、`pauseRun`、`previewRecovery`、`resumeRun`、`getRecoveryOperation`共12项，同方法路径切到生命周期候选；旧请求/响应不得与新模型拼接。
 - 两服务时间查询：`getClock/getClockAssessment`各自切到reference-time-service展示模型；旧time-evidence/time-profiles/clock-samples在统一版本中退役，以四个精确历史查询替代。clock-domain仍独立保留，其他事件时间模型和跨服务年龄证明尚须统一迁移。
@@ -264,9 +269,9 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 2. 先登记替换清单，再投影所选模型和完整operation元数据；参数、响应状态／header、认证、对象守卫和版本要求一并迁移。未登记重合、失去绑定的operationId、重复模型身份均使生成失败，不能静默丢弃。
 3. 局部候选各自的`X-LeafSeamer-Contract`值保留在历史资料；统一候选必须显式重绑所选接受集及协商元数据。同一路由不得“新版解析失败再试旧版”，也不得以`/api/v1`相同认定模型兼容。最终候选号由实际完整归并产生，本表不代为批准。
 4. 模型先按`($id, JSON Pointer)`定位，不能按`Command`、`Ref`、`RequestIdentity`等短名去重。同形但不同authority或语义的Ref也不能自动别名化；数字词法、摘要前缀、issuer_epoch及初始CommandRef须逐项版本映射。
-5. 执行worker采用[IPC0.8完整46帧候选](contracts/df03-service/README.md)作为下一SDK归并输入，沿用编码准备、逐传输、屏障尝试与独立取消执行及ordinary/all关闭，并归并reference-bound时间与排期绑定；旧0.3/0.4/0.5/0.6/0.7保留作历史，不重复拼接旧帧。监督控制9帧、bootstrap4帧、导入9帧、面板19帧及[采集器0.2十四帧](contracts/df03-collector/CHANNEL_V02.md)仍是不同通道，保持各自端点、身份、方向和握手，不能拼成任意角色可发的通用oneOf；候选采用不等于产品批准。
+5. 执行worker改以[当前命令消费包](contracts/c04-lifecycle/COMMAND_CONTRACT.md)声明的`ipc/0.14.0-continuation-draft.1`及52帧入口为下一SDK归并输入，保留当前继续运行绑定及完整消息类型图。早期IPC0.8等候选仅作历史，不再重新拼接旧帧。监督控制9帧、bootstrap4帧、导入9帧、面板19帧及[采集器0.2十四帧](contracts/df03-collector/CHANNEL_V02.md)仍是不同通道，保持各自端点、身份、方向和握手，不能拼成任意角色可发的通用oneOf。本轮SDK预览只归并HTTP资料，尚未生成统一IPC；输入选择不等于产品批准。
 
-归并验收沿用C01/C02/C04/C05/C09及X05/X08，具体断言为：①两authority同路径分别生成，单authority未登记重复必须失败；②新submit返回accepted裁决后查到状态修订2，裁决仍绑定初始修订1且摘要不变，reject不能改写为停止；③摄取替换后任何旧操作引用必须在迁移清单中解决，不能出现有路由无授权或有授权无路由；④旧头、缺头、错服务audience及跨通道帧拒绝，不能回退；⑤重算摘要但换issuer_epoch／scope／grant的请求仍拒绝。这里只完成文件和引用审阅，这些断言尚未在统一生成器及运行服务中执行。
+归并验收沿用C01/C02/C04/C05/C09及X05/X08，具体断言为：①两authority同路径分别生成，单authority未登记重复必须失败；②新submit返回accepted裁决后查到状态修订2，裁决仍绑定初始修订1且摘要不变，reject不能改写为停止；③摄取替换后任何旧操作引用必须在迁移清单中解决，不能出现有路由无授权或有授权无路由；④旧头、缺头、错服务audience及跨通道帧拒绝，不能回退；⑤重算摘要但换issuer_epoch／scope／grant的请求仍拒绝。①已在SDK预览生成器验证，并补完整操作元数据、挂载、等价路径、认证名称及WS引用检查；②—⑤仍须统一契约及运行服务验收，不能由235项资料检查代替。来源中的旧协商值当前被保留，不意味着允许旧写回退。
 
 ### 1.3 历轮进展
 
@@ -375,7 +380,7 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 
 | 审阅范围 | 既有推荐编号 | 需要审阅的实质取舍 |
 | --- | --- | --- |
-| SDK与系统基础 | D1—D6、R01—R06、P01—P07、DB01—DB06、AF01—AF06、IA01—IA06 | 源迁移/数字新接受集、运行域/采样边界、数据库与信任恢复、内部身份；已确认方向不无故重问，DF03模型已确认，余下为字段、精确profile与验证证据 |
+| SDK与系统基础 | D1—D6、R01—R06、P01—P07、DB01—DB06、AF01—AF06、IA01—IA06 | 语义／导出迁移、数字新接受集、运行域/采样边界、数据库与信任恢复、内部身份；纯数据已迁入，已确认方向不无故重问，DF03模型已确认，余下为字段、精确profile与验证证据 |
 | 自动化与排期 | AR01—AR06、ES01—ES06、SCH01—SCH07 | 有限DSL及失败依赖、活动槽与延迟、来源/快照/失步、固定日历与跨版场次 |
 | 扩展和全部设备 | ME01—ME07、NG01—NG07、AV01—AV06、AD01—AD07 | 模块写权限/批准、桥与旧编辑器、设备复合中间态及证据不足时的可用边界；保留完整旧功能 |
 | 操作台与发行 | UI01—UI07、DEP01—DEP08及工具链新增候选 | GUI交互/技术组合、只读输出与入口、加密备份、整组安装引用与信任策略 |
@@ -403,9 +408,9 @@ DM3候选参数profile含177项：16条r、161条rw；保留旧174个参数地�
 2026-10-20命令存储进展：[受理子域布局](contracts/c02-admission/STORAGE.md)提供11表、完整受理/拒收写集、历史namespace及当前权限提供者边界，159项内存SQL检查通过。裁决/初始命令/容量/审计/通知及拒收操作双向配对，关闭namespace不阻当前有权保护，旧命令RequestIdentity字典已明确标为历史。完整Controller执行/屏障和准备表、实际鉴权、Seamer身份列与SDK归并仍待完成；内存串行检查不关闭运行验收或阶段0。
 
 1. 补齐第3节实质缺口并完成第4节相关取舍审阅；按readiness的X01—X16检查跨项安全约束，保留已有确认及全部功能范围。
-2. 在SDK独立完成旧基线单一源的等价提取，Suite保留历史资料及对账入口；产出逐节点对账和原例接受集对账，不能只比类型数量。此处仍是契约资料/生成验证，不启动服务业务实现。
+2. 已在SDK独立完成旧基线单一源的等价迁入，Suite保留历史资料及[固定提交对账入口](contracts/sdk-handoff/README.md)；逐节点、字节和原232例接受集对账已完成。后续补语义实现、摘要投影、wire profile及导出策略的迁移，不能把纯数据重组称为完整产品SDK。此处仍是契约资料/生成验证，不启动服务业务实现。
 3. 在明确的新候选版本归并已审阅修订，形成同版Schema、OpenAPI、IPC、路由/WS元数据、具名摘要投影和DDL映射；旧draft.4／IPC0.3原样保留。版本号由实际变更包决定，本文不提前宣布新基线已批准。
 4. 每个修订必须有正常、边界、错身份/错域/错版本、重算摘要后错配、旧写降级拒绝用例；按故障需要补接管/撤权/崩溃时序。校验报告绑定实际输入及提交字节，静态结果和运行证据分列。
 5. 全量追踪从18个bundle细项和Q决策到C契约、五仓交付及A01—A22，无遗漏且第2/3节设计未决为零后，才登记阶段0完成并进入业务实现。保留实现、平台和设备未验收清单，不能顺带声明项目完成。
 
-本清单不自行批准任何候选或宣告阶段0关闭。2026-10-20当前进展：DF01严格解码和生成元数据已有具体候选及局部描述；DF03模型选择已获确认，时间相关归并按reference-bound/1继续。SDK源未迁移，draft.4／IPC0.3及业务代码未改。设备证据、发行信任、精确时间profile与完整持久写集等缺口仍须关闭。
+本清单不自行批准任何候选或宣告阶段0关闭。2026-10-27当前进展：DF01纯数据源已迁入SDK，并生成按服务分离的HTTP归并预览；完整语义、协商、IPC及导出仍待统一。DF03模型选择已获确认，时间相关归并按reference-bound/1继续。draft.4／IPC0.3及业务代码未改。设备证据、发行信任、精确时间profile与完整持久写集等缺口仍须按设计未决、实现任务和运行证据分别关闭。

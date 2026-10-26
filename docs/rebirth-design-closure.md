@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26设备授权持久采用进展：[九表SQLite候选](contracts/c04-lifecycle/DEVICE_AUTHORIZATION_STORAGE.md)以双向延迟外键封存State、恢复授权消费、Evidence、当前head及四份交付正文；首次取证绑定已消费恢复授权的完整运行身份，刷新必须从库取得旧证据。275项验收通过，含逐写／漏写全库回滚、COMMIT观察丢失、历史查原、禁止清空指针，以及DELETE／WAL双连接竞争。protect只比较State并捕获实际最新选择，刷新先提交也不阻挡撤权。真实来源、完整库和保护IPC未接通，失效拒绝不伪称完成设备保护，业务及阶段0边界保持。本周期第3/3轮，按各提交当时输入审查后推送main。
+
 2026-10-26设备授权语义归并：[DF06第10节](rebirth-df06-internal-trust-design.md#10-设备授权语义状态短期取证与恢复)将稳定State、短期Evidence和RecoveryAuthorization纳入同一候选Schema；正常认证刷新不推进authorization_revision，失效等号或语义变化先保护。每修订独立状态ID避免旧资源快照误指；恢复授权只指原protected状态及待选Context，后续资源恢复引用新State，消除循环依赖。69项纯契约检查及52项取证需求回归通过，明确内部辅助函数不能绕过当前选择与一次消费。物理采用、三类真实来源、撤销传播和worker续约仍属未完成实现／验证，不以这些运行证据替代阶段0设计审阅。本周期第2/3轮，仅本地提交。
 
 2026-10-26撤销切点来源进展：[持久拒绝来源](contracts/c04-lifecycle/REVOCATION_SOURCE.md)为现有FloorEvent同事务登记不可变本地顺序，从完整AuthorizationUse及挑战／响应派生依赖并重建历史相关事件全集；两张业务表与253表授权链组合，另核SQLite自增状态。90项验收通过，含六类首次写入错原件、真实4096／4097边界、永久拒绝、乱序下界、全库回滚及WAL旧读升级拒绝。no_matching_denial不是授权成功，current可返回已拒绝元数据；此入口不将命令授权转为设备开闸授权。306表OPEN链接线、设备授权状态原件和撤销保护传播仍待完成，阶段0与业务边界保持。本周期第1/3轮，仅本地提交。

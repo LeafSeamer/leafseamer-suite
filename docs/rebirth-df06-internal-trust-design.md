@@ -346,6 +346,8 @@ automatic无需借某个人员或单个run授权开放设备；每个自动动�
 
 ### 10.4 同库映射及防绕过边界
 
+局部物理映射现见[九表原子采用候选](contracts/c04-lifecycle/DEVICE_AUTHORIZATION_STORAGE.md)。它落实下述State／消费／Evidence／head／回执和审计意图的外键与读回规则，采用完整当前选择CAS；protect只比较State，避免正常刷新抢先后挡住撤权。首次Evidence另核已消费恢复授权的完整Binding。该子域尚未连接真实来源、完整Controller库或实际保护IPC，不能据此声称以下全部实施要求已完成。
+
 在Controller业务库统一实现device_authorization_state历史、每设备唯一head、不可变evidence及当前evidence选择。State历史主键为scope/device/revision，state_id另设唯一约束；head以预期旧修订CAS。State的recovery_ref、control_authority_ref、全部lineage与策略范围引用必须外键／类型映射到完整原件。Evidence表保存完整正文、state_ref和来源成员；当前选择只能指同设备、同State、已可靠封存的一条Evidence，不设置可由客户端清空的current选择参数。
 
 保护事务必须同时追加State后继、移动head、作废当前Evidence及未派发OPEN资格，并按既有AUTH_FENCE／CLOSE_GATE语义登记审计和保护outbox；相关在途保持未决直到完整核销。策略重选同事务消费RecoveryAuthorization、追加State后继及审计／outbox；重复消费不能创建第二条状态链。后续资源恢复另引用这个已存在State，不反写其recovery_ref。短期刷新不增加State修订，但Evidence封存、来源全集、旧当前选择CAS及新选择必须同事务；新状态或撤销先提交时旧刷新失败。

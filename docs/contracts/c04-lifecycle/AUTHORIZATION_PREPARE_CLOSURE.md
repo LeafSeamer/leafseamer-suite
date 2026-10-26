@@ -2,6 +2,8 @@
 
 状态：内部设计候选，approved=false。接续[关闭ACK](AUTHORIZATION_CLOSE_ACK.md)，复用255表组合及现有DenyRequest、DenyAck、PreparationClosure，不修改已确认公共基线。
 
+后续进展：已在[释放采用候选](AUTHORIZATION_PREPARE_RELEASE.md)接通released分支，完整重读释放请求、ACK、原预留采用和回收seal后才形成证明；该分支另有123项检查。下文保留本轮DENY与never_attempted的实验边界，retired仍未接通。
+
 已知事实：关闭ACK与准备核销是两个条件。既有SQL要求固定cut中的每个准备均有有效证明，且完整集合封存后才能关联pd_close_completion；已尝试准备不符合never_attempted。（来源：[准备核销SQL](../c08-controller/prepare-deny-storage.sql)、[现有字段Schema](../c08-controller/ipc-journal.schema.json)。）
 
 本轮推荐并验证的候选接线如下：

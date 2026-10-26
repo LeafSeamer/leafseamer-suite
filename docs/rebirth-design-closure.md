@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26准备释放进展：[释放采用与退役分界](contracts/c04-lifecycle/AUTHORIZATION_PREPARE_RELEASE.md)在255表组合中接通完整释放请求、ACK、原预留精确采用/回收与released核销，123项离线检查通过；原DENY与never_attempted路径107项回归通过。释放不直接恢复控制，结束后首次ACK不退款，重复ACK只查原。审阅发现监督退役与关闭ACK的活会话条件不能混用，已列出独立监督证据与替代完成分支，保留阻断；真实IPC/物理清理、监督采用、完整T5/T2及P0仍缺，业务实现未开始。本轮周期第2/3轮，仅本地提交。
+
 2026-10-26准备核销进展：[完整准备核销候选](contracts/c04-lifecycle/AUTHORIZATION_PREPARE_CLOSURE.md)在255表组合中接通实际授权与撤回、DENY_ENCODING原件、ACK及完整PreparationClosure，107项离线检查通过。双成员夹具分别使用deny_ack与never_attempted，逐写异常、缺写、漏成员、提交观察故障、时间错配和证明撤回均有反例；核销不退款、不恢复持有人、不签发最终许可。released/retired证明提供者、完整T5/T2、真实IPC/设备、P0及历史登记回收仍缺，阶段0未关闭、业务实现未开始。本轮为新周期第1/3轮，仅本地提交。
 
 2026-10-24认证关闭ACK进展：[ACK与准备核销候选](contracts/c04-lifecycle/AUTHORIZATION_CLOSE_ACK.md)在255表组合中接通完整ACK线路原件、领域采用及日志seal，63项检查通过。迟到/失效ACK只存历史，结束或撤回使当前资格失效；采用条件与后续可用性分离，避免正常恢复使自身关闭依据失效。后者另用隔离视图实验验证，未执行完整T5。非空准备cut缺证明或伪造never_attempted仍拒绝；真实IPC/设备、准备核销正向全链、完整P0及最终T2仍缺，阶段0未关闭、业务实现未开始。本轮周期第3/3轮，逐提交审查后推送三轮成果。

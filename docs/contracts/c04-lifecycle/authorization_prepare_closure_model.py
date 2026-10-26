@@ -118,7 +118,13 @@ def complete(db,close_id,tick,fail_after=None):
         for member in members:
             pid=member['prepare_id'];r=M.E.one(db,'SELECT * FROM ep_request WHERE prepare_id=?',(pid,));authorization=M.document(r['authorization_body']);E.validate('EA__EncodingAuthorization',authorization)
             M.need(M.sealed(authorization,'authorization_digest')==authorization and authorization['authorization_id']==member['authorization_id'] and authorization['authorization_digest']==member['authorization_digest'],'prepare_closure_authorization')
-            if db.execute('SELECT 1 FROM ep_send_attempt WHERE prepare_id=?',(pid,)).fetchone():
+            release=db.execute("SELECT 1 FROM ep_release WHERE prepare_id=? AND basis='worker_released'",(pid,)).fetchone()
+            if release:
+                import authorization_prepare_release_model as R
+                adopted,frame,f=R.read_adoption(db,close_id,pid)
+                M.need(P.u(adopted['committed_tick_ns'])<=P.u(tick),'prepare_release_after_closure')
+                basis='released';proof=C.source_ref('release_proof',dict(adoption=adopted,frame=frame));ack_id=None
+            elif db.execute('SELECT 1 FROM ep_send_attempt WHERE prepare_id=?',(pid,)).fetchone():
                 frame,f,a,k=read_ack(db,close_id,pid);M.need(k['disposition']=='applied' and k['committed_tick']<=P.u(tick) and not db.execute('SELECT 1 FROM pd_ack_revocation WHERE ack_id=?',(a['ack_id'],)).fetchone(),'prepare_deny_ack_not_current')
                 basis='deny_ack';proof=C.source_ref('denial_proof',dict(ack=C.columns(a),frame=frame));ack_id=a['ack_id']
             else:

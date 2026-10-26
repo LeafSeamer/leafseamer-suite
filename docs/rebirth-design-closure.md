@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26换闸原件进展：[完整GATE_FENCE候选](contracts/c04-lifecycle/TYPED_GATE_FENCE.md)在269表组合中从健康关闭、准备核销和混合恢复接通完整换闸请求、ACK及fenced采用，112项离线检查通过。原关闭与核销经双向延迟外键绑定请求，原始事务缺写不能提交；到期边界、错绑、逐写故障、提交观察故障、迟到历史和撤回失效均覆盖。换闸不改变protected控制状态，不签发许可；OPEN_GATE、ReadyCommit、新grant、新命令/attempt和新域非空prepare仍待贯通，真实物理屏障与最终AdmissionSeal未验证，阶段0未关闭、业务未改。本轮周期第3/3轮，逐提交审查后推送三轮成果。
+
 2026-10-26关闭证据接入进展：[统一原件访问候选](contracts/c04-lifecycle/CLOSE_EVIDENCE.md)按唯一持久来源读取普通或认证关闭，健康新域ACK已贯通完整PreparationClosure与混合RecoveryCloseChoice，78项离线检查通过。空cut保留非空旧注册表，新ACK与旧worker退役集合共同恢复；逐写/漏写、提交观察故障、外事务拒绝、撤回及会话结束的失效传播和历史查原均覆盖。恢复后仍为protected，未生成最终许可。新域非空prepare、完整GATE_FENCE/OPEN_GATE、新grant和最终AdmissionSeal仍待完成，实际提供者、线路及设备未验证；阶段0未关闭、业务未改。本轮新周期第2/3轮，仅本地提交。
 
 2026-10-26健康出口关闭进展：[独立关闭原件候选](contracts/c04-lifecycle/GATE_CLOSE.md)在268表组合中直接绑定已持久关闭和cut，补完整CLOSE_GATE与ACK，66项检查通过。新出口无需制造认证时钟故障，旧认证入口按close_id互斥；错绑、逐写/漏写及提交观察故障、迟到历史与撤回失效均覆盖。准备核销与RecoveryCloseChoice访问器仍须从仅认证关闭扩展到原件类型选择，之后才能接通健康出口恢复、GATE_FENCE/OPEN_GATE及新grant；完整重新开放、真实提供者与最终AdmissionSeal未完成。业务未改、阶段0未关闭。本轮新周期第1/3轮，仅本地提交。

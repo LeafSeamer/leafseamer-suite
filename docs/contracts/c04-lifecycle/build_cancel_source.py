@@ -18,7 +18,10 @@ def schema():
     defs['SocketRegistration']=obj(format_version={'const':'cancel-socket-registration/0.1.0-draft.1'},scope=ref('S8__Scope'),
         exit=ref('S8__Exit'),observer_ref=ref('S8__Ref'),registration_digest=ref('S8__Digest'))
     defs['CommandState']=ref('V__S0_State')
-    roots=['CancelCut','CancelPolicy','CancelContent','SocketRegistration','CommandState','CancelReceipt','CancelOperation','TransmissionPermit','S8__DenySnapshot','S8__Packet','S9__TransportPacket']
+    context=dict(clock_domain_id=copy.deepcopy(defs['S8__Exit']['properties']['clock_domain_id']),descriptor_digest=ref('S8__Digest'),selected_tick_ns=ref('S8__Counter'))
+    defs['CancelPrepareContext']=obj(**context)
+    defs['CancelPrepareSource']=obj(format_version={'const':'cancel-prepare-source/0.1.0-draft.1'},scope=ref('S8__Scope'),device_id=ref('S8__Id'),cut_ref=ref('S8__Ref'),prepare_head=ref('S8__Counter'),control_change_id=dict(type='string',minLength=1,maxLength=256),**context)
+    roots=['CancelCut','CancelPolicy','CancelContent','SocketRegistration','CommandState','CancelPrepareContext','CancelPrepareSource','CancelReceipt','CancelOperation','TransmissionPermit','S8__DenySnapshot','S8__Packet','S9__TransportPacket']
     selected={}
     def include(name):
         if name in selected:return

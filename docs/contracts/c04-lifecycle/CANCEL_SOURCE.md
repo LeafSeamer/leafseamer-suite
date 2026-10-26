@@ -12,10 +12,10 @@ Cut及Policy从既有取消定义和当前公共命令/IPC类型图派生，CutT
 
 原件读取核对普通许可与原intent、packet、自摘要、出口和重传根；取消传输核对执行、packet、准备关联与实际持久字节。读取结果证明候选数据库中的原件对应关系，不证明此前传输获得生产准入，也不证明设备已执行。切点封存通过既有cc_cut/target/member/commit写集，拒绝水位由上一轮钩子自动推进。重入只查原；关闭证据撤回不删除历史cut或拒绝墓碑，是否还能用于开放须另行检查。
 
-snapshot_body按指定拒绝水位读取完整Cut并派生符合当前IPC的DenySnapshot正文；pending受理不能被过滤，历史ordinary不会被后来的all替换。正文尚未持久封存，不能把一次读取结果缓存成后续开放资格。当前有122项检查通过，覆盖逐写与漏写回滚、提交观察丢失、身份/原intent/时钟错配、重算摘要、实际取消字节错配、新出口、历史快照和必填字段；既有拒绝水位98项及关闭布局251项回归通过。测试只在首次登记前选择合法身份并生成一致摘要，不修改既存身份；旧占位正文明确拒绝。
+snapshot_body按指定拒绝水位读取完整Cut并派生符合当前IPC的DenySnapshot正文；pending受理不能被过滤，历史ordinary不会被后来的all替换。它本身只负责投影，持久封存由[命令快照模块](COMMAND_SNAPSHOT.md)负责，不能把一次读取结果缓存成后续开放资格。基础来源有122项检查，覆盖逐写与漏写回滚、提交观察丢失、身份/原intent/时钟错配、重算摘要、实际取消字节错配、新出口、历史快照和必填字段。测试只在首次登记前选择合法身份并生成一致摘要，不修改既存身份；旧占位正文明确拒绝。
 
-本轮正例在119表取消布局叠加拒绝水位及socket绑定形成121表，覆盖非空普通许可、取消准备和取消许可。该来源验证不等同当前包含准备cut、IPC日志和监督认证的完整运行布局写入；capture在后者仍须接入对应准备核销写集，不能跳过原守卫。完整DenySnapshot封存、OPEN前态引用、当前授权/时间及最终AdmissionSeal继续待完成。
+基础正例在119表取消布局叠加拒绝水位及socket绑定形成121表，覆盖非空普通许可、取消准备和取消许可。后续[当前布局接线](PREPARED_CANCEL.md)在capture中增加prepare_context及对应准备核销原子写集，并验证275表恢复链的非空准备／命令快照来源；不跳过原守卫。准备跨域退役核销、当前授权/时间及最终AdmissionSeal仍待完成，完整链尚未覆盖所有在途传输。
 
-后续进展：[命令拒绝快照封存](COMMAND_SNAPSHOT.md)已增加持久身份、历史重建及局部OPEN绑定检查，补齐上述“尚无封存”的部分；完整运行布局的非空接线仍未完成。完整布局安装检查发现附加ep_request守卫缺SQL终止符，已修正；旧标识格式和准备cut写集仍须逐项接通，不能据安装成功宣布运行来源已验证。
+准备选择上下文及来源记录由CancelPrepareContext／CancelPrepareSource约束。历史读取绑定当时的控制变化与时钟域，跨域裸tick比较明确拒绝。完整布局安装的ep_request守卫终止符问题已经修复；新夹具在首次登记时选定合法标识，旧库不会隐式改名。
 
 交付：[Schema生成器](build_cancel_source.py)、[Schema](cancel-source.schema.json)、[SQL](cancel_source.sql)、[原件模型](cancel_source_model.py)、[验收](check_cancel_source.py)、[报告](cancel-source-report.json)。复现：`docs/contracts/.venv/Scripts/python.exe docs/contracts/c04-lifecycle/check_cancel_source.py --report`。

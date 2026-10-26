@@ -12,13 +12,13 @@
 
 for_open 先调用已有运行拒绝快照与恢复前态组合，再使用恢复资源原件内的 command_snapshot_id 读取本库快照，核对当前水位、scope 和 device_id，返回 command_deny_snapshot。局部绑定检查不生成 OPEN、Ready 或最终许可。调用方必须在最终唯一 writer 的新写事务内重新读取所有准入来源；WAL 中已建立的读事务可能继续看到旧水位，此时 current=true 只描述旧快照时点。跨连接测试明确覆盖这一边界。
 
-## 完整接线仍未完成
+## 集成进展与剩余边界
 
 已知事实：完整恢复夹具的设备和部分启动标识仍含点号，例如 dev.1；当前取消 IPC 的相应 Id 限制为字母、数字、下划线和连字符。旧恢复链能接受这些测试标识，取消来源校验会拒绝。另一个安装故障是存在 ep_request 时追加守卫的 SQL 缺少语句终止符；本轮已修正，并实际验证完整组合中该守卫存在。（来源：[恢复夹具](check_run_snapshot.py)、[监督来源夹具](check_supervisor_retirement_adoption.py)、[当前取消 Schema](cancel-source.schema.json)、[安装入口](cancel_source_model.py)。）
 
-基于上述事实的处理方案：保持严格 Id 边界，禁止在读取既存原件时替换点号或重算身份摘要。后续完整正例须在首次登记前统一合法标识，覆盖监督启动、出口、IPC 会话、命令受理和恢复原件。随后接通 cc_cut 与 pd_cut／pd_member／准备撤销／pd_cut_commit 的原子写集及完整历史重建。不能只向 cc_cut 补一个 prepare_cut_id，也不能删除原守卫或临时放宽 Schema。
+基于上述事实的处理方案已在[当前准备切点接线](PREPARED_CANCEL.md)落实：保持严格 Id 边界，在首次登记前统一合法标识，覆盖监督启动、出口、IPC 会话、命令受理和恢复原件；接通 cc_cut 与 pd_cut／pd_member／准备撤销／pd_cut_commit 的原子写集及历史重建。没有只补prepare_cut_id、删除守卫或放宽Schema，既存原件不替换点号或重算身份。
 
-当前 275 表完整布局只证明模块安装和失败关闭；本轮非空普通／取消传输的快照正例位于 123 表取消来源布局。OPEN 组合函数的正反例使用受控前态输入，仅证明精确绑定逻辑。integrated_nonempty_open_verified 和 full_open_verified 明确为 false，不能用局部通过替代完整恢复后的非空 OPEN 正例。时间／授权完整来源、最终 AdmissionSeal 和真实提供者认证继续待完成。
+本文件对应的59项验收中，275表只验证安装与拒绝，非空普通／取消传输位于123表，局部OPEN绑定使用受控前态输入，其报告仍保持原验证范围。新增[准备切点报告](prepared-cancel-report.json)另行证明275表真实恢复数据库来源接入双非空拒绝快照，包含编码准备但未签发普通传输。两个报告不能互相扩大结论：完整OPEN发送及Ready、准备跨域退役核销、时间／授权完整来源、最终AdmissionSeal与真实提供者认证继续未完成。
 
 ## 验收与交付
 

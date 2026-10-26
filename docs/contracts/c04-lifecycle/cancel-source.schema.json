@@ -1725,6 +1725,74 @@
       "type": "string",
       "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
     },
+    "CancelPrepareContext": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/S8__Counter"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest",
+        "selected_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "CancelPrepareSource": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "cancel-prepare-source/0.1.0-draft.1"
+        },
+        "scope": {
+          "$ref": "#/$defs/S8__Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "cut_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "prepare_head": {
+          "$ref": "#/$defs/S8__Counter"
+        },
+        "control_change_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/S8__Counter"
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "device_id",
+        "cut_ref",
+        "prepare_head",
+        "control_change_id",
+        "clock_domain_id",
+        "descriptor_digest",
+        "selected_tick_ns"
+      ],
+      "additionalProperties": false
+    },
     "CancelReceipt": {
       "$ref": "#/$defs/V__S0_CancelReceipt"
     },

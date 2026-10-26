@@ -96,6 +96,48 @@ def expected(db,cid,cut_id,stage,issued,previous=None,stored=False):
         for old in previous['targets']:
             new=next((t for t in targets if t['exit']==old['exit']),None);need(new is not None and all(new[k]==old[k] for k in ('ordinary_attempt_ids','ordinary_transmissions')),'cancel_cut_predecessor')
     return body
+def prepare_source(db,cut,head,context,change_id):
+    validate('CancelPrepareContext',context)
+    D.S.validate('Counter',context['selected_tick_ns']);D.S.validate('Counter',str(int(head)))
+    command=cut['binding']['parent_command_id'];device=one(db,'SELECT device_id FROM ce_command WHERE command_id=?',(command,))['device_id']
+    change=one(db,'SELECT * FROM ct_change WHERE change_id=?',(change_id,))
+    need(change['device_id']==device and change['clock_domain']==context['clock_domain_id'] and change['descriptor']==context['descriptor_digest'] and change['now_tick']<=P.u(context['selected_tick_ns']),'cancel_prepare_domain')
+    source=dict(format_version='cancel-prepare-source/0.1.0-draft.1',scope=M.E.A.scope(db),device_id=device,cut_ref=reference(cut['cut_id'],cut['cut_digest']),prepare_head=str(int(head)),control_change_id=change_id,**context);validate('CancelPrepareSource',source);return source
+
+def read_prepare_cut(db,cut):
+    need(db.in_transaction,'cancel_source_transaction_required')
+    r=one(db,'SELECT p.*,k.committed_tick,k.audit_body,k.outbox_body FROM cc_cut c JOIN pd_cut p ON p.cut_id=c.prepare_cut_id JOIN pd_cut_commit k ON k.cut_id=p.cut_id WHERE c.cut_id=?',(cut['cut_id'],))
+    source=M.document(r['selector_body']);validate('CancelPrepareSource',source);context={k:source[k] for k in ('clock_domain_id','descriptor_digest','selected_tick_ns')}
+    need(raw(source)==r['selector_body']==r['audit_body']==r['outbox_body'] and digest(source)==r['selector_digest'] and r['kind']=='cancel' and r['cancel_id']==cut['cut_id'] and r['selected_tick']==r['committed_tick']==P.u(source['selected_tick_ns']),'cancel_prepare_original')
+    need(source==prepare_source(db,cut,r['prepare_head'],context,source['control_change_id']),'cancel_prepare_source')
+    columns='prepare_id,exit_id,authorization_id,authorization_digest'
+    wanted=rows(db,'SELECT '+columns+' FROM pd_expected WHERE cut_id=? ORDER BY prepare_id',(r['cut_id'],));actual=rows(db,'SELECT '+columns+' FROM pd_member WHERE cut_id=? ORDER BY prepare_id',(r['cut_id'],))
+    need(wanted==actual and len(actual)<=4096,'cancel_prepare_members')
+    for member in actual:
+        e=one(db,'SELECT * FROM ce_exit WHERE exit_id=?',(member['exit_id'],));need(all(e[k]==context[k] for k in ('clock_domain_id','descriptor_digest')),'cancel_prepare_cross_domain')
+        rev=one(db,'SELECT * FROM ep_revocation WHERE prepare_id=?',(member['prepare_id'],));request=one(db,'SELECT committed_tick FROM ep_request_commit WHERE prepare_id=?',(member['prepare_id'],))
+        reason=M.document(rev['reason_body']);need(raw(reason)==rev['reason_body']==rev['audit_body']==rev['outbox_body'] and digest(reason)==rev['revocation_digest'],'cancel_prepare_revocation_original')
+        need(reason.get('revoked_tick_ns')==str(int(rev['revoked_tick'])),'cancel_prepare_revocation_tick')
+        if reason.get('kind')=='cancel_prepare_revocation':
+            origin=one(db,'SELECT p.* FROM pd_member m JOIN pd_cut p USING(cut_id) WHERE m.prepare_id=? AND m.cut_id=?',(member['prepare_id'],reason['source_ref']['id']))
+            need(reason['prepare']==member and reason['source_ref']==reference(origin['cut_id'],origin['selector_digest']) and rev['revocation_id']=='cancel_revoke_'+digest(reason).split(':')[1] and rev['revocation_revision']==P.u(1),'cancel_prepare_revocation_binding')
+        need(rev['revoked_tick']<=r['committed_tick'] and request['committed_tick']<=r['committed_tick'],'cancel_prepare_time')
+    return source
+
+def write_prepare_cut(db,cut,prepare_id,context,write):
+    device=one(db,'SELECT device_id FROM ce_command WHERE command_id=?',(cut['binding']['parent_command_id'],))['device_id']
+    change=one(db,'SELECT change_id FROM ct_current_change WHERE device_id=?',(device,))['change_id'];head=db.execute("SELECT coalesce(max(sequence),'00000000000000000000') FROM pd_registration").fetchone()[0]
+    source=prepare_source(db,cut,head,context,change);tick=P.u(context['selected_tick_ns']);encoded=raw(source)
+    write('pd_cut',cut_id=prepare_id,kind='cancel',control_id=None,cancel_id=cut['cut_id'],run_id=None,close_id=None,prepare_head=head,selected_tick=tick,selector_digest=digest(source),selector_body=encoded)
+    members=rows(db,'SELECT prepare_id,exit_id,authorization_id,authorization_digest FROM pd_expected WHERE cut_id=? ORDER BY prepare_id LIMIT 4097',(prepare_id,));need(len(members)<=4096,'cancel_prepare_capacity')
+    for member in members:
+        eid=member['exit_id'];e=one(db,'SELECT * FROM ce_exit WHERE exit_id=?',(eid,));need(all(e[k]==context[k] for k in ('clock_domain_id','descriptor_digest')),'cancel_prepare_cross_domain')
+        pid=member['prepare_id'];write('pd_member',cut_id=prepare_id,**member)
+        if not db.execute('SELECT 1 FROM ep_revocation WHERE prepare_id=?',(pid,)).fetchone():
+            event=dict(kind='cancel_prepare_revocation',source_ref=reference(prepare_id,digest(source)),prepare=member,revoked_tick_ns=context['selected_tick_ns']);rid='cancel_revoke_'+digest(event).split(':')[1];body=raw(event)
+            write('ep_revocation',prepare_id=pid,revocation_id=rid,revocation_revision=P.u(1),revocation_digest=digest(event),revoked_tick=tick,reason_body=body,audit_body=body,outbox_id=rid,outbox_body=body)
+    write('pd_cut_commit',cut_id=prepare_id,committed_tick=tick,audit_body=encoded,outbox_body=encoded);need(read_prepare_cut(db,cut)==source,'cancel_prepare_readback')
+
 def read_cut(db,cut_id):
     need(db.in_transaction,'cancel_source_transaction_required');r=one(db,'SELECT c.* FROM cc_cut c JOIN cc_cut_commit k USING(cut_id) WHERE cut_id=?',(cut_id,))
     body=decode('CancelCut',r['cut_body'],'cut_digest',r['cut_digest']);previous=read_cut(db,r['previous_cut_id']) if r['stage']=='all' else None
@@ -107,25 +149,34 @@ def read_cut(db,cut_id):
         t=one(db,'SELECT * FROM cc_target WHERE cut_id=? AND exit_id=?',(cut_id,target['exit']['writer_exit_id'],));need(raw(target)==t['target_body'] and target['target_digest']==t['target_digest'],'cancel_target_original')
     expected_members=sorted((t['exit']['writer_exit_id'],p['intent']['permit_id']) for t in body['targets'] for p in t['ordinary_transmissions'])+sorted((t['exit']['writer_exit_id'],p['permit_id']) for t in body['targets'] for p in t['cancel_transmissions'])
     actual=sorted((m['exit_id'],m['permit_id']) for m in rows(db,'SELECT * FROM cc_member WHERE cut_id=?',(cut_id,)));need(sorted(expected_members)==actual,'cancel_cut_members')
-    k=one(db,'SELECT * FROM cc_cut_commit WHERE cut_id=?',(cut_id,));need(k['audit_body']==k['outbox_body']==r['cut_body'],'cancel_cut_seal');return body
-def capture(db,cid,cut_id,stage,fail_after=None):
+    k=one(db,'SELECT * FROM cc_cut_commit WHERE cut_id=?',(cut_id,));need(k['audit_body']==k['outbox_body']==r['cut_body'],'cancel_cut_seal')
+    if 'prepare_cut_id' in r:read_prepare_cut(db,body)
+    return body
+def capture(db,cid,cut_id,stage,fail_after=None,*,prepare_context=None):
     need(stage in ('ordinary','all'),'cancel_cut_stage')
     def run():
         writes,write=N.writer(db,fail_after)
+        prepared=any(r[1]=='prepare_cut_id' for r in db.execute('PRAGMA table_info(cc_cut)'))
+        need(prepared==(prepare_context is not None),'cancel_prepare_context_required')
         if db.execute('SELECT 1 FROM cc_cut WHERE cut_id=?',(cut_id,)).fetchone():
-            old=read_cut(db,cut_id);need(old['stage']==stage and old['binding']['cancellation_id']==cid,'cancel_cut_replay_conflict');return old,writes
+            old=read_cut(db,cut_id);need(old['stage']==stage and old['binding']['cancellation_id']==cid,'cancel_cut_replay_conflict')
+            if prepared:
+                original=read_prepare_cut(db,old);need(prepare_context=={k:original[k] for k in ('clock_domain_id','descriptor_digest','selected_tick_ns')},'cancel_cut_replay_conflict')
+            return old,writes
         c=one(db,'SELECT * FROM cv_cancel WHERE cancellation_id=?',(cid,));previous=None
         if stage=='all':previous=read_cut(db,one(db,"SELECT cut_id FROM cc_cut WHERE cancellation_id=? AND stage='ordinary'",(cid,))['cut_id'])
         issued=str(int(c['cut_revision'])) if stage=='ordinary' else str(int(db.execute("SELECT coalesce(max(issued_revision),'00000000000000000000') FROM ci_issue").fetchone()[0]))
         body=expected(db,cid,cut_id,stage,issued,previous)
         if stage=='ordinary':need(raw(body)==c['cut_body'] and body['cut_digest']==c['cut_digest'],'cancel_ordinary_admission_cut')
-        write('cc_cut',cut_id=cut_id,cancellation_id=cid,stage=stage,previous_cut_id=previous['cut_id'] if previous else None,issued_revision=P.u(issued),cut_digest=body['cut_digest'],cut_body=raw(body))
+        prepare_id='cancel_prepare_'+digest(dict(cut_id=cut_id)).split(':')[1]
+        write('cc_cut',cut_id=cut_id,cancellation_id=cid,stage=stage,previous_cut_id=previous['cut_id'] if previous else None,issued_revision=P.u(issued),cut_digest=body['cut_digest'],cut_body=raw(body),**({'prepare_cut_id':prepare_id} if prepared else {}))
         for t in body['targets']:
             eid=t['exit']['writer_exit_id'];write('cc_target',cut_id=cut_id,exit_id=eid,target_digest=t['target_digest'],target_body=raw(t))
             for pid in [p['intent']['permit_id'] for p in t['ordinary_transmissions']]+[p['permit_id'] for p in t['cancel_transmissions']]:
                 fact=db.execute('SELECT disposition FROM ce_current_disposition WHERE permit_id=? UNION ALL SELECT disposition FROM cf_disposition WHERE permit_id=?',(pid,pid)).fetchone()
                 write('cc_member',cut_id=cut_id,exit_id=eid,permit_id=pid,entered_known=int(fact is not None and fact[0]=='in_flight'))
             for pid in t['cancel_prepare_ids']:write('cc_cut_prepare',cut_id=cut_id,exit_id=eid,prepare_id=pid)
+        if prepared:write_prepare_cut(db,body,prepare_id,prepare_context,write)
         write('cc_cut_commit',cut_id=cut_id,validation_body=raw(body),audit_body=raw(body),outbox_id=cut_id+'.event',outbox_body=raw(body));need(read_cut(db,cut_id)==body,'cancel_cut_readback');return body,writes
     return N.transaction(db,run)
 

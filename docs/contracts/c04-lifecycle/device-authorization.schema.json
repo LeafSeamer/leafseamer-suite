@@ -1,0 +1,923 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/c04-lifecycle/device-authorization.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "not": {},
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Principal": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "HumanEvidence": {
+      "type": "object",
+      "properties": {
+        "principal": {
+          "$ref": "#/$defs/Principal"
+        },
+        "session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "credential_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "challenge_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "response_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope_proof_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "validity_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "principal",
+        "session_id",
+        "credential_id",
+        "challenge_ref",
+        "response_ref",
+        "scope_proof_ref",
+        "validity_ref"
+      ],
+      "additionalProperties": false
+    },
+    "EvaluatorEvidence": {
+      "type": "object",
+      "properties": {
+        "runtime_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "authority_response_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "scope_proof_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "validity_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "runtime_ref",
+        "policy_ref",
+        "authority_response_ref",
+        "scope_proof_ref",
+        "validity_ref"
+      ],
+      "additionalProperties": false
+    },
+    "CancelEvidence": {
+      "type": "object",
+      "properties": {
+        "protection_scope_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "assessment_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "cancel_authorization_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "protection_scope_ref",
+        "assessment_ref",
+        "cancel_authorization_ref",
+        "ownership_ref"
+      ],
+      "additionalProperties": false
+    },
+    "Requirement": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "open-authorization-requirement/0.1.0-draft.1"
+        },
+        "requirement_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "purpose": {
+          "enum": [
+            "ordinary",
+            "cancel_only"
+          ]
+        },
+        "control_mode": {
+          "enum": [
+            "manual",
+            "automatic"
+          ]
+        },
+        "control_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Principal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evaluator": {
+          "$ref": "#/$defs/EvaluatorEvidence"
+        },
+        "holder_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HumanEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CancelEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorization_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "revocation_cut_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "requirement_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "requirement_id",
+        "revision",
+        "binding",
+        "purpose",
+        "control_mode",
+        "control_state_ref",
+        "control_authority_ref",
+        "holder",
+        "evaluator",
+        "holder_evidence",
+        "cancel_evidence",
+        "authorization_state_ref",
+        "revocation_cut_ref",
+        "selected_tick_ns",
+        "expires_tick_ns",
+        "requirement_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "control_mode": {
+                "const": "manual"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "holder": {
+                "$ref": "#/$defs/Principal"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "holder": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "purpose": {
+                "const": "cancel_only"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "cancel_evidence": {
+                "$ref": "#/$defs/CancelEvidence"
+              },
+              "holder_evidence": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "cancel_evidence": {
+                "type": "null"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "control_mode": {
+                      "const": "manual"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "holder_evidence": {
+                      "$ref": "#/$defs/HumanEvidence"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "holder_evidence": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CredentialLineage": {
+      "type": "object",
+      "properties": {
+        "principal": {
+          "$ref": "#/$defs/Principal"
+        },
+        "principal_kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "credential_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subject_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "session_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "principal",
+        "principal_kind",
+        "credential_id",
+        "session_id",
+        "subject_revision",
+        "session_revision",
+        "policy_revision",
+        "scope_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "principal_kind": {
+                "const": "human"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "session_revision": {
+                "$ref": "#/$defs/Counter"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_id": {
+                "type": "null"
+              },
+              "session_revision": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Context": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/Id"
+        },
+        "control_version": {
+          "$ref": "#/$defs/Counter"
+        },
+        "mode": {
+          "enum": [
+            "manual",
+            "automatic"
+          ]
+        },
+        "holder": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Principal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "purpose": {
+          "enum": [
+            "ordinary",
+            "cancel_only"
+          ]
+        },
+        "evaluator_lineage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CredentialLineage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evaluator_policy_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "device_scope_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "holder_lineage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CredentialLineage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel_scope_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel_lineage_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "device_id",
+        "control_authority_ref",
+        "control_epoch",
+        "control_version",
+        "mode",
+        "holder",
+        "purpose",
+        "evaluator_lineage",
+        "evaluator_policy_ref",
+        "device_scope_ref",
+        "holder_lineage",
+        "cancel_scope_ref",
+        "cancel_lineage_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "manual"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "holder": {
+                "$ref": "#/$defs/Principal"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "holder": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "purpose": {
+                "const": "cancel_only"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "holder_lineage": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "cancel_scope_ref": {
+                "type": "null"
+              },
+              "cancel_lineage_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "State": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "device-authorization-state/0.1.0-draft.1"
+        },
+        "state_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "status": {
+          "enum": [
+            "protected",
+            "policy_selected"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "initial",
+              "revoked",
+              "scope_changed",
+              "policy_denied",
+              "control_changed",
+              "runtime_changed",
+              "evidence_expired",
+              "authentication_clock_untrusted",
+              "storage_fault",
+              "source_unavailable",
+              "credential_changed",
+              "cancel_scope_changed"
+            ]
+          }
+        },
+        "parent_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recovery_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "state_id",
+        "revision",
+        "context",
+        "status",
+        "reasons",
+        "parent_ref",
+        "recovery_ref",
+        "state_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "policy_selected"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reasons": {
+                "maxItems": 0
+              },
+              "recovery_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "context": {
+                "properties": {
+                  "evaluator_lineage": {
+                    "$ref": "#/$defs/CredentialLineage"
+                  },
+                  "evaluator_policy_ref": {
+                    "$ref": "#/$defs/Ref"
+                  },
+                  "device_scope_ref": {
+                    "$ref": "#/$defs/Ref"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reasons": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Window": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "enum": [
+            "evaluator",
+            "holder",
+            "cancel"
+          ]
+        },
+        "evidence_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "not_before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "before_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "role",
+        "evidence_ref",
+        "not_before_tick_ns",
+        "before_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "RecoveryAuthorization": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "device-recovery-authorization/0.1.0-draft.1"
+        },
+        "authorization_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "request_receipt_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "protected_state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "control_authority_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "requester": {
+          "$ref": "#/$defs/Principal"
+        },
+        "requester_kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "purpose": {
+          "const": "revalidate_device_authorization"
+        },
+        "proposed_context_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        },
+        "issued_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expires_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "authorization_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "authorization_id",
+        "revision",
+        "operation_id",
+        "request_receipt_ref",
+        "binding",
+        "protected_state_ref",
+        "control_authority_ref",
+        "requester",
+        "requester_kind",
+        "purpose",
+        "proposed_context_digest",
+        "evidence_refs",
+        "issued_tick_ns",
+        "expires_tick_ns",
+        "authorization_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Evidence": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "device-authorization-evidence/0.1.0-draft.1"
+        },
+        "evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "state_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "requirement": {
+          "$ref": "#/$defs/Requirement"
+        },
+        "context_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "windows": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/Window"
+          }
+        },
+        "evidence_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "evidence_id",
+        "revision",
+        "state_ref",
+        "requirement",
+        "context_digest",
+        "windows",
+        "evidence_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

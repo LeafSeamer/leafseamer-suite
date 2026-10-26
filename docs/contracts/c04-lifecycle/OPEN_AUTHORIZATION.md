@@ -2,6 +2,8 @@
 
 状态：待审阅、approved=false。以下“推荐”是基于现有契约的设计分析，不是已运行的认证系统，也不改变已批准 draft.4／IPC 0.3。
 
+稳定授权状态、短期响应刷新与三类来源的统一规则，现归入[DF06第10节](../../rebirth-df06-internal-trust-design.md#10-设备授权语义状态短期取证与恢复)。authorization_state_ref指稳定语义状态；正常证据刷新不推进其修订，真正失效后不得靠新响应直接续约。本文件的Requirement仍只是取证清单，不将新规则暗改进已批准API／IPC。
+
 ## 已知事实与缺口
 
 [306表恢复来源](OPEN_PROVIDER_SOURCE.md)已经重建控制、资源、拒绝快照与时间来源，但[资源快照构造](open_source_model.py)的 authorization_ref 仍只接受关联 ID。[最终命令授权](final_authorization_model.py)的挑战固定 device.command，AuthorizationUse 绑定具体 ExecutionIdentity，并且当前入口拒绝取消和面板委托。[GateAccess](../c08-controller/build_scoped_gate.py)则按设备和 ordinary／cancel_only 限定出口；两者不是可互换的凭证。

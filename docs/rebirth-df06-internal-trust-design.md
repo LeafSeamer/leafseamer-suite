@@ -6,6 +6,8 @@
 
 ## 1. 事实、缺口与推荐
 
+2026-10-26补充：设备开闸的稳定授权状态、短期取证及续约边界以本稿第10节为候选归并依据。它不新增公共gate.open权限，不改变IA01—IA06的信任来源要求，也不将结构验证升级为认证成功。
+
 **当前项目事实。** 两服务各有4个内部时钟GET，声明`serviceMtls`、`clock.internal.read`和`no-store`。Controller还有`POST /internal/auth/introspect`。Seamer的`POST /api/v1/providers/{provider_id}/events`目前为bearer＋provider.publish。当前EventEnvelope有provider、boot和sequence，但没有服务身份／来源注册绑定；CausalAgeBasis只有验证器域和发出／收到tick，没有因果新采样请求端点。上述结构不能单独证明谁有权读取哪个对象，或来源真的进行了新采样。（依据：`contracts/draft4/build_contracts.py`、`first-loop.schema.json`与两份OpenAPI。）
 
 **官方事实。** Node 24服务端必须启用`requestCert`才要求客户端证书；`rejectUnauthorized`仅在该条件下生效。内建`checkServerIdentity`核验主机名／IP，不能把URI SAN当作自动完成的应用身份验证。TLS 1.3的0-RTT没有固有重放保护。RFC9525要求服务器身份使用SAN，不能仅凭CN匹配。（来源：[Node 24.22.0 TLS](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/tls.md)、[RFC8446 §8](https://www.rfc-editor.org/rfc/rfc8446.html#section-8)、[RFC9525](https://www.rfc-editor.org/rfc/rfc9525.html)）
@@ -284,3 +286,76 @@ attempt截止取两端批准窗口交集；每端按自己的认证区间保守�
 | ILT18 | 普通配对／登录洪泛和大scope；有限预算拒绝，撤销／屏障独立额度可用，日志无秘密 |
 
 以上扩充IN07／IN21／IN31、FA及ST相关验收，不替代原用例；本轮只进行文档与跨项契约审阅，真实身份／TLS／数据库并发／设备执行数为零。下一版机器归并须包含本节DTO、状态、认证档案、具名transcript投影、错误集合与[DF04第10节](rebirth-df04-storage-design.md#10-身份生命周期事务补充)；生产验证器不得只检查枚举而遗漏权威及事务来源。剩余证书发行／寿命与秘密存储profile、服务订阅、面板委托和完整生成源仍按各专题冻结；本轮不宣告C07或全系统关闭。
+
+## 10. 设备授权语义状态、短期取证与恢复
+
+本节是IA02／IA05与F04的具体候选，approved=false。已知代码事实：[OPEN取证需求](contracts/c04-lifecycle/OPEN_AUTHORIZATION.md)区分评估器、持有人和限定取消；[撤销来源](contracts/c04-lifecycle/REVOCATION_SOURCE.md)能从命令授权原件重建拒绝全集，但不能作为设备开闸凭证。原Requirement尚未区分稳定授权状态和短期响应更新。本节的分析结论是：两者必须分别版本化，否则正常认证刷新可能推进authorization_revision并反复触发设备保护。
+
+### 10.1 一个设备状态，多个不可变取证结果
+
+[唯一局部定义](contracts/c04-lifecycle/build_device_authorization.py)生成[机器Schema](contracts/c04-lifecycle/device-authorization.schema.json)，其State与Evidence并入现有Requirement体系，不再另建公共HTTP或第二身份权威。如下是冻结建议，尚未替换批准基线。
+
+| 对象／字段 | 定义与引用 |
+| --- | --- |
+| State.state_id／revision | ID按scope＋device的摘要加修订后缀确定，每修订独立ID；revision从1开始、每次语义变化严格加1，完整Ref仍含摘要；parent_ref指同设备前一修订原件 |
+| State.context | 完整scope/device、当前control_authority_ref与epoch/version、mode/holder、ordinary或cancel_only用途；不引用会随闸相位更新的control_state_ref |
+| evaluator_lineage／evaluator_policy_ref／device_scope_ref | 当前服务主体三元组、credential、主体及策略修订、范围摘要与完整内部策略／设备范围原件；不是某个run的grant，也不是模块自报能力 |
+| holder_lineage | 仅ordinary/manual存在：当前holder三元组、session／credential、主体／会话／策略修订及设备范围摘要；automatic及cancel_only为null |
+| cancel_scope_ref／cancel_lineage_ref | 仅cancel_only存在：固定ProtectionScope及完整独立取消授权链的语义引用；其中主体、代行、原操作和范围不得随刷新替换 |
+| State.status／reasons | protected或policy_selected；后者仅表示已选定策略上下文，既不是Ready也不授设备许可；protected必须有稳定原因码，允许缺失的来源字段为null |
+| State.recovery_ref | 固定引用RecoveryAuthorization：已可靠受理、仍有效的恢复授权，绑定原protected状态和控制权；不是本次恢复完成证据，不以新token代替恢复，不自动复活运行 |
+| Evidence | 新ID、revision=1、state_ref、完整Requirement、context_digest及各来源的半开Window；context_digest由受信原件合并器按完整State.context重建 |
+| Window | role、完整evidence_ref、not_before_tick_ns／before_tick_ns；角色全集必须恰好为evaluator加适用holder或cancel，不允许空缺、重复或多余角色 |
+
+CredentialLineage不包含挑战ID、响应ID、接收时刻或freshness。正常刷新这些短期事实时，State.context与revision不变；新Evidence及Requirement另用新ID。凭据轮换、会话更换、主体／策略修订、设备范围、控制权或取消语义变化均不属于普通刷新。状态摘要只排除自身顶层摘要，证据同理；嵌套引用保留。
+
+authorization_revision映射State.revision。资源快照的authorization_ref使用每修订独立的State.state_id，解析完整原件后再核持久当前指针；Plan.state_refs.authorization、EligibilityRefs.authorization和GateAccess.authorization_ref均为完整State Ref。Requirement.authorization_state_ref同样引用State；Evidence只引用已存在State与Requirement，State不反向引用Evidence。仅裸ID相等不得作为授权，首次恢复封存仍须固化完整来源及修订。
+
+RecoveryAuthorization已进入同一Schema：authorization_id、revision=1、operation_id、原RequestKey对应的request_receipt_ref、完整binding、原protected_state_ref、control_authority_ref、requester三元组及kind、固定用途revalidate_device_authorization、proposed_context_digest、按完整Ref排序的evidence_refs（1—16）、issued／expires单调窗口及authorization_digest。scope/device从binding取得，不另复制冲突字段。proposed_context_digest绑定本次待选Context，不能借同一请求换设备范围、用途或凭据；它不包含尚未产生的State。一次消费状态由持久采用记录表达，不在不可变授权正文里改写。
+
+其语义只允许本次重新取证与尝试恢复；State采用与消费同事务，旧状态、控制权、完整Binding或窗口不匹配则拒绝。证据集合的1—16是本候选有界接受范围，容纳三个角色、控制权、运行身份及其关联顶层来源；完整撤销全集等嵌套证明以具名原件Ref引用，不展开为任意多顶层项。超出拒绝且不可截断，这不是性能承诺。它不得引用即将创建的State、ResourceSnapshot或RecoveryCloseChoice。依赖顺序为“原protected状态→恢复授权→新policy_selected状态→资源恢复快照／完成→GateAccess／OPEN／ACK／Ready”；完整关闭覆盖仍在后续恢复和OPEN采用时核验，选定策略本身不解除物理保护。这样同时避免摘要循环与事务先后循环。
+
+### 10.2 三类来源的固定解析职责
+
+所有来源读取都由受信Controller内部服务完成，不接受API调用方自填lineage、context_digest、窗口或verified。实际提供者必须输出其完整原件与确定性投影，并在writer采用时重读当前状态。
+
+| 来源 | 必须解析的完整原件 | 语义投影与短期窗口 |
+| --- | --- | --- |
+| 内部评估器 | 当前受监督runtime／配对或本机保护配置、当前credential／策略／设备范围、实际挑战响应、认证时钟有效期和撤销全集 | service lineage、策略／范围Ref进入State；runtime与原响应Ref留Evidence；上界取freshness、凭据／配对／策略有效期及本地窗口最小值 |
+| ordinary/manual持有人 | 精确当前控制权、holder身份、有效人员会话及credential、原挑战响应、设备动作范围与认证有效期、撤销全集 | human lineage进入State；响应刷新不能替换session／credential；不借control.acquire或T4历史证明当前可操作 |
+| cancel_only | 固定ProtectionScope／Ownership／Assessment、原取消操作及授权／代行链、相应主体与扩展批准、认证有效期、撤销全集 | 固定取消语义Ref进入State；授权撤销可允许独立安全取消，但不得借旧持有人或普通device.command降级；既有取消规则仍全部适用 |
+
+automatic无需借某个人员或单个run授权开放设备；每个自动动作仍独立核grant、arm和命令范围。三个来源可复用同一撤销事件账本和排序算法，但必须使用各自真实绑定适配器；当前命令AuthorizationUse适配器不是上述任一来源的默认替代。多来源撤销集合按完整来源身份分别取证后归并，不能只核评估器而遗漏holder、代行者或扩展。
+
+### 10.3 刷新、失效与状态转换
+
+| 当前状态／事件 | 必须转换与行为 |
+| --- | --- |
+| 首次启动 | 建立revision=1的protected状态；缺来源可显式为null，不默认policy_selected |
+| protected，恢复授权已可靠受理且当前来源成立 | 消费恢复授权并追加下一修订policy_selected；随后完成资源恢复及OPEN，不能直接Ready |
+| policy_selected，语义及来源谱系未变，旧证据仍有效 | 可选新Evidence而保持State修订；正常认证刷新本身不触发AUTH_FENCE或强制重新接管 |
+| 新证据到达时旧证据已到期或认证时间失信 | 不接受为续约，即使新证据本身有效；先protected并完成恢复。expiry等号拒绝，不补计失效期间的可用性 |
+| 权限、scope、credential、session、控制权或取消范围变化 | 先追加protected后继与保护写集，再按新来源恢复；不能policy_selected直接切换为另一语义上下文 |
+| 提供者／worker／Controller／会话／时钟域改变 | 旧Evidence绑定失效，不能按普通刷新复用；监督退役及原在途核销仍按既有协议 |
+| 同一状态或证据请求重投 | 相同完整内容查原；同ID异内容拒绝。仅重查当前状态不消费新修订 |
+| 修订耗尽、关键写失败或COMMIT不确定 | 本地停止派发、保护并查原；不能回绕、回退修订或依靠内存新Evidence继续。需写后继但无法提交时由既有紧急关闭路径处理 |
+
+刷新必须在同一域的now同时验证旧证据仍有效、新证据已有效且selected不在未来，并保持完整Binding、评估器runtime和State Ref。新Requirement期限不能超过全部来源上界、资源快照与闸租期的最早终点。窗口可以缩短，不能通过新的received时刻延长原challenge freshness。业务NTP不替代认证时钟。
+
+新Evidence不直接延长已安装worker租期。继续使用既有闸续约／ACK采用协议；旧租期仍有效期间可准备新证据，只有可靠采用后才切换当前取证选择。选择指针已换后，迟到旧ACK只能存历史。新证据失败而旧证据仍当前有效时可维持原截止，但不能续长；旧证据到期立即阻断。持有人不因刷新失败自动释放。
+
+### 10.4 同库映射及防绕过边界
+
+在Controller业务库统一实现device_authorization_state历史、每设备唯一head、不可变evidence及当前evidence选择。State历史主键为scope/device/revision，state_id另设唯一约束；head以预期旧修订CAS。State的recovery_ref、control_authority_ref、全部lineage与策略范围引用必须外键／类型映射到完整原件。Evidence表保存完整正文、state_ref和来源成员；当前选择只能指同设备、同State、已可靠封存的一条Evidence，不设置可由客户端清空的current选择参数。
+
+保护事务必须同时追加State后继、移动head、作废当前Evidence及未派发OPEN资格，并按既有AUTH_FENCE／CLOSE_GATE语义登记审计和保护outbox；相关在途保持未决直到完整核销。策略重选同事务消费RecoveryAuthorization、追加State后继及审计／outbox；重复消费不能创建第二条状态链。后续资源恢复另引用这个已存在State，不反写其recovery_ref。短期刷新不增加State修订，但Evidence封存、来源全集、旧当前选择CAS及新选择必须同事务；新状态或撤销先提交时旧刷新失败。
+
+最终writer必须从head读取旧选择。已有Evidence时只能走续约校验；只有新恢复状态尚未选择过Evidence时允许首次选择。不能通过传入previous=null或删除过期选择绕过“旧证据仍有效”的条件。纯模型的transition与单对象evidence均只是内部关联辅助；恢复应先走revalidate核完整RecoveryAuthorization和当前Binding，但它也不验证真实发行者或数据库一次消费。单独调用辅助函数即使通过，也不构成首次选择、续约、Ready或发送入口。
+
+这些是本轮冻结的完整映射和线性化约束，物理DDL及受信提供者仍须按此实现并验证；不把尚未运行的存储、TLS、原生进程或设备验收前置为阶段0完成设计的证据要求，也不将设计成文称为实现完成。
+
+### 10.5 关联验收与交付边界
+
+[纯转换模型](contracts/c04-lifecycle/device_authorization_model.py)和[检查器](contracts/c04-lifecycle/check_device_authorization.py)覆盖四用途／模式组合、正常刷新不变修订、expiry等号、变化先保护、恢复消耗新修订、旧证据拒绝、窗口全集与错Ref、跨运行绑定及修订耗尽；[报告](contracts/c04-lifecycle/device-authorization-report.json)保留真实来源、SQLite采用、续约IPC及完整OPEN均未验证。特别保留孤立新证据在旧期限后仍可能通过单对象结构检查的反例，证明不能把内部辅助函数当作最终入口。
+
+后续归入既有FA／ST／IN验收：正常连续刷新期间无额外AUTH_FENCE且State修订稳定；撤销与刷新竞争仅一个CAS胜出；语义变化保护写集逐写／漏写全回滚；不确定COMMIT按原选择查原；进程恢复不能将expired直接续约；cancel_only不能转ordinary；真实来源签发、完整同库映射与worker续约分别取证。新候选需与统一SDK／API／IPC归并审阅，C07及全系统尚未关闭。

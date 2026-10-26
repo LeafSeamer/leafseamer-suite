@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26固定驱动失败路径进展：[原子失败与双进程竞争](contracts/c04-lifecycle/NODE_SQLITE_ATOMICITY.md)对DELETE／WAL逐写异常和逐条漏写进行全表核对，验证提交后观察失败不等于回滚、盲重放约束拒绝、实际第二writer排他，以及WAL旧读事务升级拒绝。新增203项检查全部通过，报告记录真实错误与事务状态；共用验收桥补充明确回滚后，既有六切点进程终止验收已实际重跑49项通过，两份报告分别绑定582／580项输入。旧原生诊断报告578项输入仍匹配且保持失败，核对不等于重跑。该证据仍限固定候选制品和合法SQL写集，不代替完整Node可信writer、COMMIT I/O故障、真实监督流程、Linux或设备验收。阶段0及生产发行资格未关闭，业务未改；本周期第3/3轮，审查三个提交的成果及输入绑定后推送main。
+
 2026-10-26固定Node制品进展：[候选驱动持久性验收](contracts/c04-lifecycle/NODE_SQLITE_DURABILITY.md)已下载并核对Node24.22.0／better-sqlite3 13.0.3的官方制品，实际加载win32-x64预编译模块、回读SQLite3.53.4，并在独立存储线程执行参考模型生成的八条完整取消写集。DELETE／WAL的成员后、seal后和提交后六个切点分别真实终止测试进程，由预先启动的检查线程首次重开、逐表核对与验证配置，随后由Python参考模型重建276表恢复来源；具体结果见[独立报告](contracts/c04-lifecycle/node-sqlite-durability-report.json)。这是固定候选引擎的实际证据，不是完整Node可信writer、真实监督器或Windows1224根因修复证明；旧负面报告保留，Linux、签名和动态依赖闭包仍待验。阶段0及发行资格未关闭，业务未改；本周期第2/3轮，仅本地提交。
 
 2026-10-26 Windows重开定位进展：[原生验收补充](contracts/c04-lifecycle/WINDOWS_WAL_REOPEN.md)通过公开VFS接口观察到SHM截零返回Windows1224，未修改原始返回值或替换既有报告；本次结果及完整输入另存[诊断报告](contracts/c04-lifecycle/windows-wal-reopen-report.json)。这把已知失败对象收敛到共享内存映射限制，映射所有者及完整根因仍未确定，不等于主数据库损坏或生产驱动缺陷。既有首次失败门槛保持，稍后重开仅取证；未新增生产自动重试。下一步在冻结Node／better-sqlite3制品与真实监督存储线程流程复验，Windows与Linux资格分别验证。阶段0及DF04／DF05放行继续未关闭，业务未改；新周期第1/3轮，仅本地提交。

@@ -24,6 +24,11 @@ if(isMainThread){
     db.pragma('foreign_keys=ON');db.pragma('recursive_triggers=ON');db.pragma('synchronous=FULL');db.pragma('wal_autocheckpoint=1000');
   }
   function close(){if(db){db.close();db=undefined;}}
+  function insert(statement){
+    if(!/^INSERT INTO [a-z_]+ /.test(statement.sql))throw Error('insert_workload_required');
+    db.prepare(statement.sql).run(...statement.parameters.map(decode));
+  }
+  function fault(code){const error=Error(code);error.code=code;throw error;}
   function snapshot(){
     const result={};
     for(const row of db.prepare("SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name").all()){
@@ -37,17 +42,36 @@ if(isMainThread){
     try{
       if(request.action==='ping'){parentPort.postMessage({ok:true});return;}
       if(request.action==='close'){close();parentPort.postMessage({ok:true});return;}
+      if(request.action==='upgrade_snapshot'){
+        if(!db||!db.inTransaction)throw Error('read_transaction_required');
+        insert(request.statement);db.exec('COMMIT');close();parentPort.postMessage({ok:true});return;
+      }
       close();open(request.path);
       if(request.action==='setup'){
         if(!['DELETE','WAL'].includes(request.mode))throw Error('journal_mode_required');
         db.pragma('journal_mode='+request.mode);const value=facts();close();parentPort.postMessage({ok:true,facts:value});return;
       }
+      if(request.action==='hold_snapshot'){
+        db.exec('BEGIN');const value=snapshot();parentPort.postMessage({ok:true,state:value,in_transaction:db.inTransaction});return;
+      }
+      if(request.action==='transaction'){
+        if(request.statements.length!==8)throw Error('complete_workload_required');
+        if(request.omit!==undefined&&(!Number.isInteger(request.omit)||request.omit<0||request.omit>7))throw Error('omit_index_required');
+        if(request.fail_after!==undefined&&(!Number.isInteger(request.fail_after)||request.fail_after<1||request.fail_after>8))throw Error('fault_index_required');
+        db.exec('BEGIN IMMEDIATE');
+        for(let index=0;index<request.statements.length;index++){
+          if(request.omit!==index)insert(request.statements[index]);
+          if(request.fail_after===index+1)fault('test_precommit_fault');
+        }
+        db.exec('COMMIT');
+        if(request.lose_commit_observation===true)fault('test_commit_observation_lost');
+        close();parentPort.postMessage({ok:true});return;
+      }
       if(request.action==='write'){
         if(!['after_member','after_seal','after_commit'].includes(request.phase))throw Error('phase_required');
         db.exec('BEGIN IMMEDIATE');
         for(const statement of request.statements){
-          if(!/^INSERT INTO [a-z_]+ /.test(statement.sql))throw Error('insert_workload_required');
-          db.prepare(statement.sql).run(...statement.parameters.map(decode));
+          insert(statement);
           if((request.phase==='after_member'&&statement.sql.startsWith('INSERT INTO crp_member '))||(request.phase==='after_seal'&&statement.sql.startsWith('INSERT INTO cc_cut_commit '))){parentPort.postMessage({ok:true,barrier:request.phase,in_transaction:db.inTransaction});return;}
         }
         if(request.phase!=='after_commit')throw Error('barrier_not_reached');
@@ -58,6 +82,7 @@ if(isMainThread){
       close();parentPort.postMessage(value);
     }catch(error){
       const result={ok:false,code:typeof error.code==='string'?error.code:'test_operation_failed'};
+      if(db){result.transaction_open_on_error=db.inTransaction;if(db.inTransaction){try{db.exec('ROLLBACK');result.rollback_completed=true;}catch{result.rollback_completed=false;}}}
       try{close();}catch{result.close_failed=true;}
       parentPort.postMessage(result);
     }

@@ -107,7 +107,11 @@ def prepare_source(db,cut,head,context,change_id):
 def read_prepare_cut(db,cut):
     need(db.in_transaction,'cancel_source_transaction_required')
     r=one(db,'SELECT p.*,k.committed_tick,k.audit_body,k.outbox_body FROM cc_cut c JOIN pd_cut p ON p.cut_id=c.prepare_cut_id JOIN pd_cut_commit k ON k.cut_id=p.cut_id WHERE c.cut_id=?',(cut['cut_id'],))
-    source=M.document(r['selector_body']);validate('CancelPrepareSource',source);context={k:source[k] for k in ('clock_domain_id','descriptor_digest','selected_tick_ns')}
+    source=M.document(r['selector_body'])
+    if source.get('format_version')=='retired-cancel-source/0.1.0-draft.1':
+        import retired_cancel_model as retired
+        return retired.read(db,cut)
+    validate('CancelPrepareSource',source);context={k:source[k] for k in ('clock_domain_id','descriptor_digest','selected_tick_ns')}
     need(raw(source)==r['selector_body']==r['audit_body']==r['outbox_body'] and digest(source)==r['selector_digest'] and r['kind']=='cancel' and r['cancel_id']==cut['cut_id'] and r['selected_tick']==r['committed_tick']==P.u(source['selected_tick_ns']),'cancel_prepare_original')
     need(source==prepare_source(db,cut,r['prepare_head'],context,source['control_change_id']),'cancel_prepare_source')
     columns='prepare_id,exit_id,authorization_id,authorization_digest'
@@ -161,7 +165,9 @@ def capture(db,cid,cut_id,stage,fail_after=None,*,prepare_context=None):
         if db.execute('SELECT 1 FROM cc_cut WHERE cut_id=?',(cut_id,)).fetchone():
             old=read_cut(db,cut_id);need(old['stage']==stage and old['binding']['cancellation_id']==cid,'cancel_cut_replay_conflict')
             if prepared:
-                original=read_prepare_cut(db,old);need(prepare_context=={k:original[k] for k in ('clock_domain_id','descriptor_digest','selected_tick_ns')},'cancel_cut_replay_conflict')
+                original=read_prepare_cut(db,old)
+                need(original.get('format_version')=='cancel-prepare-source/0.1.0-draft.1','cancel_cut_retirement_context_required')
+                need(prepare_context=={k:original[k] for k in ('clock_domain_id','descriptor_digest','selected_tick_ns')},'cancel_cut_replay_conflict')
             return old,writes
         c=one(db,'SELECT * FROM cv_cancel WHERE cancellation_id=?',(cid,));previous=None
         if stage=='all':previous=read_cut(db,one(db,"SELECT cut_id FROM cc_cut WHERE cancellation_id=? AND stage='ordinary'",(cid,))['cut_id'])

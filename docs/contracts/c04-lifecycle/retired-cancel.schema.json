@@ -1,0 +1,3037 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/design/c04-lifecycle/retired-cancel.schema.json",
+  "title": "retired-cancel/0.1.0-draft.1",
+  "x-approved": false,
+  "not": {},
+  "$defs": {
+    "CancelCut": {
+      "type": "object",
+      "properties": {
+        "cut_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "binding": {
+          "$ref": "#/$defs/S8__CancellationBinding"
+        },
+        "stage": {
+          "enum": [
+            "ordinary",
+            "all"
+          ]
+        },
+        "previous_cut_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S8__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/S8__Counter"
+        },
+        "deny_revision": {
+          "$ref": "#/$defs/S8__PositiveCounter"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__CutTarget"
+          },
+          "maxItems": 256
+        },
+        "cut_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "cut_id",
+        "binding",
+        "stage",
+        "previous_cut_ref",
+        "issued_revision",
+        "deny_revision",
+        "targets",
+        "cut_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "stage": {
+                "const": "ordinary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "previous_cut_ref": {
+                "type": "null"
+              },
+              "targets": {
+                "items": {
+                  "properties": {
+                    "cancel_prepare_ids": {
+                      "maxItems": 0
+                    },
+                    "cancel_transmissions": {
+                      "maxItems": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "previous_cut_ref": {
+                "$ref": "#/$defs/S8__Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S8__Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+    },
+    "S8__CancellationBinding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/S8__Scope"
+        },
+        "cancellation_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "parent_command_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "initial_operation_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "identity": {
+          "$ref": "#/$defs/S8__CancelIdentity"
+        },
+        "mode": {
+          "enum": [
+            "before_dispatch_only",
+            "cooperative"
+          ]
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        }
+      },
+      "required": [
+        "scope",
+        "cancellation_id",
+        "parent_command_id",
+        "initial_operation_ref",
+        "identity",
+        "mode",
+        "policy_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S8__Scope": {
+      "$ref": "#/$defs/S5__Scope"
+    },
+    "S5__Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/S5__Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/S5__Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "S5__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9._:/-]+$(?![\\s\\S])"
+    },
+    "S8__Ref": {
+      "$ref": "#/$defs/S5__Ref"
+    },
+    "S5__Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/S5__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S5__PositiveCounter"
+        },
+        "digest": {
+          "$ref": "#/$defs/S5__Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S5__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S5__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "S8__CancelIdentity": {
+      "$ref": "#/$defs/S6__CancelIdentity"
+    },
+    "S6__CancelIdentity": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/S6__CancelKey"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/S6__Digest"
+        }
+      },
+      "required": [
+        "key",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S6__CancelKey": {
+      "type": "object",
+      "properties": {
+        "target_scope": {
+          "$ref": "#/$defs/S6__Scope"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/S6__Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/S6__Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/S6__Id"
+        },
+        "request_epoch": {
+          "$ref": "#/$defs/S6__Id"
+        },
+        "operation_id": {
+          "const": "cancelCommand"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/S6__Id"
+        }
+      },
+      "required": [
+        "target_scope",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id",
+        "request_epoch",
+        "operation_id",
+        "idempotency_key"
+      ],
+      "additionalProperties": false
+    },
+    "S6__Scope": {
+      "$ref": "#/$defs/S5__Scope"
+    },
+    "S6__Id": {
+      "$ref": "#/$defs/S5__Id"
+    },
+    "S6__Digest": {
+      "$ref": "#/$defs/S5__Digest"
+    },
+    "S8__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "S8__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S8__CutTarget": {
+      "type": "object",
+      "properties": {
+        "exit": {
+          "$ref": "#/$defs/S8__Exit"
+        },
+        "ordinary_attempt_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__Id"
+          },
+          "maxItems": 256
+        },
+        "ordinary_transmissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__TransmissionRef"
+          },
+          "maxItems": 256
+        },
+        "cancel_prepare_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__Id"
+          },
+          "maxItems": 256
+        },
+        "cancel_transmissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__Transmission"
+          },
+          "maxItems": 256
+        },
+        "target_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "exit",
+        "ordinary_attempt_ids",
+        "ordinary_transmissions",
+        "cancel_prepare_ids",
+        "cancel_transmissions",
+        "target_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S8__Exit": {
+      "type": "object",
+      "properties": {
+        "writer_exit_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "socket_instance_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "writer_exit_id",
+        "controller_boot_id",
+        "worker_boot_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "socket_instance_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S8__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "S8__TransmissionRef": {
+      "$ref": "#/$defs/S4__TransmissionRef"
+    },
+    "S4__TransmissionRef": {
+      "type": "object",
+      "properties": {
+        "transmission_id": {
+          "$ref": "#/$defs/S4__Id"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/S4__PacketRef"
+        },
+        "primitive_id": {
+          "$ref": "#/$defs/S4__Id"
+        },
+        "intent": {
+          "$ref": "#/$defs/S4__IntentRef"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/S4__Counter"
+        },
+        "kind": {
+          "enum": [
+            "initial",
+            "protocol_resend"
+          ]
+        },
+        "cause": {
+          "enum": [
+            "dispatch",
+            "timeout",
+            "peer_request"
+          ]
+        },
+        "trigger_observation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S4__ContentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parent_dispatch_intent_id": {
+          "$ref": "#/$defs/S4__Id"
+        },
+        "initial_permit_id": {
+          "$ref": "#/$defs/S4__Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/S4__PositiveCounter"
+        },
+        "send_window": {
+          "$ref": "#/$defs/S4__SendWindow"
+        }
+      },
+      "required": [
+        "transmission_id",
+        "packet_ref",
+        "primitive_id",
+        "intent",
+        "ordinal",
+        "kind",
+        "cause",
+        "trigger_observation_ref",
+        "parent_dispatch_intent_id",
+        "initial_permit_id",
+        "issued_revision",
+        "send_window"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "initial"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ordinal": {
+                "const": "0"
+              },
+              "cause": {
+                "const": "dispatch"
+              },
+              "trigger_observation_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ordinal": {
+                "$ref": "#/$defs/S4__PositiveCounter"
+              },
+              "cause": {
+                "enum": [
+                  "timeout",
+                  "peer_request"
+                ]
+              },
+              "trigger_observation_ref": {
+                "$ref": "#/$defs/S4__ContentRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S4__Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+    },
+    "S4__PacketRef": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/S4__Id"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/S4__Digest"
+        }
+      },
+      "required": [
+        "packet_id",
+        "packet_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S4__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "S4__IntentRef": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "dispatch_intent_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "admission_origin": {
+          "enum": [
+            "panel",
+            "non_panel"
+          ]
+        },
+        "panel_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "permit_id",
+        "command_id",
+        "attempt_id",
+        "dispatch_intent_id",
+        "worker_boot_id",
+        "device_session_id",
+        "guard_id",
+        "guard_digest",
+        "clock_domain_id",
+        "descriptor_digest",
+        "controller_boot_id",
+        "ipc_session_id",
+        "device_id",
+        "admission_origin",
+        "panel_binding_digest",
+        "origin",
+        "automation_binding",
+        "automation_binding_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "panel_binding_digest": {
+                "$ref": "#/$defs/S0__Digest"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "panel_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding_digest": {
+                "$ref": "#/$defs/S2__Digest"
+              },
+              "admission_origin": {
+                "const": "non_panel"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S0__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "S0__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "S2__AutomationOriginBinding": {
+      "type": "object",
+      "properties": {
+        "origin_scope": {
+          "$ref": "#/$defs/CN__Scope"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "definition_version": {
+          "$ref": "#/$defs/S1__PositiveCounter"
+        },
+        "arm_generation": {
+          "$ref": "#/$defs/S1__Counter"
+        },
+        "execution_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "execution_binding_ref": {
+          "$ref": "#/$defs/CN__ExecutionRef"
+        },
+        "step_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "logical_action_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "binding_version": {
+          "const": "continuation-execution/0.1.0-draft.1"
+        },
+        "authorization_mode": {
+          "enum": [
+            "preparation",
+            "continuation"
+          ]
+        },
+        "continuation": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/CN__Selection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "origin_scope",
+        "run_id",
+        "definition_version",
+        "arm_generation",
+        "execution_id",
+        "execution_binding_ref",
+        "step_id",
+        "logical_action_id",
+        "binding_version",
+        "authorization_mode",
+        "continuation"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "authorization_mode": {
+                "const": "continuation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "continuation": {
+                "$ref": "#/$defs/CN__Selection"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "continuation": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CN__Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "database_instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "S1__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+    },
+    "S1__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+    },
+    "CN__ExecutionRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "execution_binding"
+        },
+        "scope": {
+          "$ref": "#/$defs/CN__Scope"
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "scope",
+        "object_id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "CN__Selection": {
+      "type": "object",
+      "properties": {
+        "transfer_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "adoption_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "receipt_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "grant_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "plan_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        },
+        "parent_preparation_ref": {
+          "$ref": "#/$defs/CN__Ref"
+        }
+      },
+      "required": [
+        "transfer_ref",
+        "adoption_ref",
+        "receipt_ref",
+        "grant_ref",
+        "plan_ref",
+        "parent_preparation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "CN__Ref": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "object",
+          "properties": {
+            "authority_service_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            },
+            "database_instance_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "authority_service_id",
+            "database_instance_id"
+          ],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.:-]+(?![\\s\\S])"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "scope",
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S2__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "S4__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "S4__ContentRef": {
+      "type": "object",
+      "properties": {
+        "object_id": {
+          "$ref": "#/$defs/S4__Id"
+        },
+        "digest": {
+          "$ref": "#/$defs/S4__Digest"
+        }
+      },
+      "required": [
+        "object_id",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S4__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S4__SendWindow": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "earliest_tick_ns": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "latest_tick_ns": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "earliest_tick_ns",
+        "latest_tick_ns",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S0__Revision": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "S8__Transmission": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "transmission_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "execution_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "cancellation_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "parent_command_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "primitive_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/S8__PacketRef"
+        },
+        "exit": {
+          "$ref": "#/$defs/S8__Exit"
+        },
+        "requester": {
+          "$ref": "#/$defs/S8__Requester"
+        },
+        "guard_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/S8__Counter"
+        },
+        "initial_permit_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/S8__PositiveCounter"
+        },
+        "kind": {
+          "enum": [
+            "initial",
+            "protocol_resend"
+          ]
+        },
+        "trigger_observation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S8__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budget_receipt_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "send_window": {
+          "$ref": "#/$defs/S8__SendWindow"
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        },
+        "protection_assessment_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        }
+      },
+      "required": [
+        "permit_id",
+        "transmission_id",
+        "execution_ref",
+        "cancellation_id",
+        "parent_command_id",
+        "primitive_id",
+        "packet_ref",
+        "exit",
+        "requester",
+        "guard_ref",
+        "ordinal",
+        "initial_permit_id",
+        "issued_revision",
+        "kind",
+        "trigger_observation_ref",
+        "budget_receipt_ref",
+        "send_window",
+        "gate_access_ref",
+        "ownership_ref",
+        "protection_assessment_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "initial"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ordinal": {
+                "const": "0"
+              },
+              "trigger_observation_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ordinal": {
+                "$ref": "#/$defs/S8__PositiveCounter"
+              },
+              "trigger_observation_ref": {
+                "$ref": "#/$defs/S8__Ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S8__PacketRef": {
+      "$ref": "#/$defs/S4__PacketRef"
+    },
+    "S8__Requester": {
+      "type": "object",
+      "properties": {
+        "actor_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "admission_origin": {
+          "enum": [
+            "panel",
+            "non_panel"
+          ]
+        },
+        "panel_binding_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S8__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S8__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "actor_ref",
+        "authorization_ref",
+        "origin",
+        "admission_origin",
+        "panel_binding_ref",
+        "automation_binding_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "automation_binding_ref": {
+                "$ref": "#/$defs/S8__Ref"
+              },
+              "admission_origin": {
+                "const": "non_panel"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "panel_binding_ref": {
+                "$ref": "#/$defs/S8__Ref"
+              },
+              "origin": {
+                "const": "manual"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "panel_binding_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S8__SendWindow": {
+      "$ref": "#/$defs/S4__SendWindow"
+    },
+    "SG__Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/SG__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/SG__Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/SG__Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "SG__Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "SG__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "SG__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "CancelPolicy": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/S8__PositiveCounter"
+        },
+        "mode": {
+          "enum": [
+            "before_dispatch_only",
+            "cooperative"
+          ]
+        },
+        "procedure_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S8__Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion_policy_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "release_policy_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "resource_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__Id"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "max_transmissions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        },
+        "allow_protocol_resend": {
+          "type": "boolean"
+        },
+        "application_attempts": {
+          "const": 1
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "policy_id",
+        "revision",
+        "mode",
+        "procedure_ref",
+        "completion_policy_ref",
+        "release_policy_ref",
+        "resource_keys",
+        "max_transmissions",
+        "allow_protocol_resend",
+        "application_attempts",
+        "policy_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "cooperative"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "procedure_ref": {
+                "$ref": "#/$defs/S8__Ref"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "procedure_ref": {
+                "type": "null"
+              },
+              "allow_protocol_resend": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CancelContent": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/S8__Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "expected_state_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "scope",
+        "command_id",
+        "expected_state_ref",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "SocketRegistration": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "cancel-socket-registration/0.1.0-draft.1"
+        },
+        "scope": {
+          "$ref": "#/$defs/S8__Scope"
+        },
+        "exit": {
+          "$ref": "#/$defs/S8__Exit"
+        },
+        "observer_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "registration_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "exit",
+        "observer_ref",
+        "registration_digest"
+      ],
+      "additionalProperties": false
+    },
+    "CommandState": {
+      "$ref": "#/$defs/V__S0_State"
+    },
+    "V__S0_State": {
+      "$ref": "#/$defs/V__S1_State"
+    },
+    "V__S1_State": {
+      "type": "object",
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/V__S1_Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/V__S1_Scope"
+        },
+        "revision": {
+          "$ref": "#/$defs/V__S1_PositiveCounter"
+        },
+        "phase": {
+          "enum": [
+            "queued",
+            "dispatching",
+            "awaiting_evidence",
+            "finished"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "unknown",
+            "cancelled",
+            "expired",
+            "blocked"
+          ]
+        },
+        "effect_status": {
+          "$ref": "#/$defs/V__S1_Effect"
+        },
+        "resource_status": {
+          "enum": [
+            "held",
+            "clear",
+            "unresolved"
+          ]
+        },
+        "automation_continuation": {
+          "enum": [
+            "eligible",
+            "paused_latched"
+          ]
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/V__S1_Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/V__S1_PositiveCounter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolution_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/V__S1_Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion_evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S1_Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "resource_evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S1_Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "attempt_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S1_Id"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "command_id",
+        "scope",
+        "revision",
+        "phase",
+        "outcome",
+        "effect_status",
+        "resource_status",
+        "automation_continuation",
+        "reason_code",
+        "terminal_revision",
+        "resolution_ref",
+        "completion_evidence_refs",
+        "resource_evidence_refs",
+        "attempt_ids"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "const": "finished"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "not": {
+                  "const": "pending"
+                }
+              },
+              "terminal_revision": {
+                "$ref": "#/$defs/V__S1_PositiveCounter"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "outcome": {
+                "const": "pending"
+              },
+              "terminal_revision": {
+                "type": "null"
+              },
+              "resolution_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "failed",
+                  "unknown",
+                  "cancelled",
+                  "expired",
+                  "blocked"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "$ref": "#/$defs/V__S1_Id"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "unknown",
+                  "blocked",
+                  "expired"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "automation_continuation": {
+                "const": "paused_latched"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "effect_status": {
+                "not": {
+                  "const": "not_sent"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "unknown"
+              },
+              "resource_status": {
+                "const": "clear"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resolution_ref": {
+                "$ref": "#/$defs/V__S1_Ref"
+              },
+              "resource_evidence_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/V__S1_Ref"
+                },
+                "minItems": 1,
+                "maxItems": 256
+              }
+            }
+          }
+        }
+      ]
+    },
+    "V__S1_Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9._:/-]+$(?![\\s\\S])"
+    },
+    "V__S1_Scope": {
+      "$ref": "#/$defs/Scope"
+    },
+    "Scope": {
+      "$ref": "#/$defs/CN__Scope"
+    },
+    "V__S1_PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "V__S1_Effect": {
+      "enum": [
+        "not_sent",
+        "possible",
+        "acknowledged",
+        "verified",
+        "partial"
+      ]
+    },
+    "V__S1_Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/V__S1_Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/V__S1_PositiveCounter"
+        },
+        "digest": {
+          "$ref": "#/$defs/V__S1_Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "V__S1_Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "CancelPrepareContext": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/S8__Counter"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "descriptor_digest",
+        "selected_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "CancelPrepareSource": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "cancel-prepare-source/0.1.0-draft.1"
+        },
+        "scope": {
+          "$ref": "#/$defs/S8__Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "cut_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "prepare_head": {
+          "$ref": "#/$defs/S8__Counter"
+        },
+        "control_change_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/S8__Counter"
+        }
+      },
+      "required": [
+        "format_version",
+        "scope",
+        "device_id",
+        "cut_ref",
+        "prepare_head",
+        "control_change_id",
+        "clock_domain_id",
+        "descriptor_digest",
+        "selected_tick_ns"
+      ],
+      "additionalProperties": false
+    },
+    "CancelReceipt": {
+      "$ref": "#/$defs/V__S0_CancelReceipt"
+    },
+    "V__S0_CancelReceipt": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/V__S0_CancelIdentity"
+        },
+        "command_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/V__S0_Scope"
+        },
+        "cancellation_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "initial_operation_ref": {
+          "$ref": "#/$defs/V__S0_Ref"
+        },
+        "accepted_state_ref": {
+          "$ref": "#/$defs/V__S0_Ref"
+        },
+        "receipt_digest": {
+          "$ref": "#/$defs/V__S0_Digest"
+        }
+      },
+      "required": [
+        "identity",
+        "command_id",
+        "scope",
+        "cancellation_id",
+        "initial_operation_ref",
+        "accepted_state_ref",
+        "receipt_digest"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_CancelIdentity": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/V__S0_CancelKey"
+        },
+        "request_digest": {
+          "$ref": "#/$defs/V__S0_Digest"
+        }
+      },
+      "required": [
+        "key",
+        "request_digest"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_CancelKey": {
+      "type": "object",
+      "properties": {
+        "target_scope": {
+          "$ref": "#/$defs/V__S0_Scope"
+        },
+        "issuer_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "issuer_epoch": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "principal_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "request_epoch": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "operation_id": {
+          "const": "cancelCommand"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/V__S0_Id"
+        }
+      },
+      "required": [
+        "target_scope",
+        "issuer_id",
+        "issuer_epoch",
+        "principal_id",
+        "request_epoch",
+        "operation_id",
+        "idempotency_key"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_Scope": {
+      "$ref": "#/$defs/Scope"
+    },
+    "V__S0_Id": {
+      "$ref": "#/$defs/V__S1_Id"
+    },
+    "V__S0_Digest": {
+      "$ref": "#/$defs/V__S1_Digest"
+    },
+    "V__S0_Ref": {
+      "$ref": "#/$defs/V__S1_Ref"
+    },
+    "CancelOperation": {
+      "$ref": "#/$defs/V__S0_CancelOperation"
+    },
+    "V__S0_CancelOperation": {
+      "type": "object",
+      "properties": {
+        "cancellation_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/V__S0_Scope"
+        },
+        "command_id": {
+          "$ref": "#/$defs/V__S0_Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/V__S0_PositiveCounter"
+        },
+        "identity": {
+          "$ref": "#/$defs/V__S0_CancelIdentity"
+        },
+        "state": {
+          "$ref": "#/$defs/V__S0_CancellationState"
+        },
+        "mode": {
+          "enum": [
+            "before_dispatch_only",
+            "cooperative"
+          ]
+        },
+        "future_writes": {
+          "enum": [
+            "pending",
+            "closed",
+            "indeterminate"
+          ]
+        },
+        "command_state_ref": {
+          "$ref": "#/$defs/V__S0_Ref"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/V__S0_Ref"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/V__S0_Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_digest": {
+          "$ref": "#/$defs/V__S0_Digest"
+        }
+      },
+      "required": [
+        "cancellation_id",
+        "scope",
+        "command_id",
+        "revision",
+        "identity",
+        "state",
+        "mode",
+        "future_writes",
+        "command_state_ref",
+        "evidence_refs",
+        "reason_code",
+        "operation_digest"
+      ],
+      "additionalProperties": false
+    },
+    "V__S0_PositiveCounter": {
+      "$ref": "#/$defs/V__S1_PositiveCounter"
+    },
+    "V__S0_CancellationState": {
+      "enum": [
+        "requested",
+        "confirmed",
+        "unsupported",
+        "failed",
+        "indeterminate",
+        "too_late"
+      ]
+    },
+    "TransmissionPermit": {
+      "$ref": "#/$defs/S9__TransmissionPermit"
+    },
+    "S9__TransmissionPermit": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "dispatch_intent_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "control_epoch": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "control_version": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "authorization_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "grant_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arm_generation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gate_revision": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "deadline_policy": {
+          "$ref": "#/$defs/S0__Dispatch"
+        },
+        "content_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "admission_origin": {
+          "enum": [
+            "panel",
+            "non_panel"
+          ]
+        },
+        "panel_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transmission": {
+          "$ref": "#/$defs/S9__TransmissionRef"
+        },
+        "budget_revision": {
+          "$ref": "#/$defs/S9__PositiveCounter"
+        },
+        "gate_access_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/SG__Ref"
+        }
+      },
+      "required": [
+        "permit_id",
+        "command_id",
+        "attempt_id",
+        "dispatch_intent_id",
+        "controller_boot_id",
+        "worker_boot_id",
+        "device_session_id",
+        "control_epoch",
+        "control_version",
+        "authorization_revision",
+        "origin",
+        "grant_revision",
+        "arm_generation",
+        "gate_revision",
+        "deadline_policy",
+        "content_digest",
+        "guard_id",
+        "guard_digest",
+        "clock_domain_id",
+        "descriptor_digest",
+        "admission_origin",
+        "panel_binding_digest",
+        "automation_binding",
+        "transmission",
+        "budget_revision",
+        "gate_access_ref",
+        "ownership_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "grant_revision": {
+                "$ref": "#/$defs/S0__Revision"
+              },
+              "arm_generation": {
+                "$ref": "#/$defs/S0__Revision"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "grant_revision": {
+                "type": "null"
+              },
+              "arm_generation": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "panel_binding_digest": {
+                "$ref": "#/$defs/S0__Digest"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "panel_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "origin": {
+                "const": "manual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "admission_origin": {
+                "const": "non_panel"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S0__Dispatch": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "immediate"
+            },
+            "max_queue_ms": {
+              "$ref": "#/$defs/S0__Duration"
+            }
+          },
+          "required": [
+            "mode",
+            "max_queue_ms"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "scheduled"
+            },
+            "occurrence_id": {
+              "$ref": "#/$defs/S0__Id"
+            },
+            "not_before": {
+              "$ref": "#/$defs/S0__Timestamp"
+            },
+            "not_after": {
+              "$ref": "#/$defs/S0__Timestamp"
+            },
+            "clock_policy_revision": {
+              "$ref": "#/$defs/S0__Revision"
+            },
+            "max_queue_ms": {
+              "$ref": "#/$defs/S0__Duration"
+            }
+          },
+          "required": [
+            "mode",
+            "occurrence_id",
+            "not_before",
+            "not_after",
+            "clock_policy_revision",
+            "max_queue_ms"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "S0__Duration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400000
+    },
+    "S0__Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "S9__TransmissionRef": {
+      "type": "object",
+      "properties": {
+        "transmission_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/S9__PacketRef"
+        },
+        "primitive_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "intent": {
+          "$ref": "#/$defs/S9__IntentRef"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/S9__Counter"
+        },
+        "kind": {
+          "enum": [
+            "initial",
+            "protocol_resend"
+          ]
+        },
+        "cause": {
+          "enum": [
+            "dispatch",
+            "timeout",
+            "peer_request"
+          ]
+        },
+        "trigger_observation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S9__ContentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parent_dispatch_intent_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "initial_permit_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "issued_revision": {
+          "$ref": "#/$defs/S9__PositiveCounter"
+        },
+        "send_window": {
+          "$ref": "#/$defs/S9__SendWindow"
+        }
+      },
+      "required": [
+        "transmission_id",
+        "packet_ref",
+        "primitive_id",
+        "intent",
+        "ordinal",
+        "kind",
+        "cause",
+        "trigger_observation_ref",
+        "parent_dispatch_intent_id",
+        "initial_permit_id",
+        "issued_revision",
+        "send_window"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "initial"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ordinal": {
+                "const": "0"
+              },
+              "cause": {
+                "const": "dispatch"
+              },
+              "trigger_observation_ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ordinal": {
+                "$ref": "#/$defs/S9__PositiveCounter"
+              },
+              "cause": {
+                "enum": [
+                  "timeout",
+                  "peer_request"
+                ]
+              },
+              "trigger_observation_ref": {
+                "$ref": "#/$defs/S9__ContentRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S9__Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}(?![\\s\\S])"
+    },
+    "S9__PacketRef": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/S9__Digest"
+        }
+      },
+      "required": [
+        "packet_id",
+        "packet_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S9__Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "S9__IntentRef": {
+      "type": "object",
+      "properties": {
+        "permit_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "dispatch_intent_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "guard_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S0__Id"
+        },
+        "admission_origin": {
+          "enum": [
+            "panel",
+            "non_panel"
+          ]
+        },
+        "panel_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S0__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "manual",
+            "automation"
+          ]
+        },
+        "automation_binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__AutomationOriginBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_binding_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S2__Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "permit_id",
+        "command_id",
+        "attempt_id",
+        "dispatch_intent_id",
+        "worker_boot_id",
+        "device_session_id",
+        "guard_id",
+        "guard_digest",
+        "clock_domain_id",
+        "descriptor_digest",
+        "controller_boot_id",
+        "ipc_session_id",
+        "device_id",
+        "admission_origin",
+        "panel_binding_digest",
+        "origin",
+        "automation_binding",
+        "automation_binding_digest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "admission_origin": {
+                "const": "panel"
+              }
+            },
+            "required": [
+              "admission_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "panel_binding_digest": {
+                "$ref": "#/$defs/S0__Digest"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "panel_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding": {
+                "$ref": "#/$defs/S2__AutomationOriginBinding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "automation"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "automation_binding_digest": {
+                "$ref": "#/$defs/S2__Digest"
+              },
+              "admission_origin": {
+                "const": "non_panel"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "automation_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "S9__Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "S9__ContentRef": {
+      "type": "object",
+      "properties": {
+        "object_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "digest": {
+          "$ref": "#/$defs/S9__Digest"
+        }
+      },
+      "required": [
+        "object_id",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "S9__PositiveCounter": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$(?![\\s\\S])"
+    },
+    "S9__SendWindow": {
+      "type": "object",
+      "properties": {
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$"
+        },
+        "earliest_tick_ns": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "latest_tick_ns": {
+          "$ref": "#/$defs/S0__Revision"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/S0__Digest"
+        }
+      },
+      "required": [
+        "clock_domain_id",
+        "earliest_tick_ns",
+        "latest_tick_ns",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S8__DenySnapshot": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/S8__Scope"
+        },
+        "device_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "snapshot_revision": {
+          "$ref": "#/$defs/S8__Counter"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__DenyEntry"
+          },
+          "maxItems": 4096
+        },
+        "snapshot_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "device_id",
+        "snapshot_revision",
+        "entries",
+        "snapshot_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S8__DenyEntry": {
+      "type": "object",
+      "properties": {
+        "cancellation_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "parent_command_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "stage": {
+          "enum": [
+            "ordinary",
+            "all"
+          ]
+        },
+        "deny_revision": {
+          "$ref": "#/$defs/S8__PositiveCounter"
+        },
+        "cut_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        }
+      },
+      "required": [
+        "cancellation_id",
+        "parent_command_id",
+        "stage",
+        "deny_revision",
+        "cut_ref"
+      ],
+      "additionalProperties": false
+    },
+    "S8__Packet": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "execution_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "cancellation_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "parent_command_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "primitive_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "exit": {
+          "$ref": "#/$defs/S8__Exit"
+        },
+        "protocol_session": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S8__Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "wire_packet_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S8__Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tracking_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S8__Id"
+          },
+          "maxItems": 256
+        },
+        "immutable_bytes_ref": {
+          "$ref": "#/$defs/S8__ContentRef"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "sha256": {
+          "$ref": "#/$defs/S8__Digest"
+        },
+        "transport_profile_ref": {
+          "$ref": "#/$defs/S8__Ref"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "packet_id",
+        "execution_ref",
+        "cancellation_id",
+        "parent_command_id",
+        "primitive_id",
+        "exit",
+        "protocol_session",
+        "wire_packet_id",
+        "tracking_ids",
+        "immutable_bytes_ref",
+        "byte_length",
+        "sha256",
+        "transport_profile_ref",
+        "packet_digest"
+      ],
+      "additionalProperties": false
+    },
+    "S8__ContentRef": {
+      "$ref": "#/$defs/S4__ContentRef"
+    },
+    "S9__TransportPacket": {
+      "type": "object",
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "packet_digest": {
+          "$ref": "#/$defs/S9__Digest"
+        },
+        "command_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "attempt_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "primitive_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "socket_instance_id": {
+          "$ref": "#/$defs/S9__Id"
+        },
+        "protocol_session": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S9__Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "wire_packet_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/S9__Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tracking_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/S9__Id"
+          },
+          "maxItems": 256
+        },
+        "immutable_bytes_ref": {
+          "$ref": "#/$defs/S9__ContentRef"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "sha256": {
+          "$ref": "#/$defs/S9__Digest"
+        },
+        "transport_profile_ref": {
+          "$ref": "#/$defs/S9__ContentRef"
+        },
+        "primitive_plan_ref": {
+          "$ref": "#/$defs/S9__ContentRef"
+        }
+      },
+      "required": [
+        "packet_id",
+        "packet_digest",
+        "command_id",
+        "attempt_id",
+        "primitive_id",
+        "writer_exit_id",
+        "device_session_id",
+        "socket_instance_id",
+        "protocol_session",
+        "wire_packet_id",
+        "tracking_ids",
+        "immutable_bytes_ref",
+        "byte_length",
+        "sha256",
+        "transport_profile_ref",
+        "primitive_plan_ref"
+      ],
+      "additionalProperties": false
+    },
+    "RetiredCancelEncodingId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "RetiredCancelStorageRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "revision": {
+          "const": "1"
+        },
+        "digest": {
+          "$ref": "#/$defs/S8__Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "RetiredCancelMember": {
+      "type": "object",
+      "properties": {
+        "prepare_id": {
+          "$ref": "#/$defs/RetiredCancelEncodingId"
+        },
+        "exit_id": {
+          "$ref": "#/$defs/S8__Id"
+        },
+        "authorization_id": {
+          "$ref": "#/$defs/RetiredCancelEncodingId"
+        },
+        "authorization_digest": {
+          "$ref": "#/$defs/S8__Digest"
+        },
+        "completion_ref": {
+          "$ref": "#/$defs/RetiredCancelStorageRef"
+        },
+        "adoption_ref": {
+          "$ref": "#/$defs/RetiredCancelStorageRef"
+        },
+        "revocation_ref": {
+          "$ref": "#/$defs/RetiredCancelStorageRef"
+        }
+      },
+      "required": [
+        "prepare_id",
+        "exit_id",
+        "authorization_id",
+        "authorization_digest",
+        "completion_ref",
+        "adoption_ref",
+        "revocation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "RetiredCancelSource": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "retired-cancel-source/0.1.0-draft.1"
+        },
+        "selection": {
+          "$ref": "#/$defs/CancelPrepareSource"
+        },
+        "retirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RetiredCancelMember"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "format_version",
+        "selection",
+        "retirements"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

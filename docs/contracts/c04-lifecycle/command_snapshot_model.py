@@ -41,4 +41,11 @@ def for_open(db,rid,fid,now):
     sources=R.for_open(db,rid,fid,now);sid=sources['originals']['resource']['command_snapshot_id'];body=read(db,sid)
     need(current(db,sid),'command_snapshot_stale')
     need(body['scope']==sources['binding']['scope'] and body['device_id']==sources['binding']['device_id'],'command_snapshot_binding')
+    for entry in body['entries']:
+        cut=C.read_cut(db,entry['cut_ref']['id'])
+        if 'prepare_cut_id' in C.one(db,'SELECT * FROM cc_cut WHERE cut_id=?',(cut['cut_id'],)):
+            selection=C.read_prepare_cut(db,cut)
+            if selection.get('format_version')=='retired-cancel-source/0.1.0-draft.1':
+                import retired_cancel_model as retired
+                retired.read(db,cut,live=True)
     sources['command_deny_snapshot']=body;return sources

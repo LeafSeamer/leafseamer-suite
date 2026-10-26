@@ -21,7 +21,7 @@
 
 本轮离线交付：[Schema](retired-close-set.schema.json)、[SQL](retired-close-set.sql)、[参考模型](retired_close_set_model.py)、[验收检查器](check_retired_close_set.py)、[报告](retired-close-set-report.json)。70项检查通过；双出口夹具同时覆盖非空和空准备集合，两个真实SQLite文件连接验证撤回先占writer锁、完成被拒、重试重读失效资格的顺序。未执行真实IPC、操作系统提供者或设备测试。既有业务文件不修改。
 
-下一步必须把恢复目标显式改为worker_ack或supervisor_retired二选一，统一校验各设备完整最新关闭集合，并将任一证明失效传播到恢复seal、后继准入和保护计划。此处只提供独立关闭完成证据，尚未替换go_recovery_target、放宽旧ACK会话要求或签发发送许可；不将独立资格通过等同于恢复完成。原准备核销路径保留，待统一消费时归并，不生成并行的假ACK。真实准入认证、来源连接、容量物理预算、完整T5/T2和P0仍需后续完成。
+后续进展：[恢复依据二选一候选](RECOVERY_CLOSE_CHOICE.md)已通过独立退役目标表和统一资格视图消费完整集合，并验证撤回传播到go_valid_recovery。旧ACK存储与活会话要求保留，没有生成假ACK。此处独立集合报告仍只覆盖其自身70项；恢复消费另有独立报告。恢复之后的完整重新开放、主动保护传播、跨域快照排序、真实准入认证、来源连接、容量物理预算及完整T5/T2/P0继续待完成。
 
 ```powershell
 docs/contracts/.venv/Scripts/python.exe docs/contracts/c04-lifecycle/build_retired_close_set.py --check

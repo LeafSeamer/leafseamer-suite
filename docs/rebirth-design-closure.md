@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26撤销切点来源进展：[持久拒绝来源](contracts/c04-lifecycle/REVOCATION_SOURCE.md)为现有FloorEvent同事务登记不可变本地顺序，从完整AuthorizationUse及挑战／响应派生依赖并重建历史相关事件全集；两张业务表与253表授权链组合，另核SQLite自增状态。90项验收通过，含六类首次写入错原件、真实4096／4097边界、永久拒绝、乱序下界、全库回滚及WAL旧读升级拒绝。no_matching_denial不是授权成功，current可返回已拒绝元数据；此入口不将命令授权转为设备开闸授权。306表OPEN链接线、设备授权状态原件和撤销保护传播仍待完成，阶段0与业务边界保持。本周期第1/3轮，仅本地提交。
+
 2026-10-26开放授权取证边界进展：[授权来源候选](contracts/c04-lifecycle/OPEN_AUTHORIZATION.md)区分设备开闸资格与逐命令授权，明确ordinary/manual的当前持有人证据、automatic的内部评估器来源及cancel_only的独立取消授权链。新增需求Schema与52项正反例，不新增公共gate.open权限，不将device.command或旧T4当作设备授权；合成Ref仍可通过格式的反例明确保留。当前授权状态／撤销切点完整原件、同库读取及保护传播、完整OPEN仍未接通，未改306表来源和批准API／IPC。阶段0与业务边界保持；本周期第3/3轮，审查各提交当时输入后推送main。
 
 2026-10-26提供者恢复来源进展：[306表完整组合](contracts/c04-lifecycle/OPEN_PROVIDER_SOURCE.md)从当前State和完整采用原件确定时间Domain，取消调用方expected_provider_domain入口，并与非空运行／命令拒绝快照及worker原件同库读取。撤回后只保留提高的拒绝下界，新恢复可选择它而不复活UTC资格；旧恢复引用和较高水位回退拒绝，实际WAL旧读／最终writer重读边界已验。跨库监督闭锁、批准与核心身份、TIME保护及完整OPEN仍未完成，业务未改、阶段0未关闭。本周期第2/3轮，仅本地提交。

@@ -1,0 +1,1669 @@
+{
+  "format": "sdk-transport-handoff/1",
+  "sdk_repository": "https://github.com/LeafSeamer/leafseamer-sdk.git",
+  "suite_repository": "https://github.com/LeafSeamer/leafseamer-suite.git",
+  "sdk_main_commit": "c37256500c43092b145feebd026e273c5a2667f4",
+  "packages": [
+    {
+      "name": "integration",
+      "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5",
+      "report": "contracts/integration/report.json",
+      "files": {
+        "contracts/integration/build.py": "9015ee63fe6331cd8a45ffc4a53aa180e3357a2fafbd558b3ae4972c8bc791ea",
+        "contracts/integration/handshake.py": "acafa1f34125c8d82a0d8a738b347b75cd0cce9774d125a6bee2e6d119e8a22e",
+        "contracts/integration/check.py": "1dfde1c76e6f522a5b23d9c6f968d5d8407565f64734208cd6e9ff4392b79376",
+        "contracts/integration/README.md": "b0df1e1aea41d601260d984819ad1fc5389410b9a58e377393fccd429825202c",
+        "contracts/integration/sources.json": "52f08256cacf13002157cbc9d6a29a33906ff4ac9618659dfac04c7997561655",
+        "contracts/integration/source/command-contract-ipc.schema.json": "c758a2a1b06011901282e2780c8e92d62d050c2ab02d65a3254da5a9a266e082",
+        "contracts/integration/source/command-contract-manifest.json": "70f0a8c2aa2192da4e91a48c5896d62132ec632025e72c1df9e683a27ce54842",
+        "contracts/integration/source/command-contract.schema.json": "049a66b80bea06247aef806447b2c9ef3de347106c8dfd964664386adb9270f6",
+        "contracts/integration/source/frames-provenance.json": "b82bca87e3b81d093f84db10fd8b2e47a1872367544c5477d60b4ff932afea0c",
+        "contracts/integration/source/frames.json": "0c2a71f978b0dbfd6a756fc3f870c1f3b9c92b3be5df25051ff942419ca28979",
+        "contracts/integration/preview/controller.preview.openapi.json": "d8617342ab37802c0d417c290bb8e4bf5c60c6bd42f3740f709e068292736dee",
+        "contracts/integration/preview/inventory.json": "c07adf138d616077a588d7a89c09da7e31acb14e8f7edd2705a90343180848d4",
+        "contracts/integration/preview/model-identities.json": "c1d95641eb95a984af6df4dcf84d6f64ad07626ef96e3a92118c0485dfdc4eed",
+        "contracts/integration/preview/models.schema.json": "6e1de1ced01234aaa666586256c99e99ae943893045d02326aca43a80c6f6f23",
+        "contracts/integration/preview/seamer.preview.openapi.json": "4cbc8844834bd93b93119bebbf84954368bf8c9c812561dca6ee9a2fa57d7b79",
+        "contracts/integration/preview/worker-ipc.schema.json": "9a79cc00f376930de25c5e36992e358747e42bb1a34023a132e7d56b4b611625",
+        "contracts/integration/preview/worker-messages.json": "2c572fa222aae50a48e56a302190d6bbb88dfea5b825aaa3fbeba5e9317f954e",
+        "contracts/composition/compose.py": "a23b0ecf89824956a8194e8ecead8208ef7507bebb7e5d8d2bdd3f99b0c9eeb7",
+        "contracts/composition/source.json": "c34828282e8b3ab5c2d1d90b1dbfc01bf1c9daebf4066249a6836ddedf875ed7",
+        "contracts/composition/policy.json": "90899f9f2c2c8923cd1450506e15d3a9f35f5d6197ccc67d003e8c34301a705a",
+        "contracts/composition/requirements-validation.txt": "a336de65ce30f3e834980f7ba382b336a92ff98c2189272409b88d55058b7e1b",
+        "contracts/integration/report.json": "ba5dbaff3e1c92b1d6db3b0261505bea105eb2b65b43e708ab2100a7f4ef2c11"
+      }
+    },
+    {
+      "name": "negotiation",
+      "commit": "c37256500c43092b145feebd026e273c5a2667f4",
+      "report": "contracts/negotiation/report.json",
+      "files": {
+        "contracts/negotiation/build.py": "2a412f150be917b878eeca4f3f4fb0ad6d6ba60ddf3036184ba2c8b706efd459",
+        "contracts/negotiation/check.py": "2b4605565ebd45ff3bd61e7a36d825fb33a08e7027a142c11eb9d0a9a6ddc1ae",
+        "contracts/negotiation/examples.json": "bc22ad7c7adba1aedf6f921772e0c667d17d73a2bbdd49279d9b8ff302cb1e31",
+        "contracts/negotiation/model.py": "dd70223b0f29a62fbb59ed1ab65aa03e64d1f6fdac9595273fe69956cec5a63c",
+        "contracts/negotiation/policy.json": "f3a4c05a4c905bca5d245283d0ab14284930457bd2d5d4854839238622ebde69",
+        "contracts/negotiation/preview/controller.openapi.json": "33ed998efcb705534d987c47b3b83e31de1eb876e250ead86305372991c8caef",
+        "contracts/negotiation/preview/manifest.json": "ecea6f975f8278d6f80d6c64f9057cd845bae55f1dbb17aefe532b66837279ef",
+        "contracts/negotiation/preview/models.schema.json": "35563cf6eeb9f914aa73b6edc97ec61fb557e039b784b28b6824d8bfb75403ed",
+        "contracts/negotiation/preview/routing.json": "432d2f090c7a0e795143723b69f3d756b4b18563f032e059532089bc40ec8a43",
+        "contracts/negotiation/preview/seamer.openapi.json": "14e9fcf5f299cd629cef315cd0786bb1c71fc3c31c9190b05a6fddd3b64b1caa",
+        "contracts/negotiation/preview/selection.json": "c56175b9e6f3018766263402a56a8356acdd96f64976cf65a37cee5957732cd4",
+        "contracts/negotiation/preview/worker-ipc.schema.json": "c54511ac075f5f410b01d043548240ad46511ab509bf9bcc35049f0957116bc1",
+        "contracts/negotiation/preview/worker-messages.json": "81bf5fc57f9ecbadf6965372a291897845f845b1dfa62d27e48f97c7f8c77ce2",
+        "contracts/negotiation/PROTOCOL.md": "8b2380cf54c214007fdbd981d3654f672a03cdc9b64d690f68a822a07835e8e1",
+        "contracts/negotiation/README.md": "753cd52d81919f5ceb3cbd0a53550ded5208661177e61a1941f4c6725980d6da",
+        "contracts/negotiation/requirements-validation.txt": "891cc0c5027fb25b5dccc3aa0f7749ca8441217c14ef85c9bc773cc4599f0a58",
+        "contracts/negotiation/sources.json": "09c3d70c6e57baf5c6aa0a98eb989cd3f5cfa0c55ddc504a54f47af9ae3bc12e",
+        "contracts/integration/preview/models.schema.json": "6e1de1ced01234aaa666586256c99e99ae943893045d02326aca43a80c6f6f23",
+        "contracts/integration/preview/controller.preview.openapi.json": "d8617342ab37802c0d417c290bb8e4bf5c60c6bd42f3740f709e068292736dee",
+        "contracts/integration/preview/seamer.preview.openapi.json": "4cbc8844834bd93b93119bebbf84954368bf8c9c812561dca6ee9a2fa57d7b79",
+        "contracts/integration/preview/worker-ipc.schema.json": "9a79cc00f376930de25c5e36992e358747e42bb1a34023a132e7d56b4b611625",
+        "contracts/integration/preview/worker-messages.json": "2c572fa222aae50a48e56a302190d6bbb88dfea5b825aaa3fbeba5e9317f954e",
+        "contracts/composition/compose.py": "a23b0ecf89824956a8194e8ecead8208ef7507bebb7e5d8d2bdd3f99b0c9eeb7",
+        "contracts/composition/requirements-validation.txt": "a336de65ce30f3e834980f7ba382b336a92ff98c2189272409b88d55058b7e1b",
+        "contracts/negotiation/report.json": "01a2bafa079d7c13e519982091953b9a5c90272badc587fa57d4ced6eed19398"
+      }
+    }
+  ],
+  "source_anchors": [
+    {
+      "repository": "sdk",
+      "commit": "027f1fc75d9113da9dd5dae93e075ca3082e5e4e",
+      "path": "contracts/composition/compose.py",
+      "sha256": "a23b0ecf89824956a8194e8ecead8208ef7507bebb7e5d8d2bdd3f99b0c9eeb7"
+    },
+    {
+      "repository": "sdk",
+      "commit": "027f1fc75d9113da9dd5dae93e075ca3082e5e4e",
+      "path": "contracts/composition/policy.json",
+      "sha256": "90899f9f2c2c8923cd1450506e15d3a9f35f5d6197ccc67d003e8c34301a705a"
+    },
+    {
+      "repository": "sdk",
+      "commit": "027f1fc75d9113da9dd5dae93e075ca3082e5e4e",
+      "path": "contracts/composition/source.json",
+      "sha256": "c34828282e8b3ab5c2d1d90b1dbfc01bf1c9daebf4066249a6836ddedf875ed7"
+    },
+    {
+      "repository": "sdk",
+      "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5",
+      "path": "contracts/composition/compose.py",
+      "sha256": "a23b0ecf89824956a8194e8ecead8208ef7507bebb7e5d8d2bdd3f99b0c9eeb7"
+    },
+    {
+      "repository": "sdk",
+      "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5",
+      "path": "contracts/integration/preview/controller.preview.openapi.json",
+      "sha256": "d8617342ab37802c0d417c290bb8e4bf5c60c6bd42f3740f709e068292736dee"
+    },
+    {
+      "repository": "sdk",
+      "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5",
+      "path": "contracts/integration/preview/models.schema.json",
+      "sha256": "6e1de1ced01234aaa666586256c99e99ae943893045d02326aca43a80c6f6f23"
+    },
+    {
+      "repository": "sdk",
+      "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5",
+      "path": "contracts/integration/preview/seamer.preview.openapi.json",
+      "sha256": "4cbc8844834bd93b93119bebbf84954368bf8c9c812561dca6ee9a2fa57d7b79"
+    },
+    {
+      "repository": "sdk",
+      "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5",
+      "path": "contracts/integration/preview/worker-ipc.schema.json",
+      "sha256": "9a79cc00f376930de25c5e36992e358747e42bb1a34023a132e7d56b4b611625"
+    },
+    {
+      "repository": "sdk",
+      "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5",
+      "path": "contracts/integration/preview/worker-messages.json",
+      "sha256": "2c572fa222aae50a48e56a302190d6bbb88dfea5b825aaa3fbeba5e9317f954e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-admission/admission.schema.json",
+      "sha256": "333d0546ad9b29c31d7fa3d1940eeb9e66c0ce16a914e60e67166c120772dfb7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-admission/admission.sql",
+      "sha256": "69eadabfb6fb6277e8a77e3bd2b68dd36e75e93e9cd6efe4b144fc247c704b32"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-admission/check_storage.py",
+      "sha256": "f0f1936f610c7205eac68d3aebd0d1ccaf6a5eec369b1d5bc398d8fefc8d5073"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-cancellation/README.md",
+      "sha256": "19c0c2df545ac42fbdd62b7045dc812e0f8fd62a98cbc55c387742142cc5b8fa"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-cancellation/build_contracts.py",
+      "sha256": "137ae07e8603252998745dd6ed818f3287060541abce077301007079a145278f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-cancellation/cancellation.schema.json",
+      "sha256": "5a2c462a3a50d23077d16818751f4d990aa3c833d19ef5548ec3c7ccb9e8cbf3"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-cancellation/check_contracts.py",
+      "sha256": "42d7360f87936bfebb915f23176843101d50e0f4002d2c96805ea3ea4683617e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-cancellation/ipc.schema.json",
+      "sha256": "d71b04fec2004ed351b0fb8aa43fb95db7ffc147d98741f3d266f196b7be07ad"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-cancellation/reference_model.py",
+      "sha256": "48926177faee6991c2dfad02099f33661f6574cfb92014d7f7c4a03ea17dea50"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-command-view/README.md",
+      "sha256": "7ba6bb9790701ef2690f2a0c4882a151b99255507c7d360c8caa349350e740c1"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-command-view/STORAGE.md",
+      "sha256": "d50d171f4b1306dc63ae11d592212c13b321904531398b72f46593e02f6657fc"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-command-view/check_storage.py",
+      "sha256": "ca89ed5f7ef5111ea897cf6c5f23b8dd10380afed0daf5cbc519cd092e97ae16"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-command-view/command.schema.json",
+      "sha256": "6557b33f483f2859cc5db5181df9927f3d1d18eb8e2f8583b1853afd5583980e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c02-command-view/storage.sql",
+      "sha256": "32b0e47ca838213f5782e6107cf76887c28cf396eda76ecee06e41b68d35e4da"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/arm_budget_model.py",
+      "sha256": "d704cddb178af92a892c3dade14f2debf1ff6493c5b8b20f8f1423e68545cb95"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/arm_exit_model.py",
+      "sha256": "a8e62e75cddba8a28f59854afdf6cf88229427edf0156b11e5ad8189f7a78d42"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/arm_storage_model.py",
+      "sha256": "68fcda70ff089b0490d04f50e6ce1a692437f655d59cdac167933d07fdc1e915"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_arm_budget.py",
+      "sha256": "e20778ac7471086f4d966d5ed123d32c87daf7ab52cdf34b101ffc3462e8e898"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_arm_exit.py",
+      "sha256": "472a3397e2a2708b0f3c7ae46427865c47d208319d227f7db194cb1f5ccaf242"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_arm_storage.py",
+      "sha256": "a7ee406cedf9045a6830254ab22fe01f4432f2ea2a6533d62329b9428221eb28"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_continuation.py",
+      "sha256": "755295788f69dda95aa501adf9a756811a128f3b00bf2818b21093a8abc38f0a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_continuation_binding.py",
+      "sha256": "45dc0d619511f8d22493a7cdc77b3010d740d7cb235683535a1efa3b2a92ad24"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_continuation_protocol.py",
+      "sha256": "84d671b87e4fd500ca0fe8b125c328f954896c82cb5b2fcf5a04d88326a2a815"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_continuation_storage.py",
+      "sha256": "1596b8d1abe8fb226638c46b7ac6cad6a589324c7d35c91013235b75f7d99573"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_continuation_trigger.py",
+      "sha256": "1391a5df8702f3c93501a6e1766328ef7c85f12da26c011054126a97fd31f3e1"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_failure_protection.py",
+      "sha256": "035ae021245d5d1cb8089f08333c889a593a9510663cb5abd5488f92f192c502"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_instance_budget.py",
+      "sha256": "750ce6abfca8f917f7efc6f4263ccd0d2a74571bc7911791fb8079d663c9fc78"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_protection_charge.py",
+      "sha256": "76bb55a63a557e9ecbfa7b55602b0ade7c50baa8c2df447cf6fcadcf2a243e96"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_protection_retry.py",
+      "sha256": "16d701965d396c11969168a2bb8039a381b84ba9888a3883078fb142424716cc"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_recovery_budget.py",
+      "sha256": "e2998ded5c33d128fbd801f8be3bef5a366e8edb68c4837bb031d6d6e181e509"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_source_budget.py",
+      "sha256": "59846b346da9eae4c34494fec955036fa63c738f158647b41b533169e4f13cc4"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_source_resync.py",
+      "sha256": "a37864be020719708ea1e85930d4af2aab259d27d278e9262f7e10ee13cc1c96"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_trigger_flow.py",
+      "sha256": "96d3d3801afa540eba63919fcdf500cccb163dab9fc82bb0acdff22c4b842335"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/build_workload_budget.py",
+      "sha256": "e8dc583c68f5bcf21cfc09c0d7109aef849c68d7373de8f587575c2cac15527e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_arm_budget.py",
+      "sha256": "16d7086f0415c08ee7e559c4663129aa052a134e878d4d2c0d32209f3ee0fc42"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_arm_exit.py",
+      "sha256": "da591daf6190de00c5657869f75d786db6ff256238cf38bc204fcded5e7159e3"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_arm_storage.py",
+      "sha256": "ce17814125fe56ade49bacd9e7eff5975dd0f00e0f60738877adf2330c674143"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_continuation.py",
+      "sha256": "3d8e26eef62b54ebc4e7570722ee0f83b23044f0f9862e4ee85425e846c7c309"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_continuation_binding.py",
+      "sha256": "2765ee636c899a2e71aa0f772afa48167f98ae774780e2dd701add3bcc2b22ef"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_continuation_protocol.py",
+      "sha256": "625e655f993db075d1c13fffbff027a396ba24d6a1570354ea5071254e8a8f4b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_continuation_storage.py",
+      "sha256": "99a94d34f9783977b891cb1153700bc4be4e3062c44fcee2f889edd6b9b7195b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_continuation_trigger.py",
+      "sha256": "7e63b00924441b13b15aa4d9b876f5e416b46f4c1881eb06634dc2e9cebe4ed6"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_failure_protection.py",
+      "sha256": "7e0ddffcde10186acb049a6c7b94c578d61cbbb72c83742c7e0f728a356f03cc"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_instance_budget.py",
+      "sha256": "757aa9d2de4ead89abc7559c794a55b1fd1d094ccb341d57a074913bae860f86"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_protection_charge.py",
+      "sha256": "6fd04fb6b870d8f5ef81a169287a43b0de4952b95227104f8c011b4336f6c80e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_protection_retry.py",
+      "sha256": "1e5fd7f517c643dc881874b3426d78ae651b81d8d9eb24a7a34935530fc26ac4"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_recovery_budget.py",
+      "sha256": "2cc61f03a9c5d38ed3c85bdf1643cf5d133299197b11358ca7e57158f3043a04"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_source_budget.py",
+      "sha256": "9b5174d039380f19fdbe6b916de89b7aa7244465922804566463eef64c713891"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_source_resync.py",
+      "sha256": "c7edbaab8888cf7b9e9121fe44a653986d277ca8add5e25099ab85586317dfeb"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_trigger_flow.py",
+      "sha256": "b740433a7971e6b053a9d71bc8f08efc2d6d62b4a4ad7a8b30c445e57e266aa6"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/check_workload_budget.py",
+      "sha256": "ea33846460838aeff04cc9efbc0f9a36a8f9143c1cea8457406f26972f2a6b55"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/command-contract-ipc.schema.json",
+      "sha256": "c758a2a1b06011901282e2780c8e92d62d050c2ab02d65a3254da5a9a266e082"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/command-contract-manifest.json",
+      "sha256": "70f0a8c2aa2192da4e91a48c5896d62132ec632025e72c1df9e683a27ce54842"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/command-contract.schema.json",
+      "sha256": "049a66b80bea06247aef806447b2c9ef3de347106c8dfd964664386adb9270f6"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/continuation_binding_model.py",
+      "sha256": "55ca034c81f961f59f7f4599e53a1ad17961f69e5625162224ee830be944c165"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/continuation_model.py",
+      "sha256": "92b9b3ed24bfe95892fc44d55328cbe430996f7b5b91a249519436aca9b2fc61"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/continuation_protocol_model.py",
+      "sha256": "23160ebb821c046d5cded8e827a5ace82ff3bbec5ab58f1d3ca52e764f49c5a7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/continuation_storage_model.py",
+      "sha256": "f17e038f02c10a4bf699ddc28dd2595dbc5eb2024ec38a01ffa734a725de9e31"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/continuation_trigger_model.py",
+      "sha256": "2a4d2c70959574a8f54b7d258b73d5739b8bbf9d4ab17c48fecea017cbe74c84"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/failure_protection_model.py",
+      "sha256": "9f9fc8815ceb33728d7cc95386834d899dcb5b7c6d8e7813428eee4b260b9254"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/instance_budget_model.py",
+      "sha256": "2f9f7dfb24fd5fe680c141881c653a9c9ad06b08c823024145264d1d3a807096"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/protection_charge_model.py",
+      "sha256": "d578521ce68af7925aa14e77192d72616419c28e2b1d36bcd9e3dcdf12eef453"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/protection_retry_model.py",
+      "sha256": "9e5431c3e6f4beb31b3ae417c9792f990bca8a028bacee15cf12a4a12ba7c574"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/recovery_budget_model.py",
+      "sha256": "b7440e00a8ac299705405f019c4be47fcd3de59e955433ca7fdd2d2980e30ec3"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/reference_model.py",
+      "sha256": "4dd6adf7f9f9b6874feb7a867d7fd7c5c618b14ff61083eee6247f0305669bb7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/source_budget_model.py",
+      "sha256": "03fac7b41d29494a6df53234fd49bd345eeadd7b69bb53181c0f798cea77a1bb"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/source_resync_model.py",
+      "sha256": "1210b730e97d8a6db1414d326a0c2b39d62161fedbd7b259c4019e9d34ffea88"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-lifecycle/trigger_flow_model.py",
+      "sha256": "045d02d0e0d68b728c1d0b57e989030011af75d9bd138511c5ca752f7d2d1ee1"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-preparation/check_storage.py",
+      "sha256": "6443596872ff11bf1535776863408bfb666901a262f5dc553c0586fec06c32bf"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-preparation/preparation.sql",
+      "sha256": "654f128cc3bfb23abe9643e3635f6a2dab8a757847b4f5e78e48278a0521363b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-storage/check_dispatch.py",
+      "sha256": "621cd7ef4e78b2a9578f91e90710a05fa7ea24aace9988f97ecb6f2c9229e03c"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c04-storage/check_recovery.py",
+      "sha256": "d6fcf79ffcfc2697aad739f17498eeac540e0fc0a25569799f4b6f5cc55dc98a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/PROTOCOL.md",
+      "sha256": "07f3b408b39e54acd90c3925b7bc8d55fa6de33db62f0c87d43460cb6f0f3afe"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/build_contracts.py",
+      "sha256": "90b7a621c30e6f17fb7747f6bcbfad4336889a9355e9cb4d28896721e8cc2274"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/build_protocol.py",
+      "sha256": "da6c252af3e6fcb580f892fce2b2051fadea1d368ca93994f8992c81e61aeae7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/build_qualification.py",
+      "sha256": "a6e4218b0080fb85230419c9bc1137b64a5a627c55ac49ec62f0ac4b816c9d5e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/build_registration.py",
+      "sha256": "a5419d11748f1c121f874003ec464dd8f8c984390479cc886827cff466893c1e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/build_storage.py",
+      "sha256": "37776bd4ec3237a4817d967376a50223a6368e9014de0ac4381df0cbab549307"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/check_contracts.py",
+      "sha256": "31718e7a21b8a455d9088509dbf164a1ba66aaae81a5fa9c0b498a18d1fdc1d7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/check_protocol.py",
+      "sha256": "3c51df2d386c50cae17364fa3c139deb3f9caa062e826e535203e7206ca596d2"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/check_qualification.py",
+      "sha256": "c202cb90293830f2e814327f91dd9ba240820e03011f24fa3dbbc95d0fb7538d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/check_registration.py",
+      "sha256": "92542f466a4cb9f565d22828e3cb34c0da23ee5d819902aac851862773f1d7ed"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/check_storage.py",
+      "sha256": "1c993d7bbdbaa1b7cba881a66fdd0a3930dfdb599c181f0bf96eeb0abaac5c95"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/ipc-v05.schema.json",
+      "sha256": "c4822441ecbdc034a50bc1fac1fb969551594240634a2e0d6ac2f42ea2da2277"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/protection.openapi.json",
+      "sha256": "a1e9d53cd9dd4a2ac8ef5b291d23f76a5932e542651408ffe1c6c0911860f089"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/protection.schema.json",
+      "sha256": "7c32f2fe9f2808fd3f69dc49828cdbf42993e0efbd9a0f158c5ec509630d8a72"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/protocol.schema.json",
+      "sha256": "39bf5921aeae266357e9c77b00eb57f2847db53d6a041cf6f6a6473778fc3657"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/qualification_model.py",
+      "sha256": "26e6bb37ae0de347235df4bc083c47b67fb75db1c1ca51538c0ac13af6108dc7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/registration_model.py",
+      "sha256": "80397703037d5e33043182cef5488b7e964f6e96afee43571fb4675f298deb66"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c05-protection/storage_model.py",
+      "sha256": "60034bf5bf4d81fb13f370cd15088e560d071ecd990952bacea286cc89013649"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/BARRIER_ATTEMPTS.md",
+      "sha256": "b30a57df8ed400dbdd96da43572654f9292504522acc6f74aa960851b80e0358"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/CANCEL_CLOSURE.md",
+      "sha256": "2fe6eeef15a2acbf2a75003384ac30e617f288c6d547bb1d6912369cc58e3ed2"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/CANCEL_FENCE.md",
+      "sha256": "8a2a35d0dce59951a9db74b3a41cc115e8560b8170135fbb5364812aa67d68fe"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/CANCEL_PLAN.md",
+      "sha256": "a6565fd8b1b60ea5c690496a50fc9e2915b501b61c61b34c97c4704173321f3b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/CANCEL_RESOURCE.md",
+      "sha256": "af5e2ab040a673863431f11ec40b706082c838fa63c1c6dc50ca180219f5d11c"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/COMMAND_STORAGE.md",
+      "sha256": "da96dd77029f4b46c690bcba6f8b486a32afd4753931db25f948873bb2497267"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/CONTROL_FENCE.md",
+      "sha256": "dc6b2c27a3e4e3b7631ebcdfcda612f778d31a17fdf86a11f042d9062595bdad"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ENCODING_AUTHORITY.md",
+      "sha256": "3dfe763f0b176b39ea16cea14e35ec2c2418efd013062d6f95ce6e71adf5a66f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ENCODING_RELEASE.md",
+      "sha256": "c36a31f048a73f0847f118c230e6e74f0ff0fe50cfa191ac19bc9909eb8eb415"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ENCODING_RELEASE_STORAGE.md",
+      "sha256": "58477dabf042aa7c9ff21153e007d4ba14f2e0a8d3703290e54bd38410740ab0"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ENCODING_STORAGE.md",
+      "sha256": "d68cebedb93c3802b8ff423e299eedb5e0cd83f5186e81a55d374bbe267f246b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/FENCE.md",
+      "sha256": "cdfd98ffeabb1dd8daab1aeef2902ca3f7451209f3665108939560b5cb24e042"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/FINAL_ADMISSION.md",
+      "sha256": "93548617477367dc915f93cccb8ce20f2f959c19325881b46c7ce06b74762025"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/GATE_ORDER.md",
+      "sha256": "c223a9bf30bc3f3a9b36a73b4cd83f7e6304c8bd0eb29fc1c46651ff9c261b21"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/IPC_JOURNAL.md",
+      "sha256": "3dc124acce88fd0c1e0c75c3317f848562f47e4945c920f55e56fdeedf7dad2b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ISSUE_LEDGER.md",
+      "sha256": "e20988ec1d3fbcefe2eaee160c4be7a0b576c3b6aaf63e3013616deb90d6cb3c"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/LIFECYCLE.md",
+      "sha256": "abc966be718cc32a0f20eecb47bb0b69a7cb55ad454e3bfa6809a77918bdd21d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/OPEN_LIFECYCLE.md",
+      "sha256": "113fb88f7c75bd1221f2f8c768b9aa1ebe0c8d41f69db0eaac1034b17840a4d2"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/OPEN_PLAN.md",
+      "sha256": "d79c2595837fdb0fe7299253c6d39a973c723cc3da58b254763818ea8dd058dd"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/OPEN_STORAGE.md",
+      "sha256": "101e637afc992393a2c66d8e2f6ff2f3cd8951cf9d544b913052b511e1e4a5cf"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/PROTECTED_HOLD.md",
+      "sha256": "9996711cc4a934207c36ad7d28a0dc3fcec903c9f7524f21b62fddb3462e92b7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/PROTECTION_OUTBOX.md",
+      "sha256": "0c90f262df8a15121f0ac3326fcd036fdd1f80f04e59b83623301c17bb48a8bd"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/README.md",
+      "sha256": "a51b8342f24642b57a1ecc446ec2c0b33efc32339975f4e8a1abbbbd399f281d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/RESOURCE_STORAGE.md",
+      "sha256": "b1cad6768dd848bd93039b8d8b73ac9251a43a7a6f13a232bec0849c47a54cfa"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/RESULT_DEPENDENCY.md",
+      "sha256": "7ae41846323bfe005a1f776f92489bcc6134f683c242745dfc5f0a631009fb8e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/SCOPED_GATE.md",
+      "sha256": "5c128dcaad7a6e86b5fa24392443ad9ad8e275e32148368013c71d9c681c31ed"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/barrier-attempt.sql",
+      "sha256": "f62e79b8d124982b7c275a8fc2675b090f840ca1b87a833f1e78f6f96005fbfb"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_cancel_closure.py",
+      "sha256": "b7f95e571096830e08fa12d4eb6e6388515e2cd8a9def5b0c04ceadbdcef099e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_cancel_fence.py",
+      "sha256": "cbba07f9548d0b09fc765ee749e74ca2d777977544782cb4200105a4d7524f1d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_cancel_plan.py",
+      "sha256": "b23f81233561b474f53de8ab834fb9835864cbd16c259c24986712fe478a8170"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_cancel_resource.py",
+      "sha256": "41a36379b491898284e3dfd17f4910c61316944a4da1fc6db5e2997701b6f519"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_control_fence.py",
+      "sha256": "99da9e8145cb4bd2d9f538926f876d2856fe4aef4e994d234ad69df1febbd0f4"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_control_storage.py",
+      "sha256": "766797716adb9ea8f8850c674d86247840d0637991cd9a1e0945cfddd9ffc46f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_encoding_authority.py",
+      "sha256": "7d2ee16ec321ca8519dfb6ed7aa3800b3584594ad856c3e7dfda6d4ed388dc9b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_encoding_release.py",
+      "sha256": "6488aefdb92f07088ed1e582029e64e5972a5f2e426d97ccf3df274a91ec3224"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_encoding_release_storage.py",
+      "sha256": "7a615df2b30986a96f9fa7128bb558bb8e4fe7265f4c6befd89be3ced5b25490"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_encoding_storage.py",
+      "sha256": "44b989ba5afff60fff35aa2025600992906deacd0d479a19aecf3d00cdfb902d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_execution_ipc.py",
+      "sha256": "ae36c783e0ce39fb1b86275b3578f474e6f8eaad4080dd2f9eef3207a7daf3ae"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_gate_renewal.py",
+      "sha256": "5ef9b2e8eb966a50e970a3bc337579e5af3fea5a98bf7bbaf4a07f5884f2058f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_hold_ownership.py",
+      "sha256": "7d5e0cf05d731e7de2a9b48cf02fdec2f593db863d5c606a77b942c11748b0ee"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_ipc_journal.py",
+      "sha256": "e19fdef8eafe5582624623e519f6e344f36f9b402d06d65444aaf597af4bd07f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_ipc_journal_storage.py",
+      "sha256": "5d8db8e6c236fb3a7fd6a49e49b579e1172a297649d381dbefd7bf80417e6848"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_issue_ledger.py",
+      "sha256": "efd931f8a9804f0ed6e3ba5de31cb9d9dc103884ed8eab3485e6fbf01c3b038d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_layout.py",
+      "sha256": "8334633a5e4f3ef8d9d17b216bb03c70f3e81930711bea4f7ddb160757b3ece9"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_open_lifecycle.py",
+      "sha256": "a477b9f796a73a2e7ac699db8e0a518f1376c35e83f7228434f622608a086e8c"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_open_plan.py",
+      "sha256": "af3f9aec5e612e51a9400152500345c3ac245286f6001586e4324376b246b950"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_open_storage.py",
+      "sha256": "c41aa31cf6b303583bf6ad8336a1dac31be4be815d04af8f0bfb01f1347e68a5"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_ownership_storage.py",
+      "sha256": "f19dcd1d77232aaf875ef21f335ce4bec2076f868e7c7bcd9d3d9887d6d09a2a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_preparation_delivery.py",
+      "sha256": "c81251c516ef053407b0486db0105c9ab8024dcb0d0cc26502b6dc6c33c9680b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_prepare_deny_storage.py",
+      "sha256": "5061f6076cb987470ef1be83c97684537253ae874421d6e0239d956a42ece220"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_protected_hold.py",
+      "sha256": "05f7dc2d9006c7e815354e07210f1e145a9650e9102f3b7c3df7d208fea0f67a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_protection_delivery.py",
+      "sha256": "812f922613536e738ab35e6f7b90e2cac56c28953297cf8d3885a5bb0eb58abc"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_protection_outbox.py",
+      "sha256": "bac338eca473705a08b216fc41d00cbe732a0c953e881501b1923e1b39023b01"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_result_dependency.py",
+      "sha256": "76e91a4474668907af03ef16375b974993fe3e28debc083e60092256dc689dfe"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_scope_storage.py",
+      "sha256": "f1743ed72b8f018d0bea0b6ff8dda80be5d5a1e295bc462536cd8b72e5ac3bdc"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/build_scoped_gate.py",
+      "sha256": "e07d77a27c69198969d34c2dfa6e6c782d3e8b006a738fb2bc83af8c655677fe"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/cancel-closure.sql",
+      "sha256": "9c54e6e27aa9358dec23f662a4631c4ab8134459853de028abeb8e0489ef4d0a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/cancel-fence.sql",
+      "sha256": "559a918a21b95e4e3f293bf888f68a694b12fe6560e84c4786789d02aa5493b5"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/cancel-plan.sql",
+      "sha256": "77b941c6d6adbf0f9aea2be8ad0f733b5bebec5281c9d634e406f3b9395da601"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/cancel-resource.sql",
+      "sha256": "3ace3a1a067791527f772ba662ede9776df8e4472244f93b2ac479a6d7e0d86d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_barrier_attempt.py",
+      "sha256": "050a2f7f9caa48122b73e7344080570a35203fa9bfa1ebbf3784ede8ff17182b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_cancel_closure.py",
+      "sha256": "5c599e539e128c89aa200764fd4beeabfc94284507950c654afe49071ea0c12b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_cancel_fence.py",
+      "sha256": "f7aab87c739236d2215bb22754e182d8e1131ae582bfd996f07925f12a83495f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_cancel_plan.py",
+      "sha256": "9ef02f2ccee3b5e9037c372315d69a7533f899a2ea089112863c2a3427df0588"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_cancel_resource.py",
+      "sha256": "b7a105462c796d0c811f2530066a585cfc0c450eb04d103815aa25a2df17aa36"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_command.py",
+      "sha256": "c9dd3d09927a6d6fa62f50b77e64612afc31a4613faaa389f959d6d02995a3f4"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_control_fence.py",
+      "sha256": "b951c58e10b047e23c73092bc8e1ed8c401ead20b08126b1c26355fc069f3658"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_control_storage.py",
+      "sha256": "7bcd8bd90894bd6aca8af522fcc362d3f8189a27a7658a32d31cef4d2d7eb155"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_encoding_authority.py",
+      "sha256": "7e2e44e135658bffc86b2d07b5b5a8cdf5e19cd6b771fb2c18994f24e919282a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_encoding_release.py",
+      "sha256": "12e0e1f1165653c6b3c0dcbfcacf12149e1886c931406a3868a415876dd325bb"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_encoding_release_storage.py",
+      "sha256": "51a8e9e4497a6f468049100d8e73ebb40e873329de6a2439d94c18ea5ca8e20d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_encoding_storage.py",
+      "sha256": "c4e656a76dee02d8b0a41b7acccb6de35d02d5bc187b0ebe648db2e2983ac46c"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_execution_ipc.py",
+      "sha256": "183943863074507eb10778cd8d90345d8927821293442090616de8b038ee021d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_fence.py",
+      "sha256": "c4a708ecc5f6c9667baf820d9b54ecab907ec1b1a259652369b575961a0dcbe1"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_gate_renewal.py",
+      "sha256": "9fb0a19c4c76aee553011361ffd8b5c522af214c7eff64c4c8b0d5e47f8090f9"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_hold_ownership.py",
+      "sha256": "bf8c5ed34739e80bc9b80b6ef68f73e3be79baf2228bfb0fa342118029b96acf"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_ipc_journal.py",
+      "sha256": "315c7d386c72ab2ff6483190179e9592f035a4d4e9cce6697a34d0f8a72e48c6"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_ipc_journal_storage.py",
+      "sha256": "78bb1496b1c61e24783645d717b6f4dfa34914e0c84559ada768e88a4c63f62e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_issue_ledger.py",
+      "sha256": "9345d6f1ce16150b62f77e137d917a90d07f013aab062140960e0031fceb037b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_layout.py",
+      "sha256": "ee3e898b93f6848679ea488cbe5f27c23cdff9dc1f15218d54018e5fafdbbc6b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_open_lifecycle.py",
+      "sha256": "104f73dddc913edb013e0d0a4e81f8f3fa8a9ef50cdeee4e85fac42e207226de"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_open_plan.py",
+      "sha256": "eeb82dc84f694a6d55db78c66cc6bad95464c8d844334a4794b2c4689617e9eb"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_open_storage.py",
+      "sha256": "5a1300af8cf9aee93f4e9648216f280f09c228dab74c80fe6b578967f684510e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_ownership_storage.py",
+      "sha256": "d6c84d7523fb6ea901817f1b6dbc0741b493ce7e43e6f01525b9b5cdc283efac"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_prepare_deny_storage.py",
+      "sha256": "0ee9d221b0c28264a4b9924d339a9e240dc8c66e7f13a1bad7a977d28584dfd1"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_protected_hold.py",
+      "sha256": "7884bbd5df6f4c4b199d32b9b0974c7e350e72a08c3fd3d60475e44e49a095db"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_resource.py",
+      "sha256": "a2d7d39637ab25421279a10981d92664dd15e020dbf2e208d61fcc410fbf2849"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_result_dependency.py",
+      "sha256": "be0013474e5babf69d7a8e45c2107527c2bc7dde88e252f75a71cf230f5b88d3"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_scope_storage.py",
+      "sha256": "a30887fd22fbfd1ef0763e1a72fcea546b019f79bb9c2e5e8ba7752e660850de"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/check_scoped_gate.py",
+      "sha256": "cd81417ec7925e7ac6bb098aab15168a27e22f1fdcaa1861b4a79815260adfd8"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/command.sql",
+      "sha256": "c691ee354522669388af8b6a4ee1fdd8dc673740fd28fb8f9acf385ee4b539fd"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/common.sql",
+      "sha256": "98f7a2f1a3eecc6336da356589854ebc7e5f28923c23165cadb2b5e530966cc4"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/control-fence.sql",
+      "sha256": "6787ff44baa87b1118f84a32f5da6021248696e3402a2821ec44440f673eb50a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-cancel-closure.sql",
+      "sha256": "9da2f05085edf9a504cfb3d12489f109a7b7ae15eb5d767c0ca6a5cd33f03fd2"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-cancel-fence.sql",
+      "sha256": "54af09ffcbc6ebc959025fad1954b12bc9153fa7795016c4bcd3c42ac5c32fcd"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-cancel-plan.sql",
+      "sha256": "e08ac8d2e568bd23a70447033ff51bfa6659b840a235c1c2aa16ae0d59f05a7f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-cancel-resource.sql",
+      "sha256": "9305bbd31226cca764dd4bfd92e9b41f5895c6c524d41d3ff0f9e60b58429caa"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-control-fence.sql",
+      "sha256": "f6cbfd06f20cebb717c5a6f4c104905aab3655aba6511ad18cf9a95158f12d56"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-issue.sql",
+      "sha256": "1bceb2564b08afbbd5b6e1ea61f64b6c69b16bebf067cda23e239932d60d4c5b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-open.sql",
+      "sha256": "cf12bfd2bb2a5f424de714ce79c61fea2447ac75571cb80e6240f1b0cf3e2ca8"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-protected-hold.sql",
+      "sha256": "464f6a9cdfebd2bf602b57c810c4131e66811eecdc9239930ea5f817624b1f21"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller-result-dependency.sql",
+      "sha256": "83fa4576c831417d6ee6a6df93457e3b904946159a6f34a6e0b2f818b2816569"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/controller.sql",
+      "sha256": "24da84ded507acfd9f454507e0d42741bf63969807f32c7463cb3608b16065c4"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding-authority-ipc.schema.json",
+      "sha256": "11426f37341d32e5a0a76a784cfcbf4167cdeb8c8b0cfe89a7475df541418ce0"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding-authority.schema.json",
+      "sha256": "d5b362352ff2c8b5a3346491d958ab75aeead6b54d04d4f0fb526587d121c058"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding-release-ipc.schema.json",
+      "sha256": "cb492937a62c8e2a3e95b8446e390ed3e1315b0eab6f2ce489b5589a82f57c00"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding-release-storage.sql",
+      "sha256": "04980c13b6f892698510fb5d8edaf2d761addd206a11c84dad165edb41cf5cce"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding-release.schema.json",
+      "sha256": "db8542fb262000ce5a7a82573a47db89469700b47ca47c41493c244dd139e32d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding-storage.sql",
+      "sha256": "42f998966397c2d557ce499995d70c8ce67cecec90513de92856e01de274f7b8"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding_authority_model.py",
+      "sha256": "4fb997d618e84d716bcad59186275ed769f75b075f4957dc90505504843977cc"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/encoding_release_model.py",
+      "sha256": "7ac67f6e2b6f4969e56f8dbac3ec9e98131ba73be8e5e1513f1d1b7666b71af5"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/execution-ipc.schema.json",
+      "sha256": "23c8603fd6f05fc4c445f318a99f609c776f1fc79b5df2262d62d2591514b98b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/fence.sql",
+      "sha256": "c40a12f5d7a4feaa6dc9a46ce7cde95911620405e94d95a89a1b74034164664f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/gate-renewal-ipc.schema.json",
+      "sha256": "6adc901ad87a9398cdc9dac1a454ff9df0cf15d4cd31f2480dd23266f0efeea5"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/hold-ownership.schema.json",
+      "sha256": "ffb08897f535a79547466ee0080f72de3da5eff918bf6f0d80db829eccf0deba"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/hold_ownership_model.py",
+      "sha256": "5bc3540f0826be4131ca79e4257e7c4199fd7ebd21f8784ec7b8fad4ae7b4afd"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ipc-journal-messages.json",
+      "sha256": "f219613cec5926ef1ace17a5d5c39c5be227d43f67943bd1977218a95fcb8026"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ipc-journal.schema.json",
+      "sha256": "ade02e56db650d3191c594f1a38192a2b8ee9f9fedabc678265fd62b505de1fe"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/ipc_journal_model.py",
+      "sha256": "cfbf324c3f1d93121f07c32c7a76367ca669e87541a0823bb8ce3d15cc40a8cc"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/issue-ledger.sql",
+      "sha256": "6afc52b90f59d52385df201aeee2d56ea1753211063547a919084defb4a99285"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/journal-ipc.schema.json",
+      "sha256": "3d3fcb4d46a785e7999da43baf44d39c10c878d442bb16c92d3d86f726859a3a"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/lifecycle.schema.json",
+      "sha256": "40d151df2836965c5cc05880fc5f72f4aebf50709b0d2ed6af4775399f992f46"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/open-lifecycle.schema.json",
+      "sha256": "db505ee18e30c38d2a152515113a84e0e1f1eb11b43b8bf98f87de103f20f794"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/open-plan.schema.json",
+      "sha256": "e4db1c77171c540a822fb0b154b0018ac03d1ba1e001d2f700c740c227b4bc33"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/open-storage.sql",
+      "sha256": "87f4c584b6abb1c8b5bc5abb1597d00d00c749835cd66d8519d14fcd343ef997"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/open_lifecycle_model.py",
+      "sha256": "61fb3d00a9c8cf2cc450420b10e6bbbf1c259757039483a3046124dcc0f7b4c8"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/open_plan_model.py",
+      "sha256": "f25c978c57bc5bbaf42e4f5ff863ed4f4ba7e5b688d934bedf97bb99f1e691b7"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/preparation_delivery_model.py",
+      "sha256": "3343a39b065cc175a27fd49cdbeb9ee9e59fdfbd942da4e1e75be2cf742e81df"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/protected-hold.sql",
+      "sha256": "d9bd6bf9822188a38aba0d01a262bad94b9fd8e59da150ab2c175080668286b4"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/protection-outbox.sql",
+      "sha256": "2900b431e8a006bcee7ce1d760e41975403f0a3000c72bb7d6a035c140de45eb"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/protection_delivery_model.py",
+      "sha256": "94989829db20874117169c28bdb5001970b276f82f1acb99595cbc58a7a9f4df"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/resource.sql",
+      "sha256": "75a521d942ecdac6262704311a184e86dadbcd625d0caf2d414b4c03e9df3e8d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/result-dependency.sql",
+      "sha256": "c00d780d7309e94da0f4ea220ef6ced307ae09343a1060c98467e7b7e61f2c8b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/scoped-gate-ipc.schema.json",
+      "sha256": "a0a318d0f463a0ee74ba1fc6eebc3e1b932a04acb38dcd501d185e56eaf2ae93"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/scoped-gate.schema.json",
+      "sha256": "da9541b4e261aa0d78baeaf759e177cea11ca8188c3cdc067777c96a38c6b147"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c08-controller/scoped_gate_model.py",
+      "sha256": "880eeb34e606c3e26dd9ba4bc86979b37667f24c3376458096e97dad2bace48d"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c09-panel-ipc/binding.schema.json",
+      "sha256": "1a46eb10b421a98c4a971b21b57cf17400e829277de5963b77b2b47b3986b2ed"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c09-panel-ipc/cases.json",
+      "sha256": "8a6ff69620cefa99c2e1e92427d166f8e1918ce647373e76668d667b748bf391"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c09-panel-ipc/ipc.schema.json",
+      "sha256": "48e8a646655ccf3367026bebdc8e9d599225954e9fcad67f73465dd2ef88a740"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/c09-panel/channel-v02.schema.json",
+      "sha256": "f6e71178af8ffc8a8d784aab1416a0a4e30fedbc589e2032171f9a9581b64a1f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df01-source/source/public.schema.json",
+      "sha256": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-reference/README.md",
+      "sha256": "0d29e0e977a74f3d98b5fe66acf7628230e3d1f0221efd5c64a13369a3e667b3"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-reference/build_contracts.py",
+      "sha256": "9e5801a567d8cd5f5181ccbcb68cc3be082cdac4010ff9fd737e3d0125bebb8b"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-reference/check_contracts.py",
+      "sha256": "33ff456fecc9301da66d9d05bc5fad616ce58e1df1a6a7c037b2734607e9c872"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-reference/reference.schema.json",
+      "sha256": "a5265f970647ab31a2289339b3c4dac17873e17dbf74b7dc2b4f115d02946a40"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-reference/reference_model.py",
+      "sha256": "40d0dd9295c65499072a1c9fdc993d27f10b497a456334f48a8171bf59c32a2f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/README.md",
+      "sha256": "fc44300f1c032154a788a284ec10d8eb1ebd9029dc7502d49da2d21f90e1280f"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/build_contracts.py",
+      "sha256": "f5d03021aad382e08fe5d2939d33032d3d49db69dca86570245f05f14f014c08"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/check_contracts.py",
+      "sha256": "a3294467db9857c41de304c3420208720c4efc2247df36615d341aa63335726e"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/internal.openapi.json",
+      "sha256": "060d8fab1d9760af0d1e15fd56280276219d7d4a7e5ca50197ad824cd291bebb"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/ipc.schema.json",
+      "sha256": "310be53457aa57cf39c2e536092326a3d2c6ea60c4336a3f6f920be12ebd67a2"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/public.openapi.json",
+      "sha256": "e08fad77fdffacc5afd7ea8d68d0a8c5c6d04259480d4d8f8e46a0db9cd92438"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/reference_model.py",
+      "sha256": "60ed04f0216af54ffe7bffd10db2651504e49bbd1033c896820708804cc21d28"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/source-bindings.json",
+      "sha256": "95434ade1ecff9dc2d2a042d1799ba5bc7f7de97a05f575258bba477ef0644fe"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/df03-service/time.schema.json",
+      "sha256": "fab54dd7ac9e57a4e581c74cd3049d5b855bae05e566242edd4d13e2574c2885"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/contracts/draft4/first-loop.schema.json",
+      "sha256": "b4ba39a5a060864cb194f34cf59231481afe76bbaff2a3ea88c76b642f501c18"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/rebirth-c11-obs-atem-design.md",
+      "sha256": "70235b4a57baf555d8af2328e6425deb89014e4d3d8634ce175bf48d94455b57"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/rebirth-df03-time-profile-design.md",
+      "sha256": "b0f6e4b1d67a761e1788c851f161b803a5a361a21bb864ce87202906e2a8140c"
+    },
+    {
+      "repository": "suite",
+      "commit": "77433a07e99e310efd0fdf55f2cf28e4e28df3d2",
+      "path": "docs/rebirth-f02-f03-design.md",
+      "sha256": "10d95a0d365807e5953ddd74c56becbb6b5d41c86cf871845967cf10d255a0cc"
+    }
+  ],
+  "expectations": {
+    "integration_models": 1263,
+    "command_models": 464,
+    "integration_http_operations": 177,
+    "integration_worker_types": 52,
+    "integration_cases": 1441,
+    "negotiation_models": 1269,
+    "negotiation_http_operations": 179,
+    "controller_operations": 91,
+    "seamer_operations": 88,
+    "ordinary_http_operations": 175,
+    "ws_operations": 2,
+    "discovery_operations": 2,
+    "changed_definitions": 44,
+    "baseline_protocol_definitions": 39,
+    "negotiation_cases": 1755
+  },
+  "selection": {
+    "contract_id": "leafseamer.api.v1.integration1",
+    "contract_digest": "sha256:a772ff45189b8e276bb04a84a234eadee92e541ad26fa0a91f4a267b5ab75d05"
+  },
+  "boundaries": {
+    "stage0_complete": false,
+    "production_sdk_ready": false,
+    "business_implementation_started": false,
+    "runtime_protocol_frozen": false
+  },
+  "cycle": {
+    "rounds": [
+      {
+        "round": 1,
+        "repository": "leafseamer-sdk",
+        "commit": "9eb9cf5ec9715ce9290279d973c69a5c03a271a5"
+      },
+      {
+        "round": 2,
+        "repository": "leafseamer-sdk",
+        "commit": "c37256500c43092b145feebd026e273c5a2667f4"
+      },
+      {
+        "round": 3,
+        "repository": "leafseamer-suite",
+        "commit": "containing-commit"
+      }
+    ],
+    "push_order": [
+      "leafseamer-sdk",
+      "leafseamer-suite"
+    ]
+  }
+}

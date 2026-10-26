@@ -41,6 +41,7 @@ Linux管理origin推荐固定HTTPS 443；Windows本机候选`https://localhost:7
 | 管理origin `/`及GUI页面 | 只发布GUI静态制品；SPA回退限定GUI页面，API／认证／内部／文件路径不能回退成200 HTML |
 | `/auth/` | 只代理指定签发Controller的同名认证路径，非任意Controller轮询；会话Cookie不共享给面板／NodeCG |
 | `/services/<已配置service_id>/api/v1/` | 为每个服务生成静态路由，去掉service前缀后转发已有`/api/v1/`；实际操作仍校验audience、scope、资源和当前权限 |
+| `/services/<已配置service_id>/.well-known/leafseamer-contracts` | 新传输候选的逐宿主发现入口；仅为配置中的服务生成精确静态GET路由，转发到该宿主的`/.well-known/leafseamer-contracts`；不接受未知service_id或按请求body选择上游，不回退到GUI HTML |
 | 相同service路径下`/api/v1/events` | 对应已有WS端点；升级头明确转发，原Origin保留并检查，单次票据按SDK帧流程提交，不进入URL |
 | `/internal/`及私有peer入口 | 公网／GUI入口拒绝；内部独立监听仅配对mTLS服务可达，不将代理证书自动等同业务peer权限 |
 | 面板／兼容编辑器 | 独立origin、固定制品及C09 CSP／sandbox／握手；不把任意外部HTML放管理origin的子路径 |
@@ -50,6 +51,8 @@ Linux管理origin推荐固定HTTPS 443；Windows本机候选`https://localhost:7
 管理Cookie必须host-only；管理host不用于面板、输出或原NodeCG页面，不能仅靠不同端口隔离Cookie。Linux模板为各访问面配置独立host，面板按安装／制品代分配独立origin，避免版本复用可写同源storage；Windows本机GUI用localhost，面板候选用127.0.0.1加每批准安装代独立端口，TLS需覆盖对应SAN，输出另用固定只读listener。面板origin回收须先验证旧存储／通道已失效，不能只关闭窗口就重分配。额外NodeCG管理host、远程DNS和证书须显式配置验证；解析或信任不成立时相关入口不可用，不降级同源代理。跨访问面仍执行精确Origin／Host、CSRF及C09隔离，独立域名不自动授信。
 
 管理API代理统一`proxy_next_upstream off`，不在超时／502后自动将写请求交给另一实例；不启用`non_idempotent`重试，不用登录页／缓存成功响应遮蔽服务错误。API／认证／诊断／实时输出不缓存；带hash静态资产可immutable缓存，入口HTML和配置清单重新验证，GUI发行更新不强制刷新直播中的页面或混合不同制品。不能通过service worker离线写队列绕过C10。
+
+2026-10-27与[SDK传输候选交接](contracts/sdk-transport-handoff/README.md)联校：发现是服务内部绝对路径，外部地址必须带部署计划中该宿主的静态service前缀；多服务管理origin不提供猜测宿主的全局发现转发。调用`/auth/`前查询配置指定签发Controller的发现入口，不能从任意Controller的广告推断认证兼容；内部mTLS调用则使用配对宿主的私有地址。客户端路由映射由部署配置给出，禁止因URL解析丢失service前缀或从不可信请求体选择目标。两个选择头及响应回显透传，重复头须保留可判别性或在代理层明确拒绝，不能取首／末值；发现响应不缓存。WS只回显契约token，日志不得记录票据子协议。新增路径、重复头及101丢失仍需实际nginx和浏览器验收，本轮只补设计，不声称代理配置已生成或生效。
 
 WS明确设置HTTP版本与Upgrade／Connection转发，配置有界空闲期限和应用心跳；代理断线只代表连接失效，不表示命令取消。请求体、header、连接及队列上限与SDK／服务profile一致，过量受理前拒绝；大备份不经过普通JSON命令大小上限。原始请求体、Authorization、Cookie、票据和完整查询串不写代理日志。服务信任的转发头只由受控代理覆盖生成；直连客户端伪造Host、Forwarded、X-Forwarded-*或身份头不得改变认证、安全origin或审计主体。内部跨主机TLS必须验证对端，不以“私网”关闭验证。
 

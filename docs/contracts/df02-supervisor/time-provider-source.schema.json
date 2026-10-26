@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/df02-supervisor/time-provider-source.schema.json",
+  "x-approved": false,
+  "x-runtime-approved": false,
+  "$defs": {
+    "ProcessObservation": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "process-admission-observation/1"
+        },
+        "observation_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "provider_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "domain_ref": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainRef"
+        },
+        "member_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "member_boot_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "channel_binding_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "containment_ref": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ContainmentRef"
+        },
+        "artifact_manifest_ref": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/RuntimeManifestRef"
+        },
+        "observed_tick_ns": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/U20"
+        },
+        "process_instance_ref": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+            },
+            "revision": {
+              "const": "1"
+            },
+            "digest": {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        "group_owned": {
+          "const": true
+        },
+        "artifact_matches": {
+          "const": true
+        },
+        "channel_exclusive": {
+          "const": true
+        }
+      },
+      "required": [
+        "format_version",
+        "observation_id",
+        "provider_id",
+        "domain_ref",
+        "member_id",
+        "member_boot_id",
+        "channel_binding_id",
+        "containment_ref",
+        "artifact_manifest_ref",
+        "observed_tick_ns",
+        "process_instance_ref",
+        "group_owned",
+        "artifact_matches",
+        "channel_exclusive"
+      ],
+      "additionalProperties": false
+    },
+    "ProviderRuntime": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "time-provider-runtime/0.1.0-draft.1"
+        },
+        "binding_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "source": {
+          "$ref": "https://leafseamer.invalid/contracts/df02-supervisor/retirement-source.schema.json#/$defs/SourceIdentity"
+        },
+        "descriptor": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainDescriptor"
+        },
+        "intent": {
+          "allOf": [
+            {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ProtectedLaunchIntent"
+            },
+            {
+              "properties": {
+                "role": {
+                  "const": "time_provider"
+                }
+              }
+            }
+          ]
+        },
+        "admission_receipt": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/AdmissionReceipt"
+        },
+        "process_observation": {
+          "$ref": "#/$defs/ProcessObservation"
+        },
+        "binding_digest": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "binding_id",
+        "revision",
+        "source",
+        "descriptor",
+        "intent",
+        "admission_receipt",
+        "process_observation",
+        "binding_digest"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/ProviderRuntime"
+}

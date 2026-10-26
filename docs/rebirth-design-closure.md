@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26时间提供者身份进展：[完整准入来源候选](contracts/df02-supervisor/TIME_PROVIDER_SOURCE.md)从受信15表监督日志读取固定time_provider意图、保护配置、bootstrap/准入回执和完整进程观察，生成确定性RuntimeBinding候选并核时间Domain七项身份。54项专项、75项监督原件与88项日志回归通过，补读取提交后退役的串行交错反例，明确候选不证明当前OS活性；clock_generation不从不透明runtime_generation转换。核心原子采用/撤回、真实监督闭锁及完整OPEN仍未完成，阶段0与业务边界保持。本周期第3/3轮，按各提交当时输入逐一审查三轮成果后推送main。
+
 2026-10-26恢复时间同库进展：[290表读取组合](contracts/c04-lifecycle/OPEN_TIME_SOURCE.md)将时间State与完整恢复、非空运行/命令拒绝快照和worker运行原件联接，资源快照首次登记确定性时间ID，读取时拒绝占位值与失效前选择。72项专项检查通过，包含八个失效逐写全库回滚、失效后历史查原和实际WAL双连接旧读快照反例；最终writer重新读取拒绝旧时间引用。时间提供者自身完整身份、采集/批准来源、TIME保护原子写集、授权来源及完整OPEN/ACK/Ready仍未完成，不能把同库读取当作可发送资格。阶段0与业务边界保持；本周期第2/3轮，仅本地提交。
 
 2026-10-26时间快照来源进展：[确定性下界候选](contracts/df03-service/GATE_SNAPSHOT_SOURCE.md)从原14表已封存State及完整Binding、Anchor/Invalidation重建现行IPC快照，复用State修订和时间代次，不新增floor权威或快照表。48项专项检查及215项存储、199项时间契约回归通过；不同provider/worker运行身份保留，公共时钟身份逐项匹配，失效后旧原件可查但旧OPEN候选拒绝，缺seal/错原件/重算摘要/非规范正文及大整数均有反例。真实监督和全部采集来源仍未接入，14表尚未与276表恢复布局组合，完整OPEN/ACK/Ready和最终许可继续未完成。阶段0与业务实现边界保持；新周期第1/3轮，仅本地提交。

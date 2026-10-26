@@ -188,3 +188,9 @@ NF01的“睡眠计入tick”只证明经过时间语义，不证明恢复后第
 2026-10-18新增[独立候选包](contracts/df02-supervisor/README.md)。监督器返回JournalView／AdmissionReceipt，核心核当前审批并持久化后才生成安装0.2的RuntimeBindingRef；监督器不持业务库，不提前伪造核心Ref。bootstrap秘密不落盘，监督器崩溃不能恢复挑战；重复CREATE只查询原attempt。fence ACK仅证明准入切断，退役仍须完整组证据，unknown及设备资源不自动释放。
 
 完整fence覆盖registered与全部非终态成员，历史deny不可复活；快照、拒绝集合与current指针同日志事务，OS创建在确认attempt提交后最多调用一次。推荐独立监督journal采用SQLite单writer、DELETE／EXTRA，业务库WAL不变；这是新增待审阅的原生依赖和存储取舍，不是已批准制品。局部内存SQL和合成消息检查只证候选约束，真实平台／设备／磁盘故障仍未验。
+
+## 11. 时间提供者准入来源
+
+新增[完整时间提供者来源](contracts/df02-supervisor/TIME_PROVIDER_SOURCE.md)候选及Schema，固定time_provider角色、空设备集合、保护配置来源、创建attempt、bootstrap身份、完整准入回执和进程实例观察。由受信监督连接在单个读事务中核所有物理列和原件，关闭域或开始退役立即拒绝；读取提交失败不交付候选。固定ID和摘要来自完整不可变原件，不由调用方任意指定。
+
+这是提供者RuntimeBinding的采用输入，不是已提交的核心Ref或当前OS活性证明。核心仍须核批准和当前监督资格，并与Channel/时间Binding原子持久化；跨监督库和Controller库的竞争须由实际监督闭锁及采用撤回机制解决，不能由两次读取相等代替。时间Domain保留独立提供者member/boot，数字clock_generation由Controller时间State管理，不从不透明runtime_generation转换。完整创建、双平台、采集器运行和最终OPEN均未因此验收，业务代码未改。

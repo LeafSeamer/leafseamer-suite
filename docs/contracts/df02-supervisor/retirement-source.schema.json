@@ -1,0 +1,273 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/df02-supervisor/retirement-source.schema.json",
+  "$defs": {
+    "SourceIdentity": {
+      "type": "object",
+      "properties": {
+        "host_installation_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "incarnation_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "service_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "os_provider_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        }
+      },
+      "required": [
+        "host_installation_id",
+        "incarnation_id",
+        "service_id",
+        "database_instance_id",
+        "os_provider_id"
+      ],
+      "additionalProperties": false
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "retirement-observation/1"
+        },
+        "observation_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "provider_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "subject_domain_ref": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainRef"
+        },
+        "evaluator_domain_ref": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainRef"
+        },
+        "containment_ref": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ContainmentRef"
+        },
+        "target_member_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "observed_tick_ns": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/U20"
+        },
+        "launch_intake_closed": {
+          "const": true
+        },
+        "group_owned": {
+          "const": true
+        },
+        "members_complete": {
+          "const": true
+        },
+        "live_process_count": {
+          "const": 0
+        },
+        "open_endpoint_count": {
+          "const": 0
+        }
+      },
+      "required": [
+        "format_version",
+        "observation_id",
+        "provider_id",
+        "subject_domain_ref",
+        "evaluator_domain_ref",
+        "containment_ref",
+        "target_member_ids",
+        "observed_tick_ns",
+        "launch_intake_closed",
+        "group_owned",
+        "members_complete",
+        "live_process_count",
+        "open_endpoint_count"
+      ],
+      "additionalProperties": false
+    },
+    "Bundle": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "retirement-source/0.1.0-draft.1"
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "host_installation_id": {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+            },
+            "incarnation_id": {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+            },
+            "service_id": {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+            },
+            "database_instance_id": {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+            },
+            "os_provider_id": {
+              "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+            }
+          },
+          "required": [
+            "host_installation_id",
+            "incarnation_id",
+            "service_id",
+            "database_instance_id",
+            "os_provider_id"
+          ],
+          "additionalProperties": false
+        },
+        "old_descriptor": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainDescriptor"
+        },
+        "evaluator_descriptor": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainDescriptor"
+        },
+        "evidence": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/RetirementEvidence"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "intent": {
+                "anyOf": [
+                  {
+                    "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/LaunchIntent"
+                  },
+                  {
+                    "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ExtensionLaunchIntent"
+                  }
+                ]
+              },
+              "admission_receipt": {
+                "anyOf": [
+                  {
+                    "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/AdmissionReceipt"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "state": {
+                "enum": [
+                  "retired",
+                  "rejected"
+                ]
+              }
+            },
+            "required": [
+              "intent",
+              "admission_receipt",
+              "state"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "format_version": {
+                "const": "retirement-observation/1"
+              },
+              "observation_id": {
+                "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+              },
+              "provider_id": {
+                "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+              },
+              "subject_domain_ref": {
+                "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainRef"
+              },
+              "evaluator_domain_ref": {
+                "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ClockDomainRef"
+              },
+              "containment_ref": {
+                "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/ContainmentRef"
+              },
+              "target_member_ids": {
+                "type": "array",
+                "items": {
+                  "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+                },
+                "maxItems": 256,
+                "uniqueItems": true
+              },
+              "observed_tick_ns": {
+                "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/U20"
+              },
+              "launch_intake_closed": {
+                "const": true
+              },
+              "group_owned": {
+                "const": true
+              },
+              "members_complete": {
+                "const": true
+              },
+              "live_process_count": {
+                "const": 0
+              },
+              "open_endpoint_count": {
+                "const": 0
+              }
+            },
+            "required": [
+              "format_version",
+              "observation_id",
+              "provider_id",
+              "subject_domain_ref",
+              "evaluator_domain_ref",
+              "containment_ref",
+              "target_member_ids",
+              "observed_tick_ns",
+              "launch_intake_closed",
+              "group_owned",
+              "members_complete",
+              "live_process_count",
+              "open_endpoint_count"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256
+        },
+        "journal_snapshot_digest": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+        },
+        "bundle_digest": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "source",
+        "old_descriptor",
+        "evaluator_descriptor",
+        "evidence",
+        "members",
+        "observations",
+        "journal_snapshot_digest",
+        "bundle_digest"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/Bundle"
+}

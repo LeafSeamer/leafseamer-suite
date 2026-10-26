@@ -21,7 +21,7 @@ def choice(db,selection):
     cid=selection['close_id'];close=close_ref(db,cid)
     if selection['kind']=='worker_ack':
         M.need(set(selection)=={'kind','close_id'},'recovery_ack_selection_fields')
-        ack,_=A.read(db,cid);a=M.E.one(db,'SELECT * FROM authorization_close_ack WHERE close_id=?',(cid,))
+        ack,_=N.CE.ack(db,cid);a=N.CE.ack_row(db,cid)
         row=M.E.one(db,'SELECT p.* FROM pd_close_completion c JOIN pd_closure p USING(closure_id) WHERE c.close_id=? AND c.ack_id=?',(cid,a['adopted_ack_id']))
         p=M.document(row['body']);N.validate('PreparationClosure',p);M.need(p==M.sealed(p,'closure_digest') and p['closure_digest']==row['closure_digest'],'recovery_prepare_original')
         return dict(kind='worker_ack',close_ref=close,ack_ref=M.reference(ack,'ack_id','ack_digest'),preparation_closure_ref=M.reference(p,'closure_id','closure_digest')),a['adopted_ack_id']

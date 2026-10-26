@@ -16,7 +16,7 @@ def source_fixture_module():
             sys.modules.pop(n,None)
             if v is not None:sys.modules[n]=v
 F=source_fixture_module()
-def inputs():return list(dict.fromkeys(Q.inputs()+F.INPUTS+[R.G.SOURCE,R.G.SUP,R.G.ENC]+[HERE/n for n in ('build_supervisor_retirement_adoption.py','supervisor-retirement-adoption.schema.json','supervisor-retirement-adoption.sql','supervisor_retirement_adoption_model.py','check_supervisor_retirement_adoption.py','SUPERVISOR_RETIREMENT_ADOPTION.md')]))
+def inputs():return list(dict.fromkeys(Q.inputs()+F.INPUTS+[R.G.SOURCE,R.G.SUP,R.G.ENC]+[HERE/n for n in ('close_evidence_model.py','build_supervisor_retirement_adoption.py','supervisor-retirement-adoption.schema.json','supervisor-retirement-adoption.sql','supervisor_retirement_adoption_model.py','check_supervisor_retirement_adoption.py','SUPERVISOR_RETIREMENT_ADOPTION.md')]))
 def fixture(worker_devices=None):
     execute=E.O.execute;CS=T.T.T.T.CS;control_execute=CS.C.execute;sources={};connections=[]
     def source(db,device):

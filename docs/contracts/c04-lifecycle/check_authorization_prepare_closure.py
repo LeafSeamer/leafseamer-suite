@@ -4,7 +4,7 @@ from unittest.mock import patch
 import check_authorization_close_ack as Q
 import authorization_prepare_closure_model as N
 A=N.A;D=N.D;P=N.P;M=N.M;E=N.E;T=Q.T;HERE=N.HERE;ROOT=HERE.parents[2]
-def inputs():return list(dict.fromkeys(Q.inputs()+[N.SCHEMA_PATH,HERE.parent/'c08-controller/encoding-release.schema.json']+[HERE/n for n in ('authorization_prepare_closure_model.py','authorization_prepare_release_model.py','check_authorization_prepare_closure.py','AUTHORIZATION_PREPARE_CLOSURE.md')]))
+def inputs():return list(dict.fromkeys(Q.inputs()+[N.SCHEMA_PATH,HERE.parent/'c08-controller/encoding-release.schema.json']+[HERE/n for n in ('close_evidence_model.py','authorization_prepare_closure_model.py','authorization_prepare_release_model.py','check_authorization_prepare_closure.py','AUTHORIZATION_PREPARE_CLOSURE.md')]))
 def run():
     checks=[];connections=[]
     def check(name,value=True):assert value,name;checks.append(dict(name=name,passed=True))

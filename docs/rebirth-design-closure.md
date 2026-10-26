@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-26关闭证据接入进展：[统一原件访问候选](contracts/c04-lifecycle/CLOSE_EVIDENCE.md)按唯一持久来源读取普通或认证关闭，健康新域ACK已贯通完整PreparationClosure与混合RecoveryCloseChoice，78项离线检查通过。空cut保留非空旧注册表，新ACK与旧worker退役集合共同恢复；逐写/漏写、提交观察故障、外事务拒绝、撤回及会话结束的失效传播和历史查原均覆盖。恢复后仍为protected，未生成最终许可。新域非空prepare、完整GATE_FENCE/OPEN_GATE、新grant和最终AdmissionSeal仍待完成，实际提供者、线路及设备未验证；阶段0未关闭、业务未改。本轮新周期第2/3轮，仅本地提交。
+
 2026-10-26健康出口关闭进展：[独立关闭原件候选](contracts/c04-lifecycle/GATE_CLOSE.md)在268表组合中直接绑定已持久关闭和cut，补完整CLOSE_GATE与ACK，66项检查通过。新出口无需制造认证时钟故障，旧认证入口按close_id互斥；错绑、逐写/漏写及提交观察故障、迟到历史与撤回失效均覆盖。准备核销与RecoveryCloseChoice访问器仍须从仅认证关闭扩展到原件类型选择，之后才能接通健康出口恢复、GATE_FENCE/OPEN_GATE及新grant；完整重新开放、真实提供者与最终AdmissionSeal未完成。业务未改、阶段0未关闭。本轮新周期第1/3轮，仅本地提交。
 
 2026-10-26跨域恢复交错进展：[恢复与撤回验收](contracts/c04-lifecycle/DOMAIN_RECOVERY_RACES.md)在266表组合和DELETE/WAL真实双连接中完成51项检查，覆盖撤回/恢复两种提交顺序、遇锁退出、失效查原、重新连接及WAL旧读快照边界。旧命令换绑新出口实际被encoding_origin拒绝，当前域非空准备正例须先完成重新开放、新grant采用和新命令链，不允许改守卫制造正例。当前进展不等同多进程或崩溃恢复，真实提供者、最终AdmissionSeal与全系统交付仍缺，阶段0未关闭、业务实现未开始。本轮周期第3/3轮，逐提交审查后推送三轮成果。

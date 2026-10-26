@@ -2,6 +2,7 @@
 import json
 from jsonschema import Draft202012Validator
 import authorization_close_ack_model as A
+import close_evidence_model as CE
 M=A.M;P=A.P;D=A.D;E=A.E;I=A.I;C=D.C;HERE=A.G.HERE
 SCHEMA_PATH=HERE.parent/'c08-controller/ipc-journal.schema.json'
 SCHEMA=json.loads(SCHEMA_PATH.read_bytes());MAX_MEMBERS=4096;MAX_CLOSURE_BYTES=16*1024*1024
@@ -23,7 +24,7 @@ def writer(db,fail_after):
         if fail_after==len(writes)-1:raise RuntimeError('injected_prepare_closure_write')
     return writes,write
 def source(db,close_id,pid):
-    dispatch,original=D.read(db,close_id);binding=dispatch['target']['binding']
+    dispatch,original=CE.dispatch(db,close_id);binding=dispatch['target']['binding']
     member=M.E.one(db,'SELECT m.* FROM pd_member m JOIN go_close c ON c.prepare_cut_id=m.cut_id WHERE c.close_id=? AND m.prepare_id=?',(close_id,pid))
     request=M.E.one(db,'SELECT * FROM ep_request WHERE prepare_id=?',(pid,));authorization=M.document(request['authorization_body']);E.validate('EA__EncodingAuthorization',authorization)
     M.need(authorization==M.sealed(authorization,'authorization_digest') and authorization['binding']==binding and authorization['authorization_id']==request['authorization_id']==member['authorization_id'] and authorization['authorization_digest']==request['authorization_digest']==member['authorization_digest'] and request['exit_id']==member['exit_id']==binding['writer_exit_id'],'deny_authorization_source')
@@ -103,14 +104,16 @@ def receive(db,close_id,pid,wire,tick,fail_after=None):
             effective_tick=P.u(body['effective_tick_ns']),received_tick=P.u(tick),future_use_denied=1,frame_body=M.raw(frame),validation_body=M.raw(body),audit_body=M.raw(body))
         seal(write,frame['message_id'],tick,body,disposition);read_ack(db,close_id,pid);return frame,writes
     return transaction(db,run)
-def current(db,close_id):return db.execute('SELECT 1 FROM pd_close_completion c JOIN pd_valid_closure p USING(closure_id) JOIN authorization_close_usable_ack a ON a.adopted_ack_id=c.ack_id WHERE c.close_id=?',(close_id,)).fetchone() is not None
+def current(db,close_id):
+    view=CE.current_view(db,close_id)
+    return view is not None and db.execute('SELECT 1 FROM pd_close_completion c JOIN pd_valid_closure p USING(closure_id) JOIN '+view+' a ON a.adopted_ack_id=c.ack_id WHERE c.close_id=?',(close_id,)).fetchone() is not None
 def complete(db,close_id,tick,fail_after=None):
     def run():
         writes,write=writer(db,fail_after)
         old=db.execute('SELECT p.body FROM pd_close_completion c JOIN pd_closure p USING(closure_id) WHERE c.close_id=?',(close_id,)).fetchone()
         if old:
             value=M.document(old[0]);validate('PreparationClosure',value);M.need(M.sealed(value,'closure_digest')==value,'prepare_closure_digest');return value,current(db,close_id),writes
-        ack,_=A.read(db,close_id);M.need(A.usable(db,ack['ack_id']) and P.u(tick)>=P.u(ack['received_tick_ns']),'prepare_close_ack_not_current')
+        ack,_=CE.ack(db,close_id);M.need(CE.usable(db,close_id,ack['ack_id']) and P.u(tick)>=P.u(ack['received_tick_ns']),'prepare_close_ack_not_current')
         close=M.E.one(db,'SELECT * FROM go_close WHERE close_id=?',(close_id,));cut=M.E.one(db,'SELECT * FROM pd_cut WHERE cut_id=?',(close['prepare_cut_id'],));selector=M.document(cut['selector_body']);M.need(M.F.digest(selector)==cut['selector_digest'],'prepare_selector_digest')
         members=P.rows(db,'SELECT prepare_id,exit_id,authorization_id,authorization_digest FROM pd_member WHERE cut_id=? ORDER BY prepare_id LIMIT ?',(cut['cut_id'],MAX_MEMBERS+1));M.need(len(members)<=MAX_MEMBERS,'prepare_closure_capacity')
         registry=P.rows(db,'SELECT * FROM pd_registration WHERE sequence<=? ORDER BY sequence LIMIT ?',(cut['prepare_head'],MAX_MEMBERS+1));M.need(len(registry)<=MAX_MEMBERS,'prepare_registry_capacity')

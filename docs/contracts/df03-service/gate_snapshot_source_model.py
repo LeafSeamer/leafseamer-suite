@@ -1,9 +1,12 @@
 """从已封存时间State确定性重建拒绝下界；离线候选，不签发UTC或OPEN资格。"""
 import copy
+import importlib.util
 import json
 from pathlib import Path
 from jsonschema import Draft202012Validator
-import reference_model as S
+_spec = importlib.util.spec_from_file_location('gate_snapshot_service_reference', Path(__file__).with_name('reference_model.py'))
+S = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(S)
 
 T = S.T
 HERE = Path(__file__).resolve().parent

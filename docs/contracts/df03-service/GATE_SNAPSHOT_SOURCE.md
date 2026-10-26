@@ -43,7 +43,7 @@
 
 故障轨迹：选择State 2/floor 1 → 失效先提交State 3/floor 2及TIME保护 → 原State 2仍可审计查原 → OPEN当前性核对拒绝State 2 → 新选择只能携带floor 2。TIME通知存在不等于设备ACK已到；来源floor、实际屏障和完整恢复是三个独立条件。不能以读取成功提前清除保护。
 
-最终OPEN选择/发送记账/采用所需来源必须与Controller当前资格在**同一writer裁决域**内核对；独立连接的旧WAL读快照或先读远程时间库再写Controller都不满足该要求。首期推荐时间State放在Controller自己的SQLite库，时间采集器只报告候选，继续禁止跨主机直接共享monotonic tick。本候选14表内存实验尚未与276表Controller恢复布局组合，`time_snapshot_ref`占位仍未在生产链替换；四个最终发送阻断保持。
+最终OPEN选择/发送记账/采用所需来源必须与Controller当前资格在**同一writer裁决域**内核对；独立连接的旧WAL读快照或先读远程时间库再写Controller都不满足该要求。首期推荐时间State放在Controller自己的SQLite库，时间采集器只报告候选，继续禁止跨主机直接共享monotonic tick。后续[290表读取组合](../c04-lifecycle/OPEN_TIME_SOURCE.md)已将本14表与276表Controller恢复布局组合，并在恢复首次写入时登记真实的确定性时间ID；仍是离线候选，生产链及四个最终发送阻断保持。
 
 ## 4. 正反例与验收
 
@@ -53,4 +53,4 @@
 - 反例：无事务、八项提供者Domain逐项错绑、四项出口公共域逐项错绑、已接收水位更高、重新计算摘要的伪快照、正文与物理列不一致、占位/重复键/非规范/过大正文，以及失效后用旧快照OPEN。
 - 结果保存于[独立报告](gate-snapshot-source-report.json)，报告绑定实际输入字节；`--check-report`仅核输入绑定，不能冒充重跑。
 
-后续整合验收必须覆盖可信监督原件、全部时间发布来源、与TIME/恢复同库的原子关联、WAL双连接变化后最终writer重读、实际OPEN/ACK/Ready和真实提供者。离线来源检查不是这些验收的替代品，也不放宽指定NTP、两平台与误差区间要求。
+后续整合验收必须覆盖可信监督原件、全部时间发布来源、与TIME/恢复同库的原子关联、实际OPEN/ACK/Ready和真实提供者。WAL双连接变化后最终writer重读的离线反例已在290表组合运行，不替代实际服务writer验收。离线来源检查不是完整运行证据，也不放宽指定NTP、两平台与误差区间要求。

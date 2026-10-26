@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/c04-lifecycle/domain-protection.schema.json",
+  "$defs": {
+    "ActiveProtection": {
+      "$ref": "https://leafseamer.invalid/design/c04-lifecycle/final-authorization.schema.json#/$defs/ClockProtectionCommit"
+    },
+    "DomainProtection": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "domain-protection/0.1.0-draft.1"
+        },
+        "protection_id": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "active_protection": {
+          "$ref": "#/$defs/ActiveProtection"
+        },
+        "retired": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "supervisor_retired"
+              },
+              "close_ref": {
+                "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+              },
+              "retired_completion_ref": {
+                "$ref": "https://leafseamer.invalid/design/c08-controller/encoding-authority.schema.json#/$defs/Ref"
+              },
+              "writer_exit_id": {
+                "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Id"
+              }
+            },
+            "required": [
+              "kind",
+              "close_ref",
+              "retired_completion_ref",
+              "writer_exit_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "protection_digest": {
+          "$ref": "https://leafseamer.invalid/design/df02-supervisor/supervisor.schema.json#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "protection_id",
+        "revision",
+        "active_protection",
+        "retired",
+        "protection_digest"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

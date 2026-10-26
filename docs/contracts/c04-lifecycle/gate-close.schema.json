@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leafseamer.invalid/contracts/c04-lifecycle/gate-close.schema.json",
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$(?![\\s\\S])"
+    },
+    "Ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$(?![\\s\\S])"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "ClockCloseTarget": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "exit_source_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "session_source_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "required_action": {
+          "enum": [
+            "close_gate",
+            "verify_termination"
+          ]
+        },
+        "close_body": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClockCloseBody"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "binding",
+        "exit_source_ref",
+        "session_id",
+        "session_source_ref",
+        "required_action",
+        "close_body"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "required_action": {
+                "const": "close_gate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "session_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "session_source_ref": {
+                "$ref": "#/$defs/Ref"
+              },
+              "close_body": {
+                "$ref": "#/$defs/ClockCloseBody"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "close_body": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "controller_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "worker_boot_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "writer_exit_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ipc_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "device_session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "clock_domain_id": {
+          "type": "string",
+          "pattern": "^clock_[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "descriptor_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "scope",
+        "controller_boot_id",
+        "worker_boot_id",
+        "writer_exit_id",
+        "ipc_session_id",
+        "device_id",
+        "device_session_id",
+        "clock_domain_id",
+        "descriptor_digest"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "type": "object",
+      "properties": {
+        "authority_service_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "database_instance_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "authority_service_id",
+        "database_instance_id"
+      ],
+      "additionalProperties": false
+    },
+    "ClockCloseBody": {
+      "type": "object",
+      "properties": {
+        "close_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reason": {
+          "$ref": "#/$defs/Id"
+        },
+        "scope": {
+          "const": "device"
+        }
+      },
+      "required": [
+        "close_id",
+        "reason",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "GateCloseDispatch": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "gate-close-dispatch/0.1.0-draft.1"
+        },
+        "dispatch_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "close_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "target": {
+          "$ref": "#/$defs/ClockCloseTarget"
+        },
+        "frame_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "wire_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "wire_bytes": {
+          "$ref": "#/$defs/Counter"
+        },
+        "selected_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "state": {
+          "const": "queued"
+        },
+        "dispatch_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "close_ref": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "format_version",
+        "dispatch_id",
+        "revision",
+        "close_ref",
+        "close_id",
+        "target",
+        "frame_ref",
+        "wire_digest",
+        "wire_bytes",
+        "selected_tick_ns",
+        "state",
+        "dispatch_digest"
+      ],
+      "additionalProperties": false
+    },
+    "GateCloseAcknowledgement": {
+      "type": "object",
+      "properties": {
+        "format_version": {
+          "const": "gate-close-ack/0.1.0-draft.1"
+        },
+        "ack_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "const": "1"
+        },
+        "close_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "dispatch_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "frame_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "observer_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "wire_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "received_tick_ns": {
+          "$ref": "#/$defs/Counter"
+        },
+        "disposition": {
+          "enum": [
+            "applied",
+            "historical"
+          ]
+        },
+        "ack_digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "format_version",
+        "ack_id",
+        "revision",
+        "close_id",
+        "dispatch_ref",
+        "frame_ref",
+        "observer_ref",
+        "wire_digest",
+        "received_tick_ns",
+        "disposition",
+        "ack_digest"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-approved": false
+}

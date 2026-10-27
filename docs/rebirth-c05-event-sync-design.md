@@ -1,12 +1,14 @@
 # C05：事件、快照同步与容量保护
 
+2026-10-27最新注册交接：[投影注册与持久化](contracts/sdk-scope-handoff/README.md)补齐SP01的Profile／Selector正文、12类视图映射、有限谓词、完整规范来源及窗口外未决覆盖，并接入旧订阅授权模型。7表同事务写集保存注册／撤销及查原；207／226项检查复验通过。真实WAL旧快照仍可见撤销前资格，因此下一步必须完成本机撤权门与页／帧最终释放排序。其余十一类当前领域、完整消费者、订阅DDL及新选择仍缺；原integration1不变。
+
 日期：2026-10-17。状态：**ES01—ES06为待审阅推荐**。已确认依据是Q48、Q50、Q63、Q64及F04—F07；DF04／DF06和C04候选的依赖仍须共同审阅。本稿只补设计，不修改公共draft.4／IPC 0.3，不实现服务或离线自治。
 
 SDK负责事件及同步协议；Controller负责设备来源注册、采集和权威命令／控制事实；Seamer负责规范摄取、观测、触发决定及相关运行保护；GUI维护可丢弃的显示投影；Suite验证版本组合、容量及故障。事件完整性保护不等于替用户设计断网期间继续直播的自动化。
 
 ## 1. 已知事实与分析
 
-2026-10-27当前SDK交接：[命令投影与订阅同源候选](contracts/sdk-event-handoff/README.md)已保留当前取消状态、unknown清资源锁存与原件Ref，并具体化人员／服务owner、15项HTTP操作、双向帧、Ready／附着／基线／ACK及重连边界。86个快照定义完整嵌入122模型图，134／294项离线检查复验通过；不证明完整页面消费者、真实身份、SQLite或网络。其余十一类当前投影、selector／profile注册、持久发送映射及完整新选择仍须联合交付；不得将新帧投到原integration1。
+上一周期SDK交接（以下缺口按当时状态记录）：[命令投影与订阅同源候选](contracts/sdk-event-handoff/README.md)已保留当前取消状态、unknown清资源锁存与原件Ref，并具体化人员／服务owner、15项HTTP操作、双向帧、Ready／附着／基线／ACK及重连边界。86个快照定义完整嵌入122模型图，134／294项离线检查复验通过；不证明完整页面消费者、真实身份、SQLite或网络。其余十一类当前投影、selector／profile注册、持久发送映射及完整新选择仍须联合交付；不得将新帧投到原integration1。
 
 事实来源：[draft.4 Schema](contracts/draft4/first-loop.schema.json)、[Seamer OpenAPI](contracts/draft4/seamer.openapi.json)、[首契约第7节](rebirth-first-loop-contract.md#7-快照增量及服务到服务边界)、[DF04](rebirth-df04-storage-design.md)、[DF06](rebirth-df06-internal-trust-design.md)。
 

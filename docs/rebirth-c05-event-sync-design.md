@@ -6,6 +6,8 @@ SDK负责事件及同步协议；Controller负责设备来源注册、采集和�
 
 ## 1. 已知事实与分析
 
+2026-10-27当前SDK交接：[命令投影与订阅同源候选](contracts/sdk-event-handoff/README.md)已保留当前取消状态、unknown清资源锁存与原件Ref，并具体化人员／服务owner、15项HTTP操作、双向帧、Ready／附着／基线／ACK及重连边界。86个快照定义完整嵌入122模型图，134／294项离线检查复验通过；不证明完整页面消费者、真实身份、SQLite或网络。其余十一类当前投影、selector／profile注册、持久发送映射及完整新选择仍须联合交付；不得将新帧投到原integration1。
+
 事实来源：[draft.4 Schema](contracts/draft4/first-loop.schema.json)、[Seamer OpenAPI](contracts/draft4/seamer.openapi.json)、[首契约第7节](rebirth-first-loop-contract.md#7-快照增量及服务到服务边界)、[DF04](rebirth-df04-storage-design.md)、[DF06](rebirth-df06-internal-trust-design.md)。
 
 | 当前已存在的内容 | 工程缺口／冲突 |

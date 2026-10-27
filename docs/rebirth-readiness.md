@@ -1,5 +1,7 @@
 # LeafSeamer 实施前契约与验收交付清单
 
+- 2026-10-27当前交接：[SDK命令投影与订阅通道](contracts/sdk-event-handoff/README.md)固定86／122模型、15项操作与人员／服务认证边界，134／294项检查实际复验通过。其他十一类当前领域映射、selector／profile、原子DDL及完整API选择仍未关闭；阶段0未结束、业务未开始。本轮为三轮周期交接轮，完成审查后先SDK再Suite推送main。
+
 - 日期：2026-10-18（Asia/Tokyo）；分支：`rebirth`。
 - 最新确认及技术入口：[TS01—TS05](rebirth-technology-selection.md)及[NF01—NF03](rebirth-platform-freeze.md)已获用户同意；正式版本、生成语义、保护预算、TV01—TV14及PF01—PF18仍需取证。运行域与NTP证据已归并新版，所有平台运行试验仍未开始。
 - 当前协议基线：[公共draft.4／IPC 0.3](contracts/draft4/README.md)已获用户同意。[DF01细化](rebirth-df01-sdk-freeze.md)列出源切换、完整工具锁、原始JSON／JCS／大整数及SV01—SV20交付；仅部分参考向量已执行，生成链和SDK验收仍待取证。C01—C12、A01—A22及其余DF运行门槛未关闭。

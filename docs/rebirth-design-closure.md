@@ -4,6 +4,8 @@
 
 ## 1. 当前事实与推荐分界
 
+2026-10-27最新事件交接：[当前命令投影与订阅通道](contracts/sdk-event-handoff/README.md)固定SDK `cf36c1b`／`fc71409`，分别交付86模型／134项检查和122模型／15操作／294项检查，本轮实际复验通过。命令取消、unknown清资源后的锁存、人员／服务owner和Ready至ACK时序已有同源候选；其余十一类当前投影、selector／profile、DDL与真实提供者、完整双authority选择仍未闭合。15操作不能直接加到旧179操作；新首帧不复用integration1。阶段0未关闭、业务未开始；本轮为第3/3轮，审查三轮成果后按SDK→Suite推送。
+
 2026-10-27最新跨仓交接：[传输候选交接](contracts/sdk-transport-handoff/README.md)固定SDK `9eb9cf5` 与 `c372565`。前者把HTTP命令与52类worker IPC接入1263模型图，177项操作保留，1441项离线检查及独立941项通过；后者补显式契约选择、Context／人员票据绑定和WS首帧，形成1269模型、179项操作（Controller 91、Seamer 88）的候选，1755项检查及独立复验通过。原[纯数据迁入与归并交接](contracts/sdk-handoff/README.md)仍按其固定提交解释。统一传输选择已有具体格式与故障规则，不再重复立项；跨域Ref／数字、授权／面板／快照、摘要／DDL及其他通道仍待完整绑定。worker保留IPC0.14且成功仍为closed，不证明完整bundle互认；所有候选均未批准，阶段0未关闭，未开始业务实现。本轮为本周期第3/3轮，按各提交当时的内容和报告输入审查，再依次推送SDK与Suite。
 
 2026-10-26设备授权持久采用进展：[九表SQLite候选](contracts/c04-lifecycle/DEVICE_AUTHORIZATION_STORAGE.md)以双向延迟外键封存State、恢复授权消费、Evidence、当前head及四份交付正文；首次取证绑定已消费恢复授权的完整运行身份，刷新必须从库取得旧证据。275项验收通过，含逐写／漏写全库回滚、COMMIT观察丢失、历史查原、禁止清空指针，以及DELETE／WAL双连接竞争。protect只比较State并捕获实际最新选择，刷新先提交也不阻挡撤权。真实来源、完整库和保护IPC未接通，失效拒绝不伪称完成设备保护，业务及阶段0边界保持。本周期第3/3轮，按各提交当时输入审查后推送main。

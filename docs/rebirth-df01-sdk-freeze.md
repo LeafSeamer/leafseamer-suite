@@ -6,6 +6,8 @@
 
 ## 1. 已知事实及本轮发现
 
+2026-10-27补充交接：[SDK事件投影与通道](contracts/sdk-event-handoff/README.md)固定当前命令86模型闭包及人员／服务122模型通道图，15项操作与认证关系已核对；134／294项离线检查实际复验通过。该切片仍需与原179项完整API裁决替换路径并生成新选择，不直接相加，不改integration1字节。其余十一类最新领域投影、selector／profile及具名摘要／DDL和真实消费者继续待完成；C01／SV02／SV03与阶段0未关闭。
+
 原Suite draft4生成器读取draft3生成物，判定器继续复用旧轮Python规则；这条历史生成链保留作对账。已有185个公共类型、19类IPC消息、71个HTTP／WS操作和232个离线用例，现已作为SDK独立纯数据重组的冻结基线；它仍不是生产SDK完整语义的唯一实现。（项目依据：[生成资料](contracts/draft4/README.md)、[归并审阅](rebirth-draft4-review.md)、[SDK交接](contracts/sdk-handoff/README.md)）
 
 官方 `openapi-typescript@7.13.0` 的peer约束为 TypeScript `^5.x`，并使用JS编译器API；不能按前稿的6.0试验起点直接宣称兼容。它生成声明，不替代运行校验；条件分支、整数精度及ref兄弟约束仍需单独验证。（来源：[固定版本package](https://raw.githubusercontent.com/openapi-ts/openapi-typescript/openapi-typescript@7.13.0/packages/openapi-typescript/package.json)、[固定版本转换实现](https://raw.githubusercontent.com/openapi-ts/openapi-typescript/openapi-typescript@7.13.0/packages/openapi-typescript/src/transform/schema-object.ts)）

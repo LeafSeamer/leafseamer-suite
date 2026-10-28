@@ -503,3 +503,9 @@ GC依赖未决命令／取消、切点、资源hold、准备墓碑、恢复消�
 C08原列的所有者、唯一键／引用、事务边界、版本切换及保留政策已有确定归属，本节关闭其余适用范围冲突。实际DDL／索引、绑定层、writer、归档定位、容量计量和迁移程序是实现交付，不能以尚未创建产品表继续扩展同义布局。C11设备原生完成／释放政策及C12发行时间决定仍由所属专题关闭，不在存储层补一个成功默认值。
 
 沿ST01—ST32、A14／A16／A22补实施验收：换context重投仍命中原Key、同ID跨scope／类型不串账、重复消费不得复活、pin与GC两种提交顺序、预算耗尽不删拒绝依据、归档不可用不成功、候选DDL失败不切换、整组激活未知查原、普通重启与备份恢复身份差异，以及新代已有写入后拒绝静默回退。当前仅契约和固定Schema核对，未执行这些产品数据库／进程／平台测试。
+
+## 25. 同命令多primitive的意图唯一键
+
+[C11音频第15.3节](rebirth-c11-audio-design.md#153-多primitive与现有ipc的唯一绑定)采用现有逐传输IPC：原业务意图唯一键为完整scope／command_id／attempt_id／primitive_id，packet与该primitive原意图精确关联；第4节基础字典中的UNIQUE(attempt_id)仅保留单primitive历史含义，不进入产品完整DDL。每个primitive首次ordinal=0，protocol_resend仍回指其原parent_dispatch_intent_id／initial_permit_id；不能只按attempt查询一条packet代替完整集合。
+
+整个command保留一个原计划和整设备hold；首次T2创建，后续primitive只能引用该命令当前有效hold、重核当前资源前态并保存自身新Ownership及issue／Guard／预算，不通过释放再获取绕过中间态。计划／primitive索引、step观察采用、进度、终态与审计／outbox归Controller同writer。保护cut和最终ResourceCut涵盖该命令全部历史primitive／传输／取消，计划尚未发送的后继也必须关闭其新签发资格。未知／失败不退款设备风险预算，不以局部primitive结束清整个hold。真实复合DDL、并发与故障用例随产品实现，现有局部单primitive报告不充本节证明。

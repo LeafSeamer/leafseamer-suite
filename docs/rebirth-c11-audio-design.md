@@ -441,3 +441,42 @@ SERVICE ID2/function0x80结构与typed value/error互斥；关联检查核对请
 AC01—AC75检查来源与静态/会话权限交集、秘密曝光、错域/错端点/迟到与截止等号、uint32边界、重算摘要后的错配、两种换接顺序、备用激活、零步计划及中间态/足迹遗漏。所有预期人工给定，验证器不生成预期；正例使用合成引用和信任前提。75项通过不包含完整协议解析器、跨语言SDK、SQLite高水位、实际授权、实时采样、网络和设备测试。
 
 后续必须归并的边界明确保留：全部参数/scene/meter资格与codec定义、现场profile批准来源、观察通道和命令证据IPC分离、primitive执行绑定及T1/T6表结构、presence/完成/释放证据policy，以及GUI的相关状态显示。不能把这份局部候选Schema发布为完整音频API或用它关闭C11。新增报告独立绑定四个原字节输入，使用本目录检查器核对工作区/暂存区，不默认为原十份报告检查器已经覆盖。
+
+## 15. 数值编码与多primitive执行归并
+
+### 15.1 当前证据与适用范围
+
+已核对Yamaha DM3 OSC v1.0.0第9页原表：电平使用整数线值，-32768表示负无穷，表内还列出-13800、0、1000等有限点；pan以-63／0／63表示左／中／右。它不能证明RCP或其他Yamaha型号采用同一格点，也不能仅凭表列举点推出所有中间值的量化行为。VB Matrix 1.0.1.8第11—13页区分dBGain、Mute和Remove，并将-inf列作增益查询结果；这里没有把该查询示例当作负无穷写入语法或路由不存在证明。（来源：[Yamaha官方规格](https://usa.yamaha.com/files/download/other_assets/2/2063222/DM3_osc_specs_v100_en.pdf)、[VB-Audio官方手册](https://vb-audio.com/Matrix/VBMatrix_UserManual.pdf)。）
+
+OSC 1.0的i与f分别为大端32位整数和IEEE754 binary32，s使用NUL终止及四字节对齐；该基础规格的字符串为ASCII。厂商明确扩展的字符编码须独立写入codec，不能因为SDK内部使用UTF-8就声称所有设备名称均接受相同字符。（来源：[OSC 1.0规格](https://opensoundcontrol.stanford.edu/spec-1_0.html)。）
+
+以下定稿的是数值／线字节与执行关联算法。DM3全部RCP binary／string词法、各型号完整量化／文本表、WING当前固件的原生／归一化转换和设备完成／释放资格仍需逐项来源，不能以本节通用算法冒充全部音频适配完成。
+
+### 15.2 两阶段精确转换
+
+1. **业务目标。** 先在批准ParameterDefinition的raw_domain／semantic_projection中验证单位、范围、格点、枚举和sentinel。十进制输入按有界字符语法解析成精确整数比例，禁止parseFloat前缀、NaN／Infinity、指数捷径和locale小数逗号；坐标／参数身份来自批准目录。AudioLevel有限centi_db与negative_infinity为互斥分支；原生raw值不因为长得像dB就自动取得单位。GUI拖动若需要吸附，必须显示确定的目标并以该目标提交，服务端不静默round或clamp。
+2. **线表示。** 只有业务目标已精确成立，才按codec执行指定线编码。integer_decimal和OSC int32必须整除／在其原范围内，字节与完整token可逆；decimal-text按具名固定精度或最短精确十进制策略输出，不使用宿主locale。OSC float32则从精确有理目标**一次**按round-to-nearest、ties-to-even选binary32位型；这是明示的线表示转换，不是把非法业务格点修成合法目标。禁止先经binary64再转binary32而产生双重舍入差异。溢出、下溢到零、非有限位型及未获profile允许的subnormal均拒绝；零使用正零，不能把-0当作额外业务状态。
+3. **绑定和比较。** 编码记录保存requested_semantic、codec_ref、参数／目录版本、encoded_wire及精确decoded_wire_value；float还保存8位十六进制bits。Controller核对这些字段及原计划，原packet字节摘要另算。设备自身再量化是第三个独立问题，必须有批准的量化函数／有限映射表才能预测observed目标；没有时可以保留合法原始观察，但不能用任意epsilon证明效果或触发值相等。
+4. **解码。** 先核完整帧、类型标签、arity、padding、有限长度和精确目标身份，再按对应read codec解码；raw与显示值分开保存。display／normalized／native tuple只能按声明的位置和类型读取，不取“最后一个args”。语法合法但单位或量化未明的值保持raw／unqualified，不造合格AudioLevel或boolean。名字字符长度、UTF-8字节长度和OSC填充分别检查；未知编码不替换为问号后当原值。
+
+如精确目标1/10编码为binary32，线bits应为3dcccccd，其精确值是13421773/134217728；这不等于把任意输入先round到0.1。1+2^-24恰在相邻binary32中点，ties-to-even选择3f800000；1+3×2^-24选择3f800002。参数是否允许这些目标仍由该参数格点决定，例子只固定序列化算法。接收NaN／无穷位型不能走AudioLevel.negative_infinity分支；负无穷必须由该codec明确的设备sentinel解码。
+
+DM3 OSC的mute只对明确的Fader/On投影取反：mute=true对应On=0；其他On、PrePost或phase保持各自具名语义，不能全局取反。上述电平表用于建立明确映射和测试点，不把表内-32768到1000的数值跨度当连续有限dB。VB单点写由目录构造完整SUID／一基通道／属性和单个赋值；只批准一个primitive，禁止把用户文本拼成范围、分号附加命令或广播。-inf、Err和缺响应分别处理，均不自动产生presence=absent。
+
+### 15.3 多primitive与现有IPC的唯一绑定
+
+当前panel4的TransportPacket、TransmissionRef、EncodingAuthorization已经含primitive_id／primitive_plan_ref，TransmissionRef另有parent_dispatch_intent_id及ordinal；[逐传输契约](contracts/c08-controller/BARRIER_ATTEMPTS.md)明确不同primitive分别拥有原业务意图和packet。本节直接采用当前52帧及[编码授权顺序](contracts/c08-controller/ENCODING_AUTHORITY.md)，不为音频另开第二设备出口或复用第14节候选中的permit_slot充当真实许可。
+
+单设备WING patch或多点VB计划由Controller执行一条公共command的固定primitive计划，保留同一command／attempt及整设备hold；每个primitive分别拥有dispatch_intent、packet、EncodingAuthorization、首次ordinal=0及逐次permit／issue／Guard。原DF04基础字典UNIQUE(attempt_id)仅能描述单primitive历史布局，产品应按完整scope／command／attempt／primitive建立原意图唯一键；后继protocol_resend始终指同primitive原意图，不能把第二属性写伪装成第一属性的重传。
+
+原子受理先固定完整计划、顺序、所有中间态与足迹、precondition／observation槽、原截止和全部预算上界。第一写之前检查整个计划可接受，之后每个primitive在自身编码和最终发送前重新核当前权限／控制／保护／原件以及上一步的合格观察。首次T2取得hold，后续T2只可使用该命令仍有效的同一hold及新Ownership／资源前后态，不重新取得第二个活跃hold，也不在两步之间释放。前一步观察只证明其具名条件，不直接让整个command succeeded。
+
+WING主／备用source与altsrc采用第12／14节的完整顺序及中间态政策；VB同设备计划保留所有点，不把场景不接受的中间态隐藏到预置执行中。跨设备是各设备独立command／hold及有序聚合；跨Controller由既有Seamer执行计划协调，不创建虚拟跨库command。独立Controller仍可执行自己拥有设备的复合动作，不依赖部署Seamer才能完成单设备patch。
+
+任一步明确失败、关联丢失、接管、撤权或超时均关闭未发的后继primitive，保留已发／未知集合，不继续下一步或在finally回滚。public终态沿现有枚举，partial只作进度；全计划效果满足固定政策才可能成功，资源另按所有primitive／attempt／取消传输的完整ResourceCut和ReleaseEvidence核销。第2步未发不能证明第1步无影响，零步计划只返回有证据的配置已相同，不能制造设备执行成功。WING／VB业务写默认retry=never，不能因通用IPC支持protocol_resend而自动启用设备写重传。
+
+### 15.4 实施出口及剩余范围
+
+本节关闭精确业务数值与线float32舍入的冲突，以及多primitive到现有编码／许可／hold的归并缺口。SDK生成编码记录和具名codec定义，Controller实现纯编码核验、同命令多primitive登记与完整cut，worker实现被批准编码器及唯一I/O出口，GUI分别显示目标、编码值、观察和部分进度。
+
+沿AUDT／A12补验：ties-to-even和双重舍入反例、整数边界、sentinel与非有限混淆、tuple错位、名称字节／字符边界、同attempt不同primitive不串账、第二步被FENCE阻断、第一步未知保留hold、整个计划预算不足零发送，以及跨设备部分成功不伪装整体成功。当前仅官方表格／Schema和精确算术检查；完整型号codec表、真实产品网络／SQLite／设备及声学测量未运行，C11仍未整体关闭。

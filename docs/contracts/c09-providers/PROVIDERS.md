@@ -130,3 +130,5 @@ python -B docs/contracts/c09-providers/check_coordinator.py --sdk <SDK仓库> --
 ```
 
 [coordinator-report.json](coordinator-report.json)记录157项检查：35方法托管消费、选择性依赖撤销、失败关闭、名额回收和6个实际线程场景，包括8线程竞争同一候选。固定SDK动态权威实际运行3次Schema子进程；测试明确展示基础ReadSet没有外部事件订阅，并验证登记后的动态权威在封装后撤销会同时关闭本地交付及SDK权威。领域守卫仍采用显式合成批准，事件由测试宿主显式触发；真实事件监听、生产鉴权、最终输出Gate、数据库、网络、浏览器和设备运行计数均为零，approved=false和runtime_ready=false继续保留。
+
+[完整面板结果与局部释放边界](DELIVERY.md)进一步将读集消费与不可变host.result入队放入同一协调锁，来源依赖延续至队列释放。完整帧绑定原请求、激活及方向序号，并实际校验64KiB上限；慢资格重读、非阻塞出口和撤权具有明确顺序。两个真实本机TCP场景仅证明该局部明文出口，浏览器MessagePort、其余帧、保护队列和产品最终输出Gate仍待接线。

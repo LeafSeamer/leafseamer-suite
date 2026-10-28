@@ -24,6 +24,8 @@ class Coordinator:
         R.need(type(max_reads) is int and 1<=max_reads<=64,'read_budget')
         R.need(type(max_dependencies) is int and 1<=max_dependencies<=256,'dependency_budget')
         self._lock=threading.RLock();self._reads={};self._dependencies={};self._building=0;self._retiring=0
+        # 输出适配器的本地登记也属于同一失效边界；关闭仅改内存，不调用传输。
+        self._outputs={}
         self._max_reads=max_reads;self._max_dependencies=max_dependencies;self._closed=False
 
     def register(self,revoker):
@@ -87,6 +89,9 @@ class Coordinator:
     def _close(self,handle):
         with self._lock:self._drop(handle)
 
+    def _close_output(self,output):
+        output['closed']=True;output['queue'].clear();output['pending_deps']=();output['busy']=False
+
     def revoke(self,dependency):
         R.need(type(dependency) is Dependency and dependency._owner is self,'dependency_owner')
         with self._lock:
@@ -95,6 +100,8 @@ class Coordinator:
             self._retiring+=1
             for handle,(_,deps) in list(self._reads.items()):
                 if dependency in deps:self._drop(handle)
+            for output in self._outputs.values():
+                if dependency in output['deps'] or dependency in output['pending_deps'] or any(dependency in item['deps'] for item in output['queue']):self._close_output(output)
         # 先关闭全部本地读取，再清理外部权威；清理失败也不能恢复依赖。
         try:callback()
         except Exception as e:raise R.Unavailable('dependency_cleanup') from e
@@ -106,6 +113,7 @@ class Coordinator:
         with self._lock:
             self._closed=True;callbacks=list(self._dependencies.values());self._dependencies.clear();self._retiring+=len(callbacks)
             for handle in list(self._reads):self._drop(handle)
+            for output in self._outputs.values():self._close_output(output)
         failed=False
         for callback in callbacks:
             try:callback()

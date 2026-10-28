@@ -2,7 +2,7 @@
   "format": "sdk-wire-handoff/1",
   "sdk_repository": "https://github.com/LeafSeamer/leafseamer-sdk.git",
   "suite_repository": "https://github.com/LeafSeamer/leafseamer-suite.git",
-  "sdk_main_commit": "7675185575d014d6138c8283dd16eacb94dbd46d",
+  "sdk_main_commit": "201f88b3ee60bf37ff8baabb70ba1ea1c840439e",
   "packages": [
     {
       "name": "scope-release",
@@ -904,6 +904,118 @@
         "plain_skipped_per_context": 100,
         "recorded_checks_total": 31268
       }
+    },
+    {
+      "name": "http-envelope",
+      "commit": "1c292c88462013d3d7b9450dcbe91b84f0db90ca",
+      "report": "contracts/http-envelope/report.json",
+      "files": {
+        "contracts/event-integration/preview/controller.openapi.json": "794b108b73cbc3ca21579888c01a2784a68efc5693bae8f0ba29df3b97174eed",
+        "contracts/event-integration/preview/seamer.openapi.json": "ebf630c970a64b2a897fbc2f3d975d8db158c9c956bffca19f669d0d05bf5bcf",
+        "contracts/event-integration/preview/selection.json": "efdd3a57be14c408764b3813a04b12ffd3bee57f0fdd31cbce9daac828fd6340",
+        "contracts/http-envelope/README.md": "6c2d852194a473fd33da72b4574dba9082070541e3f4292ee2ce071515561156",
+        "contracts/http-envelope/adapter.mjs": "b5a22a12ccee922a3b28bd8d616fd3fe1f27ec1f8c4e8b0357bcd9d7068032eb",
+        "contracts/http-envelope/build.mjs": "0c9abaef2a37a7da24ae6ebdd8de32f020ad2f73f288f4869fdea9c98377d025",
+        "contracts/http-envelope/check.mjs": "77451fca3a18fc72493e0f1899badce7a1d7da9f589e0b492aa73ffed93aa45d",
+        "contracts/http-envelope/http-check.mjs": "45b3fa2fd590ed5a7d8187b6f2381014573caa322bbe3ccaf899fe2741988385",
+        "contracts/http-envelope/node-check.mjs": "cf524a33f83c19d0b20e447307083d38ead01740095a3fdb5703348b05ef82a2",
+        "contracts/http-envelope/oracle.json": "60577b2cad17ca92bcaba59ed77bbb9a7bcf3e0735b1326ffde6af8a71bdfbe6",
+        "contracts/http-envelope/oracle.py": "f914b94d08c94bdf3fe1d6d6fccb347455fcfe792f74fd8e29b51331a544016f",
+        "contracts/http-envelope/preview/catalog.mjs": "8dba5a773d0667484e99e57863f7571d9fdbc28c0f3fa09265b7ba32f2a886b8",
+        "contracts/http-envelope/preview/inventory.json": "b3af40aea253a31895b2329e5d05bc7344e8393812c3a064778fdc00fc02b4ce",
+        "contracts/http-envelope/preview/manifest.json": "6d39c472c6457ff5dc4b6e33f920abacd490288f2ab4fb61d188a360c9bf0a86",
+        "contracts/http-envelope/preview/validators.mjs": "154209fa3b324782e423eca3e3a4d6c6660c8937968f45efa5e1cdd2047b00d8",
+        "contracts/http-envelope/report.json": "466436bedf943ed694cd892275d3d4488df232704bef641225e089d60d244150",
+        "contracts/http-envelope/runtime-tests.mjs": "c75c0a9fc5a60e1d5af66930c5840fa85a1d752330d14ebc9fd34024a2ec4fb4",
+        "contracts/http-envelope/sources.json": "e317da96e7a3a005f750eac4d9a86dc3b50e68d787a3de47cc7a12ad2e3f8be4",
+        "contracts/wire-js/dependencies.json": "dbcae02770866302233c18e475b263906d64971d76a1ea1f869f65dac7e8d3cc",
+        "contracts/wire-js/package-lock.json": "64097c158f67143afbf72ed378f1baffed263a1bb72475ee3be87497ee313f3b",
+        "contracts/wire-js/package.json": "fec7a0f66be113eb9a8229e041a40ab7f7f7462d1a0fd7eb6fe524075d71c85d",
+        "contracts/wire-routing/decoder.mjs": "5cfe8727556867f6d8bb9254cbce40e3ffad84b9ac7dd02a06496aeb30b2e305",
+        "contracts/wire-routing/preview/LICENSES.txt": "8da6966734e4e5080bc5dedeff1d1e9dcd6cc239f043a97c127b9ef7a15b3c21",
+        "contracts/wire-routing/preview/helpers.mjs": "920ee8279050fe2beae3657a95e98ad7ae5fbe141b8f184dfa217620959253fa",
+        "contracts/wire-routing/preview/inventory.json": "3cb7942adc07b1d51ba7464e97910b98c86b204b6240bf1971eb2a8a8fc0f61c",
+        "contracts/wire-routing/preview/registry.mjs": "78b560368b47aa97f3ef74157317c8f256b7cdccc7be7ed38f4af198795dc945",
+        "contracts/wire-routing/preview/routes.mjs": "3743f82284d643dd04584f19b4775ca55a4ede754d7549a1751f844ba2d75ca7",
+        "contracts/wire-routing/preview/validators.mjs": "0b7a048b20ff32c33dcb573135aaf32c72420be8e501e19333bbd7e412990e52",
+        "contracts/wire-routing/preview/wire.mjs": "47ee90c6585770cc16a1aee27f7d6fbcfb5cc7b64b46b791ed386443170b1520"
+      },
+      "expected": {
+        "cases_passed": 44,
+        "operations": 201,
+        "response_bindings": 2148,
+        "parameter_definitions": 58,
+        "independent_binding_checks": 9159,
+        "parameter_variants": 2204
+      },
+      "dependency_manifest": "contracts/wire-js/dependencies.json",
+      "dependency_files_recorded": 555
+    },
+    {
+      "name": "typed-client",
+      "commit": "201f88b3ee60bf37ff8baabb70ba1ea1c840439e",
+      "report": "contracts/typed-client/report.json",
+      "files": {
+        "contracts/event-integration/preview/controller.openapi.json": "794b108b73cbc3ca21579888c01a2784a68efc5693bae8f0ba29df3b97174eed",
+        "contracts/event-integration/preview/seamer.openapi.json": "ebf630c970a64b2a897fbc2f3d975d8db158c9c956bffca19f669d0d05bf5bcf",
+        "contracts/event-integration/preview/selection.json": "efdd3a57be14c408764b3813a04b12ffd3bee57f0fdd31cbce9daac828fd6340",
+        "contracts/http-envelope/README.md": "6c2d852194a473fd33da72b4574dba9082070541e3f4292ee2ce071515561156",
+        "contracts/http-envelope/adapter.mjs": "b5a22a12ccee922a3b28bd8d616fd3fe1f27ec1f8c4e8b0357bcd9d7068032eb",
+        "contracts/http-envelope/build.mjs": "0c9abaef2a37a7da24ae6ebdd8de32f020ad2f73f288f4869fdea9c98377d025",
+        "contracts/http-envelope/check.mjs": "77451fca3a18fc72493e0f1899badce7a1d7da9f589e0b492aa73ffed93aa45d",
+        "contracts/http-envelope/http-check.mjs": "45b3fa2fd590ed5a7d8187b6f2381014573caa322bbe3ccaf899fe2741988385",
+        "contracts/http-envelope/node-check.mjs": "cf524a33f83c19d0b20e447307083d38ead01740095a3fdb5703348b05ef82a2",
+        "contracts/http-envelope/oracle.json": "60577b2cad17ca92bcaba59ed77bbb9a7bcf3e0735b1326ffde6af8a71bdfbe6",
+        "contracts/http-envelope/oracle.py": "f914b94d08c94bdf3fe1d6d6fccb347455fcfe792f74fd8e29b51331a544016f",
+        "contracts/http-envelope/preview/catalog.mjs": "8dba5a773d0667484e99e57863f7571d9fdbc28c0f3fa09265b7ba32f2a886b8",
+        "contracts/http-envelope/preview/inventory.json": "b3af40aea253a31895b2329e5d05bc7344e8393812c3a064778fdc00fc02b4ce",
+        "contracts/http-envelope/preview/manifest.json": "6d39c472c6457ff5dc4b6e33f920abacd490288f2ab4fb61d188a360c9bf0a86",
+        "contracts/http-envelope/preview/validators.mjs": "154209fa3b324782e423eca3e3a4d6c6660c8937968f45efa5e1cdd2047b00d8",
+        "contracts/http-envelope/report.json": "466436bedf943ed694cd892275d3d4488df232704bef641225e089d60d244150",
+        "contracts/http-envelope/runtime-tests.mjs": "c75c0a9fc5a60e1d5af66930c5840fa85a1d752330d14ebc9fd34024a2ec4fb4",
+        "contracts/http-envelope/sources.json": "e317da96e7a3a005f750eac4d9a86dc3b50e68d787a3de47cc7a12ad2e3f8be4",
+        "contracts/typed-client/README.md": "fdfd132dcfab3353d3b83d34f946e387bfbb780bb6095ee4a9be8b539be7a192",
+        "contracts/typed-client/build.mjs": "5df9b95317a874d3a379ed46fe72408e254d67500ff389a80f2d9cff4e1f1c4f",
+        "contracts/typed-client/check.mjs": "a0d2ff41e95acd03ac45a148d5f91465d8478ca2a4091200b559ec3ca2b39906",
+        "contracts/typed-client/client.d.mts": "f4557bd1f35944c481795869fc7920efa0182c0973a9275f04cfb9445b12235a",
+        "contracts/typed-client/client.mjs": "49b0128e8091e5287493f5553351386c54c529848fd241ef4e0ea4636a5b802f",
+        "contracts/typed-client/dependencies.json": "9059e5ae9f4b79488ec53bd66cef04a349773a7d1cfe5497a30c6ecc53deef96",
+        "contracts/typed-client/http-check.mjs": "ee6edf31b8bee52f83fe71b4c8fc094b55d54733161f0b11ea74db94587b057f",
+        "contracts/typed-client/node-check.mjs": "4dc27d06307847d1809c9479c43b1f5266ad85cc8ebba17e9add40784eade6e2",
+        "contracts/typed-client/package-lock.json": "939be55eabe39125f503f24f19674eaffefa123d85e1c63dc52e3b0a712f3dae",
+        "contracts/typed-client/package.json": "557f631c796b065c9b24dcc5e88c3e0535c81a36da4225d169541f7388542047",
+        "contracts/typed-client/preview/bindings.json": "909f2b1a14f69668560c23dc1f2b43ed5dedbb4ec29acbf9444ac66c3cef494d",
+        "contracts/typed-client/preview/controller.d.ts": "e1d3cf012f78eb98e0e5d7d2523a4d88a8fdd7e83c71eed78f8ec72ea8b090a6",
+        "contracts/typed-client/preview/manifest.json": "ed59f3d1d65c71f73d748e86fdf0d07b0bae7be7ea7ebf91d231f22fbfcb0eaa",
+        "contracts/typed-client/preview/operations.d.ts": "86887d67c5a401205e005f17d4b25f41a38a2f3203769250b96093a79936a57c",
+        "contracts/typed-client/preview/seamer.d.ts": "839dce64f36423ee7dcdc743fd42210f1105c882634f2bdf4503cc936fb875fc",
+        "contracts/typed-client/report.json": "48e9a6705ca5bf9a99aed5779affe4c272b80f0fc8abfed565c99d5ad457fb22",
+        "contracts/typed-client/runtime-tests.mjs": "1eb40f42f162e9ac32f8c06e3d22d7da96feefc90cf29529a1b364e45d3127d4",
+        "contracts/typed-client/sources.json": "aad92d098b5593bc6d2c2976636bb7e7c42355c51390bacb98eebcde7e37ab9f",
+        "contracts/typed-client/type-negative.json": "84d4df02f939a84e72b012b94f028ccdb3c8122066e0c519421a769813fdd553",
+        "contracts/typed-client/type-tests.mts": "29a43e5626f8d48ca1f95932ba40a99d34c1311a674fd092741e5864a45a934e",
+        "contracts/wire-js/dependencies.json": "dbcae02770866302233c18e475b263906d64971d76a1ea1f869f65dac7e8d3cc",
+        "contracts/wire-js/package-lock.json": "64097c158f67143afbf72ed378f1baffed263a1bb72475ee3be87497ee313f3b",
+        "contracts/wire-js/package.json": "fec7a0f66be113eb9a8229e041a40ab7f7f7462d1a0fd7eb6fe524075d71c85d",
+        "contracts/wire-routing/decoder.mjs": "5cfe8727556867f6d8bb9254cbce40e3ffad84b9ac7dd02a06496aeb30b2e305",
+        "contracts/wire-routing/preview/LICENSES.txt": "8da6966734e4e5080bc5dedeff1d1e9dcd6cc239f043a97c127b9ef7a15b3c21",
+        "contracts/wire-routing/preview/helpers.mjs": "920ee8279050fe2beae3657a95e98ad7ae5fbe141b8f184dfa217620959253fa",
+        "contracts/wire-routing/preview/inventory.json": "3cb7942adc07b1d51ba7464e97910b98c86b204b6240bf1971eb2a8a8fc0f61c",
+        "contracts/wire-routing/preview/registry.mjs": "78b560368b47aa97f3ef74157317c8f256b7cdccc7be7ed38f4af198795dc945",
+        "contracts/wire-routing/preview/routes.mjs": "3743f82284d643dd04584f19b4775ca55a4ede754d7549a1751f844ba2d75ca7",
+        "contracts/wire-routing/preview/validators.mjs": "0b7a048b20ff32c33dcb573135aaf32c72420be8e501e19333bbd7e412990e52",
+        "contracts/wire-routing/preview/wire.mjs": "47ee90c6585770cc16a1aee27f7d6fbcfb5cc7b64b46b791ed386443170b1520"
+      },
+      "expected": {
+        "operations": 201,
+        "http_callable": 197,
+        "websocket_metadata_only": 4,
+        "response_bindings": 2148,
+        "schemas_per_authority": 1351,
+        "type_negative_cases": 20
+      },
+      "dependency_manifest": "contracts/typed-client/dependencies.json",
+      "dependency_files_recorded": 2009
     }
   ],
   "selection": {
@@ -921,12 +1033,12 @@
       {
         "round": 1,
         "repository": "leafseamer-sdk",
-        "commit": "0feafae946ecd3aaa24af1309606cdf7d7c9f181"
+        "commit": "1c292c88462013d3d7b9450dcbe91b84f0db90ca"
       },
       {
         "round": 2,
         "repository": "leafseamer-sdk",
-        "commit": "7675185575d014d6138c8283dd16eacb94dbd46d"
+        "commit": "201f88b3ee60bf37ff8baabb70ba1ea1c840439e"
       },
       {
         "round": 3,

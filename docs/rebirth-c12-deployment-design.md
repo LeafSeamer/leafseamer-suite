@@ -2,7 +2,7 @@
 
 - 日期：2026-10-18（Asia/Tokyo）；责任仓库：Suite，Controller／Seamer提供服务和存储接口，GUI提供受权操作，SDK承载契约。
 - 已确认范围：Q68的Windows 11 x64／Ubuntu 24.04 amd64及Linux容器；Q70的Linux Compose＋Nginx完整套件、Windows原生Controller＋GUI独立现场；Q71完整旧NodeCG图文。用户要求先完成全系统方案，再进行业务实现。
-- 当前事实：[DF02](rebirth-df02-runtime-design.md)、[DF04](rebirth-df04-storage-design.md)、[DF05](rebirth-df05-release-design.md)分别已有监督域、数据库、发行候选；[C10](rebirth-c10-gui-design.md)已有GUI交互候选，[C11](rebirth-c11-nodecg-design.md)仍要求具体输出访问profile。本稿不把这些候选视为已批准。
+- 当前事实：[DF02](rebirth-df02-runtime-design.md)、[DF04](rebirth-df04-storage-design.md)、[DF05](rebirth-df05-release-design.md)分别已有监督域、数据库、发行候选；[C10](rebirth-c10-gui-design.md)已明确核心与管理页面契约，[C11](rebirth-c11-nodecg-design.md)第9节已明确NodeCG组合和输出profile。各专题的采用状态由其最新专节规定。
 - 本文推荐：DEP01—DEP08待审阅；DEP是本专题建议编号，DPT01—DPT48是未执行验收。未提供可运行安装器、Nginx配置或Compose文件，未安装服务／证书、接触设备或发布制品；公共draft.4／IPC 0.3保持原样。
 
 ## 1. DEP01：部署拓扑及责任边界
@@ -162,7 +162,7 @@ Windows无需替换被占用的active程序路径，Linux无需依赖原子切�
 
 两条主教程均按“预检→验证制品→审阅计划→配置目录／身份／TLS→保护态启动→只读连通→配置能力和授权→用户明确启用”组织。教程明确每条命令的本机修改范围，不用curl|shell或让用户自行编译补依赖；不将`compose up`、绿色health或安装完成作为可以直播的结论。其他原生路径仍提供说明，不把主教程变成唯一支持方式。
 
-GUI实现栈、精确依赖／工具链、NodeCG修复组合、age辅助制品、平台profile数值及完整机器契约尚需最后锁定；本稿给出它们必须满足的接口与发行绑定，未假称已锁文件。部署主机、域名、签名／根密钥持有人等实际值在相应安装／发行阶段登记，不用虚构真实环境堵住设计。设计取舍审阅、实现任务和运行取证分别保留。
+GUI实现栈和精确依赖沿[工具链锁定稿](rebirth-toolchain-lock-design.md)，NodeCG修复组合沿[C11第9节](rebirth-c11-nodecg-design.md)，age辅助制品及平台profile沿各权威稿；第10节固定维护管理契约。已明确的选择转入完整锁、制品及机器契约生成，不再统称尚未选型。部署主机、域名及真实持有人等实际值在安装／首次发行前登记；三人阈值沿DF05第9节，人工发行时间运维选择仍独立待决定。实现任务和运行取证分别保留。
 
 以下全部DPT用例均未运行；每例记录精确制品、配置摘要、平台／浏览器／容器运行时、输入与故障切点、预期／实际、日志及文件／服务／设备证据，静态检查不替代运行。
 
@@ -222,3 +222,83 @@ GUI实现栈、精确依赖／工具链、NodeCG修复组合、age辅助制品�
 须归并DeploymentPlan／ActiveDeployment、宿主生命周期身份与退役查询、健康投影、DiagnosticExport、BackupManifest／RecoveryPlan及OutputSnapshot；每项需要关闭未知字段、精确scope／摘要投影／容量及正反例。DEP07是DF05平台切换的具体候选，不改变业务命令生命周期或旧draft.4文件。
 
 C12方案成文不等于全系统设计已冻结。仍需审阅DEP01—DEP08及此前候选，锁定尚缺的工具链／协议政策，并完成全量需求—契约—用例一致性归并。DPT01—DPT48、RA／ST／RT／TP及全部模块真实验收保留在实现后执行；缺少运行证据不能假勾完成，也不以尚无业务实现为由无限阻止设计定稿。
+
+## 10. 维护管理请求与本机执行权威
+
+本节作为首期实现输入，关闭C10的维护页面接口缺口，沿用DEP06／DEP07、DF04及DF05，不授予业务API远程安装权。以下容量和期限是产品设计上限，不是平台实测结果；DPT49—DPT56及原验收均待实现后执行。
+
+### 10.1 权威、授权和持久受理
+
+每个installation只有一个Suite本机维护agent，持有installation.db及安装根的写权限；业务服务、模块、GUI均不直接打开该库。Linux使用受文件权限保护的本机socket，Windows使用限定服务SID与管理员的named pipe；核对OS对端身份，固定注册的service_id到可见installation映射。协议只接受下述具名操作与已登记制品／目录引用，不接受shell、任意路径、URL、命令行或包内脚本。Compose业务容器不挂宿主Docker socket或整个安装根，宿主agent通过限定桥接端点提供此协议。
+
+指定Controller或Seamer可以代理本installation的维护入口；没有本机agent绑定时返回maintenance_unavailable，不把请求转发给任意其他主机。服务核当前真实human、audience、对象范围和权限，将认证审计引用及完整Principal提交给已绑定agent；agent只信注册OS连接携带的认证声明，不信GUI自填人员。远端部署只有逐主机独立计划、OS授权和回执；跨主机汇总不是分布式原子安装。
+
+GUI的maintenance.plan允许创建／读取计划；maintenance.read允许授权范围内查询。maintenance.backup与maintenance.diagnostic允许当前人员请求已批准profile内的在线备份和脱敏诊断，均需近期认证；L3另需maintenance.secrets.export且必须在本机明确批准本次operation。maintenance.request允许请求维护备份、恢复、升级或回退，但只能进入awaiting_local_approval。本机管理员通过OS验证的CLI审阅固定plan_ref、operation_id、预期generation、覆盖／中断范围及摘要后批准；这份本机批准是安装操作的授权，不能由在线角色、service主体或请求者旧会话替代。首次安装、身份服务不可用、认证时钟失信时只开放此本机入口。请求人退出不会撤销已由管理员批准的维护操作；未开始的在线操作则在执行前再次核当前会话与权限，失效即拒绝。
+
+agent事务先原子保存请求Key、request_digest、不可变计划引用、operation及目录事件，持久提交后服务才返回202和MaintenanceReceipt；业务库不先保存一个自称accepted的副本。连接中断可为结果未知，必须查agent账本。installation.db损坏／不可达时不以业务日志、新空库或备份替代，也不降信任下界。agent重启先核原operation、helper终止及已发布文件／activation事务，再决定继续哪一确定步骤；从不因HTTP重发重新做迁移或切换。
+
+MaintenanceRequestKey的human分支固定origin=human、installation_id、installation_epoch、issuer_id、issuer_epoch、principal_id、request_epoch、operation、idempotency_key；本机CLI另用origin=local_os、OS主体和本机request_epoch的闭合分支，不伪造human token。context_id由agent签发并绑定本机维护域／Principal／期限，首期有效60秒；它不入Key，也不计入request_digest。请求摘要按JCS覆盖method、path、正文，唯一排除顶层context_id与idempotency_key；同Key同摘要返原结果，异摘要409。安装generation变化不重置历史Key；查旧epoch只读原账本，不允许旧context发新操作。上下文过期只限制新受理，不撤回已受理操作。
+
+### 10.2 计划、操作和公开投影
+
+MaintenancePlan正文不可变，plan_ref含installation_id、installation_epoch、plan_id、revision=1、digest；摘要不含自身。正文含kind、deployment_plan_ref、expected_generation、target_service_scopes、release_manifest_ref或archive_ref、backup_level、consistency、encryption_profile_ref、coverage、resource_profile_ref、required_local_approval、warnings及详细步骤。kind限定backup／diagnostic／restore／upgrade／rollback；按kind闭合联合，不需要的字段禁止出现。backup选择online或maintenance，diagnostic仅脱敏导出；其余使用DEP06／DEP07固定步骤，不能由客户端编排任意步骤。restore的输入archive必须完成密文校验，解密后另产不可变RecoveryPlan引用，真正切换前本机管理员再批准该具体恢复计划及缺项，不能用解密前的笼统请求授权未知内容。
+
+计划修改创建新plan_id，不覆盖既有引用。MaintenanceReceipt含installation_id、operation_ref可空、request_locator、result_ref可空及accepted_revision；只用于已持久受理事实。lookup按请求operation返回闭合result联合：plan_ref／operation_ref／archive_ref／download_session_state，未完成流返回in_progress；not_found只表示本次可靠账本查询未命中。公开MaintenancePlanView仅含plan_ref、kind、generation、目标service scope、版本、备份级别／一致性、覆盖计数、公开制品摘要、需本机批准的原因码及步骤代码；不含主机路径、地址、secret_ref、口令、数据库内容或原始异常。目标最多256，计划／JSON投影各不超过1MiB，超限拒绝不截断；服务接入和目录可见性按安装登记及当前人员范围核对。CLI可读取受保护的完整计划用于审阅。
+
+MaintenanceOperation含operation_ref、plan_ref、request_locator、initiator联合、revision、phase、step、cancel_requested、local_approval_ref可空、result_ref可空、reason_code、targets及created_at可空。phase限定awaiting_local_approval／awaiting_secret／queued／running／succeeded／failed／cancelled／indeterminate；targets逐项含service_scope、state、receipt_ref，state为pending／applied／failed／indeterminate，不按数量推全成功。Operation另含secret_request可空（第10.4节的脱敏SecretRequest），仅原受权人员可读且不含秘密。公开local_approval_ref仅opaque引用，不泄露OS账号。ArchiveView.state限定uploading／validated／published／failed／partial，来源可信状态限定verified／unverified；partial只描述有缺项的归档，不能满足要求全覆盖的计划成功条件。progress含bytes_done、bytes_total可空，均U20；缺总数不显示虚构百分比。step为kind下固定步骤代码，领域结果仍保留DF04的published、DEP06的reconciled和DEP07的activated_protected，不能用通用phase替代。succeeded只表示计划承诺步骤满足，不表示设备ready、自动布防或观众像素成功。
+
+计划与operation、archive目录复用C05第18节DirectoryPage分页机制，但权威库明确是installation.db，authority_service_id为登记的maintenance authority，database_instance_id为其真实库身份；桥接service的业务database_instance_id不能冒充它。页和详情每次重新核当前范围，operation initiator无读权时返回403，不因其曾发起而永久可见。业务历史只可持维护locator；不能把安装目录原件复制成业务库权威。agent离线或服务正在切换时GUI显示disconnected及最后读取版本，不将超时变成failed／cancelled。
+
+### 10.3 HTTP与本机协议
+
+下表前缀均为`/api/v1/maintenance`，仅在已绑定agent的Controller／Seamer提供，均只允许human；不是新增独立公网管理端口。写请求除流式秘密／密文外使用上述context_id、idempotency_key；输入不允许未知字段。Key.operation精确使用本表operationId，幂等key及标识沿SDK既有类型，不由路由显示名称推断。错误沿SDK包络，新增reason_code为maintenance_unavailable、generation_conflict、local_approval_required、secret_required、archive_invalid、budget_exceeded、cancellation_too_late、operation_indeterminate；401／403与当前鉴权含义不变。涉及当前generation或operation revision的CAS失败409，不能由GUI刷新CAS后自动补写。
+
+| 方法／路径 | operationId | 输入、权限与结果 |
+| --- | --- | --- |
+| GET `/context` | getMaintenanceContext | maintenance.plan或read；返回绑定安装域的context、当前generation及能力，不返回OS授权 |
+| POST `/plans` | createMaintenancePlan | maintenance.plan；闭合kind参数、expected_generation及已有制品引用；201不可变PlanView；只预检，不退役writer或运行归档代码 |
+| GET `/plans/{plan_id}` | getMaintenancePlan | maintenance.read及目标范围；固定PlanView |
+| POST `/operations` | requestMaintenanceOperation | 对应kind权限＋近期认证；plan_ref、expected_generation；202 Receipt含operation_ref与request_locator，先持久受理再答复 |
+| GET `/operations` | listMaintenanceOperations | maintenance.read；DirectoryPage，kind可选、page_size／cursor；只列当前授权目标 |
+| GET `/operations/{operation_id}` | getMaintenanceOperation | maintenance.read；Operation及对应脱敏结果引用 |
+| POST `/requests/lookup` | lookupMaintenanceRequest | maintenance.read及原范围；完整原Key只读，返回found及对应result联合、in_progress或not_found；not_found不触发重做 |
+| POST `/operations/{operation_id}/cancel` | cancelMaintenanceOperation | 对应kind权限或maintenance.request、近期认证；expected_revision；202同operation的取消请求回执，不能直接声明cancelled |
+| POST `/operations/{operation_id}/secrets/{slot_id}` | supplyMaintenanceSecret | 原操作所需权限＋近期认证；仅一次性秘密流，规则见10.4，不使用普通JSON重试 |
+| POST `/archives` | importMaintenanceArchive | maintenance.request＋近期认证；密文流及声明的大小／SHA-256，规则见10.4；201隔离ArchiveView，不启动恢复 |
+| GET `/archives` | listMaintenanceArchives | maintenance.read；DirectoryPage，level可选、page_size／cursor；包括failed／partial，不能伪装完整恢复点 |
+| GET `/archives/{archive_id}` | getMaintenanceArchive | maintenance.read及原覆盖范围；ArchiveView含ID、格式、级别、一致性、覆盖／缺项计数、bytes、SHA-256、state及来源可信状态 |
+| POST `/archives/{archive_id}/download-session` | createMaintenanceDownloadSession | maintenance.backup或diagnostic及原范围，L3再核secrets.export；申请当前密文专用下载会话，规则见10.4 |
+| GET `/archives/{archive_id}/content` | downloadMaintenanceArchive | 专用下载会话；只读固定published／validated密文，支持单段Range，不承认URL令牌或普通issuer cookie |
+
+本机协议maintenance-local/1使用UTF-8 JSON长度帧，控制帧至多1MiB，二进制块至多1MiB且带operation／transfer引用和递增偏移；每连接至多一个流，输入大小先验后分配。双方先HELLO核协议、installation及OS绑定，之后仅Context、CreatePlan、GetPlan、RequestOperation、GetOperation、ListOperations、LookupRequest、CancelOperation、ImportArchive、GetArchive、ListArchives、OpenArchive、SupplySecret及本机专有ApproveOperation／ApproveRecoveryPlan。每个请求有correlation_id，响应带同ID及真实receipt或稳定错误；correlation_id不替代持久Key，消息与帧长度错误关闭连接。传输半关闭不表示操作取消；恢复新连接只查原。读取列表沿上述DirectoryPage，流终结明确带实际bytes与摘要校验结果。服务OS身份只能用普通动作且携带已核人员声明，Approve两动作只允许核实的本机管理员OS身份；不能从代理连接传一个admin=true获得权限。agent执行的固定helper及服务退役接口沿DF02既有监督契约，不给其任意设备命令权限。
+
+### 10.4 密文、秘密输入与有限资源
+
+备份加密profile固定X25519接收者列表（1—16个已登记公钥）或单一口令，两者互斥；自动备份用公钥，口令模式由人员明确选择并确认，空口令拒绝。age v1.3.2官方库支持设置scrypt工作因子及解密上限；本产品写入固定logN=18、读取最大18，较高成本包拒绝并提供本机离线转换说明，不自动提高上限。使用官方库构建锁定helper，不自行实现加密算法。（API依据：[age v1.3.2 scrypt.go](https://github.com/FiloSottile/age/blob/v1.3.2/scrypt.go)。）
+
+agent仅在确定步骤生成SecretRequest：slot_id、purpose=encrypt_passphrase／decrypt_passphrase／decrypt_identity、operation_ref、agent_runtime_id和相对本机单调域的60秒期限；公开投影只给remaining_ms，不暴露秘密。HTTP为application/octet-stream，最大16KiB，由TLS接收端内存转入受保护本机管道；不进正文日志、代理落盘、argv、env、数据库或幂等摘要。接受槽只限当前原operation和人员，agent先登记一次消费，再给helper；重复／过期／旧runtime拒绝，不回显秘密。响应丢失查询operation，不能重放秘密；helper退出且无结果时核对发布／激活账本后才产生新槽。状态unknown时不得并行启动第二helper。私钥若在本机SecretStore登记，agent按受保护引用读取，不经GUI输出。
+
+受限tar不压缩：ciphertext／plaintext各最多64GiB，普通文件最多100000个，单文件最多32GiB，manifest最多16MiB，路径UTF-8最多1024字节；禁links、devices、稀疏文件及扩展记录中未许可字段，展开前逐项检查，累计限额不能只信manifest。每installation一个归档／恢复helper，内存上限1GiB、单任务30分钟，在线复制单步100页、调度批次预算10毫秒（每个step后检查，不承诺中断已开始的SQLite调用）、两批至少让出50毫秒，超预算保留旧有效包并失败，不偷偷停止直播。开始前按声明总量校验空间并预留2GiB安全余量，过程中持续核剩余空间；恢复另加计划列出的新代及回退保留空间。安装包及迁移代码只来自DF05已验证发行物，不来自备份归档。
+
+上传仅密文流；Content-Type为application/octet-stream；X-LeafSeamer-Maintenance-Metadata头为base64url编码的UTF-8闭合JSON，解码至多4KiB，字段固定request_key、context_id、bytes、sha256，身份逐项与当前认证及安装域核对；HTTP Content-Length若存在必须等于bytes，分块流也不得超额。内容只暂存固定隔离根内由agent分配的文件。Key去重摘要绑定声明参数，不缓存整份流；同Key只允许一个上传，重连先lookup，未完成且旧流已关闭才可显式从偏移0重新上传到同一暂存对象，成功201之后重传只返回原ArchiveView。流完成、hash相符、文件同步且archive记录提交后才validated；未完成不能作为restore输入。导入ArchiveView的来源可信状态仍按DEP06核对，不以TLS上传或可解密代替来源认证。上传过程至多30分钟、无进展60秒中止传输，既有完成对象不覆盖。
+
+下载POST使用正常service-audience bearer并核Origin，不用签发Controller的Cookie替另一服务授权；成功设置不可读的Secure／HttpOnly／SameSite=Strict专用Cookie，Path精确限定该服务的该archive content路径，无Domain。票据32随机字节，仅保存其hash，绑定原会话／完整Principal、archive摘要及权限版本，期限10分钟，不续期；POST同Key返原会话状态而不复活已失效票据，需新下载时由人显式申请新Key。GET不允许跨origin重定向、CDN缓存或URL票据，Content-Disposition为固定无用户路径的附件名，Cache-Control为no-store；支持同一密文的单Range续读，ETag固定SHA-256，变更或权限失效拒绝。每块至多1MiB，每块释放前核当前授权且授权快照不得旧于DF06允许期限；撤权停止尚未释放字节，不能回收已下载内容。GUI显示服务提供的摘要供下载后核验，成功发出链接／HTTP结束不冒充用户磁盘校验完成。
+
+### 10.5 退役、取消与恢复后的查原
+
+queued／awaiting_local_approval／awaiting_secret可CAS取消，清理未发布暂存并记录cancelled。running时仅登记cancel_requested，逐步骤在安全边界响应：在线备份停止复制／helper并核其退出，尚未发布才cancelled；一旦published保留成功结果，取消不得删除已发布包。进入old_writers_retired后取消只能终止后续激活并保留protected状态，不能自动重开旧writer；取消结果须带protected结果。activation事务已提交或无法确定时返回cancellation_too_late或operation_indeterminate，查原activation_operation_id，不用“取消”反向切回旧generation。服务退役或helper结果不明均indeterminate，禁止猜成功／失败及自动二次激活。
+
+升级、恢复停掉代理业务服务后，GUI读取可以暂不可用；本机CLI按installation_id与operation_id读取同一账本，不能依赖已停服务。新generation只在安装登记的service映射、DF06新身份／配对和认证资格核验后恢复代理；旧用户token、旧主体权限及下载／secret槽不自动跨恢复生效。已登录新身份需要当前maintenance.read才可读授权旧operation，历史request_locator仍以原issuer epoch查原，不改写归属。恢复reconciled之后还要按业务恢复／人员批准／preflight显式进入运行；安装工具不能替操作者布防或重放unknown设备动作。
+
+| 用例 | 实现后退出条件 |
+| --- | --- |
+| DPT49 | GUI请求升级只进入等待本机批准；伪OS身份、任意路径／命令、远程admin字段均拒绝 |
+| DPT50 | agent持久受理后响应丢失、服务／agent重启、换generation，按原Key只取得一个operation；库损坏不重置 |
+| DPT51 | 在线备份保持业务可运行，未DONE／超时／超空间／高KDF不发布；缺目标仍展示partial |
+| DPT52 | 口令／私钥不入各层日志、临时明文正文或环境；重复槽、失效会话、旧runtime及断流不触发第二helper |
+| DPT53 | 下载主体／scope／权限改变、Range及会话到期只读同密文；令牌不进URL，跨服务cookie不授权 |
+| DPT54 | 取消与published／writer退役／activation COMMIT竞争均保留原事实，unknown查原不回退 |
+| DPT55 | 解密后的RecoveryPlan必须再次本机批准；未知包无执行权，旧session／grant／arm不复活 |
+| DPT56 | 业务代理停机时CLI可查原，新代鉴权恢复后GUI显示同operation；跨主机部分成功不伪称全局原子 |
+
+本节关闭的是请求、权威、持久关联和故障交互的设计选择。SDK需生成新的维护HTTP、DTO及独立本机协议；Suite实现agent／CLI／helper／安装账本，Controller与Seamer实现受权代理及各库备份提供者，GUI实现计划、进度、分级备份、密文导入下载和本机批准提示。它们均为产品实施任务；此处没有实现或运行这些接口，不改变旧panel4机器制品和approved／runtime_ready状态，也不代批发行更新时间来源。

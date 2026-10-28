@@ -168,7 +168,7 @@ outbox按流sequence推进，ack只证明该订阅者已确认，不证明任意
 
 ## 8. checkpoint、备份与Schema升级
 
-[C12 DEP06／DEP07](rebirth-c12-deployment-design.md)补充分级加密包、NodeCG及多库覆盖、隔离恢复与完整release／data generation选择。installation.db不进入可回退业务备份；其事务只选择引用，仍须先验证每个候选文件和旧writer退役。该候选待审阅，不以安装日志替代本稿业务事务或存储耐久证明。
+[C12 DEP06／DEP07](rebirth-c12-deployment-design.md)补充分级加密包、NodeCG及多库覆盖、隔离恢复与完整release／data generation选择。installation.db不进入可回退业务备份；其事务只选择引用，仍须先验证每个候选文件和旧writer退役。维护管理和安装持久关联按C12第10节及本稿第19节实施，不以安装日志替代本稿业务事务或存储耐久证明。
 
 延续WAL、FULL、每连接foreign_keys=ON、busy_timeout=0、wal_autocheckpoint=0，初始化后读回验证；固定驱动必须能取得扩展错误码与事务状态。主writer与checkpoint任务有界协调，PASSIVE也占I/O；长读事务／备份持续延长导致WAL增长必须监测和限制。正常直播不主动VACUUM、RESTART/TRUNCATE或迁移。所有阈值依发布profile实测，不使用示例阈值冒充SLA。（来源：[checkpoint](https://www.sqlite.org/c3ref/wal_checkpoint_v2.html)）
 
@@ -384,3 +384,19 @@ Controller持久拒绝与Seamer持久暂停不构成跨库原子事务；P1先�
 实际发送与撤销仍在同一目标writer／最终Gate排序，HTTP返回receipt不等于worker已停；applied由已完成的本地拒绝、RUN_FENCE和持久回执共同证明。原件或拒绝账本不明时保护，COMMIT未知查原，不先响应成功再补目录／outbox。旧域备份恢复保留历史和deny证据，新scope重新批准；任何未核销、unknown或恢复pin存在时不清理这些记录。
 
 SDK生成和产品迁移按上述唯一键及写集一次接入原服务库；新增验收为逐写失败全事务回滚、并发批准CAS、认可撤销与prepare排序、撤销先到、COMMIT观察丢失、重复通知、人员停用不级联及恢复新域拒绝旧资格。当前未执行这些产品SQL／进程／平台检查，不能引用早期局部SQL报告作为本节通过证据。
+
+## 19. 维护账本与业务备份的事务分界
+
+[C12第10节](rebirth-c12-deployment-design.md#10-维护管理请求与本机执行权威)的maintenance authority由Suite本机agent承担；installation.db使用本稿单writer、FULL／WAL及错误处理规则，具备自己的database_instance_id和安装域，业务服务不得直接写入。维护记录不随业务备份回滚；路径、秘密和OS审批审计保存在受保护域，API只给脱敏投影。
+
+| 本机writer事务 | 同事务事实及提交后的动作 |
+| --- | --- |
+| 计划与请求受理 | MaintenanceRequestKey唯一及摘要、不可变plan_ref、operation初始态、预期generation、目录版本和receipt一起提交；提交后返回202或执行固定工作，不先回accepted |
+| 本机批准／取消 | OS主体和固定计划摘要／RecoveryPlan、expected generation及operation revision CAS、批准或cancel_requested与审计同写；不得以取消清除激活事实 |
+| 归档发布 | helper已退出、文件同步且摘要／验证／覆盖确定后，在同事务写archive状态、result_ref、operation结果与目录事件；崩溃遗留文件仍是未发布，核原摘要后才允许补提交 |
+| writer退役与激活 | 每目标退役receipt和来源域持久绑定；只有全目标满足且新代已保护准备才按DEP07原子CAS完整ActiveDeployment与activation_operation结果，不能另起独立业务库事务冒充跨库原子 |
+| 重启核对 | 原operation、文件／helper／监督域证明及activation_operation_id核对后更新revision／结果；不确定保留indeterminate和旧拒绝下界，不以新空库或超时推翻已受理事实 |
+
+各业务库在线备份提供者使用backup_operation_id唯一关联maintenance operation和自己的service／database scope，在自身writer记录requested及复制／校验结果；SQLite Backup完成证明不能由agent的202替代。agent按这些真实回执汇总，每库一致点仍独立；NodeCG另提供其持久化证据。业务侧响应丢失查同backup_operation_id，不重复发布不同内容到同archive；原任务未证明结束时不启动第二份helper。业务库记录与installation.db不能同事务提交，采用固定请求身份与持久结果的重试读取；原业务库损坏或换代且缺原记录时保留unknown，不推断从未备份。
+
+目录记录与对应原件同writer，跨域只保存完整Ref和已核摘要，不建立虚构的跨库FK。在线复制／归档的大块IO不放在安装或业务writer事务中；生成文件、同步、验证与发布引用分阶段执行。这里是产品DDL／实现输入；维护agent、业务备份提供者、跨进程崩溃恢复及两平台耐久验证均未运行。

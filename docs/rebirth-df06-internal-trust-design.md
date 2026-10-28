@@ -523,3 +523,26 @@ valid_before_tick_ns = b + 2000000000
 采集来源、算法、原件解析、TLS使用和恢复顺序的设计选择至此明确。Controller／Seamer实现原生读取及writer、生命周期拒绝和保护传播；SDK生成policy／acquisition及服务级日志类型并绑定现有出口投影；Suite交付环境资格配置、OS维护入口和两平台部署指南；GUI分别展示认证不可用、业务参考质量及发行时间状态。未实现的类型生成、平台采集、TLS和数据库接线是实施任务，不把本节文字当作运行证明。
 
 复用FA19、TV07／TV11／TV13、IN和ILT验收，增加以下必要轨迹：FILETIME纪元与边界／timespec非法值；采集括号变长、量化外包、提交延迟；前后policy／namespace变化；同id换时间；同域其他出口故障；到期边界与TLS长连接；失信时拒绝远程恢复而允许受限本机维护；新域不能复活曾过期credential或旧permit；Seamer停止而远端旧许可未确认；业务NTP坏而认证正常时即时手动仍受其余守卫正常判定。实际系统读取、两平台误差／速率资格、TLS、并发数据库和出口终止均尚未验收，整体阶段0也未因本节单独完成。
+
+## 14. 身份、配对与运行授权的管理读取
+
+2026-10-29采用。新增以下只读入口，以[C05第18节](rebirth-c05-event-sync-design.md#18-受权历史与管理目录读取)的DirectoryPage完成枚举。只接受当前human；表中权限还必须与具体对象范围相交，查询不能使service成为人员。签发Controller与接收方映射分别列出authority和完整issuer三元组；接收方的subject列表不是全套签发者账户列表。
+
+| GET路径／operationId | 所有者与权限；首请求过滤 | 固定脱敏视图 |
+| --- | --- | --- |
+| `/api/v1/subjects`／listSubjects | 各服务本地映射；identity.read；principal_kind、state、issuer_id | SubjectSummary：subject_ref、issuer_id／issuer_epoch／principal_id、principal_kind、display_name、state、local_authorization_ref或null；不含登录名、密码摘要、session或token集合 |
+| `/api/v1/auth/service-principals`／listServicePrincipals | 指定签发Controller；identity.read；state | ServicePrincipalSummary：subject_ref、完整issuer三元组、display_name、purpose、state、current_approval_ref或null；详情沿第9.3节既有GET |
+| `/api/v1/auth/service-principals/{id}/approval`／getServiceApproval | 指定签发Controller；auth.manage及该主体范围；无 | 第9.1节ServiceApproval，含批准者、范围、期限、修订及批准操作引用，不返回credential验证材料；无批准时明确null，不虚构默认许可 |
+| `/api/v1/auth/service-principals/{id}/credentials`／listServiceCredentials | 指定签发Controller；auth.manage；state | 第9.3节ServiceCredentialView，只读元数据；包括staged、retiring及保留的终态，不重交付secret或proof原文 |
+| `/api/v1/auth/peer-pairings`／listPeerPairings | 各服务自己的配对；auth.manage；peer_service_id、state | PeerPairingSummary：pairing_ref、peer_service_id、issuer_id／issuer_epoch、state、binding_ref或null、activation_operation_ref或null、peer_observed_state或null；远端状态必须带原观察修订与有效性，不合成双方active |
+| `/api/v1/auth/peer-pairings/{id}`／getPeerPairing | 各服务自己的配对；auth.manage；无 | 前述summary及允许的transcript引用、范围、凭据指纹、两向验证结果引用和有效期限；不包含challenge／私钥／credential原文，不由详情读取再次发起proof |
+| `/api/v1/run-grants`／listRunGrants | 目标Controller；grant.read；origin_service_id、origin_database_instance_id、run_id、state | RunGrantSummary：grant_ref、origin_scope、run_id、definition_version、arm_generation、主体三元组、state、validity及preparation_ref或null；每目标独立目录，不把部分目标active汇总为全run已授权 |
+| `/api/v1/run-grants/{id}`／getRunGrant | 目标Controller；grant.read及具体grant／设备动作范围；无 | 当前具名RunGrant原件的公开字段，精确device_actions／parameter_constraints／validity及运行绑定；任何字段无权则整项拒绝，不裁剪原件后保留原digest |
+
+SubjectSummary的state来自主体／本地映射记录，支持active／disabled／revoked；该目录分类不复活远端被撤主体。服务主体state严格沿第9节disabled／active／revoked；其余state沿对应具名领域模型封闭生成，不从展示字符串反推枚举。过滤中的issuer_id只限定结果，授权比较始终含issuer_epoch和principal_id；列表项object_ref分别使用IdentityObjectRef、配对既有引用或RunGrant具名Ref，不把它们按字段名强制转换成一套引用。
+
+身份／批准／凭据目录更新纳入I1—I4，本地映射／配对纳入I5／I6，RunGrant目录与目标Controller准备／撤销事务一起提交；远端receipt只记录已验证原件和当前观察有效性。无法获取签发者或认证时钟不可信时，不以缓存目录作为当前授权证明。密码、秘密、bootstrap能力及证书私钥没有列表查询入口；credential轮换仍保持一次交付，GET不重新发秘密。用户名称等可识别信息只进入获授权页面，不随普通日志或匿名状态输出。
+
+GUI的组织授权页据此分开显示：签发方ServiceApproval、Seamer的运行批准、各Controller真实RunGrant及撤销操作。ServiceApproval修改仍走第9节PUT，目标grant撤销沿现有revokeRunGrant／revokeAuthorization，并核原固定目标集；updateRunGrant仍仅配对Seamer能调用。**本节没有关闭Seamer运行批准正文及其人员管理API的缺口**：它已有权威与准备approval_ref定位，但仍须在C04明确批准范围、版本／计划、期限、CAS和操作查询，不能用本表的身份批准或列表原件代替发放。该缺口在统一收敛清单继续保留。
+
+本节新增8种路径／方法声明，其中列表5种、详情3种；两authority展开与实际最终operation数由SDK生成确定，不简单加到旧201。列表和详情不改变原写权限。验收包含不同issuer同principal、映射与权威分离、凭据终态可读但不可换token、配对仅单端active、失信查询拒绝、grant字段无权整项拒绝、翻页间撤权和响应不含秘密；均待实施。

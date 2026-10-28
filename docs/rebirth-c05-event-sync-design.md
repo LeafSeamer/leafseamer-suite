@@ -692,3 +692,41 @@ commands、executions、occurrences必须保留全部未决对象；其余集合
 SourceDependencyIndex保留注册级槽和完整SourceStreamKey，不把device_id当通用来源主键；提取与变更顺序按[C04第17节](rebirth-c04-automation-design.md#17-来源依赖提取与扩展准入归并)。新provider_boot或source epoch必须先保护旧来源依赖并重新baseline；样本值相等、重连或新导入成功不清旧latch。数据源轮询只证明完整采样之间的差异，不升级为无遗漏离散事件；已归一化差异事件依旧逐个有持久身份与一次决定。
 
 上述字段迁移同步作用于注册接口、Origin／Inbox／来源状态／快照、C04输入绑定、C06观察绑定、C09运行绑定及SDK动态结果校验；共同引用必须指向同一具名类型，不复制两个同名SourceBindingRef。旧订阅和旧客户端不能收到新版联合正文；采用新完整选择后重新鉴权、取新基线。新旧分支、错owner、同provider同名但不同authority、跨来源结果、未批准观察、旧epoch及payload含保留词均须拒绝或按原版本处理的用例进入实施验收。本轮只裁决格式与权威，未生成新SDK或执行真实数据源摄取。
+
+## 18. 受权历史与管理目录读取
+
+2026-10-29采用。此节关闭[C10第11.4节](rebirth-c10-gui-design.md#114-剩余接口缺口与实施出口)的历史检索缺口，并提供C06／C09／DF06目录读取的共同规则。依据是现有panel4按ID详情、领域lookup与12类快照的实际职责；它们没有承诺全历史或未激活管理对象的枚举。本节新增只读接口及产品存储要求，不扩大12类事件集合，不提供任意数据库查询，也不改变原写操作的请求身份。
+
+### 18.1 每服务目录切点和分页
+
+列表均为所属authority的`GET /api/v1/...`，返回no-store的`DirectoryPage<T>`。每个路由绑定唯一封闭DTO和精确过滤键，未知参数、重复参数、非法枚举及错类型拒绝；没有通用表名、字段选择、自由表达式或客户端SQL。首请求为该路由的过滤参数与page_size（1—100，默认50）；后续只提交cursor，不能重新指定过滤、page_size或排序。SDK固定合同选择仍必须相同，旧版本没有这些路由。
+
+`DirectoryPage<T>`固定字段：selection、authority_service_id、database_instance_id、query_id、catalog_cut、page_index、items、next_cursor、end_of_scan、coverage。catalog_cut为本库目录提交序号的U20；page_index为非负U20；items为该路由DTO数组。next_cursor为null当且仅当end_of_scan=true；空items且next_cursor非null合法，不能将空页当结束。coverage为封闭对象`{kind:"retained_authorized",retention_generation,history_incomplete}`；不返回无权对象总数、被过滤计数或可用于跨主体推断的总页数。
+
+本机writer为每次相关业务提交分配严格递增catalog序号，耗尽U20时保护并拒绝新分配、不得绕回，保存`(domain,object_key,created_ordinal,catalog_sequence,source_revision,projection_body,projection_digest,tombstone)`。projection_body只含路由白名单字段，不复制原操作请求、密码、配置或设备原件。业务写与对应目录版本同一事务；外部服务只拥有自己的镜像／receipt，不能替原authority发序号。创建序号在对象生命周期内不变；列表按created_ordinal、完整object_key升序，以不透明cursor保存上个已扫描键。选取每对象catalog_sequence≤catalog_cut的最后版本，首请求之后新建／更新不混入该次遍历。完整scope／对象revision引用保留原类型，目录序号不充当业务revision或CAS。
+
+查询不跨HTTP请求持有SQLite读事务或WAL快照。首请求登记固定路由、过滤摘要、调用者完整主体、认证链／session、当前权限范围修订、selection、database_instance、服务运行代次、catalog_cut、保留代次及60秒绝对本地域期限；使用256位CSPRNG生成query_id及分页cursor（32随机字节的无填充base64url，43字符），服务端保存绑定，cursor不是授权凭据。每页读取必要不可变目录版本后释放数据库读事务，序列化及响应释放前仍核当前认证、对象权限和撤销floor。身份／权限范围／保留代次变化使整个旧查询失效，不能继续返回旧缓存；同一人重新登录也创建新查询，不继承旧session cursor。
+
+单主体最多8个活跃查询，每服务64个；每页最多100个返回项、扫描1000个目录键、响应JSON上限1 MiB。扫描预算用尽时可返回较短／空页及下一个cursor，绝不伪造end_of_scan；正文大小在加入下一完整项前核验，不能裁剪条目、数组或引用；因字节预算未加入的下一项不越过cursor，cursor仅推进已返回或已按权限过滤的扫描键。单条不可分项已超过上限返回413及固定原因，不以半条记录推进cursor。服务保存已签发页的扫描范围，当前授权未变时相同cursor返回同一页及同一个后继cursor，重复读取不跳页也不新建业务操作；不以重复请求延长60秒期限。到期、服务换代、保留代次或授权变化返回409及具名原因`directory_query_expired|directory_query_invalidated`，客户端清该列表并重新开始；429只限普通查询，不挤占在途命令、撤销和屏障的保留额度。
+
+目录版本保留须覆盖全部未过期query的cut；GC在同writer检查查询保留登记，禁止先删版本再以新数据填旧页。首期默认不自动删除历史目录正文；启用以后经批准的归档／保留政策时先失效受影响query，原子提高retention_generation并记录删去的覆盖范围。查询失效不释放业务未决记录、拒绝墓碑或引用pin。容量不足阻止新目录查询／新业务受理；已受理业务的结果和保护写集使用原领域预留空间，不能因普通历史查询耗尽容量而丢终态。重启使所有旧查询失效，回收其查询缓存／保留登记不删除业务历史。
+
+此列表是固定目录切点的获授权视图，**不是当前写资格证明**。详情仍查询当前对象；编辑提交原领域expected revision，成功展示不能替代服务端CAS。HTTP 401／403／404／409／413／429／503分别沿当前身份、对象可见性、查询状态、容量和权威可用性解释；404、空页、保留不完整均不能证明操作从未受理。相同database_instance内才比较catalog_cut，GUI不得将多个服务列表拼成跨库原子快照。
+
+### 18.2 历史入口与刷新恢复
+
+Controller、Seamer均新增`GET /api/v1/history`（operationId=`listOperationHistory`）。首请求过滤键仅为domain、initiator、initiator_issuer_id、initiator_issuer_epoch、initiator_principal_id、target_kind、target_id、request_kind、created_from、created_before及page_size；domain为`command|control|automation|extension|authorization|definition|schedule`中的本服务支持项，target_kind与target_id必须同时出现，且与domain的已授权对象类型相配；时间为明确UTC的半开区间，只筛展示用创建时间，不用于排序或业务截止。initiator为self（默认）、principal、all或internal；principal必须同时给出三个initiator身份字段，其他值禁止附加这三个字段。指定他人的完整主体、all或internal另需history.read.all，普通读取需history.read，且每条还须对应领域／对象读权。新权限不从admin显示名、device.command或拥有旧cursor推导。request_kind由该domain已选公共操作及具名内部保护种类生成闭合枚举；target_kind接受集分别为command／control的device、automation的run、extension的slot、authorization的subject／pairing／credential／grant／session、definition的definition、schedule的schedule／source／import，target_id按该类型匹配；其他关联只在详情查阅。带时间过滤时created_at为null的项不匹配，UI提示该过滤不涵盖无可靠创建时间的记录。
+
+`HistoryItem`固定entry_id、domain、request_kind、created_ordinal、created_at、initiator、target、request_locator、result_locator、record_availability。initiator为封闭联合：human／service分支含完整issuer三元组；internal分支仅含本authority及具名内部actor_id，由核心记录，不伪造人员或服务主体；target为该domain的封闭目标引用，不接收任意URL。created_at允许null并标记创建时认证时间不可用，不用当前时间补写历史。request_locator及result_locator为具名领域联合：命令沿RequestKey／RequestAdjudication与CommandRef；控制沿ControlRequestIdentity及RequestReceipt中的offer／operation引用；自动化沿生命周期Context查询身份与LifecycleOperation／run引用；扩展沿七元ManagementContext及InstallationOperation引用；授权沿DF06身份管理请求／RevocationRecord引用；定义沿草稿或发布操作身份与固定版本引用；排期沿SCH06请求身份与import／activation／occurrence操作引用。每分支只纳入原查原接口需要的非秘密身份和允许读取的结果引用，Schema必须封闭，不能把任意业务body放入locator。
+
+record_availability仅为`retained|archived|detail_unavailable`，描述详情取回能力，不是业务终态。双方locator都可按可用性规则为null：已保留正常受理／持久拒收记录必须至少有一个可查询定位；只有有明确保留／归档依据的旧记录可两者null。secret、token、Cookie、密码、proof原文、参数、原SQL／URL、原始证据均不进入HistoryItem。业务状态由授权详情按自己的命令／控制／生命周期枚举展示，历史目录不新设一个会覆盖unknown的通用“成功”状态。
+
+每个可靠受理或持久拒收操作在所属领域同writer登记唯一历史入口：`(domain,原操作的完整去重身份)`唯一；更新原结果追加同entry的目录版本，不创建第二个请求。生成结果前的密码错误等非持久业务受理不属于此目录，留在受限安全日志。后台automation、内部保护事件可登记internal／service来源，但不能伪造人员请求。详情清理后保留非秘密结果定位／保留说明；已经存在的unknown、在途和拒绝floor按DF04继续保留，不因列表归档消失。
+
+GUI刷新后先重新认证，分别向实际目标服务查自己的history，再用原领域locator查详情；没有定位或详情不可用时显示无法确认。既有commands／executions快照仍用于当前未决投影，历史页补充已结束记录。历史页不提供重新执行按钮或重放队列，点击详情不提交写入。查询接口不得从目录行重建已失去的context、credential、grant或发送资格。
+
+### 18.3 持久交接与验收
+
+DF04产品迁移纳入每authority的目录序号、不可变目录版本、原去重身份到history入口的唯一关联及有限查询保留登记；它们附属于业务writer，不是新增权威库。已有数据补目录必须从完整原账本生成并校验覆盖，缺记录时明确history_incomplete=true，不按当前快照倒推“所有历史”。读接口生成、索引、查询预算及GUI接线是实现任务；当前没有产品运行证据。
+
+实现后验证：并发新增／更新不污染旧cut；同cursor重复不跳页；空授权页仍能继续；不同issuer同principal_id、换session／权限、换database、旧selection、过期cursor拒绝；超字节不截断；响应释放前撤权不泄漏；详情归档不等于未执行；受理成功响应丢失后通过history找到原身份；原事务回滚不留幽灵目录；目录写失败不返回业务成功；查询满时保护及原操作核对继续有额度。该组检查补充A08／A10／A14／A17，均待实现后执行。

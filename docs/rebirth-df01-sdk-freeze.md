@@ -337,7 +337,7 @@ window握手与后续port属于同一面板设计的不同阶段，不共享消�
 
 ### 15.4 本项退出与实施交接
 
-2026-10-29 GUI消费映射按[C10第11节](rebirth-c10-gui-design.md#11-页面与当前公共契约绑定)定稿核心部分：控制原件使用control__TransferOffer／ControlRecord，恢复使用lifecycle__RecoveryPreview／Resume／LifecycleOperation／PreparationTarget，命令字段从state与completion读取。这些具名根已经在panel4内，不新增一套GUI命令或恢复DTO；C05控制快照修订仍是新选择生成差集。C10第11.4节明确的历史检索、管理枚举／组织授权、未激活排期读取和维护管理入口尚未全有接口定义，须在所属权威稿完成后进入生成，不能用旧按ID读取冒充全列表，也不能把这些未决接口计入当前201操作。
+2026-10-29 GUI消费映射按[C10第11节](rebirth-c10-gui-design.md#11-页面与当前公共契约绑定)定稿核心部分：控制原件使用control__TransferOffer／ControlRecord，恢复使用lifecycle__RecoveryPreview／Resume／LifecycleOperation／PreparationTarget，命令字段从state与completion读取。这些具名根已经在panel4内，不新增一套GUI命令或恢复DTO；C05控制快照修订仍是新选择生成差集。C10第11.4节所列历史检索和管理／未激活排期读取已由C05第18节、C06第9节、C09第21节及DF06第14节固定为新增GET与DirectoryPage生成任务；保持具名领域DTO与locator联合，复用已有详情路径，不给旧panel4追加未声明路由。Seamer运行批准管理和维护入口仍未定稿；新接口实际计数须按authority展开生成，不能计入当前201或用旧按ID读取冒充全列表。
 
 本轮设计出口已满足：公共接受集的起点确定；九类传输边界及其消息方向、所有者、身份和失败行为有唯一定位；独立Schema闭包可解析；旧摄取名称／权限与当前定义的冲突已有迁移裁决；首期身份路由差集明确。这里关闭C01的版本／通道选择子项，不把整个阶段0或全部C01语义核对标为完成。
 

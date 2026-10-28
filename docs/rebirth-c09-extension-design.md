@@ -629,3 +629,13 @@ field.changed由Seamer核心对固定稳定record_key、字段Pointer及类型�
 SDK一次生成object_scope、SourceRuntimeBinding、八种source-worker帧和C05判别分支，纳入新的完整选择及DF01通道清单；DF02监督器只消费批准的启动范围及完整摘要。Seamer实现本机采集宿主、配置／秘密代理、原件与来源writer、C06导入和C05规范摄取；Controller不接管数据源采集权限。GUI使用现有来源管理／导入／观察状态流程，Suite打包受监督worker及固定网络／查询配置。旧panel4和安装0.2继续作为固定历史输入，不翻转批准标志。
 
 验收必须覆盖：source角色无法取得设备出口；配置／scope／bootstrap摘要任一错配拒绝；同source重复所有者；两个来源不能互借结果；CAPTURE重送不再次查询；CANCEL／STOP／结果交错、缓存丢失、提交未知；部分分页和完整空源区别；首次baseline及恢复不触发；差异集合超限无部分更新；撤销与迟到结果；来源故障保护仅在guard／parameter或历史execution中引用它的run；Sheets和PostgreSQL在两主部署分别验证。上述接口、状态及失败行为已确定，机器生成和真实进程／数据库／外部源用例转入实施，本节不宣称这些验证通过。
+
+## 21. 扩展目录读取
+
+2026-10-29采用。Controller、Seamer各提供`GET /api/v1/extension-slots`（listExtensionSlots）和`GET /api/v1/extensions`（listExtensionInstallations），只枚举自身权威。两接口均要求当前human、extension.read及精确对象范围，返回[C05第18节](rebirth-c05-event-sync-design.md#18-受权历史与管理目录读取)的DirectoryPage，不从面板注册或活跃worker推断全部已安装对象。
+
+slot首请求过滤仅extension_id、kind、desired_state及共同page_size；每项为当前采用`installation__SlotView`的slot_ref、extension_id、kind、display_name、desired_state、current_installation_ref、pending_operation_ref、configuration_ref、dependency_revision。installation过滤仅slot_id、state、manifest_digest及page_size；每项为`installation__InstanceView`的installation_ref、slot_ref、state、manifest_digest、artifact_set_digest、intake_ref、approval_ref、review_ref、deny_record_ref、predecessor_ref、runtime_binding_refs、role_resolution_ref。引用仍指向自身精确原件，configuration_ref不展开秘密，运行绑定引用不交付bootstrap材料；DTO沿现有具名类型，不能另造一个仅含active安装的简化表。
+
+列表可包含空disabled槽位、未选择staged安装、已停用／退役实例及removed槽位；分类沿第15—18节状态，不因再次启用而把旧installation显示成active。所有新增／状态／批准／选择变更与目录版本由同服务writer提交，查询固定cut不授运行权。详情沿既有getExtensionSlot／getExtensionInstallation／getExtensionOperation；响应丢失通过lookupExtensionRequest或history中的完整七元身份查原，浏览器刷新不重新stage／activate／enable。升级中的新旧实例分别可查，不能把slot的current引用替换全部历史。
+
+两项列表路由及目录writer接线在SDK／服务实现时随新选择生成；旧panel4只有详情与管理写，不能声称现有候选已支持列表。验收覆盖只有staged无active、removed槽位保留、升级cut前后、一authority相同slot_id、权限中途缩小及配置引用不展开秘密；尚未运行。

@@ -194,3 +194,27 @@ GUI必须同时显示来源稳定ID、草稿／发布／当前激活版、原本
 | CT42 | 已accepted场次后续错过，但先前命令unknown或晚到成功 | 资格锁存、执行结果、核对与资源证据分开保存；不能覆盖unknown或解除原锁存 |
 
 冻结退出条件：SCH推荐完成审阅；旧排期能力逐项映射；日历及数据源制品验证清楚；完整Schema/OpenAPI/IPC和新旧投影差分一致；激活与受理事务、逐步窗口及失败状态能由上述用例覆盖。实施后才执行实际并发、存储、浏览器和设备验收；设计文档不等于完成项目。
+
+## 9. 未激活排期、来源和导入的读取契约
+
+2026-10-29采用，补齐SCH06写入流程对应的列表及详情；只由Seamer提供，列表共用[C05第18节](rebirth-c05-event-sync-design.md#18-受权历史与管理目录读取)的DirectoryPage、固定cut及当前授权。下表路径均含`/api/v1`前缀，所有路由尚待生成，不在旧panel4操作计数内。
+
+| GET路径／operationId | 权限、首请求额外过滤键 | 响应字段或详情 |
+| --- | --- | --- |
+| `/schedule-sources`／listScheduleSources | schedule.source.manage；kind、state | SourceConfigSummary：source_ref、kind、state、adapter_artifact_ref、mapping_revision、source_timezone、credential_configured、last_import_ref或null |
+| `/schedule-sources/{id}`／getScheduleSource | schedule.source.manage；无 | SourceConfigView：前述summary及允许数据集／查询模板引用、稳定主键规则、采集policy_ref；仅凭据已配置状态，不返回secret_ref、连接串、原SQL或秘密值 |
+| `/schedule-imports`／listScheduleImports | schedule.import及来源／目标草稿范围；source_id、schedule_id、state | ImportSummary：operation_ref、source_ref、schedule_id、base_draft_revision、state、snapshot_ref或null、diff_ref或null、applied_draft_ref或null、reason_code或null |
+| `/schedule-imports/{id}`／getScheduleImport | schedule.import及对应对象范围；沿SCH06现有详情路径，不重复创建 | ImportSummary及captured／validated／diff_ready／draft_applied阶段已有的ImportSnapshot、ImportDiff引用，抓取进度只反映实际持久阶段 |
+| `/schedule-imports/{id}/snapshot`／getScheduleImportSnapshot | schedule.import及来源／目标范围；无 | 完整ImportSnapshot脱敏视图，原件仅给受限引用，不通过此入口返回连接信息或原始外部响应 |
+| `/schedule-imports/{id}/diff`／getScheduleImportDiff | schedule.edit及目标草稿范围；无 | ImportDiff的固定diff_id／digest／import_ref／base_draft_revision、added／changed／removed／conflicts及确认标记；超预算整项拒绝，不截断删除清单 |
+| `/schedules`／listSchedules | schedule.read；state、source_id | ScheduleSummary：schedule_ref、display_name、draft_ref或null、published_version_ref或null、activation_ref或null、source_refs；包括只有草稿且从未发布的对象 |
+| `/schedules/{id}/draft`／getScheduleDraft | schedule.read及草稿可见范围；无 | ScheduleDraftView：scope、schedule_id、revision、content_digest、metadata、rows、source_refs、calendar_profile_ref或null、validation_diagnostics；rows使用SCH01 NormalizedRow，不返回秘密配置 |
+| `/schedules/{id}/versions/{version}`／getScheduleVersion | schedule.read及该版本范围；无 | SCH04不可变ScheduleVersion原件的公开字段、calendar profile和内容引用；固定原version，不替换为当前激活版 |
+
+state过滤固定闭合集：来源为enabled／disabled（配置资格，不等于运行来源live）；导入沿SCH01为fetching／captured／validated／diff_ready／draft_applied／failed／cancelled；排期为draft_only／published／active／retired的目录分类，不新增场次终态。ScheduleSummary分类按已提交的发布／激活／退役记录计算，不能因active被时间保护就改成retired。SourceConfigSummary不得以最近导入成功推导运行观察来源已批准；credential_configured只说明秘密引用可配置，不保证当前凭据有效。
+
+source_refs、草稿和导入summary的引用均带同Seamer scope、精确版本及原模型摘要；来源配置、导入和草稿事务按SCH06同时更新目录。ImportDiff绑定精确base_draft_revision；读取后草稿改变，apply仍由原CAS拒绝，不自动重算或偷换diff。独立导入未绑定schedule时schedule_id及base_draft_revision可为null，但apply前必须明确目标并生成针对该draft的diff；不得据文件名猜目标。
+
+导入详情仅在该阶段存在对应原件时提供引用；未产生返回明确阶段及null，已归档按C05保留语义，不能将failed/cancelled转成空成功结果。差异和草稿正文继续受原C06行数限制；本组snapshot／diff／draft／version详情的完整公开JSON上限为16 MiB，在生成该原件时即验证，超过则明确失败，不创建只能靠截断才能读取的原件。原始捕获8 MiB上限仍独立适用。超过普通1 MiB目录页上限的完整详情不塞进列表，也不提高全局列表预算。修改凭据继续通过原受保护配置写入口，读取接口不交付旧秘密供前端再提交。
+
+源列表与sources运行快照、排期列表与schedule_activations快照是不同投影；未发布、停用、导入失败或已退役但留档的对象都能按权限检索，不从活跃集合猜全目录。历史变更通过listOperationHistory定位原SCH06操作；取消和rollback仍只影响既定捕获／草稿语义，读列表不创建设备动作。新增验收覆盖从未激活草稿、空完整来源、并发apply、导入失败、秘密字段缺席、目录分页及归档后无法恢复详情；均待产品实现后执行。

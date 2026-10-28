@@ -194,15 +194,15 @@ GUI状态由服务端快照和有序增量驱动。以下为展示职责，精�
 | 设备列表与详情 | listDevices、getCapabilities、getSceneCatalog、getDeviceState；devices／catalogs／observations集合 | 目录引用和Observation质量与目标值分开；同步完整后仍按对象许可检查 | 现有 |
 | 手动接管、转交 | getControl、getTransfer、getControlOperation；ControlRecord、TransferOffer原件 | acquireControl／releaseControl／offerTransfer／acceptTransfer／cancelTransfer；仅human，control各具名权限，紧急接管另核权限；unknown查lookupControlRequest | 现有；控制快照按C05待生成 |
 | 专用面板、通用动作表单 | 当前能力及绑定Schema、设备观察、控制版本 | submitCommand，device.command且human_manual；取消用cancelCommand，查lookupCommandAdmission／lookupCommandCancellation。submitCommand的原始身份operation为createCommand，不能用显示名改变去重键 | 现有；C11逐动作政策待定稿 |
-| 命令详情 | getCommand／getCommandRevision／getCommandEvidence／getCommandEvidenceRevision／getCommandCancellation | command.read及对象证据可见性；列表摘要和完整证据分开，未决记录不因换页隐藏保护 | 现有；全历史列表见11.4 |
+| 命令详情 | getCommand／getCommandRevision／getCommandEvidence／getCommandEvidenceRevision／getCommandCancellation | command.read及对象证据可见性；列表摘要和完整证据分开，未决记录不因换页隐藏保护 | 现有；历史列表按C05第18节待生成 |
 | 定义列表、状态表和动作编辑 | definitions集合；getDraft／getDefinitionVersion／getPublishedArtifact／getCompiledProgram／getIndependenceProof | createDefinition／updateDraft／publishDefinition，definition.edit／definition.publish；草稿CAS与发布单独操作，发布仅human | 现有 |
 | 运行、布防、暂停、解除布防 | runs／business_states／executions集合；getRun／getActivationSlot／getExecution／getTriggerDecision／getRunOperation | createRun／preflightRun／armRun／pauseRun／disarmRun；各run权限独立；arm仅human，预检通过不代表已经布防 | 现有 |
 | 恢复预览与进度 | previewRecovery、getRecoveryOperation、LifecycleOperation及PreparationTarget | run.read预览、run.resume人员确认；lookupAutomationRequest查原，run／slot双CAS；按11.2绑定 | 现有 |
-| 数据源、导入与排期草稿 | C06 SourceConfigRevision／ImportSnapshot／ImportDiff、排期草稿／发布版本；sources投影仅运行来源，不是配置列表 | C06 SCH06的创建／配置、捕获、apply、publish／activate；来源只读不意味着任何人可配置凭据或应用差异 | SCH06待生成；未激活对象枚举见11.4 |
+| 数据源、导入与排期草稿 | C06 SourceConfigRevision／ImportSnapshot／ImportDiff、排期草稿／发布版本；sources投影仅运行来源，不是配置列表 | C06 SCH06的创建／配置、捕获、apply、publish／activate；来源只读不意味着任何人可配置凭据或应用差异 | SCH06及第9节读取待生成 |
 | 场次及播出投影 | schedule_activations／occurrences集合；C06 occurrences详情 | C06 preflight／arm／disarm、场次cancel／replay；明确新场次和原关联，时间恢复不补发 | 快照现有，C06路由待生成 |
-| 人员、服务身份及配对 | getSubject与DF06 PrincipalView、ServicePrincipal、Credential／Pairing脱敏引用 | DF06身份生命周期接口、管理权限及近期认证；真实凭据仅规定的首次交付，GUI不扮演service | DF06待生成；管理枚举见11.4 |
-| 组织运行授权、撤销进度 | getRun及授权关联、getRevocation逐目标结果 | revokeAuthorization；Controller的updateRunGrant是配对Seamer通道，GUI不能直接调用或借service凭据。授权管理另按DF06完整主体规则 | 撤销现有；管理读取／发放入口见11.4 |
-| 扩展安装、批准和角色 | getExtensionSlot／getExtensionInstallation／getExtensionOperation | stageExtension／approveExtension／resolveExtensionRoles／reviewExtensionPermissions／planExtensionChange及slot生命周期；导入原包走受权本机工具，浏览器不直连import IPC | 详情及操作现有；全列表见11.4 |
+| 人员、服务身份及配对 | getSubject与DF06 PrincipalView、ServicePrincipal、Credential／Pairing脱敏引用 | DF06身份生命周期接口、管理权限及近期认证；真实凭据仅规定的首次交付，GUI不扮演service | DF06第9／14节待生成 |
+| 组织运行授权、撤销进度 | getRun及授权关联、getRevocation逐目标结果 | revokeAuthorization；Controller的updateRunGrant是配对Seamer通道，GUI不能直接调用或借service凭据。授权管理另按DF06完整主体规则 | 撤销现有；读取按DF06第14节待生成，运行批准发放见11.4 |
+| 扩展安装、批准和角色 | getExtensionSlot／getExtensionInstallation／getExtensionOperation | stageExtension／approveExtension／resolveExtensionRoles／reviewExtensionPermissions／planExtensionChange及slot生命周期；导入原包走受权本机工具，浏览器不直连import IPC | 详情及操作现有；列表按C09第21节待生成 |
 | 兼容编辑器与第三方面板 | C09 Registry／动态Schema／授权投影，精确artifact和PanelSession | 宿主调用createPanelSession及握手／确认／请求／订阅接口，面板只走具名port方法；不得拿服务token | 现有＋C11采用资产待实现 |
 | 图文输出入口 | C12选定OutputSnapshot、批准的无管理秘密URL、renderer诊断 | 三路只读输出与控制／编辑登录分开；缺配置显示未配置，不开放原NodeCG端口 | C11／C12待生成与实现 |
 | 时间与容量 | getClock／getClockAssessment／getCapacity；DF06认证时钟状态、DF05发行时间状态分别展示 | status.read；setCapacity仅容量管理权限。浏览器时钟与业务reference均不修复认证／发行时钟 | 公共查询现有；新增时钟状态待生成 |
@@ -229,9 +229,9 @@ registry-map的12类集合逐一分配：devices／catalogs／observations用于
 
 本节关闭的是核心设备、控制、命令、定义、运行和恢复页面的字段／枚举／查询绑定冲突；不宣称C10全部完成。以下是仍需在原所属专题定稿的有限缺口，不能推给组件实现时猜测，也不另建候选体系：
 
-1. **受权历史检索**：当前按ID详情和lookup要求已知身份；刷新后内存丢失时，现有commands／executions快照没有承诺覆盖所有已结束历史。须在C05／DF04明确跨类别操作历史的owner、筛选、稳定分页、权限过滤、保留与缺失语义，再由SDK生成；未完成前不得声称“刷新总能找回原命令”，更不能用重发补足。
-2. **管理对象枚举及组织授权**：当前有扩展详情／操作、getSubject和DF06身份管理文稿，但缺完整人员／服务／配对／安装slot／installation列表及组织grant管理页面的查询／发放入口映射。须沿C07／C09／DF06规定脱敏DTO、对象权限、CAS、分页和撤权语义；不能枚举猜ID或从设备持有人集合推导全体身份。
-3. **排期未激活对象**：C06已有SCH06操作和导入模型，但sources不是SourceConfig列表，schedule_activations也不包含所有未发布排期。须补来源配置、导入历史、排期草稿列表及详情查询的固定路由／字段／分页；现有快照只承担上述运行投影。
+1. **受权历史检索，设计已关闭**：[C05第18节](rebirth-c05-event-sync-design.md#18-受权历史与管理目录读取)固定各authority的listOperationHistory、领域locator、同writer目录版本、分页cut、当前授权及保留语义。SDK和服务据此实现，刷新后查询原身份；归档或缺失仍显示无法确认，不承诺任何历史都永远可取，不用重发补足。
+2. **管理读取已关闭，运行批准写入仍未决**：[DF06第14节](rebirth-df06-internal-trust-design.md#14-身份配对与运行授权的管理读取)和[C09第21节](rebirth-c09-extension-design.md#21-扩展目录读取)固定主体／服务／配对／凭据／RunGrant及安装目录的路由、脱敏字段和当前对象权限。ServiceApproval与Controller RunGrant不能替代Seamer运行批准；后者的正文、人员批准／修订／撤销入口、CAS和查原仍须C04定稿，GUI不得直接updateRunGrant。
+3. **排期未激活对象，设计已关闭**：[C06第9节](rebirth-c06-schedule-design.md#9-未激活排期来源和导入的读取契约)固定来源配置、导入历史、排期草稿列表及详情、差异和固定版本查询；现有sources／schedule_activations只承担运行投影，新路由由SDK生成。
 4. **维护管理契约**：C12／DF04／DF05已经定义备份、恢复与安装切换规则，但尚未给出GUI到所属本机维护工具／服务的完整请求、脱敏状态和查原契约。须确定远程GUI可做与本机管理员必须做的动作边界及认证失效时入口；不能把操作系统管理员恢复入口偷换成在线GUI特权。人工发行时间选择仍独立等待决定。
 
-以上缺口不重开已采用的人员手动政策、三人发行阈值、React／Vite、NodeCG接入和12类投影。SDK生成与客户端适配、GUI组件和双语资源、服务真实字段提供者属于实现；UIT01—UIT40及A17／A18为实现后验证，当前均未执行。进入实现仍以统一收敛清单阶段0为准。
+目前剩余运行批准管理与维护管理两项具体接口缺口；上述已关闭读取设计转入实现，不再因生成器或组件未写重开。它们不重开已采用的人员手动政策、三人发行阈值、React／Vite、NodeCG接入和12类投影。SDK生成与客户端适配、GUI组件和双语资源、服务真实字段提供者属于实现；UIT01—UIT40及A17／A18为实现后验证，当前均未执行。进入实现仍以统一收敛清单阶段0为准。

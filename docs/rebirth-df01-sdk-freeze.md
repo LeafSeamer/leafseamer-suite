@@ -1,5 +1,7 @@
 # DF01：SDK契约源、生成工具链与跨语言规范化冻结方案
 
+当前采用输入、独立通道归属和首期身份接口差集以[第15节](#15-首期采用输入与独立通道归属定稿)为准；以下历轮记录保留原版本和证据边界，不作为要求重复建立既有格式的待办。
+
 2026-10-28最新成果交接：[发布原件与当前面板提供者](contracts/sdk-publication-handoff/README.md)固定SDK `ca785b2`、`aff5ccb`。panel4当前发布写入与显式panel3历史读取已有不可变存储升级参考；当前动态值提供者及发布content／metadata来源已接线，逐节点字段权限、未提交记录拒绝和撤权均有实际检查。Suite从245个固定Git原件重跑两包，保留原件字节及完整报告一致性；旧包与旧报告不改写。此前Chrome页面／Worker的35220条断言与420次HTTP交换保留为历史证据，本轮未重跑浏览器。其余来源适配、真实审批／读权、生产发布事务、投影与最终输出Gate、完整DDL、校验器硬内存限制及全局调度仍待完成，阶段0继续开放。
 
 上一注册交接的历史状态：[Profile／Selector与持久化](contracts/sdk-scope-handoff/README.md)补齐四个注册类型，保留原122个通道定义成为126模型图。完整图字节摘要、注册正文JCS摘要和Scope摘要分开；207项注册检查与226项局部SQLite检查通过并独立复验。注册可解析不代表其余十一类领域语义已更新；最终释放、完整新选择及SDK生成仍待完成，C01／SV02／SV03与阶段0未关闭。
@@ -277,3 +279,60 @@ WS text只在完整消息重组后校验；服务端库必须在重组中限制�
 当前Session/人员票据链不伪造service会话；createRequestContext仍可供service，但绑定权威主体凭据链、audience、操作交集及委托。普通退出不应要求auth.manage，候选单独给出自身会话注销边界；新主体视图、组织服务凭据、配对、服务订阅、面板委托六类缺口列入下一版归并，未伪造现有端点或宣布完整身份生命周期已交付。
 
 [离线报告](contracts/df01-source/authorization-report.json)包含36项元数据正反例及九输入绑定；真实认证、权限取证、并发撤销、接管与设备执行均为零。文中18条运行轨迹仅作实施验收计划。完整API/IPC/DDL及新接受集仍需联合归并和审阅；此批只关闭“现有操作没有逐项主体候选”的资料缺口，不关闭C01/C07或全系统设计。
+
+## 15. 首期采用输入与独立通道归属定稿
+
+2026-10-28依据当前五仓基线完成本节。**本节确定实现输入、通道职责和版本迁移规则，关闭“各种候选无明确采用顺序”的设计缺口；不宣布现有候选已经可发布。** 历史资料中的71操作、IPC0.3和笼统“各通道仍需归并”不能覆盖下表。设计完成与运行完成按[统一收敛清单1.4](rebirth-design-closure.md#14-整体完成基线与关键路径)分开，完整生产生成、适配和平台验证属于实现／验收。
+
+### 15.1 当前输入及不可混用的身份
+
+公共契约的实现起点固定SDK提交`aff5ccbb75b6140109f948f81284785c75e46d1e`中的[panel-wire完整契约](https://github.com/LeafSeamer/leafseamer-sdk/tree/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/panel-wire/contract)。选择为`leafseamer.api.v1.panel4`，摘要为`sha256:decbdf83f91486da0f473d0cbd5ad20efd188cc681de3b04a39921a4e72fa4fd`；13项manifest制品逐项字节摘要及selection的JCS摘要已在本次直接核对。Controller有102项操作，Seamer有99项，共201项，含四个WS升级入口。它是完整的当前候选接受集，**尚非包含全部首期新增身份接口的最终发布接受集**。
+
+独立本机协议固定Suite提交`74978c8c13fad66d466a59b0d0b10f4d0ca395fa`中的下列既有Schema和规范。它们不因公共HTTP选择更新而自动换版本，不拼成任意角色可投递的通用消息联合；生产制品清单按[DF05](rebirth-df05-release-design.md)同时绑定各项原件及引用闭包。SDK承担发布和生成归属，Suite继续维护总体语义；迁入产品SDK时保留原接受集和具名资源身份，若改变字段／语义则显式换版，不用目录移动偷偷改协议。
+
+| 通道及已有版本 | 两端、可信身份与端点 | 首次交付、序号及失败边界 | 权威输入 |
+| --- | --- | --- | --- |
+| 普通HTTP及内部HTTP，panel4选择 | 客户端→目标Controller或Seamer；人员、服务或provider按逐操作凭据及对象权利核验，静态service路由不接受body选authority | HTTP头必须精确选择ID及摘要；发现接口不授操作权；版本失败不裁决业务请求、不换ID重发 | panel-wire两份OpenAPI及PROTOCOL；头／参数适配采用同选择的panel-http |
+| 人员事件WS，同panel4选择 | 人员票据→目标服务`GET /api/v1/events`，不能伪装service owner | 两个子协议分别携选择与秘密票据；首帧contract.ready后才attach；连接失步关闭投影，不补动作 | panel-wire的frames.schema.json及OpenAPI中human owner元数据 |
+| 服务事件WS，同panel4选择 | 已配对mTLS服务→目标服务`GET /internal/events`，按service owner与订阅集合授权 | 仅一个选择子协议，不伪造人员session或票据；Ready、attach、snapshot／ACK及重同步仍走同一具名状态机 | 同上，service owner及serviceMtls元数据；C05 |
+| 设备worker，`ipc/0.14.0-continuation-draft.1`，52帧 | Controller核心↔其已监督准入的设备worker；本机受保护端点绑定两端boot、ipc_session、时钟域和descriptor | HELLO／HELLO_ACK及特性交集只得到wire_compatible_closed；每方向seq与日志归属唯一；另经当前Guard／逐传输许可才可发送。错身份、错版本或日志未知关闭资格 | panel-wire的worker-ipc.schema.json、worker-messages.json及command模型；[命令消费包](contracts/c04-lifecycle/COMMAND_CONTRACT.md) |
+| 监督控制，`supervisor-control/0.1.0-draft.1`，9帧 | 已准入的本服务核心↔本机监督器；scope固定service、database、supervisor及domain；worker不能连接该控制端点 | 新连接先完整同步FENCE，两个方向各自从1；REGISTER不创建进程，CREATE仅一次尝试；错序、错scope或存储不明锁存新准入，已有进程按退役规则处理 | [监督Schema](contracts/df02-supervisor/supervisor.schema.json)及[协议](contracts/df02-supervisor/README.md) |
+| 启动引导，`bootstrap/0.1.0-draft.1`，4帧 | 监督器→创建时定向继承端点的单个子进程；OS实例／制品和channel_binding_id先成立，不能自报role或重连认领 | 唯一ASSIGNMENT→PROOF→ADMISSION或REJECT；不共用设备seq；秘密不进argv、env、journal。响应丢失查已持久回执，不重新交秘密或创建 | [bootstrap Schema](contracts/df02-supervisor/bootstrap.schema.json)，引用同版监督模型；DF02 |
+| 授时采集，`time-collector/0.2.0-draft.1`，14帧 | 采用该时间提供者的服务核心↔已监督准入time_provider；专属可靠有序端点，绑定运行域、channel与configuration | HELLO／ACCEPT，双方单发送队列与连续sequence；STOP使用同方向cut，REPORT_STORED之前保留原件；缺前缀不能伪造STOP_ACK，失效关闭授时资格并按监督退役处理 | [0.2 Schema](contracts/df03-collector/channel-v02.schema.json)、[有序停止](contracts/df03-collector/CHANNEL_V02.md)、[入站方向及原子效果](contracts/df03-collector/INBOX.md) |
+| 扩展导入，`extension-import/0.1.0-draft.1`，9帧 | 当前获授权本机管理工具／目标authority／启动协调者↔受信导入宿主；peer与只读文件句柄登记同连接绑定，扩展和浏览器不能访问 | 双向sequence从1、响应关联本连接未决请求；ImportIdentity跨重连保持，attachment可重新登记；未知只查原、不换身份重导入，不加载包入口 | [导入Schema](contracts/c09-artifact-import/ipc.schema.json)及[协议](contracts/c09-artifact-import/README.md) |
+| 面板，`panel-channel/0.3.0-draft.1`，19帧 | 已批准GUI宿主↔单authority面板；window来源／nonce先核验，再交定向port；面板不持服务凭据 | window四帧，panel→host八帧，host→panel七帧；PublicBinding绑定session、instance、document_generation、channel；端口方向序号唯一，撤销关闭原通道。accepted与投影可用性分开，不能用查询失败重发业务 | panel-wire的panel-frames、Registry、输入／结果完整文档及[当前交付边界](contracts/c09-providers/DELIVERY.md) |
+
+window握手与后续port属于同一面板设计的不同阶段，不共享消息类别就自动共享发送资格。`channel__ClientFrame/ServerFrame`仅是事件WS联合；`panel__Channel_*Frame`是面板联合。名字相近不构成类型别名。采集器HELLO、设备HELLO、监督FENCE和bootstrap PROOF不得因同为JSON而走一个未分角色的分派器。
+
+四份独立根Schema的原字节SHA-256分别为：监督`ba848f2245140294fa20fbcc7cae9f4f18a8afb7a96aee809522ed70556a7091`；bootstrap`fedc394c0262a99bd5aed2b88881b1101f50f4545c586d3f60d09afe770455bb`；采集0.2`2d7e11d1697ac7dd412f867c64f1c64e643d5ec7242e5c933c85ffb958333885`；导入`2201af7840bc683bb0c7f59cc8dabb21242d8ed6836236ca9ca2d43ee7c219e4`。哈希用于固定输入，不替代身份认证或设计审阅。
+
+### 15.2 具名引用、权限和历史原件裁决
+
+1. 模型身份保持完整`$id + JSON Pointer`。独立监督Schema仍引用安装0.2启动模型和draft.4的运行域结构；导入Schema引用安装0.1中的具名基础／权限类型及artifact模型。这些是固定类型依赖，**不授权调用旧安装0.1管理API或旧设备IPC**。迁入生成源时保留闭包，不能把同名Ref、Id、Digest按短名称替换成panel4类型。
+2. 不设全局“自动规范化Ref”。不同域的摘要有裸64hex和`sha256:`前缀之分，U20不等于uint64，revision及identity也不相同；按原模型核验，跨域映射必须由所属权威显式产生，并保留原件类型／选择。当前模型合法不证明动态Schema批准、原件权利、字段可见性或发送资格。
+3. 面板35方法、参数／结果SchemaRef、Registry及Bundle激活全部采用同一panel4来源。历史panel3发布原件只走[显式历史读取](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/publication-current/README.md)，不重标原选择；失败不自动回退到旧消费者。旧报告按原提交解释，不改写摘要造成假兼容。
+4. Seamer当前摄取入口固定`POST /api/v1/providers/{provider_id}/events`、`submitProviderEvent`、`source.event.submit`及ProviderBearer。第14节旧71操作矩阵中的ingestEvent／provider.publish仅保留历史来源；产品生成和权限登记按当前操作显式映射，不把旧权限字符串自动当新许可，也不因重命名重建事件身份。来源owner、注册对象和完整事件身份仍须当前核验。
+5. `registry-map.json`中的`mandatory_unresolved=[commands,executions,occurrences]`表示必须保留未决业务对象的投影规则，不是“三类设计尚未完成”的计数。真实字段提供者未接线单列实现任务；真正缺失的来源／状态映射才返回C05/C08设计审阅。
+6. 当前C01检查不批准第14节尚待审阅的主体政策变化，也不把security／x-permission元数据当完整授权实现。人员手动、服务自动化、运行grant与独立取消的关联按C07及当前设备授权方案逐项定稿；如果其接受集变化，随最终公开版本显式发布，不在panel4旧字节中暗改。
+
+### 15.3 首期身份接口的明确差集
+
+对当前两份OpenAPI逐路径核对发现：[DF06第9节](rebirth-df06-internal-trust-design.md#9-身份生命周期细化注销组织服务与配对)已经规定的下列14种method/path均不在panel4中。它们是已确定需要覆盖的首期设计输入，不能因当前201操作“检查通过”而遗漏；不是要求另做一个身份专题或先跑完真实TLS。
+
+| 既有设计 | 尚未进入panel4的method/path | 权威归属和采用要求 |
+| --- | --- | --- |
+| IL01 | `GET /api/v1/principal` | 两服务的当前主体只读投影，human/session与service/credential不得混同 |
+| IL02 | `DELETE /auth/sessions/current` | 签发方当前Cookie会话，CSRF／Origin；只退出本人，不隐式停组织自动化或释放holder |
+| IL03 | `POST /api/v1/auth/service-principals`；`GET /api/v1/auth/service-principals/{id}`；`PUT /api/v1/auth/service-principals/{id}/approval` | 指定签发Controller拥有主体和批准，管理写核当前human、auth.manage及近期认证；减权先保护传播 |
+| IL03／IL04 | `POST /api/v1/auth/service-principals/{id}/credentials`；`POST /auth/service-credential-proofs`；`POST /api/v1/auth/service-credentials/{id}/activation`；`POST /auth/service-access-tokens` | staged证明不授业务权，秘密仅首次交付，activation与token不伪造人员session；一次交付丢失按原状态处理 |
+| IL05 | `POST /api/v1/auth/peer-pairings`；`POST /internal/pairings/{binding_id}/challenges`；`POST /internal/pairings/{binding_id}/proofs`；`GET /internal/pairings/{binding_id}/status`；`POST /api/v1/auth/peer-pairings/{id}/activation` | 各端独立拥有本端配对；pending-proof限定端点／证书，不拥有普通内部权限；双向证明不等跨库原子激活 |
+
+以上操作的字段、状态、错误和事务依据为IL01—IL06及[DF04第10节](rebirth-df04-storage-design.md#10-身份生命周期事务补充)，不从相似旧API猜默认字段。生成实现须补具名请求／响应根、权限与错误投影、两authority路由和类型导出，并以显式新选择发布；**不能把14加到201直接宣称215**，因为authority展开、签发者入口和已有共用引用须按实际归属生成计数。其余已成文的身份采样／内部取证操作继续按DF06归属审核，不声称这14条涵盖全部内部接口。
+
+### 15.4 本项退出与实施交接
+
+本轮设计出口已满足：公共接受集的起点确定；九类传输边界及其消息方向、所有者、身份和失败行为有唯一定位；独立Schema闭包可解析；旧摄取名称／权限与当前定义的冲突已有迁移裁决；首期身份路由差集明确。这里关闭C01的版本／通道选择子项，不把整个阶段0或全部C01语义核对标为完成。
+
+后续不再以“尚未生产适配”为由延长本项。SDK产品生成、独立协议打包、身份接口生成、实际认证与传输分别进入SDK／Controller／Seamer实现任务；最终制品生成时形成新选择摘要和完整发布清单，旧候选的approved、runtime_ready、advertisable保持原值。设计阶段剩余的是C07精确认证profile与实质主体政策、跨域权威／事务映射及其他C项真正未决问题，沿统一清单直接解决。
+
+本次执行的是固定字节、Schema引用、帧分类及HTTP声明静态核对：公共manifest13项一致，四份独立根及其引用闭包无缺失，设备52帧和面板4／8／7方向集合一致，人员／服务WS认证元数据分离。没有运行产品进程、TLS、浏览器、数据库、部署或设备，不继承历史运行结论。实现后按A01／A08／A09／A10／A15验证真实通道拒混投、撤权及失败关闭；这些运行证据不再作为本项设计出口的前置条件。

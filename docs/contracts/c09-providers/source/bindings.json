@@ -1,0 +1,1554 @@
+{
+  "format": "panel-result-bindings/1",
+  "approved": false,
+  "runtime_ready": false,
+  "installed": false,
+  "requires_new_complete_selection": true,
+  "source_selection": {
+    "contract_id": "leafseamer.api.v1.events2",
+    "contract_digest": "sha256:104a1404590c97baaee4f8d0cab43deb25835c6d9a378ac4457bac819ae93919"
+  },
+  "providers": {
+    "session": "当前宿主会话、激活与安装批准；固定方法功能交集及仅本会话容量",
+    "page": "当前会话/方法/输入/过滤条件/对象修订/选择绑定的页句柄存储；不能透传cursor",
+    "dynamic": "当前批准Schema、完整字段权限及预算；动态数据通过完整校验后才生成QualifiedValue，完整编辑数据不得裁剪",
+    "visibility": "当前对象读权与范围；逐项白名单重建，隐藏对象保留风险布尔标志，不返回未授权数量",
+    "identity": "当前本地主体与原主体完整issuer/epoch/principal关系，输出self/other/none和受限显示标签",
+    "control": "同快照当前控制原件及当前闸；比较operation目标和完整控制版本，不能仅从effective推断ready",
+    "command": "同命令State、取消、资源处置及证据原件，精确Ref联接；unknown清资源后仍保持锁存",
+    "definition": "固定draft或published artifact的完整content/metadata与编译证明，禁止用当前草稿替代已发布原件",
+    "execution": "同run/operation的完整执行与命令登记，包括已终结及未决；不由unresolved子集推导全部新命令",
+    "targets": "完整目标准备/保护原件及当前可见性，保留pending/applied/closing/closed/unknown，不把受理当全体完成",
+    "handle": "原评估/恢复记录及当前会话的固定不透明句柄；到期或换代不续用，显示值不能作为执行凭据",
+    "deadline": "来源Lifetime或clock加issued/expires及同域当前tick；向下取整剩余毫秒，未知返回null，不把tick伪装UTC",
+    "vocabulary": "固定受控原因和标签词表；未知内部错误映射有限unavailable，不暴露自由文本或内部details",
+    "proof": "原definition/version/proof登记与精确revision，program/bindings/graph摘要关系，verdict直接取原证明"
+  },
+  "views": [
+    "CancelView",
+    "CapabilityView",
+    "CapacityView",
+    "ClockAssessmentView",
+    "ClockView",
+    "CommandView",
+    "ControlOperationView",
+    "ControlView",
+    "DefinitionView",
+    "DevicePageView",
+    "EvidencePageView",
+    "IndependenceView",
+    "MetaView",
+    "MutationView",
+    "ObservationView",
+    "PreflightView",
+    "RecoveryOperationView",
+    "RecoveryPlanView",
+    "RunView",
+    "SceneCatalogView",
+    "TransferView"
+  ],
+  "plans": {
+    "MetaView": {
+      "source_model": "baseline__Meta",
+      "relation": "同一服务及完整选择",
+      "fields": {
+        "component_version": {
+          "kind": "source",
+          "path": "component_version"
+        },
+        "protocol_version": {
+          "kind": "source",
+          "path": "protocol_version"
+        },
+        "panel_features": {
+          "kind": "provider",
+          "provider": "session",
+          "paths": [
+            "features"
+          ],
+          "rule": "当前Registry已批准方法与原features取交集"
+        },
+        "limits_profile_ref": {
+          "kind": "provider",
+          "provider": "session",
+          "paths": [
+            "limits_profile"
+          ],
+          "rule": "仅显示当前会话适用预算profile，不能返回后台全部配置"
+        }
+      }
+    },
+    "ClockView": {
+      "source_model": "time_public__S12__PublicClock",
+      "relation": "当前时间服务公开快照；无source_label或内部运行身份",
+      "fields": {
+        "model_id": {
+          "kind": "source",
+          "path": "model_id"
+        },
+        "model_revision": {
+          "kind": "source",
+          "path": "model_revision"
+        },
+        "status": {
+          "kind": "source",
+          "path": "status"
+        },
+        "reference_utc": {
+          "kind": "source",
+          "path": "reference_utc"
+        },
+        "estimated_utc_ns": {
+          "kind": "source",
+          "path": "estimated_utc_ns"
+        },
+        "error_radius_ns": {
+          "kind": "source",
+          "path": "error_radius_ns"
+        },
+        "reasons": {
+          "kind": "source",
+          "path": "reasons"
+        },
+        "grants_execution": {
+          "kind": "source",
+          "path": "grants_execution"
+        }
+      }
+    },
+    "ClockAssessmentView": {
+      "source_model": "time_public__S12__PublicClock",
+      "relation": "仅显示reference-bound区间，conditional不是绝对执行资格",
+      "fields": {
+        "model_id": {
+          "kind": "source",
+          "path": "model_id"
+        },
+        "model_revision": {
+          "kind": "source",
+          "path": "model_revision"
+        },
+        "status": {
+          "kind": "source",
+          "path": "status"
+        },
+        "reference_utc": {
+          "kind": "source",
+          "path": "reference_utc"
+        },
+        "estimated_utc_ns": {
+          "kind": "source",
+          "path": "estimated_utc_ns"
+        },
+        "error_radius_ns": {
+          "kind": "source",
+          "path": "error_radius_ns"
+        },
+        "reasons": {
+          "kind": "source",
+          "path": "reasons"
+        },
+        "grants_execution": {
+          "kind": "source",
+          "path": "grants_execution"
+        }
+      }
+    },
+    "DevicePageView": {
+      "source_model": "baseline__DevicePage",
+      "relation": "固定目录修订与页条件",
+      "fields": {
+        "catalog_revision": {
+          "kind": "source",
+          "path": "catalog_revision"
+        },
+        "items": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "items"
+          ],
+          "rule": "逐项只保留device_id/device_kind/display_name/connection_state；先对象授权，不回总数"
+        },
+        "next_page_handle": {
+          "kind": "provider",
+          "provider": "page",
+          "paths": [
+            "next_cursor",
+            "catalog_revision"
+          ],
+          "rule": "有后页时登记固定页句柄，否则null；目录或scope变化拒绝旧页"
+        }
+      }
+    },
+    "CapabilityView": {
+      "source_model": "baseline__CapabilityCatalog",
+      "relation": "目标device在当前目录且其安装/能力版本有效",
+      "fields": {
+        "catalog_revision": {
+          "kind": "source",
+          "path": "catalog_revision"
+        },
+        "device_id": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "devices"
+          ],
+          "rule": "按方法目标选唯一已授权device"
+        },
+        "actions": {
+          "kind": "provider",
+          "provider": "dynamic",
+          "paths": [
+            "devices"
+          ],
+          "rule": "对选中device.actions逐字段按ActionSummary白名单重建并绑定批准参数/结果Schema"
+        },
+        "triggers": {
+          "kind": "provider",
+          "provider": "dynamic",
+          "paths": [
+            "devices"
+          ],
+          "rule": "对选中device.triggers按TriggerSummary白名单重建并绑定批准payloadSchema"
+        },
+        "state_schema_ref": {
+          "kind": "provider",
+          "provider": "dynamic",
+          "paths": [
+            "devices"
+          ],
+          "rule": "仅固定选中device.state_schema的批准投影，不传原完整目录"
+        }
+      }
+    },
+    "ObservationView": {
+      "source_model": "baseline__Observation",
+      "relation": "设备、来源修订与采样同一原件",
+      "fields": {
+        "device_id": {
+          "kind": "source",
+          "path": "device_id"
+        },
+        "observation_id": {
+          "kind": "source",
+          "path": "observation_id"
+        },
+        "state_revision": {
+          "kind": "source",
+          "path": "state_revision"
+        },
+        "observed_at": {
+          "kind": "source",
+          "path": "observed_at"
+        },
+        "freshness_ms": {
+          "kind": "source",
+          "path": "freshness_ms"
+        },
+        "integrity": {
+          "kind": "source",
+          "path": "integrity"
+        },
+        "projection_status": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "values"
+          ],
+          "rule": "字段裁剪状态独立于来源integrity"
+        },
+        "values": {
+          "kind": "provider",
+          "provider": "dynamic",
+          "paths": [
+            "values"
+          ],
+          "rule": "按当前字段读权构造QualifiedValue并核Schema；不透原Payload"
+        }
+      }
+    },
+    "CommandView": {
+      "source_model": "command__V__S0_CommandRecord",
+      "relation": "submit先按accepted command_ref读取精确原件；rejected不得生成CommandView，当前get核当前修订",
+      "fields": {
+        "command_id": {
+          "kind": "source",
+          "path": "command_id"
+        },
+        "revision": {
+          "kind": "source",
+          "path": "revision"
+        },
+        "state_ref": {
+          "kind": "source",
+          "path": "state_ref"
+        },
+        "target": {
+          "kind": "source",
+          "path": "target"
+        },
+        "origin": {
+          "kind": "source",
+          "path": "origin"
+        },
+        "accepted_at": {
+          "kind": "source",
+          "path": "accepted_at"
+        },
+        "phase": {
+          "kind": "source",
+          "path": "state.phase"
+        },
+        "outcome": {
+          "kind": "source",
+          "path": "state.outcome"
+        },
+        "effect_status": {
+          "kind": "source",
+          "path": "state.effect_status"
+        },
+        "resource_status": {
+          "kind": "source",
+          "path": "state.resource_status"
+        },
+        "required_completion": {
+          "kind": "source",
+          "path": "completion.required"
+        },
+        "achieved_completion": {
+          "kind": "source",
+          "path": "completion.achieved"
+        },
+        "automation_continuation": {
+          "kind": "source",
+          "path": "state.automation_continuation"
+        },
+        "cancellation_state": {
+          "kind": "provider",
+          "provider": "command",
+          "paths": [
+            "cancellation"
+          ],
+          "rule": "null表示none；非空取同命令取消视图状态，不能据Receipt宣布confirmed"
+        },
+        "reason_code": {
+          "kind": "provider",
+          "provider": "vocabulary",
+          "paths": [
+            "state.reason_code"
+          ],
+          "rule": "仅映射具名原因；失败/未知/阻断等不能丢失原因"
+        },
+        "resolution_summary": {
+          "kind": "provider",
+          "provider": "command",
+          "paths": [
+            "state.resolution_ref",
+            "state.resource_evidence_refs"
+          ],
+          "rule": "从精确处置原件生成摘要；unknown+clear仍保持paused_latched"
+        }
+      }
+    },
+    "CancelView": {
+      "source_model": "command__V__S0_CancelOperation",
+      "relation": "Receipt.initial_operation_ref联接同命令取消原件；取消revision不同于命令state revision",
+      "fields": {
+        "operation_id": {
+          "kind": "source",
+          "path": "cancellation_id"
+        },
+        "command_id": {
+          "kind": "source",
+          "path": "command_id"
+        },
+        "revision": {
+          "kind": "source",
+          "path": "revision"
+        },
+        "state": {
+          "kind": "source",
+          "path": "state"
+        },
+        "future_writes": {
+          "kind": "source",
+          "path": "future_writes"
+        },
+        "reason_code": {
+          "kind": "provider",
+          "provider": "vocabulary",
+          "paths": [
+            "reason_code"
+          ],
+          "rule": "按固定原因词表显示，不暴露内部错误"
+        }
+      }
+    },
+    "ControlOperationView": {
+      "source_model": "control__ControlOperation",
+      "relation": "RequestReceipt精确initial_result_ref与result_kind=control_operation，当前GET按原operation读取",
+      "fields": {
+        "operation_id": {
+          "kind": "source",
+          "path": "operation_id"
+        },
+        "device_id": {
+          "kind": "source",
+          "path": "device_id"
+        },
+        "state": {
+          "kind": "source",
+          "path": "state"
+        },
+        "target": {
+          "kind": "provider",
+          "provider": "identity",
+          "paths": [
+            "target"
+          ],
+          "rule": "target.mode/version保留，holder按完整主体关系投影"
+        },
+        "failure_code": {
+          "kind": "provider",
+          "provider": "vocabulary",
+          "paths": [
+            "failure_code"
+          ],
+          "rule": "有限原因码或null"
+        },
+        "effective_version": {
+          "kind": "provider",
+          "provider": "control",
+          "paths": [
+            "effective_control_ref",
+            "target",
+            "state"
+          ],
+          "rule": "仅effective且原control引用匹配时取实际生效版本，其他状态null"
+        },
+        "ready": {
+          "kind": "provider",
+          "provider": "control",
+          "paths": [
+            "effective_control_ref",
+            "target",
+            "state"
+          ],
+          "rule": "与当前epoch/version/holder/mode/gate及未决集合联核；历史effective不能保留ready"
+        }
+      }
+    },
+    "ControlView": {
+      "source_model": "control__ControlRecord",
+      "relation": "当前ControlRecord及相同释放快照",
+      "fields": {
+        "device_id": {
+          "kind": "source",
+          "path": "device_id"
+        },
+        "revision": {
+          "kind": "source",
+          "path": "revision"
+        },
+        "control_epoch": {
+          "kind": "source",
+          "path": "control_epoch"
+        },
+        "effective_version": {
+          "kind": "source",
+          "path": "effective_version"
+        },
+        "mode": {
+          "kind": "source",
+          "path": "mode"
+        },
+        "gate_state": {
+          "kind": "source",
+          "path": "gate_state"
+        },
+        "holder": {
+          "kind": "provider",
+          "provider": "identity",
+          "paths": [
+            "holder"
+          ],
+          "rule": "完整主体关联投影，不用裸principal_id匹配"
+        },
+        "pending_change": {
+          "kind": "provider",
+          "provider": "control",
+          "paths": [
+            "pending_change"
+          ],
+          "rule": "按PendingChange白名单重建；目标主体单独投影，不返回内部原件"
+        },
+        "in_flight": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "in_flight_command_ids"
+          ],
+          "rule": "CommandSet逐项过滤可见ID，隐藏项仅保留has_hidden"
+        },
+        "unresolved": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "unresolved_command_ids"
+          ],
+          "rule": "隐藏风险仍使ready为false，不将未知删去"
+        }
+      }
+    },
+    "TransferView": {
+      "source_model": "control__TransferOffer",
+      "relation": "RequestReceipt.result_kind=transfer_offer且精确initial_result_ref",
+      "fields": {
+        "transfer_id": {
+          "kind": "source",
+          "path": "transfer_id"
+        },
+        "device_id": {
+          "kind": "source",
+          "path": "device_id"
+        },
+        "expected_control": {
+          "kind": "source",
+          "path": "expected_control"
+        },
+        "state": {
+          "kind": "source",
+          "path": "state"
+        },
+        "accept_operation_id": {
+          "kind": "source",
+          "path": "accepted_operation_id"
+        },
+        "from_holder": {
+          "kind": "provider",
+          "provider": "identity",
+          "paths": [
+            "from_principal"
+          ],
+          "rule": "按当前查看者关系生成holder"
+        },
+        "target_holder": {
+          "kind": "provider",
+          "provider": "identity",
+          "paths": [
+            "target_principal"
+          ],
+          "rule": "固定原邀请目标，过期也不替换"
+        },
+        "remaining_ms": {
+          "kind": "provider",
+          "provider": "deadline",
+          "paths": [
+            "lifetime"
+          ],
+          "rule": "同域当前tick计算；过期为0，时基不可用为null，非UTC expires_at"
+        }
+      }
+    },
+    "GrantMutationView": {
+      "source_model": "baseline__MutationReceipt",
+      "relation": "仅controller.revokeRunGrant及其原请求回执",
+      "fields": {
+        "operation_id": {
+          "kind": "source",
+          "path": "operation_id"
+        },
+        "state": {
+          "kind": "source",
+          "path": "state"
+        },
+        "entity_id": {
+          "kind": "source",
+          "path": "entity_id"
+        },
+        "revision": {
+          "kind": "source",
+          "path": "revision"
+        },
+        "kind": {
+          "kind": "provider",
+          "provider": "targets",
+          "paths": [],
+          "rule": "固定grant_revocation"
+        },
+        "visible_targets": {
+          "kind": "provider",
+          "provider": "targets",
+          "paths": [
+            "targets"
+          ],
+          "rule": "按原目标逐项状态和当前别名权限投影；applied须完整集合证明"
+        },
+        "has_hidden_targets": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "targets"
+          ],
+          "rule": "隐藏目标仍计入完成判断，不能伪装全体完成"
+        }
+      }
+    },
+    "LifecycleMutationView": {
+      "source_model": "lifecycle__LifecycleOperation",
+      "relation": "仅arm/pause原操作；reserved和preparing不映射为applied",
+      "fields": {
+        "operation_id": {
+          "kind": "source",
+          "path": "operation_id"
+        },
+        "run_id": {
+          "kind": "source",
+          "path": "run_id"
+        },
+        "kind": {
+          "kind": "source",
+          "path": "kind"
+        },
+        "state": {
+          "kind": "source",
+          "path": "state"
+        },
+        "committed_run_revision": {
+          "kind": "source",
+          "path": "committed_run_revision"
+        },
+        "committed_slot_revision": {
+          "kind": "source",
+          "path": "committed_slot_revision"
+        },
+        "target_arm_generation": {
+          "kind": "source",
+          "path": "target_arm_generation"
+        },
+        "locally_closed": {
+          "kind": "source",
+          "path": "locally_closed"
+        },
+        "protection_complete": {
+          "kind": "source",
+          "path": "protection_complete"
+        },
+        "target_status_summary": {
+          "kind": "provider",
+          "provider": "targets",
+          "paths": [
+            "targets"
+          ],
+          "rule": "保留全部目标状态；隐藏项用has_hidden，不改变protection_complete"
+        }
+      }
+    },
+    "CapacityView": {
+      "source_model": "baseline__CapacityStatus",
+      "relation": "同一会话容量快照而非全服务usage透传",
+      "fields": {
+        "pressure": {
+          "kind": "source",
+          "path": "pressure"
+        },
+        "reason_codes": {
+          "kind": "provider",
+          "provider": "vocabulary",
+          "paths": [
+            "reasons"
+          ],
+          "rule": "有限原因码，不暴露其他主体情况"
+        },
+        "panel_budget": {
+          "kind": "provider",
+          "provider": "session",
+          "paths": [
+            "profile_id",
+            "profile_revision"
+          ],
+          "rule": "只取当前PanelSession适用维度预算"
+        },
+        "current_panel_usage": {
+          "kind": "provider",
+          "provider": "session",
+          "paths": [
+            "usage"
+          ],
+          "rule": "只取当前会话用量，预算下降不把已用值清零"
+        }
+      }
+    },
+    "SceneCatalogView": {
+      "source_model": "baseline__CatalogBinding",
+      "relation": "目标设备当前catalog binding",
+      "fields": {
+        "device_id": {
+          "kind": "source",
+          "path": "device_id"
+        },
+        "collection_ref": {
+          "kind": "source",
+          "path": "collection_ref"
+        },
+        "collection_generation": {
+          "kind": "source",
+          "path": "collection_generation"
+        },
+        "catalog_revision": {
+          "kind": "source",
+          "path": "catalog_revision"
+        },
+        "binding_revision": {
+          "kind": "source",
+          "path": "binding_revision"
+        },
+        "status": {
+          "kind": "source",
+          "path": "status"
+        },
+        "entries": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "entries"
+          ],
+          "rule": "只返回scene_id/display_name等View白名单，按当前场景可见性；不暴露OBS内部UUID"
+        }
+      }
+    },
+    "EvidencePageView": {
+      "source_model": "command__V__S0_EvidencePage",
+      "relation": "已固定state_revision与snapshot，当前读权另验",
+      "fields": {
+        "command_id": {
+          "kind": "source",
+          "path": "command_id"
+        },
+        "items": {
+          "kind": "provider",
+          "provider": "command",
+          "paths": [
+            "items",
+            "state_ref",
+            "snapshot_ref"
+          ],
+          "rule": "仅同命令证据，按EvidenceSummary白名单重建；不输出原details/attempt/报文"
+        },
+        "resource_release_summary": {
+          "kind": "provider",
+          "provider": "command",
+          "paths": [
+            "state_ref"
+          ],
+          "rule": "从精确状态与处置原件读取resource_status；单条sent/ack不能表示已清资源"
+        },
+        "next_page_handle": {
+          "kind": "provider",
+          "provider": "page",
+          "paths": [
+            "next_cursor",
+            "snapshot_ref",
+            "state_ref"
+          ],
+          "rule": "绑定完整证据快照/状态修订和页条件，隐藏计数不泄漏total"
+        }
+      }
+    },
+    "DraftDefinitionView": {
+      "source_model": "lifecycle__DraftRecord",
+      "relation": "create/update返回其原事务草稿修订，不偷换为当前草稿",
+      "fields": {
+        "definition_id": {
+          "kind": "source",
+          "path": "definition_id"
+        },
+        "revision": {
+          "kind": "source",
+          "path": "revision"
+        },
+        "content_digest": {
+          "kind": "source",
+          "path": "content_digest"
+        },
+        "selection_digest": {
+          "kind": "source",
+          "path": "selection_digest"
+        },
+        "metadata_revision": {
+          "kind": "source",
+          "path": "metadata_revision"
+        },
+        "kind": {
+          "kind": "provider",
+          "provider": "definition",
+          "paths": [],
+          "rule": "固定draft"
+        },
+        "content": {
+          "kind": "provider",
+          "provider": "dynamic",
+          "paths": [
+            "content"
+          ],
+          "rule": "必须完整可读/可编辑并符合当前DraftContent及全部动态字段Schema；不能裁剪后回写"
+        },
+        "metadata": {
+          "kind": "provider",
+          "provider": "dynamic",
+          "paths": [
+            "metadata"
+          ],
+          "rule": "只读固定metadata；layout按批准有界Schema，名称当纯文本"
+        },
+        "proof_summaries": {
+          "kind": "provider",
+          "provider": "definition",
+          "paths": [
+            "definition_id",
+            "revision",
+            "content_digest"
+          ],
+          "rule": "只收录同草稿内容的权威编译证明；不存在时空集而非伪造通过"
+        }
+      }
+    },
+    "PublishedDefinitionView": {
+      "source_model": "lifecycle__PublishedVersion",
+      "relation": "固定发布与artifact、program、bindings全链；源草稿修订独立于definition_version",
+      "fields": {
+        "definition_id": {
+          "kind": "source",
+          "path": "definition_id"
+        },
+        "definition_version": {
+          "kind": "source",
+          "path": "definition_version"
+        },
+        "source_draft_revision": {
+          "kind": "source",
+          "path": "source_draft_revision"
+        },
+        "artifact_ref": {
+          "kind": "source",
+          "path": "artifact_ref"
+        },
+        "program_digest": {
+          "kind": "source",
+          "path": "program_digest"
+        },
+        "bindings_digest": {
+          "kind": "source",
+          "path": "bindings_digest"
+        },
+        "kind": {
+          "kind": "provider",
+          "provider": "definition",
+          "paths": [],
+          "rule": "固定published"
+        },
+        "content": {
+          "kind": "provider",
+          "provider": "definition",
+          "paths": [
+            "artifact_ref",
+            "program_digest",
+            "bindings_digest"
+          ],
+          "rule": "从固定发布制品重建完整源内容并核映射；不能取最新草稿，无法证明完整则整个投影不可用"
+        },
+        "metadata": {
+          "kind": "provider",
+          "provider": "definition",
+          "paths": [
+            "definition_id",
+            "definition_version",
+            "artifact_ref"
+          ],
+          "rule": "固定发布时metadata原件；不混当前可变metadata"
+        },
+        "proof_summaries": {
+          "kind": "provider",
+          "provider": "definition",
+          "paths": [
+            "artifact_ref",
+            "program_digest",
+            "bindings_digest"
+          ],
+          "rule": "原制品的全部可见证明摘要，不执行面板自报证明"
+        }
+      }
+    },
+    "RunView": {
+      "source_model": "lifecycle__RunRecord",
+      "relation": "完整run及同版本关联执行和活动槽快照",
+      "fields": {
+        "run_id": {
+          "kind": "source",
+          "path": "run_id"
+        },
+        "definition_id": {
+          "kind": "source",
+          "path": "definition_id"
+        },
+        "definition_version": {
+          "kind": "source",
+          "path": "definition_version"
+        },
+        "artifact_ref": {
+          "kind": "source",
+          "path": "artifact_ref"
+        },
+        "revision": {
+          "kind": "source",
+          "path": "revision"
+        },
+        "business_state": {
+          "kind": "source",
+          "path": "business_state"
+        },
+        "lifecycle": {
+          "kind": "source",
+          "path": "lifecycle"
+        },
+        "arm_generation": {
+          "kind": "source",
+          "path": "arm_generation"
+        },
+        "active_execution_id": {
+          "kind": "source",
+          "path": "active_execution_id"
+        },
+        "slot_revision": {
+          "kind": "provider",
+          "provider": "execution",
+          "paths": [
+            "definition_id",
+            "definition_version"
+          ],
+          "rule": "从同快照ActivationSlot取当前修订，不能用run.revision代替；slot不再指该run时仍展示真实修订并阻止旧预检"
+        },
+        "transition_summary": {
+          "kind": "provider",
+          "provider": "execution",
+          "paths": [
+            "active_execution_id",
+            "last_execution_id",
+            "business_state"
+          ],
+          "rule": "由同run固定执行/状态提交记录生成，只读显示不驱动业务"
+        },
+        "execution_summary": {
+          "kind": "provider",
+          "provider": "execution",
+          "paths": [
+            "active_execution_id",
+            "last_execution_id"
+          ],
+          "rule": "优先当前active，其次显式last；都不存在时null，不伪造pending"
+        },
+        "grant_summaries": {
+          "kind": "provider",
+          "provider": "targets",
+          "paths": [
+            "active_operation_id",
+            "arm_generation"
+          ],
+          "rule": "读取当前run代次完整准备目标，分别保留baseline_grant_ref和target_grant_ref对应的可见grant_id；不得合并两代ID或用旧applied延续资格"
+        }
+      }
+    },
+    "PreflightView": {
+      "source_model": "lifecycle__Preflight",
+      "relation": "passed不是布防授权；目标零个的有效预检按领域规则，不能强行要求非空",
+      "fields": {
+        "run_id": {
+          "kind": "source",
+          "path": "run_id"
+        },
+        "run_revision": {
+          "kind": "source",
+          "path": "baseline.run_revision"
+        },
+        "slot_revision": {
+          "kind": "source",
+          "path": "baseline.slot_revision"
+        },
+        "passed": {
+          "kind": "source",
+          "path": "passed"
+        },
+        "checks": {
+          "kind": "provider",
+          "provider": "targets",
+          "paths": [
+            "checks"
+          ],
+          "rule": "保留passed/failed/unknown，隐藏目标使确认所需完整预览不可用，不能将unknown改为false后丢语义"
+        },
+        "remaining_ms": {
+          "kind": "provider",
+          "provider": "deadline",
+          "paths": [
+            "clock",
+            "issued_tick_ns",
+            "expires_tick_ns"
+          ],
+          "rule": "同域剩余期限仅展示，不能签发UTC时间或授权"
+        },
+        "assessment_handle": {
+          "kind": "provider",
+          "provider": "handle",
+          "paths": [
+            "preflight_id",
+            "preflight_digest",
+            "baseline"
+          ],
+          "rule": "固定原预检+run/slot+会话/激活，不重复刷新期限"
+        }
+      }
+    },
+    "RecoveryPlanView": {
+      "source_model": "lifecycle__RecoveryPreview",
+      "relation": "固定preview的完整计划，最多4096项，超预算整体不可用不截断",
+      "fields": {
+        "run_id": {
+          "kind": "source",
+          "path": "run_id"
+        },
+        "prior_execution_id": {
+          "kind": "source",
+          "path": "prior_execution_id"
+        },
+        "run_revision": {
+          "kind": "source",
+          "path": "baseline.run_revision"
+        },
+        "slot_revision": {
+          "kind": "source",
+          "path": "baseline.slot_revision"
+        },
+        "recovery_handle": {
+          "kind": "provider",
+          "provider": "handle",
+          "paths": [
+            "preview_id",
+            "preview_digest",
+            "baseline"
+          ],
+          "rule": "固定原预览、失败集合与当前会话，不给面板原凭据"
+        },
+        "remaining_ms": {
+          "kind": "provider",
+          "provider": "deadline",
+          "paths": [
+            "clock",
+            "issued_tick_ns",
+            "expires_tick_ns"
+          ],
+          "rule": "同域截止，不把不透明tick转UTC"
+        },
+        "items": {
+          "kind": "provider",
+          "provider": "execution",
+          "paths": [
+            "plan"
+          ],
+          "rule": "完整保留step_id/disposition，previous command按可见性给ID或隐藏标记；每个evidence_ref和非空parameters_ref由精确原件构造批准Schema的QualifiedValue摘要，dynamic逐字段核权限；必要摘要隐藏则整份不可用，不删步骤或用空集替代读取失败"
+        },
+        "unresolved": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "unresolved_command_refs"
+          ],
+          "rule": "可见ID与has_hidden；有隐藏必要决策内容时整份确认预览不可用"
+        }
+      }
+    },
+    "RecoveryOperationView": {
+      "source_model": "lifecycle__LifecycleOperation",
+      "relation": "kind必须resume；execution可null且state保留reconciling，target_arm_generation不是旧recovery_generation",
+      "fields": {
+        "operation_id": {
+          "kind": "source",
+          "path": "operation_id"
+        },
+        "run_id": {
+          "kind": "source",
+          "path": "run_id"
+        },
+        "previous_run_revision": {
+          "kind": "source",
+          "path": "baseline.run_revision"
+        },
+        "committed_run_revision": {
+          "kind": "source",
+          "path": "committed_run_revision"
+        },
+        "committed_slot_revision": {
+          "kind": "source",
+          "path": "committed_slot_revision"
+        },
+        "target_arm_generation": {
+          "kind": "source",
+          "path": "target_arm_generation"
+        },
+        "state": {
+          "kind": "source",
+          "path": "state"
+        },
+        "new_execution_id": {
+          "kind": "source",
+          "path": "execution_id"
+        },
+        "visible_new_command_ids": {
+          "kind": "provider",
+          "provider": "execution",
+          "paths": [
+            "operation_id",
+            "execution_id"
+          ],
+          "rule": "查询完整该操作执行的命令登记，不能只用未决子集"
+        },
+        "has_hidden_commands": {
+          "kind": "provider",
+          "provider": "visibility",
+          "paths": [
+            "operation_id",
+            "execution_id"
+          ],
+          "rule": "完整命令集合过滤后的隐藏标志；execution为空不造命令"
+        },
+        "target_status_summary": {
+          "kind": "provider",
+          "provider": "targets",
+          "paths": [
+            "targets"
+          ],
+          "rule": "保持closing/closed/unknown和完整目标集，不能把本地完成当远端完成"
+        }
+      }
+    },
+    "IndependenceView": {
+      "source_model": "lifecycle__Program_IndependenceProof",
+      "relation": "请求父子引用、版本和完整证明原件关联",
+      "fields": {
+        "failed_step_id": {
+          "kind": "source",
+          "path": "failed_step_id"
+        },
+        "successor_step_ids": {
+          "kind": "source",
+          "path": "successor_step_ids"
+        },
+        "verdict": {
+          "kind": "source",
+          "path": "verdict"
+        },
+        "proof_id": {
+          "kind": "provider",
+          "provider": "proof",
+          "paths": [
+            "program_digest",
+            "bindings_digest",
+            "graph_digest"
+          ],
+          "rule": "从原proof登记取精确ID"
+        },
+        "proof_revision": {
+          "kind": "provider",
+          "provider": "proof",
+          "paths": [
+            "program_digest",
+            "bindings_digest",
+            "graph_digest"
+          ],
+          "rule": "严格匹配请求revision"
+        },
+        "definition_id": {
+          "kind": "provider",
+          "provider": "proof",
+          "paths": [
+            "program_digest",
+            "bindings_digest"
+          ],
+          "rule": "从原definition/version映射取得"
+        },
+        "definition_version": {
+          "kind": "provider",
+          "provider": "proof",
+          "paths": [
+            "program_digest",
+            "bindings_digest"
+          ],
+          "rule": "固定发布版本，不默认latest"
+        },
+        "reason_codes": {
+          "kind": "provider",
+          "provider": "vocabulary",
+          "paths": [
+            "verdict"
+          ],
+          "rule": "仅受控证明说明；unknown不改independent"
+        }
+      }
+    }
+  },
+  "methods": {
+    "controller.getMeta": {
+      "view": "MetaView",
+      "variant": "MetaView",
+      "operation_key": "controller:getMeta",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "baseline__Meta",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getClock": {
+      "view": "ClockView",
+      "variant": "ClockView",
+      "operation_key": "controller:getClock",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "time_public__S12__PublicClock",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.listDevices": {
+      "view": "DevicePageView",
+      "variant": "DevicePageView",
+      "operation_key": "controller:listDevices",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "baseline__DevicePage",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getCapabilities": {
+      "view": "CapabilityView",
+      "variant": "CapabilityView",
+      "operation_key": "controller:getCapabilities",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "baseline__CapabilityCatalog",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getDeviceState": {
+      "view": "ObservationView",
+      "variant": "ObservationView",
+      "operation_key": "controller:getDeviceState",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "baseline__Observation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.submitCommand": {
+      "view": "CommandView",
+      "variant": "CommandView",
+      "operation_key": "controller:submitCommand",
+      "authority": "controller",
+      "mode": "panel_write",
+      "source_model": "command__V__S0_CommandRecord",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getCommand": {
+      "view": "CommandView",
+      "variant": "CommandView",
+      "operation_key": "controller:getCommand",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "command__V__S0_CommandRecord",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.cancelCommand": {
+      "view": "CancelView",
+      "variant": "CancelView",
+      "operation_key": "controller:cancelCommand",
+      "authority": "controller",
+      "mode": "panel_write",
+      "source_model": "command__V__S0_CancelOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getControlOperation": {
+      "view": "ControlOperationView",
+      "variant": "ControlOperationView",
+      "operation_key": "controller:getControlOperation",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "control__ControlOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getControl": {
+      "view": "ControlView",
+      "variant": "ControlView",
+      "operation_key": "controller:getControl",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "control__ControlRecord",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.acquireControl": {
+      "view": "ControlOperationView",
+      "variant": "ControlOperationView",
+      "operation_key": "controller:acquireControl",
+      "authority": "controller",
+      "mode": "host_confirm",
+      "source_model": "control__ControlOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.releaseControl": {
+      "view": "ControlOperationView",
+      "variant": "ControlOperationView",
+      "operation_key": "controller:releaseControl",
+      "authority": "controller",
+      "mode": "host_confirm",
+      "source_model": "control__ControlOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.offerTransfer": {
+      "view": "TransferView",
+      "variant": "TransferView",
+      "operation_key": "controller:offerTransfer",
+      "authority": "controller",
+      "mode": "host_confirm",
+      "source_model": "control__TransferOffer",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.acceptTransfer": {
+      "view": "ControlOperationView",
+      "variant": "ControlOperationView",
+      "operation_key": "controller:acceptTransfer",
+      "authority": "controller",
+      "mode": "host_confirm",
+      "source_model": "control__ControlOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.revokeRunGrant": {
+      "view": "MutationView",
+      "variant": "GrantMutationView",
+      "operation_key": "controller:revokeRunGrant",
+      "authority": "controller",
+      "mode": "host_confirm",
+      "source_model": "baseline__MutationReceipt",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getClockAssessment": {
+      "view": "ClockAssessmentView",
+      "variant": "ClockAssessmentView",
+      "operation_key": "controller:getClockAssessment",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "time_public__S12__PublicClock",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getCapacity": {
+      "view": "CapacityView",
+      "variant": "CapacityView",
+      "operation_key": "controller:getCapacity",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "baseline__CapacityStatus",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getSceneCatalog": {
+      "view": "SceneCatalogView",
+      "variant": "SceneCatalogView",
+      "operation_key": "controller:getSceneCatalog",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "baseline__CatalogBinding",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "controller.getCommandEvidence": {
+      "view": "EvidencePageView",
+      "variant": "EvidencePageView",
+      "operation_key": "controller:getCommandEvidence",
+      "authority": "controller",
+      "mode": "panel_read",
+      "source_model": "command__V__S0_EvidencePage",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.getMeta": {
+      "view": "MetaView",
+      "variant": "MetaView",
+      "operation_key": "seamer:getMeta",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "baseline__Meta",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.getClock": {
+      "view": "ClockView",
+      "variant": "ClockView",
+      "operation_key": "seamer:getClock",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "time_public__S12__PublicClock",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.createDefinition": {
+      "view": "DefinitionView",
+      "variant": "DraftDefinitionView",
+      "operation_key": "seamer:createDefinition",
+      "authority": "seamer",
+      "mode": "panel_write",
+      "source_model": "lifecycle__DraftRecord",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.updateDraft": {
+      "view": "DefinitionView",
+      "variant": "DraftDefinitionView",
+      "operation_key": "seamer:updateDraft",
+      "authority": "seamer",
+      "mode": "panel_write",
+      "source_model": "lifecycle__DraftRecord",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.publishDefinition": {
+      "view": "DefinitionView",
+      "variant": "PublishedDefinitionView",
+      "operation_key": "seamer:publishDefinition",
+      "authority": "seamer",
+      "mode": "host_confirm",
+      "source_model": "lifecycle__PublishedVersion",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.createRun": {
+      "view": "RunView",
+      "variant": "RunView",
+      "operation_key": "seamer:createRun",
+      "authority": "seamer",
+      "mode": "panel_write",
+      "source_model": "lifecycle__RunRecord",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.getRun": {
+      "view": "RunView",
+      "variant": "RunView",
+      "operation_key": "seamer:getRun",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "lifecycle__RunRecord",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.preflightRun": {
+      "view": "PreflightView",
+      "variant": "PreflightView",
+      "operation_key": "seamer:preflightRun",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "lifecycle__Preflight",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.armRun": {
+      "view": "MutationView",
+      "variant": "LifecycleMutationView",
+      "operation_key": "seamer:armRun",
+      "authority": "seamer",
+      "mode": "host_confirm",
+      "source_model": "lifecycle__LifecycleOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.pauseRun": {
+      "view": "MutationView",
+      "variant": "LifecycleMutationView",
+      "operation_key": "seamer:pauseRun",
+      "authority": "seamer",
+      "mode": "panel_write",
+      "source_model": "lifecycle__LifecycleOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.previewRecovery": {
+      "view": "RecoveryPlanView",
+      "variant": "RecoveryPlanView",
+      "operation_key": "seamer:previewRecovery",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "lifecycle__RecoveryPreview",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.resumeRun": {
+      "view": "RecoveryOperationView",
+      "variant": "RecoveryOperationView",
+      "operation_key": "seamer:resumeRun",
+      "authority": "seamer",
+      "mode": "host_confirm",
+      "source_model": "lifecycle__LifecycleOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.getClockAssessment": {
+      "view": "ClockAssessmentView",
+      "variant": "ClockAssessmentView",
+      "operation_key": "seamer:getClockAssessment",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "time_public__S12__PublicClock",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.getCapacity": {
+      "view": "CapacityView",
+      "variant": "CapacityView",
+      "operation_key": "seamer:getCapacity",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "baseline__CapacityStatus",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.getRecoveryOperation": {
+      "view": "RecoveryOperationView",
+      "variant": "RecoveryOperationView",
+      "operation_key": "seamer:getRecoveryOperation",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "lifecycle__LifecycleOperation",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    },
+    "seamer.getIndependenceProof": {
+      "view": "IndependenceView",
+      "variant": "IndependenceView",
+      "operation_key": "seamer:getIndependenceProof",
+      "authority": "seamer",
+      "mode": "panel_read",
+      "source_model": "lifecycle__Program_IndependenceProof",
+      "ready_for_installation": false,
+      "raw_response_allowed": false
+    }
+  },
+  "output_field_count": 181,
+  "coverage_unit": "variant_top_level_output_field"
+}

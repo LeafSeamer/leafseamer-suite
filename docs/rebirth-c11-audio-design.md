@@ -480,3 +480,50 @@ WING主／备用source与altsrc采用第12／14节的完整顺序及中间态政
 本节关闭精确业务数值与线float32舍入的冲突，以及多primitive到现有编码／许可／hold的归并缺口。SDK生成编码记录和具名codec定义，Controller实现纯编码核验、同命令多primitive登记与完整cut，worker实现被批准编码器及唯一I/O出口，GUI分别显示目标、编码值、观察和部分进度。
 
 沿AUDT／A12补验：ties-to-even和双重舍入反例、整数边界、sentinel与非有限混淆、tuple错位、名称字节／字符边界、同attempt不同primitive不串账、第二步被FENCE阻断、第一步未知保留hold、整个计划预算不足零发送，以及跨设备部分成功不伪装整体成功。当前仅官方表格／Schema和精确算术检查；完整型号codec表、真实产品网络／SQLite／设备及声学测量未运行，C11仍未整体关闭。
+
+## 16. RIVAGE型号坐标、条件codec与场景编码
+
+### 16.1 官方依据与确定边界
+
+本节采用Yamaha [RIVAGE PM OSC v1.0.2](https://usa.yamaha.com/files/download/other_assets/5/1407565/RIVAGE_PM_osc_specs_v102_en.pdf)，适用说明为固件V5.00及以后；不据此宣称后续每个固件均已验收。第15页列出四种引擎的最大通道数，第4—5页同一Dyna1／Dyna2 Attack地址按Dynamics类型给出不同缩放，第3／11页用字符串场景号。以下数值来自这些表格；其后的选择、校验和失效规则是本项目采用设计，不是厂商提供的并发保证。
+
+| 引擎 | Input | Mix | Matrix | Stereo坐标 |
+| --- | ---: | ---: | ---: | --- |
+| DSP-R10 | 144 | 72 | 36 | 1—4 |
+| CSD-R7 | 144 | 60 | 36 | 1—4 |
+| DSP-RX | 120 | 48 | 24 | 1—4 |
+| DSP-RX-EX | 288 | 72 | 36 | 1—4 |
+
+Stereo的1／2／3／4分别是AL／AR／BL／BR。表中数值为边界，不证明某会话内全部通道可用；配置的引擎必须与可信设备识别和当前拓扑一致。GUI输出目标保存kind及index，不把Mix／Matrix／Stereo拼成一条无类型的outputId；自定义显示排序不改变协议坐标。未知型号不退回16输入／8输出，变更引擎或拓扑须生成新绑定并使旧目标失效。当前会话可用集合是批准profile与合格拓扑的交集，不能仅靠用户填写型号授予写资格。
+
+| 具名参数规则 | 线类型与比例 | 坐标／解释限制 |
+| --- | --- | --- |
+| InCh／Mix／Mtrx／St Delay/Time | int32，raw=毫秒×1000，raw范围0—1000000 | X按该类通道，Y=1；不得先把毫秒取整 |
+| InCh HPF/Freq | int32，raw=Hz×10，raw范围200—20000 | Y=1／2为Bank A／B，不能固定为1 |
+| InCh LPF/Freq | int32，raw=Hz×10，raw范围200—200000 | 同样显式绑定Bank |
+| InCh Dyna1/Attack及Dyna2/Attack普通表行 | int32，raw=毫秒，raw范围0—120 | 仅适用已确认普通变体的类型集合 |
+| 同地址COMP260表行 | int32，raw=毫秒×1000，raw范围10—80000 | 必须绑定已确认COMP260变体，不能与普通行合并取并集 |
+
+上述比例确定整数线表示，不宣称设备在整个数值区间接受每一个整数或按同一精度保存；设备量化沿第15节独立批准。例如1.25ms的Delay编码为1250；0.01ms的COMP260 Attack编码为10；普通Attack的0.01ms不能整除而拒绝。同一raw=10在普通与COMP260变体分别表示10ms和0.01ms，不能跨变体比较或触发。
+
+### 16.2 条件codec的权威与失效
+
+目录生成键不能只有address。每个ParameterDefinition绑定协议／固件profile、目标坐标模式、variant_id、selector_parameter_refs、selector_predicate、read／write codec及语义投影；variant_id是本项目稳定定义身份，不是设备返回的新字段。普通与COMP260分别保留定义，普通分支必须列出有依据的类型集合，禁止把unknown或不认识的类型一律归普通。产品生成器检查同一profile／目标的分支互斥；匹配零个或多个分支均不产生可写ParameterRef。
+
+Controller在计划受理时保存选择器的合格观察引用及所选完整定义，绑定device_session、catalog及topology版本。每步编码与最终发送再次核对原选择器仍有资格且取值／修订满足前提；外部变化、失步或无法确认时拒绝未发步骤。计划若包含选择器写入，受理时必须固定变更后的目标变体、后继完整定义／编码及中间态；取得该选择器的新合格观察并验证固定前提后，才允许后继步骤。不能用旧codec预编码后盲发，也不得就地替换第15节的不可变计划。实际变体或目标不属于原计划时，关闭原计划后继资格，通过新计划和新命令受理，已发影响仍保留。
+
+只读观察也绑定采样所用选择器。无相关选择器证据时只存raw／unqualified，不能用接收时GUI当前类型解释迟到raw值。选择器变化先使相关值baseline及自动化依赖失效，重新取得同变体合格baseline后才恢复阈值判断；raw相同而codec改变不产生伪造数值跨越。该检查仍需C11独立完成／释放及部署资格，软件二次校验不提供设备端CAS。
+
+同原则适用于表中Ratio、Release等依赖Dynamics类型的参数，但必须逐项补足其精确类型标识、量化及sentinel，不从Attack规则推导其它参数。v1.0.2中Threshold表格下界与GATE／DUCKING注释不一致，不能选择较宽界或猜符号自动修订；保留该变体未合格并要求权威勘误或受控验证。静态表行存在不是全部条件codec已完成的证明。
+
+### 16.3 场景与文本分支
+
+RIVAGE recall采用地址`/yosc:req/ssrecallt_ex`，两个OSC string参数依次为`MIXER:Lib/Scene`及场景号。项目规范输入保存独立整数major（1—999）和minor（0—99），生成`major.minor`且minor固定两位；例如5／0生成`5.00`。线上标签为`,ss`，不带引号字符，不追加X／Y，不转float或复用DM3的scene_a／整数slot；不把范围内每个编号当作已有场景。存在性、保护与完成证据沿具名场景policy，默认不重发。
+
+读取配置或导入的字符串必须完整匹配`[1-9][0-9]{0,2}\.[0-9]{2}`再拆整数，不接受前缀解析、符号、指数、小数逗号或静默修复。这个格式是项目唯一规范表示，不声称设备拒绝其他词法。场景store、relative recall和meter不从这条recall命令推导；需要各自协议依据后才有运行入口，完整交付范围保持。
+
+名称、颜色、icon、patch字符串分别使用其表／模板，禁止把RCP binary类型复制到OSC或把string都当自由文本。名称的八字符限制与OSC字节／填充限制分层校验，字符集扩展仍需型号依据。MonitorMix口令仍走secret_ref专用路径，不因该规范给出字符串长度就纳入普通查询、导出或日志。
+
+### 16.4 本项出口
+
+本节关闭RIVAGE引擎拓扑、同址条件缩放和场景身份与DM3混用的具体设计缺口，转入SDK条件定义生成、Controller前提／观察绑定及GUI变体显示实施。沿AUDT补验四引擎首尾／越界坐标、Bank A/B、同址不同scale、未知及重叠分支拒绝、变体变化后的旧计划与迟到观察、场景两个string和边界词法。当前只复核官方PDF表格并执行精确算术／规范字节检查，未执行产品生成器、真实OSC、SQLite或设备测试。RIVAGE完整枚举／条件表、DM3 RCP、WING及VB剩余codec和完成／释放仍逐项保留，不以本节关闭整个C11。

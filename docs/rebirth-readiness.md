@@ -118,7 +118,7 @@ T01—T15 编号继续以 [审阅稿第 2 节](rebirth-review.md) 为主清单�
 
 | ID | 场景及必须观察的结果 | 证据层／主要责任 |
 | --- | --- | --- |
-| A01 | 独立客户端注册／更新能力；旧客户端兼容，新特性协商，不兼容写入、未知参数、越权、失效绑定明确拒绝；同版本产物不可静默替换 | 契约／SDK |
+| A01 | 独立客户端注册／更新能力；当前受支持协议主版本内按声明的组合验证客户端兼容及新特性协商；不兼容写入、未知参数、越权、失效绑定明确拒绝；历史候选不自动进入接受集，同版本产物不可静默替换 | 契约／SDK |
 | A02 | 两人编辑同修订不覆盖；同键同内容关联旧执行、不同内容拒绝；详情清理、过期身份、旧世代及恢复后不产生新执行 | 契约＋故障模拟／SDK、服务 |
 | A03 | 发送前阻塞、IPC 已投递、接管与发送并发；接管确认后旧未发送队列不出设备；转交前后单持有人，释放不复活旧请求；在途独立显示 | 可控队列竞态＋协议观测／Controller |
 | A04 | 接管持久化前后、屏障前后、实际发送前后杀进程；重启先恢复限制，旧进程迟到回执不改变新控制权，无法确认不得报生效或自动重发 | 故障模拟／Controller、SDK |
@@ -143,7 +143,9 @@ T01—T15 编号继续以 [审阅稿第 2 节](rebirth-review.md) 为主清单�
 
 ## 5. Q1—Q72 覆盖索引
 
-下表每个编号只登记一个主归属，跨项依赖见第 1 节；索引覆盖不表示功能完成。
+### 5.1 已确认决策与主归属
+
+下表每个编号只登记一个主归属，跨项依赖见第1节；Q63以C05入口容量为主，C08关键存储与保护预算为必需协作。索引覆盖不表示功能完成。Q61的首期单稳定主版本与A01兼容验证一致：只验证声明支持的协议／特性组合，旧草案、旧摘要或未知选择均不得通过静默回退进入当前接受集。
 
 | 已确认决策 | 主契约 | 主验收 |
 | --- | --- | --- |
@@ -160,7 +162,36 @@ T01—T15 编号继续以 [审阅稿第 2 节](rebirth-review.md) 为主清单�
 | Q21、Q31、Q55、Q56、Q57 | C07 | A09、A10 |
 | Q27、Q32、Q58、Q59、Q60 | C06 | A11、A12 |
 | Q28 | C11 | A19 |
-| Q63 | C05、C08 | A14 |
+| Q63 | C05 | A14 |
+
+### 5.2 十八项功能范围与交付验收
+
+本表把[设计稿第11节](rebirth-design.md#11-现有-18-个-bundle-的功能去向)的十八项既定范围逐项接到现有C／A编号，不新建待办体系。主契约只决定牵头归属，协作列不能省略。这里核对的是交付范围，不是声称功能代码、协议codec、UI或真实设备已经验收。
+
+| 范围标识 | 必须保留或明确替代的成果 | 主契约与协作 | 责任仓库／专项规范 | 主验收 |
+| --- | --- | --- | --- | --- |
+| `atem-control` | ATEM节目／预监源、转场、宏及完整控制面板；发送、应答和新观测证据分开 | C11；C02、C03、C09、C10 | Controller、GUI；[OBS／ATEM](rebirth-c11-obs-atem-design.md) | A03、A06、A07、A21 |
+| `obs-control` | OBS场景、转场、输入／媒体及直播状态控制与面板；VLC列表及播放代按具体规格交付 | C11；C02、C03、C09、C10 | Controller、GUI；[OBS／ATEM](rebirth-c11-obs-atem-design.md) | A03、A06、A18、A21 |
+| `mixer-control` | 五种Mixer配置及型号驱动、完整参数／单位／目录、场景、meter、共享前级与patch操作 | C11；C02、C03、C09、C10 | Controller、GUI；[音频](rebirth-c11-audio-design.md) | A03、A06、A07、A17、A21 |
+| `vb-matrix-control` | 矩阵路由、点增益／mute／remove、设备预置与独立本地bank；未知存在性不冒充删除完成 | C11；C02、C03、C10 | Controller、GUI；[音频](rebirth-c11-audio-design.md) | A03、A06、A07、A17、A21 |
+| `seamer` | 手动动作卡片、单卡交换、触发规则及完整自动化工作台；新版有限状态机、顺序／并行及失败恢复按Q72实现 | C04；C01、C05、C08、C10 | Seamer、SDK、GUI；[F06／F07](rebirth-f06-f07-design.md)、[GUI](rebirth-c10-gui-design.md) | A02、A05、A06、A07、A13、A17、A21 |
+| `seamer-adapter-atem` | ATEM动作／触发及动态目录映射并入Controller能力，不保留NodeCG进程内调用耦合 | C11；C01、C04、C05、C09 | Controller、SDK、Seamer；[OBS／ATEM](rebirth-c11-obs-atem-design.md) | A01、A05、A08、A13、A21 |
+| `seamer-adapter-obs` | OBS动作／触发和能力映射，场景／直播状态作为有来源、有年龄的事实 | C11；C01、C04、C05、C09 | Controller、SDK、Seamer；[OBS／ATEM](rebirth-c11-obs-atem-design.md) | A01、A08、A13、A18、A21 |
+| `seamer-adapter-mixer` | Mixer完整动作／触发目录，阈值边沿、mute变化、数值单位与型号能力约束 | C11；C01、C04、C05、C09 | Controller、SDK、Seamer；[音频](rebirth-c11-audio-design.md) | A01、A08、A13、A21 |
+| `seamer-adapter-vb` | VB动作／路由状态触发及设备目录，保持点身份、未知与反馈去重语义 | C11；C01、C04、C05、C09 | Controller、SDK、Seamer；[音频](rebirth-c11-audio-design.md) | A01、A08、A13、A21 |
+| `seamer-adapter-schedule` | 场次到期与字段变化触发、来源／节目／字段过滤和可读目录；同批事件完整交付 | C06；C01、C04、C05 | Seamer、SDK；[排期](rebirth-c06-schedule-design.md) | A08、A11、A12、A13、A21 |
+| `schedule-manager` | 排期编辑／启停、来源只读及覆盖、差异导入／回退、稳定场次；外部NodeCG排期展示单独交付 | C06；C04、C05、C10、C11 | Seamer、GUI、Controller；[排期](rebirth-c06-schedule-design.md)、[NodeCG](rebirth-c11-nodecg-design.md) | A02、A11、A12、A17、A19、A21 |
+| `data-sync-service` | 只读采集、有限轮询、同步状态与固定捕获；空源／失败显式表达，图文数据走批准桥接 | C06；C05、C07、C09、C11 | Seamer、Controller；[排期](rebirth-c06-schedule-design.md)、[NodeCG](rebirth-c11-nodecg-design.md) | A08、A10、A12、A14、A19、A21 |
+| `schedule-adapter-google-sheets` | Google Sheets只读授权、范围／列映射、稳定行身份、逐行诊断；采集入草稿而非自动激活 | C06；C07、C09、C10 | Seamer、GUI；[排期](rebirth-c06-schedule-design.md) | A10、A12、A14、A17、A21 |
+| `schedule-adapter-postgresql` | 外部PostgreSQL只读数据源、批准视图／查询模板、事务快照、超时和秘密引用；继续保留 | C06；C07、C09、C10 | Seamer、GUI；[排期](rebirth-c06-schedule-design.md) | A10、A12、A14、A17、A21 |
+| `database-postgresql` | 原运行持久化适配退出新版核心，以各服务独立SQLite库替代；不开发旧数据迁移工具，不删除上一行外部只读源 | C08；C12 | 各服务、Suite；[DF04](rebirth-df04-storage-design.md) | A02、A04、A16、A21、A22 |
+| `graphics-package` | 字幕／比分数据、原编辑器、固定动画及两路输出；加排期形成三路外部NodeCG图文，GUI不自研渲染 | C11；C05、C09、C10、C12 | Controller、GUI、Suite；[NodeCG](rebirth-c11-nodecg-design.md)、[部署](rebirth-c12-deployment-design.md) | A08、A15、A17、A19、A20、A21 |
+| `logger-system` | 各服务普通日志及关键审计、统一授权查询、脱敏与诊断导出；普通日志失败与关键记录失败分开 | C08；C05、C07、C10、C12 | 各服务、GUI、Suite；[DF04](rebirth-df04-storage-design.md)、[部署](rebirth-c12-deployment-design.md) | A08、A10、A14、A16、A17、A21 |
+| `backup-system` | 服务一致备份及Suite编排、分级加密、秘密覆盖、隔离恢复及旧实例退役；恢复保持未布防与未知记录 | C12；C07、C08 | 各服务、Suite；[部署DEP06](rebirth-c12-deployment-design.md#6-dep06备份格式分级与恢复流程) | A10、A16、A20、A21、A22 |
+
+横切要求继续有效：A01／A02覆盖公共契约和请求身份，A10覆盖当前授权，A14覆盖有界容量，A15覆盖适用模块／面板边界，A22覆盖所有最终交付物的许可与制品；不能因某行没有重复列全部横切编号而免验。A18只证明模拟器／OBS闭环子集，不给ATEM、音频、数据源、图文或其他GUI页面代签结果。NodeCG可选安装与全部图文必须交付并存；原编辑器、bridge、输出页及浏览器源分别验收。
+
+**范围核对结论。** Q1—Q72均有且只有一个主契约登记，十八个范围标识与设计稿逐项相同，各自有成果、责任仓库、规范及A编号；C01—C12和A01—A22均在决策或功能映射中有归属。因此关闭统一清单阶段0第①项“范围全部有C与A归属”。这不关闭第②—⑤项的具体设计问题，也不表示readiness 6.1第2项要求的全部参数／单位／codec和完成证据已定稿。细项未决仍只在各权威稿及统一清单登记，不能用本表的覆盖率替代它们。
 
 ## 6. 阶段放行与后续路线图
 

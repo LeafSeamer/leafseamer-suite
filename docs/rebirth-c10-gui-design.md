@@ -234,4 +234,6 @@ registry-map的12类集合逐一分配：devices／catalogs／observations用于
 3. **排期未激活对象，设计已关闭**：[C06第9节](rebirth-c06-schedule-design.md#9-未激活排期来源和导入的读取契约)固定来源配置、导入历史、排期草稿列表及详情、差异和固定版本查询；现有sources／schedule_activations只承担运行投影，新路由由SDK生成。
 4. **维护管理契约，设计已关闭**：[C12第10节](rebirth-c12-deployment-design.md#10-维护管理请求与本机执行权威)固定14种HTTP、独立本机协议、脱敏计划／进度／归档投影、在线备份及本机批准边界。GUI支持分级备份、密文导入／下载、计划及结果查询；恢复／升级仅请求，实际切换须本机管理员批准固定计划，恢复解密后还须审阅具体RecoveryPlan。代理服务停机显示disconnected，CLI按同installation账本查原；取消不回退已发布或已激活事实，unknown不重发。人工发行时间选择仍独立等待决定。
 
+VLC列表与指定条目播放按[C11视频第11节](rebirth-c11-obs-atem-design.md#11-vlc扩展的采用与请求回执契约)生成的新领域DTO实施：分页完成后使用完整source／generation／entry引用提交原设备命令，不把索引或selected当播放身份；响应丢失展示unknown并查询原Command，GUI不持OBS MAC、直连vendor或补发Select。submitted与playing及资源释放分别显示，OBS重启后缺回执不显示未执行。
+
 本节四项具体页面接口缺口已关闭；上述设计转入SDK、服务、Suite及GUI实现，不再因生成器或组件未写重开。它们不重开已采用的人员手动政策、三人发行阈值、React／Vite、NodeCG接入和12类投影。SDK生成与客户端适配、GUI组件和双语资源、服务真实字段提供者属于实现；UIT01—UIT40及A17／A18为实现后验证，当前均未执行。进入实现仍以统一收敛清单阶段0为准。

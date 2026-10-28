@@ -178,7 +178,7 @@ GUI保留OBS连接CRUD、场景预选／切换、转场选择、推流目标／�
 
 ## 7. AV06：明确的剩余冻结与推荐
 
-1. **VLC指定条目播放**：保留真实功能目标。[第9节](#9-av02av06补充vlc源扩展与studio转场)已将辅助接口收敛为VLC源内窄补丁及受限桥候选，定义列表／条目／播放代与独立制品边界；不采用改selected、猜测NEXT、暗改列表顺序或读私有内存。新增成本仍待审阅，不能默认安装或记为已完成旧功能。
+1. **VLC指定条目播放**：保留真实功能目标。[第9节](#9-av02av06补充vlc源扩展与studio转场)已将辅助接口收敛为VLC源内窄补丁及受限桥候选，定义列表／条目／播放代与独立制品边界；不采用改selected、猜测NEXT、暗改列表顺序或读私有内存。该路线及维护交付边界已由第11节采用；安装仍须本机维护批准，不记为功能已实现。
 2. **ATEM库边界**：[第8节](#8-av04av06补充可审阅的传输与证据冻结方案)已细化逐传输可靠许可、接收校验与两级账本，显式传播逐项发送失败。库tag／tarball一致只证明来源，补丁及原生／线程产物仍须DF05固定；不将3.7.0直接批准上线。
 3. **ATEM效果与年龄**：逐型号给出设备反馈到命令／执行代的证明路径。普通缓存与时间请求不够；若协议无法提供所需因果证据，需评估厂商受支持控制接口或明确较弱手动政策，不能默认降低自动化要求。该结论是待设计问题，不是删除ATEM范围。
 4. **全量能力机器契约**：将本表每个action、target、错误码、复合计划及证据政策合入下一版SDK；OBS四帧仅保留原适用域，不把通用DeviceActionEvidence存在当作验证器已实现。Media／Transition／Stream／ATEM专属profile须有正反例及独立批准。
@@ -242,7 +242,7 @@ OBS32.0.4的`vlcs_create`只注册`get_metadata` proc；媒体callbacks无直接
 
 推荐**固定VLC源最小补丁＋受限vendor桥**，不再将“纯外部插件即可控制现有源”列为默认路径：在`vlc-video`内新增具名、版本化proc和所需LibVLC动态符号；桥经公开`obs_source_get_proc_handler`调用源，不读取私有结构。通过obs-websocket已公开vendor API承载具名请求与事件；禁止任意proc名、函数地址、源指针或vendor透传。（扩展机制来源：[obs.h](https://github.com/obsproject/obs-studio/blob/32.0.4/libobs/obs.h)、[obs-websocket vendor API](https://github.com/obsproject/obs-websocket/blob/5.6.3/lib/obs-websocket-api.h)。）
 
-该选择新增OBS宿主制品维护和安装成本，仍待审阅。补丁、桥、LibVLC及OBS组合单独版本、hash、ABI和源码交付清单；不能在发行目录中同时装两个冲突的VLC源实现，也不能静默替换运行中OBS插件。安装在停止OBS的维护阶段显式选择固定组合；不兼容时保留普通OBS能力及明确的VLC扩展不可用原因，不用selected回退实现按钮。OBS官方许可为GPLv2或以后版本，相关派生制品保留适用许可和源码义务，SDK协议文档沿项目许可；进程／目录分隔本身不构成重新许可依据。（来源：[固定COPYING](https://github.com/obsproject/obs-studio/blob/32.0.4/COPYING)、[README许可说明](https://github.com/obsproject/obs-studio/blob/32.0.4/README.rst)。）
+该选择新增OBS宿主制品维护和安装成本，第11节明确采用及维护安装边界。补丁、桥、LibVLC及OBS组合单独版本、hash、ABI和源码交付清单；不能在发行目录中同时装两个冲突的VLC源实现，也不能静默替换运行中OBS插件。安装在停止OBS的维护阶段显式选择固定组合；不兼容时保留普通OBS能力及明确的VLC扩展不可用原因，不用selected回退实现按钮。OBS官方许可为GPLv2或以后版本，相关派生制品保留适用许可和源码义务，SDK协议文档沿项目许可；进程／目录分隔本身不构成重新许可依据。（来源：[固定COPYING](https://github.com/obsproject/obs-studio/blob/32.0.4/COPYING)、[README许可说明](https://github.com/obsproject/obs-studio/blob/32.0.4/README.rst)。）
 
 ### 9.2 VLC候选接口与执行代
 
@@ -303,3 +303,71 @@ Controller发出的vendor请求本身经过唯一写闸；源内部已经受理�
 | VAT48 | 同名多画布／不可寻址画布拒绝误写；扩展部署的版本/ABI/许可清单独立记录，未安装时不伪回退 |
 
 本轮已形成明确推荐：VLC源内窄扩展、ATEM逐传输可靠许可及接收校验、Studio／转场独立完成profile。待审阅的实质成本是额外OBS制品、ATEM传输适配与逐次落盘延迟、序号回绕维护，以及缺证据组合的保护表现。接下来合入新版前仍须完成辅助接口Schema、传输IPC/DDL关联、精确制品锁、逐型号证据profile及对应正反例；候选成文不等于产品批准，真实插件/协议/平台/设备用例均未执行。
+
+## 11. VLC扩展的采用与请求回执契约
+
+2026-10-29。本节采用第9.1节的固定VLC源补丁＋受限vendor桥作为`obs.vlc.playlist.item.play`的实现路线，关闭辅助接口、令牌去重及回执保留的设计缺口。OBS32.0.4／obs-websocket5.6.3为固定源码基线，补丁、实际LibVLC及两平台制品按DF05分别锁定。通过C12维护计划在OBS停止时安装并保留许可／源码交付，不远程替换运行中插件；机器生成、插件实现和运行验收后置，不能再把“尚未编译”当选型未定。设备效果／资源释放仍需独立资格，本节不批准缺少依据的完成结论。
+
+### 11.1 入口身份与严格消息边界
+
+**已知接口事实。** 固定obs-websocket vendor请求回调签名只有请求、响应和注册时的私有上下文，没有逐客户端会话身份参数。桥不能从request里的controller_id自证调用者，也不能把注册者的priv_data当远端会话。（来源：[obs-websocket5.6.3公开接口](https://github.com/obsproject/obs-websocket/blob/5.6.3/lib/obs-websocket-api.h)。）
+
+**本项目选择。** vendor名称固定`LeafSeamer.VLC`，协议`vlc-source/1`；只注册下表六种请求，不开放任意proc、vendor名称或原生函数透传。外层仍须正常OBS WebSocket认证；跨主机通过受控TLS入口，明文OBS WS只允许同机受保护回环段。GUI不直连该入口，Controller受监督OBS worker是唯一业务调用方。
+
+Suite在本机维护时配置BridgePairing：pairing_id、credential_id、完整Controller scope（authority_service_id／database_instance_id）、device_id、允许source UUID集合、状态和独立32字节随机MAC key。key不复用OBS密码或发行密钥，按DF06秘密存储规则分别装载，公开配置只存引用；配对／轮换／撤销没有vendor远程接口。OBS进程每次启动生成新的bridge_boot_id，每个VLC源创建生成新的source_instance_id；配置持久bridge_id与运行boot分开，旧源UUID重新创建也不能继承source_instance_id。
+
+GetBridgeInfo仅返回协议、bridge_id／boot_id、源扩展可用性和制品摘要，不含播放列表、宿主路径或秘密。CallVendorRequest.requestData采用仅一个envelope_json字符串字段，响应亦以该字段承载；桥对内层原始UTF-8字符串执行严格JSON解码，不能依赖obs_data_t已经转换过的字段证明无重复键或精确数字。GetBridgeInfo使用固定最小发现正文，其余请求使用闭合Envelope：protocol、bridge_id／boot_id、pairing_id、credential_id、controller_scope、device_id、sequence、request_type、payload、mac。sequence为严格U20、MAC为HMAC-SHA-256，输入是UTF-8 `LeafSeamer/VLC/request/1`、零字节及只排除顶层mac的完整JCS正文；固定32字节结果以小写64位hex编码并恒定时间比较。内层未知字段、重复键、非法数字／字符串、错源范围及旧boot均在入队前拒绝。原Envelope及MAC不得进普通日志，诊断只保留分类后的非秘密引用和错误码。MAC只证明已配对Controller来源，不代替Controller自身的人员／automation授权、当前Guard和唯一写闸。
+
+每pairing、bridge_boot的请求sequence共用递增水位，Controller在自己writer可靠预留后使用；source串行器认证后先保留新水位和写请求记录，才允许排队或调用LibVLC。较低／相等sequence只能返回仍保留的同摘要原选择收据，否则返回retired_sequence，绝不执行；同保留sequence异摘要为identity_conflict。只读请求也使用新sequence，但不增加设备写权；水位只拒绝再次进入的旧消息，不自动取消已经登记的队列项。高水位耗尽停止新请求，不回绕；源端水位是本boot内状态，重启必须换boot，旧消息不能进入新域。Controller恢复或更换库身份需重新本机配对，不能沿旧MAC身份假装同一权威。
+
+### 11.2 六个请求与领域映射
+
+| request_type | payload与结果 | 写入边界 |
+| --- | --- | --- |
+| GetBridgeInfo | 无payload；返回协议／运行身份与可用性 | 仅最小发现，不列目录或授予调用权 |
+| GetPlaylistSnapshot | source_uuid、source_instance_id，首次无cursor；后页仅opaque cursor；返回固定generation、list_digest、entry_count、entries、next_cursor、complete | 对应obs.vlc.playlist.read；分页读取不调用播放或改设置 |
+| SelectPlaylistItem | source绑定、expected_generation、expected_list_digest、entry_id、mode=start_from_beginning、原command_id／attempt_id／primitive_id和deadline_guard_ref | 对应obs.vlc.playlist.item.play；仅在Controller现有逐传输许可下调用，不能由分页或刷新触发 |
+| GetSelectionObservation | 完整SelectionToken及source_instance_id | 只读取既有收据与最新关联观察；无记录返回unavailable，不发设备动作 |
+| GetPlaybackObservation | source_uuid、source_instance_id | 当前观察及独立seq，token可空；不是旧命令补执行入口 |
+| AcknowledgeSelectionReceipt | SelectionToken、receipt_revision／digest、controller_record_ref | 仅证明Controller已持久保存指定收据，允许清理该版本；不是效果或资源释放命令 |
+
+SelectionToken为`{pairing_id,bridge_boot_id,sequence}`，sequence必须等于原Select请求sequence，不由调用方另造随机令牌；源和正文摘要由收据一起固定。原action的playlist_revision映射为expected_generation，item_ref必须含source_instance_id／generation／entry_id；裸数组index、路径／URL或旧selected不能形成可执行请求。源内部根据当前固定目录将entry_id解析为materialized_index；外部请求不携带该索引，不信任客户端传来的index。
+
+GetPlaylistSnapshot每页最多128项、编码后最多64KiB；超过字节预算提前结束一页但不得跳过未返回项。每源最多4096个物化条目，全部快照最多4MiB；source只保留一个当前generation的不可变条目映射，cursor绑定pairing／boot／source／generation／页位置，32随机字节，绝对30秒有效不续期。列表或设置改变立即使旧cursor失效，不能拼接新旧页。条目显示为ordinal及受权配置标签（每标签UTF-8≤256字节），不默认返回URL、文件路径、凭据或原始媒体元数据；无标签使用条目序号。超过条目／单项／总量上限明确拒绝，不能截断后标complete。
+
+所有普通请求／响应JSON最多64KiB，每pairing每秒最多32请求，源控制队列8项、设备未决选择32项、每源回执256项；按第9.2节保留未确认／未决记录，满时拒绝新Select，不能LRU删除unknown。队列入队到开始调用最多100ms，以源本机单调计数判断，未开始且超时记rejected_before_submit；开始调用后超时只能uncertain。该本机预算不证明满足Controller跨主机业务deadline，deadline_guard_ref只绑定原守卫；不能拿两机tick直接比较。Controller进入传输后仍按可能迟到的设备端在途处理。
+
+### 11.3 收据、事件与回收
+
+SelectionReceipt保留第9.2节身份，增加receipt_revision、request_digest、桥运行身份、completion_evidence_ref可空、release_evidence_ref可空及receipt_digest。result仍只有rejected_before_submit／submitted／uncertain；源端submitted不是公共Command succeeded。每次修订只追加新观察和引用，不替换原提交事实；无法唯一关联的PlaybackObservation令token、entry_id或playback_generation为空并标unresolved。播放代、目录代、收据revision及观察sequence分别计数，不互相充当版本。
+
+正常轨迹：Controller固定当前目录与Command／attempt→先可靠预留vendor sequence并准备固定包，再以T2消费预留并提交原传输intent→worker写闸消费许可→源核对MAC／boot／水位并登记SelectionToken→源串行器核对完整列表CAS→调用LibVLC一次→返回submitted收据→Controller同T6持久保存原件及关联→经后续具名完成政策裁决，再发送AcknowledgeSelectionReceipt。任何一次socket或请求返回成功都不跳过效果及释放核对。
+
+响应丢失后只发GetSelectionObservation，使用新查询sequence和原SelectionToken，不再次Select。源记录丢失、源销毁或OBS重启返回unavailable及当前boot，Controller保留原unknown与资源；新boot下查询不到不代表原动作未发生。断连不取消源已受理播放，不把查询包作为自动重试动作。源端可明确证明尚未调用时才给rejected_before_submit；解析错误、取消等待者或Controller本地超时不是这种证明。
+
+源可在收到精确ACK后回收对应已封存详情，但必须保留本boot的sequence水位；有未解决关联／回调或存在更新收据版本时不能回收。ACK旧revision仅确认旧版本，不删除新版本；ACK响应丢失可按同token／revision重复确认，不调用LibVLC。Controller的持久副本才承担跨OBS重启的命令历史，桥不把内存收据称为durable，也不保存重启后重放的控制队列。BridgePairing撤销阻止新调用并保留诊断事实，不自动停止正在播放的媒体。
+
+首期vendor广播事件只发`PlaybackChanged`提示，字段限定bridge_boot_id、source_instance_id和observation_seq，不含条目标签、token或路径。OBS其他订阅者收到提示不获得目录读权；Controller随后使用已认证GetPlaybackObservation拉取原件。事件缺失／重复／乱序不改变命令结果，不能用vendor事件的接收顺序伪造源端因果。
+
+### 11.4 回调身份与完成资格的界限
+
+物化occurrence对象与一次playback execution不是同一身份：同一条目重复播放时，媒体指针、路径和“最近Select”均不能给迟到Playing回调补request_token。源实现须给原生回调持有不可复用的执行上下文并核生命周期；不能携带执行上下文的引擎事件只作无关联观察。直接一次libvlc_media_list_player_play_item_at_index返回0只证明submitted，不证明该上下文已经playing。受控源的CAS及一次调用可以验证，但媒体引擎关联、音视频输出和未来无旧选择后效仍各需资格证据；实现发现公共回调不足时先保持unresolved，不能用时间延迟或同值状态补成true。
+
+人工控制的未知呈现及自动化完成要求沿F06与当前Command模型；本节不降低required动作的成功／资源证据。WING、VBAN及部分ATEM是否接受有条件部署资格另行记录决定，不能从本节的MAC或源内队列推导设备端排空，也不把候选profile写成已可上线。
+
+### 11.5 当前IPC采用与实施验收
+
+当前panel4／IPC0.14已包含具名`command__S9__TransportPacket`、PacketAckObservation及逐传输／FENCE关联，采用DF01第15节的这份输入，不再以第8节历史IPC0.3描述重新创建一套传输协议。上游ATEM适配仍须将所有初发和重传接到当前许可与唯一出口，真实ACK只更新传输事实，不提升效果；型号关联与释放政策仍是独立未决。
+
+SDK生成独立vlc-source/1消息与新公开播放列表DTO，Controller实现pairing秘密装载、sequence预留、受权代理和T6回执保存，Suite交付源补丁／桥／维护步骤，GUI只通过现有设备动作显示列表、submitted、unknown及关联结果。公开API不得透传MAC或OBS私有路径；旧panel4没有这些VLC具名模型，现有52帧设备IPC的数量不因vendor请求而增加。
+
+| 用例 | 实现后退出条件 |
+| --- | --- |
+| VAT49 | 错MAC／scope／source、旧boot、篡改payload、同sequence异摘要均在调用前拒绝；发现接口不泄露目录 |
+| VAT50 | 响应丢失后按原token查询，重复Select／回执回收后的旧序号／OBS重启均不再次播放 |
+| VAT51 | 重复URL、同条目多次播放、源销毁重建与迟到回调不借用新播放代；无法关联保持unresolved |
+| VAT52 | 列表换代使cursor与CAS失效，4096条／64KiB页／4MiB总量边界不假报完整 |
+| VAT53 | T6提交前不得ACK回收，旧revision ACK不删更新收据，满队列及未决回执不被挤掉 |
+| VAT54 | 广播提示不含目录和秘密；源内排队超时与已调用uncertain分开，断连不伪取消设备效果 |
+
+本节只关闭VLC辅助请求、授权、去重、保留与历史查询的设计；上述用例、真实插件及LibVLC回调均未运行。源端完成／释放资格、其余设备codec和跨域引用继续沿统一清单核对，未以此宣布C11或全系统设计完成。

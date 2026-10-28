@@ -309,3 +309,86 @@ execution受理与恢复预留时分别固定完整输入pin；由step_result传
 转换的exit／transition／enter及parallel全部required；简单sequence只有显式非required动作、明确failed、资源已clear、当前完整独立证明同时成立才可继续。证明覆盖全部后继的data／guard／resource及failure_writes，不只检查下一步；unknown／blocked／expired／cancelled及任何保护故障均不豁免。Literal中的同名键不改变摘要或proof识别，新增来源分支不扩展服务手动控制权限。
 
 SDK实现同版类型／摘要和完整生成，Seamer实现上述遍历、解析、索引与业务writer，Controller继续验证可信ExecutionBinding／准备／RunGrant及当前完整最终门控，C09数据源worker仅采集。验收加入仅guard引用、仅参数引用、step_result多跳、未选转换、历史execution／recovery、prepare响应丢失、来源换代与arm竞争、payload伪造同名键及超限全集；复用EX／EN／PFT原用例，不以另建局部参考包装作为实施前置。本轮未实现编译器、数据库业务事务或真实保护传播，C04其余跨域持久关联仍按统一清单核对。
+
+## 18. 组织运行批准与目标范围认可
+
+2026-10-29采用，落实[Q57](rebirth-design.md)、[DF06第11节](rebirth-df06-internal-trust-design.md#11-首期主体政策与身份权威定稿)及[准备契约](contracts/c04-preparation/README.md)。当前panel4的preparation__S0_ApprovalRef只有kind／scope／object_id／revision／digest，没有对应组织运行批准正文；GrantIntent只有裸principal_id，且其parameter_constraints引用带max_age_ms的观察Predicate而非命令参数限制。本节关闭这些关联缺口及人员管理入口，旧机器制品不暗改。ServiceApproval继续归签发Controller，RunApproval归Seamer，目标范围认可与实际RunGrant归各Controller；任何单个“批准”标签都不代表设备ready。
+
+### 18.1 不可变正文及独立状态
+
+以下正文使用SDK具名类型、严格U20、规范JCS及sha256摘要；Ref摘要覆盖完整正文，正文不包含引用自身的Ref或自身digest。首次生成的对象revision为1；正文不可原地改，修改内容或延长期限创建新proposal、endorsement和approval身份，旧引用不改写。revoked／expired不复活，replacement_ref只关联新对象，不更改原终态。对象状态另由带status_revision的View表达，不能用状态修订重算原正文Ref。所有数组按具名完整身份排序且唯一，不按显示名去重。
+
+| 对象／权威 | 完整字段组与用途 |
+| --- | --- |
+| RunApprovalProposal，Seamer | scope、proposal_id、revision、run_id、definition_id／definition_version、artifact_ref、program_digest、bindings_digest、dependency_footprint_ref、service_principal、source_service_approval_ref、controller_targets、validity、proposed_by、created_authentication_ref。每target包含controller_scope、device_actions、parameter_constraints；来源ServiceApproval引用只记录批准来源，运行时还核当前交集 |
+| RunApprovalEndorsement，目标Controller | scope、endorsement_id、revision、proposal_ref、origin_scope、run_id、service_principal、controller_target_digest、device_actions、parameter_constraints、validity、endorsed_by、authorization_basis_refs、created_authentication_ref。对固定proposal与本Controller目标范围的组织认可，不是RunGrant、prepare回执或发送许可 |
+| RunApproval，Seamer | scope、approval_id、revision、run_id、proposal_ref、artifact_ref、program_digest、bindings_digest、dependency_footprint_ref、service_principal、source_service_approval_ref、controller_endorsement_refs、validity、approved_by、approval_operation_id、created_authentication_ref。controller_endorsement_refs完整覆盖proposal中的Controller集合；纯无设备定义允许两者均为空 |
+| RunApprovalView／EndorsementView，原authority | object_ref、status_revision、state、replacement_ref或null、revocation_operation_ref或null、current_eligibility、reason_code或null。state为active／revoking／revoked／expired；current_eligibility为eligible／blocked／unavailable，只表示本对象当前核验，不证明全系统可执行 |
+| RunApprovalOperation，实际受理authority | scope、operation_id、kind、request_identity、request_digest、run_id、proposal_ref、approval_ref或null、endorsement_ref或null、state、targets、result_ref或null、reason_code或null。kind为approve／revoke_approval／revoke_endorsement；state为accepted／applying／applied／indeterminate，targets逐服务保存target_scope、purpose（close_controller／notify_seamer）、state（pending／applied／indeterminate）及receipt_ref或null；approve种类targets为空，逐目标认可放在批准正文中 |
+
+Principal一律是issuer_id／issuer_epoch／principal_id完整身份；proposed_by、endorsed_by、approved_by是当次当前human，service_principal必须是与origin_scope绑定的已配对Seamer专用service。created_authentication_ref和authorization_basis_refs指向受限审计原件，公开View只给获授权引用，不返回token、session秘密或认证快照原文。
+
+proposal的controller_targets由可信编译器遍历完整固定artifact、所有状态／分支／动作及第17节依赖足迹，不能只看本次选中路径。每Controller最多256项device_actions及64项parameter_constraints，总Controller最多256；超限整项拒绝，不遗漏未来分支。device_actions沿现有DeviceActionScope及精确能力版本，参数限制改用下述ActionParameterConstraint，不支持任意脚本或宽泛通配。动态参数必须在发布Schema及批准参数限制内，每次受理和最终发送再次核验；批准不把未知未来参数自动变成允许。proposal／endorsement／approval的validity使用新具名RunApprovalWindow，仅含有限not_before／not_after并要求not_before<not_after，由DF06认证时钟严格判断；不借业务NTP或浏览器时间延长。
+
+**参数限制的类型裁决。** 旧preparation__S3_Predicate含device_id、field、operator、value、max_age_ms，属于观察条件，不能靠字段名parameter_constraints解释成命令参数授权。新`ActionParameterConstraint`封闭包含device_id、action_id、capability_version、parameter_pointer及rule；parameter_pointer为动作参数内的规范JSON Pointer，无通配，须在固定能力Schema中可定位。rule为封闭三分支：`{kind:"equals",value}`含完整Schema合法JSON值；`{kind:"one_of",values}`含1—128个JCS互异的合法值；`{kind:"range",minimum,maximum}`含有限数值边界，闭区间且minimum≤maximum，只适用于能力声明的有限数值参数，单位／量化仍由能力规定。分支禁止混字段，不作字符串转数字、默认值补齐或布尔转换；缺路径拒绝该动作。equals／one_of的单值上限64 KiB，整体仍受1 MiB批准正文预算。−inf、mute及带标签值可按其原Schema精确匹配，不能塞进有限range。
+
+同目标／Pointer多个条件按交集处理，不按数组后项覆盖；不同Controller同名device_id不合并。controller_constraints请求项固定controller_scope和constraints数组，必须精确指向编译足迹内动作；未提供限制只表示仍受能力及当前组织／本地权限边界约束，绝不等于绕过它们。目标认可时对本地可授限制做保守包含证明：有限集逐值验证，闭区间比较同类型／同单位边界，组合按固定Pointer的合取；对象父子约束或其他形式不能证明包含时拒绝，不假定Schema等价。空交集或范围不被本地人员／服务政策覆盖时整项拒绝，不静默裁剪批准范围。运行时再核全部原条件及当前授权交集，静态包含证明不代替实际参数验证。
+
+新类型同步进入proposal、endorsement、RunApproval所引用范围、GrantIntent、RunGrant、本地可授策略、授权使用证据及最终参数检查；同一选择只有一个具名定义。原Predicate继续用于观察／guard并保持max_age语义，不给旧运行资料重算摘要。SDK生成明确迁移，不接受两种parameter_constraints联合而让调用者任选较宽分支。
+
+### 18.2 提案、逐目标认可与人员批准
+
+1. 人员在Seamer创建proposal，提交已发布artifact、预期run修订、目标服务主体及请求的有限窗口／按controller_scope分组的参数限制。Seamer核当前run.approve和对象范围，读取原发布产物与完整依赖生成真实目标集合；主体批准不能覆盖或版本／绑定不一致时拒绝。浏览器不能上传一个删去设备的“编译结果”。创建proposal只冻结审阅输入，不更改run、当前approval或布防状态。
+2. GUI分别向目标Controller提交proposal_ref，以该目标audience的人员凭据、近期认证、grant.manage及精确设备／动作／参数范围请求endorsement。Controller通过已配对Seamer的受保护内部读取获取proposal原件、重新核scope／摘要／服务身份／完整本地目标，与本地当前可授范围及有效窗口逐项比对；任何缺项或超权整项拒绝，不裁剪后仍引用原proposal。不同目标可由各自有权人员认可，不能由Seamer冒充他们签发。
+3. 目标writer在同一事务保存不可变endorsement、当前状态、原请求唯一结果、授权审计、历史目录及通知。相同proposal／本目标／固定内容只能有一个当前有效认可；重复请求返回原结果，已撤或过期的认可不复活，需要新proposal。认可本身是有限组织授权，人员退出／会话到期／停用不自动撤销；实际服务批准、本地组织策略或该认可被撤则独立保护。
+4. 人员在Seamer提交固定proposal及完整endorsement_refs。Seamer核当前人员run.approve、近期认证、expected_run_revision及expected_prior_approval_ref，逐目标通过固定配对通道取原件和当前状态；检查每项归属、同proposal、完整范围和窗口。无可靠当前证据不得批准；异步读取不放进本地writer事务，提交时复核本地版本及证据有效界。批准事务保存新RunApproval、当前指针、结果、审计／目录／outbox，并增加run revision，使旧preflight失效。相同proposal只产生一个approval身份。
+5. 跨服务不是原子提交。Seamer的applied只证明本地批准已持久化，不能宣称各目标仍可用；远端认可在读取后被撤，后续prepare／派发按目标当前状态拒绝并保护。部分认可或响应丢失只查原记录，不替其他目标认可，不自动布防。没有最终Seamer批准，任何孤立endorsement都不能签发RunGrant。
+
+新批准或替换批准只在run处于disarmed或paused、没有活动执行／待决arm或recovery、旧代次全部准备已关闭且相关资源已核对时提交。替换先明确撤销旧批准并完成固定目标传播，再批准新proposal；不存在热替换批准使旧执行悄悄扩大范围的路径。紧急撤销随时允许，不等待资源clear；恢复、补偿及未知核对另行处理。人员批准后仍须另行preflight／arm，服务不能调用这些人员动作；批准者离职只提示维护责任交接，不静默改approved_by或转移授权。
+
+### 18.3 管理与内部读取接口
+
+以下为新选择生成输入，均返回no-store。公共管理写以context_id引用本authority的RequestContext，并携带idempotency_key；本节独立去重键固定`(authority_service_id,database_instance_id,issuer_id,issuer_epoch,principal_id,request_epoch,operation,idempotency_key)`，context_id用于当前身份／范围／期限核验，不进入该键。request_digest覆盖operation、规范路径与完整语义body，仅排除顶层context_id及idempotency_key；不递归删除同名参数。先在当前读权下查同键结果，异内容409；新操作才做CAS。context过期／请求域关闭不能创建新动作，同键查原不恢复旧资格。
+
+| authority／方法与路径 | 输入、权限及结果 |
+| --- | --- |
+| Seamer POST `/api/v1/runs/{run_id}/approval-proposals`，createRunApprovalProposal | context_id、idempotency_key、expected_run_revision、artifact_ref、service_principal、validity、controller_constraints；human＋run.approve＋近期认证；201返回完整proposal及Ref |
+| Seamer GET `/api/v1/approval-proposals/{proposal_id}`，getRunApprovalProposal | run.read及对象范围；返回固定proposal，不重新编译／抓源 |
+| Controller POST `/api/v1/run-approval-endorsements`，endorseRunApproval | context_id、idempotency_key、proposal_ref；human＋grant.manage＋近期认证及本目标范围；201返回EndorsementView及原件Ref，不含设备许可 |
+| Controller GET `/api/v1/run-approval-endorsements/{endorsement_id}`，getRunApprovalEndorsement | grant.read及对象范围；返回EndorsementView及允许读取的完整正文 |
+| Seamer POST `/api/v1/runs/{run_id}/approvals`，approveRun | context_id、idempotency_key、expected_run_revision、expected_prior_approval_ref或null、proposal_ref、controller_endorsement_refs；human＋run.approve＋近期认证；202返回RunApprovalOperation |
+| Seamer GET `/api/v1/runs/{run_id}/approval`，getCurrentRunApproval | run.read；返回RunApprovalView及正文，尚未批准为明确null，不虚构默认active |
+| Seamer GET `/api/v1/run-approvals/{approval_id}/revisions/{revision}`，getRunApprovalRevision | run.read及原对象范围；不可变正文，历史可读不代表当前有效 |
+| Seamer POST `/api/v1/run-approvals/{approval_id}/revoke`，revokeRunApproval | context_id、idempotency_key、approval_ref、expected_status_revision、reason；human＋run.approval.revoke＋近期认证；202返回保护传播操作 |
+| Controller POST `/api/v1/run-approval-endorsements/{endorsement_id}/revoke`，revokeRunApprovalEndorsement | context_id、idempotency_key、endorsement_ref、expected_status_revision、reason；human＋grant.revoke＋近期认证；202返回本目标保护及通知操作 |
+| 两服务 GET `/api/v1/run-approval-operations/{operation_id}`，getRunApprovalOperation；POST `/api/v1/run-approval-requests/lookup`，lookupRunApprovalRequest | 当前领域读权＋对象范围；lookup只接受原完整请求身份，不创建新管理请求。返回原操作／受理结果或明确unknown，unknown不是可重发证明 |
+| Seamer GET `/internal/automation/approval-proposals/{proposal_id}`，readApprovalProposal；GET `/internal/automation/run-approvals/{approval_id}/revisions/{revision}`，readRunApproval；GET `/internal/automation/run-operations/{operation_id}`，readRunInitiator | 仅proposal／approval目标中的已配对Controller，automation.prepare.read；分别返回原件及当前状态，或与当前prepare绑定的生命周期原件及人员发起者审计引用。按DF06当前用途和响应释放门核验，不开放公共代理 |
+| Controller GET `/internal/automation/run-approval-endorsements/{endorsement_id}`，readRunApprovalEndorsement | 仅原origin_scope的配对Seamer，automation.prepare.read；原件及本地当前状态／拒绝下界，不允许任意Seamer枚举 |
+| Seamer POST `/internal/automation/run-approval-endorsements/{endorsement_id}/revoked`，notifyRunApprovalEndorsementRevoked | 仅原目标Controller的automation.protect；输入endorsement_ref、原Controller撤销操作Ref、proposal_ref及固定拒绝修订，核原件后持久拒绝该proposal的新批准并关闭所有已派生approval／运行目标，返回持久通知receipt；不凭客户端自报revoked撤别的目标 |
+| Controller POST `/internal/automation/run-approvals/{approval_id}/revoke`，applyRunApprovalRevocation | 原Seamer的automation.protect；输入固定revocation_operation_ref、approval_ref、endorsement_ref、本目标完整preparation／grant／代次引用及request_digest；本地先持久拒绝该approval，再按已有RUN_FENCE关闭匹配资格；202及可查原receipt |
+
+认可撤销通知以(Controller scope,原撤销操作Ref,endorsement_ref)唯一，同键异内容拒绝，重送只返回原持久receipt；通知已提交但响应丢失不创建第二次保护。内部撤销以`(origin_scope,revocation_operation_ref,controller_scope)`唯一；同身份异内容拒绝，重送只返回原记录。原结果由GET `/internal/automation/run-approvals/{approval_id}/revocations/{revocation_operation_id}`（getRunApprovalRevocationReceipt）查询，实际配对origin及原完整操作Ref共同核验；请求与回执包含原完整目标集合及pending／applied／indeterminate，不因断线删目标。接收方可从本地账本扩充遗漏的匹配准备以保护，但必须记录发现，不按来报空集合直接applied。新数据域或不能证明退役旧域时不以404结束传播。
+
+公共401／403按身份／范围，404隐藏不可见对象，409同键异内容或状态冲突，412预期修订／批准前提失效，413大小，422非法范围／窗口，429额度，503认证／权威／关键持久化不可证明。批准新权限不从definition.edit或管理员显示名推导。每份proposal及endorsement／approval公开正文上限1 MiB，超过目标项／字节预算整项拒绝；内部原件按同一上限，不能缩减后重算摘要假装原件。创建与保护查询沿现有独立容量路径，真实负载验证后才宣称该profile适用于发行。
+
+### 18.4 准备、派发与撤销关联
+
+下一完整选择将GrantIntent的裸principal_id替换为完整`principal`，必须逐项等于proposal、RunApproval、endorsement和实际服务认证主体；RunGrant的issuer／principal由目标根据实际已认证服务及指定签发者记录填写，不能由请求自报或把本地Controller身份替代主体签发者。GrantIntent继续使用既有Validity，其not_before／not_after必须在RunApprovalWindow内，authorization_policy_revision取目标当前本地授权政策且prepare同writer再次比对；该政策修订不属于跨目标共享窗口，也不把它与任何expires_at字段混用。现有PrepareRequest.approval_ref固定指向本节RunApproval正文；其artifact／run／definition／origin_scope、grant_intent的全部device_actions／ActionParameterConstraint必须与本目标endorsement逐项一致，validity的时间窗必须落在其完整批准窗口内，不用相同digest字符串替代解析与当前授权。
+
+生命周期原件增加不可变initiator（完整human Principal）及initiator_authorization_ref，由Seamer从本次真实arm／resume认证写入，不能接受GUI或service自填。目标Controller在prepare时经readRunInitiator取得与operation_ref同一原件，核签发者当前资格及本地对应运行／设备范围；Seamer自己的run.arm／run.resume权限也仍核验。这次权威核验使用真实生命周期原件及签发者／本地人员权限提供者，不把PrepareRequest中的人员字段当认证证明；相关当前使用证据归已有DF06授权来源链。当前布防／恢复发起者不能借另一个人的历史批准授出自己没有的范围。批准、认可及布防的人员身份分别记账，不把三者混成service_principal。
+
+Controller创建grant前在同writer重核本地endorsement未撤／未过期、实际配对Seamer、原approval及当前服务授权、本地策略、完整目标和控制前提；新RunGrant正文增加approval_ref及endorsement_ref，旧原件不补字段；本地Grant登记真实两个引用，grant／PreparationReceipt／审计／目录一次提交。current证据取值沿DF06有界查询与释放规则，不能从成功读取开始无限缓存。最终每次派发再核当前grant／认可拒绝下界和授权交集；RunApproval不是绕过holder、ready、资源、时间或最终permit的独立发送许可。
+
+人员退出／会话过期／停用不撤已成立的组织批准、endorsement和健康运行grant；后续自动派发核当前专用service及组织资格，不连续要求历史approved_by／endorsed_by／initiator会话在线。新的arm／resume仍需新的当前人员动作与权限，不能复用旧人员认证引用。服务批准减权、本地目标收权、组织批准／认可到期或显式撤销则按Q57停止相关新派发、失效待发并解除布防，在途及unknown保留。
+
+Seamer撤销先在本地writer永久拒绝approval身份、关闭本run新准备／执行资格，捕获proposal全部目标加既有prepare／grant／历史执行pin的并集，保存RunApprovalOperation及完整保护outbox。目标即使尚无grant也持久拒绝该approval_ref，防止撤销先到、迟到prepare重新签发；不得用旧RevocationSelector的grant字段冒充尚不存在的grant。每目标完成本地拒绝、实际RUN_FENCE及持久receipt后才applied，全部原目标完成才全局applied。认可单侧撤销先保护本地匹配grant，再通知Seamer关闭该批准及完整运行目标；通知未知保留indeterminate，不能声称其他目标也停了。
+
+到期在每次使用时比较认证区间，后台任务仅补持久传播，不是唯一失效机制；过期不可因时钟回拨恢复。批量撤销人员关联自动化沿这些明确approval操作逐项提交，不依赖人员停用事务成功后全体自动撤权。更换来源、定义版本、动作范围、参数条件或有效窗口均新proposal并重新认可，旧Ref／拒绝下界／在途账本不会迁入新对象。
+
+### 18.5 持久与验收出口
+
+Seamer产品库保存proposal正文、approval正文及独立状态／当前run指针、proposal到approval唯一关联、管理去重／operation、完整目标和保护outbox。Controller保存endorsement正文／状态、proposal与本目标唯一关联、approval拒绝记录、grant到approval／endorsement强关联及撤销receipt。所有新增原件与各自状态、去重、审计和C05目录在所属writer同事务；远端引用不伪造跨库外键。提交未知查原，不能先返回201／202再补认可或目录；关键记录丢失保持保护。
+
+原子写集归入DF04：Seamer批准提交增加run revision并失效旧preflight；撤销的本地拒绝／固定目标／outbox同写；Controller endorse与自身权限切点同写，grant与认可／拒绝状态同一准备事务核验；认可撤销与本地grant拒绝／保护意图同写。恢复旧库更换scope，旧proposal、认可和批准只作历史，不由改JSON的scope复活；要在新域运行须重新批准并处理旧域残余。
+
+此节完成正文、人员／内部API、全部目标关联、身份／期限及失败处理的设计，SDK统一生成、服务writer与GUI批准页转实施，不再新建同义批准参考包。验收必须覆盖无设备定义、未选分支含设备、同principal_id不同issuer、错误Seamer、少／多endorsement、超出ActionParameterConstraint、人员退出后健康自动化继续、新arm仍需当前人员权限、纯服务增权不扩旧批准、部分认可／撤销、先撤后prepare、批准／准备与收权交错、COMMIT未知、过期回拨、跨库恢复及资源unknown不可替换批准。当前没有运行以上产品／数据库／设备用例，C04其他关联及整体阶段0仍按统一清单核对。

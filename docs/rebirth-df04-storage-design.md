@@ -364,3 +364,23 @@ Controller持久拒绝与Seamer持久暂停不构成跨库原子事务；P1先�
 历史namespace归属证据和当前权限分别取证。namespace关闭永久阻止新accepted，但保留当前有权的查原/拒收；备份恢复使用新scope并保留旧历史，不能修改库身份伪造原目标的永久拒收。所有墓碑暂不GC，完整归档替代证明未冻结前禁止删除。通知只发布事实，不能作为设备写重传队列。
 
 159项内存SQL检查验证缺写不能提交、主动异常全表回滚、两裁决顺序、身份/关联错配、关闭与删除保护。BODY/授权/JCS仍为合成占位，检查不证明真实writer、并发、WAL或掉电；本候选不是全部Controller执行/保护DDL或已发布迁移。C04身份列、SDK同版归并和生产提供者继续待完成。
+
+## 18. 组织运行批准的产品写集
+
+采用[C04第18节](rebirth-c04-automation-design.md#18-组织运行批准与目标范围认可)的不可变正文和独立状态，不复用身份ServiceApproval表来承担RunApproval。下表是产品迁移及writer的明确约束，不是已执行DDL或新增隔离数据库；所有远端Ref保留原authority／database／revision／digest，本地事务不能声明跨库原子。
+
+| 所有者／写集 | 必须一起提交的内容与唯一约束 |
+| --- | --- |
+| Seamer提案 | proposal正文／摘要、固定run和artifact／完整足迹、原管理RequestKey结果、审计及C05目录版本；RequestKey唯一，同键异内容拒绝，失败不留下可被认可的半个proposal |
+| Controller认可 | endorsement正文／摘要、当前状态、真实人员与本地可授范围证据、原RequestKey结果、审计／目录／通知；同proposal_ref与本controller_scope最多一个有效endorsement，拒绝记录不因新请求键消失 |
+| Seamer批准 | RunApproval正文及状态、proposal→approval唯一关联、run当前approval指针、run revision递增及旧preflight失效、RunApprovalOperation、去重结果、完整认可引用、审计／目录／outbox；当前指针每run至多一个，CAS包含原run修订及原approval_ref |
+| Controller准备 | 既有prepare／grant／receipt事务内读取认可状态、approval拒绝及当前政策，RunGrant正文与本地endorsement强关联，approval_ref／endorsement_ref及真实服务主体纳入grant摘要；本地FK绑定本地原件，远端批准由已核验原件及完整Ref绑定，不造远端FK |
+| Seamer撤销 | approval永久拒绝／状态、run新工作关闭、proposal全目标与已登记prepare／grant／旧执行pin并集、完整operation targets及保护outbox、审计／目录；空的当前grant列表不能缩成零传播目标 |
+| Controller批准撤销 | 原Seamer撤销身份唯一登记、approval_ref拒绝墓碑、所有本地匹配准备／grant失效及RUN_FENCE意图、receipt状态、审计／目录／outbox；先到撤销也持久占位拒绝，没有grant不等于可以忽略 |
+| Controller认可撤销及Seamer通知 | Controller同writer写认可拒绝、匹配grant保护及通知固定原件；Seamer以原Controller scope／撤销操作Ref／endorsement_ref去重，同writer拒绝该proposal新批准并保护全部已派生approval／run，重复通知只返回原receipt |
+
+批准／认可的不可变BODY与独立status_revision不可互相覆盖；状态终结、replacement引用及当前run指针分别存储。管理Key按C04新定义，不能照搬本稿第3节历史context参与唯一键的旧字典。人员认证引用是当次操作审计，运行检查不能用外键级联删除把人员停用变成组织批准撤销。ServiceApproval／本地政策变化按独立拒绝及当前交集处理，纯增权不扩大旧批准正文。
+
+实际发送与撤销仍在同一目标writer／最终Gate排序，HTTP返回receipt不等于worker已停；applied由已完成的本地拒绝、RUN_FENCE和持久回执共同证明。原件或拒绝账本不明时保护，COMMIT未知查原，不先响应成功再补目录／outbox。旧域备份恢复保留历史和deny证据，新scope重新批准；任何未核销、unknown或恢复pin存在时不清理这些记录。
+
+SDK生成和产品迁移按上述唯一键及写集一次接入原服务库；新增验收为逐写失败全事务回滚、并发批准CAS、认可撤销与prepare排序、撤销先到、COMMIT观察丢失、重复通知、人员停用不级联及恢复新域拒绝旧资格。当前未执行这些产品SQL／进程／平台检查，不能引用早期局部SQL报告作为本节通过证据。

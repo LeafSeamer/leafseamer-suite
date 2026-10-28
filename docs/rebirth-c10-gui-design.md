@@ -201,7 +201,7 @@ GUI状态由服务端快照和有序增量驱动。以下为展示职责，精�
 | 数据源、导入与排期草稿 | C06 SourceConfigRevision／ImportSnapshot／ImportDiff、排期草稿／发布版本；sources投影仅运行来源，不是配置列表 | C06 SCH06的创建／配置、捕获、apply、publish／activate；来源只读不意味着任何人可配置凭据或应用差异 | SCH06及第9节读取待生成 |
 | 场次及播出投影 | schedule_activations／occurrences集合；C06 occurrences详情 | C06 preflight／arm／disarm、场次cancel／replay；明确新场次和原关联，时间恢复不补发 | 快照现有，C06路由待生成 |
 | 人员、服务身份及配对 | getSubject与DF06 PrincipalView、ServicePrincipal、Credential／Pairing脱敏引用 | DF06身份生命周期接口、管理权限及近期认证；真实凭据仅规定的首次交付，GUI不扮演service | DF06第9／14节待生成 |
-| 组织运行授权、撤销进度 | getRun及授权关联、getRevocation逐目标结果 | revokeAuthorization；Controller的updateRunGrant是配对Seamer通道，GUI不能直接调用或借service凭据。授权管理另按DF06完整主体规则 | 撤销现有；读取按DF06第14节待生成，运行批准发放见11.4 |
+| 组织运行授权、撤销进度 | getRun及授权关联、getRevocation逐目标结果 | revokeAuthorization；Controller的updateRunGrant是配对Seamer通道，GUI不能直接调用或借service凭据。授权管理另按DF06完整主体规则 | 撤销现有；读取按DF06第14节、批准管理按C04第18节待生成 |
 | 扩展安装、批准和角色 | getExtensionSlot／getExtensionInstallation／getExtensionOperation | stageExtension／approveExtension／resolveExtensionRoles／reviewExtensionPermissions／planExtensionChange及slot生命周期；导入原包走受权本机工具，浏览器不直连import IPC | 详情及操作现有；列表按C09第21节待生成 |
 | 兼容编辑器与第三方面板 | C09 Registry／动态Schema／授权投影，精确artifact和PanelSession | 宿主调用createPanelSession及握手／确认／请求／订阅接口，面板只走具名port方法；不得拿服务token | 现有＋C11采用资产待实现 |
 | 图文输出入口 | C12选定OutputSnapshot、批准的无管理秘密URL、renderer诊断 | 三路只读输出与控制／编辑登录分开；缺配置显示未配置，不开放原NodeCG端口 | C11／C12待生成与实现 |
@@ -230,8 +230,8 @@ registry-map的12类集合逐一分配：devices／catalogs／observations用于
 本节关闭的是核心设备、控制、命令、定义、运行和恢复页面的字段／枚举／查询绑定冲突；不宣称C10全部完成。以下是仍需在原所属专题定稿的有限缺口，不能推给组件实现时猜测，也不另建候选体系：
 
 1. **受权历史检索，设计已关闭**：[C05第18节](rebirth-c05-event-sync-design.md#18-受权历史与管理目录读取)固定各authority的listOperationHistory、领域locator、同writer目录版本、分页cut、当前授权及保留语义。SDK和服务据此实现，刷新后查询原身份；归档或缺失仍显示无法确认，不承诺任何历史都永远可取，不用重发补足。
-2. **管理读取已关闭，运行批准写入仍未决**：[DF06第14节](rebirth-df06-internal-trust-design.md#14-身份配对与运行授权的管理读取)和[C09第21节](rebirth-c09-extension-design.md#21-扩展目录读取)固定主体／服务／配对／凭据／RunGrant及安装目录的路由、脱敏字段和当前对象权限。ServiceApproval与Controller RunGrant不能替代Seamer运行批准；后者的正文、人员批准／修订／撤销入口、CAS和查原仍须C04定稿，GUI不得直接updateRunGrant。
+2. **管理读取与运行批准，设计已关闭**：[DF06第14节](rebirth-df06-internal-trust-design.md#14-身份配对与运行授权的管理读取)和[C09第21节](rebirth-c09-extension-design.md#21-扩展目录读取)固定管理目录；[C04第18节](rebirth-c04-automation-design.md#18-组织运行批准与目标范围认可)固定proposal、逐Controller范围认可、RunApproval及其撤销。GUI先展示编译的完整设备／动作／参数限制和有限窗口，由各目标有权人员认可，再提交完整引用集合批准；部分认可不显示可布防。批准后独立preflight／arm，旧批准替换须先完成撤销和相关核对。详情分开显示Seamer批准与目标认可／真实grant，不直接updateRunGrant；失败和刷新按lookupRunApprovalRequest查原。
 3. **排期未激活对象，设计已关闭**：[C06第9节](rebirth-c06-schedule-design.md#9-未激活排期来源和导入的读取契约)固定来源配置、导入历史、排期草稿列表及详情、差异和固定版本查询；现有sources／schedule_activations只承担运行投影，新路由由SDK生成。
 4. **维护管理契约**：C12／DF04／DF05已经定义备份、恢复与安装切换规则，但尚未给出GUI到所属本机维护工具／服务的完整请求、脱敏状态和查原契约。须确定远程GUI可做与本机管理员必须做的动作边界及认证失效时入口；不能把操作系统管理员恢复入口偷换成在线GUI特权。人工发行时间选择仍独立等待决定。
 
-目前剩余运行批准管理与维护管理两项具体接口缺口；上述已关闭读取设计转入实现，不再因生成器或组件未写重开。它们不重开已采用的人员手动政策、三人发行阈值、React／Vite、NodeCG接入和12类投影。SDK生成与客户端适配、GUI组件和双语资源、服务真实字段提供者属于实现；UIT01—UIT40及A17／A18为实现后验证，当前均未执行。进入实现仍以统一收敛清单阶段0为准。
+目前剩余维护管理这一项具体页面接口缺口；上述已关闭读取设计转入实现，不再因生成器或组件未写重开。它们不重开已采用的人员手动政策、三人发行阈值、React／Vite、NodeCG接入和12类投影。SDK生成与客户端适配、GUI组件和双语资源、服务真实字段提供者属于实现；UIT01—UIT40及A17／A18为实现后验证，当前均未执行。进入实现仍以统一收敛清单阶段0为准。

@@ -1,9 +1,9 @@
-# C10：GUI 操作、状态投影与恢复交互候选
+# C10：GUI 操作、状态投影与恢复交互
 
 - 日期：2026-10-18（Asia/Tokyo）；责任仓库：GUI，依赖SDK、Controller、Seamer及Suite。
 - 已确认约束：Q3／Q69统一网页操作台、完整简中和英文；Q42／Q47单持有人和持久接管；Q55—Q57身份及组织授权；Q71完整NodeCG兼容。用户要求先完成全部系统方案，再进行业务实现。
 - 已知事实：[draft.4模型](contracts/draft4/first-loop.schema.json)分别定义命令、控制记录及恢复操作；[F02／F03](rebirth-f02-f03-design.md)区分接管effective和gate ready；[C05](rebirth-c05-event-sync-design.md)要求完整快照交接；[C09](rebirth-c09-extension-design.md)限定面板委托；[C11图文](rebirth-c11-nodecg-design.md)、[视频](rebirth-c11-obs-atem-design.md)、[音频](rebirth-c11-audio-design.md)分别限定设备证据。
-- 本文分析与推荐：UI01—UI07均为待审阅候选。只设计交互、数据绑定、故障时序及验收；未实现网页、SDK或服务，未修改draft.4／IPC 0.3。客户端展示状态不新增服务端命令终态，也不构成授权证据。
+- 当前采用状态：UI01—UI07的交互规则结合第11节的当前契约绑定作为首期实现输入；旧字段与现有选择冲突时按第11节裁决。剩余具体接口缺口见第11.4节，不再将全部交互笼统列为待审阅。未实现网页、SDK或服务，未修改历史机器制品；客户端展示状态不新增服务端命令终态，也不构成授权证据。
 
 ## 1. UI01：入口、身份及工作台
 
@@ -19,15 +19,15 @@
 
 ## 2. UI02：权威投影、命令和未知结果
 
-GUI状态由服务端快照和有序增量驱动。以下为客户端视图字段，不接受客户端将其上传为可信状态；字段名在实现前随SDK视图模型固定。
+GUI状态由服务端快照和有序增量驱动。以下为展示职责，精确字段路径和原件类型按第11节绑定，不另定义同名平铺DTO，不接受客户端将其上传为可信状态。
 
 | 投影 | 必要来源／字段 | 展示及更新规则 |
 | --- | --- | --- |
 | 服务视图 | service_id、实例世代、协议／组合版本、同步scope、stream／epoch、cursor、authorization revision | 按C05完整Manifest、页数／对象数／digest交接；各服务独立水位，不能拼成跨服务原子快照 |
 | 设备视图 | device_id、目录及能力revision、Observation及质量、ControlRecord、当前相关CommandRecord | 目标值、设备最后观察和命令证据分开；仅设备可达不代表允许写入 |
-| 命令视图 | command_id／revision、phase／outcome、effect_status、completion.required／achieved、resource_status、reason_code、resolution及证据引用 | 按下表组合展示；未知终态只追加核对，不回改成功；隐藏无权限的证据内容 |
+| 命令视图 | command_id／revision、state.phase／outcome／effect_status／resource_status／reason_code／resolution_ref、completion.required／achieved及证据引用 | 按下表组合展示；未知终态只追加核对，不回改成功；隐藏无权限的证据内容 |
 | 控制视图 | ControlRecord的control_epoch／effective_version／holder／mode／pending_change／gate_state及在途、未决列表；ControlOperation | operation历史成功不能覆盖更高版本的当前持有人；服务重启／epoch改变需重新建立baseline |
-| 恢复视图 | RecoveryPreview的snapshot／plan／observations及RecoveryOperation.targets | 显示计划、跳过原因和逐目标结果；不把preparing或ready翻译为恢复完成 |
+| 恢复视图 | lifecycle__RecoveryPreview的baseline／plan／unresolved_command_refs及LifecycleOperation.targets | 按证据引用读取获授权详情，显示计划和逐目标结果；不把preparing或ready翻译为恢复完成 |
 
 | 真实协议状态 | 推荐中文展示 | 禁止推断 |
 | --- | --- | --- |
@@ -57,7 +57,7 @@ GUI状态由服务端快照和有序增量驱动。以下为客户端视图字�
 | rejected／indeterminate | 显示原因和查询入口；不凭本地超时取消请求、抢占或回到automatic |
 | 释放手动控制 | 独立明确操作，经服务确认更新；不等于恢复暂停run，不补发旧自动化 |
 
-正常转交使用现有TransferOffer的transfer_id、device_id、from_principal_id、target_principal_id、expected_control、expires_at及state（offered／accepted／expired／cancelled），由当前持有人发起，对方在自己的可信宿主UI接受。接受前原持有人仍有效；接受时服务端再次检查双方授权和版本，经屏障／持久化切换后旧待发失效。在途仍列出，转交不是取消。过期或版本冲突的邀请不能复活；accepted不等于ControlOperation已effective，更不等于设备ready。offer_ttl_ms已有请求字段，下一版仍须明确授权主体完整身份、权威到期判定及接受后operation的可查询关联，不能只靠前端弹窗实现Q42。
+正常转交绑定`control__TransferOffer`的transfer_id、scope、device_id、revision、完整from_principal／target_principal、expected_control、lifetime、state和accepted_operation_id。Principal含issuer_id／issuer_epoch／principal_id，禁止只比较principal_id。邀请由当前人员持有人发起，对方在自己的可信宿主UI接受；请求offer_ttl_ms只表达申请时长，权威期限为服务返回的Lifetime。Lifetime含clock_domain_id／descriptor_digest／issued_tick_ns／expires_tick_ns，不换成浏览器UTC到期判定。接受前原持有人仍有效；接受时再次核查双方授权和版本，经屏障／持久化切换后旧待发失效。在途仍列出，转交不是取消。accepted只表示已关联accepted_operation_id，随后查ControlOperation和当前ControlRecord；不等于已effective或设备ready，也不因邀请原期限经过而回写expired。控制快照的旧裸身份字段按[C05第16.2节](rebirth-c05-event-sync-design.md#162-控制投影的唯一字段裁决)在新选择中替换，GUI不推测缺少的issuer。
 
 紧急接管单独权限、明确目标和原因，不借管理员角色默许；保留接管入口，但存储不可靠时只能报告无法确认，不能提供“跳过保护”。批量接管按设备分别显示，不承诺多设备原子性，不把部分effective汇总成全部ready。首期整台设备接管；音频通道和矩阵点的资源模型不能提前变成细粒度接管。
 
@@ -79,9 +79,9 @@ GUI状态由服务端快照和有序增量驱动。以下为客户端视图字�
 
 排期按[C06](rebirth-c06-schedule-design.md)显示来源、草稿差异、固定日历／时区、场次身份、plannedAt和派发窗口；旧time展示文本不自动转绝对排期。DST缺失／重叠先明确错误或选择，不静默偏移；导入、验证、发布、激活与播出投影各有结果。激活新版后既有受理场次继续显示原版；时间质量恢复不补发失去资格的旧场次。界面展示使用“发送窗口”，不宣称设备到达或画面切出时刻。
 
-恢复必须使用服务端RecoveryPreview：显示snapshot的run／revision、definition／plan摘要、授权／控制／证据绑定、未知列表、计划目标和过期状态。每步列出原结果、当前观察、拟执行／保留／不执行及原因；成功或未知步骤不得由GUI改成失败以便重跑。解除接管、清理资源、校正业务状态、补偿与恢复分别操作；校正状态不自动执行进入动作。
+恢复必须使用当前`lifecycle__RecoveryPreview`：显示scope／run_id／prior_execution_id、baseline的run_revision／slot_revision／artifact_ref／arm_generation及bindings／authorization／control／source／evidence摘要、policy_ref／business_state，另列plan、unresolved_command_refs、clock及期限。plan逐步显示step_id、disposition、previous_command_ref、evidence_refs和parameters_ref；disposition严格为retain_success／execute_new／reconcile_commit，不把所有条目都画成待发动作。观察和原结果从这些授权引用读取，不能从旧baseline__RecoveryPreview的snapshot／observations字段拼接。成功或未知步骤不得由GUI改成失败以便重跑；解除接管、资源核对、业务状态提交、补偿与恢复保持不同操作语义。
 
-确认后引用精确preview_id和digest，一次消费创建RecoveryOperation；并发提交由服务端CAS决定，输家查询既有结果或重新预览，不能自动换新preview再次恢复。`reserved／preparing／ready／running／completed／paused／indeterminate`逐一展示，targets的`pending／applied／revoking／revoked／indeterminate`单列；ready不等于动作完成。预览过期、证据／授权／控制／run修订变化、服务换代使旧确认失效；重新认证后也须重新核对有效预览。部分目标撤销未确认时不能显示“恢复已全部停止”。
+确认时以`lifecycle__Resume`提交context、expected_run_revision、expected_slot_revision、preview_id、preview_digest，返回`LifecycleOperation`；并发提交由服务端CAS决定，输家查询既有结果或由人重新预览，不能自动换新preview再次恢复。操作状态`reserved／preparing／ready／running／reconciling／completed／paused／indeterminate`逐一展示；targets绑定`PreparationTarget`，状态为`pending／applied／closing／closed／unknown`，并显示controller_id、device_ids、原／目标grant引用、receipt_ref和barrier_ref。ready不等于动作完成，closed不等于设备在途已停止；locally_closed与protection_complete单列，后者也不证明全部资源clear。预览过期、证据／授权／控制／run修订变化、服务换代使旧确认失效；重新认证后也须重新核对。撤销操作的revoking／revoked等其他域状态不得混入本DTO。
 
 ## 6. UI06：完整设备面板、扩展与NodeCG编辑入口
 
@@ -115,7 +115,7 @@ GUI状态由服务端快照和有序增量驱动。以下为客户端视图字�
 
 快捷键在可信宿主配置并显示目标和作用范围，输入法／文本编辑、非当前工作台、失焦时不执行设备快捷操作；长按重复不生成切台、加分等重复命令。页面前后台切换不保持旧实时手势。弹窗用于明确授权或高风险取舍，不覆盖持续电平和控制权信息；紧急接管不能被普通提示遮住，但仍不得绕服务保护。
 
-正式浏览器覆盖沿Q68为发行时固定版本的桌面Edge／Chrome，两种语言、主题和键盘完整流程分别验收。窗口缩放和小桌面宽度不隐藏接管、unknown及目标标识；手机、平板、其他浏览器不因能打开就宣称已验证可控制。精确UI框架、组件／状态库版本及支持尺寸在C12组合和DF01锁文件中定稿，本稿不预先声称已采用某一实现栈。
+正式浏览器覆盖沿Q68为发行时固定版本的桌面Edge／Chrome，两种语言、主题和键盘完整流程分别验收。窗口缩放和小桌面宽度不隐藏接管、unknown及目标标识；手机、平板、其他浏览器不因能打开就宣称已验证可控制。React／Vite精确版本及服务会话管理职责已由[工具链第3节](rebirth-toolchain-lock-design.md)确定，锁文件生成、组件实现和浏览器尺寸／缩放验收属于实施，不再重开框架选择。
 
 ## 8. 故障时序
 
@@ -163,9 +163,9 @@ GUI状态由服务端快照和有序增量驱动。以下为客户端视图字�
 | UIT27 | 并行组失败及简单顺序非必需失败 | 按Q72及证明展示；GUI不能任意skip必需动作 |
 | UIT28 | 排期导入、DST重叠／缺失及旧time文字 | 草稿／日历选择明确，不暗生成绝对时间 |
 | UIT29 | 激活新版和NTP恢复 | 既有受理显示原版，旧失格场次不补发 |
-| UIT30 | 两人恢复同preview | 服务端一次消费，UI关联同一operation，不自动再预览再执行 |
+| UIT30 | 两人恢复同preview、相同run但slot已变 | 同一预览一次消费，run／slot双CAS，UI关联原operation，不自动再预览再执行 |
 | UIT31 | 预览后授权／证据／控制／运行域变化 | 旧确认失效，需重新核对；不比较跨域tick |
-| UIT32 | 恢复ready、部分撤销未确认 | 不展示已恢复完成或已全部停止 |
+| UIT32 | 恢复ready／reconciling、target closing／unknown、locally_closed但protection_complete为false | 精确展示当前LifecycleOperation和PreparationTarget，不展示已恢复完成或已全部停止，不接受旧域枚举 |
 | UIT33 | OBS／ATEM／Mixer／VB与通用表单 | 同SDK和受控入口，专用功能覆盖按C11逐项验收 |
 | UIT34 | −inf、mute、unknown、binary及秘密参数 | 不混值／单位／存在性，秘密不回显，不开放未批准codec |
 | UIT35 | WING多写、VB replace与本地bank | 中间态／删除清单／部分结果可见，不伪原子或设备预置 |
@@ -177,7 +177,61 @@ GUI状态由服务端快照和有序增量驱动。以下为客户端视图字�
 
 ## 10. 归并与剩余冻结事项
 
-1. **公共契约归并**：沿用现有TransferOffer／TransferRequest／TransferAcceptRequest，补齐完整主体身份、权威到期与接受后operation查询关联；C05完整快照与同步投影；C09 PanelSession的编辑器批准、精确host方法和Seamer草稿scope；统一操作记录和客户端刷新后的查询入口。现有draft.4字段不暗补新状态。
+1. **公共契约归并**：转交、命令及恢复按第11节现有精确根绑定；C05控制快照修订、DF06身份接口和C06排期已成文接口按DF01生成新选择。统一历史检索、管理枚举及维护入口的具体缺口见第11.4节，现有draft.4字段不暗补新状态。
 2. **能力参数与预算**：逐动作冻结实时控制资格／继续条件／间隔与未决上限、复合操作中间态、设备目录和完成／释放政策。UI04的单未决策略是推荐上限，尚无时延／手感验收；相对与复合动作不因此删去。
-3. **交付组合**：[C12 DEP01—DEP08](rebirth-c12-deployment-design.md)已给出静态资源／API／面板／编辑器origin与TLS、独立Controller安装入口、NodeCG有限只读输出及原dashboard隔离候选；待审阅和负向验收。GUI实现栈、精确依赖与制品仍沿DF01／DF05锁定。声明origin或选择iframe均不等于证明隔离。
-4. **审阅与验证**：UI01—UI07待审阅；UIT01—UIT40全部未运行；静态字段／引用检查不能关闭A09／A10／A15／A17—A21。C10已有交互候选，但全系统设计尚未完成，不进入业务实现。
+3. **交付组合**：[C12 DEP01—DEP08](rebirth-c12-deployment-design.md)和[C11图文第9节](rebirth-c11-nodecg-design.md#9-首期采用与实现出口)给出静态资源／API／面板／编辑器origin与TLS、独立Controller及NodeCG采用路线；工具链栈已确定。完整产物锁、隔离实现和负向验收仍待实施，声明origin或选择iframe不等于证明隔离。
+4. **验证**：UIT01—UIT40全部未运行；静态字段／引用检查不能关闭A09／A10／A15／A17—A21。第11节关闭核心操作页面的旧模型冲突；第11.4节和C11仍有明确设计缺口，阶段0未关闭。
+
+## 11. 页面与当前公共契约绑定
+
+### 11.1 固定依据与页面所有权
+
+2026-10-29核对的机器输入是SDK提交`aff5ccbb75b6140109f948f81284785c75e46d1e`的[panel-wire契约目录](https://github.com/LeafSeamer/leafseamer-sdk/tree/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/panel-wire/contract)：controller.openapi.json、seamer.openapi.json、models.schema.json及registry-map.json。该输入是panel4候选，不是运行服务；下表“现有”仅指确有机器声明，“待生成”指已有采用文稿，“待定稿”指仍缺具体接口。最终产品采用DF01的新完整选择，禁止将文稿修订叠加到旧摘要下运行。
+
+| 页面／分区 | 读取与字段来源 | 操作入口、权限及故障约束 | 状态 |
+| --- | --- | --- | --- |
+| 初始化、登录、站点切换 | discoverContracts、getMeta、getSession；DF06 PrincipalView的完整主体、audience和授权范围 | bootstrap／login／refreshSession；登出与身份生命周期沿DF06，bootstrap不变成公开注册。站点不可达不换签发者 | 现有入口＋DF06待生成 |
+| 设备列表与详情 | listDevices、getCapabilities、getSceneCatalog、getDeviceState；devices／catalogs／observations集合 | 目录引用和Observation质量与目标值分开；同步完整后仍按对象许可检查 | 现有 |
+| 手动接管、转交 | getControl、getTransfer、getControlOperation；ControlRecord、TransferOffer原件 | acquireControl／releaseControl／offerTransfer／acceptTransfer／cancelTransfer；仅human，control各具名权限，紧急接管另核权限；unknown查lookupControlRequest | 现有；控制快照按C05待生成 |
+| 专用面板、通用动作表单 | 当前能力及绑定Schema、设备观察、控制版本 | submitCommand，device.command且human_manual；取消用cancelCommand，查lookupCommandAdmission／lookupCommandCancellation。submitCommand的原始身份operation为createCommand，不能用显示名改变去重键 | 现有；C11逐动作政策待定稿 |
+| 命令详情 | getCommand／getCommandRevision／getCommandEvidence／getCommandEvidenceRevision／getCommandCancellation | command.read及对象证据可见性；列表摘要和完整证据分开，未决记录不因换页隐藏保护 | 现有；全历史列表见11.4 |
+| 定义列表、状态表和动作编辑 | definitions集合；getDraft／getDefinitionVersion／getPublishedArtifact／getCompiledProgram／getIndependenceProof | createDefinition／updateDraft／publishDefinition，definition.edit／definition.publish；草稿CAS与发布单独操作，发布仅human | 现有 |
+| 运行、布防、暂停、解除布防 | runs／business_states／executions集合；getRun／getActivationSlot／getExecution／getTriggerDecision／getRunOperation | createRun／preflightRun／armRun／pauseRun／disarmRun；各run权限独立；arm仅human，预检通过不代表已经布防 | 现有 |
+| 恢复预览与进度 | previewRecovery、getRecoveryOperation、LifecycleOperation及PreparationTarget | run.read预览、run.resume人员确认；lookupAutomationRequest查原，run／slot双CAS；按11.2绑定 | 现有 |
+| 数据源、导入与排期草稿 | C06 SourceConfigRevision／ImportSnapshot／ImportDiff、排期草稿／发布版本；sources投影仅运行来源，不是配置列表 | C06 SCH06的创建／配置、捕获、apply、publish／activate；来源只读不意味着任何人可配置凭据或应用差异 | SCH06待生成；未激活对象枚举见11.4 |
+| 场次及播出投影 | schedule_activations／occurrences集合；C06 occurrences详情 | C06 preflight／arm／disarm、场次cancel／replay；明确新场次和原关联，时间恢复不补发 | 快照现有，C06路由待生成 |
+| 人员、服务身份及配对 | getSubject与DF06 PrincipalView、ServicePrincipal、Credential／Pairing脱敏引用 | DF06身份生命周期接口、管理权限及近期认证；真实凭据仅规定的首次交付，GUI不扮演service | DF06待生成；管理枚举见11.4 |
+| 组织运行授权、撤销进度 | getRun及授权关联、getRevocation逐目标结果 | revokeAuthorization；Controller的updateRunGrant是配对Seamer通道，GUI不能直接调用或借service凭据。授权管理另按DF06完整主体规则 | 撤销现有；管理读取／发放入口见11.4 |
+| 扩展安装、批准和角色 | getExtensionSlot／getExtensionInstallation／getExtensionOperation | stageExtension／approveExtension／resolveExtensionRoles／reviewExtensionPermissions／planExtensionChange及slot生命周期；导入原包走受权本机工具，浏览器不直连import IPC | 详情及操作现有；全列表见11.4 |
+| 兼容编辑器与第三方面板 | C09 Registry／动态Schema／授权投影，精确artifact和PanelSession | 宿主调用createPanelSession及握手／确认／请求／订阅接口，面板只走具名port方法；不得拿服务token | 现有＋C11采用资产待实现 |
+| 图文输出入口 | C12选定OutputSnapshot、批准的无管理秘密URL、renderer诊断 | 三路只读输出与控制／编辑登录分开；缺配置显示未配置，不开放原NodeCG端口 | C11／C12待生成与实现 |
+| 时间与容量 | getClock／getClockAssessment／getCapacity；DF06认证时钟状态、DF05发行时间状态分别展示 | status.read；setCapacity仅容量管理权限。浏览器时钟与业务reference均不修复认证／发行时钟 | 公共查询现有；新增时钟状态待生成 |
+| 维护、备份、恢复与升级 | C12安装记录、backup分级／状态、完整generation选择；普通GUI不读秘密原件 | 必须走所属服务／Suite受权工具，不能用设备命令、扩展API或浏览器文件系统权限替代维护授权 | 具体管理接口待定稿，见11.4 |
+| 语言、主题、键盘和帮助 | 本地非敏感偏好及随release的双语资源 | 不产生业务写入；服务会话管理器拥有请求和投影，React重挂载不重新提交 | 工具链与UI07已定，待实现 |
+
+### 11.2 核心详情的精确字段与请求身份
+
+- **命令**：getCommand／getCommandRevision响应根为`command__V__S0_CommandRead`，分别固定view=current／historical，record为`command__V__S0_CommandRecord`（command__CommandRecord的具名目标）；以下字段路径均相对record。摘要为`SnapshotRecord<snapshot__CommandSnapshotView>`。phase／outcome／effect_status／resource_status／reason_code／resolution_ref都在state内，完成级别在completion内；HTTP详情读取为record.state和record.completion，不能直接读取响应根。historical不可用来开放当前写控件。详情的evidence_refs与摘要的evidence_count不能互换；缺少证据读取权限不是“没有证据”。outer snapshot revision、source_record_ref、state_ref和command revision各守自己的类型及归属，不按数值大小跨层替换。
+- **控制**：详情为`control__ControlRecord`，revision、control_epoch、effective_version和reserved_version各自显示／核验；pending_change由operation_id／target／requested_by／reason构成。OfferRequest提交context_id、idempotency_key、expected_control、reason、target_principal和offer_ttl_ms；接受另建自己的AcceptRequest，不能复用邀请人的请求身份。accepted_operation_id按同scope查询，不把offer revision当control version。新快照的holder与source_control_ref沿C05生成，旧effective_holder_id不足以判断本人身份。
+- **定义**：`lifecycle__DraftRecord`绑定scope、definition_id、revision、content、content_digest、selection_digest、metadata_revision、metadata；`PublishedVersion`绑定definition_version、source_draft_revision、artifact_ref、program_digest、bindings_digest和published_by。编辑和发布分别显示固定版本，不能将草稿摘要当已发布artifact。定义列表从definitions快照取得display_name／published_ref／draft_revision／activation_state和外层对象身份，不因没有listDefinitions路由新造另一列表权威。
+- **运行与布防**：`lifecycle__RunRecord`的lifecycle、business_state、arm_generation、active_execution_id、active_operation_id、pause_latches和dispatch_eligible分别展示。InspectRun提交context和expected_run_revision／expected_slot_revision；Preflight的passed、checks及期限是预检结果。Arm还须原preflight_id／preflight_digest，不以本地检查代替。run、slot任一修订改变按原操作查询／重新读取，由人再次决定，禁止静默刷新CAS后补发。
+- **恢复**：第5节字段直接对应`lifecycle__RecoveryPreview`／`Resume`／`LifecycleOperation`／`PreparationTarget`，不使用同一models文件内保留的baseline__RecoveryPreview。reconciling显示“正在核对提交”；retain_success显示“保留已成功结果”，execute_new显示“执行新动作”，reconcile_commit显示“核对业务提交”。target unknown是该准备／保护目标结果未确定，不能将整条命令改成unknown或failed。所有引用遵守本域完整scope、revision、digest，GUI不能自行补全。
+
+### 11.3 列表完整性、权限与故障状态
+
+registry-map的12类集合逐一分配：devices／catalogs／observations用于设备与能力，commands用于当前命令，controls用于接管与转交，sources用于来源资格，definitions用于含未发布草稿的定义列表，runs／business_states／executions用于自动化，schedule_activations／occurrences用于已激活排期与场次。各集合仍沿C05权威所有者；服务会话管理器经createSubscription、getSnapshot、getSnapshotPage完成完整交接，再接有序events。集合不是随意可选的数据库表名，不追加管理对象进去假装旧Schema支持。
+
+快照完整只表示所选授权scope与固定snapshot的完整，不表示全库历史、所有安装、全部身份或所有未激活排期都已列出。页面可同时显示完整baseline与详情加载状态；只有已授权空集合可显示“暂无记录”。缺页／丢帧保持loading或resync_required；401为重新认证，403为无权限，版本不符为incompatible，服务不可达为disconnected；详情404只说明当前查询未返回，不推断从未受理、已取消或已删除。业务错误保留稳定reason_code和原结果，不把所有409都归类为编辑冲突。
+
+后台读取失败不清除已显示的unknown保护，也不因旧成功响应迟到覆盖更高revision。切换scope／主体、退出和权限缩小时销毁无权投影及面板通道，已发请求继续按所属服务真实账本处理。读取重试须有界并可取消，任何写入均不由effect、焦点、重新连接、刷新或语言切换触发；请求关联由领域SDK管理，不强行套用一个跨命令／控制／自动化通用幂等键。
+
+### 11.4 剩余接口缺口与实施出口
+
+本节关闭的是核心设备、控制、命令、定义、运行和恢复页面的字段／枚举／查询绑定冲突；不宣称C10全部完成。以下是仍需在原所属专题定稿的有限缺口，不能推给组件实现时猜测，也不另建候选体系：
+
+1. **受权历史检索**：当前按ID详情和lookup要求已知身份；刷新后内存丢失时，现有commands／executions快照没有承诺覆盖所有已结束历史。须在C05／DF04明确跨类别操作历史的owner、筛选、稳定分页、权限过滤、保留与缺失语义，再由SDK生成；未完成前不得声称“刷新总能找回原命令”，更不能用重发补足。
+2. **管理对象枚举及组织授权**：当前有扩展详情／操作、getSubject和DF06身份管理文稿，但缺完整人员／服务／配对／安装slot／installation列表及组织grant管理页面的查询／发放入口映射。须沿C07／C09／DF06规定脱敏DTO、对象权限、CAS、分页和撤权语义；不能枚举猜ID或从设备持有人集合推导全体身份。
+3. **排期未激活对象**：C06已有SCH06操作和导入模型，但sources不是SourceConfig列表，schedule_activations也不包含所有未发布排期。须补来源配置、导入历史、排期草稿列表及详情查询的固定路由／字段／分页；现有快照只承担上述运行投影。
+4. **维护管理契约**：C12／DF04／DF05已经定义备份、恢复与安装切换规则，但尚未给出GUI到所属本机维护工具／服务的完整请求、脱敏状态和查原契约。须确定远程GUI可做与本机管理员必须做的动作边界及认证失效时入口；不能把操作系统管理员恢复入口偷换成在线GUI特权。人工发行时间选择仍独立等待决定。
+
+以上缺口不重开已采用的人员手动政策、三人发行阈值、React／Vite、NodeCG接入和12类投影。SDK生成与客户端适配、GUI组件和双语资源、服务真实字段提供者属于实现；UIT01—UIT40及A17／A18为实现后验证，当前均未执行。进入实现仍以统一收敛清单阶段0为准。

@@ -189,7 +189,7 @@ provider peer 的显示名和计数不证明“当前选中且用于纪律的源
 
 本轮完成官方字段与权限核对、候选记录、年龄／一致性证明责任、TIME屏障和事务顺序、36项验收设计。只运行文档链接／编号／机器基线保持检查；不宣称解析器、NTP、broker或真实平台验证通过。
 
-当前决策：2026-10-20已确认采用第9节应用参考时钟，NF02模型选择不再是阻塞项。下一版按此路线归并候选附属记录的可校验Schema、原始字节正反例及批准／撤销引用，不暗改draft.4；旧P项中的后端年龄／快照研究不作为新路线的实现前置。仍需冻结精确库与制品、NTS引导、时代／闰秒、上游误差包络及共享计时profile。实现后证据包括最低权限、源身份、时基／年龄、误差预算、失效传播与负载／恢复报告。无合格profile的平台不得标绝对排期验收完成。
+当前决策：2026-10-20已确认采用第9节应用参考时钟，NF02模型选择不再是阻塞项。下一版按此路线归并候选附属记录的可校验Schema、原始字节正反例及批准／撤销引用，不暗改draft.4；旧P项中的后端年龄／快照研究不作为新路线的实现前置。精确协议路线、NTS引导、时代／闰秒、上游误差与平台profile规则现由第19节定稿；完整制品和实际环境资格转入实施／验收。实现后证据包括最低权限、源身份、时基／年龄、误差预算、失效传播与负载／恢复报告。无合格profile的平台不得标绝对排期验收完成。
 
 后续全系统设计继续DF04逐表事务、DF05制品信任、DF06内部授权，然后补齐自动化／事件／排期、全部设备和NodeCG、GUI与运维。全部设计审阅完成后才进入业务实现，不能以本稿或首闭环完成代替全系统门槛。
 
@@ -281,7 +281,7 @@ U4 = T2 + E2 + Dplus
 
 TP39—TP43只是独立算术参考，可离线核算；TP37/38为现有接口资格反例，其余需未来采集器及平台故障测试。本轮不执行真实NTP、修改系统时间或注入宿主故障。
 
-冻结顺序：9.2模型选择已完成；接着冻结原生协议库及双平台制品、NTS启动信任、时代／闰秒／上游E包络与计时profile，完成候选Schema和正反例归并。system-bound仅保留历史／诊断用途，不作运行时回退路线。指定NTP、两平台与完整功能目标不变；完成模型选择不提前开启业务实现。
+冻结顺序：9.2模型选择已完成；第19节现已固定原生协议库、NTS启动信任、时代／闰秒／上游E与计时profile的设计规则，双平台制品、完整Schema和验收按其交接实施。system-bound仅保留历史／诊断用途，不作运行时回退路线。指定NTP、两平台与完整功能目标不变；完成模型选择不提前开启业务实现。
 
 ## 10. 已选路线的可校验字段候选
 
@@ -354,5 +354,78 @@ OPEN保留完整提供者Domain，仅与出口比较共同authority/database/clo
 首期时间State继续由Controller自己的writer维护，OPEN最终裁决同库重读；独立读事务、远程读取或普通查询结果不构成最终资格。新增离线读取器和正反例覆盖完整元数据与物理列、现行IPC投影、失效/历史顺序及不同成员共享时钟。完整采集/批准/加密来源、真实监督解析、与Controller恢复布局的同库组合及OPEN/ACK/Ready仍未接通；详细验收矩阵及输入绑定报告见上述链接。本候选待审阅，不改变已批准基线或业务代码。
 
 后续同库接线：[290表恢复时间来源](contracts/c04-lifecycle/OPEN_TIME_SOURCE.md)已将原14表与Controller 276表实际组合，三种拒绝来源在同一连接中读取，恢复资源快照首次登记确定性时间ID。新增72项专项检查通过，包括实际WAL双连接的旧快照仍可读反例、最终writer重读拒绝及八个逐写失效全库回滚；上一轮48项元数据检查实际回归。前段“尚未同库组合”现由此限定更新：已完成离线读取接线，不表示实际时间发布writer、TIME保护原子配对或完整OPEN已实现。
+
+## 19. 首期业务参考采集的协议与资格定稿
+
+2026-10-29。本节固定第9节剩余的协议库、NTS启动来源、时代／闰秒及误差profile设计，作为SDK、两服务与Suite实现输入；不改变reference-bound/1，也不新增系统校时器。下列数值是产品接受边界，实际部署资格必须有对应证据，不能把此文稿当作已验证的时钟精度。
+
+### 19.1 固定依赖及采集适配
+
+**已核对的上游事实。** Meta官方`facebook/time`提交`bbc297d0f23f1234f0e9ed9e0eb3566b30c61a73`提供`ntp/protocol.Packet`原始32位时间字、`ntp/ntske.Client.Handshake`及`ntp/protocol/nts.BuildNTSRequest`／`VerifyNTSResponse`。Handshake接收tls.Config并强制TLS1.3和ntske/1；NTS响应验证返回解析包及新cookie。其`protocol.Unix`只按时代0换算，且截断小数纳秒，不能用作本项目的多时代精确转换。（来源：[固定NTP源码](https://github.com/facebook/time/blob/bbc297d0f23f1234f0e9ed9e0eb3566b30c61a73/ntp/protocol/ntp.go)、[NTS客户端](https://github.com/facebook/time/blob/bbc297d0f23f1234f0e9ed9e0eb3566b30c61a73/ntp/protocol/nts/client.go)、[KE客户端](https://github.com/facebook/time/blob/bbc297d0f23f1234f0e9ed9e0eb3566b30c61a73/ntp/ntske/client.go)。）
+
+**本项目采用方案。** Go1.27.2构建受监督采集辅助程序，分别发布windows/amd64及linux/amd64制品，GOTOOLCHAIN=local、CGO_ENABLED=0，固定上述提交及go.sum／依赖闭包；不安装上游daemon，不调用系统设时API。只采用协议、NTS及KE库，禁止通过`protocol.Offset`／CorrectTime或Go time.Now生成合格锚点。网络读写与m1／m4采样在同一原生组件完成，共享计时身份和批准仍由DF02准入提供，不把Go进程私有起点当成域时钟。
+
+NTS-KE固定NextProtocol=0、AEAD=15（AES-SIV-CMAC-256），关闭非标准算法协商及compliant-export扩展；采用库密码实现和标准TLS exporter，不另写密码算法。现有KE客户端只返回解释后的结果，项目对固定版本做窄适配：在导出密钥前验证完整KE记录序列，提供绑定原响应、所选算法、证书链及端点的受保护验证回执。要求NextProtocol／AEAD各恰好一个且只含所选值，EndOfMessage恰好一个、critical且空body；server／port各至多一个，端口为一个非零uint16，未知critical拒绝、未知noncritical在总预算内忽略并留原件；error拒绝，warning不得变成成功资格。补丁不更改AEAD、exporter或TLS验证核心；源码补丁、上游测试与两平台构建属于实施任务，不假称原库已满足全部项目策略。（协议依据：[RFC8915 §4—5](https://www.rfc-editor.org/rfc/rfc8915.html#section-4)。）
+
+TLS SNI／校验名固定为批准的KE主机名，实际连接IP来自该Binding批准的endpoint_set。KE返回的NTP主机与端口也必须在预批准集合内，空值采用明确配置的默认值；DNS结果或KE认证不能赋予连接任意内网地址的能力。端点集合改变需要新Source revision及原TIME失效流程。每个UDP socket连接固定端点；内核返回的完整datagram先取m4再解析，使用1233字节缓冲检测超过1232上限，截断、来源不符和多余尾字节拒绝。
+
+NTP请求仅version=4、mode=3；T1填非零CSPRNG 64位关联值，作为不参与时间计算的opaque echo，不用宿主wall伪装精度。NTS另生成32字节CSPRNG UID，绑定一次Poll和已消费cookie；禁止同关联重传。响应须version=4、mode=4、OrigTime两个字精确匹配、stratum=1..15、LI=0、T2／T3／Reference Timestamp非全零。trusted_network只接受48字节报文，无legacy MAC／扩展冒充认证；NTS先做长度与结构检查，要求恰好一个匹配UID及一个末尾Authenticator、无legacy MAC，原字节重新编码须相等再调用VerifyNTSResponse，避免把不同序列化的AD当原报文。认证成功仍须执行时代、误差、当前Binding和发布CAS检查；认证失败不降级trusted_network。
+
+stratum=0走KoD故障而不生成Exchange：RATE按当前有效poll约束放慢，至少16秒且不得以负数／溢出缩短；超过本产品最大等待1小时则停止该源并要求配置核对；DENY／RSTR及未知停止码关闭该源。未认证NTS错误最多触发限速的重新KE，不刷新锚点、放宽身份或解除保护。无论超时、cookie丢失还是无效响应，旧Poll永久消费；下一次采样是新Poll及新关联。
+
+### 19.2 非循环的NTS冷启动与密钥期限
+
+冷启动唯一自动来源是已取得当前资格的DF06第13节`trusted-system-interval/1`认证区间。它可用于NTS证书日期及NTP时代解释，但绝不把其UTC值当业务ReferenceAnchor；无此独立区间时NTS状态保持cold／unavailable，先按DF06本机维护恢复认证来源。既有业务NTP、同一未认证响应、旧锚点、GUI时间和安装时人工TUF锚均不能自举此资格。trusted_network同样需要独立时代依据和明确网络信任批准，不能作为NTS失败的回退。
+
+Go tls.Config.Time只接入当前认证区间的上端，保留标准链／主机名／用途验证，InsecureSkipVerify=false；VerifyConnection再核同一已验证链的每张证书在当前完整区间内有效。握手中任一次读取缺资格即锁存本次失败并关闭连接，不能以time函数的占位返回值获得成功；Time与回调之间域／policy变化也拒绝。认证来源通过受监督本机只读桥提供，绑定真实source_ref／runtime与原采集，使用前重新外推，旧于DF06期限不采用。无TLS会话缓存、恢复或0-RTT，不读取系统默认信任根替换配置中的专用根集合。（接口依据：[Go crypto/tls.Config](https://pkg.go.dev/crypto/tls#Config)；证书启动问题见[RFC8915 §8.5](https://www.rfc-editor.org/rfc/rfc8915.html#section-8.5)。）
+
+BootstrapEvidence为不可变原件：id、revision、provider运行域、source/profile Ref、认证source_ref及其读取tick、UTC下上界、根集合digest、验证名、实际端点Ref、证书链digest、TLS版本／ALPN、KE原件Ref、选择算法及自身digest。AuthEvidence.bootstrap_ref绑定它；不把cookie或C2S／S2C导出到公共回执。新密钥上下文只在内存保留，绑定provider boot、Source／Approval／Policy及BootstrapEvidence，最多1小时并不越过证书链有效期；每次发包重新核当前认证资格和全部绑定，失信／换源／重启即销毁密钥与cookie并停止新采集。旧批准不可因重新KE复活。该链不授予发行更新时间资格，DF05人工时间决定仍单独待定。
+
+### 19.3 时代、闰秒和有限平台包络
+
+EraEvidence.independent_time_ref明确指向DF06的AuthenticationClockAcquisition不可变原件，method_ref采用auth-interval-era/1；同authority解析，不能以Controller设备投影代替Seamer的服务级原件。EraEvidence使用该独立认证来源在m1／m4附近取得的区间，包含采集跨度及量化外包；核验tick n须不早于m4；在同域当前认证区间[L_auth(n), U_auth(n)]上取解释窗口[L_auth(n)−e_plus(n−m1), U_auth(n)]，只用于独立时代裁决，不生成业务锚点。窗口宽度最多24小时。对原T2、T3按窗口上下界的有理数商求候选era范围，至多检查相邻两个有符号32位era，不遍历整数域；按第10节的有理数公式计算，只有一个时代的时间误差区间与独立窗口相交才可采用；零候选或多个候选均拒绝。Reference Timestamp允许向前扩展已批准最大上游年龄，仍须唯一解析，不能强制三个字段同era。精确核T3≥T2、T3−T2≤e_plus(m4−m1)+E2+E3，禁止靠无符号减法自动绕回；2036跨界不切换时钟域，不用当前年份或本地wall猜时代。
+
+首期保持normal UTC、禁止smear。每个SourceQualification明确源的UTC实现及无smear承诺，另绑定LeapSchedule原件：IERS Bulletin C来源标识、有效UTC窗口、已宣布事件时刻／正负方向、内容digest和批准Ref；覆盖期只能取公告明确覆盖的范围，不能把“暂无事件”外推为永久有效；不是凭NTP的LI=0推断未来没有闰秒。安装包可带已审阅的表，更新经受权配置修改并推进time_generation；无覆盖当前区间的表则不取得绝对时间资格。宣布事件前后各24小时的保护带内禁止绝对排期，全部区间外推及guard期限不得跨保护带或表有效期；LI非0、模式冲突、源step／smear迹象均失效。保护带结束后重新采集与人员恢复，不补发错过场次；即时手动仍由自身守卫判定。该保守停用窗口延续第10节“闰秒附近拒绝”政策，不将POSIX重复秒视为严格递增UTC。（公告来源：[IERS Bulletin C](https://datacenter.iers.org/productMetadata.php?id=16)。）
+
+共享单调计数仍用DF02登记的Windows QueryInterruptTimePrecise／Linux CLOCK_BOOTTIME，保留原整数及相同descriptor_digest；不混入墙钟或Go私有monotonic字段。ReferenceProfile沿现有observed-delta-relative/1，量化总界q覆盖两次读取和换算；平台若只给相对真实时间的速率界d，则先外包转换为ρ≥d/(1−d)，再向上取可表达ppm。首期批准要求0<ρ≤1000ppm、0<q≤1ms，超出须改善部署或重新裁决profile，不自动放宽。休眠／恢复、回退、计数方法变化、VM迁移或无法证明速率包络时失效并新域恢复；API分辨率、一次基准测试或操作系统“同步”标记不能单独证明包络。
+
+### 19.4 上游误差、年龄与容量政策
+
+SourceQualification是条件保证的明确前提：qualification_id/revision、Source／平台profile Ref、authority及批准／撤销状态、valid_from／valid_until、server_utc_mode、source_provenance_ref、T2／T3／Reference Timestamp各自的有限绝对误差界、最大上游年龄、服务器step／holdover／授时失效规则、环境监测与证据Ref、digest。误差界均须大于0且不超过1秒，最大上游年龄大于0且不超过24小时；必须覆盖时间戳生成位置、分辨率、排队和受允许holdover，不能仅填设备宣称精度。该批准来自受权时间配置管理者对具体授时环境的责任声明与资格证据；NTS对端身份认证、root字段或多源一致不产生此批准。实际部署没有这些数值及依据时只提供诊断采样，不伪造合格默认值。
+
+ErrorEvidence.error_method_ref固定`qualified-server-envelope/1`，将当前有效Qualification的三个上界及来源原件带入，E2／E3分别取对应值。上游年龄在m1的保守上界取`max(0, ceil(T3−Tref+E3+Eref))`，因服务端发送不早于m1而可向更早时刻保守使用；Tref的误差区间整体晚于T3则拒绝。随后沿既有规则再加从m1起算的exchange_age，宁可重复外包也不刷新年龄。该推导以源对Reference Timestamp含义及无step的资格承诺为条件，不能宣称通过报文本身验证服务器诚实。根delay按有符号16.16读取、dispersion按无符号16.16、precision按有符号2的幂精确解释，保留原字和解析回执；这些是诊断／一致性拒绝依据，不用半root delay替代E2／E3。
+
+资格validity、LeapSchedule、来源／Profile／Approval／Policy及当前认证证据在writer发布前和每次UTC许可签发前一并核对，完整UTC区间须落在各有效窗口内；撤销或变化先执行原Invalidation／TIME屏障。采样超时不刷新旧年龄；可继续外推尚在全部边界内的旧锚点，年龄或半宽到界后拒绝，不能把一次探测失败误作新锚点。身份、计时、密码或来源可信性失效则立即关闭新资格，不能等TTL自然耗尽。
+
+| 资源或政策 | 首期接受规则 |
+| --- | --- |
+| 并发／探测 | 每服务最多4个源，每源1个在途UDP，全服务1个KE；UDP发出到完整接收最多2秒，每源至少16秒才可新Poll，不重传旧Poll |
+| NTP／KE大小 | UDP≤1232字节；KE全消息≤64KiB、最多64条记录，cookie库存1—8个、每个≤1024字节；先检查再分配，超限拒绝，不截断后采用 |
+| cookie补充 | 每次消费一个cookie，placeholder数量在0—7内并按实际序列化1232字节预算计算；返回cookie总数与字节各有界，耗尽只启动受限KE，不复用已消费cookie |
+| KE期限／重试 | 整体5秒；失败退避60、120、240秒直至1小时，上界内加非负不超过10%的抖动；不是循环立即重试，成功只清退避不解除业务保护 |
+| 时间Policy | max_sample_span=2秒，exchange／anchor年龄上限均32秒；默认UTC最大半宽500ms，可在0<半宽≤1秒范围内明确配置；业务窗口仍必须完整容纳真实外推区间 |
+| 平台与来源 | q／ρ及E2／E3／Eref／上游年龄无“可信默认”；按19.3／19.4有限范围和真实资格配置；不能把Policy上限当实际误差 |
+| 原件保留 | 沿第13—16节同库加密与REPORT_STORED流程，保护消息独立额度；cookie／key不上普通日志，原始报文含秘密按受保护Blob处理；队列满不发布缺原件锚点 |
+
+第9.4节实验预算由本表作为首期实现参数覆盖；它不是已测性能。请求截止与年龄沿第10节拒绝等号，最大采样跨度允许等号；达到2秒的报文仍因原请求截止而不可新受理。guard期限取业务窗口、各批准有效期、下一保护带和全部单调年龄界的最早拒绝点，不能因显示区间仍较窄延长已失效资格。
+
+### 19.5 生成差集、写集与退出条件
+
+SDK采用原ReferenceProfile／AuthEvidence／ErrorEvidence／EraEvidence的具名引用，新增BootstrapEvidence、SourceQualification、LeapSchedule正文及独立摘要投影，错误原件增加bootstrap_unavailable、era_ambiguous、leap_window、upstream_unqualified、protocol_rejected等闭合原因。不要在旧候选字节中把任意Ref当这些正文已经存在。BootstrapEvidence只含已完成验证的事实；失败记录Failure及受保护诊断，不先造成功证据再改状态。SourceQualification与LeapSchedule由核心受权配置writer保存，批准和撤销沿已有时间配置权限，不新增远程OS校时权。
+
+Request／原始Blob／认证与时代及误差原件／Exchange／Anchor／当前State继续同一服务writer事务提交，绑定全部独立正文Ref；跨进程采集器的认证“通过”标志不是核心的自证，核心按固定协议验证器重核原件关联及当前批准，TLS验证来源绑定受监督采集receipt。NTS会话密钥和cookie仅在provider内存，原始入站密文与回执保留不能使重启后的旧密钥上下文复活。TIME失效写集和设备出口的TIME_FENCE仍按第17—18节；本节不将采集成功当出口已经解除保护。
+
+| 用例 | 实现后必须证明的结果 |
+| --- | --- |
+| TP49 | 两平台固定Go及依赖构建，同域m1／m4及无系统设时；原生精度与包络分别验证 |
+| TP50 | 认证区间缺失／过期、证书上下界跨有效期、链或名称不符时KE拒绝，未认证NTP不修复自身证书时间 |
+| TP51 | KE重复／未知critical／超限、异常cookie及UDP UID／orig／MAC／尾字节均拒绝；正确算法与官方向量互通 |
+| TP52 | 2036相邻时代、全零、负UTC、小数向外取整、Tref跨代及时代歧义按完整独立窗口裁决 |
+| TP53 | LI／smear冲突、闰秒保护带和表过期立即停止新绝对资格，窗口结束不自动补排期 |
+| TP54 | NTS通过但E或上游依据缺失仍unavailable；年龄公式不因延迟包、重复读取或root小数值变年轻 |
+| TP55 | KE／Poll超时、cookie耗尽、KoD及队列满有界，旧Poll不重发且保护通道不被普通采集占用 |
+| TP56 | 发布前撤销／域变、COMMIT未知／重启、TIME目标部分未确认，均不凭新样本复活旧guard或自动续跑 |
+
+本节关闭上述协议／启动／时代／误差的设计选择，余下为窄适配补丁、产品生成、真实采集与writer接线及TP49—TP56等实现后证据；具体环境数值的测量不再成为选型设计缺口。DF03跨公共事件年龄及其他领域持久引用的一次整体核对仍沿统一收敛清单执行，DF05发行更新时间运维选择保持独立未决，阶段0不因本节单独完成而通过。
 
 当前读取器重核完整worker运行原件，时间提供者自身RuntimeBinding与当前监督资格仍由可信解析器接口承载，实验使用显式合成Ref。不得把这项外部前提、保护outbox或失效后的unavailable快照当作真实设备已关闭证明。授权来源、完整时间采集与身份链、最终OPEN/ACK/Ready继续作为阶段0未关闭事项，业务实现仍未开始。

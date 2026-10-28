@@ -25,6 +25,7 @@ TUF客户端实际包名是`tuf-js`，`@tufjs/models`是依赖，不采用未经
 | 认证/存储 | cookie2.0.1、argon2 0.45.1、better-sqlite3 13.0.3 | cookie编解码不代替会话/CSRF；原生模块只在服务端 |
 | 更新校验 | tuf-js6.0.0 | Suite运维依赖，固定初始根和独立持久信任状态 |
 | 备份辅助 | age v1.3.2、Go1.27.2 | C12受限预编译辅助，不要求用户现场安装Go |
+| 业务NTP／NTS采集 | facebook/time提交bbc297d0f23f1234f0e9ed9e0eb3566b30c61a73、Go1.27.2 | 仅protocol／nts／ntske；DF03第19节固定KE窄适配、独立时间输入和精确整数换算，两平台辅助制品分别构建 |
 
 18包不是五仓完整依赖清单；测试工具、HTTP/WS框架、数据源驱动、原生编译器及各设备模块仍须进入完整闭包。C11原有NodeCG、ATEM等候选不由本表替换。精确候选已指定不等于制品已经冻结。
 
@@ -77,5 +78,7 @@ metadata、resolved、bytes_verified、installed、built、qualified分别表示
 | TL12 | age错误口令/截断/非法插件/高成本输入 | 有界失败，无部分激活或秘密日志 |
 | TL13 | 缺Go/离线缺模块 | 明确失败，无隐式工具链下载 |
 | TL14 | metadata合法但无制品/运行证据 | 不得标qualified或生产可用 |
+
+2026-10-29业务参考采集路线按[DF03第19节](rebirth-df03-time-profile-design.md#19-首期业务参考采集的协议与资格定稿)采用固定上游提交及KE窄适配。上游go.mod声明go1.26.0，与本项目Go1.27.2分开；Apache-2.0许可和NOTICE随实际制品分发。这里只核对固定源码的接口、算法和版本声明；未运行上游测试或跨平台编译。完整go.sum、依赖许可、补丁摘要、两个GOOS制品及TP49—TP56进入产品交付任务，不能把上游当前main作为可浮动依赖。（来源：[固定go.mod](https://github.com/facebook/time/blob/bbc297d0f23f1234f0e9ed9e0eb3566b30c61a73/go.mod)、[许可](https://github.com/facebook/time/blob/bbc297d0f23f1234f0e9ed9e0eb3566b30c61a73/LICENSE)。）
 
 继续按[readiness 6.1](rebirth-readiness.md#61-全系统设计完成门槛)收敛完整依赖、设备协议政策、机器契约归并和统一定稿清单。本文减少未指定候选，不宣称全系统设计完成；用户需审阅的实质取舍仍保持待审阅。

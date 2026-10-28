@@ -272,6 +272,8 @@ WS text只在完整消息重组后校验；服务端库必须在重组中限制�
 
 ## 14. 逐操作主体、凭据与目标守卫
 
+首期已确定采用人员手动、服务自动化分离，以及人员定义发布／布防／恢复政策；当前操作定位及权威事务以[DF06第11节](rebirth-df06-internal-trust-design.md#11-首期主体政策与身份权威定稿)为准。以下71操作候选保留作差分输入，不能因其历史待审阅标记重新悬置已确定的政策，也不能据此批准其余未审阅内容。
+
 [授权候选](contracts/df01-source/AUTHORIZATION.md)、[Schema](contracts/df01-source/authorization.schema.json)及[完整矩阵](contracts/df01-source/authorization-candidate.json)将当前71操作细分为105分支、43个具名目标/用途守卫。每条保存精确源位置和权限，分支认证与HTTP骨架核对；SDK可导入不再被误作服务可调用。新增策略待审阅，原draft.4和exports源不改。
 
 推荐manual/接管/转交仅human，service设备写经配对Seamer＋automation＋当前RunGrant；后台KEY通过provider事件触发。服务可按明确目标授权编辑草稿、创建未布防run、只读预检及有限暂停，定义发布/布防/恢复需人员明确操作。Schema旧接受集允许service＋manual，因此此项须另版显式收紧，不能称旧方案早已禁止。provider.publish仍保留服务来源输入，不能混同publishDefinition。

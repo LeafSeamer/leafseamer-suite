@@ -225,6 +225,10 @@ Schema升级先进入整库维护并保存有效备份；核对from版本、脚�
 
 ## 10. 身份生命周期事务补充
 
+实施时以[DF06第11节](rebirth-df06-internal-trust-design.md#11-首期主体政策与身份权威定稿)的主体政策及权威表解释本节I1—I6。第3节把credential／auth_session／run_grant并列仅为逻辑字典，不表示三者由同一签发方写入：会话与服务凭据属于指定签发Controller，本地RunGrant属于各目标Controller，Seamer的run／arm属于Seamer。镜像与本地授权须分开，不能通过复制相同表名建立第二权威。
+
+控制请求按控制契约的RequestKey，命令裁决按第17节；其他身份管理操作按自身已成文幂等契约生成，不能将第3节历史八字段identity一概套用，也不能凭本节补充表的request_identity_ref改变操作身份。新增service＋manual及服务发布／布防／恢复拒绝须发生在新业务受理／预算消费前，事务内仍复核当前本地权限与floor。这里关闭归属与旧字典适用范围的歧义，完整DDL及真实并发故障证据属于实现任务。
+
 2026-10-18候选，与[DF06第9节IL01—IL06](rebirth-df06-internal-trust-design.md#9-身份生命周期细化注销组织服务与配对)共同审阅。补充表字典，不代表已有生产DDL或数据库迁移；旧内存探针未覆盖本节，不复用其通过数量。
 
 | 补充记录／约束 | 事务归属及不可省略的字段 |

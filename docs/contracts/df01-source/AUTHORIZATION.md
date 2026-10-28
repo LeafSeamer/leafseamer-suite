@@ -2,11 +2,13 @@
 
 本稿补齐[导出清单](EXPORTS.md)没有表达的调用主体边界。状态为**待审阅推荐**，机器资料固定`approved=false/authority_switched=false/runtime_approved=false`；既有draft.4／IPC0.3及其接受集不变。适用范围是现有两服务71个HTTP／WS操作，未来安装、配对、面板和服务订阅接口不冒充已经存在。
 
+**首期采用状态更新。** 第1节第1项及第2项中的人员发布／布防／恢复限制已确定采用，当前操作映射与身份事务归属见[DF06第11节](../../rebirth-df06-internal-trust-design.md#11-首期主体政策与身份权威定稿)。本目录71操作的机器矩阵保留为历史输入，不能直接代表panel4全部201操作；服务订阅已有独立通道，不能用本稿第3项的旧链限制取消该通道。上述采用决定不批量批准本目录其余候选或宣称运行可用。
+
 ## 1. 已知事实与新增取舍
 
 已知事实：当前HTTP骨架声明认证方式和权限，但没有完整主体用途策略；AuthorizationBinding结构允许service＋manual；Session和WsTicketBinding要求非空session_id；issueToken是人员Cookie＋CSRF换取定向短期令牌，路径中的service-tokens不表示创建组织服务身份。updateRunGrant已有“配对Seamer提出范围、Controller取本地交集”语义；provider目录和事件不得按自报provider_id信任；人员退出不撤销独立组织授权。（来源：[两份HTTP骨架](source/http/controller.operations.json)、[公共模型](source/public.schema.json)、[首闭环§2/§6](../../rebirth-first-loop-contract.md)、[F04§2](../../rebirth-f04-f05-design.md)、[draft.3§3](../../rebirth-draft3-review.md)。）
 
-本轮推荐以下取舍，不能从历史security自动推导，也不能当用户已批准：
+以下保留原推荐及其依据；不得从历史security自动推导其已经生效。已采用的部分以本稿顶部状态更新和DF06第11节为准，未列入的其他取舍仍按各自当前权威稿核对。
 
 1. **人员手动、服务自动化分开。** manual及接管/转交仅接受human；服务设备写只接受配对Seamer的automation＋当前RunGrant。后台KEY/数据源通过受控provider事件驱动Seamer；人员操作面板仍由宿主代理当前human。此项收紧现有Schema的service＋manual组合，归并时必须有接受集差分。其他服务不能靠origin改成manual、假session或自报Seamer身份绕过布防。
 2. **服务可以准备，不能自我批准。** 在组织授予的目标范围内允许服务读取、编辑草稿、创建未布防run、只读预检/恢复预览、暂停所属run；发布、布防、执行恢复要求人员明确操作。定时触发仍由已布防的服务执行，不要求每次场次到达再由GUI批准。保留未来受控服务发布需求的扩展位置，首期没有自动发布/自动重新布防权限。

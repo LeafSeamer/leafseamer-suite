@@ -2,6 +2,8 @@
 
 日期：2026-10-17。细化已确认的TS02、F04/F05和draft.4；IA01—IA06是待审阅推荐，不代表用户已批准新取舍。继续先完成全系统设计，不修改业务实现，不签发证书、开启监听或控制设备。
 
+首期主体政策及身份权威归属以第11节为准：其中人员手动、服务自动化的收紧方案已确定采用。该决定不等于批准全部历史候选，不改变已有机器资料的版本或运行验收标志。
+
 依据：[身份与容量](rebirth-f04-f05-design.md)、[TS02](rebirth-technology-selection.md)、[draft.4归并](rebirth-draft4-review.md)、[DF02运行域](rebirth-df02-runtime-design.md)、[DF03授时证据](rebirth-df03-time-profile-design.md)、[DF04存储](rebirth-df04-storage-design.md)。候选附属模型版本`internal-trust/0.1.0-draft.1`，不修改公共draft.4／IPC 0.3。
 
 ## 1. 事实、缺口与推荐
@@ -361,3 +363,46 @@ automatic无需借某个人员或单个run授权开放设备；每个自动动�
 [纯转换模型](contracts/c04-lifecycle/device_authorization_model.py)和[检查器](contracts/c04-lifecycle/check_device_authorization.py)覆盖四用途／模式组合、正常刷新不变修订、expiry等号、变化先保护、恢复消耗新修订、旧证据拒绝、窗口全集与错Ref、跨运行绑定及修订耗尽；[报告](contracts/c04-lifecycle/device-authorization-report.json)保留真实来源、SQLite采用、续约IPC及完整OPEN均未验证。特别保留孤立新证据在旧期限后仍可能通过单对象结构检查的反例，证明不能把内部辅助函数当作最终入口。
 
 后续归入既有FA／ST／IN验收：正常连续刷新期间无额外AUTH_FENCE且State修订稳定；撤销与刷新竞争仅一个CAS胜出；语义变化保护写集逐写／漏写全回滚；不确定COMMIT按原选择查原；进程恢复不能将expired直接续约；cancel_only不能转ordinary；真实来源签发、完整同库映射与worker续约分别取证。新候选需与统一SDK／API／IPC归并审阅，C07及全系统尚未关闭。
+
+## 11. 首期主体政策与身份权威定稿
+
+### 11.1 采用范围与当前操作定位
+
+**首期决定，2026-10-28。** 手动接管、转交、定义发布、布防和恢复仅允许人员；服务设备写必须经已配对Seamer、automation用途及有效RunGrant。服务不得自行发布定义、重新布防或执行恢复。后台来源事件仍可触发已经布防的运行，不要求每个自动动作再次由人员批准。该收紧替换旧Schema允许的service＋manual组合，不能声称旧版本已经拒绝该组合。
+
+下表按[DF01第15节](rebirth-df01-sdk-freeze.md#15-首期采用输入与独立通道归属定稿)固定的SDK panel4输入定位。operationId须连同Controller／Seamer权威使用；HTTP的bearer声明、SDK函数可导入或结构校验通过均不证明主体符合政策。
+
+| 权威／当前operationId | 首期主体与用途 | 接受后的领域边界 |
+| --- | --- | --- |
+| Controller：`acquireControl`、`releaseControl`、`offerTransfer`、`acceptTransfer`、`cancelTransfer` | 当前human；转交目标也是完整人员三元组；原持有人、目标、紧急权限及理由按控制契约分别核验 | T3保存受理／版本预留，T4证明生效，T5另建ready；退出不释放holder，拒绝service不得产生pending或预留版本 |
+| Controller：`getControl`、`getControlOperation`、`getTransfer`、`lookupControlRequest` | 沿用控制契约的人员查询入口及当前对象读取权；lookup只查原，不是新受理 | 不从历史effective推导当前持有人，不因not_found允许换键重做 |
+| Controller：`submitCommand` | human＋manual，或配对Seamer＋automation＋当前RunGrant；human面板委托仍取当前人员权限交集 | T1受理与T2派发前均核当前权限；manual还需当前holder，automation需批准版本、arm、本地自动模式及范围；两者均需ready、资源与逐次permit |
+| Controller：`updateRunGrant` | 已配对Seamer提交既定运行批准，Controller取本地授权交集 | 登记不自授权限，不代表布防或设备ready；不得扩大原批准窗口／版本／动作范围 |
+| Controller：`revokeRunGrant`、`cancelCommand` | 有目标权限的human，或既有规则允许的所属服务链；服务不能取消外来manual命令 | 限定取消与撤销保留独立用途、对象归属和在途核销；不因禁止service manual而禁用必要保护 |
+| Seamer：`publishDefinition`、`armRun`、`resumeRun` | human；定义发布、布防及恢复分别核权限和当前前提；服务即使持有同名权限也拒绝 | 发布不布防；arm／恢复的远端准备、固定目标、一次消费及R2—R4顺序保持，不由人员请求直接跳到设备发送 |
+
+服务只读、被授权的草稿编辑／未布防运行创建、所属运行暂停和独立服务订阅继续按各自现行契约处理；本决定没有新增这些操作的权限。`cancel_only`是独立安全取消链，不是service＋manual的兼容别名。GUI及面板不得持有服务凭据来代替人员确认。
+
+### 11.2 身份权威与事务归属
+
+以下是Q55—Q57、F04第2节及本稿第9—10节的实施归并，明确同名记录属于谁，不新增身份服务或跨库事务。（依据：[已确认身份与授权](rebirth-design.md)、[身份事务I1—I6](rebirth-df04-storage-design.md#10-身份生命周期事务补充)、[控制权契约](contracts/c08-controller/CONTROL_AUTHORITY.md)。）
+
+| 记录／资格 | 唯一持久权威与写入边界 | 接收方能做什么 |
+| --- | --- | --- |
+| 人员／服务主体、会话、ServiceApproval、opaque Credential、AccessToken | 独立模式本地Controller；套件模式指定签发Controller。I1—I4串行处理批准、签发、注销与轮换 | 保存本地subject映射、明确远端引用及当前有界证据；不能改远端状态，也不能在签发方失联时转成本地签发 |
+| 本地授权、trust_pairing及其proof／activation | 各服务自己的库；I5只激活本端记录，另一端单独提交 | 远端active只是有期限的观察；映射主体不等于批准，证书身份不等于设备动作权限 |
+| 定义、运行、arm及组织运行批准 | Seamer运行域持有其版本和生命周期；指定签发方持有服务身份／ServiceApproval，不拥有Seamer的run状态 | Controller保存精确运行引用和本地RunGrant；签发方不能用更新ServiceApproval代替发布、布防或恢复 |
+| Controller RunGrant、控制holder及设备授权State／Evidence | 每个目标Controller在自身库裁决；RunGrant来自配对Seamer的请求与本地交集，holder按T3／T4，State／Evidence按第10.4节 | Seamer保存逐目标receipt和运行关联；单目标成功不证明全部目标成功，远端记录不作同库外键 |
+| RequestContext及每种操作的请求身份／receipt | 实际受理操作的服务；使用该操作已定义的RequestKey与版本 | issuer负责认证而非代替目标去重；不得套用DF04第3节历史context参与唯一键去改当前控制／命令身份 |
+| 撤销operation、固定目标集及拒绝floor | 相应权威受理I1／I6；每个目标独立持久化本地floor、屏障和receipt | 目标只确认自己的范围；汇总者须原固定集合全部可靠确认才applied，不按在线节点缩减集合 |
+| WS票据、订阅owner及面板委托 | 具体接收服务拥有单次票据／订阅及其当前授权；人员session仍归签发方，面板委托不产生新主体 | 人员与服务订阅走各自通道，service的session为null；不能伪造人员票据连接，也不能沿用旧矩阵取消独立服务WS |
+
+**必须保持的并发次序。** 服务主体的认证与用途判定先于任何新请求的额度消费和领域受理；事务内再次核对本地当前修订／floor。签发与注销在签发方同writer排序，I4保存token与session_audience，I1捕获固定目标，不能先提交token再异步补audience。目标T1接收后若撤销先于T2，匹配许可不得派发；已经经过发送切点的动作保留在途或unknown，不伪报未发送。证据采集和远端确认发生在事务外，以有界原件参与本地提交；任何COMMIT未知均保留保护、按原身份查询，不生成新设备请求来补偿。
+
+### 11.3 实施交接与关闭判据
+
+本节关闭C07的service＋manual产品取舍、相关当前操作定位及身份子域的持久权威／事务归属。C01生成时须产生新选择身份，显式移除service＋manual接受分支并补齐第9节身份接口；不修改旧panel4制品的字节或批量翻转候选批准标志。DF04负责产品表、唯一键与writer实现，Controller／Seamer负责实际主体守卫，GUI保持人员动作确认；不新增同义参考包。
+
+实现验收归入既有A01／A02／A09／A10及FA／ILT：有效service凭据调用五项控制写和三项发布／布防／恢复写均拒绝，且无请求受理／预算消费／版本预留；service＋manual命令拒绝；有效human仍须目标权限及控制条件；有效Seamer自动动作保持允许，未配对、错arm／grant／范围均拒绝；撤销与受理／发送、注销与签发两种顺序均覆盖；跨目标离线保持未确认。拒绝可以有受限安全审计，不能产生业务成功记录。结构、生成接受集和真实服务鉴权分别取证，不能用同一Schema检查替代三者。
+
+本节核验仅为当前文件与路由映射检查，未执行上述运行验收。C07剩余设计项是证书／秘密及认证期限的精确发布profile、与C12一致的可信时间／恢复引导；IA中未涉及本节的实质取舍继续按整体清单核对。TLS、平台秘密存储、真实数据库和设备效果均在实现后验收，不能以这些尚未运行撤销本节已明确的设计结论。

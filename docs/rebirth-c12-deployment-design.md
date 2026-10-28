@@ -97,6 +97,8 @@ SecretStore的首期具体实现、平台主密钥装载及跨机恢复按[DF06�
 
 ## 5. DEP05：NodeCG只读输出profile
 
+2026-10-29采用更新：[C11第9节](rebirth-c11-nodecg-design.md#9-首期采用与实现出口)已确定本节的独立只读listener、三路兼容输出及默认私有／显式公开路线；其容量与部署模式以该节为准。下文推荐措辞不再表示这一局部选择尚待批准。实际listener、安装配置、网络隔离与浏览器证据仍须实施验收；本更新不宣告其他DEP项目完成。
+
 **固定源码事实。** 在旧提交`5d60491d7158f87fc27b564f510d321074aedac9`，三路页面均只调用`nodecg.Replicant(name).on("change", handler)`，没有Replicant赋值、sendMessage、其他NodeCG API或直接网络请求。字幕／比分读取graphicsData，排期读取scheduleData。两bundle构建同时包含dashboard，不能把整个构建目录当只读输出目录。原HTML均有`#2f2f2f`背景，字体名称存在回退，不是已证明透明或跨平台像素相同。（来源：[字幕](https://github.com/ikenainanodesu/leafseamer-legacy/blob/5d60491d7158f87fc27b564f510d321074aedac9/bundles/graphics-package/src/graphics/lower-third.tsx#L25)、[比分](https://github.com/ikenainanodesu/leafseamer-legacy/blob/5d60491d7158f87fc27b564f510d321074aedac9/bundles/graphics-package/src/graphics/scoreboard.tsx#L13)、[排期](https://github.com/ikenainanodesu/leafseamer-legacy/blob/5d60491d7158f87fc27b564f510d321074aedac9/bundles/schedule-manager/src/graphics/schedule-display.tsx#L9)、两bundle的vite.config.mjs及graphics HTML；本轮只读核查。）
 
 **推荐实现边界。** 在Controller交付的NodeCG桥接bundle内提供独立只读HTTP／WS listener，仅导出经批准的三路投影和对应静态依赖闭包。保留旧React组件、CSS、动画、布局及显示语义；入口加载一个有限读取兼容层，再运行旧渲染组件。此层属于NodeCG兼容传输适配，不在LeafSeamer GUI自研字幕／比分／排期渲染，也不宣称支持任意NodeCG页面。

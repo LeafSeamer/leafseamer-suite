@@ -2,7 +2,7 @@
   "format": "sdk-wire-handoff/1",
   "sdk_repository": "https://github.com/LeafSeamer/leafseamer-sdk.git",
   "suite_repository": "https://github.com/LeafSeamer/leafseamer-suite.git",
-  "sdk_main_commit": "cf2d074b0b8307d74a1ebec8b092f9d94d1f9dbf",
+  "sdk_main_commit": "eef557ddfcf8cc53bf1c7258502e841b96accb1b",
   "packages": [
     {
       "name": "scope-release",
@@ -1085,11 +1085,112 @@
         "network_tests_executed": 0,
         "device_tests_executed": 0
       }
+    },
+    {
+      "name": "panel-results",
+      "commit": "5209d06af1d91dbb41923d28f33943ed3c0158be",
+      "report": "contracts/panel-results/report.json",
+      "expected": {
+        "cases_passed": 652,
+        "views": 21,
+        "variants": 23,
+        "methods": 35,
+        "top_level_field_bindings": 181,
+        "providers": 14,
+        "runtime_projection_tests_executed": 0,
+        "authority_provider_tests_executed": 0,
+        "database_tests_executed": 0,
+        "browser_tests_executed": 0,
+        "network_tests_executed": 0,
+        "device_tests_executed": 0
+      },
+      "files": {
+        "contracts/panel-results/bindings.json": "f146637240cf6ca04e7c6f68f4abc8553c78e01ceb3c5096e2f292f64fef466c",
+        "contracts/panel-results/build.py": "b1f66d7f0a4c22196007a526d22498560742182bd6d4e02ce8f9e5281acef52b",
+        "contracts/panel-results/catalog.py": "2593e333e784dbca62908062679f55da008b45cebd26013d6c95d05a4ddbd6ef",
+        "contracts/panel-results/check.py": "6f3943c06780f6e48ac64bf9fd5f45b266e89a71d12cb57605a88619ac643b48",
+        "contracts/panel-results/fixtures.py": "a7fa8c924e66db5a4fc62302d92a2dc85c70cff82ee6f326ce727929ad0eb7b7",
+        "contracts/panel-results/README.md": "cd809a2f09a5d3bfbcdf0a0866764ecb715fef238a2475cf32abb6c86d116ebb",
+        "contracts/panel-results/result.schema.json": "c694feb6bb0205754b2aa1bf229d875e3628a6e7d117846b2aaf0e578d35d3d8",
+        "contracts/panel-results/RESULTS.md": "c8751a57042fe46369ff5af0a2e7a066ed3c25bb4219c8a33e2e486a307b905c",
+        "contracts/panel-results/source/legacy-cases.json": "70f8d5a6bfcb21367bc79216bdf19608d65332e2efad475572dff4bd344db72a",
+        "contracts/panel-results/sources.json": "2677760a1122dc8568732fc61f8ac4862a8da1bebfcefe7037dece932da8321f",
+        "contracts/event-integration/preview/models.schema.json": "f1c7a1a2a2ff4dd0834f05a8eb87033c7bb644e673a7b92d1f830f4e8ac1d6b5",
+        "contracts/event-integration/preview/controller.openapi.json": "794b108b73cbc3ca21579888c01a2784a68efc5693bae8f0ba29df3b97174eed",
+        "contracts/event-integration/preview/seamer.openapi.json": "ebf630c970a64b2a897fbc2f3d975d8db158c9c956bffca19f669d0d05bf5bcf",
+        "contracts/event-integration/preview/selection.json": "efdd3a57be14c408764b3813a04b12ffd3bee57f0fdd31cbce9daac828fd6340",
+        "contracts/panel-methods/bindings.json": "3349e2ccd265a6f0785457d27782dbbf77c7a3a31ddd5931f10edca428d08bb8",
+        "contracts/panel-results/report.json": "868943dd5cfc55df7469cd7e424b46557bc71c6808d99880e56edee37df3b931"
+      }
+    },
+    {
+      "name": "panel-integration",
+      "commit": "eef557ddfcf8cc53bf1c7258502e841b96accb1b",
+      "report": "contracts/panel-integration/report.json",
+      "expected": {
+        "cases_passed": 5972,
+        "models": 1463,
+        "operations": 201,
+        "ws_operations": 4,
+        "methods": 35,
+        "projection_methods": 17,
+        "invalidation_methods": 2,
+        "runtime_projection_tests_executed": 0,
+        "authority_provider_tests_executed": 0,
+        "database_tests_executed": 0,
+        "browser_tests_executed": 0,
+        "network_tests_executed": 0,
+        "device_tests_executed": 0
+      },
+      "files": {
+        "contracts/panel-integration/build.py": "5cb72ac8339fe4796614a18c2d6116ea00d3320e371c9dfadec34204a13a41f7",
+        "contracts/panel-integration/check.py": "4e7b211201be60a4f46d916ab20cbe94c2e4c57bfa0d71f9a79ce94a1d63aa78",
+        "contracts/panel-integration/preview/binding-map.json": "377bff2a3fd15c283e15f3c88800050b7560976716efe54c8c2f43c87f8a34a7",
+        "contracts/panel-integration/preview/controller.openapi.json": "b4d77bb252b1bc3598f9bc933297938a942a91c80f756f3544ead17db739294a",
+        "contracts/panel-integration/preview/frames.schema.json": "74017186a11ee4c73c98cd9705dc4c428665643c97faf102d480e4f321375504",
+        "contracts/panel-integration/preview/input.schema.json": "80900545d366d413be6a3987041070dc529914b47fd85f26e8906720e4a8b48c",
+        "contracts/panel-integration/preview/manifest.json": "fd03a61476374ca3d9cbfd48926ce0455353f22e570afb81f01d63e4489e4ad5",
+        "contracts/panel-integration/preview/method-registry.json": "4eea500650007d450afab918a8cfbd81c60cb80608874194498c10dd2e8c8301",
+        "contracts/panel-integration/preview/models.schema.json": "9e12b81ac9d9a3a0f63ad5ea5737ce7c3bdd76f1a63c259dd35757ce43901b1f",
+        "contracts/panel-integration/preview/panel-frames.schema.json": "1f00df5aaab74accac307a03b653c434da243459279b1d96923f60dc522357ed",
+        "contracts/panel-integration/preview/registry-map.json": "c117ca46b24a1b68df13e994d5264ebe57d0c2d780740ce5001c02f8b435708f",
+        "contracts/panel-integration/preview/result.schema.json": "87f44e6bc1073ffa2dc3919af2647ed674a5287805742485880149f14f8cf6bf",
+        "contracts/panel-integration/preview/seamer.openapi.json": "c6818231d89b4e5e5c12cde76fb789e4b36b2c794f3e1bd0f0262c0df8829821",
+        "contracts/panel-integration/preview/selection.json": "284bc9d50448186b00d1e730c47252f38145a9bf7c5e466ce7643d15cdd1d391",
+        "contracts/panel-integration/preview/worker-ipc.schema.json": "3d17dfdd43fc10c962f6423ad66b2c23de3d8086ffb2f16b9bd444a76ae99b64",
+        "contracts/panel-integration/preview/worker-messages.json": "91e63d7b62005a880bdffc97fbc42799c58a38f817e93f3616b7ac292346e314",
+        "contracts/panel-integration/PROTOCOL.md": "730e5be65313bb143ddae3d159b8829ed8b7701572d7df668a17803bb5bbeada",
+        "contracts/panel-integration/README.md": "2eaae78b694fc236d2fbd992658e75f9e63afde1c894d63e0f74f4e9c26f6b29",
+        "contracts/panel-integration/source/bundle.schema.json": "b6fd30c08babcd3adddb48d347253541c9607b2db36008cb15f448524b3bef3d",
+        "contracts/panel-integration/source/channel-v02-cases.json": "e6e3b604dc0669c6d25fa9af78d8580da7ddcba44f4f885b464bdd8eb03b1e9a",
+        "contracts/panel-integration/source/channel-v02.schema.json": "f6e71178af8ffc8a8d784aab1416a0a4e30fedbc589e2032171f9a9581b64a1f",
+        "contracts/panel-integration/source/method-registry-v02.json": "94dd15b4b265f8d212253751201dda37edd75d5801d2bd9fc2c18a702ac28733",
+        "contracts/panel-integration/sources.json": "9a1daaa79afbe13aab008e04fbba8405bfc3f569f6edbcc95687f121becb7a96",
+        "contracts/event-integration/preview/models.schema.json": "f1c7a1a2a2ff4dd0834f05a8eb87033c7bb644e673a7b92d1f830f4e8ac1d6b5",
+        "contracts/event-integration/preview/controller.openapi.json": "794b108b73cbc3ca21579888c01a2784a68efc5693bae8f0ba29df3b97174eed",
+        "contracts/event-integration/preview/seamer.openapi.json": "ebf630c970a64b2a897fbc2f3d975d8db158c9c956bffca19f669d0d05bf5bcf",
+        "contracts/event-integration/preview/selection.json": "efdd3a57be14c408764b3813a04b12ffd3bee57f0fdd31cbce9daac828fd6340",
+        "contracts/event-integration/preview/manifest.json": "f0a83d989c7733ade608487697801a694c5f9149cff67a34ccf1803ec3317f15",
+        "contracts/event-integration/preview/worker-ipc.schema.json": "9e1956794736e0651f6d9400b88b3682ce92a0daa94fdbf9b3fc480a7e41b329",
+        "contracts/event-integration/preview/worker-messages.json": "91e63d7b62005a880bdffc97fbc42799c58a38f817e93f3616b7ac292346e314",
+        "contracts/event-integration/preview/frames.schema.json": "0a426fa0a42e2480dcba6149907d0ae285e4481b71d4b4665ac0f484f541a79f",
+        "contracts/event-integration/preview/registry-map.json": "c117ca46b24a1b68df13e994d5264ebe57d0c2d780740ce5001c02f8b435708f",
+        "contracts/event-integration/preview/routing.json": "d5893e5ed5fa2672caa4674725facf05ddd8eddc2dcfcd1d73eb3f4925d7c79b",
+        "contracts/panel-methods/input.schema.json": "d384906672fdf79a9a8c46eb8ef3e06d0bb9174181993e3ffaa8e13f7e47d76d",
+        "contracts/panel-methods/bindings.json": "3349e2ccd265a6f0785457d27782dbbf77c7a3a31ddd5931f10edca428d08bb8",
+        "contracts/panel-methods/fixtures.py": "da1609cd85f2056328c58ace04e0484b17ae0f1e47d197452035f7fd96de09ac",
+        "contracts/panel-results/result.schema.json": "c694feb6bb0205754b2aa1bf229d875e3628a6e7d117846b2aaf0e578d35d3d8",
+        "contracts/panel-results/bindings.json": "f146637240cf6ca04e7c6f68f4abc8553c78e01ceb3c5096e2f292f64fef466c",
+        "contracts/panel-results/fixtures.py": "a7fa8c924e66db5a4fc62302d92a2dc85c70cff82ee6f326ce727929ad0eb7b7",
+        "contracts/panel-results/source/legacy-cases.json": "70f8d5a6bfcb21367bc79216bdf19608d65332e2efad475572dff4bd344db72a",
+        "contracts/authorization/bindings.json": "9a9661272dd344dc97ffedc1022ac322f4abf7f6dd393a80f723f1807f44d3d4",
+        "contracts/panel-integration/report.json": "0718e57c04d9bf0dee2cc32a0fef3af7626cad56f224b76903156869bc5f3b3f"
+      }
     }
   ],
   "selection": {
-    "contract_id": "leafseamer.api.v1.events2",
-    "contract_digest": "sha256:104a1404590c97baaee4f8d0cab43deb25835c6d9a378ac4457bac819ae93919"
+    "contract_id": "leafseamer.api.v1.panel3",
+    "contract_digest": "sha256:eba90989adcae8a5e5a8b361643f4a338b3f74bfec05cfbd778f368d68786963"
   },
   "boundaries": {
     "stage0_complete": false,
@@ -1102,12 +1203,12 @@
       {
         "round": 1,
         "repository": "leafseamer-sdk",
-        "commit": "436728a3a113daebae502f8997f20f734942e5b6"
+        "commit": "5209d06af1d91dbb41923d28f33943ed3c0158be"
       },
       {
         "round": 2,
         "repository": "leafseamer-sdk",
-        "commit": "cf2d074b0b8307d74a1ebec8b092f9d94d1f9dbf"
+        "commit": "eef557ddfcf8cc53bf1c7258502e841b96accb1b"
       },
       {
         "round": 3,
@@ -1119,5 +1220,38 @@
       "leafseamer-sdk",
       "leafseamer-suite"
     ]
-  }
+  },
+  "runtime_artifact_selection": {
+    "contract_id": "leafseamer.api.v1.events2",
+    "contract_digest": "sha256:104a1404590c97baaee4f8d0cab43deb25835c6d9a378ac4457bac819ae93919"
+  },
+  "consumer_compatibility": [
+    {
+      "package": "wire-routing",
+      "selection": {
+        "contract_id": "leafseamer.api.v1.events2",
+        "contract_digest": "sha256:104a1404590c97baaee4f8d0cab43deb25835c6d9a378ac4457bac819ae93919"
+      },
+      "compatible_with_current": false,
+      "rebuild_required": true
+    },
+    {
+      "package": "http-envelope",
+      "selection": {
+        "contract_id": "leafseamer.api.v1.events2",
+        "contract_digest": "sha256:104a1404590c97baaee4f8d0cab43deb25835c6d9a378ac4457bac819ae93919"
+      },
+      "compatible_with_current": false,
+      "rebuild_required": true
+    },
+    {
+      "package": "typed-client",
+      "selection": {
+        "contract_id": "leafseamer.api.v1.events2",
+        "contract_digest": "sha256:104a1404590c97baaee4f8d0cab43deb25835c6d9a378ac4457bac819ae93919"
+      },
+      "compatible_with_current": false,
+      "rebuild_required": true
+    }
+  ]
 }

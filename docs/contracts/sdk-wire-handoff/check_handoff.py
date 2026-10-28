@@ -4,13 +4,14 @@ import copy
 import importlib.util
 from pathlib import Path
 import subprocess
+import uuid
 import rfc8785
 
 ROOT=Path(__file__).resolve().parent;SUITE=ROOT.parents[2]
 HELPER=ROOT.parent/'sdk-transport-handoff/check_handoff.py'
 spec=importlib.util.spec_from_file_location('fixed_handoff_helpers',HELPER)
 H=importlib.util.module_from_spec(spec);spec.loader.exec_module(H)
-NAMES=['scope-release','scope-recovery','channel-release','snapshot-consumer','projection-delta','event-integration','wire-json','wire-js','wire-static','wire-routing','wire-browser','http-envelope','typed-client','authorization','panel-methods']
+NAMES=['scope-release','scope-recovery','channel-release','snapshot-consumer','projection-delta','event-integration','wire-json','wire-js','wire-static','wire-routing','wire-browser','http-envelope','typed-client','authorization','panel-methods','panel-results','panel-integration']
 DESIGNS=['README.md','docs/ROADMAP.md','docs/rebirth-design-closure.md','docs/rebirth-readiness.md','docs/rebirth-df01-sdk-freeze.md','docs/rebirth-c05-event-sync-design.md','docs/rebirth-df04-storage-design.md','docs/rebirth-c09-extension-design.md']
 
 def package_report(package,files):
@@ -92,12 +93,93 @@ def inspect_panel(report,bindings,schema,authorization,models,apis):
 
 def inspect_new_sources(sdk,package,files):
     source=H.decode(files['contracts/'+package['name']+'/sources.json'])
-    raw=H.read_fixed(sdk,source['sdk_source_commit'],source['inputs'])
+    raw=H.read_fixed(sdk,source.get('sdk_source_commit',source.get('source_commit')),source['inputs'])
     H.require(all(H.sha(raw[p])==h and raw[p]==files[p] for p,h in source['inputs'].items()),'SDK来源提交原件')
     for p,item in source['copied_sources'].items():
         H.require(item['repository']=='https://github.com/LeafSeamer/leafseamer-suite','副本来源仓库')
         original=H.read_fixed(SUITE,item['commit'],{item['path']:item['sha256']})
         H.require(original[item['path']]==files[p],'Suite副本原件')
+
+def inspect_results(report,bindings,schema,methods):
+    H.require(all(bindings[k] is False for k in ['approved','runtime_ready','installed']) and bindings['requires_new_complete_selection'],'结果候选资格')
+    H.require(set(bindings['methods'])==set(methods['methods']) and len(bindings['views'])==21 and len(bindings['plans'])==23,'结果覆盖')
+    H.require(bindings['coverage_unit']=='variant_top_level_output_field' and sum(len(p['fields']) for p in bindings['plans'].values())==bindings['output_field_count']==181,'顶层来源计数')
+    for name,plan in bindings['plans'].items():
+        H.require(set(plan['fields'])==set(schema['$defs'][name]['properties']),'结果字段遗漏')
+        for item in plan['fields'].values():
+            H.require(item['kind'] in ['source','provider'],'未知来源类型')
+            if item['kind']=='provider':H.require(item['provider'] in bindings['providers'],'结果提供者遗漏')
+    for method,row in bindings['methods'].items():
+        H.require(row['view']==methods['methods'][method]['result_view'] and row['variant'] in bindings['plans'],'结果方法变体')
+        H.require(row['ready_for_installation'] is False and row['raw_response_allowed'] is False,'结果不得自动安装或透传')
+    H.require(report['cases_passed']==652 and report['providers']==len(bindings['providers'])==14,'结果报告范围')
+    H.require(all(report[k]==0 for k in ['runtime_projection_tests_executed','authority_provider_tests_executed','database_tests_executed','browser_tests_executed','network_tests_executed','device_tests_executed']),'结果实测伪标')
+
+def inspect_panel_integration(report,files,methods,results):
+    base='contracts/panel-integration/preview/'
+    read=lambda n:H.decode(files[base+n])
+    manifest=read('manifest.json');selection=read('selection.json');registry=read('method-registry.json');mapping=read('binding-map.json');graph=read('models.schema.json');defs=graph['$defs']
+    H.require(selection['contract_id']=='leafseamer.api.v1.panel3' and selection['contract_digest']=='sha256:'+H.sha(rfc8785.dumps(manifest)),'panel3选择身份')
+    H.require(all(manifest[k] is False for k in ['approved','runtime_ready','advertisable']),'panel3资格伪标')
+    expected={p.removeprefix(base) for p in files if p.startswith(base)}-{'selection.json','manifest.json'}|{'PROTOCOL.md'}
+    H.require(set(manifest['artifacts'])==expected,'panel3制品覆盖')
+    for n,h in manifest['artifacts'].items():H.require(H.sha(files[('contracts/panel-integration/' if n=='PROTOCOL.md' else base)+n])==h,'panel3制品字节')
+    H.require(registry['registry_ref']==dict(revision=registry['registry']['revision'],digest=H.sha(rfc8785.dumps(registry['registry']))),'Registry摘要')
+    rows={r['method']:r for r in registry['registry']['methods']}
+    H.require(rows==mapping['methods'] and set(rows)==set(methods['methods']) and len(rows)==35,'Registry完整方法')
+    for method,row in rows.items():
+        H.require(row['mode']==methods['methods'][method]['mode'],'方法用途变更')
+        for kind,name in [('input',methods['methods'][method]['input_definition']),('result',results['methods'][method]['variant'])]:
+            doc=read(kind+'.schema.json');binding=dict(schema_id=doc['$id'],definition=name,schema_digest=H.sha(rfc8785.dumps(doc)))
+            H.require(row[kind+'_schema_ref']==binding and name in doc['$defs'],'SchemaRef文档闭包绑定')
+        branch=next(c for c in defs['panel__Service_BoundIntent']['allOf'] if c.get('if',{}).get('properties',{}).get('method',{}).get('const')==method)
+        H.require(branch['then']['properties']['normalized_arguments']['properties']['schema_ref']=={'const':row['input_schema_ref']},'服务Intent旧绑定')
+        branch=next(c for c in defs['panel__Service_RequestReceipt']['allOf'] if c.get('if',{}).get('properties',{}).get('method',{}).get('const')==method)
+        H.require(branch['then']['properties']['projection']['properties']['schema_ref']=={'const':row['result_schema_ref']},'服务结果旧绑定')
+    H.require(sum(r['subscription_mode']=='projection' for r in rows.values())==17 and sum(r['subscription_mode']=='invalidation' for r in rows.values())==2,'订阅用途改变')
+    for name,key in [('panel__Channel_ActivationRef','registry_ref'),('panel__Service_PrepareActivation','expected_registry_ref'),('panel__Bundle_Manifest','registry_ref')]:H.require(defs[name]['properties'][key]=={'const':registry['registry_ref']},'激活Registry未固定')
+    H.require(set(defs['panel__Channel_Result']['properties']['projection_state']['enum'])=={'available','unavailable','not_applicable'},'受理与投影未分离')
+    operations=0
+    for authority in ['controller','seamer']:
+        api=read(authority+'.openapi.json');H.require(api['info']['version']==selection['contract_id'] and len(api['components']['schemas'])==len(defs),'完整API版本')
+        operations+=sum(len(v) for v in api['paths'].values())
+    H.require(report['selection']==selection and report['models']==len(defs)==1463 and report['operations']==operations==201 and report['cases_passed']==5972,'panel3报告覆盖')
+    H.require(all(report[k]==0 for k in ['runtime_projection_tests_executed','authority_provider_tests_executed','database_tests_executed','browser_tests_executed','network_tests_executed','device_tests_executed']),'panel3实测伪标')
+    return selection
+
+def consumer_files(manifest):
+    files={}
+    for package in manifest['packages']:
+        if package['name'] not in ['wire-routing','http-envelope','typed-client']:continue
+        for p,h in package['files'].items():
+            H.require(p not in files or files[p]==h,'客户端固定快照版本冲突');files[p]=h
+    return files
+
+def record_consumer_probe(sdk,node):
+    manifest=H.decode((ROOT/'manifest.json').read_bytes());expected=consumer_files(manifest)
+    files=H.read_fixed(sdk,manifest['sdk_main_commit'],expected)
+    H.require(all(H.sha(raw)==expected[p] for p,raw in files.items()),'消费者当前提交原件漂移')
+    root=SUITE/'logs'/('consumer-check-'+uuid.uuid4().hex);root.mkdir(parents=True)
+    for p,raw in files.items():
+        path=root/H.path_name(p);path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(raw)
+    inputs=dict(previous=manifest['runtime_artifact_selection'],current=manifest['selection'])
+    path=root/'selections.json';path.write_bytes(H.encode(inputs))
+    result=subprocess.run([str(node),'--disallow-code-generation-from-strings',str(ROOT/'check_consumers.mjs'),str(root),str(path)],capture_output=True)
+    H.require(result.returncode==0,result.stderr.decode('utf8',errors='replace'))
+    receipt=H.decode(result.stdout)
+    receipt.update(format='sdk-consumer-selection-check/1',approved=False,runtime_ready=False,sdk_commit=manifest['sdk_main_commit'],previous=inputs['previous'],current=inputs['current'],snapshot_files=expected,node_sha256=H.sha(node.read_bytes()),probe_sha256=H.sha((ROOT/'check_consumers.mjs').read_bytes()))
+    (ROOT/'consumer-report.json').write_bytes(H.encode(receipt))
+
+def inspect_consumers(manifest,receipt,http):
+    previous=manifest['runtime_artifact_selection'];current=manifest['selection']
+    H.require(previous==http['selection'] and current!=previous,'客户端选择未区分')
+    expected=[dict(package=n,selection=previous,compatible_with_current=False,rebuild_required=True) for n in ['wire-routing','http-envelope','typed-client']]
+    H.require(manifest['consumer_compatibility']==expected,'消费者兼容范围伪标')
+    H.require(receipt['format']=='sdk-consumer-selection-check/1' and receipt['all_passed'] and receipt['approved'] is False and receipt['runtime_ready'] is False,'消费者探针资格')
+    H.require(receipt['sdk_commit']==manifest['sdk_main_commit'] and receipt['previous']==previous and receipt['current']==current and receipt['snapshot_files']==consumer_files(manifest),'消费者原件绑定')
+    H.require(receipt['probe_sha256']==H.sha((ROOT/'check_consumers.mjs').read_bytes()) and len(receipt['node_sha256'])==64,'探针制品绑定')
+    names=['动态代码生成被禁用']+[n+':'+label for n in ['wire-routing','http-envelope','typed-client'] for label in ['原选择可构造','新选择拒绝','原ID错摘要拒绝','新ID原摘要拒绝','原ID新摘要拒绝']]+['未发生传输调用']
+    H.require(receipt['checks']==[dict(name=n,passed=True) for n in names] and receipt['cases_passed']==17 and receipt['dynamic_codegen_blocked'] and receipt['transport_calls']==0,'消费者真实构造记录')
 
 def inspect_browser(receipt,files,routing):
     H.require(receipt['format']=='wire-browser-receipt/1' and receipt['approved'] is False and receipt['runtime_ready'] is False,'浏览器收据资格')
@@ -144,7 +226,7 @@ def run(sdk):
     check('最终SDK提交',previous==manifest['sdk_main_commit'])
     read=lambda group,p:H.decode(snapshots[group]['contracts/'+group+'/'+p])
     event=read('event-integration','preview/manifest.json');selection=read('event-integration','preview/selection.json')
-    check('新完整选择',selection==manifest['selection'] and selection['contract_digest']=='sha256:'+H.sha(rfc8785.dumps(event)))
+    check('历史运行制品选择',selection==manifest['runtime_artifact_selection'] and selection['contract_digest']=='sha256:'+H.sha(rfc8785.dumps(event)))
     check('模型集合',len(read('event-integration','preview/models.schema.json')['$defs'])==1351)
     inv=read('wire-routing','preview/inventory.json')
     check('201API及52消息与281根',len(inv['operations'])==201 and len(inv['messages'])==52 and len(inv['schemas'])==281)
@@ -156,7 +238,12 @@ def run(sdk):
     panel=read('panel-methods','bindings.json');panel_schema=read('panel-methods','input.schema.json')
     panel_models=read('event-integration','preview/models.schema.json');panel_apis={a:read('event-integration','preview/'+a+'.openapi.json') for a in ['controller','seamer']}
     inspect_panel(reports['panel-methods'],panel,panel_schema,authorization,panel_models,panel_apis);check('面板35方法当前字段与授权交叉绑定',True)
-    for p in manifest['packages'][-2:]:inspect_new_sources(sdk,p,snapshots[p['name']]);check('固定双仓来源:'+p['name'],True)
+    results=read('panel-results','bindings.json');result_schema=read('panel-results','result.schema.json')
+    inspect_results(reports['panel-results'],results,result_schema,panel);check('21视图及181字段来源绑定',True)
+    current=inspect_panel_integration(reports['panel-integration'],snapshots['panel-integration'],panel,results)
+    check('当前完整选择',current==manifest['selection'])
+    consumers=H.decode((ROOT/'consumer-report.json').read_bytes());inspect_consumers(manifest,consumers,http);check('客户端选择实际构造记录',True)
+    for p in manifest['packages'][-4:]:inspect_new_sources(sdk,p,snapshots[p['name']]);check('固定双仓来源:'+p['name'],True)
     check('HTTP选择一致',http['selection']==selection)
     artifacts=read('typed-client','preview/manifest.json')['artifacts']
     check('类型生成产物集合',set(artifacts)=={'controller.d.ts','seamer.d.ts','operations.d.ts','bindings.json'})
@@ -184,19 +271,28 @@ def run(sdk):
         b=copy.deepcopy(authorization);change(b);denied('授权:'+label,lambda b=b:inspect_authorization(reports['authorization'],b,http))
     for label,change in [('伪安装',lambda b:b.update(installed=True)),('漏方法',lambda b:b['methods'].pop('controller.getMeta')),('降领域权限',lambda b:b['methods']['controller.submitCommand'].update(permission='status.read')),('漏当前字段',lambda b:b['methods']['controller.cancelCommand']['source_fields'].pop('body.expected_state_ref')),('透传原响应',lambda b:b['methods']['seamer.getRun'].update(raw_response_allowed=True))]:
         b=copy.deepcopy(panel);change(b);denied('面板:'+label,lambda b=b:inspect_panel(reports['panel-methods'],b,panel_schema,authorization,panel_models,panel_apis))
+    for label,change in [('伪安装',lambda b:b.update(installed=True)),('漏字段',lambda b:next(iter(b['plans'].values()))['fields'].pop(next(iter(next(iter(b['plans'].values()))['fields'])))),('未知提供者',lambda b:next(v for p in b['plans'].values() for v in p['fields'].values() if v['kind']=='provider').update(provider='missing'))]:
+        b=copy.deepcopy(results);change(b);denied('结果:'+label,lambda b=b:inspect_results(reports['panel-results'],b,result_schema,panel))
+    for label,change in [('选择混用',lambda m:m.update(selection=m['runtime_artifact_selection'])),('伪兼容',lambda m:m['consumer_compatibility'][0].update(compatible_with_current=True))]:
+        m=copy.deepcopy(manifest);change(m);denied('消费者:'+label,lambda m=m:inspect_consumers(m,consumers,http))
+    for label,change in [('漏断言',lambda r:r['checks'].pop()),('传输调用',lambda r:r.update(transport_calls=1)),('探针漂移',lambda r:r.update(probe_sha256='0'*64))]:
+        r=copy.deepcopy(consumers);change(r);denied('构造记录:'+label,lambda r=r:inspect_consumers(manifest,r,http))
     return dict(format='sdk-wire-handoff-report/1',all_passed=True,cases_passed=len(checks),checks=checks,sdk_main_commit=previous,
       packages=len(reports),fixed_sdk_file_bindings=sum(len(p['files']) for p in manifest['packages']),browser_checks_recorded=count,
       dependency_file_bindings_recorded=sum(p.get('dependency_files_recorded',0) for p in manifest['packages']),http_envelope_runtime_checks_recorded=12076,typed_client_runtime_checks_recorded=862,
       authorization_static_checks_recorded=655,panel_format_checks_recorded=771,panel_methods_installed=False,real_authorization_tests_executed=0,
+      panel_result_checks_recorded=652,panel_integration_checks_recorded=5972,current_selection=current,runtime_artifact_selection=selection,selection_consumer_checks_recorded=17,selection_consumer_probe_rerun=False,
       stage0_complete=False,historical_behavior_rerun=False,browser_rerun=False,dependency_installation_rerun=False,device_tests_executed=0,input_sha256=local_inputs())
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--sdk',type=Path)
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--sdk',type=Path);parser.add_argument('--node',type=Path,help='显式运行固定消费者构造检查并更新独立记录')
     group=parser.add_mutually_exclusive_group();group.add_argument('--report',action='store_true');group.add_argument('--check-report',action='store_true');args=parser.parse_args()
     if args.check_report:
+        if args.node:parser.error('--node不能与--check-report同时使用')
         r=H.decode((ROOT/'report.json').read_bytes());H.require(r['all_passed'] and r['input_sha256']==local_inputs(),'本仓输入漂移');print(H.json.dumps(dict(all_passed=True,bindings=len(r['input_sha256']),behavior_rerun=False)))
     else:
         if not args.sdk:parser.error('需要--sdk指定SDK仓库')
+        if args.node:record_consumer_probe(args.sdk.resolve(),args.node.resolve())
         r=run(args.sdk.resolve())
         if args.report:(ROOT/'report.json').write_bytes(H.encode(r))
         print(H.json.dumps({k:v for k,v in r.items() if k not in ('checks','input_sha256')},ensure_ascii=False))

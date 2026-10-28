@@ -1,7 +1,7 @@
 {
   "format": "sdk-wire-handoff-report/1",
   "all_passed": true,
-  "cases_passed": 98,
+  "cases_passed": 117,
   "checks": [
     {
       "name": "交接格式",
@@ -196,11 +196,35 @@
       "passed": true
     },
     {
+      "name": "固定报告及全部输入:panel-results",
+      "passed": true
+    },
+    {
+      "name": "main包含:panel-results",
+      "passed": true
+    },
+    {
+      "name": "提交顺序:panel-results",
+      "passed": true
+    },
+    {
+      "name": "固定报告及全部输入:panel-integration",
+      "passed": true
+    },
+    {
+      "name": "main包含:panel-integration",
+      "passed": true
+    },
+    {
+      "name": "提交顺序:panel-integration",
+      "passed": true
+    },
+    {
       "name": "最终SDK提交",
       "passed": true
     },
     {
-      "name": "新完整选择",
+      "name": "历史运行制品选择",
       "passed": true
     },
     {
@@ -236,11 +260,31 @@
       "passed": true
     },
     {
+      "name": "21视图及181字段来源绑定",
+      "passed": true
+    },
+    {
+      "name": "当前完整选择",
+      "passed": true
+    },
+    {
+      "name": "客户端选择实际构造记录",
+      "passed": true
+    },
+    {
       "name": "固定双仓来源:authorization",
       "passed": true
     },
     {
       "name": "固定双仓来源:panel-methods",
+      "passed": true
+    },
+    {
+      "name": "固定双仓来源:panel-results",
+      "passed": true
+    },
+    {
+      "name": "固定双仓来源:panel-integration",
       "passed": true
     },
     {
@@ -394,11 +438,43 @@
     {
       "name": "面板:透传原响应",
       "passed": true
+    },
+    {
+      "name": "结果:伪安装",
+      "passed": true
+    },
+    {
+      "name": "结果:漏字段",
+      "passed": true
+    },
+    {
+      "name": "结果:未知提供者",
+      "passed": true
+    },
+    {
+      "name": "消费者:选择混用",
+      "passed": true
+    },
+    {
+      "name": "消费者:伪兼容",
+      "passed": true
+    },
+    {
+      "name": "构造记录:漏断言",
+      "passed": true
+    },
+    {
+      "name": "构造记录:传输调用",
+      "passed": true
+    },
+    {
+      "name": "构造记录:探针漂移",
+      "passed": true
     }
   ],
-  "sdk_main_commit": "cf2d074b0b8307d74a1ebec8b092f9d94d1f9dbf",
-  "packages": 15,
-  "fixed_sdk_file_bindings": 865,
+  "sdk_main_commit": "eef557ddfcf8cc53bf1c7258502e841b96accb1b",
+  "packages": 17,
+  "fixed_sdk_file_bindings": 923,
   "browser_checks_recorded": 31268,
   "dependency_file_bindings_recorded": 2564,
   "http_envelope_runtime_checks_recorded": 12076,
@@ -407,6 +483,18 @@
   "panel_format_checks_recorded": 771,
   "panel_methods_installed": false,
   "real_authorization_tests_executed": 0,
+  "panel_result_checks_recorded": 652,
+  "panel_integration_checks_recorded": 5972,
+  "current_selection": {
+    "contract_id": "leafseamer.api.v1.panel3",
+    "contract_digest": "sha256:eba90989adcae8a5e5a8b361643f4a338b3f74bfec05cfbd778f368d68786963"
+  },
+  "runtime_artifact_selection": {
+    "contract_id": "leafseamer.api.v1.events2",
+    "contract_digest": "sha256:104a1404590c97baaee4f8d0cab43deb25835c6d9a378ac4457bac819ae93919"
+  },
+  "selection_consumer_checks_recorded": 17,
+  "selection_consumer_probe_rerun": false,
   "stage0_complete": false,
   "historical_behavior_rerun": false,
   "browser_rerun": false,
@@ -414,16 +502,18 @@
   "device_tests_executed": 0,
   "input_sha256": {
     "docs/contracts/sdk-transport-handoff/check_handoff.py": "51dc5c8860244083f89269ffaa541a3d178a75bf0ee71b156d66548554437f7e",
-    "docs/contracts/sdk-wire-handoff/check_handoff.py": "cf5b0c5679a30e31da142757b9611f136f074654f300ee9050520a470b7889e5",
-    "docs/contracts/sdk-wire-handoff/manifest.json": "baa85148c99e65767f26745b2f29317dd436e21c26cd595dd69bf42406b43c93",
-    "docs/contracts/sdk-wire-handoff/README.md": "b6a90281d2e7268e62650463c21d6a8211eabf0a8ae7b1f53c8c0497f951fcd8",
+    "docs/contracts/sdk-wire-handoff/check_consumers.mjs": "f514bbff1de62d97234dbc3932dee0c06542ea887def078da481c2b64d3a9847",
+    "docs/contracts/sdk-wire-handoff/check_handoff.py": "f9de69a58d18be65152be4bb27d5fa655f759098cf33115caa38666a9638820e",
+    "docs/contracts/sdk-wire-handoff/consumer-report.json": "8b8967d971814a60024d03845d93246b1fa6276300c1b4118a69b0939b576a8a",
+    "docs/contracts/sdk-wire-handoff/manifest.json": "8741fbfd3d3a56e7307f696af3968f994a28092ed0b1ed42a3ce63d9f37831e1",
+    "docs/contracts/sdk-wire-handoff/README.md": "bb8ae837e3ce550f1c66fa42d04a9a8137f2d0a5202e5f2c533ce7c50feb8b7c",
     "docs/rebirth-c05-event-sync-design.md": "9897fcbbab5352d20f596217e6cd5e06478f0b181736aff344b685e6cde986c7",
-    "docs/rebirth-c09-extension-design.md": "d96d043304a059ecbe2c22b50a2c25a15b064d84f4b66305b5e12ce3561aec77",
-    "docs/rebirth-design-closure.md": "f9d8dd540e9021bb9cb75539f86eddf110a03b6aeda28da64d28f4af90b0c4da",
-    "docs/rebirth-df01-sdk-freeze.md": "9272c49d3477fe3211b2951f4d452a33bab9441cec799517b68625b44e298124",
+    "docs/rebirth-c09-extension-design.md": "5a41a0f97326798279ede618be4af065293ef8342606d7d3e17b8612420dbe4c",
+    "docs/rebirth-design-closure.md": "bf3024a45b62139417f1f6d5417f1a3066eb0589fa7dc01ea40e6a5a2a535639",
+    "docs/rebirth-df01-sdk-freeze.md": "1ede3d786be2b1fe8cb143f4ba13157b65b3293c80949e81c3b8607e7374319e",
     "docs/rebirth-df04-storage-design.md": "362b109c17d94c43537f9d47b8d0b9c1f8026b74e394e08f94ae7b7d9d0a36ba",
-    "docs/rebirth-readiness.md": "0a5a9f81d3862becac43aa10536246fe76d7488566de18da5a0463310323a94b",
-    "docs/ROADMAP.md": "4da1d544efa22633567c991d7764b5bb579c85bef4a2ef295c66a610dc771511",
-    "README.md": "9b70d8f05c741bad7076ca8c83f16f3eb08b37ff806cb40c82a4ee6ffd3cb744"
+    "docs/rebirth-readiness.md": "82b221cfd1db87648dba57e201e82933ccd7751608c0bc05299fa83be6fc87ae",
+    "docs/ROADMAP.md": "c6236fe9097eb2a7e04374a66c0e3768ed009a41602d1f60beb02953061c178b",
+    "README.md": "d26f69e4005c4ee408da026f5610d8c2e6f41802b53d64b5dc8421027553c3d3"
   }
 }

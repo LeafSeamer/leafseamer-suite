@@ -302,3 +302,24 @@ queued／awaiting_local_approval／awaiting_secret可CAS取消，清理未发布
 | DPT56 | 业务代理停机时CLI可查原，新代鉴权恢复后GUI显示同operation；跨主机部分成功不伪称全局原子 |
 
 本节关闭的是请求、权威、持久关联和故障交互的设计选择。SDK需生成新的维护HTTP、DTO及独立本机协议；Suite实现agent／CLI／helper／安装账本，Controller与Seamer实现受权代理及各库备份提供者，GUI实现计划、进度、分级备份、密文导入下载和本机批准提示。它们均为产品实施任务；此处没有实现或运行这些接口，不改变旧panel4机器制品和approved／runtime_ready状态，也不代批发行更新时间来源。
+
+## 11. 首期部署profile与发行绑定采用
+
+[DF05第10节](rebirth-df05-release-design.md#10-首期发行通道与部署组合映射)作为DEP01／DEP02／DEP07的完整发行输入。DeploymentPlan仍是受保护本机配置，ReleaseManifest仍是发行者提供的不可变组合；不能将用户地址／目录／secret_ref写进公开发行清单，也不能用本机计划批准未经信任验证的新二进制。
+
+| 部署profile | 必须选择的产品与宿主角色 | 可省略部分与不得省略的闭包 |
+| --- | --- | --- |
+| windows-native-controller | Controller、GUI、SDK生成制品、Suite本机agent／安装工具，Controller独立监督器及所需原生时钟／存储运行时 | 不要求Seamer、NodeCG、Docker或Nginx；不能因独立模式省略身份、保护账本、监督与维护权威 |
+| linux-compose-suite | 指定身份Controller、Seamer、GUI、SDK制品、Suite宿主agent及辅助程序、Nginx；逐服务列已核验镜像和独立数据卷 | NodeCG可选；选中时补其真实运行时／数据备份、只读bridge和输出闭包；业务容器不得获得宿主安装权限 |
+| linux-native | 每个选中的Controller／Seamer及其监督器、SDK、Suiteagent，使用GUI时包含GUI与对应HTTPS入口 | 单Controller保持独立，套件模式才要求Seamer；Nginx按实际入口选择，不能隐含依赖未安装代理 |
+| split-control | 每主机独立选择上述已验profile及manifest，现场Controller唯一拥有设备；跨主机peer／身份／通道边明确列入计划 | 不要求异构主机共享同一个平台manifest；不能因聚合计划通过声称原子部署或现场网络可达 |
+
+五仓组件来源登记与实际安装子集分开。安装器从选中entrypoints计算依赖闭包并向管理员展示展开结果；未声明依赖拒绝，不能靠安装时npm或下载未知运行时补齐。GUI、SDK为静态／库制品，不因此新增后台服务；第三方NodeCG、Nginx和VLC插件按各自受信制品绑定，不冒充第六个LeafSeamer业务仓库。
+
+DeploymentPlan新增component_binding_refs、protocol_binding_refs、storage_binding_refs及container_binding_refs，均指所选manifest内具名项；跨主机每条边保留两端manifest_ref和完整selection。计划固定的host_ref／service_id／instance_id／data_root_ref继续由本机受权配置解析；远端自报角色和端口不能作为绑定来源。完整plan_digest覆盖这些引用与实际选择，但不含秘密正文；任何组件／通道／存储／镜像／入口变更均建立新plan_id，不复用旧批准。
+
+ActiveDeployment保存同一完整release／组件／协议／data generation／配置组合及activation_operation_id；本机agent只在新代文件与数据库均验证、目标writer全退役、当前发行授权有效后一次CAS选择。逐镜像导入成功只是prepared事实，不能逐服务提前改active；启动失败保留protected／indeterminate并查原，不自动运行另一标签或半套旧组件。全新部署无需伪造旧writer退役证据，但必须从受信引导、单实例及无既有安装冲突的明确首次安装状态开始，缺installation.db本身不构成该证明。
+
+远端主机逐项记录各自维护和激活回执；部分成功时聚合状态保持未完成，已激活主机保持新保护域，不能以恢复旧数据的方式伪造全体回滚。与旧同版本主机尚兼容也不能忽略当前配对／授权／来源锁存。现场恢复及布防仍需独立人员动作，部署完成不授设备permit。
+
+本节将发行映射和部署子集选择转为产品实现任务。两主profile的安装、跨主机、容器导入／退役及失败恢复用例均待A20／A22／DPT实测；发行人工时间选择是C12剩余设计决定，不要求真实持有人或生产设备到场才编写安装器。

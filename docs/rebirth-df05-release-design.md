@@ -108,7 +108,7 @@ TUF格式由受测客户端处理；不得按业务JCS重签TUF metadata，也�
 3. 检查平台、CPU、依赖、ABI、协议及DB兼容计划；先有完整包再请求进入维护。错误结果返回具体缺项，不调用npm自动修复。
 4. Suite确认所有受影响服务的维护状态；停止新trigger和设备写，收集在途／unknown及固定账本，保存备份与未决清单。维护不主动操纵播出设备。
 5. 证明旧运行域／writer全部退役。存在unknown不等于必须丢记录或现场回滚；保留资源和暂停，新组合保护态只做核对，未解决前不开放相关动作。
-6. 按DF04迁移计划处理DB，切换活动组合；[C12 DEP07](rebirth-c12-deployment-design.md)进一步推荐在独立数据generation准备迁移，由安装管理SQLite事务选择完整release／data／配置引用，不依赖symlink或通用rename作为唯一active权威。多个文件／多个库不宣称原子提交，崩溃按日志逐项核对；此细化仍待审阅。
+6. 按DF04迁移计划处理DB，切换活动组合；[C12 DEP07](rebirth-c12-deployment-design.md)进一步推荐在独立数据generation准备迁移，由安装管理SQLite事务选择完整release／data／配置引用，不依赖symlink或通用rename作为唯一active权威。多个文件／多个库不宣称原子提交，崩溃按日志逐项核对；该组合选择已由C12第7、10—11节及本稿第10节采用，真实平台验证仍待实施。
 7. 新监督域以保护态启动，核对实际文件／能力、DB与领域不变量、配对和秘密；只读健康检查通过仍不自动布防。恢复写入依新的屏障／ready／明确恢复条件。
 8. 完成清单／报告并保留上一已验证组合及备份；GC只在其不再被恢复计划引用时进行。安装完成不等于现场自动化已恢复。
 
@@ -276,3 +276,51 @@ RA29—RA46均为计划；本轮仅核对源码、文档与离线边界算例。
 第8.1节固定TUF客户端加窄适配补丁作为实施路线：只补时间输入、逐步持久化与规范缓存轮换接口，复用原验证核心。补丁编写、完整锁、上游与故障测试、真实制品及签名演练列入实施／验收，不再把“尚无补丁代码”当成选择路线尚未成文。若实施发现固定上游无法满足这些接口，必须指出具体失败并重新裁决，不能改成隐藏private字段访问或自行验签。
 
 人工时间引导的运维采用决定与运行认证时钟profile分别记录；本节的阈值决定不代替它们。没有当前有效时间证据时更新拒绝，已有运行不因更新失败自动停止。首次安装独立渠道和阈值失陷带外重建沿8.2／8.5，渠道实际控制、持有人与两平台恢复证明仍属于发行前证据，不要求先取得它们才能编写产品。
+
+## 10. 首期发行、通道与部署组合映射
+
+本节固定C12整体发行映射，沿第9节已采用的三人阈值与TUF窄适配路线。第8.3节人工发行时间方式仍等待独立决定，本节不授予更新时间、真实签名或安装权限。源码生成、合成构建与验收可继续；真实发行持有人、发布渠道及时间证据必须在适用发行操作前取得。
+
+### 10.1 旧清单与下一版差集
+
+当前[清单Schema](contracts/df05/release-manifest.schema.json)仍是native-release/0.1.0-draft.1：protocols仅public／ipc／bootstrap，db_compatibility仅controller／seamer，capabilities.sqlite固定WAL／FULL，target只有一个可空container_image_digest，runtime只有一个Node条目。它不能完整描述当前已定的独立通道、监督journal或多镜像组合；结构通过不代表可安装首期产品。旧Schema及其报告保持原版本，以下字段在产品SDK生成时形成新清单版本，不给旧格式增加宽松未知字段。
+
+| 新版字段／绑定 | 必需内容与约束 | 取代的歧义 |
+| --- | --- | --- |
+| component_bindings | 保留五仓version／完整commit／来源归档／锁摘要；每组件列entrypoints、artifact_refs及requires组件集合；无运行入口的SDK仍以生成制品参与依赖 | 五仓组合身份不等于五个必须启动的进程；选择子集仍必须满足完整依赖闭包 |
+| protocol_bindings | 每项channel_id、完整契约ID／digest、schema_artifact_ref、端点角色、方向及使用组件；HTTP／人员WS／服务WS绑定同一完整selection，独立通道分别绑定原件 | 不从三个版本字符串推导所有通道兼容，不用SemVer major代替选择摘要 |
+| storage_bindings | owner_role、store_kind、schema_id、精确read/write revisions、engine_ref、connection_profile_ref、migration_refs和验收报告；同schema_id才可比较修订 | 不把不同库的revision=1当同格式，不把监督或安装库遗漏于兼容检查 |
+| runtime_bindings | runtime_id、kind、精确版本／制品／ABI／平台和使用组件；Node、原生helper及可选外部运行时分别列出 | NodeCG或Go helper不继承业务Node条目的ABI；构建工具不是必须启动的运行时 |
+| container_bindings | 每项image_id、image_archive_ref、config_digest、有序rootfs_diff_ids、平台、对应entrypoint、使用组件、容器环境报告；registry_manifest_digest仅在确实取得该原件时登记 | 镜像身份、导出归档hash及仓库manifest摘要分别绑定；一个字段不能代表多个服务镜像 |
+| deployment_profiles | profile_id、所需组件／入口／协议／存储／容器绑定、可选能力、宿主前提及所需报告；引用全部在本清单或显式受信外部依赖中闭合 | 按profile判断可部署集合，不因某单组件可加载放行整个组合 |
+
+这些数组按各自ID唯一；引用须指向清单内具名artifact及其最终字节hash。制品／运行入口的依赖无环，服务间双向通信关系另按通道边记录，不作为相互安装依赖；所有被选入口的传递依赖、协议和存储绑定必须齐全；同一入口不能绑定两套活跃公共selection。通道端点逐对匹配角色、方向、ID及digest；已有独立bootstrap／监督／设备／授时／导入／面板，以及新增source-worker／VLC／maintenance-local均按DF01第15节各自归属，不拼成通用消息联合。VLC辅助插件在外部OBS进程中运行，其本机插件制品及OBS平台兼容报告单列，不伪造为Controller内置设备worker。
+
+artifact的role新增明确image_archive、protocol_schema、configuration_template和migration等交付类别；模板及迁移文件只交受信安装器的固定入口处理，不提供任意包内脚本执行。动态依赖仍须bundled完整字节或明确host前提及环境报告；宿主前提不成立时预检拒绝，安装器不下载“latest”补齐。完整清单自身由TUF target的长度／hash绑定，归档与manifest仍沿第2节无环关联；运行profile、报告或协议制品不得反向嵌入最终manifest hash造成摘要环。
+
+### 10.2 存储与兼容判定
+
+| store_kind／权威 | 首期连接profile | 兼容、备份与恢复边界 |
+| --- | --- | --- |
+| controller_business／目标Controller，seamer_business／Seamer | DF04固定WAL／FULL，每连接foreign_keys=ON、busy_timeout=0、wal_autocheckpoint=0及领域要求的触发器配置 | 各库独立scope与Schema；同组件读写集合分别核对，实际迁移脚本和from/to摘要明确；不将读兼容当可写 |
+| supervisor_journal／独立监督器 | DF02第12节固定DELETE／EXTRA，单writer；外键／触发器等按实际具名布局回读 | journal_schema独立，不能用业务WAL报告证明；启动／退役原件与旧域保持关联 |
+| installation／Suite本机agent | DF04第19节固定WAL／FULL及单writer | 不随业务备份回退；旧agent／helper退役后由受信引导入口执行具名安装库迁移，trust／release／time下界保持，失败不得新建空库 |
+| nodecg_data／可选NodeCG | 使用所选NodeCG发行的真实持久化格式和专用备份提供者 | 不宣称是业务SQLite；固定版本／插件／数据格式及恢复兼容，缺少恢复证据时归档覆盖明确缺项 |
+
+SQLite engine_ref绑定实际二进制、version／source_id／compile_options及驱动；同一引擎可供不同profile使用，但验收逐连接验证实际设置。Supervisor与installation迁移程序不得由设备模块或普通业务请求执行。首次产品库从最终Schema创建，旧离线候选库不自动升级为可执行业务库；后续业务升级按DF04第24节在新data generation内完成。
+
+跨主机部署不要求所有主机同OS或同release_id；每个主机使用对应已批准manifest，连接两端仍必须拥有同一完整公共selection和对应独立通道绑定。没有共同选择则拒绝连接，不默认回退旧协议或自动缩减能力。跨主机预检结果只形成兼容报告，不能证明远端仍有权限、旧writer已退役或全部主机已原子切换。
+
+### 10.3 Compose镜像的字节与运行身份
+
+官方格式中，ImageID由配置JSON的SHA-256确定，配置包含有序rootfs.diff_ids；DiffID是未压缩层内容摘要，不能与分发层或整个导出包hash混同。Docker load从归档恢复镜像及标签，load成功不代表项目计划已经验证通过。（来源：[OCI Image Configuration v1.1.1](https://github.com/opencontainers/image-spec/blob/v1.1.1/config.md)、[Docker image load](https://docs.docker.com/reference/cli/docker/image/load/)。）
+
+首期Compose发行采用已签清单列出的单平台镜像归档：外层发布包按原路径规则解包；image_archive是完整受hash约束的独立payload，不把其内部层文件当宿主安装根文件展开，也不以宿主包的“无链接”规则宣称普通Linux镜像层不可含符号链接。受信宿主agent先验证归档字节及声明平台／配置／有序层绑定，再通过固定引擎入口导入；导入后读取引擎实际ImageID／平台／RootFS并与清单相等，记录导入回执。归档只允许本发行声明的镜像与标签集合；标签不得覆盖指向不同身份的既有安装标签。
+
+启动以已核验的不可变ImageID关联实际container ID，标签仅供显示，不作为启动权威；生成计划禁止自动pull和无限restart。镜像缺失或身份不符明确失败，不按标签拉取替代物。registry_manifest_digest不能从ImageID或归档hash猜造；如果将来采用仓库分发，应另验证真实manifest及其选择平台，而不是增加一个自报字符串。引擎／Compose精确版本、导入／inspect能力、宿主组证明与相应环境报告属于该profile完整锁和平台验收，当前未运行Docker导入或容器启动。
+
+### 10.4 完成边界
+
+Suite负责生成发行／部署闭包、受信验证与安装工具，SDK生成新版具名清单和校验器，各产品提供实际入口／协议／数据兼容声明及运行报告。构建锁、最终hash、镜像归档、签名和平台报告由真实构建产生，不能在设计阶段填写虚构值；平台组合不满足已有发布门槛只能保留未就绪状态。
+
+本节关闭C12的发行组合、独立通道、存储和多镜像映射缺口；第8.3节发行时间的运维选择仍独立待决定。沿A20／A22及DPT增加验收：缺依赖、同ID错摘要、不同库同revision混用、读兼容却需写、错PRAGMA报告、只换一服务镜像、tag漂移、导入半成功、安装库迁移未知、跨主机选择不同，以及已激活后回退丢失新账本。当前只核验固定Schema与上述官方格式来源，不声明产品打包、签名、安装、容器或恢复成功。

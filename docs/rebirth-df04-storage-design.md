@@ -418,3 +418,24 @@ AgeEvidence由接收库拥有，主键为(scope,object_id,revision)，唯一接�
 来源库与接收库之间不建立跨库FK或虚构事务。跨库Ref须保存完整owner／版本／摘要以及受权解析回执，本库原件可用本库FK约束；同名provider或sample_id不能当关联键。初次核验证据的远端IO在writer事务外完成，进入writer时再核当前依赖／保护版本与年龄；失效先到即拒绝消费。提交结果未知只查原inbox／decision／challenge消费身份，不重建首次时间。
 
 未决摄取、执行、恢复、审计及订阅pin继续保留对应时间／年龄原件及资格引用，不能只保留展示毫秒。普通GC清大正文后仍保留旧身份拒绝依据；需要证据但已归档不可读时明确缺证并保护。接收服务换域／换库后旧年龄只作历史，不沿旧tick恢复pending或重建可触发状态。产品DDL和writer需实现这些关联；当前只定稿归属与写集，数据库及跨进程故障验收未运行。
+
+## 22. Controller最终准入与全部IPC的产品组合写集
+
+2026-10-29。采用[F02/F03第7节](rebirth-f02-f03-design.md#7-首期最终发送与控制屏障采用)统一已有领域，不以不同参考布局的表数相加宣布产品库完成。Controller保持唯一业务scope和单writer；监督journal独立。产品DDL生成以下关系，已有ct／ci／ce／cg／cr／ow／go／gs／ep／ij原件身份保留其唯一来源，禁止以新增“当前已通过”表绕开原权威。
+
+| 产品关系 | 必须形成的原子写集与约束 |
+| --- | --- |
+| 最终AdmissionSeal | 一条ci_issue恰好一份不可变seal；ordinary与cancel两个许可分支排他；绑定完整Binding、请求／执行、Ownership、前后资源、当前GateAccess、二选一Ready／Scope采用、Guard、packet／编码证据及设备预算扣费。普通首次hold／Ownership与实际attempt及后态资源同T2封存；取消使用原Plan独立hold；重传新issue及预算、不新建原请求 |
+| 安装与发送关联 | T2逻辑意图不含未来Guard ACK或IPC seq；发送器后续预约FrameRecord并关联精确Guard／permit；Guard ACK领域原件与入站日志同COMMIT，实际DISPATCH候选必须关联已可靠采用ACK并重新核当前性。WriteAttempt先持久再IO，提交未知只查原 |
+| 完整屏障cut | operation／attempt＋selector／registry水位＋全局issue切点固定；普通与取消传输集合及准备全集分别保存成员和规范摘要，双向覆盖，不能按当前剩余对象缩减。原ACK与采用分开；迟到强事实、来源撤回与资源失效／关闭目标同事务，T4不改旧Ownership |
+| 共同关闭派生关系 | 主键含cause完整Ref、device／writer_exit及目标安全代次；cause必须解析至控制、身份、RUN、TIME、CANCEL、资源、归属或运行失效原件之一，成员不可无来源创建。关闭attempt／原ACK／恢复消费分别追加，旧cause与新cause不互相覆盖；各领域deny仍是自身权威，无第三份可单独清除的拒绝floor |
+| 全部FrameRecord／EffectCommit | F02第7.4节52类的领域原件与共享日志双向配对，出站逻辑意图、选帧及WriteAttempt分阶段；入站消息、领域效果、审计／应答outbox同COMMIT。原件类型和reply_to由同版消息清单生成，不接受泛化effect_body或静默rejected代替未实现领域 |
+| 准备拒绝与释放 | 准备登记／容量预留先于编码；DENY单调拒未来使用且不退款；RELEASE清空任务／借用后的ACK、adoption和唯一ep_release同COMMIT，元数据墓碑仍保留；本机never_attempted或监督退役退款与worker_released互斥。缓存退款不更新设备风险clear |
+
+所有Ref持久保存scope（适用时）、精确ID／revision／digest及正文核验回执；与本库原件的投影字段以复合FK／唯一性／封存约束连接。没有实际表列的旧BODY字段须在产品迁移中具名展开，不以历史参考的非空约束冒充完整关联。Schema、JCS、授权、真实tick／原件提供者仍由可信核心验证；数据库约束作为第二道一致性检查。单调值与U20精确处理，不经浮点或有符号64位截断。
+
+同一协调器在提交及候选登记间排序，保护锁存不等待数据库；不持业务写事务等待网络、插件或监督器。尚未分配seq的旧候选可丢弃；已预约帧失效、部分写或共享日志未知则结束会话，不能删帧退款seq。紧急volatile_close只作终端保护，数据库恢复后可存原件历史而不接续原流。
+
+GC依赖未决命令／取消、切点、资源hold、准备墓碑、恢复消费、审计与事件pin；原证据不可读时不据空记录推未发。已关闭会话可按既定归档政策清大正文，但拒绝旧session／请求身份的依据保留；关键存储额度不足停止新受理及准备，不挤占关闭／核对保留额度。产品启动不自动重播旧设备outbox，监督退役也不清未知设备效果。
+
+本节完成Controller最终写集和52类领域日志的归属设计，旧219表等局部布局仍保留原临时阻断及验证范围。产品实施须用上述真实提供者／关系替代阻断并运行F02第7.6节与A03／A04／A06／A07／A14故障验收；当前没有产品迁移、并发或磁盘运行证据，不要求再建立一套同层实验组合才允许实施。

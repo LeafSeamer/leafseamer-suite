@@ -254,3 +254,79 @@ FT04—FT12、FT22 对应 FC06—FC09／FC22；FT01—FT03、FT08—FT21 覆盖 
 本轮消除了五处容易误实现的空白：effective 与 ready 分离；ACK 完整覆盖 intent 而非只列命令；重启后旧 worker 的“没见过”不能证明未发；存储故障不能瞬时撤回已送许可；事件重传与设备重投分离。它们遵循 draft.2，没有改成自动恢复或强行清除未知。
 
 F02 设计稿和消息资料可供实现评审，但关闭 F02 仍需选定并验证 IPC／监督器、真正唯一写出口、可观测传输边界和 FT04—FT14 等竞态。F03 已给事务与耐久策略，仍需固定驱动／引擎构建、实际表／迁移评审、备份实现、故障注入和平台存储证据。F04 撤销传播、F05 时钟／容量／保护预算仍是开放前置，不能用实验编码限额冒充生产参数。本轮只进行离线协议检查，没有创建服务、数据库或设备连接。
+
+## 7. 首期最终发送与控制屏障采用
+
+2026-10-29。本节完成C02／C03在统一清单1.4所列的最终发送所有者、切点、持久提交和进程退役顺序核对。**当前事实：**固定panel4采用设备IPC0.14的52种消息；现有编码授权、Ownership、GateAccess、准备拒绝／释放、共享日志及T3—T5已有具名原件与时序，但分轮SQL保留部分领域未接入和最终准入阻断。它们属于局部参考接受集，不能作为产品禁止所有普通派发的功能规范，也不能删除阻断后宣称完整实现。（来源：[当前采用输入](rebirth-df01-sdk-freeze.md#15-首期采用输入与独立通道归属定稿)、[最终准入](contracts/c08-controller/FINAL_ADMISSION.md)、[共享日志](contracts/c08-controller/IPC_JOURNAL_STORAGE.md)。）
+
+**采用结论：**本节统一后续产品实现顺序，复用已有原件，不新增同义发送协议。历史IPC0.3／0.8／0.9和各阶段表数只说明对应参考版本；当前机器接受集仍以DF01固定输入及明确生成差集为准。AdmissionSeal／完整物理外键、真实提供者和最终服务组合属于实施任务，不能把非空BODY、布尔passed或仅Schema通过当作资格证明。
+
+### 7.1 四个所有者及不可混同的提交点
+
+| 所有者 | 独占权威及顺序 | 不由该所有者证明的事实 |
+| --- | --- | --- |
+| Controller业务单writer | RequestKey裁决、完整主体／控制状态、prepare／Ownership、ci_issue、Guard／permit、屏障cut、ACK采用、ReadyCommit或ScopeCommit、预算及领域审计／outbox | SQLite提交不证明IPC已入流、设备已执行或旧进程已退出 |
+| Controller每会话唯一发送器 | 共用设备注册集和每方向连续seq；只选择已提交逻辑候选，再预约完整FrameRecord、持久WriteAttempt并进入同一字节流 | 不从排队顺序自行创建授权；完整写入不等于对端处理 |
+| worker每设备唯一I/O仲裁器 | 普通／取消／重传、Guard安装、DENY、各FENCE、OPEN／CLOSE及最终permit消费在同一设备序列中裁决；所有设备共享该会话的帧收发顺序 | OS已接收字节、库ACK或缓存清空均不等于业务效果／设备资源释放 |
+| 本机监督器独立journal | 创建前意图、一次启动、bootstrap与准入、拒绝新启动和OS组退役证据 | 不直接访问业务库或持设备连接，不替核心签发Ready／Ownership，不把退役改成not_sent |
+
+核心writer的状态变化与发送器候选登记通过同一进程内协调顺序交接；锁顺序固定为该协调器在前、业务写事务在后，不允许持写事务等待网络或worker ACK。保护先锁存拒绝新选择／废弃本地资格，再尝试持久记录；存储失败仍保持拒绝。持久提交成功仅发布对应新状态，不能解除先到的更强保护。发送器在选择及每次开始写前核同设备当前代次；worker在Lsend再次核当前本地安装状态。两端之间已有入流前缀仍存在传播窗口，不承诺本机COMMIT使远端瞬时关闭。
+
+### 7.2 准备、最终准入、安装及发送
+
+1. T1可靠保存请求裁决及命令后，编码准备事务固定实际RequestKey／取消Plan、参数和profile、目标出口、EncodingAuthorization及独立容量预留。编码不得做设备I/O、自动连接或厂商库重试；prepare登记不消耗ci_issue，不需要尚不存在的最终Guard。
+2. 编码响应与其共享入站FrameRecord、原请求及EncodingEvidence同事务保存；原字节摘要按字节计算，参数／profile／出口不能在后续替换。准备失败、未知及过期不生成发送许可。普通proposed_attempt_id此时仍是预留身份。
+3. 最终T2在同writer内取得当前控制／授权、普通ReadyCommit或限定取消ScopeCommit、完整前态资源、真实当前tick、编码及预算依据。普通首次派发创建实际attempt、hold及不可变Ownership；取消使用自己的Plan及独立hold；重传沿用原attempt／packet而新增permit、issue、Guard及预算扣费。再写完整后态资源快照和AdmissionSeal，一次COMMIT。既有hold绝不被重标为当前holder。
+4. AdmissionSeal固定完整Binding、ExecutionIdentity、前／后态资源Ref、OwnershipRef、PermitAuthority及ci_issue、GateAccessRef、二选一ReadyCommit／ScopeCommit、保护Assessment或null、完整GuardRef、EncodingEvidence／packet、预算扣费原件、控制／授权／两安全代次、最终采样tick及封存摘要。每条新issue必须有且仅有同事务seal；seal中的许可类型与普通／取消唯一关联。正文及真实提供者原件逐项核对，不以存在某行代替当前性。Guard不反向引用Seal，seal不依赖尚未发生的Guard ACK，避免摘要及因果循环。
+5. T2可靠确认且资格仍有效后，唯一发送器才预约GUARD_INSTALL或CANCEL_GUARD帧；精确ACK保存为入站领域事实。ACK必须绑定原Guard、运行域、会话、permit或execution及完整Scope，可靠采用后才允许选择对应DISPATCH。等待ACK期间不持写事务；迟到ACK仅保留历史，不能重开当前门控。
+6. 设备I/O前核原字节、完整Guard、当前范围／控制／授权／资源安全代次、逐传输预算及实际单调期限；需要UTC的动作另核当前Reference Bundle及自身窗口。worker先消费唯一permit，再调用设备传输；消费后崩溃或结果丢失保留unknown，不自动重发。协议重传只能请求Controller新增许可；上游库内部重试必须接入同一出口，不能自行重用旧许可。
+
+准备原件在T2采用时检查其期限；T2之后保留它作为原签发历史，不因编码TTL经过抹掉传输intent。后续仍受原Guard／发送窗口和当前撤回约束，不能借此延长任何期限。设备预算、编码活缓存和风险hold是三个不同账本：Guard失败或未知不自动退设备预算；DENY不退编码缓存；RELEASE不清设备风险。
+
+### 7.3 保护切点、关闭与控制生效
+
+所有屏障cut在与准备登记和ci_issue相同writer顺序中封存，逐目标保存完整匹配普通及取消传输、共享issued_cut_revision、规范摘要及原操作／attempt绑定；准备cut另保存完整prepare登记水位和匹配全集，不能从permit反推尚未派发的准备。范围按原来源选择：CONTROL覆盖同设备；AUTH按原完整身份／用途及修订；RUN按原run／arm／origin；TIME只覆盖匹配域及time-required成员；CANCEL区分ordinary与all。手动取消不得借父命令的run身份；非命中成员不凭“同设备”被误撤。
+
+控制T3同时封存pending操作、预留目标版本、queued终结、cut及发送outbox；提交后才发送会改变控制版本的FENCE。数据库失败可走只关闸的紧急CLOSE，不得借它报告控制权变更。原ACK入库与T4采用分开；T4再核当前pending／最新attempt、完整目标集合、原主体／期限及所有原件未撤回，控制记录、操作结果、选择分类及通知同事务提交。历史in_flight不能被not_sent或退役覆盖，退休仅证明不能继续发新字节，原未知影响仍保留。
+
+CONTROL／AUTH／RUN／TIME／CANCEL各领域保留自己的deny或失效原件；统一关闭调度只从这些原件、资源事故、Ownership撤回、会话／监督失效派生目标，不另建一套可独立解除的控制或拒绝权威。每个关闭目标保存完整cause Ref、设备／出口、目标安全代次及原关闭attempt关联，同cause同目标幂等；多个cause不得互相覆盖。当前范围内任何未解除硬保护都阻止普通OPEN；迟到更强事实或原ACK撤回须同事务追加风险失效、全部受影响目标及outbox，新发现出口也受当前保护。既有ro／cu／go记录映射到该共同派生关系，不能把“有目标行”当worker已关闸。
+
+恢复消费只采用当前完整关闭证据，不自动OPEN。普通开放使用ReadyCommit；限定取消使用ScopeCommit，二者互斥，cancel_only不能显示为全局ready或豁免无关风险。父ordinary未知仅在原批准取消政策逐项允许时参与保护评估，不转移其Ownership或释放资源。切换范围／执行／主体／域先关闭，再完整安装新屏障／拒绝快照，用新gate revision和token开放；T4 effective不是T5 ready，OPEN_ACK也须当前原件复核并可靠采用。相同旧OPEN或close重投只查原ACK，不重开、续租或关闭后来合法开放。
+
+### 7.4 共享日志的最终优先规则
+
+采用IPC_JOURNAL及IPC_JOURNAL_STORAGE覆盖GATE_ORDER的早期仅内存seq描述：未分配序号的逻辑候选可因保护而丢弃；完整帧及seq一旦可靠预约，就不得退款、跳过或用占位帧补号。该帧在发送前失去资格时终止会话，不继续后续正常帧。每会话多设备共用方向水位，设备调度器不能另开写队列；先前帧完整写入后才允许下一帧开始。部分写或不确定结果不能从中间重发。
+
+所有52类消息接入同一FrameRecord／EffectCommit关系；以下是领域所有者映射，不改变现有线协议方向或reply_to。入站FrameRecord、领域原件／状态、审计和必要应答outbox同COMMIT，出站逻辑意图先可靠保存，选帧及WriteAttempt仍按共享日志两阶段完成。STORED只在对应领域可靠提交后排队；historical或rejected有精确原结论，不能用通用非空effect_body假装业务成功。
+
+| 消息集合 | 领域提交所有者及效果 |
+| --- | --- |
+| HELLO、HELLO_ACK | 会话／监督准入关联，仅wire_compatible_closed |
+| ENCODE_PACKET、ENCODE_CANCEL_PACKET、PREPARE_PACKET、PREPARE_CANCEL_PACKET、PACKET_ENCODING_FAILED、CANCEL_ENCODING_FAILED | 准备授权、原编码结果及容量账本，不授设备发送 |
+| PREPARE_PACKET_REJECTED、CANCEL_PREPARE_REJECTED | 核心对原prepare的明确拒绝与原响应关联，不伪造worker失败 |
+| GUARD_INSTALL、GUARD_ACK、CANCEL_GUARD、CANCEL_GUARD_ACK | 最终T2的Guard与安装采用，ACK不重做T2 |
+| DISPATCH、RESEND_DISPATCH、DISPATCH_CANCEL | 已封存逐传输许可及发送意图；初发和重传各一次消费 |
+| RESEND_REQUEST、RESEND_REJECTED、CANCEL_RESEND_REQUEST、CANCEL_RESEND_REJECTED | 原packet／attempt或取消执行的重传请求裁决；允许须另有新permit |
+| SEND_REPORT、EVIDENCE_CANDIDATE、REPORT_STORED、CANCEL_SEND_REPORT、CANCEL_EVIDENCE_CANDIDATE、CANCEL_REPORT_STORED | T6原报告、证据及命令／取消裁决，资源变更另核依据 |
+| QUERY_CANCEL_EXECUTION、CANCEL_EXECUTION_STATUS | 精确原执行只读状态，不重新执行或推断未发 |
+| FENCE、FENCE_ACK、AUTH_FENCE、AUTH_FENCE_ACK、TIME_FENCE、TIME_FENCE_ACK、RUN_FENCE、RUN_FENCE_ACK、CANCEL_FENCE、CANCEL_FENCE_ACK | 各领域cut、原ACK及独立采用；同一日志不合并各自选择器 |
+| QUERY_BARRIER、BARRIER_UNAVAILABLE、BARRIER_STORED | 原屏障查询／不可用／可靠保存事实；查不到不生成未发证明 |
+| OPEN_GATE、OPEN_GATE_ACK | 原OpenPlan／Dispatch／ACK与ReadyCommit或ScopeCommit独立采用 |
+| GATE_FENCE、GATE_FENCE_ACK | 当前换闸及连续性原件，不变更控制holder或设备结果 |
+| CLOSE_GATE、CLOSE_GATE_ACK | 全目标关闭及历史关联，普通与terminal模式分别处理 |
+| DENY_ENCODING、DENY_ENCODING_ACK | 准备未来使用的永久墓碑，已借字节未发也拒绝；不退款 |
+| RELEASE_ENCODING、RELEASE_ENCODING_ACK | 编码任务及全部字节借用退出后的清空原件与唯一退款，不清设备影响 |
+
+数据库不可写时只有controller范围CLOSE_GATE／ACK可用volatile_close、seq=null及预留缓冲，经同一流的完整帧边界处理；发起前核心永久停止该会话正常发送，worker接受后terminal_closed。若流部分写／阻塞或保护缓冲不足，断流并请求监督退役，不能建立第二条未排序通道。紧急ACK不宣称durable、not_sent、资源clear或控制effective；恢复数据库后只存历史，旧会话不重新开放。
+
+### 7.5 退役、恢复与产品写集交接
+
+正常退出、OS组退役、缓存释放和设备风险处置分别留原件。监督journal记录停止新启动及全部旧成员，取得OS创建实例／无逃逸组清空证据后，业务核心才能采用RuntimeRetired；查不到PID／Job／cgroup、IPC断开或超时都不单独证明退役。监督库与业务库不做跨库原子提交：源回执只读核验，核心同事务保存完整Ref及当前采用；源撤回或监督失联先关闭本地资格，再持久保护及通知。旧回执可查不代表当前仍可发送。
+
+进程重启在接受新工作前终止所有旧IPC会话和Ready／Scope／Guard资格；查原命令、cut、ACK、准备及退役记录，保留未知影响。新worker以新boot／session默认closed，只能在旧出口退役及当前资源／恢复条件分别满足后取得新资格。旧outbox中的DISPATCH／OPEN／编码不自动重播，查到历史T2提交也不是继续旧动作的授权。后台原报告允许追加核对，不改写旧请求身份或重置预算。
+
+DF04第22节将本节对象关系纳入产品DDL与迁移；无需先把每个历史参考表拼成新的实验包。现有AdmissionSeal／Scope／Encoding／journal等参考中的“未实现提供者”和临时阻断，在产品中由上述明确关系与最终验证替代，旧参考原件保持其原验证范围。范围及字段／失败／依赖已明确的部分直接进入实施；平台退役可靠性、并发、真实库和设备效果保留为验收，不假报设计阶段已执行。
+
+### 7.6 实现后的验证出口
+
+A03／A04／A06／A07按本节增加：T2任一缺写不产生可发送许可；Guard ACK不先于seal且不单独授发送；保护先于选帧拒绝、预约后失效终止会话、入流在先保留未知；所有52类方向／reply_to与领域提交配对；同ID异原字节拒绝；普通／取消切换不双开；控制T4不改旧hold归属；DENY／RELEASE／退役分别不清设备风险；数据库不可写仍可终端关闭或请求退役；崩溃后不重播历史设备动作。真实并发调度、磁盘故障、平台监督与设备均待实现后验证，本轮只做固定契约／映射核对及已有共享日志有限模型复验。

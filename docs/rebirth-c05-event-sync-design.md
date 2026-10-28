@@ -753,3 +753,39 @@ basis选定后各分支禁止其他分支字段、未知键和隐式fallback。q
 年龄在规范摄取writer求值前及实际消费／pending升格前重新推进，门控判定必须与当时来源前沿、保护代次及运行资格同一串行顺序。source_time原件未取得时可保留pending，但不绕过规范流前沿；超时或年龄过期依既有observed_only锁存，晚到证据不升级。已经判定无新鲜度的旧事件不得因后台查询成功重新执行。接收域重启使旧pending失效；恢复快照／baseline只建立新前沿，不以当前UTC重新解释旧事件为可触发。
 
 生产验证按DF03 TP57—TP62并入EV／EN及A08／A10／A14，覆盖两通道去重、首次年龄不可刷新、错owner及摘要循环拒绝、证据读取撤销、同库提交失败和本地域换代。接口／Schema／提供者／数据库与服务运行均转实施，当前未执行这些产品用例；本节不重开已确定的12类集合或三种ACK。
+
+## 20. 跨服务保护观察与恢复采用
+
+2026-10-29。采用既有P1—P4、protection-delivery及preparation-delivery原件，关闭1.4列出的跨域撤销关联核对项。**当前证据事实：**保护application历史与当前资格分开；准备closed历史也可能对应后来indeterminate的保护状态。两类现有观察Schema分别携保护status_revision和准备／保护两条修订轴；不能把它们压成同一个“最后状态”。（来源：[保护交付](contracts/c08-controller/PROTECTION_DELIVERY.md)、[准备交付](contracts/c08-controller/PREPARATION_DELIVERY.md)。）
+
+### 20.1 两类观察的权威与采用
+
+| 原件 | 所有者、身份与当前用途 |
+| --- | --- |
+| P1 SourceProtectionPlan | Seamer固定fault、依赖登记水位、run／历史execution pin、全部准备及提交目标；sp／po接收计划反向关联同库P1，不接受孤立客户端计划 |
+| Controller保护应用 | Controller原operation／selector／target／cut及其完整普通、取消传输和PreparationClosure；历史receipt不变，当前资格由原件及撤回链决定 |
+| Protection Observation | 同controller_scope／origin_scope／operation／run／deny代次及selector／target摘要；原application目前仅revision1 applied、revision2 indeterminate，失效永久，不以revision3复活 |
+| Preparation Observation | 同preparation／run／generation／mode／execution／request摘要；preparation_revision与protection_revision分别比较。closed仍可保留原applied_receipt，却不得代表当前保护合格 |
+| Seamer P4采用 | 对本地固定plan／target核实际认证Controller与完整绑定，保存不可变观察／正文摘要和当前已观察投影；确认仅证明本库接收，不授恢复或发送 |
+
+同身份同revision同正文只返回原接收结果；同身份异摘要或不可能的准备状态路径须同事务保存冲突／未确认状态并关闭依赖资格，不能只报HTTP错误后继续显示旧成功。合法乱序可补历史，但不得降低任一修订轴；保护revision2必须保留原cut／receipt／Closure身份，不能携新成功原件覆盖旧应用。准备原合法路径与applied回执有无一起核对，数值更大不是合法迁移证明。完整source／prepare／Controller目标集合不由最后收到一条消息猜测。
+
+当前查询与历史事件分别处理。历史读取只承诺原件真实性及访问权；恢复预检须经当前认证连接核目标当前资格、源原件未撤回和本地保护状态，不能以缓存applied或同域GET成功替代。查询结果仍有传播窗口；无当前可核原件、通道失步、超时或存储不可读则相关资格为未确认并保护，不伪造不存在或自动重发设备命令。正常状态更新沿既有保护HTTP／准备状态接口及通知传递，不新增通用“远端已成功”端点。
+
+### 20.2 P1—P4与故障顺序
+
+P1在与来源登记、arm／恢复准备及命令提交意图相同writer顺序中捕获完整集合。目标为准备记录与历史提交的并集，包含尚未收到响应、旧出口和未决执行；不能只从当前grants生成。先完成本地RAM拒绝，P1完整计划／latch／deny／预算／audit／outbox同COMMIT；P2是Controller持久单调拒绝与完整cut；P3是当前出口及准备Closure的应用原件；P4是Seamer原观察、完整目标汇总及保护投影同事务。四者不构成跨库事务。
+
+P3或准备关闭所依赖的ACK／退役／Closure撤回，Controller在同事务保存撤回、不可变状态修订、受影响资格失效及通知；不能只更新一个view而不留下可交付事件。源撤回写入失败先执行已有本地关闸及监督保护，不报告可靠新状态。Seamer接收indeterminate或冲突时，同事务使相关P4采用及恢复预览不可用，关联既有run／准备保护，不删除原applied事实。已提交业务状态保留历史并追加完整性事故；未提交R4／R5不得越过已知保护。
+
+新取证必须使用原机制创建新operation／cut／对应计划，不能改写旧application。新计划只有覆盖同来源、同run及所需全部旧库存，且当前所有目标applied，才可作为旧失效计划的替代保护依据；旧latch及deny下界继续存在。多个来源各自满足，不能用某一个新applied清其他来源或人员接管／授权撤销的latch。
+
+SourcePauseResolution及R2—R4按[C04第19节](rebirth-c04-automation-design.md#19-首期执行来源恢复与继续运行的持久关联采用)绑定完整latch集合、当前观察修订、重基线和独立资源证据。R4消费的精确观察／resolution修订永久保存；任何新失效先于R4提交即拒绝旧预览，后于提交则建立新保护事实，不倒改已提交start。再次恢复必须新预览和新代次，不能复用旧Resolution再清一次。
+
+### 20.3 保留、容量与交接
+
+P0保护额度沿既有SOURCE_BUDGET／WORKLOAD_BUDGET／实例预算：发布、布防、恢复、新依赖／目标和完整动作计划在获得可发资格前预留；普通摄取额度与保护保留分区分开。保护集合超界或无法证明全集时先关闭本地自动化门，维护核对可分批收集证据，但总状态仍未完整applied，不截取前N项假报覆盖。
+
+GC同时检查P1／P4、latch、run／旧execution、准备／提交、恢复预览／消费、资源、审计及订阅pin。清原始大正文不删除旧身份拒绝依据；缓存命中、重新登录、重连或新快照均不延长资格。恢复库更换scope并默认未布防，旧观察只作历史，不从空表或缺通知推断远端没有动作。此处沿用现有保留与预算契约，不把逻辑槽数称为物理磁盘预留。
+
+产品迁移、实际消息／HTTP原始解码、受权提供者及单writer分别按DF01／DF04实现；PFT及EN补验两修订轴、矛盾证据、P4提交未知、source／target增长与保护交错、撤回先后、缺原件不恢复及恢复库旧scope拒绝。本节只完成关联选择，不声明真实跨服务保护或数据库故障验证通过。

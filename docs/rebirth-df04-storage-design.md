@@ -439,3 +439,26 @@ AgeEvidence由接收库拥有，主键为(scope,object_id,revision)，唯一接�
 GC依赖未决命令／取消、切点、资源hold、准备墓碑、恢复消费、审计与事件pin；原证据不可读时不据空记录推未发。已关闭会话可按既定归档政策清大正文，但拒绝旧session／请求身份的依据保留；关键存储额度不足停止新受理及准备，不挤占关闭／核对保留额度。产品启动不自动重播旧设备outbox，监督退役也不清未知设备效果。
 
 本节完成Controller最终写集和52类领域日志的归属设计，旧219表等局部布局仍保留原临时阻断及验证范围。产品实施须用上述真实提供者／关系替代阻断并运行F02第7.6节与A03／A04／A06／A07／A14故障验收；当前没有产品迁移、并发或磁盘运行证据，不要求再建立一套同层实验组合才允许实施。
+
+## 23. Seamer执行、保护观察与恢复的产品组合写集
+
+2026-10-29采用C04第19节及C05第20节。Seamer保持同一业务scope、单writer和现有摄取epoch；各子域不各自创建run／准备／请求namespace或拒绝下界。Controller原件保留远端scope和精确摘要，本库只保存核验历史及采用，不建立跨库FK或“远端当前”布尔权威。
+
+| 产品写集 | 真实关联与最后封存条件 |
+| --- | --- |
+| 管理与预检 | RunApproval、artifact、run／slot／ingest revision、receive_cursor、依赖索引／latch集合、当前控制／身份及来源证据；旧预检依赖改变即失效。当前人员、服务主体与历史人员审批分开保存 |
+| 准备与保护库存 | 准备请求、完整Controller目标、mode／execution、原outbox及保护预算先提交再发送；所有响应未知意图留在库存，不能靠已收到grant回填唯一目标集 |
+| 规范摄取与计划 | 原Origin／首次年龄、连续前沿、完整target／decision／snapshot、execution／StepPlan／waiting记录、活动槽、完整动作槽和INGRESS_RUN审计同一COMMIT；零目标也有明确根记录，accepted不允许先于完整计划 |
+| 执行推进与命令 | ANCHOR、READY、SUBMISSION、ATTEMPT及远端裁决各自原身份和封存；CommandSubmission绑定完整Controller RequestKey与内容摘要，结果未知只查原。普通触发与恢复的ExecutionBinding分别绑定真实来源 |
+| P1和P4 | P1与sp／po计划反向配对，固定全部历史准备／提交；P4保存原观察、冲突及两条修订轴，当前采用、恢复失效、必要保护和通知同事务；同ID异正文不能保留旧成功投影 |
+| 来源解决与R4 | SourcePauseResolution不可变正文＋独立R4消费行；Preview包含精确refs，Preflight不回指未来Resolution。R4完整latch／baseline／floor／观察／资源／run／slot／ingest CAS，消费、cleared_start_id与新execution启动同COMMIT |
+| continuation与恢复R5 | Request及完整human Principal、全目标Receipt、Adoption、原recovery执行和组织批准／目标认可链；R5与新grant采用、状态提交、slot及审计outbox共同封存，少目标不提交。Finish局部body摘要不替代完整R5关联 |
+| 普通R5／T7 | 完整固定步骤、命令完成及独立资源证明、当前保护和业务状态CAS；Q72条件逐项成立，unknown不提交。迟到撤回追加事故／保护而不改写已发生历史 |
+
+上述权威字段在产品迁移中具名展开并与原件复合键关联；同count不是同集合，Scope、revision和digest缺一不可。SourcePauseResolution不占用CompletionEvidence／ReleaseEvidence列；first_receive和历史CommandSubmission也不因查询而刷新。continuation actor新增issuer_epoch后须新选择及新摘要，禁止从当前身份表补写旧审批正文。
+
+当前schema中的receive_seq与last_receive_seq迁移为带scope／epoch的receive_cursor；run生命周期修订和ingest进度修订独立。新库从该最终模型创建，历史格式按原选择只读；不实现自动迁移旧业务数据以掩盖缺失关联。重启／恢复库遵守旧库存保护与新scope规则，不自动重播命令outbox或恢复旧锚。
+
+完整动作槽、依赖／准备增长与P0最坏保护成本在实际受理事务前预留并在封存复核；普通工作不可透支保护分区。远端查询在writer外，消费时复核已知撤回及版本；COMMIT未知核原身份，不以新请求重做副作用。领域证据、规范事件、管理目录及审计各自原件与对应writer同步发布，网络释放不能先于可靠提交。
+
+本节关闭C04／C05跨域关联在Seamer产品库的归属与事务设计；真实DDL、provider、驱动、并发／掉电及跨进程验证仍属实施／验收。此前局部SQL的表数和合成passed不作为完整产品数据库证明，也不再新增同义实验组合替代实际业务实现。

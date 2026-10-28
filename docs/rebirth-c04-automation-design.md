@@ -392,3 +392,51 @@ Seamer产品库保存proposal正文、approval正文及独立状态／当前run�
 原子写集归入DF04：Seamer批准提交增加run revision并失效旧preflight；撤销的本地拒绝／固定目标／outbox同写；Controller endorse与自身权限切点同写，grant与认可／拒绝状态同一准备事务核验；认可撤销与本地grant拒绝／保护意图同写。恢复旧库更换scope，旧proposal、认可和批准只作历史，不由改JSON的scope复活；要在新域运行须重新批准并处理旧域残余。
 
 此节完成正文、人员／内部API、全部目标关联、身份／期限及失败处理的设计，SDK统一生成、服务writer与GUI批准页转实施，不再新建同义批准参考包。验收必须覆盖无设备定义、未选分支含设备、同principal_id不同issuer、错误Seamer、少／多endorsement、超出ActionParameterConstraint、人员退出后健康自动化继续、新arm仍需当前人员权限、纯服务增权不扩旧批准、部分认可／撤销、先撤后prepare、批准／准备与收权交错、COMMIT未知、过期回拨、跨库恢复及资源unknown不可替换批准。当前没有运行以上产品／数据库／设备用例，C04其他关联及整体阶段0仍按统一清单核对。
+
+## 19. 首期执行、来源恢复与继续运行的持久关联采用
+
+2026-10-29。本节关闭统一清单1.4的C04其余跨域持久关联核对项。**当前契约事实：**panel4已有准备、摄取、执行及continuation接口，但lifecycle__EvaluationSnapshot仍为裸receive_seq，RecoveryPreview没有SourcePauseResolution分支，continuation的Request.actor只有issuer_id／principal_id；不能靠短名相同或旧Ref存在声称这些字段已归并。（来源：[固定SDK模型](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/panel-wire/contract/models.schema.json)、[继续运行协议](contracts/c04-lifecycle/CONTINUATION_PROTOCOL.md)。）
+
+**本项目采用：**复用第14、16—18节和[C05第20节](rebirth-c05-event-sync-design.md#20-跨服务保护观察与恢复采用)，完整接入同一Seamer业务writer。既有源码中的合成provider前提须由真实受权原件提供者实现，旧参考库不等于产品组合库，也不要求先新增另一组参考表才能开始实施。
+
+### 19.1 唯一原件与提交顺序
+
+| 阶段 | 原件来源及本库提交 | 失败或跨服务边界 |
+| --- | --- | --- |
+| 发布／布防 | 完整artifact、AST依赖、RunApproval／目标Endorsement、当前人员与服务主体；预检固定run／slot／ingest／source前态、完整目标及保护预算 | 发布产物及全部未选分支仍参与依赖，缺目标不批准；人员会话退出不撤既有组织批准，但新布防须当前人员权限 |
+| 准备 | P1准备登记、原请求及Controller目标先于HTTP；Controller签发的prepare／grant回执归该Controller，Seamer保存完整scope及摘要和已观察状态 | accepted不等于applied，响应未知不删目标；当前资格须核原准备、控制／授权及组织批准，不能以本地缓存或请求正文自授 |
+| 规范摄取／PLAN | 同一IngressCommit固定全集、每run唯一决定、完整EvaluationSnapshot、execution／StepPlan、waiting记录、活动槽、容量及审计outbox | 全目标同COMMIT；busy或抑制不排队补跑，回滚后的旧事件不能重新升格；与来源保护同writer排序 |
+| ANCHOR／READY | 原受理或R4提交可靠确认后的当前活路径固定ExecutionAnchor；步骤就绪及边沿／延迟／预算只按原计划、域及依赖建立 | 崩溃缺锚不补采当前时间续跑，换域取消旧等待；相对延迟和绝对排期取交集 |
+| SUBMISSION／ATTEMPT | 固定CommandSubmission的完整Controller scope、RequestKey、content摘要、ExecutionBinding／step及原目标；持久一次调用尝试后才网络发送 | 回应丢失只按原请求查准入账本；not_found、超时、403或503都不授权重新调用设备动作；永久拒收必须有Controller原排他裁决 |
+| 步骤证据 | Controller命令／attempt及Completion、Release、resolution归其原authority；Seamer只保存核验原件与精确关联，迟到事实追加历史 | accepted不是succeeded，resource clear不是步骤成功；原unknown不可借新请求重跑，证据撤回使依赖失效并保护 |
+| R5／T7 | 固定执行及业务状态CAS、完整步骤集合、当前来源／授权／保护、资源与采用证据、slot释放、审计outbox同COMMIT | 状态转换／并行全required；Q72仅允许已声明独立可选步骤明确failed且资源清理证据完整。unknown、取消或接管不豁免；设备副作用不随业务事务回滚 |
+
+RunRecord、EvaluationSnapshot、TriggerDecision及预检／恢复基线统一采用第14节的receive_cursor={scope,ingest_epoch,sequence}、独立ingest_revision及RunIngestBaseline Ref；旧last_receive_seq／receive_seq不作为新执行分支。只有同scope同epoch才比较序号，run.revision与ingest_revision各自推进，不能用无匹配遥测隐式修改运行生命周期。普通触发ExecutionBinding来自原决定，恢复来自原operation／start，二者不可互造来源。所有具体CommandRef归目标Controller，不能把Seamer execution ID当其命令ID。
+
+任何远端原件读取均在writer事务外以当前配对和对象用途取得；进入本库提交时重新核完整绑定、已知撤回下界、所依赖前态及有效期限。网络查询成功不形成跨库原子快照；新收到撤回与本地消费同writer排序，已经在远端或本地提交的事实保留历史并按政策追加保护，不倒改为“从未发生”。远端未知状态不补造有效receipt。
+
+### 19.2 SourcePauseResolution的独立恢复位置
+
+生成具名SourcePauseResolution与其Ref，所有者为Seamer scope。正文为id／revision、run_id、latch_ref、rebaseline_ref、fence_receipt_refs、resource_resolution_refs、new_arm_generation、preflight_ref、resolution_digest；采用C05第14.2节已有语义，数组是精确完整目标集合而非任意客户端提供的证明列表。fence_receipt_refs解析相应Controller原回执及C05当前观察修订；resource_resolution_refs仍解析实际设备资源证据，不能被保护applied替代。
+
+RecoveryPreview新增source_pause_resolution_refs，封闭的具名Ref数组；没有来源latch时必须为空，有来源latch时与预检捕获的完整未清集合逐一对应。RecoveryPlanItem.evidence_refs继续只承担每步CompletionEvidence，不混入SourcePauseResolution，也不把source resolution填入ReleaseEvidence字段。DependencyBaseline新增ingest_revision／receive_cursor、dependency_index_revision及latch_set_digest，固定这次预检的一致点；相应摘要随新选择明确更新，旧预览不静默升级。
+
+无环生成顺序为：当前事实及latch集合→Preflight→SourcePauseResolution→RecoveryPreview→人员恢复操作／R2→各目标R3准备→R4消费。Preflight只绑定原事实，不反向含未来Resolution或Preview摘要；R4在独立消费行记录cleared_start_id，不修改Resolution正文加入未来start。R2仍paused；R3不代表运行开始；R4重新核当前完整latch／source baseline与floor、保护观察修订、依赖／ingest／run／slot前态、资源和人员权限，新generation严格高于已知deny，原子记录精确消费并启动新的execution。新fault／target／撤回先到则旧预览失效，不清无关latch。
+
+重基线只使来源可观察，不能恢复原运行。基线、连续delta及ready仍保留原拒绝floor和gap；旧closed key不重开。源同步、Controller保护applied、资源clear及run可恢复四者分别验证。历史SourcePauseResolution可读，不作为当前新恢复的通行凭据。
+
+### 19.3 恢复完成后的继续运行
+
+采用既有CONTINUATION／BINDING／PROTOCOL／TRIGGER链，关闭旧恢复准备仅覆盖单execution却直接回armed的冲突。恢复步骤完成后，原recovery准备和grant保持不变；在原准备之下由各目标Controller另签run_generation且activation=adoption_and_r5的continuation grant。完整目标来自批准的继续运行计划，不缩成刚执行过的恢复步骤子集；缺原准备的新增目标或动作须重新预览和新代次，不能扩大旧grant。
+
+新完整选择将两服务continuation Request.actor改为完整human Principal（kind、issuer_id、issuer_epoch、principal_id）；与request_epoch所属的持久身份、当前人员审批及固定Request摘要一致，不从正文自授权限或补当前epoch。approval_ref仍指这次具体继续运行确认，组织RunApproval及各Endorsement另外由原准备和新grant链核验，互不替代。新grant的被授权主体仍是配对Seamer服务，不能将审批人员写成automation服务或反向把服务当恢复人员。变更后的摘要与版本显式更新，旧两字段actor只读历史。
+
+Seamer保存同一transfer的完整Controller Receipt集合后才能封存Adoption；恢复R5同时核采用、原执行完成、当前资格及全部前态，才释放恢复互斥并回armed。之后普通trigger使用新的ExecutionBinding及continuation grant；原recovery execution仍是历史。现有八个内部操作及三元／带kind Ref的显式转换直接采用，不另开继续运行入口；FinishRecord.commit_body_digest仍只摘要原body，不能替代完整R5及执行原件。HTTP found、Finish非空或收到最后一份Receipt均不等于当前资格。
+
+Controller撤回先关闭其新受理／attempt／许可资格并产生原撤回通知；Seamer按原Controller scope验证，和完整准备失效计划、run／来源锁存及预算消费同事务。两边传播窗口保留，旧命令／R5历史不改写；收到通知不重跑恢复动作或退款旧保护账户。新execution、完整动作槽及新目标在出现可发资格前计入既有WORKLOAD_BUDGET／实例预算，不能先发前半计划再发现剩余保护额度不足。
+
+### 19.4 实施与验证出口
+
+SDK生成上述精确差集，Seamer实现单writer及真实原件提供者，Controller实现原准备／grant和准入查询，Suite组合身份与保护路径，GUI按历史与当前资格分别呈现。执行器、数据库组合、网络和两平台运行均为实施或验收任务，不因它们尚未写完而继续将本节关联列作未定义。
+
+A05—A08／A13／A14须验证：跨scope同ID拒绝、不同ingest epoch拒比较、全目标摄取缺写回滚、锚前崩溃不续跑、命令响应丢失不重发、来源Resolution不能作Completion／Release、R4期间新fault拒旧预览、continuation actor错epoch拒绝、少一Receipt不能Adopt／R5、保护撤回先后两种顺序及Q72完整前提。当前仅设计定稿与固定Schema核对，未运行这些产品用例；全系统阶段0仍须其余条目共同满足。

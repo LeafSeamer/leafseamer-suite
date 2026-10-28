@@ -527,3 +527,38 @@ RIVAGE recall采用地址`/yosc:req/ssrecallt_ex`，两个OSC string参数依次
 ### 16.4 本项出口
 
 本节关闭RIVAGE引擎拓扑、同址条件缩放和场景身份与DM3混用的具体设计缺口，转入SDK条件定义生成、Controller前提／观察绑定及GUI变体显示实施。沿AUDT补验四引擎首尾／越界坐标、Bank A/B、同址不同scale、未知及重叠分支拒绝、变体变化后的旧计划与迟到观察、场景两个string和边界词法。当前只复核官方PDF表格并执行精确算术／规范字节检查，未执行产品生成器、真实OSC、SQLite或设备测试。RIVAGE完整枚举／条件表、DM3 RCP、WING及VB剩余codec和完成／释放仍逐项保留，不以本节关闭整个C11。
+
+## 17. DM3 OSC具名线绑定与目录计数
+
+采用[DM3 OSC v1.0.0具名绑定表](contracts/c11-audio/dm3-osc-v100-bindings.json)作为产品生成的参数输入之一。其依据为[Yamaha官方OSC v1.0.0](https://usa.yamaha.com/files/download/other_assets/2/2063222/DM3_osc_specs_v100_en.pdf)第4—11页；文件只保存协议事实及未决标记，不分发原PDF。purpose为documented_wire_bindings，runtime_approved=false；它不是ParameterDefinition的替代品，不能直接加载成当前运行资格。
+
+### 17.1 覆盖与类型
+
+第4—8页逐行有123条唯一set地址，按页分别29／27／29／34／4条；另有两个bank各一条recall及当前场景查询，共4条场景操作。第11页的prmnum标注为145，和上述两种行数分别保留；不为凑145而生成22条未知地址，也不将这个差额解释为确定缺少22个功能。它们与RCP的184项覆盖／177项参数表不是同一身份空间。
+
+| 绑定值域 | 地址数 | 生成规则 |
+| --- | ---: | --- |
+| off_on | 57 | OSC i、raw 0／1；业务boolean的含义仍由具名参数确定，PrePost不自动解释为pre |
+| level | 18 | OSC i、比例100、dB及-32768 sentinel；有限域与设备量化沿第15节，不从区间跨度推断全部可写格点 |
+| pan | 15 | OSC i、边界-63／63；Table 2显示值与raw分开，不能发送L63等显示字符串 |
+| name | 8 | OSC s、最多8字符；字节／填充和字符集资格另核，不截断输入 |
+| color／icon | 7／7 | OSC s，分别精确使用Table 3的11个及Table 4的56个token；保留大小写、空格和标点，不能发送枚举序号 |
+| input_category／output_category／fx_return_category | 2／4／1 | 分别采用Table 5的10个、Table 6的4个token及唯一FX RTN；不能合并成全类型都接受的并集 |
+| link_group | 3 | OSC i，0为NONE，1—9对应A—I；显示字母不作为线上string |
+| ha_gain | 1 | OSC i，0—64，Table 7按整数dB对应；绑定Local Input而不是当前channel的显示序号 |
+
+绑定表已保留所有确切地址、x／y范围、具名计数来源及出处行。输出类名InCh／StInCh／FxRtnCh／Mix／St／Mtrx／Fx等不得由GUI统一outputId猜测；Stereo Channel数2与Stereo Bus数1分别使用。Mute Group数6不授予DCA操作；官方该profile的DCA数量为0，不从其它Yamaha型号继承入口。
+
+### 17.2 明确不作推断的分支
+
+StInCh和FxRtnCh到Mix／Fx／Matrix的22条发送参数在表中Y为1，绑定表标记send_y_fixed_1_requires_confirmation。保留该原值，不自行扩成目标总数，也不以此宣布其余发送能力已完成或应删除。产品实现先保持该分支未合格，准确目标语法须由同协议型号依据解决；不能拿InCh的Y范围或RCP坐标补作OSC事实。
+
+11条PrePost的表格注释只写OFF／ON；标记pre_post_direction_not_specified，禁止将raw=1直接当作pre=true。与RIVAGE中明确Post／Pre的对应不能跨型号复用。两个标记可以同时存在，生成器须保留全部阻断，不能仅保留第一个。无标记仅表示没有本表这两类疑点，不自动证明量化、会话权限、响应、效果或释放。
+
+名称和枚举使用OSC s而非RCP binary；枚举引号只是文档排版，不进入线值，FX RTN中的空格属于token。地址由完整ParameterRef解析，用户不能传字符串扩展目录。只读模型的解析器和来源年龄必须另有依据，本表set行不自动产生get或订阅响应codec。
+
+### 17.3 场景与实施出口
+
+scene_a／scene_b各自recall采用`/yosc:req/ssrecall_ex`及`,si`，参数为bank字符串和0—99整数；查询采用`/yosc:req/sscurrent_ex`及`,s`，只有bank。两种请求都没有普通set的X／Y路径段，不复用RIVAGE的ssrecallt_ex和小数字符串。这里未定义的响应、store、relative recall、scene 100或meter不能从recall格式推导；完整既定用途仍按各自协议补齐，不以一个查询存在就认定原Recall完成。
+
+本节关闭DM3 OSC已公开set表的逐地址／值域／枚举绑定及计数混用缺口，明确剩余坐标与PrePost语义疑点。SDK生成时将本表与已批准的语义投影、会话访问、物理足迹和完成／释放policy组合，缺任一依据不生成可写资格；Controller及GUI消费相同定义，不能在各端各猜一套。目录录入和11类序列化已有固定输入，产品编码器及正常／异常回复、真实设备量化、字符支持、保护与释放验收后置。RCP词法仍未获得可替代的依据，本表不关闭RCP或整体C11。

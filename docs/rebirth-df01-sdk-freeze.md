@@ -337,6 +337,8 @@ window握手与后续port属于同一面板设计的不同阶段，不共享消�
 
 ### 15.4 本项退出与实施交接
 
+C11音频第17节的DM3 OSC具名线绑定表为生成输入：123条set与4条场景操作独立于标称prmnum，11类值域不从RCP目录复制。必须保留坐标／PrePost未决标记并与语义、会话、足迹及证据policy合成完整定义；静态无标记不等于可写，set表不自动生成get响应或meter能力。
+
 C11音频第16节新增RIVAGE条件codec的生成约束：ParameterDefinition绑定variant_id、selector_parameter_refs及selector_predicate，禁止按相同address去重或把不同缩放范围取并集。具体分支及选择器观察与定义／会话／目录版本一同消费，未知或重叠分支拒绝，类型变化重建baseline；SDK生成四引擎类型化坐标和场景major／minor规范字符串，保留型号表未证部分，不改历史局部Schema。
 
 C11音频第15节明确业务格点与binary32线舍入分层，生成具名codec的精确目标／编码bits／decoded值记录，保留sentinel与未合格raw分支。多primitive沿现有TransportPacket／TransmissionRef／EncodingAuthorization和52帧IPC，DF04第25节将原意图唯一键绑定到command／attempt／primitive，整命令hold不在步骤间释放；不增加同义音频发送通道。各型号完整codec表和设备完成／释放资格继续按C11未决项处理，不用通用转换算法替代它们。

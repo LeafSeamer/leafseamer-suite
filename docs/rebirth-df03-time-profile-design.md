@@ -428,4 +428,49 @@ Request／原始Blob／认证与时代及误差原件／Exchange／Anchor／当�
 
 本节关闭上述协议／启动／时代／误差的设计选择，余下为窄适配补丁、产品生成、真实采集与writer接线及TP49—TP56等实现后证据；具体环境数值的测量不再成为选型设计缺口。DF03跨公共事件年龄及其他领域持久引用的一次整体核对仍沿统一收敛清单执行，DF05发行更新时间运维选择保持独立未决，阶段0不因本节单独完成而通过。
 
+## 20. 事件年龄与排期时间的同版采用
+
+2026-10-29。本节关闭C05／C06与业务参考时间的映射缺口。**当前契约事实：**采用输入panel4保留baseline__EventAgeProof及UtcAgeBasis对旧ClockSample的引用，但time_internal__S11__Anchor／Assessment和time_internal__S12__EvidenceBundle已经采用reference-bound/1；command__S12__ScheduleGuard也已有独立Seamer来源与Controller本地域。旧对象字段存在不代表可与新时间原件互换。（来源：[固定SDK选择](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/panel-wire/contract/models.schema.json)、[时间服务映射](contracts/df03-service/README.md)。）
+
+**本项目采用：**新完整选择的事件年龄以本节与[C05第19节](rebirth-c05-event-sync-design.md#19-事件时间原件与接收年龄归并)为准，替换旧ClockSample／UtcAgeBasis执行分支；旧字段只按旧版本历史读取。认证时钟与发行时间仍不承担业务UTC年龄，不从PublicClock展示值、occurred_at／observed_at字符串或收到消息时刻生成资格。事件的时间证据与设备完成证据分开，source_timestamp存在不证明设备何时产生效果。
+
+### 20.1 来源捕获与接收求值
+
+SourceTimeEvidence绑定来源完整SourceStreamKey、binding_ref、event_id、source_sequence、对QualifiedValue整体的payload_digest，以及capture_semantics、capture_evidence_ref、capture_domain、capture_start_tick_ns／capture_end_tick_ns、elapsed_profile_ref、可空reference_context_ref与可空utc_interval。自身id／revision／digest为不可变精确Ref，authority由source_key提供。reference_context_ref指向已存在EvidenceBundle，解析其中完整Domain、Binding、Anchor、Assessment、Profile及第19节资格原件；引用校验不得只比短ID。来源捕获证据须明确把所声明的事实时刻包在同域[a,b]中，a≤b，且从a至b运行域及相关资格未失效。来源类型可为设备或data_source，不假造设备ID。
+
+capture_semantics取sampled_observation或event_occurrence，并由已批准能力／SourceObservationBinding指定。前者表示可信查询取得状态的采集区间，不能证明设备隐藏缓存内容的物理测量时间；后者须有来源协议及资格证明事件发生在该区间，不能用接收通知的tick顶替。旧缓存、未经证明的设备自报时间、完整轮询之间漏掉的变化均不补造发生区间；证据不足保持unproven，展示仍按原权限。状态采样不能升级为连续离散边沿。
+
+带UTC的捕获采用来源自己的合格参考锚点，把[a,b]映射为`[Ls,Us]=[L_source(a),U_source(b)]`；下界向下、上界向上取整，捕获端的量化和速率包络沿既有Profile计算。要求锚点tick≤a，且a、b两端及捕获期间所需来源／批准／运行连续性均成立，不能拿捕获之后新取得的锚点回填旧事件。无合格UTC时reference_context_ref和utc_interval同时为null；本地单调及因果新采样仍可独立合格，不能伪造UTC零区间。该原件持久化后再和Origin一起发布，后来的GET不重新采样或改写区间。
+
+接收方首次受理固定本域r0，并以该tick的合格参考原件取得`[Lr,Ur]`。只有双方均为正常、非smear的相容UTC尺度，完整来源时间原件已核验且Ls≤Us、Lr≤Ur、Ls≤Ur，才建立trusted_utc分支。保守初始年龄为`Alo=max(0,Lr−Us)`、`Ahi=max(0,Ur−Ls)`；Ls>Ur明确拒绝未来冲突，不把负数截成0通过。跨主机只比较UTC区间，不比较单调tick；来源与接收域不要求相等，但各自必须与自己的原件一致。来源历史锚点只用于当时捕获，不要求它在网络到达时仍是当前锚点；已知撤销、失信或来源换代按C05保护，不能借历史可读绕过当前信任检查。
+
+在接收域当前tick n≥r0，以已批准的单调经过量包络e_minus／e_plus推进：`lower_age_ms=floor((Alo+e_minus(n−r0))/1000000)`，`upper_age_ms=ceil((Ahi+e_plus(n−r0))/1000000)`。各原值使用纳秒整数或精确有理数，最后才向外转毫秒；不得两端就近舍入或先经浮点。换参考源不重新锚定已经登记的年龄，也不取两次估计的较小值；当前单调域／平台资格失效则旧年龄不可继续用于执行。重启后保留历史，不恢复旧tick；规范重同步不能把旧事件重新变年轻。
+
+### 20.2 因果与本地捕获分支
+
+causal_capture仍限DF06批准的fresh_query与sampled状态。验证器固定原sent tick s、首次received tick r及当前n，要求s≤r≤n、原PendingCapture／CaptureReceipt与完整来源一致，并由真实查询证据证明采样不早于s；年龄下界0，上界为`ceil(e_plus(n−s)/1000000)`。这替换DF06第5节直接除tick差的理想公式：量化及速率误差不能省略，q／ρ来自该验证器域的有效平台资格，不能从远端自报或业务UTC状态推定。来源换域、验证器换域、challenge过期或资格失效不重建pending；challenge本身的单调截止仍严格拒绝等号。
+
+同一Seamer可信核心采集data_source时采用local_capture分支；它复用SourceTimeEvidence及来源捕获原件，以相同本地域中的[a,b]与当前n≥b计算`[e_minus(n−b),e_plus(n−a)]`并向外转毫秒。必须核完整authority／database、clock_domain_id／descriptor_digest、当前运行绑定及平台资格，不因同机部署或tick数值接近就使用此分支。数据源worker原始输出不是时间权威，由核心核受监督采集及规范事件身份；local_capture不伪造对自己的mTLS或challenge。设备跨Controller转发只能用已批准的UTC或因果分支。
+
+所有分支的最大年龄沿原F05语义允许`upper_age_ms≤max_age_ms`；时间锚点的年龄、原请求及challenge截止仍各自严格小于上限，不能互换等号规则。接收求值、pending升格及真正消费前均推进年龄；已经提交的原决定不因晚到重复包重新求值。条件策略固定允许的分支与capture_semantics，不得因UTC失败就把同一旧事件自动改成新challenge或local_capture。跨通道到达顺序仍按C05规范前沿裁决，时间合格不补齐缺号。
+
+### 20.3 排期守卫与实施出口
+
+排期沿当前command__S12__ScheduleGuard采用：origin_service_id／origin_database_instance_id及occurrence／definition／activation／admission／step_window来自Seamer原件；local_clock_domain、queue_deadline_tick_ns及ExecutionTime的Bundle／UtcGuard来自Controller当前本地域。两侧分别验证完整Ref和正文摘要，不把Seamer的tick复制成Controller截止，不给公共排期DTO填旧ClockSample以兼容。UTC窗口与UtcGuard逐字相同，实际每次发送要求`not_before≤L && U<not_after`；排队、授权、许可、参考时间及步骤原截止同时成立，取最早拒绝点。事件年龄通过不是排期准时许可，也不是RunGrant或完成证据。
+
+window_enter仍按C06预先固定的可能到点规则锁存；新锚点不能向后推边界或恢复旧场次。GUI使用可空参考时间投影，无法给出合格UTC时清空相关参考值，但仍保留原场次、命令和unknown历史；不拿浏览器wall或认证时钟补业务UTC。即时且原政策不要求UTC的控制继续使用本地单调约束，不因业务参考不可用增加隐含排期条件。
+
+生成与持久归属见C05第19节、DF04第21节及DF01第15.4节；沿用现有EvidenceBundle、Anchor、Assessment、ScheduleGuard及设备52帧，不新增同义时间服务或IPC。本节只完成同版语义选择，下一步是产品SDK、来源捕获、摄取writer及各服务消费接线。
+
+| 用例 | 实现后退出条件 |
+| --- | --- |
+| TP57 | 来源区间整体晚于接收区间拒绝；重叠区间以0为下界且保留完整上界；纳秒到毫秒向外取整 |
+| TP58 | 重传、查询、pending升级及排队不重置首次接收锚；新参考样本不能缩短原年龄 |
+| TP59 | 因果采样计入速率及量化，恰好年龄阈值允许但challenge截止等号拒绝；旧离散事件不能伪装fresh_query |
+| TP60 | 本地数据源仅在同一合格时钟域使用local_capture；同机不同域、换库、worker伪报和旧缓存拒绝资格 |
+| TP61 | Capture／Origin／AgeEvidence及摄取事务的同ID异摘要、半边提交和重启重放均拒绝；无法解析原件保持不可执行 |
+| TP62 | Seamer来源Ref与Controller本地Guard分开；跨域tick、不同步骤窗口、过窗重签及GUI展示值不能取得发送许可 |
+
+以上为待运行产品用例；本轮仅核固定契约与精确算术边界，不声称跨服务、数据库、平台或设备验收通过。C06／DF03原列跨服务年龄及排期同版映射缺口据此转实施，其他领域引用和设备政策仍按统一清单继续核对。
+
 当前读取器重核完整worker运行原件，时间提供者自身RuntimeBinding与当前监督资格仍由可信解析器接口承载，实验使用显式合成Ref。不得把这项外部前提、保护outbox或失效后的unavailable快照当作真实设备已关闭证明。授权来源、完整时间采集与身份链、最终OPEN/ACK/Ready继续作为阶段0未关闭事项，业务实现仍未开始。

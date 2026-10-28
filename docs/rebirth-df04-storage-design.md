@@ -408,3 +408,13 @@ SDK生成和产品迁移按上述唯一键及写集一次接入原服务库；�
 Controller保存SelectionReceipt时，在T6同一事务写原件、完整SelectionToken、source实例、receipt revision／digest、对应attempt观察及审计／通知；只有该事务可靠提交后才能发AcknowledgeSelectionReceipt。ACK为有界维护消息，不另起设备动作，也不证明效果成立。相同token同revision同摘要幂等，不同摘要为协议冲突；较新收据追加，旧收据不覆盖较新投影，未知终态仍由原resolution路径处理。
 
 OBS桥只保留本boot内的水位和有界回执，不能承担Controller的耐久历史。Controller提交未知先查本地事务，不重发Select；OBS重启后仍按原token查询本地历史，新boot缺记录不代表旧动作没发生。备份恢复换Controller scope并重新配对，不从恢复旧sequence继续调用旧桥；旧原件仅历史读取。桥的RAM水位与Controller SQLite不宣称原子提交，跨边界采用固定身份、只读查原和不重放设备动作的故障规则。此处为产品写集输入，未运行真实插件或跨进程数据库验收。
+
+## 21. 来源时间及接收年龄的持久关联
+
+[C05第19节](rebirth-c05-event-sync-design.md#19-事件时间原件与接收年龄归并)的SourceTimeEvidence由source_key指定的来源库拥有，主键为完整owner scope＋id／revision，UNIQUE(SourceStreamKey,event_id)关联唯一时间原件或明确null；source_sequence唯一性仍沿原来源账本。采集原件、所引用的时间Bundle／平台资格先可靠保存，来源时间、Origin、原序号及发布outbox同writer提交。时间原件绑定payload摘要而不回指Origin摘要，发布后不可换另一时间原件；同身份异摘要为冲突，不用新采样覆盖旧记录。
+
+AgeEvidence由接收库拥有，主键为(scope,object_id,revision)，唯一接收身份为(SourceStreamKey,event_id,receiver_domain)；FirstObservation固定最早接收tick、basis及原锚点引用，后续年龄求值仅追加不可变revision。已提交原决定固定其精确年龄Ref，重复请求直接查原；未决求值在与保护／来源状态共享的串行边界内取得当前tick并核资格，不把入队时年龄当提交时年龄。因果PendingCapture的CAS消费、CaptureReceipt关联、年龄原件、规范inbox、全部目标决定及原INGRESS_RUN写集同一次COMMIT；本地采集也走该规范写集，不新增第二条触发通道。
+
+来源库与接收库之间不建立跨库FK或虚构事务。跨库Ref须保存完整owner／版本／摘要以及受权解析回执，本库原件可用本库FK约束；同名provider或sample_id不能当关联键。初次核验证据的远端IO在writer事务外完成，进入writer时再核当前依赖／保护版本与年龄；失效先到即拒绝消费。提交结果未知只查原inbox／decision／challenge消费身份，不重建首次时间。
+
+未决摄取、执行、恢复、审计及订阅pin继续保留对应时间／年龄原件及资格引用，不能只保留展示毫秒。普通GC清大正文后仍保留旧身份拒绝依据；需要证据但已归档不可读时明确缺证并保护。接收服务换域／换库后旧年龄只作历史，不沿旧tick恢复pending或重建可触发状态。产品DDL和writer需实现这些关联；当前只定稿归属与写集，数据库及跨进程故障验收未运行。

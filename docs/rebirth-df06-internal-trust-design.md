@@ -101,9 +101,9 @@ DF04原`trigger_inbox(provider_id,provider_boot_id,event_id)`必须在下一版�
 
 验证器收到响应时保存本地received_tick，核对来自原peer、request/source/digest/域及待决状态，并用CAS将pending改consumed。结果丢失后再次收到同一响应只返回原处理记录，不再次触发。若消费事务结果不明先查询持久身份，不重新执行规则；新challenge也不是重放旧业务动作的授权。
 
-因果年龄上界为`ceil((now_tick - sent_tick)/1_000_000)`，下界0，sent≤received≤now，所有tick仅在验证器同域比较。沿用已有年龄阈值语义：上界≤max_age允许，challenge期限本身仍严格小于expires。排队、查询、传输及验证后的等待都计入；不能只用received−sent锁定一个不会增长的上界。sampled结果可参与声明允许采样的状态规则，不能生成离散边沿或证明缺口不存在。
+因果年龄按[DF03第20节](rebirth-df03-time-profile-design.md#20-事件年龄与排期时间的同版采用)采用验证器域有效平台资格的经过量上界e_plus，年龄上界为`ceil(e_plus(now_tick - sent_tick)/1_000_000)`，下界0；sent≤received≤now且所有tick仅在验证器同域比较。e_plus包含观测delta相对速率与跨度量化，不能直接把tick差当真实经过量，也不要求先取得业务UTC才能使用已合格单调域。沿用年龄阈值语义：上界≤max_age允许，challenge期限本身仍严格小于expires。排队、查询、传输及验证后的等待全部计入，不以received−sent冻结上界。sampled结果仅用于声明允许采样的状态，不生成离散边沿或证明缺口不存在。
 
-来源发布该观测时，事件与回执先入同一持久序列／outbox，HTTP和订阅流使用同event_id／sequence／origin_digest；两路到达按同一inbox去重，不形成两次触发。响应领先订阅流不允许静默跨越缺失sequence，完整C05规则另行归并。UTC证明沿用DF03双方可信链，未证明时间可展示但不能冒充新鲜触发。
+来源发布该观测时，事件与回执先入同一持久序列／outbox，HTTP和订阅流使用同event_id／sequence／origin_digest；两路到达按同一inbox去重，不形成两次触发。响应领先订阅流不允许静默跨越缺失sequence，完整C05规则另行归并。UTC证明采用DF03第20节双方reference-bound/1区间与固定首次接收锚点；C05第19节的SourceTimeEvidence进入新Origin摘要，AgeEvidence仍由接收方产生。旧ClockSample／UtcAgeBasis只用于旧版本历史，未证明时间可展示但不能冒充新鲜触发。本地Seamer数据源使用核验后的local_capture，不伪造对自己的mTLS或challenge。两种事件时间原件读取采用C05具名内部GET与events.internal.read用途，当前配对、来源范围和释放前撤权缺一不可。
 
 ## 6. 撤销、容量与日志
 

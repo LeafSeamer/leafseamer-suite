@@ -218,3 +218,13 @@ source_refs、草稿和导入summary的引用均带同Seamer scope、精确版�
 导入详情仅在该阶段存在对应原件时提供引用；未产生返回明确阶段及null，已归档按C05保留语义，不能将failed/cancelled转成空成功结果。差异和草稿正文继续受原C06行数限制；本组snapshot／diff／draft／version详情的完整公开JSON上限为16 MiB，在生成该原件时即验证，超过则明确失败，不创建只能靠截断才能读取的原件。原始捕获8 MiB上限仍独立适用。超过普通1 MiB目录页上限的完整详情不塞进列表，也不提高全局列表预算。修改凭据继续通过原受保护配置写入口，读取接口不交付旧秘密供前端再提交。
 
 源列表与sources运行快照、排期列表与schedule_activations快照是不同投影；未发布、停用、导入失败或已退役但留档的对象都能按权限检索，不从活跃集合猜全目录。历史变更通过listOperationHistory定位原SCH06操作；取消和rollback仍只影响既定捕获／草稿语义，读列表不创建设备动作。新增验收覆盖从未激活草稿、空完整来源、并发apply、导入失败、秘密字段缺席、目录分页及归档后无法恢复详情；均待产品实现后执行。
+
+## 10. 业务参考时间与排期字段采用
+
+2026-10-29。按[DF03第20节](rebirth-df03-time-profile-design.md#20-事件年龄与排期时间的同版采用)关闭本稿跨服务年龄及时间字段的同版映射：采用现有ScheduleGuard、ExecutionTime、EvidenceBundle及UtcGuard；第6节的ClockSample泛称不再指baseline旧ClockSample，而指reference-bound/1的精确锚点／评估链。Seamer的发生项、定义、激活、受理、步骤窗口和其摘要保持来源权威，Controller仅在自己的当前运行域建立queue_deadline及发送Guard；二者分别关联，不跨机相减tick。
+
+calendar_profile_ref决定民用时间解释；SourceQualification／LeapSchedule／Reference Profile决定运行参考UTC的可用性，不能互相替代。每步UTC窗口与当前发送UtcGuard完全一致，接收事件的年龄合格不延长原窗口，也不改排期版本。固定window_enter后的失信按SCH05锁存，原场次不因新锚点、认证恢复或重新登录复活；已发送命令保留自己的终态和未知资源。
+
+field.changed沿C05 SourceTimeEvidence与接收方AgeEvidence：本地可信核心可使用local_capture，跨Controller使用合格UTC或批准因果采样；每个观察绑定固定允许的capture_semantics、basis及max_age。首次完整捕获只建基线，后续完整捕获的差异不声明捕获了间隔内全部物理边沿。ImportSnapshot、外部行的日期、导入完成时间以及草稿apply时间都不能替代运行观察年龄。导入／激活仍不自动建立观察授权。
+
+新SDK生成、排期writer和实际时间提供者接线进入实现；SCH及TP57—TP62验证域错配、窗口等号、pending过期、不补发与同库写集。当前没有真实调度或平台运行证据，本节不修改排期范围、日历解释选择或设备完成政策。

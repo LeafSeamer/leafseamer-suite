@@ -96,7 +96,7 @@ keepalive、devstatus、快照和meter续订列为C09 ProtocolIOPolicy；有界�
 
 固定拓扑中的通道／bus／main／matrix／DCA／aux各有独立坐标，不能仅用连续outputId拼OSC路径。profile维护确切address、type tags、参数arity、枚举、范围／量化、读写及响应规则；动态未批准地址只供诊断，不能变成raw写后门。OSC包／bundle尺寸、嵌套深度及字符串长度有界；定时bundle如未建立受控调度证据则拒绝，不能让设备缓存未来写绕过接管。
 
-响应codec须区分display_value、normalized_value和raw_value，逐路径核对tuple及types，不能照搬旧驱动“取最后一个args”的通用规则。历史文档的,sff例子仅用于形成反例，必须按实际固件确认；native meter的report_id另属采样绑定，不升级成OSC控制ACK，也不因收到meter推断该推子写已完成。
+响应codec须区分display_value、normalized_value和raw_value，按第18节的具名叶参数类型核对tuple及types，不能照搬旧驱动“取最后一个args”的通用规则。文档定义与实际固件资格分别绑定；native meter的report_id另属采样绑定，不升级成OSC控制ACK，也不因收到meter推断该推子写已完成。
 
 WING patch候选流程：固定channel、旧source binding、目标group/index及计划摘要 → 完整前提／权限检查 → 按第12节选择的顺序执行第一写 → 按证据policy核对中间状态 → 必要的第二写 → 核对最终绑定。每次写分别领取许可；group＋旧index或旧group＋新index可能已有音频副作用，必须在预览列出，不能宣称先静默准备。若无法证明中间态满足场景要求，动作在派发前拒绝；节点多属性写没有自动取得原子保证，不能自动加mute、恢复旧路由或用UDP合包冒充原子事务。
 
@@ -562,3 +562,55 @@ StInCh和FxRtnCh到Mix／Fx／Matrix的22条发送参数在表中Y为1，绑定�
 scene_a／scene_b各自recall采用`/yosc:req/ssrecall_ex`及`,si`，参数为bank字符串和0—99整数；查询采用`/yosc:req/sscurrent_ex`及`,s`，只有bank。两种请求都没有普通set的X／Y路径段，不复用RIVAGE的ssrecallt_ex和小数字符串。这里未定义的响应、store、relative recall、scene 100或meter不能从recall格式推导；完整既定用途仍按各自协议补齐，不以一个查询存在就认定原Recall完成。
 
 本节关闭DM3 OSC已公开set表的逐地址／值域／枚举绑定及计数混用缺口，明确剩余坐标与PrePost语义疑点。SDK生成时将本表与已批准的语义投影、会话访问、物理足迹和完成／释放policy组合，缺任一依据不生成可写资格；Controller及GUI消费相同定义，不能在各端各猜一套。目录录入和11类序列化已有固定输入，产品编码器及正常／异常回复、真实设备量化、字符支持、保护与释放验收后置。RCP词法仍未获得可替代的依据，本表不关闭RCP或整体C11。
+
+## 18. WING叶参数编解码与来源坐标采用
+
+### 18.1 文档依据与三类返回
+
+以下采用[厂商托管的WING Remote Protocols 3.1-03](https://cdn-media.empowertribe.com/2106004e217b8eb2639d93672823eef5/WING_Remote-Protocols-3.1-03.pdf)第20—24、40—44、47—48及51页的线格式；页脚版本3.1.0，文件SHA256为`b4496d27440e47b63729ac16786a631224e4c0a21efb9fda7f378d40ed6589ce`。这是具名协议定义，不能仅因固件版本号较大就推导兼容。部署目录仍须绑定实际型号、固件、拓扑和定义修订；不导入文档示例中的网络地址、序列号或会话数据。
+
+对于已批准的**单个叶参数**，OSC地址、type tags和参数数目必须同时匹配；下面的位置为从零开始的args索引。node列表、node字符串dump、blob/native、错误事件及meter不得进入此分支。
+
+| 文档类型 | 返回tags／arity | 参数位置与消费规则 | 首期绝对写的线类型 |
+| --- | --- | --- | --- |
+| F | `,sff`／3 | args[0]是显示字符串；args[1]是0—1归一化binary32；args[2]是该参数单位下的原生binary32。三个值分别保存，语义投影只消费具名原生值 | `,f`／1，按第15节从准确业务目标生成原生binary32，不发送归一化值 |
+| I | `,sfi`／3 | args[0]是显示字符串；args[1]是归一化binary32；args[2]是原生int32。boolean只在对应参数的原生域确为0／1时投影 | `,i`／1，原生int32；不把浮点归一化值转换成整数 |
+| S（字符串或枚举） | `,s`／1 | args[0]就是线字符串；是否为枚举、合法token、文本长度及字符规则由该参数定义决定 | `,s`／1；枚举发送确切token，普通字符串不得借用枚举接受集 |
+
+SDK定义同时保存read tuple、write tag、native domain、单位／投影、sentinel和访问模式；读写tags不同不能复用一个序列化声明。显示字符串只供显示，不用parseFloat恢复控制目标；归一化值只保留为观测，不把其乘以参数最大值当作原生值。文档的fader例子中0.7000对应−2dB、0.6750对应−3dB、0.7500对应0dB；这些点不证明整个区间是一条直线。首期OSC绝对写已可直接使用原生值，因此不再把“先推导一套全局归一化逆函数”作为该写入分支的设计前置。需要复现设备滑杆曲线的GUI映射仍须独立的具名曲线，不能用上述三点外推。
+
+文档允许对0／1整数参数发送−1来toggle，也允许用整数序号选择部分枚举；本项目的绝对set编码器固定发送0／1或字符串token，不由一次set生成toggle或依赖枚举排列的ordinal。缺少范围、单位、合法token或条件分支时拒绝该定义的业务调用，不以设备接受多种类型为由逐类型重试。浮点NaN／IEEE无穷不是业务negative_infinity；fader示例的显示`-oo`和有限原生−144另由fader域解释，不能用于其他F参数。这里不把−144至10的表列范围和1024 steps推成1024个等间距dB格点。
+
+### 18.2 路由叶参数与来源目录
+
+通道地址`/ch/{c}`中c为1—40；下表中所有索引仍须经过实际拓扑核验。（来源：同规格第47页。）
+
+| 路径后缀 | 原生域／写入 | 路由中的用途 |
+| --- | --- | --- |
+| `/in/conn/grp`、`/in/conn/altgrp` | S，`OFF,LCL,AUX,A,B,C,SC,USB,CRD,MOD,PLAY,AES,USR,OSC,BUS,MAIN,MTX`，逐个token独立 | 主／备用来源组；不与输出路由或User Signal的枚举取并集 |
+| `/in/conn/in`、`/in/conn/altin` | I，1—64 | 主／备用来源组内索引；64是字段上界，不代表每组存在64个源 |
+| `/in/set/altsrc`、`/in/set/srcauto` | I，0／1 | 分别记录主备用选择及自动来源切换状态；与group/index一起进入第12节绑定 |
+
+来源坐标按其自身目录校验，不把strip数、返回节点数和物理端口数混为一谈：第40—43页列LCL最多24且受型号约束、AUX 8、A／B／C各48、SC 32、USB 48、CRD／MOD各64、PLAY 4、AES 2、USR 56、OSC 2。OFF仍保留合法线索引，语义上不生成物理前级；不能擅自写index=0。文档节点上界不证明对应扩展卡、舞台箱或物理接口已安装。
+
+USR不是56个同类物理前级：1—24是User Signal，25—56是User Patch。其`/io/in/USR/{u}/user/grp`在前者只取`OFF,CH,AUX,BUS,MAIN,MTX`，后者只取`OFF,LCL,AUX,A,B,C,SC,USB,CRD,MOD,PLAY,AES`；`user/in`的表列上界分别为40和64，仍按所选来源组验证。`user/tap`的PRE／POST和`user/lr`的L+R／L／R仅适用于1—24。符号为数字的字符串枚举仍按S处理，不能仅凭字面数字改成I。（来源：同规格第43页。）
+
+`/io/in/$BUS`、`$MAIN`、`$MTX`在第43—44页分别列32、8、16个来源节点；这与`/bus`的16、`/main`的4、`/mtx`的8个strip不是同一坐标域。不得直接用同一个整数或未经证实的左右声道算式互换。跨域映射须由批准拓扑显式列出，不能从数量恰为两倍推出映射及物理前级身份。
+
+第40页另定义`/io/altsw`及`/io/autoaltovr`两个0／1全局参数。第12节的来源绑定必须加入这两项的原始观察及其定义版本，作为路由／前级计划的依赖；任一变化均使原绑定失效。表中名称不足以确定它们与altsrc／srcauto的完整优先级，不能只按通道altsrc就断言当前物理源。物理PreampRef需要具名解析规则和同一合格捕获；未知时保留待解决，不能把主源、备用源或所有LCL源当作默认答案。
+
+### 18.3 独立地址与型号差异
+
+以下三组不得合并成一个宽范围定义。（来源：同规格第40—41、47、51和60页。）
+
+| 对象 | 文档具体差异 | 采用约束 |
+| --- | --- | --- |
+| 物理输入gain与通道关联gain | `/io/in/LCL/{n}/g`及A／B／C对应路径列−3..45.5、98 steps；`/ch/{c}/in/set/$g`按LCL列−2.5..45、20 steps，按AES列−3..45.5、98 steps | 不取并集、不假定同一格点，也不把通道关联值直接用作物理写。后者须绑定来源条件；当前来源与具体HA能力尚不明确时不能形成前级写资格 |
+| 通道main发送与main strip | 第51页`/ch/{c}/main/{m}`列1—4，并在脚注27给WING Rack的1—8，关联机背四个立体声耳机输出；第60页`/main/{m}`仍列1—4 | 脚注仅作用于其具名路径。不能据此扩展`/main`、其他发送族或所有型号；Rack的跨域目标映射仍需具名定义 |
+| 原始控制与有效状态 | `/ch/{c}/mute`为I 0／1；`/ch/{c}/$mute`为只读I 0—2；`/ch/{c}/fdr`与只读`/ch/{c}/$fdr`分别为原始和受DCA影响的电平 | `$mute=2`不能转boolean true或回写mute；`$fdr`不能覆盖原始fader目标或成为其写地址。`$`不是统一只读判据，访问权逐项采用原表 |
+
+### 18.4 实施交接与未决边界
+
+本节关闭WING普通叶参数三类tuple、绝对写tag以及通道主备用路由／USR分支枚举的编码规则缺口。SDK按上述具名条件生成定义；Controller核对完整tuple和同版来源绑定；GUI区分原始控制、有效状态、归一化观察与显示文本。编解码实现和已明确表格的机械录入进入实施，不再为每个同类叶参数另建候选包。正常回复、错type／arity、错域／错枚举、只读状态误写、toggle混入绝对set、全局来源变化和Rack路径范围混用进入AUDT／A12。
+
+仍需解决的WING设计依据限定为：实际来源选择优先级及跨域物理映射、HA条件差异、确实需要的具名数值曲线／sentinel／量化与文本规则，以及观察关联／完成／释放政策。单参数写无回显、node OK非声学完成、返回端口非nonce等既有边界不变。三个tuple的静态字节核对不证明任何当前固件、真实产品或设备运行通过；本节不关闭整体C11或阶段0。

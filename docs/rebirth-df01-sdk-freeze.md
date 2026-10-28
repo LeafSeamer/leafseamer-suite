@@ -337,6 +337,8 @@ window握手与后续port属于同一面板设计的不同阶段，不共享消�
 
 ### 15.4 本项退出与实施交接
 
+C11音频第18节固定WING叶参数F／I／S各自的read tuple和绝对write tag。SDK分别生成显示、归一化、原生字段，禁止以归一化值回写原生fader或将只读有效状态当写地址；通道路由、USR Signal／Patch及型号脚注保留各自的枚举、坐标和selector。来源绑定增加全局切换参数依赖，不能从组内索引或strip数量猜物理前级映射；文档已明确的编码规则转实施，未知来源优先级、HA差异和完成／释放政策仍沿原C11项解决。
+
 C11音频第17节的DM3 OSC具名线绑定表为生成输入：123条set与4条场景操作独立于标称prmnum，11类值域不从RCP目录复制。必须保留坐标／PrePost未决标记并与语义、会话、足迹及证据policy合成完整定义；静态无标记不等于可写，set表不自动生成get响应或meter能力。
 
 C11音频第16节新增RIVAGE条件codec的生成约束：ParameterDefinition绑定variant_id、selector_parameter_refs及selector_predicate，禁止按相同address去重或把不同缩放范围取并集。具体分支及选择器观察与定义／会话／目录版本一同消费，未知或重叠分支拒绝，类型变化重建baseline；SDK生成四引擎类型化坐标和场景major／minor规范字符串，保留型号表未证部分，不改历史局部Schema。

@@ -64,10 +64,36 @@ source_validator必须按当前选定的具体模型校验来源，并核领域�
 
 正常轨迹：可信宿主核当前会话和请求→在一致读取中固定来源列表→按方法取得root与全部提供者票据→每组提交精确来源和字段→完整结果验证→最终Gate内重新检查并单次消费。故障轨迹：root已返回、dynamic校验中撤权→invalidate立即关闭→迟到校验返回不能写入或封装→已受理领域操作仍可按原请求查询。
 
-## 本轮验证
+## 通用读集验证
 
 ```text
 python -B docs/contracts/c09-providers/check_readset.py --sdk <SDK仓库> --report
 ```
 
 检查固定Git原件、当前模型中全部35方法对应结果的字段集合，实际运行全部14分组的合成读集；覆盖替换来源、错字段、单次票据、部分失败、截止等号、时钟倒退及两个真实线程撤权场景。测试来源和结果采用显式合成const Schema，不声称已验证真实领域适配器。数据库、网络、浏览器、设备、生产审批和最终输出Gate运行计数均为零，阶段0继续开放。
+
+## 固定模型配置与动态批准
+
+[typed_validators.py](typed_validators.py)提供固定panel4模型配置，加载的原始models.schema.json必须与 [typed-sources.json](typed-sources.json)中的完整字节摘要一致；不接受改写后的字典、旧选择或未知模型回退。1463模型全部引用使用本地闭包，资源解析拒绝网络获取。来源按指定模型做实际JSON Schema及format验证；结果按方法唯一变体验证完整结构，并执行已有的时钟区间、命令锁存、预检和恢复显示不变量。
+
+```python
+contract = Contract(models_bytes, selection)
+readset = contract.readset(
+    context, expected_sources,
+    dynamic_validator=approved_dynamic,
+    source_guard=current_source_and_rights,
+    result_guard=complete_domain_relations,
+)
+```
+
+配置始终绑定精确method。即使controller与seamer返回同形MetaView，也不能把一方已绑定的验证器用于另一方法。source_guard(context, model, value)与result_guard(context, view, value)必须由可信宿主明确提供并返回True；缺守卫不能构造此配置的读集，结构合法也不能绕过守卫拒绝。守卫负责来源当前性、授权、完整领域关联和本地采用事实，可闭包绑定该一致读取中的完整计划及不可变原件。底层`Contract.validate`只提供结构检查，不独立证明这些事实。
+
+动态入口dynamic_validator(method, JSON Pointer, kind, value)只在静态结构通过后调用，必须明确返回True。位置包括能力actions的参数／结果SchemaRef、triggers的载荷SchemaRef与状态SchemaRef；观察`/values`的QualifiedValue；草稿／发布的完整`/content`与`/metadata`；恢复每一步的每条evidence_summaries与非空parameters_summary。kind分别为schema_ref、qualified或raw。缺入口或任一项拒绝使整个结果不可用；空恢复证据列表及null参数依旧由静态模型和领域守卫判断，不制造虚拟摘要。定义的layout即使为空也需要当前批准，不能借静态开放对象默认放行。
+
+该入口应连接当前批准Schema、字段权利及来源适配器，不能注册无条件返回True的生产策略。校验器拿到的是副本，不能通过改值实现隐式裁剪。上述检查发生在读集封装阶段；封装后的撤权仍必须触发invalidate，并在最终输出Gate复核，不把本配置宣称为已接通发送门。
+
+```text
+python -B docs/contracts/c09-providers/check_typed.py --sdk <SDK仓库> --report
+```
+
+[typed-report.json](typed-report.json)单列真实模型检查：全部35方法／23变体、181项缺字段反例，以及Meta、公开时钟、Observation、DraftRecord四类完整来源样例；这不代表1463模型均完成领域行为验收。三个读集正例中，观察值实际连接固定SDK动态提供者并运行两个Schema子进程，验证错误类型、缺字段权利和撤权拒绝。其余动态位置使用显式合成策略；领域守卫采用合成的精确原件／结果批准，未接真实审批或数据库读取事务。通用357项报告仍独立保留，不能把两个报告的数量当成全部生产提供者完成度。

@@ -1,0 +1,2026 @@
+{
+  "purpose": "design_fixture_only",
+  "runtime_approved": false,
+  "fixtures": {
+    "MetaView": {
+      "component_version": "0.1.0",
+      "protocol_version": "1.0.0-draft.4",
+      "panel_features": [
+        "controller.getMeta"
+      ],
+      "limits_profile_ref": "sim-panel"
+    },
+    "ClockView": {
+      "status": "synchronized",
+      "sampled_at": "2026-10-18T10:00:00.000Z",
+      "offset_ms": -1.25,
+      "uncertainty_ms": 3.5,
+      "sample_age_ms": 100,
+      "policy_revision": "1"
+    },
+    "ClockAssessmentView": {
+      "eligible_for_absolute": true,
+      "reason_code": "qualified",
+      "policy_revision": "1",
+      "sample_age_ms": 100,
+      "uncertainty_now_ms": 4,
+      "utc_lower_ms": 1792317600000,
+      "utc_upper_ms": 1792317600008
+    },
+    "DevicePageView": {
+      "items": [
+        {
+          "device_id": "device.1",
+          "device_kind": "synthetic",
+          "display_name": "合成设备",
+          "connection_state": "ready"
+        }
+      ],
+      "catalog_revision": "4",
+      "next_page_handle": null
+    },
+    "CapabilityView": {
+      "device_id": "device.1",
+      "catalog_revision": "4",
+      "actions": [
+        {
+          "action_id": "synthetic.set",
+          "capability_version": "1.0.0",
+          "parameters_schema_ref": {
+            "schema_id": "synthetic.state",
+            "definition": "value",
+            "schema_digest": "7c6399a0bdcfe21656f954c5a96a679f1fb1114312e903ca46796e756e00a98b"
+          },
+          "result_schema_ref": {
+            "schema_id": "synthetic.state",
+            "definition": "value",
+            "schema_digest": "7c6399a0bdcfe21656f954c5a96a679f1fb1114312e903ca46796e756e00a98b"
+          },
+          "supported_completion": [
+            "acknowledged",
+            "effect_verified"
+          ],
+          "default_completion": "effect_verified",
+          "cancel_mode": "before_dispatch_only",
+          "retry_mode": "never",
+          "evidence_timeout_ms": 2000
+        }
+      ],
+      "triggers": [
+        {
+          "trigger_id": "synthetic.changed",
+          "capability_version": "1.0.0",
+          "payload_schema_ref": {
+            "schema_id": "synthetic.state",
+            "definition": "value",
+            "schema_digest": "7c6399a0bdcfe21656f954c5a96a679f1fb1114312e903ca46796e756e00a98b"
+          },
+          "delivery_semantics": "discrete",
+          "time_requirement": "relative_age",
+          "max_age_ms": 1000
+        }
+      ],
+      "state_schema_ref": {
+        "schema_id": "synthetic.state",
+        "definition": "value",
+        "schema_digest": "7c6399a0bdcfe21656f954c5a96a679f1fb1114312e903ca46796e756e00a98b"
+      }
+    },
+    "ObservationView": {
+      "device_id": "device.1",
+      "observation_id": "observation.1",
+      "state_revision": "4",
+      "observed_at": "2026-10-18T10:00:00.000Z",
+      "freshness_ms": 100,
+      "integrity": "complete",
+      "projection_status": "complete",
+      "values": {
+        "schema_ref": {
+          "schema_id": "synthetic.state",
+          "definition": "value",
+          "schema_digest": "7c6399a0bdcfe21656f954c5a96a679f1fb1114312e903ca46796e756e00a98b"
+        },
+        "value": {
+          "program": "Scene A"
+        }
+      }
+    },
+    "CommandView": {
+      "command_id": "command.1",
+      "revision": "4",
+      "target": {
+        "device_id": "device.1",
+        "action_id": "synthetic.set",
+        "capability_version": "1.0.0"
+      },
+      "origin": "manual",
+      "accepted_at": "2026-10-18T10:00:00.000Z",
+      "phase": "finished",
+      "outcome": "unknown",
+      "effect_status": "possible",
+      "resource_status": "unresolved",
+      "required_completion": "effect_verified",
+      "achieved_completion": null,
+      "cancellation_state": "none",
+      "automation_continuation": "paused_latched",
+      "reason_code": "reply_lost",
+      "resolution_summary": null
+    },
+    "CancelView": {
+      "operation_id": "cancel.1",
+      "command_id": "command.1",
+      "state": "requested",
+      "reason_code": null
+    },
+    "ControlOperationView": {
+      "operation_id": "control.op",
+      "device_id": "device.1",
+      "state": "effective",
+      "target": {
+        "version": "5",
+        "mode": "manual",
+        "holder": {
+          "relation": "self",
+          "display_label": "当前操作员"
+        }
+      },
+      "failure_code": null,
+      "effective_version": "5",
+      "ready": true
+    },
+    "ControlView": {
+      "device_id": "device.1",
+      "revision": "7",
+      "control_epoch": "epoch.1",
+      "effective_version": "5",
+      "mode": "manual",
+      "holder": {
+        "relation": "self",
+        "display_label": "当前操作员"
+      },
+      "gate_state": "ready",
+      "pending_change": null,
+      "in_flight": {
+        "visible_command_ids": [],
+        "has_hidden": false
+      },
+      "unresolved": {
+        "visible_command_ids": [],
+        "has_hidden": false
+      }
+    },
+    "TransferView": {
+      "transfer_id": "transfer.1",
+      "device_id": "device.1",
+      "from_holder": {
+        "relation": "self",
+        "display_label": "当前操作员"
+      },
+      "target_holder": {
+        "relation": "other",
+        "display_label": "其他操作员"
+      },
+      "expected_control": {
+        "epoch": "epoch.1",
+        "version": "5"
+      },
+      "expires_at": "2026-10-18T10:00:30.000Z",
+      "state": "offered",
+      "accept_operation_id": null
+    },
+    "MutationView": {
+      "operation_id": "mutation.1",
+      "state": "applied",
+      "entity_id": "run.1",
+      "revision": "5",
+      "visible_targets": [
+        {
+          "service_alias": "controller.local",
+          "status": "applied",
+          "applied_revision": "5"
+        }
+      ],
+      "has_hidden_targets": false
+    },
+    "CapacityView": {
+      "pressure": "normal",
+      "reason_codes": [],
+      "panel_budget": {
+        "max_pending_requests": 32,
+        "max_unacked_frames": 64,
+        "max_unacked_bytes": 1048576
+      },
+      "current_panel_usage": {
+        "pending_requests": 1,
+        "unacked_frames": 2,
+        "unacked_bytes": 512
+      }
+    },
+    "SceneCatalogView": {
+      "device_id": "device.1",
+      "collection_ref": "collection.1",
+      "collection_generation": "1",
+      "catalog_revision": "4",
+      "binding_revision": "2",
+      "status": "ready",
+      "entries": [
+        {
+          "scene_id": "scene.1",
+          "display_name": "Scene A"
+        }
+      ]
+    },
+    "EvidencePageView": {
+      "command_id": "command.1",
+      "items": [
+        {
+          "evidence_id": "evidence.1",
+          "kind": "transport_submission",
+          "captured_at": "2026-10-18T10:00:00.000Z",
+          "predicate_result": null,
+          "completion_level": "sent"
+        }
+      ],
+      "resource_release_summary": {
+        "status": "unresolved",
+        "policy_label": null
+      },
+      "next_page_handle": null
+    },
+    "DefinitionView": {
+      "definition_id": "definition.1",
+      "revision": "4",
+      "definition_version": null,
+      "published": false,
+      "definition": {
+        "schema_ref": {
+          "schema_id": "synthetic.definition",
+          "definition": "value",
+          "schema_digest": "eca342bb6f700f9f2f279c528ee0eff44b288ed2cd2dd86a673608a9e55fb675"
+        },
+        "value": {
+          "kind": "rule",
+          "name": "合成规则",
+          "trigger": {
+            "provider_id": "provider.1",
+            "device_id": "device.1",
+            "trigger_id": "synthetic.changed",
+            "capability_version": "1.0.0",
+            "conditions": []
+          },
+          "groups": [
+            {
+              "kind": "sequential",
+              "steps": [
+                {
+                  "step_id": "step.1",
+                  "action_ref": {
+                    "provider_id": "provider.1",
+                    "device_id": "device.1",
+                    "action_id": "synthetic.set",
+                    "capability_version": "1.0.0"
+                  },
+                  "parameters": {
+                    "value": 1
+                  },
+                  "required": true,
+                  "on_failure": "stop",
+                  "depends_on": [],
+                  "preconditions": [],
+                  "completion": "effect_verified",
+                  "deadlines": {
+                    "max_queue_ms": 1000,
+                    "evidence_timeout_ms": 2000
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "proof_summaries": []
+    },
+    "RunView": {
+      "run_id": "run.1",
+      "definition_id": "definition.1",
+      "definition_version": "1.0.0",
+      "revision": "4",
+      "business_state": null,
+      "transition_summary": null,
+      "lifecycle": "paused",
+      "execution_summary": "unknown",
+      "arm_generation": "2",
+      "active_execution_id": "execution.1",
+      "grant_summaries": {
+        "items": [
+          {
+            "controller_alias": "controller.local",
+            "grant_id": "grant.1",
+            "status": "applied"
+          }
+        ],
+        "has_hidden": false
+      }
+    },
+    "PreflightView": {
+      "run_id": "run.1",
+      "run_revision": "4",
+      "passed": true,
+      "checks": [
+        {
+          "code": "control_ready",
+          "passed": true,
+          "label_key": "check.control_ready"
+        }
+      ],
+      "observed_at": "2026-10-18T10:00:00.000Z",
+      "assessment_handle": "assessment.synthetic"
+    },
+    "RecoveryPlanView": {
+      "run_id": "run.1",
+      "run_revision": "4",
+      "recovery_handle": "recovery.synthetic",
+      "expires_at": "2026-10-18T10:00:30.000Z",
+      "items": [
+        {
+          "step_id": "step.1",
+          "source_execution_id": "execution.1",
+          "source_command_id": "command.1",
+          "decision": "stop",
+          "reason_code": "unresolved"
+        }
+      ],
+      "unresolved": {
+        "visible_command_ids": [
+          "command.1"
+        ],
+        "has_hidden": false
+      }
+    },
+    "RecoveryOperationView": {
+      "operation_id": "recovery.op",
+      "run_id": "run.1",
+      "previous_run_revision": "4",
+      "committed_run_revision": "5",
+      "recovery_generation": "1",
+      "state": "ready",
+      "new_execution_id": "execution.2",
+      "visible_new_command_ids": [
+        "command.2"
+      ],
+      "has_hidden_commands": false,
+      "target_status_summary": {
+        "items": [
+          {
+            "service_alias": "controller.local",
+            "status": "applied",
+            "applied_revision": "5"
+          }
+        ],
+        "has_hidden": false
+      }
+    },
+    "IndependenceView": {
+      "proof_id": "proof.1",
+      "proof_revision": "1",
+      "definition_id": "definition.1",
+      "definition_version": "1.0.0",
+      "failed_step_id": "step.1",
+      "successor_step_ids": [
+        "step.2"
+      ],
+      "verdict": "unknown",
+      "reason_codes": [
+        "footprint_unknown"
+      ]
+    }
+  },
+  "context": {
+    "authorized": true,
+    "delegation_active": true,
+    "request_binding_matches": true,
+    "expected_fields": {},
+    "allowed_features": [
+      "controller.getMeta"
+    ],
+    "approved_schemas": {
+      "synthetic.state": {
+        "definition": "value",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "program": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          "required": [
+            "program"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "synthetic.definition": {
+        "definition": "value",
+        "schema": {
+          "allOf": [
+            {
+              "$ref": "https://leafseamer.invalid/contracts/draft4/first-loop.schema.json#/$defs/Definition"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "rule"
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "steps": {
+                        "items": {
+                          "properties": {
+                            "parameters": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "value"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "projection_status": "complete",
+    "definition_fully_visible": true,
+    "operation_epoch": "epoch.1",
+    "current_control": {
+      "epoch": "epoch.1",
+      "version": "5",
+      "mode": "manual",
+      "holder": {
+        "relation": "self",
+        "display_label": "当前操作员"
+      },
+      "gate_state": "ready",
+      "pending": false,
+      "unresolved": false
+    },
+    "all_targets_applied": true,
+    "panel_budget": {
+      "max_pending_requests": 32,
+      "max_unacked_frames": 64,
+      "max_unacked_bytes": 1048576
+    },
+    "panel_usage": {
+      "pending_requests": 1,
+      "unacked_frames": 2,
+      "unacked_bytes": 512
+    },
+    "command_evidence_ids": [
+      "evidence.1"
+    ],
+    "resource_status": "unresolved",
+    "all_grants_applied": true,
+    "recovery_plan_fully_visible": true,
+    "authoritative_verdict": "unknown"
+  },
+  "cases": [
+    {
+      "id": "PR001",
+      "method": "controller.getMeta",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR002",
+      "method": "controller.getClock",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR003",
+      "method": "controller.listDevices",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR004",
+      "method": "controller.getCapabilities",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR005",
+      "method": "controller.getDeviceState",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR006",
+      "method": "controller.submitCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR007",
+      "method": "controller.cancelCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR008",
+      "method": "controller.getControlOperation",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR009",
+      "method": "controller.getControl",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR010",
+      "method": "controller.offerTransfer",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR011",
+      "method": "controller.revokeRunGrant",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR012",
+      "method": "controller.getClockAssessment",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR013",
+      "method": "controller.getCapacity",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR014",
+      "method": "controller.getSceneCatalog",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR015",
+      "method": "controller.getCommandEvidence",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR016",
+      "method": "seamer.createDefinition",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR017",
+      "method": "seamer.createRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR018",
+      "method": "seamer.preflightRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR019",
+      "method": "seamer.previewRecovery",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR020",
+      "method": "seamer.resumeRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR021",
+      "method": "seamer.getIndependenceProof",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "raw_response"
+          ],
+          "value": {
+            "token": "synthetic"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR022",
+      "method": "controller.getDeviceState",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "values",
+            "value",
+            "secret_value"
+          ],
+          "value": "synthetic"
+        }
+      ],
+      "valid": false,
+      "expected_error": "dynamic_value"
+    },
+    {
+      "id": "PR023",
+      "method": "controller.getDeviceState",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "values",
+            "schema_ref",
+            "schema_digest"
+          ],
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "valid": false,
+      "expected_error": "schema_binding"
+    },
+    {
+      "id": "PR024",
+      "method": "controller.getDeviceState",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "projection_status"
+          ],
+          "value": "complete"
+        },
+        {
+          "path": [
+            "context",
+            "projection_status"
+          ],
+          "value": "filtered"
+        }
+      ],
+      "valid": false,
+      "expected_error": "projection_scope"
+    },
+    {
+      "id": "PR025",
+      "method": "controller.getDeviceState",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "projection_status"
+          ],
+          "value": "filtered"
+        },
+        {
+          "path": [
+            "context",
+            "projection_status"
+          ],
+          "value": "filtered"
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR026",
+      "method": "seamer.createDefinition",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "definition",
+            "value",
+            "groups",
+            0,
+            "steps",
+            0,
+            "parameters",
+            "secret_value"
+          ],
+          "value": "synthetic"
+        }
+      ],
+      "valid": false,
+      "expected_error": "dynamic_value"
+    },
+    {
+      "id": "PR027",
+      "method": "seamer.createDefinition",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "definition_fully_visible"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "definition_scope"
+    },
+    {
+      "id": "PR028",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "authorized"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "authority"
+    },
+    {
+      "id": "PR029",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "delegation_active"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "authority"
+    },
+    {
+      "id": "PR030",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "request_binding_matches"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "authority"
+    },
+    {
+      "id": "PR031",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "expected_fields"
+          ],
+          "value": {
+            "command_id": "command.other"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "object_binding"
+    },
+    {
+      "id": "PR032",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "effect_status"
+          ],
+          "value": "not_sent"
+        }
+      ],
+      "valid": false,
+      "expected_error": "unknown_effect"
+    },
+    {
+      "id": "PR033",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "resource_status"
+          ],
+          "value": "clear"
+        }
+      ],
+      "valid": false,
+      "expected_error": "unknown_resolution"
+    },
+    {
+      "id": "PR034",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "resource_status"
+          ],
+          "value": "clear"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "resolution_summary"
+          ],
+          "value": {
+            "revision": "5",
+            "resolved_outcome": "not_sent",
+            "resolved_at": "2026-10-18T10:00:00.000Z"
+          }
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR035",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "outcome"
+          ],
+          "value": "pending"
+        }
+      ],
+      "valid": false,
+      "expected_error": "command_phase"
+    },
+    {
+      "id": "PR036",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "automation_continuation"
+          ],
+          "value": "eligible"
+        }
+      ],
+      "valid": false,
+      "expected_error": "continuation"
+    },
+    {
+      "id": "PR037",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "outcome"
+          ],
+          "value": "cancelled"
+        }
+      ],
+      "valid": false,
+      "expected_error": "cancellation"
+    },
+    {
+      "id": "PR038",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "outcome"
+          ],
+          "value": "succeeded"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "achieved_completion"
+          ],
+          "value": "acknowledged"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "effect_status"
+          ],
+          "value": "acknowledged"
+        }
+      ],
+      "valid": false,
+      "expected_error": "completion"
+    },
+    {
+      "id": "PR039",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "outcome"
+          ],
+          "value": "succeeded"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "achieved_completion"
+          ],
+          "value": "effect_verified"
+        }
+      ],
+      "valid": false,
+      "expected_error": "effect"
+    },
+    {
+      "id": "PR040",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "outcome"
+          ],
+          "value": "succeeded"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "achieved_completion"
+          ],
+          "value": "effect_verified"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "effect_status"
+          ],
+          "value": "verified"
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR041",
+      "method": "controller.getControl",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "unresolved",
+            "has_hidden"
+          ],
+          "value": true
+        }
+      ],
+      "valid": false,
+      "expected_error": "ready"
+    },
+    {
+      "id": "PR042",
+      "method": "controller.getControl",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "in_flight",
+            "visible_command_ids"
+          ],
+          "value": [
+            "command.new"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR043",
+      "method": "controller.getControl",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "holder"
+          ],
+          "value": {
+            "relation": "none",
+            "display_label": ""
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "holder"
+    },
+    {
+      "id": "PR044",
+      "method": "controller.getControl",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "gate_state"
+          ],
+          "value": "fencing"
+        }
+      ],
+      "valid": false,
+      "expected_error": "pending_control"
+    },
+    {
+      "id": "PR045",
+      "method": "controller.getControlOperation",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "current_control",
+            "epoch"
+          ],
+          "value": "epoch.other"
+        }
+      ],
+      "valid": false,
+      "expected_error": "ready_binding"
+    },
+    {
+      "id": "PR046",
+      "method": "controller.getControlOperation",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "current_control",
+            "version"
+          ],
+          "value": "6"
+        }
+      ],
+      "valid": false,
+      "expected_error": "ready_binding"
+    },
+    {
+      "id": "PR047",
+      "method": "controller.getControlOperation",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "current_control",
+            "unresolved"
+          ],
+          "value": true
+        }
+      ],
+      "valid": false,
+      "expected_error": "ready_binding"
+    },
+    {
+      "id": "PR048",
+      "method": "controller.getControlOperation",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "current_control",
+            "unresolved"
+          ],
+          "value": true
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "ready"
+          ],
+          "value": false
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR049",
+      "method": "controller.getControlOperation",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "state"
+          ],
+          "value": "pending"
+        }
+      ],
+      "valid": false,
+      "expected_error": "effective_version"
+    },
+    {
+      "id": "PR050",
+      "method": "controller.offerTransfer",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "state"
+          ],
+          "value": "accepted"
+        }
+      ],
+      "valid": false,
+      "expected_error": "transfer_operation"
+    },
+    {
+      "id": "PR051",
+      "method": "controller.offerTransfer",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "state"
+          ],
+          "value": "accepted"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "accept_operation_id"
+          ],
+          "value": "control.accept"
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR052",
+      "method": "seamer.armRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "has_hidden_targets"
+          ],
+          "value": true
+        },
+        {
+          "path": [
+            "context",
+            "all_targets_applied"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "global_application"
+    },
+    {
+      "id": "PR053",
+      "method": "seamer.armRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "visible_targets",
+            0,
+            "applied_revision"
+          ],
+          "value": null
+        }
+      ],
+      "valid": false,
+      "expected_error": "target_revision"
+    },
+    {
+      "id": "PR054",
+      "method": "controller.getCapacity",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "current_panel_usage",
+            "pending_requests"
+          ],
+          "value": 999
+        }
+      ],
+      "valid": false,
+      "expected_error": "capacity_scope"
+    },
+    {
+      "id": "PR055",
+      "method": "controller.getCommandEvidence",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "items",
+            0,
+            "obs_bundle"
+          ],
+          "value": {}
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR056",
+      "method": "controller.getCommandEvidence",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "items",
+            0,
+            "evidence_id"
+          ],
+          "value": "evidence.other"
+        }
+      ],
+      "valid": false,
+      "expected_error": "evidence_owner"
+    },
+    {
+      "id": "PR057",
+      "method": "controller.getCommandEvidence",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "resource_release_summary",
+            "status"
+          ],
+          "value": "clear"
+        }
+      ],
+      "valid": false,
+      "expected_error": "resource_release"
+    },
+    {
+      "id": "PR058",
+      "method": "controller.getClock",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "sample_age_ms"
+          ],
+          "value": null
+        }
+      ],
+      "valid": false,
+      "expected_error": "clock_quality"
+    },
+    {
+      "id": "PR059",
+      "method": "controller.getClockAssessment",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "utc_upper_ms"
+          ],
+          "value": 1
+        }
+      ],
+      "valid": false,
+      "expected_error": "clock_interval"
+    },
+    {
+      "id": "PR060",
+      "method": "controller.getClockAssessment",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "uncertainty_now_ms"
+          ],
+          "value": null
+        }
+      ],
+      "valid": false,
+      "expected_error": "clock_quality"
+    },
+    {
+      "id": "PR061",
+      "method": "controller.getCapabilities",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "actions",
+            0,
+            "default_completion"
+          ],
+          "value": "sent"
+        }
+      ],
+      "valid": false,
+      "expected_error": "completion_default"
+    },
+    {
+      "id": "PR062",
+      "method": "controller.getSceneCatalog",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "entries"
+          ],
+          "value": [
+            {
+              "scene_id": "scene.1",
+              "display_name": "Scene A"
+            },
+            {
+              "scene_id": "scene.1",
+              "display_name": "Scene A"
+            }
+          ]
+        }
+      ],
+      "valid": false,
+      "expected_error": "duplicate_scene"
+    },
+    {
+      "id": "PR063",
+      "method": "seamer.createDefinition",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "published"
+          ],
+          "value": true
+        }
+      ],
+      "valid": false,
+      "expected_error": "definition_version"
+    },
+    {
+      "id": "PR064",
+      "method": "seamer.getRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "lifecycle"
+          ],
+          "value": "running"
+        },
+        {
+          "path": [
+            "context",
+            "all_grants_applied"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "run_grants"
+    },
+    {
+      "id": "PR065",
+      "method": "seamer.preflightRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "checks"
+          ],
+          "value": []
+        }
+      ],
+      "valid": false,
+      "expected_error": "preflight_checks"
+    },
+    {
+      "id": "PR066",
+      "method": "seamer.preflightRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "checks",
+            0,
+            "passed"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "preflight_checks"
+    },
+    {
+      "id": "PR067",
+      "method": "seamer.previewRecovery",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "recovery_plan_fully_visible"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "recovery_scope"
+    },
+    {
+      "id": "PR068",
+      "method": "seamer.getRecoveryOperation",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "committed_run_revision"
+          ],
+          "value": "4"
+        }
+      ],
+      "valid": false,
+      "expected_error": "recovery_revision"
+    },
+    {
+      "id": "PR069",
+      "method": "seamer.getRecoveryOperation",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "target_status_summary",
+            "has_hidden"
+          ],
+          "value": true
+        },
+        {
+          "path": [
+            "context",
+            "all_targets_applied"
+          ],
+          "value": false
+        }
+      ],
+      "valid": false,
+      "expected_error": "recovery_targets"
+    },
+    {
+      "id": "PR070",
+      "method": "seamer.getIndependenceProof",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "verdict"
+          ],
+          "value": "independent"
+        }
+      ],
+      "valid": false,
+      "expected_error": "proof_verdict"
+    },
+    {
+      "id": "PR071",
+      "method": "controller.getMeta",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "panel_features"
+          ],
+          "value": [
+            "auth.introspect"
+          ]
+        }
+      ],
+      "valid": false,
+      "expected_error": "features"
+    },
+    {
+      "id": "PR072",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "revision"
+          ],
+          "value": "4\n"
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR073",
+      "method": "controller.getCommand",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "actor"
+          ],
+          "value": {
+            "principal_id": "operator.1"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR074",
+      "method": "controller.getClockAssessment",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "time_evidence_ref"
+          ],
+          "value": {
+            "evidence_id": "secret"
+          }
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR075",
+      "method": "controller.getCommandEvidence",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "items",
+            0,
+            "captured_at"
+          ],
+          "value": "2026-02-30T00:00:00.000Z"
+        }
+      ],
+      "valid": false,
+      "expected_error": "structure"
+    },
+    {
+      "id": "PR076",
+      "method": "controller.getDeviceState",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "values",
+            "schema_ref",
+            "definition"
+          ],
+          "value": "other"
+        }
+      ],
+      "valid": false,
+      "expected_error": "schema_binding"
+    },
+    {
+      "id": "PR077",
+      "method": "controller.getDeviceState",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "values",
+            "schema_ref",
+            "schema_digest"
+          ],
+          "value": "63e1c540126855def2ac530f55023790ef3606fade138961e23496705bf55dbb"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "values",
+            "value",
+            "secret_value"
+          ],
+          "value": "synthetic"
+        }
+      ],
+      "valid": false,
+      "expected_error": "schema_binding"
+    },
+    {
+      "id": "PR078",
+      "method": "controller.getControlOperation",
+      "changes": [
+        {
+          "path": [
+            "context",
+            "current_control",
+            "epoch"
+          ],
+          "value": "epoch.other"
+        },
+        {
+          "path": [
+            "result",
+            "value",
+            "ready"
+          ],
+          "value": false
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR079",
+      "method": "controller.getControl",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "in_flight",
+            "has_hidden"
+          ],
+          "value": true
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR080",
+      "method": "seamer.armRun",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "has_hidden_targets"
+          ],
+          "value": true
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR081",
+      "method": "controller.getCapacity",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "panel_budget",
+            "max_pending_requests"
+          ],
+          "value": 0
+        },
+        {
+          "path": [
+            "context",
+            "panel_budget",
+            "max_pending_requests"
+          ],
+          "value": 0
+        }
+      ],
+      "valid": true
+    },
+    {
+      "id": "PR082",
+      "method": "controller.getControl",
+      "changes": [
+        {
+          "path": [
+            "result",
+            "value",
+            "holder",
+            "display_label"
+          ],
+          "value": "SYNTHETIC_UNREDACTED_TEXT"
+        }
+      ],
+      "valid": true
+    }
+  ]
+}

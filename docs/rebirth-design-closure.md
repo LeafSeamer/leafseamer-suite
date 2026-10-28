@@ -1,6 +1,6 @@
 # 全系统设计定稿收敛清单
 
-2026-10-28最新成果交接：[panel4消费者与浏览器](contracts/sdk-panel-handoff/README.md)固定SDK `144d0ff`、`db56342`，完整选择、静态正文、HTTP信封和类型客户端已对齐。当前候选含1463模型／201操作／35方法；Suite在Chrome普通与隔离模式的页面及Worker实际完成35220条断言和420次合成服务HTTP收发。旧消费者继续绑定events2；发布原件与动态值提供者仍绑定panel3，实际拒绝重标或直接使用panel4。类型层不表达全部if/then约束，运行正文校验不可省略；浏览器结果不等产品GUI、真实授权或设备验收。提供者迁移、真实投影与最终输出Gate、完整DDL及全系统设计审阅仍待完成，阶段0继续开放。
+2026-10-28最新成果交接：[发布原件与当前面板提供者](contracts/sdk-publication-handoff/README.md)固定SDK `ca785b2`、`aff5ccb`。panel4当前发布写入与显式panel3历史读取已有不可变存储升级参考；当前动态值提供者及发布content／metadata来源已接线，逐节点字段权限、未提交记录拒绝和撤权均有实际检查。Suite从245个固定Git原件重跑两包，保留原件字节及完整报告一致性；旧包与旧报告不改写。此前Chrome页面／Worker的35220条断言与420次HTTP交换保留为历史证据，本轮未重跑浏览器。其余来源适配、真实审批／读权、生产发布事务、投影与最终输出Gate、完整DDL、校验器硬内存限制及全局调度仍待完成，阶段0继续开放。
 
 上一交接的历史状态：[投影注册与持久化](contracts/sdk-scope-handoff/README.md)固定SDK `fbe2499`／`d26c499`。126模型保留原122定义，Profile／Selector具名注册和7表持久写集已有207／226项检查及独立复验；40条故障路径和DELETE／WAL双连接边界已实测。WAL旧快照反例要求继续补最终释放与撤权排序；其余十一类当前领域、完整订阅DDL和新完整选择仍未完成。阶段0未关闭。本轮为当前周期第3/3轮，审计后按SDK→Suite推送main。
 
@@ -214,13 +214,13 @@
 
 | 范围 | 已具备的设计材料，不再重复建立 | 仍须在实施前完成 | 留给实现与验收的证据 |
 | --- | --- | --- | --- |
-| C01 单源与解码 | SDK独立源；panel4完整候选1463模型／201操作／52类worker，35面板方法与19通道消息；正文、HTTP信封及197操作TS客户端已按同一选择重建，Chrome页面与Worker已有当前选择实测 | 当前候选审阅；跨域Ref与逐规则语义调用点、提供者接口、具名摘要／DDL；提供者从panel3迁移及其余独立通道 | 产品GUI窗口／port身份、WS传输、真实权限与服务适配、并发票据及生产环境仍待验收；现有浏览器结果仅覆盖固定消费者与合成服务 |
+| C01 单源与解码 | SDK独立源；panel4完整候选1463模型／201操作／52类worker，35面板方法与19通道消息；正文、HTTP信封及197操作TS客户端已按同一选择重建，Chrome页面与Worker已有当前选择实测 | 当前候选审阅；跨域Ref与逐规则语义调用点、提供者接口、具名摘要／DDL；其余动态来源提供者接线及独立通道 | 产品GUI窗口／port身份、WS传输、真实权限与服务适配、并发票据及生产环境仍待验收；现有浏览器结果仅覆盖固定消费者与合成服务 |
 | C02/C03 命令与接管 | 三命令裁决接口及11表受理子域、三准备接口及14表准备/关闭子域；[51表组合与30帧IPC候选](contracts/c08-controller/BARRIER_ATTEMPTS.md)登记逐primitive/逐传输许可及同cut尝试/ACK/采用关系；[77表命令组合](contracts/c08-controller/COMMAND_STORAGE.md)联接资源、固定终态、Resolution/T6和原报告身份；[七命令HTTP](contracts/c02-command-view/README.md)定义公开修订、取消查原/进度及固定证据分页和503投影错误；[91表公开持久化](contracts/c02-command-view/STORAGE.md)补取消原子受理/拒绝、完整捕获及不可变证据清单；[IPC0.7完整46帧](contracts/c02-cancellation/README.md)增加ordinary/all关闭、独立取消执行及四屏障覆盖；监督控制／bootstrap及15表journal | 转交关联；RequestKey全链映射；取消保护执行物理写集、共享签发分配器与closure/result及证据原件完整FK；prepare/observe及其他三类屏障表；guard/预算和packet准备持久提供者；统一SDK归并 | writer并发、最终发送竞态、进程纳管和重启、磁盘耐久、设备效果 |
 | C04/C05 执行与摄取 | 程序／证明、24操作生命周期、执行记录与40表恢复／提交／摄取组合；保护HTTP、RUN_FENCE及P2／P3候选；最终释放门、订阅交付ACK及12类快照／增量消费者已有局部运行证据 | 准备回执替换预填grant；P1/P4、P3到准备closed引用与资源证据；真实领域来源／权限／完整性契约、规范摄取与投影ACK分界、跨source_epoch替换／GC／P0；边沿／预算／依赖边消费与完整DDL | 真实编译器、提供者及事务执行器、HTTP／WS／TLS出口与GUI投影清理、跨服务故障／负载／恢复竞争；projection_applied不等durable_ingest |
 | C06 时间与排期 | 固定日历、场次身份、激活／受理边界；DF03的reference-bound/1路线于2026-10-20获确认；[参考时钟字段候选](contracts/df03-reference/README.md)定义采样／证据／锚点／评估、发布失效及UTC子守卫与精确算术；[时间服务与IPC0.8](contracts/df03-service/README.md)补六查询、完整46帧及逐步排期来源绑定；[采集器0.2十四帧](contracts/df03-collector/CHANNEL_V02.md)补有序停止及持久回执前保留；[27表时间与入站日志](contracts/df03-collector/INBOX.md)联接原件发布、STOP、发送和容量及入站效果原子提交，显式修正旧25表消息方向；[TIME切点与共享水位候选](contracts/df03-time-fence/README.md)补两类许可完整捕获、ACK采用与失效原子写集规范及内部投影Schema | 跨服务EventAgeProof及其他公共事件时间字段与SDK统一迁移；时间子域到完整库的组合、TIME设备屏障账本、加密/采集提供者与完整字段映射、实际容量profile与GC、场次／日历约束；冻结协议库、引导信任及误差profile | 两平台采样、休眠／换源、NTP误差前提和日历并发运行 |
 | C07 身份 | 主体用途矩阵、配对／注销／服务凭据生命周期、来源与对象授权设计 | 新生命周期接口、订阅owner及槽管理完整HTTP/WS；证书与秘密存储profile、历史身份归属及撤销映射 | TLS、当前权限提供者、秘密落盘、撤销传播及日志隔离 |
 | C08 存储 | 监督journal、Seamer恢复／执行／摄取布局及Controller局部组合；注册7表、owner journal 5表、快照6表及增量3表参考写集，局部SQLite、Windows进程强杀已有证据 | 全业务库／installation.db／监督journal完整表／索引／事务／字段映射；owner／Context／票据／订阅代际／发送映射／ACK／pin及各屏障、预算／准备来源归并；局部表数不能相加冒充完整库 | 产品驱动与生产迁移、完整并发／崩溃／备份恢复、Linux owner及掉电；已有局部证据不等生产耐久，不要求先实现才能设计 |
-| C09 扩展 | 35方法当前输入、21结果视图／23变体及181顶层字段来源；panel4固定Registry与完整SchemaRef、19帧通道及服务／订阅／Bundle绑定，旧提供者仍为panel3；既有安装接口及导入IPC；完整发布原件不可变关联及动态值／逐节点权限参考已有83／103项检查 | 数据源SourceRuntimeBinding与启动对象范围；审批／运行／目录／撤销提供者接口和DDL；生产发布原件与产物／请求／审计同事务；真实Schema批准与来源／值关联、投影及最终输出Gate；校验器内存硬限额与全局调度 | ZIP与原生加载、真实审批、浏览器窗口／port、字段投影过滤和全部写出口 |
+| C09 扩展 | 35方法当前输入、21结果视图／23变体及181顶层字段来源；panel4固定Registry与完整SchemaRef、19帧通道及服务／订阅／Bundle绑定，当前动态提供者已绑定panel4，旧提供者保留panel3；既有安装接口及导入IPC；当前／历史发布原件不可变存储有292基础及74升级检查，发布content／metadata来源接线有332基础及59发布检查 | 数据源SourceRuntimeBinding与启动对象范围；审批／运行／目录／撤销提供者接口和DDL；生产发布原件与产物／请求／审计同事务；真实Schema批准、其余来源／值关联、投影及最终输出Gate；校验器内存硬限额与全局调度 | ZIP与原生加载、真实审批、浏览器窗口／port、字段投影过滤和全部写出口 |
 | C10/C11 全功能 | 18旧bundle细项来源、GUI交互、各设备和NodeCG专题；DM3参数profile与184项分组 | 逐参数codec／单位和证据政策、设备复合中间态／释放政策、NodeCG固定兼容组合及许可；统一Schema/IPC与GUI字段 | 实际型号／固件、音频标定、图文像素及浏览器交互；无硬件实证不得标支持通过 |
 | C12 发行部署 | 两主部署、静态service路由、安装引用／恢复与TUF时间及信任恢复候选 | 实质取舍审阅、完整锁生成和制品验证规则、安装内层模型与统一协议映射；精确版本变化重新核对 | 下载字节、构建／签名／重建、安装／更新／恢复、Nginx及两平台部署 |
 

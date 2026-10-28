@@ -528,6 +528,42 @@ RIVAGE recall采用地址`/yosc:req/ssrecallt_ex`，两个OSC string参数依次
 
 本节关闭RIVAGE引擎拓扑、同址条件缩放和场景身份与DM3混用的具体设计缺口，转入SDK条件定义生成、Controller前提／观察绑定及GUI变体显示实施。沿AUDT补验四引擎首尾／越界坐标、Bank A/B、同址不同scale、未知及重叠分支拒绝、变体变化后的旧计划与迟到观察、场景两个string和边界词法。当前只复核官方PDF表格并执行精确算术／规范字节检查，未执行产品生成器、真实OSC、SQLite或设备测试。RIVAGE完整枚举／条件表、DM3 RCP、WING及VB剩余codec和完成／释放仍逐项保留，不以本节关闭整个C11。
 
+### 16.5 枚举、Ratio与Release的明确部分
+
+**官方表项。** 本节继续使用第16.1节固定的OSC v1.0.2，第12—14页表1—18及第4—11页对应参数行。表6的Dynamics Type线字符串为`PM Comp`、`Classic Comp`、`GATE`、`DE-ESSER`、`EXPANDER`、`DUCKING`；表18却以`LEGACY COMP`和`COMP260`命名Ratio分支。产品[官方规格](https://uk.yamaha.com/en/business/audio/products/mixers/rivage-pm/specs.html)也采用Legacy Comp／Comp260名称，但没有给出它们与这两个OSC字符串的对应关系。因此不得按词意、顺序或名称相似度编造别名映射，也不能直接发送不在表6中的`COMP260`字符串。
+
+以下字符串采用OSC s，大小写和内部空格均是值的一部分，排版引号不进入报文。这里固定已明确的接受集及表归属，完整参数行的机械展开进入SDK实施，不另建同义参数包。
+
+| 域／原表 | 精确值及约束 |
+| --- | --- |
+| Active Cue／1 | `NONE,OTHERS,INPUT,DCA,OUTPUT` |
+| Color／2 | `Blue,Orange,Yellow,Purple,SkyBlue,Pink,Red,Green,LtGreen,White,OFF`；不复用DM3的Cyan／Magenta／Off集合 |
+| Icon／3 | 按第12页两列共56个token原样展开；例如`DrumKit`、`Subwoofer`、`Effector`不能替换成DM3的`Drumkit`、`SubWoofer`、`Effect` |
+| Knee／5 | `HARD,SOFT-1,SOFT-2,SOFT-3,SOFT-4,SOFT-5` |
+| Dynamics Type／6 | 上述六个确切字符串；线token与数值分支的语义映射分别验证 |
+| EQ Type／7 | `PRECISE,AGGRESSIVE,SMOOTH,LEGACY` |
+| Input／Mix／Matrix Role／10—12 | 各自的集合均为`Mono,StereoL,StereoR,SurrL,SurrR,SurrC,SurrLFE,SurrLs,SurrRs`；不得因集合相同而合并目标坐标域 |
+| Stereo Role／13 | 仅`Mono,StereoL,StereoR`；不能继承其它Role的Surround成员 |
+| Bus Type／15 | `VARI,FIXED,MIXMINUS` |
+| Surround Monitor Source／16 | `Surr A,Surr B,DownMix A,DownMix B,Ext Surr5.1 1,Ext Surr5.1 2,Ext Surr5.1 3,Ext Surr5.1 4`，以及`Ext St 1`至`Ext St 4`、`Define 1`至`Define 8`；区间展开为明确token，不接受任意尾数字 |
+| Oscillator Type／17 | `SINE 1CH,SINE 2CH,PINK NOISE,BURST NOISE` |
+
+Link Group表14的1—26映射A—Z、27—52映射a—z；线值仍为int32，不能发送显示字母。Assign参数行虽然列0—52，表14未解释0的成员语义，本节不自行将0投影成“无关联”事实或据此缩小影响范围。对应Group参数坐标仍是1—52，不能把Assign的0值当成第0组坐标。
+
+**采用的数值规则。** Ratio使用自己的`finite_ratio`与`infinite_ratio`语义，不能沿AudioLevel的centi_db或负无穷分支。有限Ratio保存正的准确比例，单位为压缩比的前项对1；有依据的编码关系如下。数值范围、设备离散档位及无穷编码是三个不同条件。
+
+| 具名语义分支 | 有限语义边界／线缩放 | 单独保留的限制 |
+| --- | --- | --- |
+| 表18的LEGACY COMP／EXPANDER Ratio | 1:1—20:1；普通Ratio行raw=ratio×10，端点为10、200 | 不能把raw最大255解释为有限25.5:1；表中未明确把255分配给∞ |
+| 表18的COMP260 Ratio | 1:1—500:1；COMP260行raw=ratio×100，端点为100、50000 | 不能把65535解释为有限655.35:1，亦不能仅因其是最大值就认定∞编码 |
+| COMP260 Release | 注释明确6.2ms—999ms；沿该行scale=1000得到raw 6200—999000 | 不能使用普通行的整个3340—42700000范围；没有别名／类型资格时不能自动选择此分支 |
+
+例如有限2:1在两个Ratio分支分别编码20、200；这不授予全部中间小数档位。`infinite_ratio`需要明确的sentinel映射后才可序列化，不能先发255／65535试探。Release的端点限制来自具名注释与整数比例，不把范围内每一个raw都宣称为设备实际格点。第16.2节的选择器、迟到观察和计划失效规则同时适用；未知Dynamics Type不能退回普通分支。Mix的Dyna1/Type行Y为Bank A/B，而输入Dyna1／Dyna2 Type行Y=1，选择器Ref必须采用各自的完整坐标。
+
+**Patch词法与剩余冲突。** 表4的AES输出、表8的输入、表9的OMNI输出分别选择自身模板。模板中的空格不同：`MIX[N]`生成`MIX1`，`CS1 MY1 [N]`生成`CS1 MY1 1`，不能先统一去空格再解析；`[X]`只展开L／R，`[Y]`只展开L／R／C，`[Z]`只展开LFE／Ls／Rs／L／R／C，`[N]`由具名拓扑提供一基整数及上界。客户端只传目录目标Ref，编码器从批准模板生成字符串，不接受用户拼接的Patch文本。三个表不取并集；某表未列的既定用途须另补依据，不能以此永久删去功能范围。模板不证明目标存在、可写或已切换。
+
+本节关闭确定枚举／Role差异、有限Ratio比例与COMP260 Release范围的设计缺口。SDK定义保留精确字符串域及独立Ratio语义，Controller／GUI沿相同定义校验和显示；完整录入及编码器进入实施。剩余RIVAGE数值阻断具体为：Type字符串与条件分支的权威映射、Ratio无穷sentinel和实际格点、Threshold下界／符号冲突，以及尚无依据的访问／响应与物理目标资格。已明确缩放及模板不再重复调查；不能用本节的静态检查宣布全部条件codec完成。
+
 ## 17. DM3 OSC具名线绑定与目录计数
 
 采用[DM3 OSC v1.0.0具名绑定表](contracts/c11-audio/dm3-osc-v100-bindings.json)作为产品生成的参数输入之一。其依据为[Yamaha官方OSC v1.0.0](https://usa.yamaha.com/files/download/other_assets/2/2063222/DM3_osc_specs_v100_en.pdf)第4—11页；文件只保存协议事实及未决标记，不分发原PDF。purpose为documented_wire_bindings，runtime_approved=false；它不是ParameterDefinition的替代品，不能直接加载成当前运行资格。

@@ -1,5 +1,7 @@
 # DF04：SQLite 表契约、事务与恢复设计
 
+当前首期采用以[第24节](#24-首期跨域身份保留与版本切换采用)的适用范围裁决和第10—23节领域补充共同解释；第2—8节基础字典不覆盖后续具名身份与事务。
+
 2026-10-27最新存储交接：[SDK局部持久化与正文成果](contracts/sdk-wire-handoff/README.md)固定5表owner恢复journal、6表快照消费者及3表增量投影写集，并关联已有7表注册存储。各表属于局部参考边界，不能简单相加为生产数据库。Windows同机排他及2次子进程强杀已有证据，Linux、掉电、生产迁移及备份恢复未验。最终释放门已有排序参考，完整owner／Context／票据／发送映射／ACK／pin、规范摄取与执行的生产DDL仍须统一；历史“进程崩溃未验”只适用于原注册存储报告。
 
 上一注册存储交接的历史状态：[固定SDK写集交接](contracts/sdk-scope-handoff/README.md)提供7表局部DDL和226项检查，包括40条逐写入故障、DELETE／WAL双连接、提交观察丢失与关闭重开。对象／墓碑、操作、审计、通知、封存通过双向延迟外键同提交，固定启动authority，禁止覆盖及删除。其结果不代表完整生产库或迁移已交付；owner／Context／票据／订阅代际／发送映射／ACK与pin仍须归并。WAL旧读反例保留，新writer读取不是最终释放门，进程崩溃和断电未验。
@@ -462,3 +464,42 @@ GC依赖未决命令／取消、切点、资源hold、准备墓碑、恢复消�
 完整动作槽、依赖／准备增长与P0最坏保护成本在实际受理事务前预留并在封存复核；普通工作不可透支保护分区。远端查询在writer外，消费时复核已知撤回及版本；COMMIT未知核原身份，不以新请求重做副作用。领域证据、规范事件、管理目录及审计各自原件与对应writer同步发布，网络释放不能先于可靠提交。
 
 本节关闭C04／C05跨域关联在Seamer产品库的归属与事务设计；真实DDL、provider、驱动、并发／掉电及跨进程验证仍属实施／验收。此前局部SQL的表数和合成passed不作为完整产品数据库证明，也不再新增同义实验组合替代实际业务实现。
+
+## 24. 首期跨域身份、保留与版本切换采用
+
+本节对第2—8节基础字典及第10—23节领域补充作最终适用范围裁决。基础字典是逻辑职责，产品表按具名领域契约生成；旧context参与去重、裸service／provider标识及旧ClockSample不得因仍出现在基础表中覆盖后续RequestKey、SourceStreamKey和时间原件。当前SDK的command__RequestKey与control__RequestKey均不含context_id／digest，操作命名空间却不同；snapshot__ObjectRef还包含entity_kind／entity_epoch／content_digest，不能把它直接转换为任意领域Ref。（来源：[当前模型图](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/panel-wire/contract/models.schema.json)、[命令裁决](contracts/c02-admission/STORAGE.md)、[控制权](contracts/c08-controller/CONTROL_AUTHORITY.md)。）
+
+### 24.1 唯一权威与关联边界
+
+| 领域与唯一写入方 | 身份及必须保留的关联 | 采用与事务定位 |
+| --- | --- | --- |
+| 签发Controller的主体／会话／组织服务批准 | 完整issuer_id／issuer_epoch／principal_id，kind由真实主体登记确定；本地subject映射不可复用；session与ServiceApproval独立 | DF06第11节与本稿第10节I1—I6；注销不级联撤销组织运行批准 |
+| 每个目标服务的RequestContext和请求裁决 | 原target_scope含authority_service_id／database_instance_id；RequestKey按操作原模型逐字段取值，命令固定createCommand，控制使用各自operation_id；context、digest只作关联与冲突检查 | 第17、18、22、23节；同键异正文拒绝，换context不新建动作；身份签发者不代目标去重 |
+| Controller命令、控制、准备、grant、attempt、资源和屏障 | 原scope下具名ID／revision；完整设备、命令、attempt、运行代次及原cut成员关联；queued claim与active hold分开，单活跃限制按原领域状态谓词 | 第4、22节；完整集合相等不是成员数相等，受理／生效／ready／完成／资源释放各有原件 |
+| Seamer定义、运行、执行、恢复、继续运行与业务状态 | artifact／run／execution／step、完整摄取游标及独立ingest_revision；单活动槽／恢复锁；远端CommandRef与Receipt保持原Controller scope | 第14、16、18、23节；SourcePauseResolution、Completion、Release不得共用无类型证据列 |
+| 来源、规范摄取、排期与时间 | 完整SourceStreamKey及源事件身份、接收scope／ingest_epoch、稳定场次键；时间域与capture／age revision独立 | C05第16—20节、C06第9—10节、DF03第19—20节；发布来源与接收状态分属两方，重连／换版本不重触发 |
+| 公共投影、目录、订阅与面板读集 | ObjectRef完整身份、owner、connection_generation、scope/profile/selector与原选择摘要；原件摘要与投影content_digest分开 | C05第16、18节及C09既有持久读集；十二集合从本权威同库快照生成，不从跨库缓存拼造权威 |
+| 核心／worker与独立监督journal | 原runtime domain、boot、channel、session及方向序号；消息ID与领域效果关联；监督启动／退役绑定原OS组身份 | DF02第12节、本稿第11、22节；监督库独立，不能向业务库签Ready；序号预约后失效终止原会话 |
+| 安装与维护 | installation.db的安装身份、maintenance_operation及完整deployment／data generation；各业务库保留自身scope | 第19节、C12第7、10节；安装选择只是引用CAS，不是跨库原子提交，不借安装库改业务原件 |
+
+每个同库FK使用其具名原件所需的完整复合键；每个远端Ref保存原选择、类型、完整scope／身份／revision／digest及采用依据，不通过删除scope前缀合并。不可变正文的身份唯一，后续状态修订单独追加／CAS；一个历史有效Ref不能充当前资格。引用链缺失、同身份异正文、错类型、错误域或修订冲突均停止该次采用并按相应领域保护，不用最近一行或默认值补齐。API当前权限仍须重核，保存历史归属不延长凭据或读权。
+
+### 24.2 保留类别与删除门槛
+
+1. **不可删除的拒绝依据。** 首期保留命令／控制／管理的去重裁决、永久拒收、namespace及epoch关闭、已消费恢复／票据身份、授权floor、已退役出口和相关最小身份／摘要／结果关联。第7节关于关闭context资料的回收不得删除这些记录；context到期、命令终态、WS确认或备份成功均不允许重新接受原Key。命令裁决子域沿第17节全部行不GC的既有规则，不能偷偷将“所有行”缩成仅一条摘要墓碑。产品不实现自动压缩或清除这组安全账本；容量准入与维护使用既定有限profile，达到预算先拒新工作，不能换epoch或恢复旧备份规避上限。
+2. **被引用的原件与未决事实。** 活动run／定义／批准／排期、未核销intent、unknown／hold、保护cut、准备／恢复／继续运行、年龄决定、审计及当前订阅／面板读集的pin保持原件可用。只有其领域终结、全部正反向引用解除且已满足对应原有保留策略，才可进入归档；某一个消费者ACK不能代其他引用者解除pin。新pin、关闭与GC判定由所属writer排序，检查与删除之间不得释放writer锁后无条件执行。
+3. **允许有界淘汰的派生与交付资料。** 已无上述pin的旧投影交付页、缓存和非关键遥测，沿C05/C09原窗口清理；保留floor、旧连接／订阅拒绝和显式失步语义，不能因页被清理返回完整空结果。正文外置归档须先写入／核验并取得受保护定位，再同writer更新位置；最后一份可用证据不能先删后补上传。依赖远端归档且暂不可取时保持context_unavailable／未确认，不改成不存在或成功。
+
+除原协议已允许删除的临时秘密外，清除秘密正文与保留消费／撤销身份分开。原token不能留可重用明文，但消费记录不能因secret删除而消失。首期不引入未设计的“全局TTL清库”或将备份当在线拒绝账本。未来账本压缩须有独立的等价拒绝证明和版本迁移，不是本期实现的自由选择。
+
+### 24.3 新库、升级与恢复
+
+首个产品版本直接创建最终具名Schema；已有离线候选数据库／测试夹具和旧协议材料只作按原版本读取的历史，不承诺自动迁移成可执行业务记录。产品此后的Schema升级沿C12第7节：退出旧writer，在新data generation构建、逐库验证后由installation.db一次选择完整组合。第8节的单库事务适用于候选文件内部DDL；它不授权原地升级正在活动的业务库，也不能替代安装激活CAS。没有该from/to迁移及兼容声明时拒绝升级，不能猜字段默认值完成迁移。
+
+正常重启保留原database_instance和拒绝历史，换运行域并执行保护恢复；备份恢复新建database_instance／control_epoch／request_epoch，保留旧scope原件和未决事实，不改写其身份使之成为新域的成功证据。未核销动作在新域仍需显式核对，不从恢复点缺行推断never_sent。程序回退、数据恢复及安装信任下界各按C12／DF05独立处理。
+
+### 24.4 设计出口与实施验证
+
+C08原列的所有者、唯一键／引用、事务边界、版本切换及保留政策已有确定归属，本节关闭其余适用范围冲突。实际DDL／索引、绑定层、writer、归档定位、容量计量和迁移程序是实现交付，不能以尚未创建产品表继续扩展同义布局。C11设备原生完成／释放政策及C12发行时间决定仍由所属专题关闭，不在存储层补一个成功默认值。
+
+沿ST01—ST32、A14／A16／A22补实施验收：换context重投仍命中原Key、同ID跨scope／类型不串账、重复消费不得复活、pin与GC两种提交顺序、预算耗尽不删拒绝依据、归档不可用不成功、候选DDL失败不切换、整组激活未知查原、普通重启与备份恢复身份差异，以及新代已有写入后拒绝静默回退。当前仅契约和固定Schema核对，未执行这些产品数据库／进程／平台测试。

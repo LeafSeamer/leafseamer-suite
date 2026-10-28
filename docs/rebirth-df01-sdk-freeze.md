@@ -1,6 +1,6 @@
 # DF01：SDK契约源、生成工具链与跨语言规范化冻结方案
 
-当前采用输入、独立通道归属和首期身份接口差集以[第15节](#15-首期采用输入与独立通道归属定稿)为准；以下历轮记录保留原版本和证据边界，不作为要求重复建立既有格式的待办。
+当前采用输入、独立通道归属和首期身份接口差集以[第15节](#15-首期采用输入与独立通道归属定稿)为准，跨域语义消费及设计出口以[第16节](#16-跨域语义消费与产品生成出口)为准；以下历轮记录保留原版本和证据边界，不作为要求重复建立既有格式的待办。
 
 2026-10-28最新成果交接：[发布原件与当前面板提供者](contracts/sdk-publication-handoff/README.md)固定SDK `ca785b2`、`aff5ccb`。panel4当前发布写入与显式panel3历史读取已有不可变存储升级参考；当前动态值提供者及发布content／metadata来源已接线，逐节点字段权限、未提交记录拒绝和撤权均有实际检查。Suite从245个固定Git原件重跑两包，保留原件字节及完整报告一致性；旧包与旧报告不改写。此前Chrome页面／Worker的35220条断言与420次HTTP交换保留为历史证据，本轮未重跑浏览器。其余来源适配、真实审批／读权、生产发布事务、投影与最终输出Gate、完整DDL、校验器硬内存限制及全局调度仍待完成，阶段0继续开放。
 
@@ -317,7 +317,7 @@ window握手与后续port属于同一面板设计的不同阶段，不共享消�
 3. 面板35方法、参数／结果SchemaRef、Registry及Bundle激活全部采用同一panel4来源。历史panel3发布原件只走[显式历史读取](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/publication-current/README.md)，不重标原选择；失败不自动回退到旧消费者。旧报告按原提交解释，不改写摘要造成假兼容。
 4. Seamer当前摄取入口固定`POST /api/v1/providers/{provider_id}/events`、`submitProviderEvent`、`source.event.submit`及ProviderBearer。第14节旧71操作矩阵中的ingestEvent／provider.publish仅保留历史来源；产品生成和权限登记按当前操作显式映射，不把旧权限字符串自动当新许可，也不因重命名重建事件身份。来源owner、注册对象和完整事件身份仍须当前核验。
 5. `registry-map.json`中的`mandatory_unresolved=[commands,executions,occurrences]`表示必须保留未决业务对象的投影规则，不是“三类设计尚未完成”的计数。真实字段提供者未接线单列实现任务；真正缺失的来源／状态映射才返回C05/C08设计审阅。
-6. 当前C01检查不批准第14节尚待审阅的主体政策变化，也不把security／x-permission元数据当完整授权实现。人员手动、服务自动化、运行grant与独立取消的关联按C07及当前设备授权方案逐项定稿；如果其接受集变化，随最终公开版本显式发布，不在panel4旧字节中暗改。
+6. 第14节主体政策已由DF06第11节定稿：人员手动、配对Seamer自动化与有效RunGrant、独立取消各按真实主体及用途守卫；不再将此决定列为待审阅。security／x-permission元数据仍不等于完整授权实现，接受集收紧随新完整选择发布，不在panel4旧字节中暗改。
 
 ### 15.3 首期身份接口的明确差集
 
@@ -358,3 +358,24 @@ C04第18节新增生成差集：RunApprovalProposal／Endorsement／RunApproval�
 后续不再以“尚未生产适配”为由延长本项。SDK产品生成、独立协议打包、身份接口生成、实际认证与传输分别进入SDK／Controller／Seamer实现任务；最终制品生成时形成新选择摘要和完整发布清单，旧候选的approved、runtime_ready、advertisable保持原值。设计阶段剩余的是C07精确认证profile与实质主体政策、跨域权威／事务映射及其他C项真正未决问题，沿统一清单直接解决。
 
 本次执行的是固定字节、Schema引用、帧分类及HTTP声明静态核对：公共manifest13项一致，四份独立根及其引用闭包无缺失，设备52帧和面板4／8／7方向集合一致，人员／服务WS认证元数据分离。没有运行产品进程、TLS、浏览器、数据库、部署或设备，不继承历史运行结论。实现后按A01／A08／A09／A10／A15验证真实通道拒混投、撤权及失败关闭；这些运行证据不再作为本项设计出口的前置条件。
+
+## 16. 跨域语义消费与产品生成出口
+
+当前采用按第15节固定输入及明确差集；[DF04第24节](rebirth-df04-storage-design.md#24-首期跨域身份保留与版本切换采用)补齐存储身份、保留与切换的唯一适用规则。以下将第11—14节历史候选中的语义调用点归入实际服务入口，沿用[语义注册](contracts/df01-source/SEMANTIC_REGISTRY.md)的content／linked和四类结果，不增加另一套校验器或通用可信Ref。历史13个函数、四条示例和71操作矩阵不是新产品完整注册表。
+
+| 消费位置 | 必须校验的输入与权威提供者 | 调用时机与结果去向 |
+| --- | --- | --- |
+| SDK及每个原始入口 | 当前完整selection、原wire、具名根、严格词法／预算、开放数据边界、JCS具名投影；content规则只用该输入 | 解码前保留原字节并拒非法原报文；完整根及相应能力Schema通过后按有限selector评估，SDK valid不授业务权限 |
+| 各服务请求入口 | DF06真实AuthenticatedRequestContext、单audience、当前主体／权限／范围／委托及请求用途；人员管理与服务自动化分支 | 认证与用途先于新业务额度／去重裁决；当前有权的查原仍核对象范围，不能让未认证者借重复键读取结果 |
+| Controller受理／控制／准备 | 完整RequestKey、当前本地权威版本、原设备／目录／参数限制、人员holder或Seamer运行批准／认可／grant | 原T1、T3及prepare写集内重核版本；结构合法不等accepted，错误不产生半个命令／控制预留／grant |
+| Controller最终发送及证据采用 | F02/F03第7节所有者，当前运行域／来源／认证／控制／时间／资源／Guard／AdmissionSeal；证据核原attempt和原cut全集 | T2、唯一发送器及I/O出口分别消费自身当前条件；T4／T6按原件类型采用，不以消息ACK证明设备完成或释放 |
+| Seamer发布／摄取／执行／恢复 | C04第17—19节完整AST／依赖、批准／认可、SourceStreamKey、snapshot／年龄、原计划／槽位、SourcePauseResolution和完整目标回执 | 发布前验证全部足迹，摄取同writer完整PLAN，R4／R5再次核baseline／锁存／资格；远端证据不在本地改写，不重放未知动作 |
+| 排期与时间 | C06第9—10节稳定场次身份、来源版本、窗口锁存；DF03采集／ReferenceBundle／AgeEvidence与本地域绑定 | 资格取得与场次裁决各核原版本；参考时间、认证时间、发行时间分开，显示UTC不替代执行截止 |
+| 事件／目录／面板 | C05第16—20节十二集合、三种ACK、原scope／profile／selector／目录cut；C09原件读集、动态Schema及方法参数／结果 | 从本权威一致快照构造，提交前核同一读集，释放前复核当前权限／连接代；projection_applied不推进规范摄取 |
+| 扩展／监督／维护 | C09批准产物与受限运行身份、DF02监督原件，C12维护Plan／Operation及本机权威 | 独立通道按原用途解析；未知消息／缺原件失败关闭，不通过公共API别名或SDK可导入性取得内部权力 |
+
+linked提供者由该入口的服务装配，客户端和模块不能传入trusted/fresh/durable布尔满足它。远端取证在writer外；提交／释放按所属领域重核本地当前修订、拒绝floor和有界资格，不声称多个服务原子。适用规则缺上下文返回context_unavailable，校验器预算／内部故障返回validator_fault；不能改成设备failed、默认valid或自动重试副作用。无适用实例不生成虚假的valid。具体公共错误按原操作响应映射脱敏，禁止回显动态输入键或异常栈。
+
+产品生成把新选择下的每个HTTP操作（以authority＋operationId区分）、每个WS／IPC方向根、开放参数／Schema边界及具名摘要逐项绑定到上述消费位置和原领域规则。每条注册仍须具名根／selector／phase、静态reason/location及实际实现；纯结构项显式登记由完整Schema覆盖，不能用“没有linked规则”推导不需要授权。完整生成清单检查漏项／多项、实际符号存在和接受集差分；这些是既定规则的实施和验收，不再创建只有planned状态的新包装层。新增C11能力按其最终政策加入同一生成输入，不允许旧候选或无能力Schema的fallback。
+
+本节完成C01剩余跨域权威、主体政策和语义调用／事务位置的设计归并；SDK源码迁入、规则注册的实际展开、独立摘要向量、完整产品DDL和客户端重建进入实施。C01不再有独立于C11／C12决策的设计阻断，但整体阶段0仍以统一清单为准。SV01—SV20及A01／A02需在实际发布包、两平台和真实消费者中取得证据；当前静态关系核验不冒充这些用例通过，旧approved／runtime_ready保持原值。

@@ -1,0 +1,124 @@
+{
+  "all_passed": true,
+  "cases_passed": 16,
+  "checks": [
+    {
+      "name": "事务追加原件",
+      "passed": true
+    },
+    {
+      "name": "按完整发布身份读取",
+      "passed": true
+    },
+    {
+      "name": "新草稿不替换冻结内容",
+      "passed": true
+    },
+    {
+      "name": "实际子进程校验冻结内容与元数据",
+      "passed": true
+    },
+    {
+      "name": "消费候选不可重放",
+      "passed": true
+    },
+    {
+      "name": "缺少content拒绝",
+      "passed": true
+    },
+    {
+      "name": "缺少metadata拒绝",
+      "passed": true
+    },
+    {
+      "name": "嵌套元数据类型拒绝",
+      "passed": true
+    },
+    {
+      "name": "缺少叶字段权限拒绝",
+      "passed": true
+    },
+    {
+      "name": "错整文档摘要拒绝",
+      "passed": true
+    },
+    {
+      "name": "错来源上下文拒绝",
+      "passed": true
+    },
+    {
+      "name": "撤权后拒绝消费",
+      "passed": true
+    },
+    {
+      "name": "错完整发布对象拒绝",
+      "passed": true
+    },
+    {
+      "name": "回滚原件不可读取",
+      "passed": true
+    },
+    {
+      "name": "失败不改变已提交原件",
+      "passed": true
+    },
+    {
+      "name": "真实校验调用数",
+      "passed": true
+    }
+  ],
+  "validator_subprocess_calls": 5,
+  "tools": {
+    "jsonschema": "4.25.1",
+    "referencing": "0.36.2",
+    "rfc8785": "0.1.4"
+  },
+  "sqlite_version": "3.50.4",
+  "sqlite_memory_scenarios": 1,
+  "synthetic_host": true,
+  "production_authority_tests_executed": 0,
+  "production_publication_tests_executed": 0,
+  "production_projection_tests_executed": 0,
+  "final_output_gate_tests_executed": 0,
+  "worker_memory_limit_tests_executed": 0,
+  "network_tests_executed": 0,
+  "browser_tests_executed": 0,
+  "device_tests_executed": 0,
+  "format": "sdk-provider-check/1",
+  "approved": false,
+  "runtime_ready": false,
+  "sdk_commit": "c1cecd0e0475f01e84855694d195e368b657d4ea",
+  "selection": {
+    "contract_id": "leafseamer.api.v1.panel3",
+    "contract_digest": "sha256:eba90989adcae8a5e5a8b361643f4a338b3f74bfec05cfbd778f368d68786963"
+  },
+  "snapshot_files": {
+    "contracts/publication-source/build.py": "bbece446a69ae917b3b462b7e9178ef76e313d85049061d8aa3fa5b3be9abd33",
+    "contracts/publication-source/check.py": "12281739ce3f3c3552fc51d6a00a24eebec4597229836b73797effb77f3954df",
+    "contracts/publication-source/fixtures.py": "42bae49d70f57a1b5c1764312dbe7dd2304bf370a9b0fa4cdf753870287f4cbe",
+    "contracts/publication-source/layout.sql": "95e50c4534145c75a93f19d50f1bb0721968551624032e16eea9058610b407e6",
+    "contracts/publication-source/README.md": "8d3e29b4cde1cba23f718dd237331014831ac03eb6de7e9167ee11a18e8bb43f",
+    "contracts/publication-source/record.schema.json": "934e5409790705cb429340b624d95d097c63abf92d93d232e60ca97af5473527",
+    "contracts/publication-source/source/lifecycle.txt": "e972dd205861f240dea0085a33ce106bd461a44c3ccbfee54e0ef16399099f18",
+    "contracts/publication-source/sources.json": "3d2018c3b7c203f2f6b6bc988a05131c7c04d3298b8bf09b3cc6b4348670f96c",
+    "contracts/publication-source/store.py": "16806307a2bcd95407ed8195f129d7cd34704518b5fe77966d14d252020b4dfc",
+    "contracts/panel-integration/preview/models.schema.json": "9e12b81ac9d9a3a0f63ad5ea5737ce7c3bdd76f1a63c259dd35757ce43901b1f",
+    "contracts/panel-integration/preview/selection.json": "284bc9d50448186b00d1e730c47252f38145a9bf7c5e466ce7643d15cdd1d391",
+    "contracts/panel-results/RESULTS.md": "c8751a57042fe46369ff5af0a2e7a066ed3c25bb4219c8a33e2e486a307b905c",
+    "contracts/publication-source/report.json": "724f4d59e967632569a9357537bd2b503dd0e27845f89629849405ede3d77a73",
+    "contracts/panel-dynamic/check.py": "43dfb346ad5f3423bbba3602a616c2bed6ac46d43e750101cf715f503c7b2669",
+    "contracts/panel-dynamic/fixtures.py": "ec745236e5043645834cad1fb1f55bd616e4ac38aec50b51c56660ab735026f6",
+    "contracts/panel-dynamic/provider.py": "1cb3f3051e7ecde7bab3d92f9f9a16b190b8acc2ee7592436b679bdd2ea28b9b",
+    "contracts/panel-dynamic/README.md": "aea8dba177b1e62e5db2ae73081bbca5472e1684570f8267cf3b69fa542cfd7e",
+    "contracts/panel-dynamic/source/bundle.schema.json": "b6fd30c08babcd3adddb48d347253541c9607b2db36008cb15f448524b3bef3d",
+    "contracts/panel-dynamic/source/bundle.txt": "6587f47ca1bdbe7896f64308c30326b0963fa9dc4dffed5210fc1a95581b6470",
+    "contracts/panel-dynamic/source/check_bundle.py": "2646547149865dcc20397f878f41f20746dac999c6d12d6f33ff11be7bd8d05f",
+    "contracts/panel-dynamic/sources.json": "ed490bd3cd6c03925c81d253f13efa773240a33101fae7438702a994f2c177e2",
+    "contracts/panel-dynamic/worker.py": "b7a1ac6b2cdab4c8930ade89a840d364ace58a2382d1c3b1231b5ef8112e056d",
+    "contracts/panel-integration/preview/method-registry.json": "4eea500650007d450afab918a8cfbd81c60cb80608874194498c10dd2e8c8301",
+    "contracts/panel-dynamic/report.json": "bb516c7d9c53f0ba04e8915cc8293d6b1d85bd34dc7e4707c8a4b00e68b0677c"
+  },
+  "python_version": "3.14.0",
+  "python_sha256": "7bcdf892816a8d651e89f008cfc2f1544a41f13089af70a227b9fc54ced8551f",
+  "probe_sha256": "9ad4940a85d558b764530a48059cbfad53ce7ee80c0e081940b9d3efe3d70f4c"
+}

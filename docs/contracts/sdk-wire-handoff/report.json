@@ -1,7 +1,7 @@
 {
   "format": "sdk-wire-handoff-report/1",
   "all_passed": true,
-  "cases_passed": 117,
+  "cases_passed": 135,
   "checks": [
     {
       "name": "交接格式",
@@ -220,6 +220,30 @@
       "passed": true
     },
     {
+      "name": "固定报告及全部输入:publication-source",
+      "passed": true
+    },
+    {
+      "name": "main包含:publication-source",
+      "passed": true
+    },
+    {
+      "name": "提交顺序:publication-source",
+      "passed": true
+    },
+    {
+      "name": "固定报告及全部输入:panel-dynamic",
+      "passed": true
+    },
+    {
+      "name": "main包含:panel-dynamic",
+      "passed": true
+    },
+    {
+      "name": "提交顺序:panel-dynamic",
+      "passed": true
+    },
+    {
       "name": "最终SDK提交",
       "passed": true
     },
@@ -272,6 +296,18 @@
       "passed": true
     },
     {
+      "name": "消费者历史提交原件",
+      "passed": true
+    },
+    {
+      "name": "消费者历史祖先",
+      "passed": true
+    },
+    {
+      "name": "发布原件与动态校验实际串联记录",
+      "passed": true
+    },
+    {
       "name": "固定双仓来源:authorization",
       "passed": true
     },
@@ -285,6 +321,14 @@
     },
     {
       "name": "固定双仓来源:panel-integration",
+      "passed": true
+    },
+    {
+      "name": "固定双仓来源:publication-source",
+      "passed": true
+    },
+    {
+      "name": "固定双仓来源:panel-dynamic",
       "passed": true
     },
     {
@@ -470,11 +514,39 @@
     {
       "name": "构造记录:探针漂移",
       "passed": true
+    },
+    {
+      "name": "提供者记录:漏断言",
+      "passed": true
+    },
+    {
+      "name": "提供者记录:漏子进程",
+      "passed": true
+    },
+    {
+      "name": "提供者记录:生产资格",
+      "passed": true
+    },
+    {
+      "name": "提供者记录:非合成宿主",
+      "passed": true
+    },
+    {
+      "name": "提供者记录:探针漂移",
+      "passed": true
+    },
+    {
+      "name": "提供者记录:来源漂移",
+      "passed": true
+    },
+    {
+      "name": "提供者记录:选择漂移",
+      "passed": true
     }
   ],
-  "sdk_main_commit": "eef557ddfcf8cc53bf1c7258502e841b96accb1b",
-  "packages": 17,
-  "fixed_sdk_file_bindings": 923,
+  "sdk_main_commit": "c1cecd0e0475f01e84855694d195e368b657d4ea",
+  "packages": 19,
+  "fixed_sdk_file_bindings": 951,
   "browser_checks_recorded": 31268,
   "dependency_file_bindings_recorded": 2564,
   "http_envelope_runtime_checks_recorded": 12076,
@@ -495,6 +567,11 @@
   },
   "selection_consumer_checks_recorded": 17,
   "selection_consumer_probe_rerun": false,
+  "publication_source_checks_recorded": 83,
+  "panel_dynamic_checks_recorded": 103,
+  "provider_checks_recorded": 16,
+  "provider_subprocess_calls_recorded": 5,
+  "provider_probe_rerun": false,
   "stage0_complete": false,
   "historical_behavior_rerun": false,
   "browser_rerun": false,
@@ -503,17 +580,19 @@
   "input_sha256": {
     "docs/contracts/sdk-transport-handoff/check_handoff.py": "51dc5c8860244083f89269ffaa541a3d178a75bf0ee71b156d66548554437f7e",
     "docs/contracts/sdk-wire-handoff/check_consumers.mjs": "f514bbff1de62d97234dbc3932dee0c06542ea887def078da481c2b64d3a9847",
-    "docs/contracts/sdk-wire-handoff/check_handoff.py": "f9de69a58d18be65152be4bb27d5fa655f759098cf33115caa38666a9638820e",
+    "docs/contracts/sdk-wire-handoff/check_handoff.py": "41477aae838aa3d996af09545b9dc1573a329967d8054a86f847a98a44ed0537",
+    "docs/contracts/sdk-wire-handoff/check_providers.py": "9ad4940a85d558b764530a48059cbfad53ce7ee80c0e081940b9d3efe3d70f4c",
     "docs/contracts/sdk-wire-handoff/consumer-report.json": "8b8967d971814a60024d03845d93246b1fa6276300c1b4118a69b0939b576a8a",
-    "docs/contracts/sdk-wire-handoff/manifest.json": "8741fbfd3d3a56e7307f696af3968f994a28092ed0b1ed42a3ce63d9f37831e1",
-    "docs/contracts/sdk-wire-handoff/README.md": "bb8ae837e3ce550f1c66fa42d04a9a8137f2d0a5202e5f2c533ce7c50feb8b7c",
+    "docs/contracts/sdk-wire-handoff/manifest.json": "0763ad51916a6fb74e86197e43066bae8519a4d943dc89b64a9e36edfb255c8f",
+    "docs/contracts/sdk-wire-handoff/provider-report.json": "7184b75ec76c34f15763fc76796a464c015707ced6cb97083f2347b7790f5b38",
+    "docs/contracts/sdk-wire-handoff/README.md": "4e4648c8515fd5a92a9f99311a2db06d055bbb95340b47bcaf4039a1a2a3179f",
     "docs/rebirth-c05-event-sync-design.md": "9897fcbbab5352d20f596217e6cd5e06478f0b181736aff344b685e6cde986c7",
-    "docs/rebirth-c09-extension-design.md": "5a41a0f97326798279ede618be4af065293ef8342606d7d3e17b8612420dbe4c",
-    "docs/rebirth-design-closure.md": "bf3024a45b62139417f1f6d5417f1a3066eb0589fa7dc01ea40e6a5a2a535639",
-    "docs/rebirth-df01-sdk-freeze.md": "1ede3d786be2b1fe8cb143f4ba13157b65b3293c80949e81c3b8607e7374319e",
+    "docs/rebirth-c09-extension-design.md": "fd045021a29506a5a260a8c61b419d4eb1fd192489a1718fa697c9b48df53717",
+    "docs/rebirth-design-closure.md": "2489e9c02a4577624b26bd4bca102efde168145d6266368385435a39cae5dfc9",
+    "docs/rebirth-df01-sdk-freeze.md": "a311ced2a20e37057037744fabc2a5caaf54fd0603ec050be9b9f2d093d5b118",
     "docs/rebirth-df04-storage-design.md": "362b109c17d94c43537f9d47b8d0b9c1f8026b74e394e08f94ae7b7d9d0a36ba",
-    "docs/rebirth-readiness.md": "82b221cfd1db87648dba57e201e82933ccd7751608c0bc05299fa83be6fc87ae",
-    "docs/ROADMAP.md": "c6236fe9097eb2a7e04374a66c0e3768ed009a41602d1f60beb02953061c178b",
-    "README.md": "d26f69e4005c4ee408da026f5610d8c2e6f41802b53d64b5dc8421027553c3d3"
+    "docs/rebirth-readiness.md": "f4a56cba2c722030f44470d0b8e9121a341787b25fcc7dd628e0e795f286650e",
+    "docs/ROADMAP.md": "63383f716b761c683c3ca6125a8805cd6c230d5fcb460bba55a47d05e5f5ebc5",
+    "README.md": "21e08ae91847aa4c1f10bef16e1edce104808efeb4e42d338f5c6a7dfc9b51b3"
   }
 }

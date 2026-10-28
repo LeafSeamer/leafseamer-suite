@@ -4,6 +4,7 @@ import copy
 import importlib.util
 from pathlib import Path
 import subprocess
+import sys
 import uuid
 import rfc8785
 
@@ -11,7 +12,7 @@ ROOT=Path(__file__).resolve().parent;SUITE=ROOT.parents[2]
 HELPER=ROOT.parent/'sdk-transport-handoff/check_handoff.py'
 spec=importlib.util.spec_from_file_location('fixed_handoff_helpers',HELPER)
 H=importlib.util.module_from_spec(spec);spec.loader.exec_module(H)
-NAMES=['scope-release','scope-recovery','channel-release','snapshot-consumer','projection-delta','event-integration','wire-json','wire-js','wire-static','wire-routing','wire-browser','http-envelope','typed-client','authorization','panel-methods','panel-results','panel-integration']
+NAMES=['scope-release','scope-recovery','channel-release','snapshot-consumer','projection-delta','event-integration','wire-json','wire-js','wire-static','wire-routing','wire-browser','http-envelope','typed-client','authorization','panel-methods','panel-results','panel-integration','publication-source','panel-dynamic']
 DESIGNS=['README.md','docs/ROADMAP.md','docs/rebirth-design-closure.md','docs/rebirth-readiness.md','docs/rebirth-df01-sdk-freeze.md','docs/rebirth-c05-event-sync-design.md','docs/rebirth-df04-storage-design.md','docs/rebirth-c09-extension-design.md']
 
 def package_report(package,files):
@@ -157,7 +158,7 @@ def consumer_files(manifest):
 
 def record_consumer_probe(sdk,node):
     manifest=H.decode((ROOT/'manifest.json').read_bytes());expected=consumer_files(manifest)
-    files=H.read_fixed(sdk,manifest['sdk_main_commit'],expected)
+    files=H.read_fixed(sdk,manifest['consumer_probe_commit'],expected)
     H.require(all(H.sha(raw)==expected[p] for p,raw in files.items()),'消费者当前提交原件漂移')
     root=SUITE/'logs'/('consumer-check-'+uuid.uuid4().hex);root.mkdir(parents=True)
     for p,raw in files.items():
@@ -167,7 +168,7 @@ def record_consumer_probe(sdk,node):
     result=subprocess.run([str(node),'--disallow-code-generation-from-strings',str(ROOT/'check_consumers.mjs'),str(root),str(path)],capture_output=True)
     H.require(result.returncode==0,result.stderr.decode('utf8',errors='replace'))
     receipt=H.decode(result.stdout)
-    receipt.update(format='sdk-consumer-selection-check/1',approved=False,runtime_ready=False,sdk_commit=manifest['sdk_main_commit'],previous=inputs['previous'],current=inputs['current'],snapshot_files=expected,node_sha256=H.sha(node.read_bytes()),probe_sha256=H.sha((ROOT/'check_consumers.mjs').read_bytes()))
+    receipt.update(format='sdk-consumer-selection-check/1',approved=False,runtime_ready=False,sdk_commit=manifest['consumer_probe_commit'],previous=inputs['previous'],current=inputs['current'],snapshot_files=expected,node_sha256=H.sha(node.read_bytes()),probe_sha256=H.sha((ROOT/'check_consumers.mjs').read_bytes()))
     (ROOT/'consumer-report.json').write_bytes(H.encode(receipt))
 
 def inspect_consumers(manifest,receipt,http):
@@ -176,10 +177,45 @@ def inspect_consumers(manifest,receipt,http):
     expected=[dict(package=n,selection=previous,compatible_with_current=False,rebuild_required=True) for n in ['wire-routing','http-envelope','typed-client']]
     H.require(manifest['consumer_compatibility']==expected,'消费者兼容范围伪标')
     H.require(receipt['format']=='sdk-consumer-selection-check/1' and receipt['all_passed'] and receipt['approved'] is False and receipt['runtime_ready'] is False,'消费者探针资格')
-    H.require(receipt['sdk_commit']==manifest['sdk_main_commit'] and receipt['previous']==previous and receipt['current']==current and receipt['snapshot_files']==consumer_files(manifest),'消费者原件绑定')
+    H.require(receipt['sdk_commit']==manifest['consumer_probe_commit'] and receipt['previous']==previous and receipt['current']==current and receipt['snapshot_files']==consumer_files(manifest),'消费者原件绑定')
     H.require(receipt['probe_sha256']==H.sha((ROOT/'check_consumers.mjs').read_bytes()) and len(receipt['node_sha256'])==64,'探针制品绑定')
     names=['动态代码生成被禁用']+[n+':'+label for n in ['wire-routing','http-envelope','typed-client'] for label in ['原选择可构造','新选择拒绝','原ID错摘要拒绝','新ID原摘要拒绝','原ID新摘要拒绝']]+['未发生传输调用']
     H.require(receipt['checks']==[dict(name=n,passed=True) for n in names] and receipt['cases_passed']==17 and receipt['dynamic_codegen_blocked'] and receipt['transport_calls']==0,'消费者真实构造记录')
+
+def provider_files(manifest):
+    files={}
+    for package in manifest['packages'][-2:]:
+        for p,h in package['files'].items():
+            H.require(p not in files or files[p]==h,'提供者固定快照版本冲突');files[p]=h
+    return files
+
+def record_provider_probe(sdk):
+    manifest=H.decode((ROOT/'manifest.json').read_bytes());expected=provider_files(manifest)
+    files=H.read_fixed(sdk,manifest['sdk_main_commit'],expected)
+    H.require(all(H.sha(raw)==expected[p] for p,raw in files.items()),'提供者当前提交原件漂移')
+    root=SUITE/'logs'/('provider-check-'+uuid.uuid4().hex);root.mkdir(parents=True)
+    for p,raw in files.items():
+        path=root/H.path_name(p);path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(raw)
+    result=subprocess.run([sys.executable,'-I','-B',str(ROOT/'check_providers.py'),str(root)],capture_output=True)
+    H.require(result.returncode==0,result.stderr.decode('utf8',errors='replace'))
+    receipt=H.decode(result.stdout)
+    receipt.update(format='sdk-provider-check/1',approved=False,runtime_ready=False,sdk_commit=manifest['sdk_main_commit'],selection=manifest['selection'],snapshot_files=expected,
+        python_version=sys.version.split()[0],python_sha256=H.sha(Path(sys.executable).read_bytes()),probe_sha256=H.sha((ROOT/'check_providers.py').read_bytes()))
+    (ROOT/'provider-report.json').write_bytes(H.encode(receipt))
+
+def inspect_providers(manifest,receipt,reports):
+    H.require(receipt['format']=='sdk-provider-check/1' and receipt['all_passed'] and receipt['approved'] is False and receipt['runtime_ready'] is False,'提供者探针资格')
+    H.require(receipt['sdk_commit']==manifest['sdk_main_commit'] and receipt['selection']==manifest['selection'] and receipt['snapshot_files']==provider_files(manifest),'提供者快照绑定')
+    H.require(receipt['probe_sha256']==H.sha((ROOT/'check_providers.py').read_bytes()) and len(receipt['python_sha256'])==64 and receipt['python_version'],'提供者探针身份')
+    names=['事务追加原件','按完整发布身份读取','新草稿不替换冻结内容','实际子进程校验冻结内容与元数据','消费候选不可重放','缺少content拒绝','缺少metadata拒绝','嵌套元数据类型拒绝','缺少叶字段权限拒绝','错整文档摘要拒绝','错来源上下文拒绝','撤权后拒绝消费','错完整发布对象拒绝','回滚原件不可读取','失败不改变已提交原件','真实校验调用数']
+    H.require(receipt['cases_passed']==16 and receipt['checks']==[dict(name=n,passed=True) for n in names],'提供者断言身份')
+    H.require(receipt['validator_subprocess_calls']==5 and receipt['sqlite_memory_scenarios']==1 and receipt['synthetic_host'] is True,'提供者实际运行范围')
+    for key in ['production_authority_tests_executed','production_publication_tests_executed','production_projection_tests_executed','final_output_gate_tests_executed','worker_memory_limit_tests_executed','network_tests_executed','browser_tests_executed','device_tests_executed']:
+        H.require(receipt[key]==0,'提供者生产资格伪标')
+    publication=reports['publication-source'];dynamic=reports['panel-dynamic']
+    H.require(receipt['tools']==dynamic['tools'] and receipt['sqlite_version']==publication['sqlite_version'],'提供者运行依赖版本')
+    H.require(publication['cases_passed']==83 and publication['models']==29 and publication['sqlite_tables']==1 and publication['sqlite_file_modes_tested']==['DELETE','WAL'] and publication['sqlite_two_connection_scenarios']==2,'发布原件范围')
+    H.require(dynamic['cases_passed']==103 and dynamic['validator_subprocess_calls']==17 and dynamic['revocation_thread_scenarios']==dynamic['validator_timeout_scenarios']==1,'动态校验范围')
 
 def inspect_browser(receipt,files,routing):
     H.require(receipt['format']=='wire-browser-receipt/1' and receipt['approved'] is False and receipt['runtime_ready'] is False,'浏览器收据资格')
@@ -243,7 +279,11 @@ def run(sdk):
     current=inspect_panel_integration(reports['panel-integration'],snapshots['panel-integration'],panel,results)
     check('当前完整选择',current==manifest['selection'])
     consumers=H.decode((ROOT/'consumer-report.json').read_bytes());inspect_consumers(manifest,consumers,http);check('客户端选择实际构造记录',True)
-    for p in manifest['packages'][-4:]:inspect_new_sources(sdk,p,snapshots[p['name']]);check('固定双仓来源:'+p['name'],True)
+    consumer_snapshot=H.read_fixed(sdk,manifest['consumer_probe_commit'],consumer_files(manifest))
+    check('消费者历史提交原件',all(H.sha(raw)==consumer_files(manifest)[p] for p,raw in consumer_snapshot.items()))
+    check('消费者历史祖先',subprocess.run(['git','merge-base','--is-ancestor',manifest['consumer_probe_commit'],manifest['sdk_main_commit']],cwd=sdk,capture_output=True).returncode==0)
+    providers=H.decode((ROOT/'provider-report.json').read_bytes());inspect_providers(manifest,providers,reports);check('发布原件与动态校验实际串联记录',True)
+    for p in manifest['packages'][-6:]:inspect_new_sources(sdk,p,snapshots[p['name']]);check('固定双仓来源:'+p['name'],True)
     check('HTTP选择一致',http['selection']==selection)
     artifacts=read('typed-client','preview/manifest.json')['artifacts']
     check('类型生成产物集合',set(artifacts)=={'controller.d.ts','seamer.d.ts','operations.d.ts','bindings.json'})
@@ -277,22 +317,26 @@ def run(sdk):
         m=copy.deepcopy(manifest);change(m);denied('消费者:'+label,lambda m=m:inspect_consumers(m,consumers,http))
     for label,change in [('漏断言',lambda r:r['checks'].pop()),('传输调用',lambda r:r.update(transport_calls=1)),('探针漂移',lambda r:r.update(probe_sha256='0'*64))]:
         r=copy.deepcopy(consumers);change(r);denied('构造记录:'+label,lambda r=r:inspect_consumers(manifest,r,http))
+    for label,change in [('漏断言',lambda r:r['checks'].pop()),('漏子进程',lambda r:r.update(validator_subprocess_calls=0)),('生产资格',lambda r:r.update(production_authority_tests_executed=1)),('非合成宿主',lambda r:r.update(synthetic_host=False)),('探针漂移',lambda r:r.update(probe_sha256='0'*64)),('来源漂移',lambda r:r['snapshot_files'].update({'extra':'0'*64})),('选择漂移',lambda r:r.update(selection=manifest['runtime_artifact_selection']))]:
+        r=copy.deepcopy(providers);change(r);denied('提供者记录:'+label,lambda r=r:inspect_providers(manifest,r,reports))
     return dict(format='sdk-wire-handoff-report/1',all_passed=True,cases_passed=len(checks),checks=checks,sdk_main_commit=previous,
       packages=len(reports),fixed_sdk_file_bindings=sum(len(p['files']) for p in manifest['packages']),browser_checks_recorded=count,
       dependency_file_bindings_recorded=sum(p.get('dependency_files_recorded',0) for p in manifest['packages']),http_envelope_runtime_checks_recorded=12076,typed_client_runtime_checks_recorded=862,
       authorization_static_checks_recorded=655,panel_format_checks_recorded=771,panel_methods_installed=False,real_authorization_tests_executed=0,
       panel_result_checks_recorded=652,panel_integration_checks_recorded=5972,current_selection=current,runtime_artifact_selection=selection,selection_consumer_checks_recorded=17,selection_consumer_probe_rerun=False,
+      publication_source_checks_recorded=83,panel_dynamic_checks_recorded=103,provider_checks_recorded=16,provider_subprocess_calls_recorded=5,provider_probe_rerun=False,
       stage0_complete=False,historical_behavior_rerun=False,browser_rerun=False,dependency_installation_rerun=False,device_tests_executed=0,input_sha256=local_inputs())
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--sdk',type=Path);parser.add_argument('--node',type=Path,help='显式运行固定消费者构造检查并更新独立记录')
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--sdk',type=Path);parser.add_argument('--node',type=Path,help='显式运行固定消费者构造检查并更新独立记录');parser.add_argument('--probe-providers',action='store_true',help='显式运行固定提供者串联并更新独立记录')
     group=parser.add_mutually_exclusive_group();group.add_argument('--report',action='store_true');group.add_argument('--check-report',action='store_true');args=parser.parse_args()
     if args.check_report:
-        if args.node:parser.error('--node不能与--check-report同时使用')
+        if args.node or args.probe_providers:parser.error('运行探针不能与--check-report同时使用')
         r=H.decode((ROOT/'report.json').read_bytes());H.require(r['all_passed'] and r['input_sha256']==local_inputs(),'本仓输入漂移');print(H.json.dumps(dict(all_passed=True,bindings=len(r['input_sha256']),behavior_rerun=False)))
     else:
         if not args.sdk:parser.error('需要--sdk指定SDK仓库')
         if args.node:record_consumer_probe(args.sdk.resolve(),args.node.resolve())
+        if args.probe_providers:record_provider_probe(args.sdk.resolve())
         r=run(args.sdk.resolve())
         if args.report:(ROOT/'report.json').write_bytes(H.encode(r))
         print(H.json.dumps({k:v for k,v in r.items() if k not in ('checks','input_sha256')},ensure_ascii=False))

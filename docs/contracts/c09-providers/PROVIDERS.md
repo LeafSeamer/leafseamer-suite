@@ -58,7 +58,7 @@ source_validator必须按当前选定的具体模型校验来源，并核领域�
 
 ## 最终释放与持久化边界
 
-消费Candidate仅返回进程内值，不调用网络发送。生产宿主必须将consume、当前授权／导航／来源失效复核与唯一输出Gate的入队判定置于同一可证明串行边界；入队之后尚未发送的字节仍按Gate规则失效，已进入传输层字节不可撤回。不能先consume再无条件排队。这个最终发送衔接、worker硬内存限制、全局并发调度和失效监听尚未实现。
+消费Candidate仅返回进程内值，不调用网络发送。生产宿主必须将consume、当前授权／导航／来源失效复核与唯一输出Gate的入队判定置于同一可证明串行边界；入队之后尚未发送的字节仍按Gate规则失效，已进入传输层字节不可撤回。不能先consume再无条件排队。下述协调器实现已登记依赖在本进程内的失效串行边界；最终发送衔接、worker硬内存限制、全局并发调度和真实权威事件监听尚未实现。
 
 读集本身不持久化Ticket或Candidate，进程重启后全部丢弃。页／评估句柄由其权威存储按独立接口原子保存；领域写入已提交时，读集失败不回滚业务操作，也不能换新请求重发。对面板仅使用当前通道允许的有限不可用状态，内部异常及来源原件不会直接进入响应。
 
@@ -97,3 +97,36 @@ python -B docs/contracts/c09-providers/check_typed.py --sdk <SDK仓库> --report
 ```
 
 [typed-report.json](typed-report.json)单列真实模型检查：全部35方法／23变体、181项缺字段反例，以及Meta、公开时钟、Observation、DraftRecord四类完整来源样例；这不代表1463模型均完成领域行为验收。三个读集正例中，观察值实际连接固定SDK动态提供者并运行两个Schema子进程，验证错误类型、缺字段权利和撤权拒绝。其余动态位置使用显式合成策略；领域守卫采用合成的精确原件／结果批准，未接真实审批或数据库读取事务。通用357项报告仍独立保留，不能把两个报告的数量当成全部生产提供者完成度。
+
+## 进程内依赖失效协调
+
+[coordinator.py](coordinator.py)的Coordinator由可信宿主独占。宿主在一致读取之前登记每个当前权威代次的清理回调，取得不透明Dependency，并为读集提供完整依赖集合。Dependency只证明登记身份，不证明权限；来源、导航、安装、批准及授权代次的真实核验和无丢失事件订阅仍由宿主负责。不得在原件读取后才补订阅，也不能把已撤销权威重新登记为新代次。没有真实订阅的宿主不能以本参考宣称生产撤权已经接通。
+
+```python
+coordinator = Coordinator()
+approval = coordinator.register(dynamic_authority.revoke)
+reading = coordinator.begin(
+    [approval, source_lifecycle, navigation],
+    lambda: contract.readset(context, expected_sources,
+        dynamic_validator=approved_dynamic,
+        source_guard=current_source_and_rights,
+        result_guard=complete_domain_relations),
+)
+# 只通过reading提交各组、封装和消费；失效事件先调用coordinator.revoke(approval)。
+```
+
+begin先检查依赖及容量并保留构造名额，然后在锁外调用可信build；build只能返回全新、尚未签发任何票据的ReadSet。返回后重新检查依赖，任何构造期间失效均拒绝迟到结果。构造器不得保留底层读集用于另行交付；托管对象不是不可信Python代码的隔离沙箱。真实动态权威也不能绕过协调入口直接撤销或交付，否则该协调器无法观察事件。
+
+ManagedReadSet提供ticket、provide、seal、consume和close。除consume外的慢校验在协调锁外执行，依靠底层读集回写时复核失效。托管调用遇到任何异常都会关闭本次读取并释放容量，包括过早seal的不完整结果；这比基础读集的可继续收集语义更严格。调用者应先收齐全部组，并在退出时用close释放未完成读取；没有后台到期扫描。consume在同一协调锁内核登记依赖并单次消费，无论成功或失败都移除读取，不允许换上下文重试。
+
+revoke先在协调锁内移除该依赖并关闭所有关联读取，包括封装后的候选和构造中的保留项，再在锁外执行登记的清理回调。清理异常仅报告dependency_cleanup，依赖保持关闭；重复撤销不重跑回调。无关依赖的读集不受影响。close永久关闭协调器、失效全部读取并逐一执行所有剩余清理，即使一个清理失败也继续其余清理。与已在另一线程执行的清理不会重复调用，close不是等待那些线程结束的屏障。
+
+最多64个读取名额、256个依赖名额、每个读集16个不同依赖；可下调，不能上调。被撤销但尚未返回的构造仍占读取名额，尚未完成的清理仍占依赖名额，防止通过重复撤销绕过在途容量。此上限只覆盖一个Coordinator实例，不能代替宿主全局调度或线程／worker硬限额。可信单调时钟须为快速本地读取，不得在持锁消费期间等待外部服务。
+
+串行规则是明确的：撤权先取得协调锁，则相关读取不能消费；消费先取得锁，则该次本地返回可以完成，随后撤权不追回已经返回的值。慢外部清理不会推迟本地失效。返回值后的网络入队、缓存或重试仍必须经过正式输出Gate，本参考不提供排队或发送API。源数据库事务和外部事件之间的原子关系也不由此进程锁证明。
+
+```text
+python -B docs/contracts/c09-providers/check_coordinator.py --sdk <SDK仓库> --report
+```
+
+[coordinator-report.json](coordinator-report.json)记录157项检查：35方法托管消费、选择性依赖撤销、失败关闭、名额回收和6个实际线程场景，包括8线程竞争同一候选。固定SDK动态权威实际运行3次Schema子进程；测试明确展示基础ReadSet没有外部事件订阅，并验证登记后的动态权威在封装后撤销会同时关闭本地交付及SDK权威。领域守卫仍采用显式合成批准，事件由测试宿主显式触发；真实事件监听、生产鉴权、最终输出Gate、数据库、网络、浏览器和设备运行计数均为零，approved=false和runtime_ready=false继续保留。

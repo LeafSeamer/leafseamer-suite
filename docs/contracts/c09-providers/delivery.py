@@ -43,10 +43,44 @@ class Delivery:
             # 同一公共通道不能出现两个独立序号所有者，墓碑保留到协调器结束。
             identity=R.digest(public_binding)
             R.need(all(o['identity']!=identity for o in coordinator._outputs.values()),'output_channel_reused')
-            coordinator._outputs[self]=dict(identity=identity,deps=tuple(dependencies),pending_deps=(),queue=[],closed=False,busy=False,releasing=False,next_sequence=int(next_sequence),sent_sequence=None,used={})
+            coordinator._outputs[self]=dict(identity=identity,deps=tuple(dependencies),pending_deps=(),queue=[],closed=False,busy=False,releasing=False,next_sequence=int(next_sequence),sent_sequence=None,used={},outcomes={},receipt_bindings={})
 
     def _get(self):
         o=self._owner._outputs[self];R.need(not o['closed'] and not self._owner._closed,'output_closed');return o
+
+    def _check_request(self,current,request):
+        R.need(type(current) is dict and set(current)==SESSION_KEYS|{'method','request_id','input_digest'},'context_fields')
+        R.need({k:current[k] for k in SESSION_KEYS}==self._context,'session_changed')
+        R.need(self._contract.validate('panel__Channel_Request',request),'request_schema')
+        R.need(request['public_binding']==self._binding and request['activation_ref']==self._activation,'request_channel')
+        R.need(request['request_id']==current['request_id'] and request['method']==current['method'] and R.digest(request['payload']['value'])==current['input_digest'],'request_binding')
+        R.need(current['authority']==R.BINDINGS['methods'][request['method']]['authority'],'method_authority')
+        for name in SESSION_KEYS|{'input_digest'}:
+            if name.endswith('_digest'):
+                h=current[name];R.need(type(h) is str and len(h)==64 and all(c in '0123456789abcdef' for c in h),'context_digest')
+        scope=current['scope'];R.need(type(scope) is dict and set(scope)=={'authority_service_id','database_instance_id'} and all(type(v) is str and 0<len(v)<=128 for v in scope.values()),'scope')
+
+    def _capacity(self,o,request,payload,sequence):
+        identity=R.digest(request);previous=o['used'].get(request['request_id'])
+        R.need(previous==identity or (previous is None and len(o['used'])<256),'result_identity')
+        R.need(sequence<=MAX_SEQUENCE,'output_sequence')
+        R.need(len(o['queue'])<self._max_items and sum(len(x['payload']) for x in o['queue'])+len(payload)<=self._max_bytes,'output_capacity')
+        return identity
+
+    def _outcome(self,o,request_id,state,reason='ok',accepted_ref=None):
+        previous=o['outcomes'].get(request_id)
+        # 已知受理不能被模糊查询失败覆盖；需要独立的accepted/unavailable回执。
+        if state=='unavailable':
+            R.need(previous is None or previous['state']!='accepted','accepted_receipt_required');return None
+        if previous is not None:
+            old=previous['state']
+            R.need(old=='pending_confirmation' or state==old,'outcome_regression')
+            if old in ['rejected','cancelled']:R.need(reason==previous['reason'],'outcome_regression')
+            if old=='accepted':
+                known=previous['accepted_ref']
+                if accepted_ref is None:accepted_ref=known
+                R.need(known is None or R.bounded(known)==R.bounded(accepted_ref),'accepted_result_changed')
+        return dict(state=state,reason=reason,accepted_ref=copy.deepcopy(accepted_ref))
 
     def enqueue(self,reading,candidate,current_context,request,accepted_guard):
         """accepted_guard核验可信请求账本；不从结果结构推断业务已受理。"""
@@ -61,24 +95,18 @@ class Delivery:
         try:
             with raw._lock:
                 raw._current();R.need(raw._state=='sealed' and candidate is raw._candidate,'candidate_binding');value=json.loads(raw._output)
-            R.need({k:current_context[k] for k in SESSION_KEYS}==self._context,'session_changed')
-            R.need(self._contract.validate('panel__Channel_Request',request),'request_schema')
-            R.need(request['public_binding']==self._binding and request['activation_ref']==self._activation,'request_channel')
-            R.need(request['request_id']==current_context['request_id'] and request['method']==current_context['method'] and R.digest(request['payload']['value'])==current_context['input_digest'],'request_binding')
+            self._check_request(current_context,request)
             R.need(accepted_guard(copy.deepcopy(current_context),copy.deepcopy(request)) is True,'request_not_accepted')
             frame=dict(protocol_version=self._binding['protocol_version'],type='host.result',public_binding=self._binding,activation_ref=self._activation,
                 channel_sequence=str(sequence),request_id=request['request_id'],method=request['method'],status='accepted',reason_code='ok',projection_state='available',result=dict(schema_ref=self._refs[request['method']],value=value))
             R.need(self._contract.validate('panel__Channel_Result',frame),'result_frame_schema');payload=R.bounded(frame,65536)
             with owner._lock:
                 o=self._get();R.need(o['busy'] and all(d in owner._dependencies for d in deps),'dependency_stale')
-                identity=R.digest(request);previous=o['used'].get(request['request_id'])
-                R.need(previous==identity or (previous is None and len(o['used'])<256),'result_identity')
-                R.need(sequence<=MAX_SEQUENCE,'output_sequence')
-                R.need(len(o['queue'])<self._max_items and sum(len(x['payload']) for x in o['queue'])+len(payload)<=self._max_bytes,'output_capacity')
+                identity=self._capacity(o,request,payload,sequence);outcome=self._outcome(o,request['request_id'],'accepted')
                 # 读集消费和队列登记之间没有解锁或外部回调。
                 consumed=raw.consume(current_context,candidate);R.need(R.bounded(consumed)==R.bounded(value),'result_changed')
                 token=object();o['queue'].append(dict(token=token,payload=payload,deps=deps,context=copy.deepcopy(current_context),deadline=raw._expires,last=raw._last,clock=raw._clock,sequence=sequence))
-                o['next_sequence']+=1;o['used'][request['request_id']]=identity;return token
+                o['next_sequence']+=1;o['used'][request['request_id']]=identity;o['outcomes'][request['request_id']]=outcome;return token
         except BaseException:
             with owner._lock:owner._close_output(owner._outputs[self])
             raise

@@ -4,6 +4,8 @@
 
 首期主体政策及身份权威归属以第11节为准：其中人员手动、服务自动化的收紧方案已确定采用。该决定不等于批准全部历史候选，不改变已有机器资料的版本或运行验收标志。
 
+首期密码、秘密存储、内部证书及身份期限的实施选择以第12节为准；历史“具体profile待定”不再重新悬置其中已经选定的参数。真实平台与密码实现验收仍未完成。
+
 依据：[身份与容量](rebirth-f04-f05-design.md)、[TS02](rebirth-technology-selection.md)、[draft.4归并](rebirth-draft4-review.md)、[DF02运行域](rebirth-df02-runtime-design.md)、[DF03授时证据](rebirth-df03-time-profile-design.md)、[DF04存储](rebirth-df04-storage-design.md)。候选附属模型版本`internal-trust/0.1.0-draft.1`，不修改公共draft.4／IPC 0.3。
 
 ## 1. 事实、缺口与推荐
@@ -406,3 +408,60 @@ automatic无需借某个人员或单个run授权开放设备；每个自动动�
 实现验收归入既有A01／A02／A09／A10及FA／ILT：有效service凭据调用五项控制写和三项发布／布防／恢复写均拒绝，且无请求受理／预算消费／版本预留；service＋manual命令拒绝；有效human仍须目标权限及控制条件；有效Seamer自动动作保持允许，未配对、错arm／grant／范围均拒绝；撤销与受理／发送、注销与签发两种顺序均覆盖；跨目标离线保持未确认。拒绝可以有受限安全审计，不能产生业务成功记录。结构、生成接受集和真实服务鉴权分别取证，不能用同一Schema检查替代三者。
 
 本节核验仅为当前文件与路由映射检查，未执行上述运行验收。C07剩余设计项是证书／秘密及认证期限的精确发布profile、与C12一致的可信时间／恢复引导；IA中未涉及本节的实质取舍继续按整体清单核对。TLS、平台秘密存储、真实数据库和设备效果均在实现后验收，不能以这些尚未运行撤销本节已明确的设计结论。
+
+## 12. 首期认证与秘密存储实施profile
+
+### 12.1 采用边界与密码接口
+
+本节固定`identity-runtime/1`的设计目标，属于常规技术实施选择；不把历史模拟profile改名当生产通过。服务启动必须同时选择精确profile修订及平台实现，发行验收不通过时不得静默降低成本、延长期限或回退明文。真实库版本、原生产物与平台报告进入既有工具链锁和发行清单，生成锁及执行检查属于实施任务，不再为同一选择新增参考包。
+
+**官方事实。** Node crypto提供随机数、SHA-256、AES-GCM及固定时间比较；GCM解密必须验证认证标签，库可接受短标签，因此应用必须显式限制长度。Windows DPAPI的机器范围与用户范围不同；systemd凭据在服务激活时装载且运行期间不可变。下述具体参数、用途隔离和轮换次序为项目选择，并非这些工具自动保证。（来源：[Node crypto](https://nodejs.org/docs/latest-v24.x/api/crypto.html)、[Microsoft DPAPI](https://learn.microsoft.com/en-us/windows/win32/api/dpapi/nf-dpapi-cryptprotectdata)、[systemd Credentials](https://systemd.io/CREDENTIALS/)）
+
+- 人员密码使用既选node-argon2的Argon2id：m=65536 KiB、t=3、p=1、随机盐16字节、输出32字节，保存PHC及profile修订。只接受登记的算法／成本组合，不直接执行数据库中任意高成本参数；密码计算并发2、等待队列8，超额返回429，独立于保护通道。平台负载不达标时调整资源或另版profile，不在运行中自动降成本。（算法依据：[OWASP密码存储建议](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)；本项目数值及队列为设计选择。）
+- opaque服务凭据、访问令牌、刷新秘密、票据、初始化及配对挑战各用独立32字节CSPRNG输出；原始秘密规范无填充base64url，严格解码并回编码一致，拒绝等价的非规范尾位。查找ID与秘密分开，ID不是鉴权证明；对旧协议的格式差异由新SDK选择显式迁移，不修改旧制品接受集。
+- 验证值固定为SHA-256：输入为UTF-8的`LeafSeamer/opaque-verifier/v1`、一个零字节、具名kind、一个零字节、原始32字节秘密。kind限定为`service_credential/access_token/session_refresh/ws_ticket/first_admin/pairing_challenge`，不可由请求任意选择；保存算法版本、kind、验证值及父绑定，比较固定32字节Buffer。仅适用于高熵随机秘密，人员密码不走这条路径。无明文重取、无可兑换的验证值公开接口，响应丢失沿I2／I4查原。
+
+### 12.2 秘密存储与原子引用
+
+各服务独立SecretStore。公开配置和业务库只保存`secret_ref={owner_service_id,secret_id,version,purpose}`；调用方不能把任意文件路径当secret_ref。master key每服务独立，发行签名key、部署CA私钥及人员密码验证值不得混入运行master key用途。
+
+| 部署profile | 主密钥的确定装载方式 | 禁止回退与变更行为 |
+| --- | --- | --- |
+| Windows原生 | 专用服务账户使用用户范围DPAPI封装32字节master key，调用设置UI_FORBIDDEN且不设LOCAL_MACHINE；密文目录ACL仅该身份及受权安装管理者可访问 | DPAPI身份／机器不匹配即缺秘密，不改用机器范围；服务身份变更走受控重配，不能复制blob后假定可恢复 |
+| Ubuntu原生 | systemd的LoadCredentialEncrypted装载该服务master key；私有源由安装管理者维护，服务从凭据目录读取 | 不把明文放unit的SetCredential或环境变量；新master key先加入下一启动配置，再维护重启并证明装载成功，不能靠运行中替换源文件热更新 |
+| Linux容器 | 显式只读挂载单服务master key文件，固定服务UID/GID及最小可读权限；主机源目录不对其他普通账户开放 | 禁止映像层、Compose环境值和匿名默认密码；轮换通过受控重建装载新挂载，不把容器root视为不受宿主管理员影响 |
+
+设备密码、数据源令牌及运行TLS私钥使用`node:crypto`的AES-256-GCM不可变信封：32字节key、12字节随机nonce、16字节tag；加解密均显式设置authTagLength=16。AAD采用现有JCS编码的`{profile_id,owner_service_id,secret_id,version,purpose,key_id}`，不包含秘密；密文保存在分离的服务秘密目录，secret_ref与信封头逐字段一致。任何标签、身份或用途不符均拒绝，final验证前的暂存明文不交给调用方。单秘密明文最多64 KiB，超限不得拆分成无界密钥材料。
+
+每key的nonce登记在SecretStore自己的单writer账本，必须先可靠保留唯一(key_id,nonce)后加密；撞值重新采样，写入失败不得加密发布。已保留nonce永久消费，同key至多2^24个信封后禁止新写并要求轮换。信封写入不可变文件且完成平台耐久步骤后，业务writer才能原子引用新secret_ref并写操作receipt；文件就绪不代表业务引用已切换。明确未提交时保留旧引用；COMMIT未知时不得自行切回旧引用，按原操作查询真实持久选择，未引用密文不作为可加载秘密；清理前必须证明没有当前、历史恢复或未决操作引用。不同库和文件不宣称原子提交。
+
+master key轮换：受权维护者预装新key→验证服务装载→用新key生成新信封→逐项CAS引用并登记进度→核对所有引用及所需备份覆盖→明确退役旧key。原运行资格不会因重加密自动恢复。普通秘密内容更新只新增信封和secret_ref，不要求为每个设备密码重启服务；需要重启的是平台master key装载或相关TLS上下文切换。nonce账本丢失、旧备份恢复或无法证明key使用历史时，禁止继续用旧key加密，先生成新key；旧key可在受控恢复中仅用于解密。
+
+跨机恢复沿DEP06显式加密秘密包：在隔离状态验证包、取得授权解密材料，目标服务生成新的master key并重新封装，核对完整引用后才发布恢复集。DPAPI blob或systemd加密源的可复制性不代替该流程。缺秘密保留对应能力不可用，不伪造成功，不自动连接恢复出的设备；旧会话、票据、未完成挑战及旧许可不随秘密恢复复活。
+
+### 12.3 内部证书与生命周期参数
+
+内部mTLS采用独立部署CA，首期配置为ECDSA P-256／SHA-256、CA有效期最多5年、critical CA:TRUE、pathlen=0及keyCertSign/cRLSign，只签终端叶证书；叶证书最多90日，CA:FALSE、digitalSignature、精确DNS/IP SAN，按服务角色显式配置serverAuth/clientAuth。不共享跨服务私钥；叶证书更换即新credential，即使SPKI相同也须登记。证书签发由隔离的OpenSSL工具及经校验的固定配置完成，禁止复制未验证CSR扩展，CA私钥不进Controller／Seamer；精确签发工具制品纳入锁定，禁止使用任意PATH中的程序。X.509扩展和签发接口由OpenSSL实现，不自写证书编码。（来源：[OpenSSL req](https://docs.openssl.org/3.5/man1/openssl-req/)、[X.509扩展配置](https://docs.openssl.org/3.5/man5/x509v3_config/)；算法组合及寿命为项目选择。）
+
+这套内部CA不替代浏览器HTTPS根、组织外部PKI或TUF发行root；便捷本机HTTPS仍按DEP03在部署者明确选择后安装到限定用户信任存储。服务只信固定部署CA及已配对指纹，TLS1.3、无0-RTT／会话恢复和逐请求授权沿第2节。链／SAN／用途／认证有效期全部通过才谈配对，不能因证书尚有效延长应用credential或批准期限。
+
+| 参数 | identity-runtime/1上限或固定值 | 约束 |
+| --- | --- | --- |
+| 人员会话／刷新空闲／近期认证 | 8小时／30分钟／5分钟 | 刷新不改变会话绝对截止；普通注销不撤独立组织授权 |
+| access token／WS票据 | 60秒／10秒 | 单audience；票据单次，响应丢失不重发秘密 |
+| 首次管理员初始化／staged凭据／配对attempt | 10分钟／10分钟／10分钟 | 初始化还需本机部署者权限；proof不延长父截止 |
+| 一次配对challenge | 60秒且不超过attempt截止 | F04第4.2节旧模拟“配对60秒”在此只指challenge，不把attempt偷偷压成同一对象 |
+| opaque服务凭据 | 最多90日，提前30日告警 | 管理员给出有限expires_at；原批准或配对更早到期时取最早期限 |
+| 新旧凭据或叶证书重叠 | 最多5分钟 | 激活时固定retire_at，重试或第二次证明不续期；失陷立即撤旧，不等待重叠结束 |
+| 授权snapshot／刷新调度 | 2秒／500毫秒 | freshness从challenge发送算；调度是目标，不是SLA，晚到即拒绝且不延长旧permit |
+| 活跃token／pending配对 | 每credential最多8个／每服务最多16个 | 与I4／I5同writer预留，超额拒绝；不靠GC事后修正计数 |
+| 身份请求／响应 | 64 KiB／256 KiB | 仅身份接口；不覆盖各独立通道的大对象预算 |
+| 登录／证明失败预算 | 每身份5次/分钟且入口全局60次/分钟 | 未认证身份桶有总界，满时统一入口节流；撤销及核对使用独立保护额度 |
+
+组织批准与RunGrant仍必须具有明确有限窗口；本节不把会话8小时或credential90日当组织授权默认值，实际运行窗口由人员批准并受全部父边界约束。证书、秘密与身份期限选择已成文；运行认证时钟的可信采集profile及失信恢复仍须按FINAL_AUTHORIZATION与C12完成归并，安装更新时间锚不能冒充服务运行时的持续认证采样。
+
+### 12.4 实施与验收归属
+
+Controller实现opaque／会话、SecretStore与证书装载，Seamer接入同一库契约但使用独立key和身份；Suite实现配置生成、签发辅助工具、安装权限及维护恢复。复用现有技术锁、I1—I6和DEP06／DEP07，不建立第二套公开身份API。每个实现必须有明确错误结果，密钥丢失、解密失败、轮换未完成或认证时间失信均不隐式产生新身份或设备资格。
+
+既有TV07、ILT、IN及DPT14／恢复用例补足以下实施后证据：跨用途验证值拒绝；低位非规范base64url拒绝；GCM错tag／错AAD／短tag不输出明文；nonce保留失败、崩溃及恢复不复用；DPAPI换身份拒绝；systemd运行中更新源不视为已装载；只读容器挂载及权限；秘密文件就绪与业务引用COMMIT各失败点；旧key缺失／新key未装载保持保护；错SAN／用途／CA、到期及轮换重试不延长窗口。密码耗时与并发内存、TLS握手预算、文件耐久及两平台恢复各自取证；上述规格不是这些测试的通过记录。

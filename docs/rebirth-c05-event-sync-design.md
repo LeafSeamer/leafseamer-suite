@@ -619,3 +619,57 @@ R2预留恢复仍paused；R3逐目标安装新代次资格；R4在同writer复�
 新OPEN_GATE携带完整RunDenySnapshot并由ACK回显；新worker初始closed，先安装拒绝下界再开闸。新RUN_FENCE先到时旧快照不能降低下界或漏墓碑，同快照修订不能换正文。统一屏障账本按permit_id排序且唯一、每目标最多256项；这明确替代原两正文包络的多字段排序/4096边界，完整保护仍覆盖全部目标，禁止截断。人工/面板和自动化在既有接管/资源门控下各自保留。
 
 141项离线检查覆盖新结构、原受理到发送来源链、重算摘要错配、快照/ACK/旧出口及两HTTP投影。原19帧回归仅升级后结构，旧面板102项和原保护131项另行复验；不把合成身份与固定账本当实际权威。PIP01—PIP16为待运行故障规格。两个保护接口已具机器格式，但所有公共命令/Prepare接口、实际字段签发者、P1—P4物理DDL、跨epoch重基线、GC/P0与SDK最终统一仍待交付，候选未批准，阶段0未关闭。
+
+## 16. 当前投影权威与控制身份迁移定稿
+
+### 16.1 采用事实与剩余冲突
+
+2026-10-29核对DF01固定的SDK提交`aff5ccbb75b6140109f948f81284785c75e46d1e`中panel4的registry-map与完整models图：十二个集合均有具名模型、authority及权限映射；ProviderReceipt已与内部摄取记录分开，公共结果没有receive_sequence／decision_refs。这些已成文方案进入实际提供者和writer实施，不再要求另建投影包。来源见[固定模型图](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/panel-wire/contract/models.schema.json)、[集合映射](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/panel-wire/contract/registry-map.json)。
+
+**已核实的具体差异。** snapshot__ControlSnapshotView仍有effective_holder_id且无reserved_version；snapshot__PendingControl使用target_holder_id；snapshot__Transfer使用from_principal_id／target_principal_id及expires_at。相同图中的control__ControlRecord／ControlOperation／TransferOffer已经采用完整Principal、预留版本、Lifetime及accepted_operation_id。旧snapshot结构通过只能证明自身形状，不能证明与新控制权语义一致。以下替换是生成最终SDK必须落实的接受集变更，不直接修改旧panel4字节或批准标志。
+
+### 16.2 控制投影的唯一字段裁决
+
+依据[控制权契约](contracts/c08-controller/CONTROL_AUTHORITY.md)与DF06已采用的人员手动政策，控制集合从Controller同一短读事务的当前control head及不可变原件生成：
+
+| 投影位置 | 最终字段与类型来源 | 关系及失败行为 |
+| --- | --- | --- |
+| ControlSnapshotView | 删除effective_holder_id；增加holder（control__Principal或null）、reserved_version（control__U20）及source_control_ref（snapshot__ObjectRef）；保留device_ref、control_epoch、effective_version、mode、gate_state及在途／未决集合 | source_control_ref绑定完整control__ControlRecord原件；holder、版本及mode必须逐字段相等，manual非null、automatic为null，effective_version不得超过reserved_version；source_control_ref保留原件revision；外层Record使用该控制投影自己的单调revision，任一公开字段或关系集合变化均由同writer推进，不复用仅覆盖控制原件的修订号 |
+| pending_change | null，或封闭对象`{operation_ref,target,requested_by,state,reason}`；target为control__Target，requested_by为control__Principal，reason为control__Reason；state仅pending／indeterminate | operation_ref指当前pending槽的ControlOperation，target含预留version及完整holder；requested_by、target与原件相等，version等于本次已预留目标；终态不能留在pending槽，拒绝或生效的历史结果通过原操作引用查询 |
+| transfers每项 | 封闭对象`{transfer_ref,from_principal,target_principal,expected_control,lifetime,state,accept_operation_ref}`；Principal／ControlVersion／Lifetime复用control具名类型；state保留offered／accepted／expired／cancelled | 删除两个裸principal_id、拆散的expected字段及expires_at；accept_operation_ref仅accepted时非null，指accepted_operation_id的同库原件，且与控制操作的设备、目标及邀请关联匹配；其他状态为null |
+| 期限展示 | Lifetime保留原clock_domain_id、descriptor_digest、issued_tick_ns及expires_tick_ns；GUI另根据参考时间计算可空展示值 | 是否可接受邀请由Controller原受监督域判定；不得用GUI时钟、快照生成时间或UTC展示值续期。accepted不因旧邀请期限到达而改expired |
+
+source_control_ref、operation_ref及transfer_ref使用现有完整ObjectRef身份；其content_digest覆盖原件完整规范正文，不直接复制原件内的record_digest／operation_digest／offer_digest。必需的同库关联按relation_policy生成闭包，缺失或无权整体拒绝该范围，不能从裸ID猜issuer、补默认principal或跨库抓取“最新值”。本节不把控制管理原件直接公开为任意body；公开字段仍只有上表与已保留的显式投影字段。
+
+新的模型图、注册Profile／Selector、ScopeSpec、快照manifest和契约selection同时生成。已有旧选择的订阅不能混入新控制body；切换需新授权及新完整快照，旧代投影退出当前可见集合。新图仍保留具名跨引用和预算，不能添加unknown字段或双读旧字段作为迁移捷径。该字段裁决关闭控制投影与当前控制权契约的设计冲突；生成及真实互通是实施工作。
+
+### 16.3 十二类投影的数据所有者
+
+本表补充第10.1节的字段表，给出实际提供者必须读取的权威原件及提交边界。每一行均遵循当前owner／scope／Profile／Selector授权和释放门，journal与对应领域变更同事务；对象全集不得截断。权限名沿固定registry-map，不从表内来源推导新增读权。
+
+| 集合 | 权威原件及本地提交来源 | 不可混同的远端或显示状态 |
+| --- | --- | --- |
+| devices | Controller设备注册、受监督模块绑定及连接／质量状态；配置CAS或运行状态writer提交 | 设备显示online不等ready、可写或真实效果 |
+| catalogs | Controller当前安装批准、目录原件及激活引用；批准／激活事务 | 模块自报目录和安装批准不等当前动作许可 |
+| commands | Controller请求裁决、命令状态历史、attempt／证据及资源账本；T1、T2、T6和保护写集 | 受理、终态、资源释放独立；远端Seamer状态不覆盖命令原件 |
+| controls | Controller控制head及历史、pending操作／转交、闸和在途全集；T3—T5 | 持有人生效、转交接受、ready三者分开，字段采用16.2 |
+| observations | Controller已接收的设备／来源观测及批准动态值Schema；观测writer | 保留原采样身份／年龄；投影生成或同值查询不刷新设备事实 |
+| sources | Controller发布来源或Seamer摄取来源，各自的SourceStreamKey、前沿、gap、baseline及拒绝floor | 两个authority即使描述同来源也不是同一条状态；Seamer摄取确认不修改Controller发布原件 |
+| definitions | Seamer草稿CAS及不可变发布产物、当前发布引用 | 发布不布防，当前草稿不覆盖已发布版本 |
+| runs | Seamer运行生命周期、arm、活动槽、锁存及恢复操作；摄取／暂停／R2—R4事务 | 视图armed不授权恢复或派发，远端准备receipt不是本地running |
+| business_states | Seamer业务状态与转换提交原件；T7／R5原子提交 | 不根据Controller设备观测或某一步成功推导目标业务状态 |
+| executions | Seamer固定计划、StepRecord、命令裁决引用及执行总结；原子摄取／逐步writer | 远端command为精确引用，缺失／不可读不自动变failed或success；旧unknown保留 |
+| schedule_activations | Seamer排期版本、CalendarProfile及激活CAS | 新版激活不改写已受理场次的原版本或截止 |
+| occurrences | Seamer稳定场次身份、窗口、资格锁存、受理／抑制及execution关联；场次裁决writer | 过窗不补触发，未决场次不因显示窗口结束被遗漏 |
+
+commands、executions、occurrences必须保留全部未决对象；其余集合的current也必须按领域身份及生命周期判定，不能简单对任意历史对象取max(revision)。单authority快照在同库一致点读取全部选定集合及journal水位，跨库仅保留精确引用。GUI拼接两服务页面只形成展示组合，不产生跨库一致性声明；C09面板读集同样需要本权威正式采用记录，不能把远端投影缓存当原件。
+
+### 16.4 三种确认与实施出口
+
+- `client.snapshot.applied`只证明该owner在当前连接／构建代完成规定的基线采用；canonical_trigger消费者同时提交来源baseline与旧事件拒绝floor。基线和reconcile不产生新触发，不解除run锁存或恢复旧资格。
+- `projection_applied`只在当前投影实体／墓碑、交付前沿、原ACK及阶段同事务提交后发送。它不证明触发匹配、业务inbox或设备已执行；普通GUI同步不能代替Seamer摄取。
+- `durable_ingest`只由Seamer规范摄取writer在来源前沿、inbox、完整匹配／决定集、所需execution／计划／活动槽及audit／outbox共同提交后产生。提交未知按原inbox查原，不重触发；零匹配或抑制也须有明确原裁决，不能伪造执行成功。
+
+上述确认均绑定当前owner、connection_generation、cursor、payload_digest及相应原件；服务端只接受实际已提交传输映射内的确认。ACK丢失重传原确认，不重做领域变更；连接换代依新绑定重同步，不能把历史ACK搬到新连接。F04撤权与最终释放排序继续生效，已交给客户端的内容不能物理撤回。
+
+本节将投影字段来源、控制身份替换及三种确认的事务归属定稿；实际领域提供者、登记／发布writer、C09读集及GUI采用均按现有规范实现。既有SNP／SS／EN／PFT和A08／A10／A14增加关联验收：跨issuer同principal_id不合并；reserved大于effective时显示不丢失；accepted邀请过期仍保留原操作；错单调域不得接受；Projection ACK不可推进业务inbox；摄取提交失败不ACK且重投不重复受理；撤权先释放则拒绝、先释放则记不可撤回。当前核验仅为固定Schema和文档关系，不是上述运行用例通过。

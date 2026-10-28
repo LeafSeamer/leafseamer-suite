@@ -4,7 +4,7 @@
 
 首期主体政策及身份权威归属以第11节为准：其中人员手动、服务自动化的收紧方案已确定采用。该决定不等于批准全部历史候选，不改变已有机器资料的版本或运行验收标志。
 
-首期密码、秘密存储、内部证书及身份期限的实施选择以第12节为准；历史“具体profile待定”不再重新悬置其中已经选定的参数。真实平台与密码实现验收仍未完成。
+首期密码、秘密存储、内部证书及身份期限的实施选择以第12节为准，运行认证时间的采集与恢复以第13节为准；历史“具体profile待定”不再重新悬置其中已经选定的参数。真实平台与密码实现验收仍未完成。
 
 依据：[身份与容量](rebirth-f04-f05-design.md)、[TS02](rebirth-technology-selection.md)、[draft.4归并](rebirth-draft4-review.md)、[DF02运行域](rebirth-df02-runtime-design.md)、[DF03授时证据](rebirth-df03-time-profile-design.md)、[DF04存储](rebirth-df04-storage-design.md)。候选附属模型版本`internal-trust/0.1.0-draft.1`，不修改公共draft.4／IPC 0.3。
 
@@ -458,10 +458,66 @@ master key轮换：受权维护者预装新key→验证服务装载→用新key�
 | 身份请求／响应 | 64 KiB／256 KiB | 仅身份接口；不覆盖各独立通道的大对象预算 |
 | 登录／证明失败预算 | 每身份5次/分钟且入口全局60次/分钟 | 未认证身份桶有总界，满时统一入口节流；撤销及核对使用独立保护额度 |
 
-组织批准与RunGrant仍必须具有明确有限窗口；本节不把会话8小时或credential90日当组织授权默认值，实际运行窗口由人员批准并受全部父边界约束。证书、秘密与身份期限选择已成文；运行认证时钟的可信采集profile及失信恢复仍须按FINAL_AUTHORIZATION与C12完成归并，安装更新时间锚不能冒充服务运行时的持续认证采样。
+组织批准与RunGrant仍必须具有明确有限窗口；本节不把会话8小时或credential90日当组织授权默认值，实际运行窗口由人员批准并受全部父边界约束。证书、秘密与身份期限选择已成文；运行认证时钟按第13节采集并接入FINAL_AUTHORIZATION，安装更新时间锚不能冒充服务运行时的持续认证采样。
 
 ### 12.4 实施与验收归属
 
 Controller实现opaque／会话、SecretStore与证书装载，Seamer接入同一库契约但使用独立key和身份；Suite实现配置生成、签发辅助工具、安装权限及维护恢复。复用现有技术锁、I1—I6和DEP06／DEP07，不建立第二套公开身份API。每个实现必须有明确错误结果，密钥丢失、解密失败、轮换未完成或认证时间失信均不隐式产生新身份或设备资格。
 
 既有TV07、ILT、IN及DPT14／恢复用例补足以下实施后证据：跨用途验证值拒绝；低位非规范base64url拒绝；GCM错tag／错AAD／短tag不输出明文；nonce保留失败、崩溃及恢复不复用；DPAPI换身份拒绝；systemd运行中更新源不视为已装载；只读容器挂载及权限；秘密文件就绪与业务引用COMMIT各失败点；旧key缺失／新key未装载保持保护；错SAN／用途／CA、到期及轮换重试不延长窗口。密码耗时与并发内存、TLS握手预算、文件耐久及两平台恢复各自取证；上述规格不是这些测试的通过记录。
+
+## 13. 运行认证时钟采集与失信恢复
+
+2026-10-29定稿。本节细化[F04的部署者信任系统时间](rebirth-f04-f05-design.md#25-浏览器与认证时钟故障)，不将业务reference-bound/1、业务NTS包或安装更新时间锚转换为认证来源。采用`trusted-system-interval/1`及[FINAL_AUTHORIZATION](contracts/c04-lifecycle/FINAL_AUTHORIZATION.md)已有区间、单调截止、故障锁存和关闭写集；正常运行不增加人工逐次校时步骤。系统时间的环境可信假设与API采集事实必须分别记录。
+
+### 13.1 来源资格与平台接口
+
+**已知接口事实。** Windows的GetSystemTimePreciseAsFileTime返回UTC格式的系统时间；分辨率不证明系统相对真实UTC的误差。Linux CLOCK_REALTIME会受设置和校时调整影响，CLOCK_BOOTTIME计入挂起。因而一次系统调用成功不能自报quality=trusted。（来源：[Microsoft API](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimepreciseasfiletime)、[Microsoft计时精度说明](https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps)、[Linux man-pages](https://www.man7.org/linux/man-pages/man2/clock_gettime.2.html)。）
+
+**项目采用。** Controller与Seamer各自使用既定C／C++原生适配层在本机采集，不远程借用签发者的tick。Windows按`QueryInterruptTimePrecise → GetSystemTimePreciseAsFileTime → QueryInterruptTimePrecise`读取；FILETIME以整数减去1601至1970的116444736000000000个100ns单位，再乘100，拒绝负值／溢出。Linux按`clock_gettime(CLOCK_BOOTTIME) → clock_gettime(CLOCK_REALTIME) → clock_gettime(CLOCK_BOOTTIME)`读取；检查返回值及timespec的纳秒范围，再精确换算。禁止Date.now、字符串本地时区、浮点秒、COARSE或静默替换成另一计时API。
+
+容器在同一已验证时间namespace内直接执行上述读取，并绑定C12宿主授时配置与DF02运行域证明；不能跨namespace拼接宿主tick和容器wall。缺少域证明只提供无授权资格的诊断，不能以同一机器名认定同域。应用不调用设置系统时间的接口，不启动或改配宿主授时服务。
+
+`AuthenticationClockPolicy`由安装／维护入口固定，含id、revision、digest、service_id、runtime_profile_ref、native_artifact_ref、system_time_source_ref、environment_approval_ref、max_system_error_ns、wall_quantization_ns、monotonic_quantization_ns、drift_ppb、capture_limit_ns、sample_period_ns、sample_ttl_ns、health_profile_ref。完整Ref沿DF01；纳秒及身份计数用规范整数串，drift_ppb为0至1000000的整数。policy及环境批准由可信安装配置解析，不接受普通HTTP、模块或采集正文自报批准。
+
+`max_system_error_ns=E`是部署者批准的宿主授时环境相对UTC的有限绝对误差假设，必须大于0；量化界与速率界分别有平台／制品证据引用。E不得从“已同步”状态、API分辨率、业务offset或近期平均误差自动生成。环境批准明确允许的OS／虚拟化、系统授时来源与配置、监测规则、失效条件、维护责任及证据；运行环境改变即失效。未建立该批准的安装不能开始认证业务，合成批准仅用于隔离验收。该模型对已批准环境给条件保证，不承诺检测恶意系统管理员、谎报时钟或全部硬件故障。
+
+首期固定采样周期500ms、单次括号上限20ms、样本有效期2s；它们是调度与拒绝上限，不是实测SLA。E及两种量化／速率界按精确平台profile提供，缺项、超Schema范围或证据不匹配拒绝，不能填零占位。授时健康profile固定原生Windows W32Time或Linux宿主已安装的授时管理器及其受限只读状态映射；查询失败、服务／源配置变化、明确未同步、失去外部参考且没有批准的有限holdover条件均关闭资格。健康状态只验证批准环境仍成立，不单独证明E。
+
+### 13.2 区间、持久来源与身份使用
+
+设两次同域单调读数为a、b，中间系统UTC整数读数为w；`q_m`为每次单调读取的纳秒误差界，`q_w`为wall读取的量化界，`d`为速率包络ppb。要求b≥a、b−a≤20ms，且前后运行域／policy／健康配置未变。按第13.1节的UTC假设，w所对应瞬间的真实UTC在`[w−E−q_w,w+E+q_w]`；无须假定该瞬间位于括号中点。在数值锚点b处保守采用：
+
+```text
+Q = ceil(q_m * (1000000000 + d) / 1000000000)
+Dplus = ceil((b - a + 2*q_m) * (1000000000 + d) / 1000000000)
+L = w - E - q_w - 2*Q
+U = w + E + q_w + Dplus + 2*Q
+valid_before_tick_ns = b + 2000000000
+```
+
+计算使用足够宽整数，结果限制到现有无符号64位域，越界拒绝而不截断。Q把单调读数量化转换为UTC经过量上界，额外2Q同时覆盖锚点和后续当前tick的读取偏差；以后按已有整数模型从b向外外推，不能取中点后丢掉半径。提交和每次使用均重新检查当前tick严格早于valid_before；调度延迟不重置b或延长2s。固定毫秒UTC字段若需转换，起始下界向下、结束上界向上舍入，不通过浮点timestamp缩窄区间。
+
+每次采集生成不可变`AuthenticationClockAcquisition`：id／revision／digest、service_id、service_boot_id、clock_domain_id、descriptor_digest、native_artifact_ref、policy_ref、environment_approval_ref、health_evidence_ref、a、b、原始wall整数和平台单位、换算后的w、E／q_w／q_m／d、L／U、valid_before_tick_ns。记录只从受监督本地入口进入writer；重复id只查原，不能换采样时间。配置前后检查、API失败、超时或非法数字作为失败进入既有故障入口，不构造一个“可信但空值”的样本。
+
+采集原件与服务认证时钟当前指针在同库writer内提交；Controller按实际出口Binding生成已有AuthenticationClockSample，`acquisition_ref`必须解析到该原件，不能只比较字符串。样本的锚点、边界、期限、policy、制品／域必须与原件精确匹配；同次采集可以投影到同域多个真实出口，不能为不存在的出口补造身份。Seamer以自身service／boot／domain保存服务级认证日志，不伪造Controller设备Binding；公共认证类型和Controller出口投影在SDK中明确区分，均复用同一算法与失信规则。
+
+每次登录、续期、签发、配对激活、内部授权响应及受权读取／写入均在本服务当前认证区间内核对有效期；登录、token或授权缓存不缓存“时钟永久可信”。现有授权使用仍取原始与当前区间、所有有效期及单调截止的交集，新采样不得延长旧permit。任何一次已确定过期的session／token／credential／grant按精确对象Ref持久记录拒绝事实或既有撤销状态，恢复较早wall或换运行域不得复活该对象；新会话、轮换凭据和新批准仍走各自现有流程。
+
+内部TLS保留平台标准链、名称、用途及时间校验；另外在握手后、激活业务会话前，用最新认证区间验证实际验证链的有效期：L不早于各notBefore，U严格早于各notAfter。标准校验拒绝不得由区间检查覆盖；信任锚按本项目CA有效期策略处理。长连接每次释放授权响应或使用业务权限仍重新检查当前区间、配对和撤销，证书到期、时钟失信或凭据撤销不因已有socket继续授权。首期关闭业务TLS会话恢复／0-RTT，避免恢复握手绕过原验证链和当前生命周期检查；启用须另版明确等价证据。
+
+### 13.3 失信、恢复与部署时间边界
+
+前后配置／域不一致、系统时间与已有预测区间不相交、采集缺口达到2s、休眠／恢复或连续性无法证明，均使本服务认证域保护锁存。错误采集立即阻止新业务，不等后台到期任务；成功采集也不能清除故障。Controller按既有AuthenticationClockFault／ClockClosePlan处理完整域出口，保持持有人、已发送与unknown事实；失败提交或无法确认关闭时由监督路径停止受影响出口。Seamer停止签发新运行工作、暂停受影响运行并使未发派发失去资格；对已交付Controller的许可走既有撤权／取消传播，未获目标确认不得显示全域已停止。业务NTP单独失效仍仅影响其时间依赖，不触发这项认证域故障。
+
+恢复沿既定本机管理员维护入口，顺序固定：①保留故障与过期拒绝事实，停止新工作；②核对全部旧运行成员的关闭／可信退役及远端在途；③管理员修复宿主授时环境并重新验证或更换环境批准；④监督器建立有新证明的运行绑定，不能仅改客户端ID；⑤采集并可靠提交新域首样本，重新建立身份验证与当前撤销来源；⑥经现有人员恢复流程重新取得设备资格及需要的RunGrant／布防。旧fault不删除，旧域许可／上下文不续用，unknown不重放。
+
+时钟失信时普通“近期重新认证”无法完成，本机维护入口因此只使用受控OS管理员通道授权环境修复、退役和新域启动；它不直接签发业务身份、清除设备保护或跳过密码验证。新域可认证后才进入正常人员恢复。原长期身份可重新证明，但已过期或被撤销的具体版本不能因新域复活；已有人员手动持有关系保持，ready须重新证明。发现未关闭的远端效果时可恢复诊断，不能先开放冲突写。
+
+本节不批准DF05人工更新时间方案，也不把安装时的单次UTC锚缓存成持续运行资格。发行验签／激活时间、业务reference-bound/1的NTS冷启动和运行认证是三条独立来源链；业务参考采集可使用已经有效的认证区间校验证书日期，但反向用业务未认证包修复认证区间被禁止。DF03具体协议库、时代／闰秒／上游误差profile继续单独定稿。
+
+### 13.4 实施交接与验收
+
+采集来源、算法、原件解析、TLS使用和恢复顺序的设计选择至此明确。Controller／Seamer实现原生读取及writer、生命周期拒绝和保护传播；SDK生成policy／acquisition及服务级日志类型并绑定现有出口投影；Suite交付环境资格配置、OS维护入口和两平台部署指南；GUI分别展示认证不可用、业务参考质量及发行时间状态。未实现的类型生成、平台采集、TLS和数据库接线是实施任务，不把本节文字当作运行证明。
+
+复用FA19、TV07／TV11／TV13、IN和ILT验收，增加以下必要轨迹：FILETIME纪元与边界／timespec非法值；采集括号变长、量化外包、提交延迟；前后policy／namespace变化；同id换时间；同域其他出口故障；到期边界与TLS长连接；失信时拒绝远程恢复而允许受限本机维护；新域不能复活曾过期credential或旧permit；Seamer停止而远端旧许可未确认；业务NTP坏而认证正常时即时手动仍受其余守卫正常判定。实际系统读取、两平台误差／速率资格、TLS、并发数据库和出口终止均尚未验收，整体阶段0也未因本节单独完成。

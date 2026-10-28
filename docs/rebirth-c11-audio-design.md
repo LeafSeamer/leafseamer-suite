@@ -80,7 +80,7 @@ yamaha-generic、yamaha-dm3、yamaha-dm3-osc、yamaha-rivage、behringer-wing五
 | MonitorMix/Password（119） | 标为secret；凭据写走secret_ref，禁止普通parameter.query、全文搜索预览、遥测、trigger、快照／日志和导出回显；维护角色仍可执行经批准的设定。禁止保存普通digest作为可猜测口令指纹 |
 | MuteGrp、InputChLink、Monitor、Cue、HA | 声明对其它通道／监听的影响；成员／链接变化使相关计划与足迹失效；不能仅按所写地址证明操作独立 |
 | 只读／无访问项 | r不生成set；w不生成query；--不生成运行入口；动态目录不得扩大审批权限 |
-| Scene 1000/1001 | scene.recall/store(bank_ref,scene_index)，旧范围0—100仅作核对依据；实际存储／保护／空slot状态单独确认。Store覆盖设备保存内容，不能假称不影响后续直播 |
+| Scene 1000/1001 | scene.recall/store(bank_ref,scene_index)，第19节固定DM3 RCP A库的0—99请求绑定；旧范围0—100不直接生成运行范围，B库及实际存储／保护／空slot状态单独确认。Store覆盖设备保存内容，不能假称不影响后续直播 |
 | Scene 1010/1011 | scene.recall_relative(direction)不伪造x/y；不自动重试，未知时不猜当前场次再次inc/dec；与绝对recall区分 |
 | Meter 2000/2001/2002/2100/2101/2102 | meter.subscribe(target,pickoff,interval_profile)，六流覆盖InCh/StInCh/FxRtnCh/Mix/Mtrx/St；pickoff必须来自对应列表。记录raw及解码版本；未核实曲线前不标成dBFS，不以0..127直接推物理声压 |
 
@@ -597,7 +597,7 @@ StInCh和FxRtnCh到Mix／Fx／Matrix的22条发送参数在表中Y为1，绑定�
 
 scene_a／scene_b各自recall采用`/yosc:req/ssrecall_ex`及`,si`，参数为bank字符串和0—99整数；查询采用`/yosc:req/sscurrent_ex`及`,s`，只有bank。两种请求都没有普通set的X／Y路径段，不复用RIVAGE的ssrecallt_ex和小数字符串。这里未定义的响应、store、relative recall、scene 100或meter不能从recall格式推导；完整既定用途仍按各自协议补齐，不以一个查询存在就认定原Recall完成。
 
-本节关闭DM3 OSC已公开set表的逐地址／值域／枚举绑定及计数混用缺口，明确剩余坐标与PrePost语义疑点。SDK生成时将本表与已批准的语义投影、会话访问、物理足迹和完成／释放policy组合，缺任一依据不生成可写资格；Controller及GUI消费相同定义，不能在各端各猜一套。目录录入和11类序列化已有固定输入，产品编码器及正常／异常回复、真实设备量化、字符支持、保护与释放验收后置。RCP词法仍未获得可替代的依据，本表不关闭RCP或整体C11。
+本节关闭DM3 OSC已公开set表的逐地址／值域／枚举绑定及计数混用缺口，明确剩余坐标与PrePost语义疑点。SDK生成时将本表与已批准的语义投影、会话访问、物理足迹和完成／释放policy组合，缺任一依据不生成可写资格；Controller及GUI消费相同定义，不能在各端各猜一套。目录录入和11类序列化已有固定输入，产品编码器及正常／异常回复、真实设备量化、字符支持、保护与释放验收后置。RCP场景请求另按第19节，名称／binary词法仍未定，本表不关闭RCP或整体C11。
 
 ## 18. WING叶参数编解码与来源坐标采用
 
@@ -668,3 +668,21 @@ USR不是56个同类物理前级：1—24是User Signal，25—56是User Patch�
 来源展开利用现有C09依赖关系及其预算；出现循环、缺成员、未知类型、超预算或无法取得一致捕获时保留具体缺项，不产合格物理目标。已知成员仍进入诊断，不能以部分集合继续前级写。双侧都选择同一物理输入的去重、跨组User Patch、来源mode切换、全局切换后单独override及第二成员发送前被FENCE阻断，纳入原AUDT／A12验收。
 
 本补充关闭型号本地端口数、User Patch跨组成员及多成员前级写目标的设计缺口，并排除“全局位值就是每通道当前分支”的错误前提。SDK生成来源成员与目标集合约束，Controller实现解析／依赖失效和既定多primitive路径，GUI实现成员选择及共享影响预览；这些已有明确规则的工作转实施。**完整线上活动分支映射、成员配对的具体线上表示、HA差异和观察资格仍需依据**，不把本轮手册行为核对当作已经得到真实设备的有效来源观察；本轮起始的来源绑定完整出口尚未满足。
+
+## 19. DM3 RCP A库场景请求绑定
+
+首期DM3的TCP场景请求采用下表；型号绑定不得扩展为DM7或其它Yamaha系列的通用规则。接口依据为[Yamaha官方控制模块v2.2.0](https://usa.yamaha.com/files/download/other_assets/1/1583711/Crestron_module_DM7_DM3_CL_QL_TF_TFRACK_v220.zip)的DM3接口；官方随附说明第17页明确该模块未支持DM3的B库。这里固定请求格式和编号关系，未据此授予运行资格或声明设备不支持B库。
+
+| 操作 | TCP行内容，不含末尾LF | 语义输入及边界 |
+| --- | --- | --- |
+| scene.recall | `ssrecall_ex scene_a N` | bank_ref明确为A，N为0—99整数，按原值序列化 |
+| scene.store | `ssupdate_ex scene_a N` | 同上；请求可编码与目标可覆盖分别判断 |
+| 当前场景查询 | `sscurrent_ex scene_a` | 只有bank，无N、X、Y或普通get前缀 |
+
+每个请求仅一行，以一个LF字节结束；表中分隔为单个ASCII空格，N使用ASCII十进制非负整数的规范形式，不加引号、正号、前导零、小数或千位分隔。场景0编码为0，99编码为99；负数、100、非整数和非A库不进入这份绑定，不截断、取模或自动换库。B库沿原覆盖项保留独立绑定缺口，不能以替换bank字符串或复制OSC格式宣告完成。
+
+SceneRef的编号在此绑定内保持0—99原值，界面装饰性的两位显示不改变标识；不能应用其它型号的一基到零基减一，或把100个slot误读为包含索引100。普通参数的X／Y、RIVAGE场景major／minor和OSC的type tags都不进入该TCP行。相对recall与meter仍是独立操作，不由本表生成。
+
+**请求格式与设备状态分开。** Store仍须核对目标的存在、保护、可写性、权限和影响预览；0可编码不证明0可存储，99可编码也不证明slot存在或可召回。格式正确、TCP写成功、当前场景查询有值或收到NOTIFY，均不替代原命令的关联应答、完成或资源释放。完整响应词法、ERROR分类、迟到消息处理资格及设备实际效果继续按第4、14—15节解决，查询不能用于未知recall的自动重试。
+
+本节关闭A库绝对recall／store及当前场景查询的请求语法、编号转换缺口；SDK生成这三种具名请求，Controller沿既有许可与请求账本消费，GUI显示同一SceneRef。产品encoder和真实设备往返转实施／验收；名称及其余binary／string、B库、relative、meter和响应／完成资格仍未关闭，不将局部请求绑定计作阶段0整体通过。

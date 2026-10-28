@@ -2,7 +2,7 @@
   "format": "sdk-wire-handoff/1",
   "sdk_repository": "https://github.com/LeafSeamer/leafseamer-sdk.git",
   "suite_repository": "https://github.com/LeafSeamer/leafseamer-suite.git",
-  "sdk_main_commit": "201f88b3ee60bf37ff8baabb70ba1ea1c840439e",
+  "sdk_main_commit": "cf2d074b0b8307d74a1ebec8b092f9d94d1f9dbf",
   "packages": [
     {
       "name": "scope-release",
@@ -1016,6 +1016,75 @@
       },
       "dependency_manifest": "contracts/typed-client/dependencies.json",
       "dependency_files_recorded": 2009
+    },
+    {
+      "name": "authorization",
+      "commit": "436728a3a113daebae502f8997f20f734942e5b6",
+      "report": "contracts/authorization/report.json",
+      "files": {
+        "contracts/authorization/AUTHORIZATION.md": "885f862d92d7aa81bb3ee9d4afc41ebbaccf5ab9115b864117c23f956ce88038",
+        "contracts/authorization/bindings.json": "9a9661272dd344dc97ffedc1022ac322f4abf7f6dd393a80f723f1807f44d3d4",
+        "contracts/authorization/build.py": "c490ca7178e49cf78f29e2f458efda72578ef3ce25be4392ca7cd6239289be2f",
+        "contracts/authorization/check.py": "bb1935af6efa38927cad61ab770b2218e3e6b6e086944747922352c13a67ff99",
+        "contracts/authorization/policy.py": "8fd0a85a19adbc7e747833f988049d1a648ce6b801ea90a30a02fdd6acfc13e4",
+        "contracts/authorization/providers.py": "4a8270c1389549897e178594d57a29a5a654bacd7b429cc8a6bd01869f2bafca",
+        "contracts/authorization/README.md": "ed5e564a5abb561a2b42074ba4baf0611516a93dea18d257dc3c69d63b1b1310",
+        "contracts/authorization/source/legacy-authorization.json": "e3a72f9c4a91c3a914941b420ef2b4c6ee89eba340f7fe0fd27e4f2bcd3e55c9",
+        "contracts/authorization/source/legacy-authorization.md": "53f2fe1060ffc5cae3f1737e33ee5ede86e08512c1b2cc80d23766c4d69dec36",
+        "contracts/authorization/sources.json": "6a2e1692df876f0ae4e53a6880e81961f08400ae63af46ae13c9290e2aecec62",
+        "contracts/http-envelope/preview/inventory.json": "b3af40aea253a31895b2329e5d05bc7344e8393812c3a064778fdc00fc02b4ce",
+        "contracts/event-integration/preview/controller.openapi.json": "794b108b73cbc3ca21579888c01a2784a68efc5693bae8f0ba29df3b97174eed",
+        "contracts/event-integration/preview/seamer.openapi.json": "ebf630c970a64b2a897fbc2f3d975d8db158c9c956bffca19f669d0d05bf5bcf",
+        "contracts/event-integration/preview/selection.json": "efdd3a57be14c408764b3813a04b12ffd3bee57f0fdd31cbce9daac828fd6340",
+        "contracts/authorization/report.json": "bc3395d24bf37bd0cc73cc10c43f5b1e877d22b8bbaa47a068664651e1f99c07"
+      },
+      "expected": {
+        "cases_passed": 655,
+        "operations": 201,
+        "branches": 245,
+        "registered_guards": 62,
+        "active_guards": 61,
+        "providers": 12,
+        "legacy_changes": 163,
+        "runtime_authorization_tests_executed": 0,
+        "network_tests_executed": 0,
+        "device_tests_executed": 0
+      }
+    },
+    {
+      "name": "panel-methods",
+      "commit": "cf2d074b0b8307d74a1ebec8b092f9d94d1f9dbf",
+      "report": "contracts/panel-methods/report.json",
+      "files": {
+        "contracts/panel-methods/bindings.json": "3349e2ccd265a6f0785457d27782dbbf77c7a3a31ddd5931f10edca428d08bb8",
+        "contracts/panel-methods/build.py": "b776478fb92fdf607b6f4558e834da44d0f9efcf62f70b7c14d7448cca0bc6f7",
+        "contracts/panel-methods/check.py": "86b4183756efdb569d8328777c06992e8b51d8e130a20cbb2ac606dbb364bd96",
+        "contracts/panel-methods/fixtures.py": "da1609cd85f2056328c58ace04e0484b17ae0f1e47d197452035f7fd96de09ac",
+        "contracts/panel-methods/input.schema.json": "d384906672fdf79a9a8c46eb8ef3e06d0bb9174181993e3ffaa8e13f7e47d76d",
+        "contracts/panel-methods/METHODS.md": "35047066dbb1005c90bd478f78923363140c73407d823f5c03a5a4f6fd79d11b",
+        "contracts/panel-methods/policy.py": "b5af663b1c9f6f01e38c2cc3feb24af4accd2f6a5226a4fed406f86909928145",
+        "contracts/panel-methods/README.md": "89a049a6f19f094a599cf661063096a98ecd5886b4b78c78f57681b8738a5a5d",
+        "contracts/panel-methods/source/legacy-bindings.json": "49add3ec9f11f4226af628fc79455db1cee22499a2485b5684e667520c71ade4",
+        "contracts/panel-methods/sources.json": "317cf52ff42b60aedb79d680df57d163c9a14c34be54d0444998c3e4957a44e8",
+        "contracts/event-integration/preview/models.schema.json": "f1c7a1a2a2ff4dd0834f05a8eb87033c7bb644e673a7b92d1f830f4e8ac1d6b5",
+        "contracts/event-integration/preview/controller.openapi.json": "794b108b73cbc3ca21579888c01a2784a68efc5693bae8f0ba29df3b97174eed",
+        "contracts/event-integration/preview/seamer.openapi.json": "ebf630c970a64b2a897fbc2f3d975d8db158c9c956bffca19f669d0d05bf5bcf",
+        "contracts/event-integration/preview/selection.json": "efdd3a57be14c408764b3813a04b12ffd3bee57f0fdd31cbce9daac828fd6340",
+        "contracts/authorization/bindings.json": "9a9661272dd344dc97ffedc1022ac322f4abf7f6dd393a80f723f1807f44d3d4",
+        "contracts/panel-methods/report.json": "b1c639479000107f6e886a215b0c3a6180205578352a96689a9ddf9b3acbe64c"
+      },
+      "expected": {
+        "cases_passed": 771,
+        "methods": 35,
+        "semantic_rules": 28,
+        "synthetic_http_mappings": 35,
+        "real_handle_tests_executed": 0,
+        "authorization_tests_executed": 0,
+        "result_projection_tests_executed": 0,
+        "browser_tests_executed": 0,
+        "network_tests_executed": 0,
+        "device_tests_executed": 0
+      }
     }
   ],
   "selection": {
@@ -1033,12 +1102,12 @@
       {
         "round": 1,
         "repository": "leafseamer-sdk",
-        "commit": "1c292c88462013d3d7b9450dcbe91b84f0db90ca"
+        "commit": "436728a3a113daebae502f8997f20f734942e5b6"
       },
       {
         "round": 2,
         "repository": "leafseamer-sdk",
-        "commit": "201f88b3ee60bf37ff8baabb70ba1ea1c840439e"
+        "commit": "cf2d074b0b8307d74a1ebec8b092f9d94d1f9dbf"
       },
       {
         "round": 3,

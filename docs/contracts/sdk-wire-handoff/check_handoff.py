@@ -10,8 +10,8 @@ ROOT=Path(__file__).resolve().parent;SUITE=ROOT.parents[2]
 HELPER=ROOT.parent/'sdk-transport-handoff/check_handoff.py'
 spec=importlib.util.spec_from_file_location('fixed_handoff_helpers',HELPER)
 H=importlib.util.module_from_spec(spec);spec.loader.exec_module(H)
-NAMES=['scope-release','scope-recovery','channel-release','snapshot-consumer','projection-delta','event-integration','wire-json','wire-js','wire-static','wire-routing','wire-browser','http-envelope','typed-client']
-DESIGNS=['README.md','docs/ROADMAP.md','docs/rebirth-design-closure.md','docs/rebirth-readiness.md','docs/rebirth-df01-sdk-freeze.md','docs/rebirth-c05-event-sync-design.md','docs/rebirth-df04-storage-design.md']
+NAMES=['scope-release','scope-recovery','channel-release','snapshot-consumer','projection-delta','event-integration','wire-json','wire-js','wire-static','wire-routing','wire-browser','http-envelope','typed-client','authorization','panel-methods']
+DESIGNS=['README.md','docs/ROADMAP.md','docs/rebirth-design-closure.md','docs/rebirth-readiness.md','docs/rebirth-df01-sdk-freeze.md','docs/rebirth-c05-event-sync-design.md','docs/rebirth-df04-storage-design.md','docs/rebirth-c09-extension-design.md']
 
 def package_report(package,files):
     H.require(set(files)==set(package['files']),'固定文件集合不完整')
@@ -54,6 +54,50 @@ def inspect_typed(report,bindings,inventory):
     H.require(bindings['approved'] is False and bindings['runtime_ready'] is False and bindings['operations']==expected,'客户端操作绑定')
     H.require(sum(o['callable'] for o in expected)==report['http_callable']==197 and report['websocket_metadata_only']==4,'客户端传输边界')
     H.require(report['operations']==201 and report['response_bindings']==2148 and report['schemas_per_authority']==1351,'客户端类型覆盖')
+
+def inspect_authorization(report,bindings,inventory):
+    H.require(bindings['approved'] is False and bindings['runtime_ready'] is False and bindings['selection']==inventory['selection'],'授权候选资格或选择')
+    rows={o['key']:o for o in bindings['operations']};expected={o['authority']+':'+o['operation_id']:o for o in inventory['operations']}
+    H.require(len(rows)==len(bindings['operations'])==201 and set(rows)==set(expected),'授权操作覆盖')
+    for key,row in rows.items():
+        source=expected[key]
+        H.require(all(row[k]==source[k] for k in ['authority','operation_id','method','path','transport','security']),'授权调用身份')
+        H.require(row['authorization_granted'] is False and row['branches'],'授权许可伪标')
+        for branch in row['branches']:
+            H.require(set(branch['guards'])<=set(bindings['guards']) and set(branch['providers'])<=set(bindings['providers']),'守卫或提供者缺失')
+    H.require(sum(len(o['branches']) for o in rows.values())==report['branches']==245 and len(bindings['guards'])==62 and len(bindings['providers'])==12,'授权登记统计')
+    H.require(len({g for o in rows.values() for b in o['branches'] for g in b['guards']})==report['active_guards']==61,'活跃守卫统计')
+    H.require(set(bindings['guard_changes'])=={'ticket_issue'} and 'subscription' in bindings['guard_changes']['ticket_issue']['current'],'票据迁移缺失')
+    H.require(report['cases_passed']==655 and all(report[k]==0 for k in ['runtime_authorization_tests_executed','network_tests_executed','device_tests_executed']),'授权证据范围')
+
+def inspect_panel(report,bindings,schema,authorization,models,apis):
+    H.require(bindings['approved'] is False and bindings['runtime_ready'] is False and bindings['installed'] is False and bindings['requires_new_complete_selection'] is True,'面板候选伪安装')
+    H.require(bindings['source_selection']==authorization['selection'],'面板来源选择')
+    methods=bindings['methods'];expected=set(models['$defs']['panel__Channel_Method']['enum']);auth={o['key']:o for o in authorization['operations']}
+    H.require(set(methods)==expected and len(methods)==35 and len(bindings['semantic_rules'])==28,'面板方法或规则覆盖')
+    H.require(sum(r['mode']=='host_confirm' for r in methods.values())==8,'确认用途缺失')
+    for method,row in methods.items():
+        key=method.replace('.',':',1);op=auth[key];H.require(row['operation_key']==key and row['authority']==op['authority'],'面板跨权威')
+        H.require(row['human_branch']==next(b for b in op['branches'] if b['profile']=='human') and row['permission']==op['permission'],'面板领域授权不符')
+        H.require(row['installed'] is False and row['authorization_granted'] is False and row['raw_response_allowed'] is False,'面板许可或原响应泄漏')
+        H.require(row['semantic_rule'] in bindings['semantic_rules'] and row['input_definition'] in schema['$defs'],'领域规则或输入遗漏')
+        api=apis[row['authority']];source=api['paths'][op['path']][op['method'].lower()]
+        H.require(row['path']==op['path'] and row['http_method'].upper()==op['method'],'面板调用位置改变')
+        fields={p['in']+'.'+p['name'] for p in source.get('parameters',[])}
+        body=source.get('requestBody',{}).get('content',{}).get('application/json',{}).get('schema')
+        while body and set(body)=={'$ref'}:body=api['components']['schemas'][body['$ref'].rsplit('/',1)[-1]]
+        if body:fields|={'body.'+n for n in body['properties']}
+        H.require(set(row['source_fields'])==fields,'面板字段覆盖遗漏')
+    H.require(report['cases_passed']==771 and report['synthetic_http_mappings']==35 and all(report[k]==0 for k in ['real_handle_tests_executed','authorization_tests_executed','result_projection_tests_executed','browser_tests_executed','network_tests_executed','device_tests_executed']),'面板证据范围')
+
+def inspect_new_sources(sdk,package,files):
+    source=H.decode(files['contracts/'+package['name']+'/sources.json'])
+    raw=H.read_fixed(sdk,source['sdk_source_commit'],source['inputs'])
+    H.require(all(H.sha(raw[p])==h and raw[p]==files[p] for p,h in source['inputs'].items()),'SDK来源提交原件')
+    for p,item in source['copied_sources'].items():
+        H.require(item['repository']=='https://github.com/LeafSeamer/leafseamer-suite','副本来源仓库')
+        original=H.read_fixed(SUITE,item['commit'],{item['path']:item['sha256']})
+        H.require(original[item['path']]==files[p],'Suite副本原件')
 
 def inspect_browser(receipt,files,routing):
     H.require(receipt['format']=='wire-browser-receipt/1' and receipt['approved'] is False and receipt['runtime_ready'] is False,'浏览器收据资格')
@@ -108,6 +152,11 @@ def run(sdk):
     count=inspect_browser(read('wire-browser','browser-report.json'),snapshots['wire-browser'],reports['wire-routing']);check('四浏览器上下文完整断言',count==31268)
     http=read('http-envelope','preview/inventory.json');inspect_http(reports['http-envelope'],http);check('完整HTTP参数与响应记录',True)
     inspect_typed(reports['typed-client'],read('typed-client','preview/bindings.json'),http);check('完整客户端类型与状态记录',True)
+    authorization=read('authorization','bindings.json');inspect_authorization(reports['authorization'],authorization,http);check('完整外层授权与证据边界',True)
+    panel=read('panel-methods','bindings.json');panel_schema=read('panel-methods','input.schema.json')
+    panel_models=read('event-integration','preview/models.schema.json');panel_apis={a:read('event-integration','preview/'+a+'.openapi.json') for a in ['controller','seamer']}
+    inspect_panel(reports['panel-methods'],panel,panel_schema,authorization,panel_models,panel_apis);check('面板35方法当前字段与授权交叉绑定',True)
+    for p in manifest['packages'][-2:]:inspect_new_sources(sdk,p,snapshots[p['name']]);check('固定双仓来源:'+p['name'],True)
     check('HTTP选择一致',http['selection']==selection)
     artifacts=read('typed-client','preview/manifest.json')['artifacts']
     check('类型生成产物集合',set(artifacts)=={'controller.d.ts','seamer.d.ts','operations.d.ts','bindings.json'})
@@ -129,11 +178,16 @@ def run(sdk):
         r=copy.deepcopy(reports['typed-client']);change(r);denied('客户端:'+label,lambda r=r:inspect_typed(r,read('typed-client','preview/bindings.json'),http))
     b=read('typed-client','preview/bindings.json');next(o for o in b['operations'] if not o['callable'])['callable']=True
     denied('WS不得伪标普通HTTP',lambda:inspect_typed(reports['typed-client'],b,http))
-    p=manifest['packages'][-2];bad=copy.deepcopy(p);bad['dependency_files_recorded']-=1
+    p=next(p for p in manifest['packages'] if p['name']=='http-envelope');bad=copy.deepcopy(p);bad['dependency_files_recorded']-=1
     denied('依赖记录遗漏',lambda:package_report(bad,snapshots['http-envelope']))
+    for label,change in [('伪授权',lambda b:b['operations'][0].update(authorization_granted=True)),('漏操作',lambda b:b['operations'].pop()),('错认证',lambda b:b['operations'][0].update(security=[])),('丢票据迁移',lambda b:b['guard_changes'].clear())]:
+        b=copy.deepcopy(authorization);change(b);denied('授权:'+label,lambda b=b:inspect_authorization(reports['authorization'],b,http))
+    for label,change in [('伪安装',lambda b:b.update(installed=True)),('漏方法',lambda b:b['methods'].pop('controller.getMeta')),('降领域权限',lambda b:b['methods']['controller.submitCommand'].update(permission='status.read')),('漏当前字段',lambda b:b['methods']['controller.cancelCommand']['source_fields'].pop('body.expected_state_ref')),('透传原响应',lambda b:b['methods']['seamer.getRun'].update(raw_response_allowed=True))]:
+        b=copy.deepcopy(panel);change(b);denied('面板:'+label,lambda b=b:inspect_panel(reports['panel-methods'],b,panel_schema,authorization,panel_models,panel_apis))
     return dict(format='sdk-wire-handoff-report/1',all_passed=True,cases_passed=len(checks),checks=checks,sdk_main_commit=previous,
       packages=len(reports),fixed_sdk_file_bindings=sum(len(p['files']) for p in manifest['packages']),browser_checks_recorded=count,
       dependency_file_bindings_recorded=sum(p.get('dependency_files_recorded',0) for p in manifest['packages']),http_envelope_runtime_checks_recorded=12076,typed_client_runtime_checks_recorded=862,
+      authorization_static_checks_recorded=655,panel_format_checks_recorded=771,panel_methods_installed=False,real_authorization_tests_executed=0,
       stage0_complete=False,historical_behavior_rerun=False,browser_rerun=False,dependency_installation_rerun=False,device_tests_executed=0,input_sha256=local_inputs())
 
 if __name__=='__main__':

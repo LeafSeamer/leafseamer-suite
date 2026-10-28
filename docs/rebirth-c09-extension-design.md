@@ -578,3 +578,5 @@ LaunchRecord区分registered、creating、awaiting_bootstrap、admitted_closed�
 [完整面板结果交付](contracts/c09-providers/DELIVERY.md)已有局部参考：原请求和当前上下文验证、host.result完整模型、64KiB帧上限、同锁消费与入队、排队依赖撤销、重新取权及单次非阻塞释放。35方法完整结果帧、三种线程竞态和两个本机TCP场景实际运行；sent_sequence只证明指定出口完整接受，不代表面板消费或业务完成。19类帧统一序号与保护队列、生产回执账本、真实浏览器端口和产品传输仍未完成；无完整投影的结果分支由后续回执入口补齐。
 
 [无投影回执交付](contracts/c09-providers/RECEIPTS.md)补齐host.result的5类状态与14种有限原因，核验完整RequestIdentity和原意图摘要，两个输出入口共用不可倒退的受理状态登记。投影失败不等于业务未受理；已知accepted后只能使用独立当前回执表达accepted/unavailable，不能发送unknown_outcome覆盖原事实。完整19类帧、真实账本事务与浏览器输出仍待归并，未开始业务实现。
+
+[回执账本只读快照](contracts/c09-providers/JOURNAL.md)新增隔离SQLite布局与读取适配：单事务取得不可变原请求、原意图和有界回执历史，重新打开后仍核完整身份、原摘要和状态不可倒退。实际文件库、WAL并发读取、新进程重新打开及撤权后停止输出均有独立验证；原件由固定用例构造，领域writer和身份认证为合成配置。真实业务提交事务、数据库迁移及留存、完整失效监听、浏览器输出和19类帧归并继续保留，阶段0未关闭。

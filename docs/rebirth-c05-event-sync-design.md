@@ -673,3 +673,22 @@ commands、executions、occurrences必须保留全部未决对象；其余集合
 上述确认均绑定当前owner、connection_generation、cursor、payload_digest及相应原件；服务端只接受实际已提交传输映射内的确认。ACK丢失重传原确认，不重做领域变更；连接换代依新绑定重同步，不能把历史ACK搬到新连接。F04撤权与最终释放排序继续生效，已交给客户端的内容不能物理撤回。
 
 本节将投影字段来源、控制身份替换及三种确认的事务归属定稿；实际领域提供者、登记／发布writer、C09读集及GUI采用均按现有规范实现。既有SNP／SS／EN／PFT和A08／A10／A14增加关联验收：跨issuer同principal_id不合并；reserved大于effective时显示不丢失；accepted邀请过期仍保留原操作；错单调域不得接受；Projection ACK不可推进业务inbox；摄取提交失败不ACK且重投不重复受理；撤权先释放则拒绝、先释放则记不可撤回。当前核验仅为固定Schema和文档关系，不是上述运行用例通过。
+
+## 17. 设备与数据源身份分支定稿
+
+2026-10-29。固定panel4的`ingress__SourceBindingRef`要求device_id／trigger_id／capability_version，而C06保留独立数据源field.changed；不能给外部排期源制造设备ID。下一完整选择将SourceBindingRef改为封闭的公共部分加target判别分支，公共部分保留registration_id／revision、owner_service_id、database_instance_id、provider_id／provider_boot_id、capture_policy_id／revision、delivery_semantics；移除公共部分的三个设备专属字段。
+
+| target分支 | 必需字段及权威校验 |
+| --- | --- |
+| device | kind=`device`、device_id、trigger_id、capability_version；仍由Controller当前设备目录／来源注册核对，不能只凭Schema或请求路径授予权限 |
+| data_source | kind=`data_source`、source_ref、source_runtime_binding_ref、observation_binding_ref；三者均为同一Seamer权威的精确Ref，来源、配置、映射、provider启动身份和批准必须相同；首期delivery_semantics固定sampled |
+
+每个分支关闭另一分支字段及全部未知键，不接受null设备字段、两分支并存或只有kind的对象。data_source的观察绑定固定record_key规则、字段Pointer、类型／单位、比较规则、质量／年龄及Schema；它不是ImportSnapshot Ref或任意草稿引用。数据源worker的原始捕获只能经[C09第20节](rebirth-c09-extension-design.md#20-数据源运行范围与采集通道定稿)由可信核心验证、归一化并登记，不能直接冒充规范事件发布者。
+
+采用现有`ingress__Origin`完整对象作为新origin_digest投影：source_key、binding_ref、event_id、source_sequence及QualifiedValue payload全部参与JCS摘要，不另拼旧EventEnvelope或按短字段名删除数据。SourceStreamKey仍为authority_service_id／database_instance_id／registration_id／source_stream_id／source_epoch五元组；target分支无需塞进唯一键，但注册原件、Ref修订和摘要必须绑定它。delivery_binding_ref与age_evidence_ref继续是接收侧独立证据，不能混入不可变来源正文或用于刷新旧事件年龄。历史版本只按其原投影核验，不重算旧digest冒充迁移。
+
+注册与来源状态由owner服务拥有：设备来源由Controller登记并通过配对服务通道交付Seamer；本地数据源由Seamer自己的受监督核心登记，经相同规范摄取验证和writer路径接纳，不伪造一次对自身的mTLS响应。远程调用`submitProviderEvent`仍须校验实际peer、provider路径、注册owner及source.event.submit；外部调用者不能凭Seamer来源ID取得本地入口权限。两类来源都受当前注册修订、provider_boot、来源floor及首次接收年龄约束。
+
+SourceDependencyIndex保留注册级槽和完整SourceStreamKey，不把device_id当通用来源主键；提取与变更顺序按[C04第17节](rebirth-c04-automation-design.md#17-来源依赖提取与扩展准入归并)。新provider_boot或source epoch必须先保护旧来源依赖并重新baseline；样本值相等、重连或新导入成功不清旧latch。数据源轮询只证明完整采样之间的差异，不升级为无遗漏离散事件；已归一化差异事件依旧逐个有持久身份与一次决定。
+
+上述字段迁移同步作用于注册接口、Origin／Inbox／来源状态／快照、C04输入绑定、C06观察绑定、C09运行绑定及SDK动态结果校验；共同引用必须指向同一具名类型，不复制两个同名SourceBindingRef。旧订阅和旧客户端不能收到新版联合正文；采用新完整选择后重新鉴权、取新基线。新旧分支、错owner、同provider同名但不同authority、跨来源结果、未批准观察、旧epoch及payload含保留词均须拒绝或按原版本处理的用例进入实施验收。本轮只裁决格式与权威，未生成新SDK或执行真实数据源摄取。

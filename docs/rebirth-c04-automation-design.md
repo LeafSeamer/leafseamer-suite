@@ -276,3 +276,36 @@ SourcePauseLatch绑定保护plan及被拒绝的代次；暂停不增加arm_gener
 局部字段与有限判定见[保护候选](contracts/c05-protection/README.md)。它不实现AST/真实Controller授权、R2—R4或物理事务；PFT01—PFT18与EN对应的运行验收仍待后续实现。活动槽、手动接管、其他来源/授权latch继续独立生效，本轮不批准新候选或关闭C04。
 
 2026-10-20后续[IPC0.5归并候选](contracts/c05-protection/PROTOCOL.md)已给出CommandRequest/RunBinding/RunGrant及Guard/Permit/IntentRef的来源字段和21帧格式。定义版本使用正十进制计数，不再把旧RunBinding的Version与新程序计数拼接；保护HTTP仅两个内部操作，公共准入与准备账本的完整归并仍待交付。开闸完整拒绝快照不能清旧下界，RUN_FENCE只拒原代次，不恢复运行或释放资源。141项新参考检查非真实执行、权限或并发证明。
+
+## 17. 来源依赖提取与扩展准入归并
+
+2026-10-29采用现有AR01—AR06及程序／生命周期方案，按Q72保留有限表达式、显式引用、完整图和失败继续规则；本节关闭C09所列“完整来源依赖如何提取”的算法缺口，不新增另一套执行器或证明格式。输入来自固定CompiledProgram、批准InputBinding／ActionBinding、资源别名与能力足迹、C06已发布场次绑定及当前来源注册；模块、面板或事件payload不得提交自报完整的依赖列表代替这些权威原件。
+
+### 17.1 发布与布防的完整集合
+
+先按Schema定义的程序结构访问rule、每个state及transition、sequence／parallel、全部action与delay；仅在具名Condition、Value及parameter_binding节点解析ref。遍历所有分支，包括当前false／unknown、未选中的转换和可选步骤，不以运行时求值或当前状态裁剪集合。literal及原始parameters的任意嵌套JSON保持业务数据，不递归识别其中同名binding_id、step_id或source_key。
+
+| 依赖类别 | 提取规则 |
+| --- | --- |
+| trigger | 全部声明的触发InputBinding及注册槽，包含设备事件和C05的data_source分支，不限最近匹配事件 |
+| guard／edge | 全部条件ref、边沿／稳定窗及其基线来源；即使短路求值未读取也保留静态依赖 |
+| parameter | 每个parameter_binding的源ref；由能力定义要求的观测前提、参数范围与完整最坏足迹一起归并，不从本次值推断只有一项资源 |
+| step_result | 先验证完整动作图无环，再递归并入被引用步骤的全部输入／证据来源和资源依赖；不把中间结果当独立无来源常量 |
+| machine | 绑定本run业务状态的权威revision与状态Schema；若该状态声明额外外部依据，沿已发布输入绑定归并，不能隐藏在未声明JSON内 |
+| schedule／time | 固定场次、激活、日历与逐步窗口的来源；绝对时间策略进入独立时间依赖，不能因为没有trigger就遗漏 |
+
+先形成按注册级输入槽归一的静态集合，再在arm／恢复事务中把每个槽解析到当前完整SourceStreamKey和SourceBindingRef，保留二者的对应关系。设备与data_source分别按C05第17节核对target；未注册、歧义、越权、未知动态路径、缺完整足迹或超过现有图／保护容量均拒绝，不截断后给完整证明。静态集合、完整解析集合、artifact与目录／批准修订进入同一预检依赖摘要，任何来源变更使旧预检失效。
+
+### 17.2 writer顺序与历史输入
+
+Seamer writer将依赖索引、run／arm_generation、输入基线、活动槽和准备意图登记一起提交，之后才能向Controller发送prepare。登记的是所有可能使用的Controller目标，不只是已返回grant的目标。来源失效与此事务共用当前修订核对：失效先提交则arm拒绝；arm先提交则完整登记被后续保护捕获。远端prepare响应晚到也不能使旧代次恢复有效。
+
+execution受理与恢复预留时分别固定完整输入pin；由step_result传递的来源也进入pin，不能仅保留本次触发源。当前定义换版或run停用不能删除历史依赖；只有相关设备提交、资源、恢复和远端准备均已核销，且保留策略允许，才移除活动索引边，历史原件仍可查询。旧数据无法证明提取完整时扩大保护并维护核对，不能宣称“查不到边所以没有影响”。
+
+一般面板结果的C09读集也由可信宿主从方法固定的权威原件列表提取权限／来源依赖；它只保护结果释放，不替代本节的运行保护索引。安装批准、目录、来源注册、credential或映射失效均先关闭相关读集及新资格，再清理缓存。两个索引用途不同，不能将35方法的一次读集完整当成整个run依赖完整。
+
+### 17.3 Q72与实施出口
+
+转换的exit／transition／enter及parallel全部required；简单sequence只有显式非required动作、明确failed、资源已clear、当前完整独立证明同时成立才可继续。证明覆盖全部后继的data／guard／resource及failure_writes，不只检查下一步；unknown／blocked／expired／cancelled及任何保护故障均不豁免。Literal中的同名键不改变摘要或proof识别，新增来源分支不扩展服务手动控制权限。
+
+SDK实现同版类型／摘要和完整生成，Seamer实现上述遍历、解析、索引与业务writer，Controller继续验证可信ExecutionBinding／准备／RunGrant及当前完整最终门控，C09数据源worker仅采集。验收加入仅guard引用、仅参数引用、step_result多跳、未选转换、历史execution／recovery、prepare响应丢失、来源换代与arm竞争、payload伪造同名键及超限全集；复用EX／EN／PFT原用例，不以另建局部参考包装作为实施前置。本轮未实现编译器、数据库业务事务或真实保护传播，C04其余跨域持久关联仍按统一清单核对。

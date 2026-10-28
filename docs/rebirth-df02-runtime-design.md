@@ -76,6 +76,8 @@ Linux容器也是独立profile：明确由容器运行时管理根组、谁能�
 
 ## 5. 内部bootstrap候选契约
 
+2026-10-29归并说明：扩展worker的具名启动范围按[C09第20节](rebirth-c09-extension-design.md#20-数据源运行范围与采集通道定稿)修订为devices／data_sources的object_scope；其完整内容进入启动摘要、授权及bootstrap证明。下表device_ids形状是旧机器输入，不覆盖新数据源范围；core／time_provider和纯静态panel保持各自引导路径。完整机器生成和OS准入验证属于实施，不得剥除新范围后使用旧摘要。
+
 建议独立版本`bootstrap/0.1.0-draft.1`，不是第20类业务IPC消息。后续[监督器机器候选](contracts/df02-supervisor/README.md)已生成其Schema及独立控制通道格式，尚未并入SDK或批准。最终归并时按DF01单一来源规则管理，draft.4／IPC 0.3机器文件不改。所有对象封闭，整数词法按DF01的新版本修订另审，不从旧正则漏洞导出新允许值。
 
 公共标识／digest沿用SDK类型；纳秒为无符号十进制字符串，不能转Number。OS句柄值、FD、原始PID／创建时间留本地受保护观测，不作为可序列化授权凭证。可公开审计仅使用不含秘密的引用。

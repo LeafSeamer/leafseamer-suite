@@ -69,6 +69,8 @@
 
 ## 4. 来源注册和不可变事件
 
+2026-10-29归并说明：下文的设备专属SourceBindingRef及旧EventEnvelope投影是历史输入；下一完整选择采用[C05第17节](rebirth-c05-event-sync-design.md#17-设备与数据源身份分支定稿)的target判别分支和完整Origin摘要。设备来源归Controller，数据源观察归Seamer受监督核心，两者均核当前注册／批准、provider启动身份与首次接收年龄；不能给数据源伪造设备或重算历史事件。
+
 Controller为已批准模块建立`SourceRegistration`，绑定owner_service_id、database_instance_id、provider_id、provider_boot_id、device_id、trigger_id、capability_version、模块制品及批准revision、capture_policy_id/revision、delivery_semantics。注册只允许设备能力声明的事件；模块自报source ID不成为可信来源。Seamer另保存本地授权订阅／用途及当前配对，不把远端注册直接当本地批准。
 
 现有bearer＋provider.publish入口保留为已登记提供者的输入边界，令牌主体必须与provider及允许能力相符；不因为payload带causal/UTC字段就升级为可信证明。可信Controller跨服务转发走新增内部入口；Seamer自有数据源由其本地批准的提供者建立等价来源记录。外部输入无法取得所需来源／年龄证明时标unproven，只用于允许的展示或不要求该证明的用途，不扩大既有触发权限。两类入口共用来源命名空间、摘要与inbox去重，不产生绕过一次消费的第二通道。

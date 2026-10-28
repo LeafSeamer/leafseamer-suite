@@ -54,7 +54,7 @@
 
 nodecg_bridge类型不把远端NodeCG服务器纳入本地Job/cgroup证明：本地Controller适配进程按DF02纳管，独立NodeCG bundle按C11配对／授权。停止本地worker不能证明远端图文、外部编辑器或厂商daemon已经退出／停止输出；各自运行域和在途事实必须分开。
 
-Seamer数据源扩展采用具名SourceRuntimeBinding，绑定source_id、固定查询／映射、capture policy、批准外连／secret范围和provider epoch，不伪造device_id来套设备许可。启动与重启仍受DF02监督；采集只能提交C06导入快照或经独立批准的C05观察来源，不能调用设备写入口、发布草稿或自行布防。数据源断连／重启使来源失步并撤旧年龄证据，抓取恢复不自动补事件。SourceRuntimeBinding须与下一版LaunchIntent的具名对象范围一起归并，当前只含device_ids的旧候选不能被解释成已经覆盖全部数据源授权。
+Seamer数据源扩展采用具名SourceRuntimeBinding，绑定source_id、固定查询／映射、capture policy、批准外连／secret范围和provider epoch，不伪造device_id来套设备许可。启动与重启仍受DF02监督；采集只能提交C06导入快照或经独立批准的C05观察来源，不能调用设备写入口、发布草稿或自行布防。数据源断连／重启使来源失步并撤旧年龄证据，抓取恢复不自动补事件。第20节明确下一版LaunchIntent的具名对象范围与SourceRuntimeBinding；当前只含device_ids的旧候选尚未实施该迁移。
 
 物理设备身份候选DeviceIdentityBinding含authority、logical_device_id、协议端点、可证明的厂商稳定标识或人工核对记录、别名集合及owner registration。名字/IP不足以证明物理唯一；不能自动发现就新建第二writer，端点改变先核对原设备。跨Controller双写的部署注册／接替仍沿F02单所有者约束，数据库唯一键不能证明另一服务器没有连接设备。
 
@@ -580,3 +580,52 @@ LaunchRecord区分registered、creating、awaiting_bootstrap、admitted_closed�
 [无投影回执交付](contracts/c09-providers/RECEIPTS.md)补齐host.result的5类状态与14种有限原因，核验完整RequestIdentity和原意图摘要，两个输出入口共用不可倒退的受理状态登记。投影失败不等于业务未受理；已知accepted后只能使用独立当前回执表达accepted/unavailable，不能发送unknown_outcome覆盖原事实。完整19类帧、真实账本事务与浏览器输出仍待归并，未开始业务实现。
 
 [回执账本只读快照](contracts/c09-providers/JOURNAL.md)新增隔离SQLite布局与读取适配：单事务取得不可变原请求、原意图和有界回执历史，重新打开后仍核完整身份、原摘要和状态不可倒退。实际文件库、WAL并发读取、新进程重新打开及撤权后停止输出均有独立验证；原件由固定用例构造，领域writer和身份认证为合成配置。真实业务提交事务、数据库迁移及留存、完整失效监听、浏览器输出和19类帧归并继续保留，阶段0未关闭。
+
+## 20. 数据源运行范围与采集通道定稿
+
+2026-10-29。已知模型差异：安装0.2的RoleBinding已经具有source分支，SourceRef可参与角色解析；但ExtensionLaunchIntent只有device_ids，完整panel4中的ingress SourceBindingRef还强制要求device_id、trigger_id、capability_version。前者不能表达数据源准入范围，后者不能正确表达C06的field.changed。以下是下一完整版本的明确修订，旧机器原件不改、不以空字符串或虚构设备填补差异。（来源：[安装0.2模型](contracts/c09-installation/installation-v02.schema.json)、[摄取模型](contracts/c05-ingress/ingress.schema.json)、[DF01采用输入](rebirth-df01-sdk-freeze.md#15-首期采用输入与独立通道归属定稿)。）
+
+### 20.1 启动范围、身份和权限
+
+扩展worker的LaunchIntent把顶层device_ids替换为必需的封闭`object_scope`判别分支：`{kind:devices,device_ids:[...]}`或`{kind:data_sources,source_refs:[...],data_object_refs:[...]}`。devices沿现有完整物理足迹提取，1—64个ID；data_sources限Seamer权威，1—64个精确SourceRef及0—128个经批准的DataObjectRef，数据对象必须属于所列来源及当前配置。Ref按kind／scope／object_id／revision／digest逐字段ASCII排序去重，同对象不同修订拒绝；不得截断。两种角色分别启动，不允许一个数据源进程因同时请求device_scope取得设备出口。core、time_provider和纯静态panel保持各自引导分支，不伪造数据源或设备范围。
+
+完整object_scope进入原launch摘要、LaunchAuthorization、bootstrap HMAC和AdmissionReceipt。source_refs及data_object_refs从可信角色解析、配置与当前收窄批准交集取得，不能从模块回报或只扫描Permission中的某一种字段反推。network_endpoint、secret_role及只读文件范围仍由对应批准提供，data_scope.propose只准提出候选数据，不授予草稿apply、发布、激活或设备写权限。任何越界请求在核心入口及实际网络／秘密代理处分别拒绝。
+
+`SourceRuntimeBinding`在真实admitted_closed之后由Seamer登记，不被提前嵌入LaunchIntent造成身份循环。字段固定为binding_id、revision、scope、source_ref、configuration_ref、mapping_ref、capture_policy_ref、launch_intent_ref、launch_record_ref、installation_ref、approval_ref、role_resolution_ref、permissions_digest、member_id／member_boot_id、provider_id／provider_boot_id、runtime_generation、clock_domain_id、descriptor_digest、entry_id、binding_digest。scope是Seamer的authority/database；运行身份来自可信启动回执，配置／映射／policy从固定原件解析。摘要只排顶层binding_digest，Ref按整原件规则生成；不可变原件与当前指针分别存放。
+
+同一次worker准入可登记多个来源binding，共用真实member身份但不能共享错来源的配置或权限；每个来源仅一个当前采集所有者。provider_boot_id随真实准入换代，注册来源的新epoch由核心分配。配置、映射、凭据授予或批准范围改变先撤旧资格、核对采集退出并建立新安装／运行绑定，不原地改旧原件。安装active不等于来源live：还需合法完整baseline及独立的SourceObservationBinding批准。
+
+### 20.2 受监督采集通道
+
+采用独立`source-worker/1`本地通道，沿DF02启动身份与受控IPC端点认证，不能混入设备worker的52帧、时间collector的14帧或面板通道。核心与worker各有独立、从1开始严格递增的规范U20发送序号；信封必含protocol、runtime_binding_ref、ipc_session_id、sender_sequence、type和body，关闭未知字段、重复JSON键及超限正文。会话换代使旧帧失效，同序不同内容或缺号关闭通道并按来源失步保护，不以跳号重连继续旧采集。
+
+| 方向／帧 | 固定正文及处理 |
+| --- | --- |
+| 核心→worker CAPTURE | capture_id、capture_ordinal、source_ref、purpose=`import_snapshot|sampled_observation`、固定query／mapping／capture policy refs、同域issued_tick／deadline_tick、result_budget；身份由核心一次分配，worker不得自行轮询生成业务事件 |
+| worker→核心 CAPTURE_RESULT | capture_id、原请求摘要、开始／结束tick、raw_response及受限元数据、coherence、complete、内容摘要；raw_response固定base64字节封装及原字节SHA-256，声明仍是候选，核心验证来源、预算、固定查询／映射及实际协议完整性后才接纳 |
+| worker→核心 CAPTURE_FAILED | capture_id、原请求摘要、有限原因码及最后阶段；不含任意异常正文、SQL连接串、token或原响应回显；失败不伪装成完整空源 |
+| 核心→worker CAPTURE_ACK | capture_id、原请求摘要、核心持久接纳或拒绝回执Ref；只释放已核对的本次暂存，不表示草稿已应用或事件已执行 |
+| 核心→worker CANCEL | capture_id、原请求摘要、cancel_id；取消只停止本次采集，不删除已有快照／草稿／事件 |
+| worker→核心 CANCEL_ACK | cancel_id、capture_id、state=`stopped|pending|already_reported`、原结果摘要或null；stopped须已无该采集查询／回调，pending不能当退出完成 |
+| 核心→worker STOP | stop_id、该binding最后已发CAPTURE帧的sender_sequence及当前完整采集ID集合摘要；先关闭新CAPTURE资格 |
+| worker→核心 STOP_ACK | stop_id、原集合摘要、仍在执行／待确认的完整capture列表及各状态；空活动列表只证明该采集通道停止，不证明设备出口或旧自动化已排空 |
+
+所有capture相关帧均另含capture_ordinal，须匹配同一runtime_binding_ref、会话和原请求，错误身份不转成新的采集。ordinal是每binding从1连续分配的U20，不等于帧序号；核心持久分配，worker保留最高已消费值，详情释放也不降低水位。相同capture_id／ordinal重送只返回原结果／失败；旧ordinal查不到详情则返回outcome_unavailable，不再次访问外部源；同ordinal异身份或新ordinal缺号关闭来源资格。核心保留首次发送tick与固定deadline，等待、重传或ACK不能刷新年龄。取消／STOP与结果并发由核心账本按当前资格裁决：已提交结果可查原，迟到未接纳结果仅留受限历史，不自动成为新live采样。只有核心持久回执允许释放结果缓存；进程丢缓存须声明未知，不能重采补洞。
+
+采用`source-capture-capacity/1`：沿C06既有预算，每来源1次未完成采集、每Seamer最多4次，捕获总deadline10s，最多10000行／8MiB原始响应；单通道完整帧上限16MiB，普通控制帧64KiB。原始响应的JSON封装和元数据也受总帧限制。核心在派发前预约原件与结果存储，超限或无法持久保存则拒绝／保护，不裁剪后标complete。控制／停止处理独立于结果队列，不被大结果阻塞；一次进程内可同时承担多个来源，但任一无法证明身份的通道故障保护该通道全部绑定。该预算是实施上限，尚非负载验收结论。
+
+数据源通道只传无设备控制效果的采集；PostgreSQL固定只读查询、Sheets受限读取与本地导入沿C06。若第三方采集声称需要控制设备、任意SQL或隐含修复写，不能以data_source身份装载。外部来源读取可能存在服务端资源占用，CANCEL_ACK的停止证据仍须按驱动／查询profile验证，不以断开本地连接宣称远端查询已终止。
+
+### 20.3 快照、观察和来源保护
+
+purpose在请求时固定，两条出口不互相代授：import_snapshot只形成C06不可变捕获／校验／差异资料，用户另行apply草稿；sampled_observation只向已发布并批准的SourceObservationBinding提供样本，不能从行内容生成规则、设备动作或新增观察注册。相同原始读取供两用途复用时，核心分别建立有权的接纳记录及年龄证明，不能只改purpose重封原请求。
+
+field.changed由Seamer核心对固定稳定record_key、字段Pointer及类型比较，不由worker自报event/live。首个完整样本只建baseline；后续完整合格样本与当前baseline同writer核对后，固定新baseline、差异事件原件、来源序号和outbox。该事务不表示C05摄取已经完成；outbox沿原事件身份提交，重送只查原，不刷新首次捕获年龄。输出事件逐项有稳定身份，整个差异集合及存储预算在更新baseline前验证，不只提交前N个变化。来源失败／重启／映射变化或无法及时提交会使旧观察资格失效，重建baseline不补发离线边沿。
+
+新的SourceBindingRef判别分支和完整依赖提取分别以[C05第17节](rebirth-c05-event-sync-design.md#17-设备与数据源身份分支定稿)及[C04第17节](rebirth-c04-automation-design.md#17-来源依赖提取与扩展准入归并)为准。source epoch变化必须先关闭旧注册资格并保护其当前／历史依赖，不能删旧索引后把新provider当作无影响。来源的停止与依赖该来源的旧设备动作是两个完成条件；C04准备目标和RUN_FENCE仍覆盖已发、结果未知及旧execution。
+
+### 20.4 归并与实施验证
+
+SDK一次生成object_scope、SourceRuntimeBinding、八种source-worker帧和C05判别分支，纳入新的完整选择及DF01通道清单；DF02监督器只消费批准的启动范围及完整摘要。Seamer实现本机采集宿主、配置／秘密代理、原件与来源writer、C06导入和C05规范摄取；Controller不接管数据源采集权限。GUI使用现有来源管理／导入／观察状态流程，Suite打包受监督worker及固定网络／查询配置。旧panel4和安装0.2继续作为固定历史输入，不翻转批准标志。
+
+验收必须覆盖：source角色无法取得设备出口；配置／scope／bootstrap摘要任一错配拒绝；同source重复所有者；两个来源不能互借结果；CAPTURE重送不再次查询；CANCEL／STOP／结果交错、缓存丢失、提交未知；部分分页和完整空源区别；首次baseline及恢复不触发；差异集合超限无部分更新；撤销与迟到结果；来源故障保护仅在guard／parameter或历史execution中引用它的run；Sheets和PostgreSQL在两主部署分别验证。上述接口、状态及失败行为已确定，机器生成和真实进程／数据库／外部源用例转入实施，本节不宣称这些验证通过。

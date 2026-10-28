@@ -310,6 +310,8 @@ window握手与后续port属于同一面板设计的不同阶段，不共享消�
 
 ### 15.2 具名引用、权限和历史原件裁决
 
+2026-10-29新增明确生成差集：[C09第20节](rebirth-c09-extension-design.md#20-数据源运行范围与采集通道定稿)固定独立source-worker/1及八种采集帧，核心↔受监督Seamer数据源worker，不与设备、时间采集或面板混用。上一表的九类是现有固定输入，下一完整选择须再纳入此通道及object_scope／SourceRuntimeBinding；[C05第17节](rebirth-c05-event-sync-design.md#17-设备与数据源身份分支定稿)同时替换设备专属SourceBindingRef。版本、封闭联合、当前权威和完整启动摘要一起生成，旧Schema没有这些字段，不声称已经支持数据源启动／摄取。
+
 1. 模型身份保持完整`$id + JSON Pointer`。独立监督Schema仍引用安装0.2启动模型和draft.4的运行域结构；导入Schema引用安装0.1中的具名基础／权限类型及artifact模型。这些是固定类型依赖，**不授权调用旧安装0.1管理API或旧设备IPC**。迁入生成源时保留闭包，不能把同名Ref、Id、Digest按短名称替换成panel4类型。
 2. 不设全局“自动规范化Ref”。不同域的摘要有裸64hex和`sha256:`前缀之分，U20不等于uint64，revision及identity也不相同；按原模型核验，跨域映射必须由所属权威显式产生，并保留原件类型／选择。当前模型合法不证明动态Schema批准、原件权利、字段可见性或发送资格。
 3. 面板35方法、参数／结果SchemaRef、Registry及Bundle激活全部采用同一panel4来源。历史panel3发布原件只走[显式历史读取](https://github.com/LeafSeamer/leafseamer-sdk/blob/aff5ccbb75b6140109f948f81284785c75e46d1e/contracts/publication-current/README.md)，不重标原选择；失败不自动回退到旧消费者。旧报告按原提交解释，不改写摘要造成假兼容。

@@ -313,7 +313,7 @@ Patch值候选按24位group和8位member组合：`(group << 8) | member`；解�
 | VbanRequestBinding | request_id、device/session/profile引用、transport_namespace、local_socket_ref、remote_endpoint_ref、stream_binding_ref、wire_counter、query_target、property、request_digest、issued_tick、deadline_tick；wire_counter在API中用十进制字符串，线头编码uint32LE |
 | VbanReplyEvidence | request_binding_ref、packet_digest、received_tick、service_id/function、wire_counter、reply_target/property、typed_value或typed_error、codec_ref；关联结果由可信适配器生成，不接受模块自报matched=true |
 | AudioObservationPolicy | profile_ref、correlation_rule_ref、sample_rule_ref、presence_rule_ref、completion_rule_ref、release_rule_ref、qualification_refs；引用独立版本证据，不能用一个“已验证”布尔值包办全部保证 |
-| PointPresenceEvidence | target、snapshot/request引用、classifier_ref、state=`present|absent|unknown`、reason；classifier输入必须足以区分无点、已静音点、−inf点、slot离线及查询错误 |
+| PointPresenceEvidence | target、snapshot/request引用、classifier_ref、state=`present|absent|unknown`、reason；按profile明确配置存在性语义，动作原因、mute／phase和slot状态独立保留；不能把查询失败归为absent |
 
 回复先验证报文边界和精确SERVICE类别，再匹配端点、绑定socket、未退休counter及预期target/property；service id 0的PING、未知服务、普通TEXT与错误编码不得落入同一成功分支。服务回复中的附加字段、流名规则与正文编码按已验证profile固定，不能机械套用发送TEXT的UTF8格式位。默认采用单点单属性查询，整段查询只有在完整性标志和最大回复数量已证明后才启用，超时不能发布半个快照。
 
@@ -327,7 +327,7 @@ pending状态为`reserved → submitted → replied|expired|cancelled`；这些�
 
 推荐将“查询成功”“新鲜观察”“目标效果成立”“未来不会再有该attempt的写”四项独立记录。单点数值回复可以先获得类型正确的观察；未有presence规则时，presence仍为unknown，不抹掉可显示的数值，也不发patched/unpatched触发。−inf、mute=1、Err和静默均无默认存在性分类。
 
-资格实验必须对同一已知点执行：有点且有限增益、有点且−inf、有点且mute、显式Remove、slot离线、坐标越界、重启恢复，逐状态采集gain/mute/phase的REQUESTREPLY原文并与设备路由图对照。只有响应签名集合互不混淆且有适用版本证据，才批准一个明确classifier；若有重叠，该查询组合不能承担存在性证明。不能反过来将所有Err定为absent来让测试通过。
+资格验收必须对同一已知点覆盖有限增益、负无穷gain赋值、mute、显式Remove、slot离线、坐标越界、重启恢复，逐状态核对gain/mute/phase回复与配置状态。需要区分的是profile定义的存在性类别，不要求同一类别中的所有动作原因都有不同回复。Matrix 1.0.2.6 x64按第20.3节分类：负无穷gain与Remove均可为absent，但附属状态不同；mute的有限点仍为present。若present和absent类别本身无法区分，该查询组合不合格；不能将Err定为absent来让测试通过。
 
 写后路径有两种待验证方案，均不靠等待固定延时补证：①服务端提供与写counter关联的完成确认，再以新查询核对目标；②单个包仅包含一个获许可的绝对写primitive及其后的一次查询，并证明固定版本按顺序执行且查询在写应用之后采样。方案②不是多写批处理特权，也不是厂商已保证；其顺序、部分错误、重复包及完成含义都必须验收。若只有独立写包＋读包且无顺序证据，读到目标值不能构成该写完成。
 
@@ -428,7 +428,7 @@ SERVICE ID2/function0x80结构与typed value/error互斥；关联检查核对请
 
 本局部模型的MatrixPoint.endpoint_binding_ref与请求remote_endpoint_ref引用同一个不可变远端绑定对象，必须相等；不能只核对回复照抄了请求，却让点目标属于另一个端点。若后续引入配置端点/解析后传输端点两种对象，必须有受信映射和版本验证，再修订此规则，不能仅更名后跳过关联。
 
-纯轮询没有command_id/attempt_id，不得伪造它们接入现有`EVIDENCE_CANDIDATE`。本局部对象称VbanReplyCandidate，暂归观察通道；绑定命令的证据由Controller另外核对command/attempt并经T6持久提交，归并时再定义相应IPC映射。禁止候选自报matched、durable、资源已释放或命令成功。夹具的sample_policy、可信context/clock及pending均为人工输入前提，不是新实现的信任来源；`fresh_observation`仅指这些前提成立时的观察分类。−inf仍是有效电平，不产生presence=absent，也不完成旧unknown命令。
+纯轮询没有command_id/attempt_id，不得伪造它们接入现有`EVIDENCE_CANDIDATE`。本局部对象称VbanReplyCandidate，暂归观察通道；绑定命令的证据由Controller另外核对command/attempt并经T6持久提交，归并时再定义相应IPC映射。禁止候选自报matched、durable、资源已释放或命令成功。夹具的sample_policy、可信context/clock及pending均为人工输入前提，不是新实现的信任来源；`fresh_observation`仅指这些前提成立时的观察分类。旧夹具未赋予−inf存在性含义；新完整选择对第20.3节固定版本采用配置点classifier，不能将这一规则回写成旧夹具已具备的能力，也不能借此完成旧unknown命令。
 
 ### 14.3 WING计划结构与执行绑定
 
@@ -739,3 +739,25 @@ SceneRef的编号在此绑定内保持0—99原值，界面装饰性的两位显
 GUI将“配置点存在”“静音”“显示增益”和slot／引擎状态分别呈现。预置采集只把合格present点记为连接项；合格absent属于完整快照中的空位，unknown保持缺口，不能保存为伪造的负无穷已连接点。有限显示增益不足以满足精确采集的限制继续按第20.2节处理，不以新presence classifier解除。merge／replace仍沿原计划与显式删除集执行。
 
 patch.changed只消费同一分类语义、有效目录和合格基线间的present↔absent变化；初次查询、重连、分类修订或资格恢复只建立新基线，不伪造一次插接事件。该事件报告配置变化，不归因于某条命令，也不自动解除原命令hold。SDK固定classifier及语义身份，Controller实现资格检查与C05基线消费，GUI和预置使用同一定义；往返、失效、外部控制及设备实际效果属于运行验收。
+
+### 20.4 单点SERVICE回复与采样顺序
+
+本节限定同一Matrix 1.0.2.6 x64 profile的单点、单属性、非范围查询。固定服务处理规则为：请求counter随文本及来源端点传递，查询读取当前配置字段后生成SERVICE ID 2回复；同一文本中的语句依次处理，写返回错误仍可能继续处理后续查询。counter用于关联，接收旧值／重复值不构成服务端拒绝重放保证。（来源：[官方1.0.2.6发行包](https://download.vb-audio.com/Download_Mixer/VBAudioMatrix_Setup_v1026.zip)。这些是版本绑定的静态协议规则，尚未取得产品进程或真实网络运行验收。）
+
+| 层次 | 固定绑定及消费者要求 |
+| --- | --- |
+| SERVICE头 | 28字节VBAN头；offset 4—7为`60 80 02 00`，offset 24—27为请求counter的uint32LE回显。不能以普通TEXT、SERVICE ID 1或PING代替 |
+| 回复流名 | 16字节槽按NUL终止名称识别`Request Reply`，不要求与请求TEXT流名相等；终止符后的填充不参与名称相等，完整包字节仍参与packet_digest |
+| 正文 | 从offset 28开始；本profile点属性回复采用ASCII目标、` = `、值及终止分号，发送长度不包含C字符串末尾NUL。只接受一个完整的预期PointRef／property赋值；目标须按已批准目录解析，不以字符串包含关系匹配 |
+| 数值 | dBGain有限token保留一位小数，或独立`-inf`；Mute／Phase按各自boolean词法。错误、额外赋值、列表、范围、缺分号、嵌入NUL、非法尾部及超长包均不形成成功观察，不用第一项填满预期结果 |
+| 完整性 | 单点预期回复必须在既有单包预算内完整解析。多个查询可能产生同counter的多个SERVICE包，没有可供本profile使用的整组结束标记；不得将counter相等当作完整快照，也不启用隐式分包拼接 |
+
+名称匹配只解释协议字段，不建立来源真实性；仍须同时核对远端端点、本地socket、请求路由、namespace、未退休pending、counter、目录／会话、目标属性及资格修订。请求流绑定和固定回复流名是不同约束，SDK归并时分别表达。仅凭IP／UDP源地址无法获得密码学来源证明；受控来源路径和独占控制条件沿视频第12节的逐部署资格固定，条件未知或失效即停止产生合格观察并进入既定保护路径。
+
+对合法的单次查询，采样发生于请求被处理时，读取的是配置字段，非早先订阅缓存。Controller沿第11.2节使用同域`[issued_tick, received_tick]`包围采样，以`now_tick-issued_tick`计算保守年龄，包含发送排队、服务排队及返回传输；资格或时钟失效时不缩小区间补救。查询不能证明音频处理已经采用配置，更不能证明物理输出。
+
+同包方案②固定为一个已获许可的绝对写primitive及其后同点的一次查询，正文由类型化encoder生成并绑定完整字节摘要，不能接受调用方脚本文本、追加第二个写或在查询前后插入别的动作。后续查询发生在该写**处理尝试之后**，不等价于写成功之后：前写错误可以与合法读回并存，甚至读回早已存在的同一目标显示值。单独写不要求返回可消费的写成功ACK；缺少回复仍按原deadline及unknown规则处理，不据此重发。
+
+因此本轮只关闭单点回复线结构、关联和配置采样顺序的设计缺口。合格查询可提供显示值及第20.3节的配置存在性；不能据此补出精确native gain、写成功标记、音频完成或资源释放。足够分辨率的效果证据仍须独立收敛，不能把目标值或模型推导值写进observed_value。原始包、解析观察和完成／释放决定分别留存原件引用，服务端重放防护仍不能从counter推导。
+
+实现验收沿AUDT57—AUDT64增加以下判据：固定流名与不同请求流正确关联；正文无NUL时完整接受、缺终止分号或额外赋值拒绝；错误写后合法查询不能完成写；同包先写后查与跨包乱序分别覆盖；同counter重复／冲突与多查询分包不得伪装一次完整结果；旧counter写副本的后续执行风险不因新查询而消失。上述为待运行判据，本节未宣称实际网络、产品或设备测试通过。

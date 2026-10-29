@@ -343,6 +343,8 @@ C11音频第17节的DM3 OSC具名线绑定表为生成输入：123条set与4条�
 
 C11音频第18.6节固定WING当前分支及选择模式的四个位值。SDK将altsrc的MAIN／ALT、srcauto的INDIVIDUAL／GLOBAL、全局选择与override分别生成；Controller采用合格捕获中的通道altsrc，不以全局组合公式覆盖它。GLOBAL禁用单独切换时不能自动修改模式或override，模式／全局传播及成员变化使计划失效；编辑器参考版本不替代实际固件资格。
 
+第18.7节固定普通来源奇偶槽对和User Patch逐槽复制成员。SDK保留有序角色与去重目标两个投影；偶数入口不向后配对，USR 24／25不得跨分区，User Patch不能递归扩大为四成员。控制副作用不由角色配对推断，StageConnect分配、处理strip跨域映射和HA耦合沿原缺口继续绑定；实际写计划不得借此绕过完整footprint及每次许可。
+
 C11音频第19节另固定DM3 RCP A库三种场景请求：recall／store的SceneRef保留0—99原值，当前场景查询只携带bank；不套用其它型号的编号减一、普通参数X／Y或OSC type tags。请求可编码不等于slot可写或操作已完成，B库和响应资格仍沿原项补齐，不让生成器扩展成任意bank字符串入口。
 
 C11音频第20节固定Matrix 1.0.2.6 x64点增益的有限centi_db域和独立负无穷哨兵。SDK输出规范十进制并保留原目标；查询一位小数属于显示投影，不重写原生值或生成精确相等／预置保存证据。第20.3节的presence只指有效配置点，mute不撤点，负无穷gain与Remove虽可同为absent却有不同附属状态影响；classifier及C05基线资格独立于命令完成。版本／运行模式不自动扩展。

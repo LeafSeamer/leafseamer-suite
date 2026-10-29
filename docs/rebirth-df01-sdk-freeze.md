@@ -343,7 +343,7 @@ C11音频第17节的DM3 OSC具名线绑定表为生成输入：123条set与4条�
 
 C11音频第18.6节固定WING当前分支及选择模式的四个位值。SDK将altsrc的MAIN／ALT、srcauto的INDIVIDUAL／GLOBAL、全局选择与override分别生成；Controller采用合格捕获中的通道altsrc，不以全局组合公式覆盖它。GLOBAL禁用单独切换时不能自动修改模式或override，模式／全局传播及成员变化使计划失效；编辑器参考版本不替代实际固件资格。
 
-第18.7节固定普通来源奇偶槽对和User Patch逐槽复制成员。SDK保留有序角色与去重目标两个投影；偶数入口不向后配对，USR 24／25不得跨分区，User Patch不能递归扩大为四成员。第18.8节的StageConnect按sc_uprout逐位置将1—9及A—W映射到上行1—32；双成员先配SC槽再分别映射，非法／缺字符不移位或补侧。SC状态、链拓扑、计数与路由修订共同失效，传输坐标不能直接生成PreampRef。处理strip跨域映射和HA耦合沿原缺口继续绑定；实际写计划不得借此绕过完整footprint及每次许可。
+第18.7节固定普通来源奇偶槽对和User Patch逐槽复制成员。SDK保留有序角色与去重目标两个投影；偶数入口不向后配对，USR 24／25不得跨分区，User Patch不能递归扩大为四成员。第18.8节的StageConnect按sc_uprout逐位置将1—9及A—W映射到上行1—32；双成员先配SC槽再分别映射，非法／缺字符不移位或补侧。SC状态、链拓扑、计数与路由修订共同失效，传输坐标不能直接生成PreampRef。第18.9节按BUS 16／MAIN 4／MTX 8个处理strip分别映射32／8／16个来源成员，左右为2k−1／2k，busmono派生只读mode；SDK不得混用strip号、成员号或带美元符号的元数据路径与grp枚举。HA耦合沿原缺口继续绑定；实际写计划不得借此绕过完整footprint及每次许可。
 
 C11音频第19节另固定DM3 RCP A库三种场景请求：recall／store的SceneRef保留0—99原值，当前场景查询只携带bank；不套用其它型号的编号减一、普通参数X／Y或OSC type tags。请求可编码不等于slot可写或操作已完成，B库和响应资格仍沿原项补齐，不让生成器扩展成任意bank字符串入口。
 

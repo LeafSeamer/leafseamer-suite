@@ -341,6 +341,8 @@ C11音频第18节固定WING叶参数F／I／S各自的read tuple和绝对write t
 
 C11音频第17节的DM3 OSC具名线绑定表为生成输入：123条set与4条场景操作独立于标称prmnum，11类值域不从RCP目录复制。必须保留坐标／PrePost未决标记并与语义、会话、足迹及证据policy合成完整定义；静态无标记不等于可写，set表不自动生成get响应或meter能力。
 
+C11音频第18.6节固定WING当前分支及选择模式的四个位值。SDK将altsrc的MAIN／ALT、srcauto的INDIVIDUAL／GLOBAL、全局选择与override分别生成；Controller采用合格捕获中的通道altsrc，不以全局组合公式覆盖它。GLOBAL禁用单独切换时不能自动修改模式或override，模式／全局传播及成员变化使计划失效；编辑器参考版本不替代实际固件资格。
+
 C11音频第19节另固定DM3 RCP A库三种场景请求：recall／store的SceneRef保留0—99原值，当前场景查询只携带bank；不套用其它型号的编号减一、普通参数X／Y或OSC type tags。请求可编码不等于slot可写或操作已完成，B库和响应资格仍沿原项补齐，不让生成器扩展成任意bank字符串入口。
 
 C11音频第20节固定Matrix 1.0.2.6 x64点增益的有限centi_db域和独立负无穷哨兵。SDK输出规范十进制并保留原目标；查询一位小数属于显示投影，不重写原生值或生成精确相等／预置保存证据。第20.3节的presence只指有效配置点，mute不撤点，负无穷gain与Remove虽可同为absent却有不同附属状态影响；classifier及C05基线资格独立于命令完成。版本／运行模式不自动扩展。

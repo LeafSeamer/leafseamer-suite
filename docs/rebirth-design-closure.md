@@ -363,6 +363,12 @@ Controller70项回归、SDK19项检查、类型正反例及最终独立包八项
 
 本轮关闭核心挑战准入到实际服务启动的接线缺口，**完整DF02与阶段1仍未关闭**。profile仍为合成安装输入，局部安装摘要不含发行签名或完整加载防替换证明；bootstrap_authenticated只表示握手事实，runtime_admitted仍false，业务就绪503、设备闸门closed。下一关键路径为可信保护配置／运行来源、worker子域准入和旧域退役恢复，再贯穿模拟器session／采样与实际控制、准备和命令执行；Seamer、隔离OBS与组合启动继续保留。当前周期第1/3轮，仅本地提交，第三轮审查累计成果后再推送。
 
+**本周期第2轮：专属监督控制连接与失联保护。** [SDK `ca0a119`](https://github.com/LeafSeamer/leafseamer-sdk/tree/ca0a119188b1bbf09559f12008b2d0d84b1d9a4c)增加独立supervisor-control查询入口和具名Scope／LaunchKey／JournalView类型，采用既定LAUNCH_QUERY／LAUNCH_RESULT／ERROR，HTTP product1选择及摘要保持不变。[Controller `7983c38`](https://github.com/LeafSeamer/leafseamer-controller/tree/7983c38d0439a64f54b285e565ef545f692911b7)通过与bootstrap分开的实际Windows命名管道连接已准入核心。原生宿主固定端点、拒绝远端、核实际客户端PID与Job归属，按完整scope／channel／序号处理查询；返回原生SQLite中既有完整回执，未知键与同ID异摘要分别给null和冲突，不重签准入。
+
+核心在业务绑定采用前完成首查询，随后串行核验，响应须匹配实际未决请求与完整原件。错范围、错方向、重复键、乱序／重放、断线和迟到结果不能恢复来源；控制故障停止整个Job，只有确认空组及核心退出后才提交退出原件。Controller全量106项中105通过、1项非Windows用例跳过，最终独立包另有5项实际监督连接检查通过；SDK25项、独立包查询解码及类型正反例通过。[GUI `1e14019`](https://github.com/LeafSeamer/leafseamer-gui/tree/1e14019ac7f89ad56c854649161b889a3b3daa29)仅同步SDK构建锁，类型／构建与6项状态测试通过。本轮没有重跑浏览器、Linux、部署或真实设备；消费者错误响应另使用合成管道服务端，原生PID鉴别和进程退出使用实际Windows进程。
+
+本轮关闭已准入核心缺少持续监督来源与失联关闭接线的缺口，**阶段1与完整DF02仍未关闭**。2秒请求和5秒宿主静默预算是开发保护值，不是生产执行租约。查询来源不构成完整RuntimeBindingRef或worker授权；完整扩展object_scope／extension_binding、启动fence、REGISTER／CREATE与一次创建账本、worker子组、可信安装来源及旧域恢复仍须实施。下一步沿现有控制连接推进受监督模拟器worker，不能用核心空设备分支缩减范围或只扩展查询页面。当前为2/3轮，仅本地提交，第三轮审查累计成果后推送。
+
 SDK当前product1尚未包含全部DF01身份接口和政策差集；沿用的token签发请求仍无客户端请求身份，不自动重试，也不宣称HTTP查原完成。Seamer仍为下表骨架；GUI已采用Controller与SDK的上述本地HTTPS登录至注销及设备读取闭环，不能据此宣称完整跨仓系统或生产认证已完成。
 
 #### 当前可复查事实

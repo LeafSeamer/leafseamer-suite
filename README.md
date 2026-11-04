@@ -12,8 +12,8 @@ LeafSeamer 是直播软硬件控制与自动化项目。各组件独立仓库、
 | [leafseamer-sdk](https://github.com/LeafSeamer/leafseamer-sdk) | 公共契约、客户端与模块开发接口 |
 | [leafseamer-suite](https://github.com/LeafSeamer/leafseamer-suite) | 总入口、设计、兼容组合、部署与验收 |
 
-- [当前SDK开发包：类型传输与人员会话客户端](https://github.com/LeafSeamer/leafseamer-sdk/tree/a3166330608dfd1aa68428a1a92b748cda066bb5)
-- [当前Controller开发入口：持久权限与HTTPS身份接线](https://github.com/LeafSeamer/leafseamer-controller/tree/745d657428bbec687df6310ead43df5afc3e1159)
+- [当前SDK开发包：产品契约生成与人员会话客户端](https://github.com/LeafSeamer/leafseamer-sdk/tree/093ad80e44705100593f22238b930f2f81313ac0)
+- [当前Controller开发入口：持久权限与HTTPS会话生命周期](https://github.com/LeafSeamer/leafseamer-controller/tree/4b0dbc86c79e5f8bbdb58a2156b80d289b75a118)
 - [SDK既有契约：发布原件与当前面板提供者](docs/contracts/sdk-publication-handoff/README.md)
 - [完整设计稿与 Q1—Q72 决策](docs/rebirth-design.md)
 - [全系统设计定稿收敛清单：具体缺口、审阅包与实施交接](docs/rebirth-design-closure.md)

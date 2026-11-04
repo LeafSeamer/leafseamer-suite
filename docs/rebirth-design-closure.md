@@ -345,6 +345,12 @@ Controller70项回归、SDK19项检查、类型正反例及最终独立包八项
 
 本轮关闭模拟器启动所依赖的Windows核心进程容纳实现缺口，**未关闭完整DF02或阶段1**。新状态始终`runtime_admitted=false`；监督journal、原生跨会话实例锁、保护配置与发行制品权威、bootstrap、子Job、worker准入及旧域恢复仍须接通，不能用当前匿名Job事实伪造RuntimeBindingRef。下一关键路径先沿既定DF02完成启动登记和准入绑定，再建立模拟器设备session／采样、控制变更、准备与资源来源。Linux cgroup仍为必须完成的平台实现项。当前为新周期第1/3轮，仅本地提交，尚未到累计推送点。
 
+**本周期第2轮：原生实例保护与核心启动原件。** [Controller `7706a54`](https://github.com/LeafSeamer/leafseamer-controller/tree/7706a54382a7445d02137cf5032922fbe3a38421)在实际Windows宿主中接通目录文件身份绑定的Global互斥锁、显式DACL、逐次命名Job和原生SQLite启动记录。`init-process-host`显式创建日志且不覆盖，普通启动缺日志不补建；核心创建前提交尝试，恢复线程前提交实际进程观察，确认空组及核心退出后提交退出原件，再交付成功。未结束尝试阻止接替，不以PID消失或互斥锁可取得代替退出证据。
+
+启动日志使用锁定同源SQLite 3.53.4、单writer、DELETE／EXTRA，验证DDL、完整性、目录／账户身份并限制4096次尝试及16MiB；其四表是实际核心进程生命周期原件，尚未实现完整DF02的runtime／fence／bootstrap／AdmissionReceipt。当前92项Controller回归通过、1项非Windows用例跳过；独立安装包13项Windows相关检查通过、1项跳过，包括junction互斥、复制目录拒绝、创建失败和强停后的持久拒绝接替。跨交互会话、账户切换、abandoned恢复、真实掉电耐久、Linux、浏览器及设备仍未验收。
+
+本轮减少模拟器受监督启动的实例与崩溃检测依赖，但完整监督准入和阶段1仍未关闭。旧域恢复尚无可执行入口，未结束记录保持拒绝，不提供删除日志绕过。下一关键路径是将这些原生事实接入既定保护配置、域身份、bootstrap与旧域恢复，再形成有效worker绑定后推进模拟器设备session／采样与控制链。当前为第2/3轮，仅本地提交，累计推送留到第3轮审查后；SDK、Seamer和GUI本轮未修改。
+
 SDK当前product1尚未包含全部DF01身份接口和政策差集；沿用的token签发请求仍无客户端请求身份，不自动重试，也不宣称HTTP查原完成。Seamer和GUI仍为下表骨架；Controller与SDK已有上述本地HTTPS登录至注销闭环，不能据此宣称完整跨仓系统或生产认证已完成。
 
 #### 当前可复查事实

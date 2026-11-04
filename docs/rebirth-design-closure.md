@@ -357,6 +357,12 @@ Controller70项回归、SDK19项检查、类型正反例及最终独立包八项
 
 **三轮整体收敛检查（44df51d起）。** 前两轮关闭Windows核心进程容纳、实例互斥与启动原件缺口；第3轮关闭GUI没有运行入口和身份／设备读取消费者的缺口。阶段1第①项的GUI构建操作及第④项的浏览器子项取得证据，但Seamer、模拟器执行、完整监督准入、配对／撤销、隔离OBS与组合启动尚未完成，阶段1不关闭；阶段0／2／3仍保持未完成。下一关键路径回到已定监督运行域、保护配置及worker绑定，然后贯穿模拟器session、采样、手动与触发执行，并接入现有GUI；不继续扩展仅展示读取的页面代替执行链。正式平台、发行时间、真实型号和部署证据分别保留。本轮为3/3，审查三轮累计成果后推送main，仅提交源码、测试、构建锁、规范与使用文档。
 
+**新周期第1轮：实际核心bootstrap与双库启动绑定。** [SDK `ce483f9`](https://github.com/LeafSeamer/leafseamer-sdk/tree/ce483f95b762ac6e840fd4775f1cf53101cf7d8f)增加独立bootstrap入口、四帧严格解码、具名类型和固定来源闭包，公开product1选择及摘要不变。[Controller `7f634ed`](https://github.com/LeafSeamer/leafseamer-controller/tree/7f634ed99628297b8cb406962787740da410f0aa)已将该通道接入实际Windows原生宿主与服务入口：创建前保存核心意图、描述及非秘密政策；继承管道挑战用CNG／Node HMAC和同源绝对tick验证，closed准入回执先提交监督库再发送。核心核完整绑定并在schema11保存本次service_boot原件后才监听；写失败关闭库，监督已经提交的历史保留。
+
+监督schema1→2与业务schema10→11均显式备份迁移，旧身份和原件保留；重复升级幂等，未决尝试不能绕过恢复。实际Job／文件库用例覆盖成功监听、正常退出、错误制品／服务、旧业务库、HMAC／角色／重复帧／EOF／超时、绑定写入失败、回执篡改及跨boot重用拒绝。Controller全量回归及修正后的专项复验共覆盖101个用例，最终100项通过、1项非Windows用例跳过；最终独立离线安装包另有5项真实bootstrap检查通过。SDK23项检查、独立包解码和类型正反例通过；[GUI `9c9f724`](https://github.com/LeafSeamer/leafseamer-gui/tree/9c9f724d0b2bee3bb85f27082d1d148455353942)同步构建锁并补齐SDK辅助运行库许可，类型、构建与6项状态检查通过。本轮未重跑浏览器、Linux、部署或真实设备验收。
+
+本轮关闭核心挑战准入到实际服务启动的接线缺口，**完整DF02与阶段1仍未关闭**。profile仍为合成安装输入，局部安装摘要不含发行签名或完整加载防替换证明；bootstrap_authenticated只表示握手事实，runtime_admitted仍false，业务就绪503、设备闸门closed。下一关键路径为可信保护配置／运行来源、worker子域准入和旧域退役恢复，再贯穿模拟器session／采样与实际控制、准备和命令执行；Seamer、隔离OBS与组合启动继续保留。当前周期第1/3轮，仅本地提交，第三轮审查累计成果后再推送。
+
 SDK当前product1尚未包含全部DF01身份接口和政策差集；沿用的token签发请求仍无客户端请求身份，不自动重试，也不宣称HTTP查原完成。Seamer仍为下表骨架；GUI已采用Controller与SDK的上述本地HTTPS登录至注销及设备读取闭环，不能据此宣称完整跨仓系统或生产认证已完成。
 
 #### 当前可复查事实

@@ -1,6 +1,6 @@
 # LeafSeamer
 
-> **施工中 / Work in progress。** 新版已按依赖进入业务实现，SDK 已有可本地安装的开发包，Controller 已有持久身份、保护态启动、本机健康接口和首次管理员事务；网络认证与完整业务服务、GUI、部署组合及设备验收尚未完成，当前不提供生产可用的直播系统。
+> **施工中 / Work in progress。** 新版已按依赖进入业务实现，SDK 已有可本地安装的开发包，Controller 已有持久身份、保护态启动、本机健康接口和首次管理员事务；本地HTTPS身份闭环已验证，生产认证资格与完整业务服务、GUI、部署组合及设备验收尚未完成，当前不提供生产可用的直播系统。
 
 LeafSeamer 是直播软硬件控制与自动化项目。各组件独立仓库、独立版本，Suite 负责总体设计、部署组合和整套验收；首期不使用强制 Submodule。
 
@@ -12,8 +12,8 @@ LeafSeamer 是直播软硬件控制与自动化项目。各组件独立仓库、
 | [leafseamer-sdk](https://github.com/LeafSeamer/leafseamer-sdk) | 公共契约、客户端与模块开发接口 |
 | [leafseamer-suite](https://github.com/LeafSeamer/leafseamer-suite) | 总入口、设计、兼容组合、部署与验收 |
 
-- [当前SDK开发包：安装、类型客户端与有界HTTP传输](https://github.com/LeafSeamer/leafseamer-sdk/tree/3b2cf9f1039a2f827b40c25b2d6b40c414257693)
-- [当前Controller开发入口：持久身份权限与HTTP保护态接线](https://github.com/LeafSeamer/leafseamer-controller/tree/d0353cccbf5b51a72001fb734e2e6d68de774a31)
+- [当前SDK开发包：类型传输与人员会话客户端](https://github.com/LeafSeamer/leafseamer-sdk/tree/a3166330608dfd1aa68428a1a92b748cda066bb5)
+- [当前Controller开发入口：持久权限与HTTPS身份接线](https://github.com/LeafSeamer/leafseamer-controller/tree/745d657428bbec687df6310ead43df5afc3e1159)
 - [SDK既有契约：发布原件与当前面板提供者](docs/contracts/sdk-publication-handoff/README.md)
 - [完整设计稿与 Q1—Q72 决策](docs/rebirth-design.md)
 - [全系统设计定稿收敛清单：具体缺口、审阅包与实施交接](docs/rebirth-design-closure.md)

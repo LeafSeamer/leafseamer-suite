@@ -19,6 +19,7 @@ import {artifactFixture,zipFixture,digestValue} from './fixtures/artifact-packag
 // 显式选定待联调的Controller构建；产品安装包没有邻仓路径依赖。
 const controller=process.env.LEAFSEAMER_CONTROLLER_TEST_ROOT;
 assert.ok(controller&&path.isAbsolute(controller),'LEAFSEAMER_CONTROLLER_TEST_ROOT必须为已构建Controller的绝对路径');
+const Database=createRequire(path.join(controller,'package.json'))('better-sqlite3');
 const load=name=>import(pathToFileURL(path.join(controller,'dist',name)));
 const {initializeStorage,migrateStorage,openStorage}=await load('storage.mjs');
 const {initializeProcessHost,installedCoreDigest}=await load('process-host.mjs');
@@ -40,11 +41,11 @@ async function management(storage){
 }
 async function waitFor(fn){const end=performance.now()+15000;while(!fn()){assert.ok(performance.now()<end,'真实监督器事件等待超时');await delay(20);}return fn();}
 
-for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime'])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32',timeout:30000},async t=>{
-  const runtimeMode=mode==='supervisor_create_runtime';let runtimeInput=null;
+for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore'])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32',timeout:30000},async t=>{
+  const runtimeMode=['supervisor_create_runtime','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore'].includes(mode);let runtimeInput=null;
   const creates=mode.startsWith('supervisor_create')&&mode!=='supervisor_create_bad_profile',loadsSuccessfully=mode==='supervisor_load'||mode==='supervisor_deny'||mode.startsWith('supervisor_create');
-  const usesCapabilities=['capability','launch_prepare','load_handoff','load_close','supervisor_create_runtime'].includes(mode);
-  const usesRoles=['roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_create_runtime'].includes(mode),usesConfiguration=usesRoles||mode==='configuration';
+  const usesCapabilities=runtimeMode||['capability','launch_prepare','load_handoff','load_close','supervisor_create_runtime'].includes(mode);
+  const usesRoles=runtimeMode||['roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_create_runtime'].includes(mode),usesConfiguration=usesRoles||mode==='configuration';
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'leafseamer-materialization-')),install=path.join(root,'install'),core=path.join(root,'core');
   fs.mkdirSync(install);fs.mkdirSync(core);createInstallationStore(install);const store=openInstallationStore(install);
   let service,intakeService,authorized,child,ended,contentPin;const frames=[];let stderr='';
@@ -75,6 +76,12 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     }
     artifact.inventory.files.sort((a,b)=>a.file_id<b.file_id?-1:1);artifact.manifest.inventory_digest=digestValue(artifact.inventory);
   }
+  if(mode.startsWith('supervisor_create_module')){
+    const module=artifact.payload.get('worker');module.bytes=fs.readFileSync(path.join(controller,'dist/simulator-module.mjs'));
+    Object.assign(artifact.inventory.files.find(f=>f.file_id==='worker'),{size_bytes:String(module.bytes.length),digest:'sha256:'+crypto.createHash('sha256').update(module.bytes).digest('hex')});
+    artifact.manifest.api_versions=['leafseamer-device-module/1'];artifact.manifest.ipc_versions=['device-module/1'];
+    artifact.manifest.inventory_digest=digestValue(artifact.inventory);
+  }
   const archive=zipFixture(artifact.entries()).bytes;
   authorized=await authorizeFixture(store,archive,digestValue(artifact.manifest));
   const identity={host_installation_id:store.identity.host_installation_id,client_registration_id:'client.synthetic',import_request_id:'request.synthetic'};
@@ -89,7 +96,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   assert.equal((await store.sealImport(identity,{platform_profile_ref:profile,release_authorization_ref:authorized.result.reference})).state,'sealed');
   const sealed=store.sealedArtifact(identity),receipt=sealed.receipt;
   if(mode==='stage'||usesConfiguration){
-    const migration=await migrateStorage(core);assert.equal(migration.schema_revision,'23');
+    const migration=await migrateStorage(core);assert.equal(migration.schema_revision,'24');
     let controllerStore=openStorage(core),manager;
     try{
       let installations=controllerStore.extensionInstallations;installations.bindSource(store);
@@ -117,7 +124,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
             bindings:[{role_id:'device',kind:'device',values:[installations.roles.deviceReference(registered.device_id)],configuration_ref:configured.configuration_ref}]};
           resolved=await installations.roles.resolve(roleRequest);assert.equal(resolved.record.permissions[0].scope.devices[0].object_id,registered.device_id);
           assert.deepEqual(installations.roles.current(result.installation_ref),resolved);assert.deepEqual(await installations.roles.resolve(roleRequest),resolved);
-          if(['review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_create_runtime'].includes(mode)){
+          if(runtimeMode||['review','approval','capability','launch_prepare','load_handoff','load_close'].includes(mode)){
             const proposed=structuredClone(resolved.record.permissions);proposed[0].scope.action_ids=['get'];
             reviewRequest={request_id:'review.synthetic',installation_ref:result.installation_ref,configuration_ref:configured.configuration_ref,
               role_resolution_ref:resolved.resolution_ref,expected_revision:'0',proposed_permissions:proposed};
@@ -209,6 +216,13 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     }finally{manager?.clock.stop();controllerStore.close();}
     if(!runtimeMode)return;
   }
+  const moduleStorageFailure=mode==='supervisor_create_module_store_fail'||mode==='supervisor_create_module_store_ignore';
+  if(moduleStorageFailure){
+    const fault=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
+    try{fault.exec(`CREATE TRIGGER module_candidate_fault BEFORE INSERT ON device_module_frame_commit
+      WHEN (SELECT message_type FROM device_module_frame WHERE message_id=NEW.message_id)='CAPTURED'
+      BEGIN SELECT RAISE(${mode.endsWith('ignore')?'IGNORE':"ABORT,'synthetic_module_commit'"}); END`);}finally{fault.close();}
+  }
   const binding={intake_ref:sealed.intake_ref,platform_profile_ref:profile,host_installation_id:store.identity.host_installation_id,
     host_trust_epoch:receipt.host_trust_epoch,manifest_digest:receipt.manifest_digest,artifact_set_digest:receipt.artifact_set_digest};
   if(mode==='receipt')binding.intake_ref={...binding.intake_ref,digest:digestValue('wrong receipt')};
@@ -263,7 +277,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }};}};
   service=serveInstallationClient({store:instrumented,registration_id:'coordinator.synthetic',channel_id:channelId,channel});service.done.catch(()=>{});
   if(runtimeMode){
-    const peerFrame=await waitFor(()=>frames.find(frame=>frame.event==='intake-peer'));const corePeer=captureInstallationPeer(peerFrame.pid);
+    await waitFor(()=>frames.find(frame=>frame.event==='intake-peer')||child.exitCode!==null);
+    const peerFrame=frames.find(frame=>frame.event==='intake-peer');assert.ok(peerFrame,JSON.stringify({frames,stdout,stderr}));const corePeer=captureInstallationPeer(peerFrame.pid);
     // 显式交接服务端创建完成，覆盖客户端先报告身份的调度顺序。
     await delay(100);
     store.registerClient({client_registration_id:'core.intake',role:'launch_coordinator',user_sid:corePeer.descriptor.user_sid,
@@ -282,7 +297,22 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     fs.writeFileSync(fixture+'.continue','continue');
   }
   await waitFor(()=>frames.find(f=>f.event==='done')||child.exitCode!==null);
-  const done=frames.find(f=>f.event==='done');assert.ok(done,JSON.stringify({frames,stdout,stderr}));assert.equal(done.record.state,creates?'retired':'registered',JSON.stringify(frames));assert.equal(done.record.creation_attempted,creates);
+  const done=frames.find(f=>f.event==='done');assert.ok(done,JSON.stringify({frames,stdout,stderr}));
+  if(moduleStorageFailure){
+    assert.equal(frames.find(f=>f.event==='unavailable')?.code,'module_channel_closed');
+    assert.equal(frames.find(f=>f.event==='module-failed-retired')?.result.result,'confirmed_empty');
+    assert.equal(frames.find(f=>f.event==='module-samples'),undefined);
+    child.stdin.write('stop\n');await ended;
+    const db=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});try{
+      assert.equal(db.prepare('SELECT count(*) FROM device_module_channel').pluck().get(),1);
+      assert.equal(db.prepare('SELECT count(*) FROM device_module_frame').pluck().get(),5);
+      assert.equal(db.prepare('SELECT count(*) FROM device_module_frame_commit').pluck().get(),5);
+      assert.equal(db.prepare("SELECT count(*) FROM device_module_frame WHERE message_type='CAPTURED'").pluck().get(),0);
+      assert.equal(db.prepare("SELECT count(*) FROM device_module_frame WHERE message_type='CAPTURE'").pluck().get(),1);
+      assert.equal(db.prepare('SELECT count(*) FROM worker_runtime_withdrawal').pluck().get(),1);
+    }finally{db.close();}return;
+  }
+  assert.equal(done.record.state,creates?'retired':'registered',JSON.stringify(frames));assert.equal(done.record.creation_attempted,creates);
   if(creates){
     const admitted=frames.find(f=>f.event==='admitted')?.record;assert.equal(admitted?.state,(mode==='supervisor_create'||runtimeMode)?'admitted_closed':'indeterminate',JSON.stringify(frames));
     if(mode==='supervisor_create'||runtimeMode){assert.equal(admitted.admission_receipt.role,'worker');assert.equal(admitted.admission_receipt.gate_state,'closed');
@@ -297,7 +327,25 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       assert.equal(frames.find(f=>f.event==='plan-invalidated')?.code,'extension_plan_slot_stale');
       const activation=frames.find(f=>f.event==='activation-accepted')?.activation;assert.equal(activation?.record.phase,'accepted');assert.equal(activation.owners.length,1);
       assert.equal(adopted.ref.kind,'runtime_binding');assert.deepEqual(adopted.binding.admission_receipt,admitted.admission_receipt);
-      assert.equal(frames.find(f=>f.event==='runtime-withdrawn')?.binding.withdrawal.reason,'source_changed');}
+      // 人员撤销可先由审批writer或监督观察发现；两条路径都必须永久撤回同一运行绑定。
+      assert.ok(['source_changed','approval_changed'].includes(frames.find(f=>f.event==='runtime-withdrawn')?.binding.withdrawal.reason));
+      if(mode==='supervisor_create_module'){
+        const samples=frames.find(f=>f.event==='module-samples');assert.ok(samples,JSON.stringify(frames));
+        assert.deepEqual(samples.connected.body.identity,{kind:'virtual',model:'leafseamer.simulator',revision:'1'});
+        assert.deepEqual(samples.first.body.value,{value:0,sample_sequence:'1'});assert.deepEqual(samples.second.body.value,{value:0,sample_sequence:'2'});
+        assert.notEqual(samples.first.body.capture_id,samples.second.body.capture_id);
+        assert.equal(samples.first.body.device_session_id,samples.connected.body.device_session_id);
+        assert.deepEqual(samples.first.binding.runtime_binding_ref,adopted.ref);
+        assert.equal(samples.disconnected.type,'DISCONNECTED');
+        assert.equal(samples.disconnected.body.device_session_id,samples.connected.body.device_session_id);
+        assert.equal(frames.find(f=>f.event==='module-disconnected-read')?.code,'module_session');
+        assert.notEqual(samples.reconnected.body.device_session_id,samples.connected.body.device_session_id);
+        assert.equal(samples.third.body.device_session_id,samples.reconnected.body.device_session_id);
+        assert.deepEqual(samples.third.body.value,{value:0,sample_sequence:'1'});
+        assert.notEqual(frames.find(f=>f.event==='module-revoked')?.code,'unexpected_success');
+        assert.ok(frames.find(f=>f.event==='module-revoked')?.code);
+      }
+    }
     assert.equal(frames.find(f=>f.event==='duplicate')?.code,runtimeMode?'worker_authorization_creation_attempted':'supervisor_indeterminate');
     const denied=frames.find(f=>f.event==='denied')?.record;
     if(runtimeMode)assert.ok(['indeterminate','retiring','retired'].includes(denied?.state));
@@ -320,7 +368,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }else assert.equal(frames.find(f=>f.event==='unavailable')?.code,mode==='revoke_pending'?'supervisor_unauthorized':'supervisor_materialization_unavailable',JSON.stringify(frames));
   child.stdin.end('stop\n');assert.equal((await ended)[0],0);
   if(creates){
-    const Database=createRequire(path.join(controller,'package.json'))('better-sqlite3'),db=new Database(path.join(core,'supervisor-journal.db'),{fileMustExist:true});
+    const db=new Database(path.join(core,'supervisor-journal.db'),{fileMustExist:true});
     try{
       assert.equal(db.prepare('SELECT count(*) FROM worker_creation').pluck().get(),1);assert.equal(db.prepare('SELECT count(*) FROM worker_observation').pluck().get(),1);
       const creation=JSON.parse(db.prepare('SELECT record_jcs FROM worker_creation').pluck().get()),observation=JSON.parse(db.prepare('SELECT record_jcs FROM worker_observation').pluck().get());
@@ -340,6 +388,15 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       assert.equal(business.prepare('SELECT count(*) FROM worker_fence_ack').pluck().get(),fences.length);
       assert.equal(business.prepare('SELECT count(*) FROM worker_runtime_commit').pluck().get(),1);
       assert.equal(business.prepare('SELECT count(*) FROM worker_runtime_withdrawal').pluck().get(),1);
+      if(mode==='supervisor_create_module'){
+        assert.equal(business.prepare('SELECT count(*) FROM device_module_channel').pluck().get(),1);
+        assert.equal(business.prepare('SELECT count(*) FROM device_module_frame').pluck().get(),14);
+        assert.equal(business.prepare('SELECT count(*) FROM device_module_frame_commit').pluck().get(),14);
+        const captures=business.prepare("SELECT frame_jcs FROM device_module_frame WHERE message_type='CAPTURED' ORDER BY length(sequence),sequence").pluck().all().map(JSON.parse);
+        assert.deepEqual(captures.map(f=>f.body.value.sample_sequence),['1','2','1']);
+        assert.equal(new Set(captures.map(f=>f.body.device_session_id)).size,2);
+        assert.throws(()=>business.exec('DELETE FROM device_module_frame'),/immutable_module_frame/);
+      }
     }finally{business.close();}}
   }
 });

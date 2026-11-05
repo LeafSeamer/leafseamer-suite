@@ -41,8 +41,8 @@ async function management(storage){
 }
 async function waitFor(fn){const end=performance.now()+15000;while(!fn()){assert.ok(performance.now()<end,'真实监督器事件等待超时');await delay(20);}return fn();}
 
-for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore'])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32',timeout:30000},async t=>{
-  const runtimeMode=['supervisor_create_runtime','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore'].includes(mode);let runtimeInput=null;
+for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore','supervisor_create_module_control'])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32',timeout:30000},async t=>{
+  const runtimeMode=['supervisor_create_runtime','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore','supervisor_create_module_control'].includes(mode);let runtimeInput=null;
   const creates=mode.startsWith('supervisor_create')&&mode!=='supervisor_create_bad_profile',loadsSuccessfully=mode==='supervisor_load'||mode==='supervisor_deny'||mode.startsWith('supervisor_create');
   const usesCapabilities=runtimeMode||['capability','launch_prepare','load_handoff','load_close','supervisor_create_runtime'].includes(mode);
   const usesRoles=runtimeMode||['roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_create_runtime'].includes(mode),usesConfiguration=usesRoles||mode==='configuration';
@@ -100,7 +100,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   assert.equal((await store.sealImport(identity,{platform_profile_ref:profile,release_authorization_ref:authorized.result.reference})).state,'sealed');
   const sealed=store.sealedArtifact(identity),receipt=sealed.receipt;
   if(mode==='stage'||usesConfiguration){
-    const migration=await migrateStorage(core);assert.equal(migration.schema_revision,'25');
+    const migration=await migrateStorage(core);assert.equal(migration.schema_revision,'26');
     let controllerStore=openStorage(core),manager;
     try{
       let installations=controllerStore.extensionInstallations;installations.bindSource(store);
@@ -307,6 +307,21 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }
   await waitFor(()=>frames.find(f=>f.event==='done')||child.exitCode!==null);
   const done=frames.find(f=>f.event==='done');assert.ok(done,JSON.stringify({frames,stdout,stderr}));
+  if(mode==='supervisor_create_module_control'){
+    assert.equal(frames.find(f=>f.event==='unavailable'),undefined,JSON.stringify(frames));
+    const results=frames.filter(f=>f.event==='control-result');assert.equal(results.length,2,JSON.stringify(frames));
+    assert.equal(results[0].operation.state,'effective');assert.equal(results[0].control.mode,'manual');assert.ok(results[0].control.holder);assert.equal(results[0].control.effective_version,'1');
+    assert.equal(results[1].operation.state,'effective');assert.equal(results[1].control.mode,'automatic');assert.equal(results[1].control.holder,null);assert.equal(results[1].control.effective_version,'2');
+    assert.ok(results.every(v=>v.control.gate_state==='protected'&&v.control.pending_change===null));
+    assert.ok(frames.filter(f=>f.event==='control-replay').every(v=>v.replay.replay));
+    child.stdin.write('stop\n');await ended;
+    const db=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});try{
+      assert.equal(db.prepare('SELECT count(*) FROM control_request').pluck().get(),2);assert.equal(db.prepare('SELECT count(*) FROM control_barrier_evidence').pluck().get(),2);
+      const proofs=db.prepare('SELECT body_jcs FROM control_barrier_evidence').pluck().all().map(JSON.parse);
+      assert.ok(proofs.every(v=>v.targets.length===1&&v.receipts.length===1&&v.receipts[0].retirement.result==='confirmed_empty'));
+      assert.deepEqual(db.pragma('foreign_key_check'),[]);
+    }finally{db.close();}return;
+  }
   if(moduleStorageFailure||catalogFailure||baselineFailure){
     assert.equal(frames.find(f=>f.event==='unavailable')?.code,'module_channel_closed');
     assert.equal(frames.find(f=>f.event==='module-failed-retired')?.result.result,'confirmed_empty');

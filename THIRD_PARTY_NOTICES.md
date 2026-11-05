@@ -11,4 +11,8 @@
 
 此说明不表示旧仓历史改授 Apache-2.0，也不表示已审查尚未引入的代码、依赖或素材；后续引入时逐项保留必要声明。
 
+Suite安装运行模块使用本仓锁定的npm依赖：better-sqlite3 13.0.3、node-addon-api 8.9.2、yauzl 3.4.0及pend 1.2.0采用MIT，canonicalize 5.1.0采用Apache-2.0。实际依赖字节与完整性由`package-lock.json`绑定；各依赖随自己的npm包提供许可文件，分发完整安装组合时须保留。Suite包没有将这些依赖源码重新声明为本项目原创。构建同时复制固定LeafSeamer SDK运行资产及其许可，`sdk-runtime.json`锁定清单和许可摘要。
+
+TUF客户端来自官方[tuf-js固定提交](https://github.com/theupdateframework/tuf-js/tree/c30653d07f0c41fbe5a2030d25eca6fd04f8547f)对应npm 6.0.0，MIT，Copyright (c) 2022 GitHub and the TUF Contributors。本项目通过`build-tuf.mjs`作时间／存储／轮换接口修改，发行标识为`6.0.0-leafseamer.1`，不宣称等同于未修改的上游包。`dist/vendor/tuf-js/LICENSE`保留原许可，`leafseamer-patch.json`列原始输入、补丁和产物摘要。运行依赖`@tufjs/models` 5.0.0、debug 4.4.3、`@gar/promise-retry` 1.0.3均为MIT，完整依赖锁与各包许可同样保留。
+
 `docs/contracts/c11-audio/dm3-legacy-catalog.json`转录上述固定旧提交中`bundles/mixer-control/extension/drivers/dm3-rcp-catalog.ts`的184条参数元数据，保留原行、位置及源blob摘要。沿用旧材料的MIT版权及许可声明，不把转录声明为重新授予厂商协议或第三方材料许可。原文件还注明参考[Bitfocus Yamaha RCP目录](https://github.com/bitfocus/companion-module-yamaha-rcp/blob/master/DM3%20Parameters-2.txt)；此链接仅保留来源链，不用可变master证明新版设备兼容。当前未引入该第三方项目代码，运行制品及完整上游许可核验在后续引入审阅中处理。

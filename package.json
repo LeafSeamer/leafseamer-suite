@@ -1,0 +1,42 @@
+{
+  "name": "@leafseamer/suite",
+  "version": "0.1.0-dev.1",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "LeafSeamer 本机安装管理与组合交付",
+  "engines": {
+    "node": ">=24.22.0 <25"
+  },
+  "packageManager": "npm@11.19.1",
+  "exports": {
+    "./local-import": "./dist/local-import.mjs",
+    "./local-peer": "./dist/local-peer.mjs",
+    "./installation": "./dist/installation-store.mjs"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSES"
+  ],
+  "scripts": {
+    "build:native": "node scripts/build-native.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "npm run build && node --disallow-code-generation-from-strings --test test/*.test.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@gar/promise-retry": "1.0.3",
+    "@tufjs/models": "5.0.0",
+    "better-sqlite3": "13.0.3",
+    "canonicalize": "5.1.0",
+    "debug": "4.4.3",
+    "yauzl": "3.4.0"
+  },
+  "devDependencies": {
+    "@leafseamer/sdk": "file:../leafseamer-sdk",
+    "tuf-js": "6.0.0"
+  }
+}

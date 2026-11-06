@@ -12,13 +12,15 @@
 
 ## 字段来源与持久化
 
+2026-11-06产品选择升级：`leafseamer.api.v1.product4` 显式扩展 `accepted_at`。缺少可信应用参考时间的即时命令必须保留该字段并返回 `null`，受理事务另行保存实际监督单调域、受理tick及原截止；查询不得用认证时钟或当前系统时间补填。定时命令仍须可信参考时间，无参考时间时拒绝。完整记录、快照和面板投影共同升级；历史候选Schema及product3接受集保持不变，不得混用选择。最终参考时间功能与验收范围不缩减。（来源：[SDK产品契约](https://github.com/LeafSeamer/leafseamer-sdk/blob/main/CONTRACT.md)。）
+
 | 公开字段 | 固定来源及验证 |
 |---|---|
 | command_id、scope、request_identity | ca_command_initial、ca_request_key及实际Controller scope，完整请求内容摘要重算 |
 | initial_command_ref | 原RequestAdjudication.command_ref，绑定实际初始命令正文；不会随公开修订变化 |
 | target、origin、run_binding、automation_binding | 已受理CommandContent完整原件，不改设备、来源和run代次 |
 | actor | 显式可信本地提供者的完整Actor，与原RequestKey的principal/issuer/issuer_epoch精确一致 |
-| accepted_at | 首次受理的应用参考时间，由可信时间提供者返回并在Schema中验证时间格式；重读不取当前系统时钟替换 |
+| accepted_at | 有参考时间时保存首次受理的可信应用参考时间并验证格式；product4无参考时间的即时分支保存null及独立实际单调受理原件；重读不取当前系统时钟替换 |
 | dispatch、control_binding | 原请求排期及expected_control，不替换为当前持有人或新排期 |
 | policy | 完成/释放政策Ref、原受理Ref、max_attempts及原deadline Ref；政策摘要对提供者原件复核 |
 | original_deadline_ref | 独立原截止原件的摘要引用，正文保存在cm_policy.original_deadline_body；不得仅把Dispatch摘要冒充原截止证据 |

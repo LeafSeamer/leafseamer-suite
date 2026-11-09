@@ -30,6 +30,15 @@ const {localIdentityPermissions}=await load('local-permission-store.mjs');
 const {bind:bindCore,workerIntent}=await import(pathToFileURL(path.join(controller,'test/fixtures/core-binding.mjs')));
 const {fixture:authenticationFixture}=await import(pathToFileURL(path.join(controller,'test/auth-clock-fixture.mjs')));
 const {certificate}=await import(pathToFileURL(path.join(controller,'test/https-auth-fixture.mjs')));
+async function verifyGuiExecution({root,gui,endpoint,records}){
+  const input=path.join(root,'gui-browser-input.json');
+  fs.writeFileSync(input,JSON.stringify({...endpoint,records,revoke_request:gui.revoke_request,revoke_result:gui.revoke_result}));
+  const driver=spawn(process.execPath,[path.join(gui.root,'test/controller-command-browser-check.mjs'),
+    process.env.LEAFSEAMER_PLAYWRIGHT_MODULE,process.env.LEAFSEAMER_BROWSER_EXECUTABLE,input],{stdio:['ignore','pipe','pipe'],windowsHide:true});
+  let output='';driver.stdout.on('data',chunk=>{output+=chunk;});driver.stderr.on('data',chunk=>{output+=chunk;});
+  const [code]=await once(driver,'close');assert.equal(code,0,output);
+  const result=JSON.parse(output.trim());assert.equal(result.command_responses,'real_controller');assert.equal(result.commands,2);assert.equal(result.revoked,true);
+}
 async function verifySuccessorMigration(directory){
   const snapshot=db=>Object.fromEntries(db.prepare("SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT IN('service_state','schema_migration') ORDER BY name").pluck().all().map(name=>{
     assert.match(name,/^[a-z_][a-z0-9_]*$/);const rows=db.prepare('SELECT * FROM '+name).raw().all().map(row=>JSON.stringify(row)).sort();
@@ -420,7 +429,16 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }
   if(runtimeInput)runtimeInput.installation_client={peer_module:new URL('../dist/local-peer.mjs',import.meta.url).href,client_module:new URL('../dist/local-import.mjs',import.meta.url).href,
     name:'\\\\.\\pipe\\LeafSeamer.Install.'+crypto.randomUUID(),channel_id:crypto.randomUUID(),server_pid:process.pid};
-  const fixture=path.join(root,'fixture.json');fs.writeFileSync(fixture,JSON.stringify({binding,mode,materials,runtime:runtimeInput,
+  let gui=null;
+  if(mode.endsWith('_cleanup_successor')&&process.env.LEAFSEAMER_GUI_TEST_ROOT){
+    const guiRoot=process.env.LEAFSEAMER_GUI_TEST_ROOT;assert.ok(path.isAbsolute(guiRoot));
+    for(const key of ['LEAFSEAMER_PLAYWRIGHT_MODULE','LEAFSEAMER_BROWSER_EXECUTABLE'])assert.ok(process.env[key]&&path.isAbsolute(process.env[key]),key);
+    const config=path.join(root,'gui-site.json');fs.writeFileSync(config,JSON.stringify({site_label:'模拟器联调',service_id:coreIdentity.service_id,database_instance_id:coreIdentity.database_instance_id}));
+    const build=spawnSync(process.execPath,[path.join(guiRoot,'scripts/build.mjs'),'--config',config],{cwd:guiRoot,encoding:'utf8',windowsHide:true});
+    assert.equal(build.status,0,build.stderr);
+    gui={root:guiRoot,directory:path.join(guiRoot,'dist'),revoke_request:path.join(root,'gui-revoke-request'),revoke_result:path.join(root,'gui-revoke-result.json')};
+  }
+  const fixture=path.join(root,'fixture.json');fs.writeFileSync(fixture,JSON.stringify({binding,mode,materials,runtime:runtimeInput,...(gui?{gui}:{}),
     ...((mode==='supervisor_create_module_writable_evidence_resource_open_dispatch_ready'||commandLifecycleCases.includes(mode)||commandEncodingCases.includes(mode))?{command_tls:certificate()}:{})}));
   const peer=captureInstallationPeer(process.pid).descriptor,descriptor=store.materializationClock(),suffix=crypto.randomUUID(),channelId=crypto.randomUUID();
   const config={format:'leafseamer-installation-peer/1',pipe_suffix:suffix,channel_id:channelId,
@@ -540,6 +558,10 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       assert.equal(resource.resource.value.format,'leafseamer-device-resource-successor/1');assert.equal(resource.resource.value.inventory.observed_write_sequence,'1');
       assert.equal(resource.resource.value.inventory.retired_preparation_refs.length,1);assert.equal(next.closed.ack.frame.body.transmission_coverage.length,2);
       assert.equal(next.closed.ack.frame.body.issued_cut_revision,'2');assert.equal(next.cleaned.steps.release_ack.frame.body.cache_empty,true);
+      if(gui){const endpoint=frames.find(f=>f.event==='gui-endpoint'),first=frames.find(f=>f.event==='command-history');assert.ok(endpoint&&first);
+        await verifyGuiExecution({root,gui,endpoint,records:[first.current.record,next.current.body.record]});
+        assert.ok(frames.find(f=>f.event==='gui-evidence-revoked'));
+      }
       child.stdin.write('stop\n');await ended;const db=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
       try{
         for(const table of ['command_final_admission','command_settlement','command_hold_release','command_device_hold','command_transmission_issue','command_preparation_retirement','device_initial_open'])assert.equal(db.prepare('SELECT count(*) FROM '+table).pluck().get(),2,table);

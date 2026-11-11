@@ -71,7 +71,7 @@ async function verifySuccessorMigration(directory){
 }
 const commandAdmissionFaults=['source','notification'].map(part=>'supervisor_create_module_writable_evidence_resource_open_dispatch_ready_command_'+part+'_ignore');
 const commandLifecycleFaults=['commit','head'].map(part=>'supervisor_create_module_writable_evidence_resource_open_dispatch_ready_lifecycle_'+part+'_ignore');
-const commandLifecycleCases=['queue_deadline','execution_closed'].map(part=>'supervisor_create_module_writable_evidence_resource_open_dispatch_ready_'+part);
+const commandLifecycleCases=['queue_deadline','execution_closed','control_queued','control_queued_cut_omit'].map(part=>'supervisor_create_module_writable_evidence_resource_open_dispatch_ready_'+part);
 const finalAdmissionOmissions=Object.fromEntries(['command_final_admission','command_device_hold','command_transmission_issue','command_attempt_inventory','command_lifecycle_revision','command_lifecycle_commit','command_lifecycle_head']
  .map(table=>['supervisor_create_module_writable_evidence_resource_open_dispatch_ready_encoding_t2_'+table+'_omit',table]));
 const guardOmissions=Object.fromEntries(['command_guard_request','command_guard_ack','execution_guard_frame','execution_effect_commit'].map(table=>['supervisor_create_module_writable_evidence_resource_open_dispatch_ready_encoding_t2_guard_'+table+'_omit',table]));
@@ -85,7 +85,7 @@ const settlementOmissions=Object.fromEntries([
 const cleanupOmissions=Object.fromEntries(['deny_request','deny_ack','release_request','release_ack'].map(phase=>
  ['supervisor_create_module_writable_evidence_resource_open_dispatch_ready_encoding_t2_guard_dispatch_closure_cleanup_'+phase+'_omit',
  {phase,table:'command_preparation_cleanup',operation:'INSERT',condition:"NEW.phase='"+phase+"'"}]));
-const commandEncodingCases=[...['','_request_ignore','_response_ignore','_changed_input','_t2','_t2_guard','_t2_guard_changed','_t2_guard_dispatch','_t2_guard_dispatch_closure','_t2_guard_dispatch_closure_late','_t2_guard_dispatch_closure_cleanup','_t2_guard_dispatch_closure_cleanup_late','_t2_guard_dispatch_closure_cleanup_successor','_t2_observation_omit'].map(part=>'supervisor_create_module_writable_evidence_resource_open_dispatch_ready_encoding'+part),...Object.keys(finalAdmissionOmissions),...Object.keys(guardOmissions),...Object.keys(dispatchOmissions),...Object.keys(settlementOmissions),...Object.keys(cleanupOmissions)];
+const commandEncodingCases=[...['','_request_ignore','_response_ignore','_changed_input','_t2','_t2_guard','_t2_guard_changed','_t2_guard_dispatch','_t2_guard_dispatch_closure','_t2_guard_dispatch_closure_late','_t2_guard_dispatch_closure_cleanup','_t2_guard_dispatch_closure_cleanup_late','_t2_guard_dispatch_closure_cleanup_successor','_t2_guard_dispatch_closure_cleanup_successor_control','_t2_guard_dispatch_closure_cleanup_late_control_unresolved','_t2_observation_omit'].map(part=>'supervisor_create_module_writable_evidence_resource_open_dispatch_ready_encoding'+part),...Object.keys(finalAdmissionOmissions),...Object.keys(guardOmissions),...Object.keys(dispatchOmissions),...Object.keys(settlementOmissions),...Object.keys(cleanupOmissions)];
 async function management(storage){
   const fixture=authenticationFixture(storage.authenticationClock.scope),clock=startAuthenticationClock(fixture.source,storage.authenticationClock,fixture.provider,{schedule:false});
   try{
@@ -161,7 +161,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   assert.equal((await store.sealImport(identity,{platform_profile_ref:profile,release_authorization_ref:authorized.result.reference})).state,'sealed');
   const sealed=store.sealedArtifact(identity),receipt=sealed.receipt;
   if(mode==='stage'||usesConfiguration){
-    const schema=mode.endsWith('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
+    const schema=mode.endsWith('_successor_control')||mode.includes('_control_queued')||mode.endsWith('_control_unresolved')?58:mode.includes('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
     let controllerStore=openStorage(core),manager;
     try{
       let installations=controllerStore.extensionInstallations;installations.bindSource(store);
@@ -283,6 +283,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }
   const moduleStorageFailure=mode==='supervisor_create_module_store_fail'||mode==='supervisor_create_module_store_ignore';
   const catalogFailure=mode.includes('_catalog_'),baselineFailure=mode.includes('_baseline_');
+  if(mode.endsWith('_control_queued_cut_omit')){const db=new Database(path.join(core,'controller.sqlite'));try{db.exec("CREATE TRIGGER injected_control_cut BEFORE INSERT ON control_command_cut WHEN EXISTS(SELECT 1 FROM command_admission_source) BEGIN SELECT RAISE(IGNORE); END");}finally{db.close();}}
   const bindingFailure=mode.includes('_binding_'),handshakeFailure=mode.includes('_handshake_'),controlFenceFailure=mode.includes('_control_fence_');
   const readyMode=mode.includes('_open_dispatch_ready'),commandFailure=commandAdmissionFaults.includes(mode),lifecycleFailure=commandLifecycleFaults.includes(mode),encodingFailure=commandEncodingCases.includes(mode)&&mode.endsWith('_ignore'),finalFailure=Object.hasOwn(finalAdmissionOmissions,mode),observationFailure=mode.endsWith('_t2_observation_omit'),guardFailure=Object.hasOwn(guardOmissions,mode);
   const dispatchMode=mode.includes('_open_dispatch'),dispatchFailure=dispatchMode&&!readyMode&&(mode.endsWith('_request_ignore')||mode.endsWith('_ack_ignore'));
@@ -430,7 +431,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   if(runtimeInput)runtimeInput.installation_client={peer_module:new URL('../dist/local-peer.mjs',import.meta.url).href,client_module:new URL('../dist/local-import.mjs',import.meta.url).href,
     name:'\\\\.\\pipe\\LeafSeamer.Install.'+crypto.randomUUID(),channel_id:crypto.randomUUID(),server_pid:process.pid};
   let gui=null;
-  if(mode.endsWith('_cleanup_successor')&&process.env.LEAFSEAMER_GUI_TEST_ROOT){
+  if(mode.includes('_cleanup_successor')&&process.env.LEAFSEAMER_GUI_TEST_ROOT){
     const guiRoot=process.env.LEAFSEAMER_GUI_TEST_ROOT;assert.ok(path.isAbsolute(guiRoot));
     for(const key of ['LEAFSEAMER_PLAYWRIGHT_MODULE','LEAFSEAMER_BROWSER_EXECUTABLE'])assert.ok(process.env[key]&&path.isAbsolute(process.env[key]),key);
     const config=path.join(root,'gui-site.json');fs.writeFileSync(config,JSON.stringify({site_label:'模拟器联调',service_id:coreIdentity.service_id,database_instance_id:coreIdentity.database_instance_id}));
@@ -468,14 +469,20 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const clientPeer=captureInstallationPeer(child.pid);
   store.registerClient({client_registration_id:'coordinator.synthetic',role:'launch_coordinator',user_sid:clientPeer.descriptor.user_sid,
     target_authority_service_ids:[coreIdentity.service_id],permissions:['intake.query','materialization.verify'],approval_reference:'approval.synthetic'});
-  const channel=createInstallationChannel({name:'\\\\.\\pipe\\LeafSeamer.Install.'+suffix,peer:clientPeer,server:true}),replies=[];
+  const replies=[];
   // 注入响应延迟／错绑；查询与物化观察始终由真实store及原生文件检查完成。
   const instrumented={...store,bindImportClient(...args){const bound=store.bindImportClient(...args);return {...bound,async verifyMaterialization(request){
     if(['verified','revoke_pending','timeout'].includes(mode))await delay(mode==='timeout'?4200:2200);
-    const result=await bound.verifyMaterialization(request);replies.push(result);
+    let result;try{result=await bound.verifyMaterialization(request);}catch(error){frames.push({event:'materialization-check-failed',code:error.code??error.name});throw error;}replies.push(result);
+    frames.push({event:'materialization-check-result',result:result.result});
     return mode==='challenge'?{...result,request:{...result.request,challenge_id:'wrong.challenge'}}:result;
   }};}};
-  service=serveInstallationClient({store:instrumented,registration_id:'coordinator.synthetic',channel_id:channelId,channel});service.done.catch(()=>{});
+  const startCoordinator=()=>{
+    const channel=createInstallationChannel({name:'\\\\.\\pipe\\LeafSeamer.Install.'+suffix,peer:clientPeer,server:true});
+    service=serveInstallationClient({store:instrumented,registration_id:'coordinator.synthetic',channel_id:channelId,channel});
+    service.done.catch(error=>frames.push({event:'installation-channel-failed',code:error.code??error.name}));
+  };
+  if(!runtimeMode)startCoordinator();
   if(runtimeMode){
     await waitFor(()=>frames.find(frame=>frame.event==='intake-peer')||child.exitCode!==null);
     const peerFrame=frames.find(frame=>frame.event==='intake-peer');assert.ok(peerFrame,JSON.stringify({frames,stdout,stderr}));const corePeer=captureInstallationPeer(peerFrame.pid);
@@ -486,6 +493,9 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     const client=runtimeInput.installation_client,intakeChannel=createInstallationChannel({name:client.name,peer:corePeer,server:true});
     intakeService=serveInstallationClient({store,registration_id:'core.intake',channel_id:client.channel_id,channel:intakeChannel});intakeService.done.catch(()=>{});
     fs.writeFileSync(fixture+'.intake-ready','ready');
+    await waitFor(()=>frames.find(frame=>frame.event==='registered')||child.exitCode!==null);
+    assert.ok(frames.find(frame=>frame.event==='registered'),JSON.stringify({frames,stdout,stderr}));
+    startCoordinator();fs.writeFileSync(fixture+'.coordinator-ready','ready');
   }
   if(loadsSuccessfully){
     await waitFor(()=>frames.find(f=>f.event==='loaded'||f.event==='unavailable')||child.exitCode!==null);
@@ -551,7 +561,29 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }
   if(readyMode){
     const unavailable=frames.find(f=>f.event==='unavailable'),ready=frames.find(f=>f.event==='initial-ready');
-    if(mode.endsWith('_cleanup_successor')){
+    if(mode.includes('_control_queued')){
+      assert.equal(unavailable,undefined,JSON.stringify(unavailable));const released=frames.find(f=>f.event==='command-control-released'),closed=frames.find(f=>f.event==='control-queued-command');
+      if(mode.endsWith('_control_queued_cut_omit')){
+        const failed=frames.find(f=>f.event==='command-control-rollback');assert.ok(failed&&closed);assert.equal(failed.code,'control_command_cut_storage');
+        assert.deepEqual(failed.after,failed.before);assert.equal(released,undefined);assert.equal(closed.current.record.revision,'1');
+        assert.equal(closed.current.record.state.phase,'queued');child.stdin.write('stop\n');await ended;
+        const db=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});try{
+          for(const table of ['control_request','control_operation_head','control_command_cut','ca_command_initial'])assert.equal(db.prepare('SELECT count(*) FROM '+table).pluck().get(),1,table);
+          assert.equal(db.prepare('SELECT count(*) FROM command_final_admission').pluck().get(),0);assert.equal(db.prepare('SELECT count(*) FROM command_transmission_issue').pluck().get(),0);
+          assert.deepEqual(db.pragma('foreign_key_check'),[]);
+        }finally{db.close();}return;
+      }
+      assert.ok(released&&closed);assert.equal(released.operation.state,'effective');assert.equal(released.control.gate_state,'protected');
+      assert.equal(closed.current.record.state.outcome,'blocked');assert.equal(closed.current.record.state.effect_status,'not_sent');assert.equal(closed.current.record.state.resource_status,'clear');
+      assert.equal(closed.current.record.state.reason_code,'control_fenced');assert.equal(closed.current.record.revision,'2');
+      child.stdin.write('stop\n');await ended;const db=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
+      try{const cut=JSON.parse(db.prepare('SELECT body_jcs FROM control_command_cut WHERE operation_id=?').pluck().get(released.operation.operation_id));
+        assert.equal(cut.commands.length,1);assert.equal(cut.commands[0].queued,true);assert.equal(cut.commands[0].transmission,null);
+        for(const table of ['command_final_admission','command_device_hold','command_transmission_issue'])assert.equal(db.prepare('SELECT count(*) FROM '+table).pluck().get(),0);
+        assert.equal(db.prepare('SELECT count(*) FROM ca_command_initial').pluck().get(),1);assert.deepEqual(db.pragma('foreign_key_check'),[]);
+      }finally{db.close();}return;
+    }
+    if(mode.includes('_cleanup_successor')){
       assert.equal(unavailable,undefined,JSON.stringify({unavailable,events:frames.map(({event,stage,code,reason,remaining_ms,reported_ms})=>({event,stage,code,reason,remaining_ms,reported_ms})),failures:frames.filter(f=>f.event==='worker_gate_failure')}));const next=frames.find(f=>f.event==='successor-command'),resource=frames.find(f=>f.event==='successor-resource');
       assert.ok(next&&resource);assert.equal(next.accepted.status,202);assert.equal(next.current.status,200);assert.equal(next.replayed.status,200);
       assert.equal(next.current.body.record.state.outcome,'succeeded');assert.equal(next.current.body.record.state.resource_status,'clear');assert.equal(next.current.body.record.accepted_at,null);
@@ -565,6 +597,16 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       child.stdin.write('stop\n');await ended;const db=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
       try{
         for(const table of ['command_final_admission','command_settlement','command_hold_release','command_device_hold','command_transmission_issue','command_preparation_retirement','device_initial_open'])assert.equal(db.prepare('SELECT count(*) FROM '+table).pluck().get(),2,table);
+        if(mode.endsWith('_successor_control')){
+          const released=frames.find(f=>f.event==='command-control-released');assert.ok(released);assert.equal(released.operation.state,'effective');
+          assert.equal(released.control.mode,'automatic');assert.equal(released.control.holder,null);assert.equal(released.control.gate_state,'protected');
+          assert.equal(released.replay.replay,true);assert.deepEqual(released.replay.receipt,released.accepted.receipt);
+          const operationId=released.operation.operation_id,cut=JSON.parse(db.prepare('SELECT body_jcs FROM control_command_cut WHERE operation_id=?').pluck().get(operationId));
+          assert.equal(cut.commands.length,2);assert.equal(cut.issued_revision,'2');assert.ok(cut.commands.every(c=>c.transmission&&c.command_ref.revision==='5'));
+          const evidence=JSON.parse(db.prepare('SELECT body_jcs FROM control_barrier_evidence WHERE operation_id=?').pluck().get(operationId));
+          assert.equal(evidence.command_selection.commands.length,2);assert.ok(evidence.command_selection.commands.every(c=>c.disposition==='in_flight'&&c.resource_status==='clear'));
+          assert.ok(evidence.receipts.every(r=>r.retirement?.result==='confirmed_empty'||r.record===null));
+        }
         assert.equal(db.prepare('SELECT count(*) FROM command_preparation_cleanup').pluck().get(),8);assert.equal(db.prepare('SELECT sum(charged_bytes) FROM command_transmission_issue').pluck().get(),16);
         const {readCommandRecord}=await load('command-record-store.mjs');for(const id of db.prepare('SELECT command_id FROM command_settlement').pluck().all()){
           const saved=db.transaction(()=>readCommandRecord(db,id)).immediate();assert.equal(saved.record.state.outcome,'succeeded');assert.equal(saved.record.revision,'5');}
@@ -572,7 +614,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
         assert.deepEqual(observations,[{value:7,write_sequence:'1'},{value:23,write_sequence:'2'}]);assert.deepEqual(db.pragma('foreign_key_check'),[]);
       }finally{db.close();}return;
     }
-    if(mode.endsWith('_closure_late')||mode.endsWith('_cleanup_late')){
+    if(mode.endsWith('_closure_late')||mode.endsWith('_cleanup_late')||mode.endsWith('_control_unresolved')){
       assert.equal(unavailable,undefined,JSON.stringify(unavailable));const history=frames.find(v=>v.event==='command-history'),closed=frames.find(v=>v.event==='command-closed');
       assert.ok(history&&closed);assert.equal(history.http_status,200);assert.equal(history.current.record.state.phase,'finished');assert.equal(history.current.record.state.outcome,'unknown');
       assert.equal(history.current.record.state.resource_status,'unresolved');assert.equal(history.current.record.state.effect_status,'possible');assert.equal(history.current.record.state.automation_continuation,'paused_latched');
@@ -581,10 +623,23 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       try{assert.equal(db.prepare('SELECT count(*) FROM command_hold_release').pluck().get(),0);assert.equal(db.prepare('SELECT count(*) FROM command_device_hold').pluck().get(),1);
        const s=JSON.parse(db.prepare('SELECT body_jcs FROM command_settlement').pluck().get()),received=db.prepare('SELECT f.observed_tick FROM command_dispatch_evidence e JOIN execution_frame_record f USING(record_id)').pluck().get();
        assert.ok(BigInt(received)>=BigInt(s.module_settlement.evidence_deadline_tick_ns));assert.equal(s.module_settlement.module_settled,false);
-       if(mode.endsWith('_cleanup_late')){const cleaned=frames.find(f=>f.event==='command-cleaned');assert.ok(cleaned);
+       if(mode.endsWith('_cleanup_late')||mode.endsWith('_control_unresolved')){const cleaned=frames.find(f=>f.event==='command-cleaned');assert.ok(cleaned);
         assert.equal(cleaned.value.steps.release_ack.frame.body.cache_empty,true);
         assert.equal(db.prepare('SELECT count(*) FROM command_preparation_cleanup').pluck().get(),4);
         assert.equal(db.prepare('SELECT sum(charged_bytes) FROM command_transmission_issue').pluck().get(),8);}
+       if(mode.endsWith('_control_unresolved')){
+        const released=frames.find(f=>f.event==='command-control-released');assert.ok(released);
+        assert.equal(released.operation.state,'effective');assert.equal(released.control.mode,'automatic');assert.equal(released.control.holder,null);assert.equal(released.control.gate_state,'protected');
+        assert.equal(released.replay.replay,true);assert.deepEqual(released.replay.receipt,released.accepted.receipt);
+        const operationId=released.operation.operation_id,cut=JSON.parse(db.prepare('SELECT body_jcs FROM control_command_cut WHERE operation_id=?').pluck().get(operationId));
+        assert.equal(cut.commands.length,1);assert.equal(cut.commands[0].queued,false);assert.ok(cut.commands[0].transmission);assert.equal(cut.issued_revision,'1');
+        const evidence=JSON.parse(db.prepare('SELECT body_jcs FROM control_barrier_evidence WHERE operation_id=?').pluck().get(operationId));
+        assert.equal(evidence.command_selection.commands.length,1);const selected=evidence.command_selection.commands[0];
+        assert.equal(selected.disposition,'in_flight');assert.equal(selected.resource_status,'unresolved');
+        assert.ok(evidence.receipts.length>0&&evidence.receipts.every(r=>r.retirement?.result==='confirmed_empty'||r.record===null));
+        const {readCommandRecord}=await load('command-record-store.mjs'),saved=db.transaction(()=>readCommandRecord(db,history.current.record.command_id)).immediate();
+        assert.deepEqual(saved.record,history.current.record);assert.equal(db.prepare('SELECT count(*) FROM command_transmission_issue').pluck().get(),1);
+       }
        assert.deepEqual(db.pragma('foreign_key_check'),[]);
       }finally{db.close();}return;
     }

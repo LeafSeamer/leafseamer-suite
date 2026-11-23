@@ -102,12 +102,7 @@ async function verifyModuleEventsMigration(directory){
 }
 const obsMode = 'supervisor_create_module_obs';
 const obsPortableRoot = process.env.LEAFSEAMER_OBS_PORTABLE_TEST_ROOT;
-test('obs_cut_dispatch_guard',{skip:process.platform!=='win32'||!obsPortableRoot,timeout:45000},async t=>{
-  const {inspectObsCut}=await load('obs-discovery.mjs');
-  const {startPortableObs}=await import('./fixtures/obs-portable.mjs');
-  const obs=await startPortableObs(t,obsPortableRoot,inspectObsCut);
-  const input={port:obs.port,password:obs.password,initial:obs.program_scene_uuid,
-    target:obs.scene_uuids.find(scene=>scene!==obs.program_scene_uuid)};
+async function verifyObsCutGuard(t,input){
   const env={...process.env,LEAFSEAMER_OBS_GUARD_TEST:'1'};
   delete env.NODE_TEST_CONTEXT;
   const probe=spawn(process.execPath,['--disallow-code-generation-from-strings','--test','--test-isolation=none','--test-reporter=tap',
@@ -122,6 +117,13 @@ test('obs_cut_dispatch_guard',{skip:process.platform!=='win32'||!obsPortableRoot
   probe.stdin.end(JSON.stringify(input));
   assert.equal((await ended)[0],0,stdout+stderr);
   assert.match(stdout,/^ok 1 - obs_cut_final_guard\r?$/m);
+}
+test('obs_cut_dispatch_guard',{skip:process.platform!=='win32'||!obsPortableRoot,timeout:45000},async t=>{
+  const {inspectObsCut}=await load('obs-discovery.mjs');
+  const {startPortableObs}=await import('./fixtures/obs-portable.mjs');
+  const obs=await startPortableObs(t,obsPortableRoot,inspectObsCut);
+  await verifyObsCutGuard(t,{port:obs.port,password:obs.password,initial:obs.program_scene_uuid,
+    target:obs.scene_uuids.find(scene=>scene!==obs.program_scene_uuid)});
 });
 test('obs_cut_wire_transport',{skip:process.platform!=='win32'||!obsPortableRoot,timeout:35000},async t=>{
   const {inspectObsCut,openObsCutWriterSession,ObsCutEntryRejected}=await load('obs-discovery.mjs');
@@ -747,6 +749,10 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   if(obs){
     await waitFor(()=>frames.some(f=>f.event==='obs-module-samples'||f.event==='unavailable')||child.exitCode!==null);
     assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,code})=>({event,code}))));
+    const {packet_hex,target,stale}=frames.find(f=>f.event==='obs-cut-packet');
+    assert.equal(stale,'obs_cut_packet_stale_reference');
+    await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
+      catalog:frames.find(f=>f.event==='obs-scene-confirmed').ready,packet_hex});
     await portable.stop();
     fs.writeFileSync(fixture+'.obs-stopped','stopped');
     await waitFor(()=>frames.some(f=>f.event==='module-failed-retired')||child.exitCode!==null);

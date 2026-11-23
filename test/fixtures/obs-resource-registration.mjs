@@ -2,19 +2,21 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {createHash, randomUUID} from 'node:crypto';
 import {once} from 'node:events';
-import {mkdtempSync, readdirSync} from 'node:fs';
+import {mkdtempSync, readFileSync, readdirSync, writeFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {initializeStorage, openStorage} from '/controller/dist/storage.mjs';
 import {createObsDeviceModule} from '/controller/dist/obs-device-module.mjs';
+import {canonical} from '/controller/dist/auth-clock-value.mjs';
 
 const cli = '/controller/dist/cli.mjs';
 const require = createRequire(cli);
 const Database = require('better-sqlite3');
 const WebSocket = require('ws');
-const dir = mkdtempSync(path.join(os.tmpdir(), 'leafseamer-obs-resource-'));
+const suiteDataDirectory = process.env.OBS_FIXTURE_DATA_DIR;
+const dir = suiteDataDirectory ?? mkdtempSync(path.join(os.tmpdir(), 'leafseamer-obs-resource-'));
 const filename = path.join(dir, 'controller.sqlite');
 const chunks = [];
 for await (const chunk of process.stdin) chunks.push(chunk);
@@ -47,7 +49,7 @@ function history(db) {
 const migrate = revision => command('migrate-storage', ['--data-dir', dir, '--to-revision', String(revision)]);
 const register = input => command('register-obs-resource', ['--data-dir', dir], input);
 
-initializeStorage(dir);
+if (suiteDataDirectory === undefined) initializeStorage(dir);
 let migrated = await migrate(97);
 assert.equal(migrated.code, 0, JSON.stringify(migrated.errors));
 const storage = openStorage(dir);
@@ -127,6 +129,56 @@ assert.deepEqual(observation.output.resource_ref, created.output.resource_ref);
 assert.deepEqual(observation.output.samples, ['1', '2'].map(sample_sequence => ({sample_sequence, program_scene_uuid: scenes[0]})));
 assert.deepEqual(observation.output.catalog.action_ids, []);
 assert.deepEqual(observation.output.catalog.trigger_ids, []);
+
+const secretDirectory = process.env.OBS_FIXTURE_SECRET_DIR;
+if (secretDirectory !== undefined) {
+  const options = ['--data-dir', dir, '--secret-dir', secretDirectory];
+  const seal = input => command('seal-obs-resource-credential', options, input);
+  const protectedObserve = input => command('observe-obs-resource', options, input);
+  const credential = {device_id: device, password, version: '1'};
+  assert.equal((await seal({...credential, password: 'incorrect-synthetic-password'})).errors?.error, 'obs_authentication');
+  const sealed = await seal(credential);
+  assert.equal(sealed.code, 0, JSON.stringify(sealed.errors));
+  assert.equal(sealed.output.event, 'obs_resource_credential_sealed');
+  const secret_ref = sealed.output.secret_ref;
+  assert.equal(secret_ref.secret_id, created.output.resource_ref.object_id);
+  assert.equal(secret_ref.owner_service_id, identity.service_id);
+  assert.deepEqual(await seal(credential), sealed);
+  const second = await seal({...credential, version: '2'});
+  assert.equal(second.code, 0, JSON.stringify(second.errors));
+  const protectedInput = {device_id: device, samples: 2, secret_ref};
+  const fromStore = await protectedObserve(protectedInput);
+  assert.equal(fromStore.code, 0, JSON.stringify(fromStore.errors));
+  assert.deepEqual(fromStore.output.samples, observation.output.samples);
+  for (const [field, bad, code] of [
+    ['secret_id', randomUUID(), 'obs_resource_secret_binding'],
+    ['owner_service_id', randomUUID(), 'secret_store_reference'],
+    ['purpose', 'runtime_tls', 'secret_store_reference']
+  ]) {
+    assert.equal((await protectedObserve({...protectedInput, secret_ref: {...secret_ref, [field]: bad}})).errors?.error, code);
+  }
+  const ledger = new Database(path.join(secretDirectory, 'nonce.sqlite'), {readonly: true, fileMustExist: true});
+  try { assert.equal(ledger.prepare('SELECT count(*) FROM secret_nonce').pluck().get(), 2); }
+  finally { ledger.close(); }
+  const firstFile = path.join(secretDirectory, secret_ref.secret_id + '.1.secret');
+  const secondFile = path.join(secretDirectory, secret_ref.secret_id + '.2.secret');
+  const envelope = readFileSync(firstFile, 'utf8');
+  assert.ok(!envelope.includes(password));
+  const broken = JSON.parse(envelope);
+  assert.notEqual(broken.nonce, JSON.parse(readFileSync(secondFile, 'utf8')).nonce);
+  const shortTag = Buffer.from(broken.tag, 'base64url').subarray(0, 12).toString('base64url');
+  writeFileSync(firstFile, canonical({...broken, tag: shortTag}));
+  assert.equal((await protectedObserve(protectedInput)).errors?.error, 'secret_store_envelope');
+  broken.tag = Buffer.from(broken.tag, 'base64url');
+  broken.tag[0] ^= 1;
+  writeFileSync(firstFile, canonical({...broken, tag: broken.tag.toString('base64url')}));
+  assert.equal((await protectedObserve(protectedInput)).errors?.error, 'secret_store_envelope');
+  writeFileSync(firstFile, envelope);
+  const aad = JSON.parse(envelope);
+  writeFileSync(secondFile, canonical({...aad, header: {...aad.header, version: '2'}}));
+  assert.equal((await protectedObserve({...protectedInput, secret_ref: second.output.secret_ref})).errors?.error, 'secret_store_envelope');
+  console.log('OBS 密文封存、只读凭据挂载、按引用采样和错误认证标签拒绝通过');
+}
 
 const lifetime = new AbortController(), resource = created.output.record;
 const open = () => createObsDeviceModule({resource, password, signal: lifetime.signal});

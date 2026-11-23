@@ -156,7 +156,7 @@ sealed表示该次内容封存提交，不能代替当前可用性查询、安�
 
 跨仓本机联调使用`test/controller-materialization.integration.mjs`：先构建两仓，将`LEAFSEAMER_CONTROLLER_TEST_ROOT`设为Controller绝对路径，再运行`node --disallow-code-generation-from-strings --test test/controller-materialization.integration.mjs`。它使用临时安装库、真实进程与管道；合成发行／平台批准只供测试，不授予生产资格。
 
-Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指向刚解压的 [OBS Studio 32.0.4 Windows x64 便携包](https://github.com/obsproject/obs-studio/releases/tag/32.0.4)。目录须无 `config`，并由本次测试独占。运行 `node --disallow-code-generation-from-strings --test --test-name-pattern 'supervisor_create_module_obs$' test/controller-materialization.integration.mjs`。用例在临时库登记两个空场景和随机凭据，在本机启动一次性 OBS，验证原生 Worker 的只读采集和目录持久化。测试使用软件实例、临时配置及合成发行批准。
+Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指向刚解压的 [OBS Studio 32.0.4 Windows x64 便携包](https://github.com/obsproject/obs-studio/releases/tag/32.0.4)。目录须无 `config`，并由本次测试独占。运行 `node --disallow-code-generation-from-strings --test --test-name-pattern 'supervisor_create_module_obs$' test/controller-materialization.integration.mjs`。用例在临时库登记两个空场景和随机凭据，在本机启动一次性 OBS，验证原生 Worker 采集、SQLite 保存，以及 HTTPS 场景目录的权限与失联撤回。测试使用软件实例、临时配置及合成发行批准。
 
 同一联调文件的 `obs_cut_wire_transport$` 用例使用独占的 OBS 便携实例，在两个空场景之间验证固定 Cut 传输。用例检查同步拒发、按 UUID 设置场景、匹配应答后发起的新读回以及相同目标重复提交仍产生新的四帧。该用例使用测试提供的许可复核回调。
 

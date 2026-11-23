@@ -652,7 +652,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     runFence={origin_scope,run_id,...(mode===retirementSchemaExecution?{after_retirement:true,rejection_id:receipt.receipt_id}:{})};
   }
   const fixture=path.join(root,'fixture.json');fs.writeFileSync(fixture,JSON.stringify({binding,mode,materials,runtime:runtimeInput,reference_acceptance:referenceAcceptance,reference_schema:referenceSchema,source_reference_capture:sourceReferenceCapture,...(process.env.LEAFSEAMER_CORE_PERFORMANCE?{performance_capture:process.env.LEAFSEAMER_CORE_PERFORMANCE}:{}),...(gui?{gui}:{}),...(automationPeer?{automation_peer:automationPeer}:{}),...(runFence?{run_fence:runFence}:{}),
-    ...((mode.endsWith('_capabilities')||mode==='supervisor_create_module_writable_evidence_resource_open_dispatch_ready'||commandLifecycleCases.includes(mode)||commandEncodingCases.includes(mode))?{command_tls:certificate()}:{})}));
+    ...((obs||mode.endsWith('_capabilities')||mode==='supervisor_create_module_writable_evidence_resource_open_dispatch_ready'||commandLifecycleCases.includes(mode)||commandEncodingCases.includes(mode))?{command_tls:certificate()}:{})}));
   const peer=captureInstallationPeer(process.pid).descriptor,descriptor=store.materializationClock(),suffix=crypto.randomUUID(),channelId=crypto.randomUUID();
   const config={format:'leafseamer-installation-peer/1',pipe_suffix:suffix,channel_id:channelId,
     host_installation_id:store.identity.host_installation_id,authority_service_id:store.identity.authority_service_id,database_instance_id:store.identity.database_instance_id,
@@ -729,6 +729,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,code})=>({event,code}))));
     await portable.stop();
     fs.writeFileSync(fixture+'.obs-stopped','stopped');
+    await waitFor(()=>frames.some(f=>f.event==='module-failed-retired')||child.exitCode!==null);
   }
   if(automationPeer&&!targetGateOnly){
     const seamer=process.env.LEAFSEAMER_SEAMER_TEST_ROOT??path.join(path.dirname(controller),'leafseamer');
@@ -1851,12 +1852,27 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     assert.equal(admitted.admission_receipt.gate_state,'closed');
     assert.deepEqual(connected.body.catalog.action_ids,[]);
     assert.deepEqual(connected.body.catalog.trigger_ids,[]);
-    assert.deepEqual(first.body.value,{sample_sequence:'1',program_scene_uuid:portable.program_scene_uuid});
-    assert.deepEqual(second.body.value,{sample_sequence:'2',program_scene_uuid:portable.program_scene_uuid});
+    assert.deepEqual(first.body.value,{sample_sequence:'1',program_scene_uuid:portable.program_scene_uuid,scenes:portable.directory});
+    assert.deepEqual(second.body.value,{sample_sequence:'2',program_scene_uuid:portable.program_scene_uuid,scenes:portable.directory});
     assert.equal(accepted.approval.qualification.qualification,'fixed_obs_read_only/1');
     assert.equal(accepted.approval.evidence_policy.write_eligible,false);
     assert.equal(accepted.approval.device_session_id,connected.body.device_session_id);
-    assert.ok(['module_closed','module_channel_closed'].includes(frames.find(f=>f.event==='unavailable')?.code));
+    const {scene_catalog:directory}=accepted;
+    assert.equal(directory.device_session_id,connected.body.device_session_id);
+    assert.equal(directory.collection_ref,accepted.approval.approval_id);
+    assert.equal(directory.status,'unconfirmed');
+    assert.deepEqual(directory.entries.map(({scene_id,...scene})=>scene),portable.directory);
+    assert.equal(new Set(directory.entries.map(({scene_id})=>scene_id)).size,2);
+    const http=frames.find(f=>f.event==='obs-scene-catalog-http');
+    assert.equal(http?.current.status,200);
+    assert.deepEqual(http.current.body.data,directory);
+    assert.equal(http.noPermission.status,403);
+    assert.equal(http.noToken.status,401);
+    const withdrawn=frames.find(f=>f.event==='obs-scene-catalog-withdrawn')?.response;
+    assert.equal(withdrawn?.status,503);
+    assert.equal(withdrawn.body.error.code,'WORKER_NOT_READY');
+    const unavailable=frames.find(f=>f.event==='unavailable')?.code;
+    assert.ok(['module_closed','module_channel_closed','worker_runtime_withdrawn'].includes(unavailable),String(unavailable));
     assert.equal(frames.find(f=>f.event==='module-failed-retired')?.result.result,'confirmed_empty');
     child.stdin.end('stop\n');assert.equal((await ended)[0],0);
     const worker=new Database(path.join(core,'supervisor-journal.db'),{readonly:true,fileMustExist:true});
@@ -1867,6 +1883,8 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.equal(business.prepare('SELECT count(*) FROM extension_resource_owner').pluck().get(),1);
       assert.equal(business.prepare('SELECT count(*) FROM device_catalog_approval').pluck().get(),1);
       assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),2);
+      const values=business.prepare('SELECT body_jcs FROM device_baseline_sample ORDER BY sample_sequence').pluck().all();
+      assert.deepEqual(values.map(row=>JSON.parse(row).value.scenes),[portable.directory,portable.directory]);
       assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),0);
       assert.equal(business.prepare('SELECT count(*) FROM worker_runtime_withdrawal').pluck().get(),1);
       const journal=business.prepare('SELECT frame_jcs FROM device_module_frame').pluck().all();

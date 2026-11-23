@@ -57,7 +57,9 @@ export async function startPortableObs(t, root, inspect) {
       await wait(250);
       const discovery = await inspect({port,password});
       assert.equal(discovery.collection_name,collection_name);
-      return {port,password,collection_name,scene_uuids:scenes.map(([,uuid]) => uuid).sort(),
+      const scene_uuids=scenes.map(([,uuid]) => uuid).sort();
+      const directory=scene_uuids.map(uuid=>({obs_scene_uuid:uuid,display_name:scenes.find(([,id])=>id===uuid)[0]}));
+      return {port,password,collection_name,scene_uuids,directory,
         program_scene_uuid:discovery.program_scene_uuid,stop};
     } catch (error) {
       if (performance.now()>=until || !['obs_transport','obs_request','obs_observation_changed','obs_timeout'].includes(error.code)) throw error;

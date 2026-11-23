@@ -43,6 +43,10 @@ device_actions 按 (device_id,action_id,capability_version) 排序且唯一；pa
 | /internal/automation/preparations/lookup | PreparationLookup → found/record、not_found/null或indeterminate/null，200 | automation.prepare.read；只读，不创建准备或 grant |
 | /internal/automation/preparations/close | PreparationClose → PreparationRecord，首次202、原件200 | automation.protect；原执行 grant 失效不阻止当前有保护权的主体收紧拒绝。允许同身份单调拒绝重投，不授设备重试 |
 
+Controller Schema 77 的实际配对监听器开放准备提交和查原，要求 `X-LeafSeamer-Preparation-Version: automation-preparation/0.1.0-draft.2`。它使用本部署两端的配对证书、目标绑定和一次请求挑战。准备正文固定完整服务主体、动作和参数范围、目标策略修订。结果包含固定请求摘要、RunGrant、运行批准与背书引用。202 表示新提交，200 返回已有原件或查原结论，同键异内容返回 409。应答携带原挑战、配对 attempt 与 transcript 摘要，使用 `no-store`。客户端遇到响应未知时按原目标库、准备身份及请求摘要查原，`not_found` 时保留该身份和不确定状态。该配对版本独立于公开 SDK 的 product9 选择，关闭操作尚未启用。
+
+配对 `POST /internal/automation/preparations/eligibility` 复用该版本及 `automation.prepare.read`，输入为原查原身份、准备回执引用和 RunGrant 引用。Controller 在同一库核验签发启动身份和单调域、当前组织批准与背书、撤销拒绝及精确控制原件，在应答释放前重核。可用时返回 `eligible` 和原证据最早截止。Seamer 按自己的单调域加验最多两秒的读取期限，并在布防检查中复核全部目标和来源。旧回执仍可查原，缺少签发启动信息的旧记录无法提供当前资格。
+
 准备身份键：(controller_scope, origin_scope, preparation_id)。operation_id 属于请求正文，不能借同 preparation_id 改所属操作。请求摘要固定，异内容409；相同原件仍需当前读取权限，但不因旧审批/控制版本已变化重新签发。未知后 lookup=not_found 不证明准备从未受理，也不允许另起ID；采取 close，完成保护后由新预览/新代次重新准备。
 
 close 携带完整原 PrepareRequest 及其摘要，不要求先取得 receipt；这样可以在准备响应丢失或准备请求尚在网络中时建立精确墓碑。首次 close 的身份键增加 close_operation_id；同键异内容409。多个独立关闭操作可指向同一准备身份，各自记录，均只收紧同一代次拒绝。不能覆盖原请求、回执或其他操作结果。

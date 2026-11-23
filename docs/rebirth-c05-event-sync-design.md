@@ -261,6 +261,8 @@ HTTP创建的request_id以`(publisher,owner,purpose,request_id)`唯一，保存s
 
 `server.sync.ready`是有cursor和payload_digest的同链检查点，包含baseline_snapshot_id；只有追赶所需前缀已交付且客户端已连续处理到它才显示同步。它不授予run恢复权。控制帧没有device.write／permission字段；未知type、额外字段、缺绑定均拒绝。附属机器资料只描述owner／view／attach／ACK及有限控制帧，完整manifest分页、类型化server.data和checkpoint载荷仍需同版归并，不能以本批Schema通过宣告整个事件协议可用。
 
+product9 内部服务通道的就绪检查点摘要为 `SHA-256(JCS({entry_kind:"sync.ready",payload:{baseline_snapshot_id}}))`。每代连接的检查点占用该代固定追赶区间的最后游标，空区间也分配游标。接收方核对快照身份、连续游标和摘要，持久提交后发送 `durable_ingest` ACK。确认当前代检查点后发布方报告 `live`，空闲通道随后跟进获准日志。重连固定新的追赶终点并回到 `catching_up`。重放旧检查点不会开放新代实时资格。Seamer 核验发布方水位和本地当前代检查点后报告传输就绪。
+
 ### 9.5 SS05：撤销、持久事务及有限预算
 
 权限关闭与连接换代在同一释放门排序：先关闭则未释放帧不可再发，先释放则记录不可撤回。收到F04 selector按实际owner／credential／pairing／授权映射作用，人员session注销不得命中service owner。撤TLS credential使该连接立即失去新释放资格；仍有已批准新credential也只能重新attach，不借旧socket延长。普通token过期不被误解成无关mTLS断权，mTLS自己的身份／用途截止独立检查。

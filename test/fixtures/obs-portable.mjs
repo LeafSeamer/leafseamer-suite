@@ -24,7 +24,10 @@ export async function startPortableObs(t, root, inspect) {
   const settings = path.join(config, 'plugin_config', 'obs-websocket');
   const scenePath = path.join(config, 'basic', 'scenes');
   let stop = async () => {};
-  t.after(async () => { try { await stop(); } finally { fs.rmSync(configRoot, {recursive:true, force:true}); } });
+  t.after(async () => {
+    try { await stop(); }
+    finally { fs.rmSync(configRoot, {recursive:true, force:true, maxRetries:8, retryDelay:125}); }
+  });
   fs.mkdirSync(settings, {recursive:true});
   fs.mkdirSync(scenePath, {recursive:true});
   const socket = net.createServer().listen(0, '127.0.0.1');
@@ -50,6 +53,8 @@ export async function startPortableObs(t, root, inspect) {
   for (;;) {
     assert.equal(obs.exitCode,null,'OBS portable exited during startup');
     try {
+      await inspect({port,password});
+      await wait(250);
       const discovery = await inspect({port,password});
       assert.equal(discovery.collection_name,collection_name);
       return {port,password,collection_name,scene_uuids:scenes.map(([,uuid]) => uuid).sort(),

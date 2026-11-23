@@ -102,6 +102,34 @@ async function verifyModuleEventsMigration(directory){
 }
 const obsMode = 'supervisor_create_module_obs';
 const obsPortableRoot = process.env.LEAFSEAMER_OBS_PORTABLE_TEST_ROOT;
+test('obs_cut_wire_transport',{skip:process.platform!=='win32'||!obsPortableRoot,timeout:35000},async t=>{
+  const {inspectObsCut,openObsCutWriterSession,ObsCutEntryRejected}=await load('obs-discovery.mjs');
+  const {startPortableObs}=await import('./fixtures/obs-portable.mjs');
+  const obs=await startPortableObs(t,obsPortableRoot,inspectObsCut);
+  const abort=new AbortController();t.after(()=>abort.abort());
+  const input={port:obs.port,password:obs.password};
+  const session=await openObsCutWriterSession(input,abort.signal);
+  const target=obs.scene_uuids.find(scene=>scene!==obs.program_scene_uuid);
+  let order=0n,entries=0;
+  const {openNativeClock}=await load('native-clock.mjs'),clock=openNativeClock();
+  const cut=enterTransmission=>session.cutScene({sceneUuid:target,enterTransmission,tick:()=>clock.tick(),
+    nextIoSequence:()=>++order,evidenceDeadline:clock.tick()+5000000000n,signal:abort.signal});
+  await assert.rejects(cut(()=>{throw new ObsCutEntryRejected();}),ObsCutEntryRejected);
+  assert.equal((await session.sample()).program_scene_uuid,obs.program_scene_uuid);
+  for(let i=0;i<2;i++){
+    const result=await cut(()=>{entries++;});
+    const [send,ack,query,reply]=result.frames;
+    assert.deepEqual(result.frames.map(frame=>frame.kind),['set_send','set_ack','query_send','query_result']);
+    assert.ok(result.frames.every((frame,index,frames)=>index===0||
+      BigInt(frame.io_seq)>BigInt(frames[index-1].io_seq)&&BigInt(frame.tick_ns)>=BigInt(frames[index-1].tick_ns)));
+    assert.equal(send.protocol_request_id,ack.protocol_request_id);
+    assert.equal(query.protocol_request_id,reply.protocol_request_id);
+    assert.notEqual(send.protocol_request_id,query.protocol_request_id);
+    assert.equal(reply.scene_uuid,target);
+  }
+  assert.equal(entries,2);
+  assert.equal((await inspectObsCut(input)).program_scene_uuid,target);
+});
 const preparationSchemaExecution='supervisor_create_module_writable_evidence_resource_open_dispatch_ready_encoding_t2_guard_dispatch_closure_cleanup_successor';
 const retirementSchemaExecution=preparationSchemaExecution+'_control';
 const preserveExecutionHistory=process.env.LEAFSEAMER_EXECUTION_FENCE_MIGRATION_TEST==='1';

@@ -101,6 +101,7 @@ async function verifyModuleEventsMigration(directory){
  }finally{db.close();}
 }
 const obsMode = 'supervisor_create_module_obs';
+const obsCutMode = 'supervisor_create_module_obs_cut';
 const obsPortableRoot = process.env.LEAFSEAMER_OBS_PORTABLE_TEST_ROOT;
 async function verifyObsCutGuard(t,input){
   const env={...process.env,LEAFSEAMER_OBS_GUARD_TEST:'1'};
@@ -238,15 +239,15 @@ async function verifyReferenceRestart(core,policy,workerExit){
   }
 }
 
-for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime','supervisor_create_module_writable_capabilities','supervisor_create_module_writable_peer_capabilities','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore','supervisor_create_module_control','supervisor_create_module_writable','supervisor_create_module_writable_catalog_template','supervisor_create_module_writable_catalog_policy','supervisor_create_module_writable_binding_fail','supervisor_create_module_writable_binding_ignore','supervisor_create_module_writable_handshake_fail','supervisor_create_module_writable_handshake_write_ignore','supervisor_create_module_writable_control_fence_request_fail','supervisor_create_module_writable_control_fence_ack_ignore','supervisor_create_module_writable_control_fence_write_ignore','supervisor_create_module_writable_manual_authority_source_fail','supervisor_create_module_writable_manual_authority_commit_ignore','supervisor_create_module_writable_manual_authority_core_source_fail','supervisor_create_module_writable_manual_authority_core_commit_ignore','supervisor_create_module_writable_evaluator_source_fail','supervisor_create_module_writable_evaluator_commit_ignore','supervisor_create_module_writable_recovery_request_ignore','supervisor_create_module_writable_recovery_authorization_ignore','supervisor_create_module_writable_recovery_commit_ignore','supervisor_create_module_writable_consumption_record_ignore','supervisor_create_module_writable_consumption_state_ignore','supervisor_create_module_writable_consumption_commit_ignore','supervisor_create_module_writable_consumption_head_ignore','supervisor_create_module_writable_manual_challenge_record_ignore','supervisor_create_module_writable_manual_challenge_commit_ignore','supervisor_create_module_writable_manual_challenge_response_ignore','supervisor_create_module_writable_manual_challenge_checks','supervisor_create_module_writable_evidence_checks','supervisor_create_module_writable_evidence_cut_ignore','supervisor_create_module_writable_evidence_record_ignore','supervisor_create_module_writable_evidence_commit_ignore','supervisor_create_module_writable_evidence_head_ignore','supervisor_create_module_writable_evidence_resource_checks','supervisor_create_module_writable_evidence_resource_record_ignore','supervisor_create_module_writable_evidence_resource_commit_ignore','supervisor_create_module_writable_evidence_resource_open_checks','supervisor_create_module_writable_evidence_resource_open_record_ignore','supervisor_create_module_writable_evidence_resource_open_commit_ignore',"supervisor_create_module_writable_evidence_resource_open_dispatch","supervisor_create_module_writable_evidence_resource_open_dispatch_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_request_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ack_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_automatic","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_manual_migration","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_control_ignore",...commandAdmissionFaults,...commandLifecycleFaults,...commandLifecycleCases,...commandEncodingCases,obsMode])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32'||mode===obsMode&&!obsPortableRoot,timeout:(mode==='supervisor_create_module_writable_peer_capabilities'||mode.endsWith('_capture_events'))?(exerciseReceiverAge&&mode.endsWith('_capture_events')?160000:120000):(mode.includes('_cleanup_successor')||mode.endsWith('_capabilities'))&&process.env.LEAFSEAMER_GUI_TEST_ROOT?120000:60000},async t=>{
-  const obs=mode===obsMode;
+for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime','supervisor_create_module_writable_capabilities','supervisor_create_module_writable_peer_capabilities','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore','supervisor_create_module_control','supervisor_create_module_writable','supervisor_create_module_writable_catalog_template','supervisor_create_module_writable_catalog_policy','supervisor_create_module_writable_binding_fail','supervisor_create_module_writable_binding_ignore','supervisor_create_module_writable_handshake_fail','supervisor_create_module_writable_handshake_write_ignore','supervisor_create_module_writable_control_fence_request_fail','supervisor_create_module_writable_control_fence_ack_ignore','supervisor_create_module_writable_control_fence_write_ignore','supervisor_create_module_writable_manual_authority_source_fail','supervisor_create_module_writable_manual_authority_commit_ignore','supervisor_create_module_writable_manual_authority_core_source_fail','supervisor_create_module_writable_manual_authority_core_commit_ignore','supervisor_create_module_writable_evaluator_source_fail','supervisor_create_module_writable_evaluator_commit_ignore','supervisor_create_module_writable_recovery_request_ignore','supervisor_create_module_writable_recovery_authorization_ignore','supervisor_create_module_writable_recovery_commit_ignore','supervisor_create_module_writable_consumption_record_ignore','supervisor_create_module_writable_consumption_state_ignore','supervisor_create_module_writable_consumption_commit_ignore','supervisor_create_module_writable_consumption_head_ignore','supervisor_create_module_writable_manual_challenge_record_ignore','supervisor_create_module_writable_manual_challenge_commit_ignore','supervisor_create_module_writable_manual_challenge_response_ignore','supervisor_create_module_writable_manual_challenge_checks','supervisor_create_module_writable_evidence_checks','supervisor_create_module_writable_evidence_cut_ignore','supervisor_create_module_writable_evidence_record_ignore','supervisor_create_module_writable_evidence_commit_ignore','supervisor_create_module_writable_evidence_head_ignore','supervisor_create_module_writable_evidence_resource_checks','supervisor_create_module_writable_evidence_resource_record_ignore','supervisor_create_module_writable_evidence_resource_commit_ignore','supervisor_create_module_writable_evidence_resource_open_checks','supervisor_create_module_writable_evidence_resource_open_record_ignore','supervisor_create_module_writable_evidence_resource_open_commit_ignore',"supervisor_create_module_writable_evidence_resource_open_dispatch","supervisor_create_module_writable_evidence_resource_open_dispatch_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_request_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ack_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_automatic","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_manual_migration","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_control_ignore",...commandAdmissionFaults,...commandLifecycleFaults,...commandLifecycleCases,...commandEncodingCases,obsMode,obsCutMode])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32'||mode===obsMode&&!obsPortableRoot,timeout:(mode==='supervisor_create_module_writable_peer_capabilities'||mode.endsWith('_capture_events'))?(exerciseReceiverAge&&mode.endsWith('_capture_events')?160000:120000):(mode.includes('_cleanup_successor')||mode.endsWith('_capabilities'))&&process.env.LEAFSEAMER_GUI_TEST_ROOT?120000:60000},async t=>{
+  const obsCut=mode===obsCutMode,obs=mode===obsMode||obsCut;
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
   const referenceWatermark=mode.endsWith('_reference_watermark');
   const referenceAcceptance=mode===referenceAcceptanceExecution||referenceRestart||referenceWatermark;
   const referenceSchema=referenceAcceptance||mode.endsWith('_reference_absent');
   const commandSettled=mode.includes('_dispatch_closure'),commandDispatch=mode.includes('_guard_dispatch'),commandDispatchFailure=dispatchOmissions[mode],settlementFailure=settlementOmissions[mode],cleanupFailure=cleanupOmissions[mode];
   const runtimeMode=obs||['supervisor_create_runtime','supervisor_create_module_writable_peer_capabilities','supervisor_create_module_writable_capabilities','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore','supervisor_create_module_control','supervisor_create_module_writable','supervisor_create_module_writable_catalog_template','supervisor_create_module_writable_catalog_policy','supervisor_create_module_writable_binding_fail','supervisor_create_module_writable_binding_ignore','supervisor_create_module_writable_handshake_fail','supervisor_create_module_writable_handshake_write_ignore','supervisor_create_module_writable_control_fence_request_fail','supervisor_create_module_writable_control_fence_ack_ignore','supervisor_create_module_writable_control_fence_write_ignore','supervisor_create_module_writable_manual_authority_source_fail','supervisor_create_module_writable_manual_authority_commit_ignore','supervisor_create_module_writable_manual_authority_core_source_fail','supervisor_create_module_writable_manual_authority_core_commit_ignore','supervisor_create_module_writable_evaluator_source_fail','supervisor_create_module_writable_evaluator_commit_ignore','supervisor_create_module_writable_recovery_request_ignore','supervisor_create_module_writable_recovery_authorization_ignore','supervisor_create_module_writable_recovery_commit_ignore','supervisor_create_module_writable_consumption_record_ignore','supervisor_create_module_writable_consumption_state_ignore','supervisor_create_module_writable_consumption_commit_ignore','supervisor_create_module_writable_consumption_head_ignore','supervisor_create_module_writable_manual_challenge_record_ignore','supervisor_create_module_writable_manual_challenge_commit_ignore','supervisor_create_module_writable_manual_challenge_response_ignore','supervisor_create_module_writable_manual_challenge_checks','supervisor_create_module_writable_evidence_checks','supervisor_create_module_writable_evidence_cut_ignore','supervisor_create_module_writable_evidence_record_ignore','supervisor_create_module_writable_evidence_commit_ignore','supervisor_create_module_writable_evidence_head_ignore','supervisor_create_module_writable_evidence_resource_checks','supervisor_create_module_writable_evidence_resource_record_ignore','supervisor_create_module_writable_evidence_resource_commit_ignore','supervisor_create_module_writable_evidence_resource_open_checks','supervisor_create_module_writable_evidence_resource_open_record_ignore','supervisor_create_module_writable_evidence_resource_open_commit_ignore',"supervisor_create_module_writable_evidence_resource_open_dispatch","supervisor_create_module_writable_evidence_resource_open_dispatch_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_request_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ack_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_automatic","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_manual_migration","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_control_ignore",...commandAdmissionFaults,...commandLifecycleFaults,...commandLifecycleCases,...commandEncodingCases].includes(mode);let runtimeInput=null;
-  const writable=mode.startsWith('supervisor_create_module_writable'),requestedActions=writable?['leafseamer.simulator.value.set']:['get','set'],proposedActions=writable?requestedActions:['get'];
+  const writable=mode.startsWith('supervisor_create_module_writable'),requestedActions=obsCut?['obs.program_scene.set']:writable?['leafseamer.simulator.value.set']:['get','set'],proposedActions=writable||obsCut?requestedActions:['get'];
   const armChain=exerciseArmChain&&mode.endsWith('_capture_events')&&!scopeMigration&&!subscriptionMigration&&!sourceProjectionMigration&&!snapshotMigration&&!channelMigration;
   const targetGateOnly=armChain&&process.env.LEAFSEAMER_SIMULATOR_TARGET_GATE_TEST==='1';
   const armedTargetDispatch=armChain&&!targetGateOnly&&process.env.LEAFSEAMER_SIMULATOR_ARM_DISPATCH_TEST==='1';
@@ -265,16 +266,16 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const coreIdentity=initializeStorage(core);await initializeProcessHost(core);
   const portable=obs?await (await import('./fixtures/obs-portable.mjs')).startPortableObs(t,obsPortableRoot,(await load('obs-discovery.mjs')).inspectObsCut):null;
   const artifact=artifactFixture();
-  if(mode.endsWith('_capabilities'))artifact.manifest.extension_version='1.0.0';
+  if(obsCut||mode.endsWith('_capabilities'))artifact.manifest.extension_version='1.0.0';
   if(usesRoles){
     artifact.manifest.roles=[{role_id:'device',kind:'device',minimum:1,maximum:armChain?2:1,purpose:'设备绑定'}];
-    artifact.manifest.permission_templates=obs?[]:[{request_id:'device.request',kind:'device_scope',purpose:'请求设备动作',scope:{device_role:'device',action_ids:requestedActions,trigger_ids:[]}}];
+    artifact.manifest.permission_templates=obs&&!obsCut?[]:[{request_id:'device.request',kind:'device_scope',purpose:'请求设备动作',scope:{device_role:'device',action_ids:requestedActions,trigger_ids:[]}}];
   }
   if(usesCapabilities){
     const template=JSON.parse(fs.readFileSync(writable?path.join(controller,'dist/simulator-control-capability.json'):new URL('./fixtures/static-capability.json',import.meta.url)));
     if(mode==='supervisor_create_module_writable_catalog_template')template.actions[0].completion.default='acknowledged';
     if(!obs&&!writable&&mode.startsWith('supervisor_create_module')&&mode!=='supervisor_create_module_catalog_template')template.state_schema=(await load('simulator-module.mjs')).simulatorCatalog().state_schema;
-    const bytes=obs?fs.readFileSync(path.join(controller,'dist/obs-module-capability.json')):Buffer.from(JSON.stringify(template));
+    const bytes=obs?fs.readFileSync(path.join(controller,obsCut?'dist/obs-cut-module-capability.json':'dist/obs-module-capability.json')):Buffer.from(JSON.stringify(template));
     const file={path:'payload/capability.json',role:'schema',bytes};
     artifact.payload.set('capability',file);artifact.inventory.files.push({file_id:'capability',path:file.path,size_bytes:String(bytes.length),
       digest:'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex'),role:file.role,executable:false});
@@ -294,11 +295,11 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     artifact.inventory.files.sort((a,b)=>a.file_id<b.file_id?-1:1);artifact.manifest.inventory_digest=digestValue(artifact.inventory);
   }
   if(mode.startsWith('supervisor_create_module')){
-    const module=artifact.payload.get('worker');module.bytes=fs.readFileSync(path.join(controller,obs?'dist/obs-device-module.mjs':writable?'dist/simulator-control-module.mjs':'dist/simulator-module.mjs'));
+    const module=artifact.payload.get('worker');module.bytes=fs.readFileSync(path.join(controller,obsCut?'dist/obs-cut-device-module.mjs':obs?'dist/obs-device-module.mjs':writable?'dist/simulator-control-module.mjs':'dist/simulator-module.mjs'));
     Object.assign(artifact.inventory.files.find(f=>f.file_id==='worker'),{size_bytes:String(module.bytes.length),digest:'sha256:'+crypto.createHash('sha256').update(module.bytes).digest('hex')});
-    const policy=artifact.payload.get('policy');policy.bytes=mode==='supervisor_create_module_catalog_policy'?Buffer.from('{"network":false}'):fs.readFileSync(path.join(controller,obs?'dist/obs-module-policy.json':writable&&mode!=='supervisor_create_module_writable_catalog_policy'?'dist/simulator-control-policy.json':'dist/simulator-policy.json'));
+    const policy=artifact.payload.get('policy');policy.bytes=mode==='supervisor_create_module_catalog_policy'?Buffer.from('{"network":false}'):fs.readFileSync(path.join(controller,obsCut?'dist/obs-cut-module-policy.json':obs?'dist/obs-module-policy.json':writable&&mode!=='supervisor_create_module_writable_catalog_policy'?'dist/simulator-control-policy.json':'dist/simulator-policy.json'));
     Object.assign(artifact.inventory.files.find(f=>f.file_id==='policy'),{size_bytes:String(policy.bytes.length),digest:'sha256:'+crypto.createHash('sha256').update(policy.bytes).digest('hex')});
-    artifact.manifest.api_versions=writable?['leafseamer-device-module/2','leafseamer-device-primitives/1']:['leafseamer-device-module/2'];artifact.manifest.ipc_versions=mode.endsWith('_capture_events')?['device-module/3','device-module/4']:['device-module/3'];if(mode.endsWith('_capture_events'))artifact.manifest.api_versions.push('leafseamer-device-event-capture/1');
+    artifact.manifest.api_versions=writable||obsCut?['leafseamer-device-module/2','leafseamer-device-primitives/1']:['leafseamer-device-module/2'];artifact.manifest.ipc_versions=mode.endsWith('_capture_events')?['device-module/3','device-module/4']:['device-module/3'];if(mode.endsWith('_capture_events'))artifact.manifest.api_versions.push('leafseamer-device-event-capture/1');
     artifact.manifest.inventory_digest=digestValue(artifact.inventory);
   }
   const archive=zipFixture(artifact.entries()).bytes;
@@ -315,7 +316,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   assert.equal((await store.sealImport(identity,{platform_profile_ref:profile,release_authorization_ref:authorized.result.reference})).state,'sealed');
   const sealed=store.sealedArtifact(identity),receipt=sealed.receipt;
   if(mode==='stage'||usesConfiguration){
-    const schema=mode===currentSchemaExecution?100:obs?99:mode.endsWith('_ready_automatic')||armChain?97:mode.endsWith('_ready_manual_migration')?95:sourceReferenceCapture?94:firstEnrollment?93:referenceWatermark || finalAdmissionOmissions[mode]==='command_issue_order'?92:referenceAcceptance?90:referenceSchema?88:mode===retirementSchemaExecution?80:mode===preparationSchemaExecution?(preserveExecutionHistory?78:79):mode.endsWith('_capture_events')?(scopeMigration?64:subscriptionMigration?65:sourceProjectionMigration?66:snapshotMigration?67:channelMigration?68:80):mode==='supervisor_create_module_writable_peer_capabilities'?62:mode.endsWith('_successor_control')||mode.includes('_control_queued')||mode.endsWith('_control_unresolved')?58:mode.includes('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
+    const schema=mode===currentSchemaExecution?101:obs?99:mode.endsWith('_ready_automatic')||armChain?97:mode.endsWith('_ready_manual_migration')?95:sourceReferenceCapture?94:firstEnrollment?93:referenceWatermark || finalAdmissionOmissions[mode]==='command_issue_order'?92:referenceAcceptance?90:referenceSchema?88:mode===retirementSchemaExecution?80:mode===preparationSchemaExecution?(preserveExecutionHistory?78:79):mode.endsWith('_capture_events')?(scopeMigration?64:subscriptionMigration?65:sourceProjectionMigration?66:snapshotMigration?67:channelMigration?68:80):mode==='supervisor_create_module_writable_peer_capabilities'?62:mode.endsWith('_successor_control')||mode.includes('_control_queued')||mode.endsWith('_control_unresolved')?58:mode.includes('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
     let controllerStore=openStorage(core),manager;
     try{
       let installations=controllerStore.extensionInstallations;installations.bindSource(store);
@@ -363,6 +364,14 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
            const after=snapshot(file);
            assert.equal(after.schema_migration.pop()[2],'100');
            assert.deepEqual(after,before);
+           if(obsCut){
+             const upgraded=await migrateStorage(core,101);
+             assert.equal(upgraded.schema_revision,'101');
+             assert.equal(upgraded.steps.length,1);
+             const stage101=snapshot(file);
+             assert.equal(stage101.schema_migration.pop()[2],'101');
+             assert.deepEqual(stage101,snapshot(path.join(core,upgraded.backup_file)));
+           }
            controllerStore=openStorage(core);
            installations=controllerStore.extensionInstallations;
            installations.bindSource(store);
@@ -386,7 +395,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
           roleRequest={request_id:'resolve.synthetic',installation_ref:result.installation_ref,configuration_ref:configured.configuration_ref,expected_revision:'0',
             bindings:[{role_id:'device',kind:'device',values:deviceRefs,configuration_ref:configured.configuration_ref}]};
           resolved=await installations.roles.resolve(roleRequest);
-           if(obs)assert.deepEqual(resolved.record.permissions,[]);
+           if(obs&&!obsCut)assert.deepEqual(resolved.record.permissions,[]);
            else assert.deepEqual(resolved.record.permissions[0].scope.devices,deviceRefs);
           assert.deepEqual(installations.roles.current(result.installation_ref),resolved);assert.deepEqual(await installations.roles.resolve(roleRequest),resolved);
           if(runtimeMode||['review','approval','capability','launch_prepare','load_handoff','load_close'].includes(mode)){
@@ -394,13 +403,13 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
             reviewRequest={request_id:'review.synthetic',installation_ref:result.installation_ref,configuration_ref:configured.configuration_ref,
               role_resolution_ref:resolved.resolution_ref,expected_revision:'0',proposed_permissions:proposed};
             reviewed=await installations.reviews.review(reviewRequest);
-            if(obs){assert.deepEqual(reviewed.record.proposed_permissions,[]);assert.deepEqual(reviewed.record.requested_permissions,[]);}
+            if(obs&&!obsCut){assert.deepEqual(reviewed.record.proposed_permissions,[]);assert.deepEqual(reviewed.record.requested_permissions,[]);}
             else{assert.deepEqual(reviewed.record.proposed_permissions[0].scope.action_ids,proposedActions);
               assert.deepEqual(reviewed.record.requested_permissions[0].scope.action_ids,requestedActions);}
             assert.deepEqual(installations.reviews.current(result.installation_ref),reviewed);
             if(mode==='approval'||usesCapabilities){
               manager=await management(controllerStore);approvalRequest={request_id:'approve.synthetic',installation_ref:result.installation_ref,
-                permission_review_ref:reviewed.review_ref,configuration_ref:configured.configuration_ref,approved_permission_ids:usesCapabilities&&!obs?['device.request']:[]};
+                permission_review_ref:reviewed.review_ref,configuration_ref:configured.configuration_ref,approved_permission_ids:usesCapabilities&&(!obs||obsCut)?['device.request']:[]};
               if(mode==='approval')await assert.rejects(manager.sessions.approveExtension(manager.token,{...approvalRequest,approved_permission_ids:['device.request']}),/extension_capability_template_unavailable/);
               approved=await manager.sessions.approveExtension(manager.token,approvalRequest);assert.deepEqual(approved.permissions,usesCapabilities?proposed:[]);
               assert.deepEqual(manager.sessions.lookupExtensionApproval(manager.token,approvalRequest.request_id),approved);
@@ -751,7 +760,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,code})=>({event,code}))));
     const {packet_hex,target,stale}=frames.find(f=>f.event==='obs-cut-packet');
     assert.equal(stale,'obs_cut_packet_stale_reference');
-    await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
+    if(!obsCut)await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
       catalog:frames.find(f=>f.event==='obs-scene-confirmed').ready,packet_hex});
     await portable.stop();
     fs.writeFileSync(fixture+'.obs-stopped','stopped');
@@ -1876,11 +1885,11 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     const admitted=frames.find(f=>f.event==='admitted')?.record;
     assert.equal(admitted?.state,'admitted_closed');
     assert.equal(admitted.admission_receipt.gate_state,'closed');
-    assert.deepEqual(connected.body.catalog.action_ids,[]);
+    assert.deepEqual(connected.body.catalog.action_ids,obsCut?['obs.program_scene.set']:[]);
     assert.deepEqual(connected.body.catalog.trigger_ids,[]);
     assert.deepEqual(first.body.value,{sample_sequence:'1',program_scene_uuid:portable.program_scene_uuid,scenes:portable.directory});
     assert.deepEqual(second.body.value,{sample_sequence:'2',program_scene_uuid:portable.program_scene_uuid,scenes:portable.directory});
-    assert.equal(accepted.approval.qualification.qualification,'fixed_obs_read_only/1');
+    assert.equal(accepted.approval.qualification.qualification,obsCut?'fixed_obs_cut_catalog/1':'fixed_obs_read_only/1');
     assert.equal(accepted.approval.evidence_policy.write_eligible,false);
     assert.equal(accepted.approval.device_session_id,connected.body.device_session_id);
     const {scene_catalog:directory}=accepted;
@@ -1903,6 +1912,22 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     assert.deepEqual(confirmed.replayed,confirmed.ready);
     assert.equal(confirmed.current.status,200);
     assert.deepEqual(confirmed.current.body.data,confirmed.ready);
+    if(obsCut){
+      const bound=frames.find(f=>f.event==='obs-cut-execution-bound');
+      assert.deepEqual(bound.first,bound.repeated);
+      assert.equal(bound.state.gate_state,'closed');
+      assert.deepEqual(bound.state.ready_devices,[]);
+      assert.equal(bound.first.value.state,'bound_closed');
+      assert.equal(bound.first.value.write_eligible,false);
+      assert.deepEqual(bound.first.value.primitive_plan.scene_catalog,confirmed.ready);
+      assert.equal(bound.first.value.action.action_id,'obs.program_scene.set');
+      assert.equal(bound.first.value.exit.protocol_session,directory.device_session_id);
+      const {deviceExecutionCapabilities}=await load('sdk/device-execution.mjs');
+      assert.ok(deviceExecutionCapabilities.manual.every(v=>bound.features.includes(v)));
+      assert.ok(deviceExecutionCapabilities.automation.every(v=>!bound.features.includes(v)));
+      assert.equal(bound.capabilities.status,200,JSON.stringify(bound.capabilities));
+      assert.deepEqual(bound.capabilities.body.data.devices[0].actions,[]);
+    }
     const lost=frames.find(f=>f.event==='obs-scene-catalog-withdrawn'),withdrawn=lost?.response;
     assert.equal(withdrawn?.status,503);
     assert.equal(withdrawn.body.error.code,'WORKER_NOT_READY');
@@ -1932,7 +1957,15 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),2);
       const values=business.prepare('SELECT body_jcs FROM device_baseline_sample ORDER BY sample_sequence').pluck().all();
       assert.deepEqual(values.map(row=>JSON.parse(row).value.scenes),[portable.directory,portable.directory]);
-      assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),0);
+      assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),obsCut?1:0);
+      if(obsCut){
+        const bound=frames.find(f=>f.event==='obs-cut-execution-bound').first;
+        const [saved,digest]=business.prepare('SELECT body_jcs,body_digest FROM device_execution_binding').raw().get();
+        assert.deepEqual(JSON.parse(saved),bound.value);
+        assert.equal(digest,bound.ref.digest);
+        assert.equal(business.prepare("SELECT count(*) FROM device_module_frame WHERE message_type='EXECUTION_BOUND'").pluck().get(),2);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type IN ('OPEN_GATE','DISPATCH')").pluck().get(),0);
+      }
       assert.equal(business.prepare('SELECT count(*) FROM worker_runtime_withdrawal').pluck().get(),1);
       const journal=business.prepare('SELECT frame_jcs FROM device_module_frame').pluck().all();
       assert.ok(journal.every(frame=>!frame.includes(portable.password)));

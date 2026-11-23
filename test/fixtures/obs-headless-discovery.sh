@@ -99,6 +99,10 @@ assert.deepEqual(result.scenes.map(x=>x.obs_scene_uuid).sort(),[
 ]);
 JS
  printf '%s\n' 'OBS Cut 配置只读检查通过'
+ if [ "${OBS_FIXTURE_REGISTER_RESOURCE:-0}" = 1 ]; then
+  printf '{"port":%s,"password":"%s"}' "$port" "$password" |
+   node --disallow-code-generation-from-strings "$(dirname "$0")/obs-resource-registration.mjs"
+ fi
 else
  if inspect_cut; then exit 1; fi
  grep -qx '{"error":"obs_cut_profile_transition"}' /tmp/obs-cut-result.json

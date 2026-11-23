@@ -40,6 +40,10 @@ cat > "$XDG_CONFIG_HOME/obs-studio/basic/scenes/LeafSeamer.json" <<EOF
  ]
 }
 EOF
+if [ "${OBS_FIXTURE_REGISTER_RESOURCE:-0}" = 1 ]; then
+ sed 's/"name":"LeafSeamer"/"name":"Alternate"/' "$XDG_CONFIG_HOME/obs-studio/basic/scenes/LeafSeamer.json" \
+  > "$XDG_CONFIG_HOME/obs-studio/basic/scenes/Alternate.json"
+fi
 Xvfb :41 -screen 0 1280x720x24 -nolisten tcp > /tmp/obs-xvfb.log 2>&1 &
 display_pid=$!
 obs_pid=
@@ -100,7 +104,7 @@ assert.deepEqual(result.scenes.map(x=>x.obs_scene_uuid).sort(),[
 JS
  printf '%s\n' 'OBS Cut 配置只读检查通过'
  if [ "${OBS_FIXTURE_REGISTER_RESOURCE:-0}" = 1 ]; then
-  printf '{"port":%s,"password":"%s"}' "$port" "$password" |
+  printf '{"port":%s,"password":"%s","obs_pid":%s}' "$port" "$password" "$obs_pid" |
    node --disallow-code-generation-from-strings "$(dirname "$0")/obs-resource-registration.mjs"
  fi
 else

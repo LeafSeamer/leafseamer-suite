@@ -1,20 +1,24 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
+import {createHash, randomUUID} from 'node:crypto';
 import {once} from 'node:events';
 import {mkdtempSync, readdirSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
+import {setTimeout as delay} from 'node:timers/promises';
 import {initializeStorage, openStorage} from '/controller/dist/storage.mjs';
+import {createObsDeviceModule} from '/controller/dist/obs-device-module.mjs';
 
 const cli = '/controller/dist/cli.mjs';
 const require = createRequire(cli);
 const Database = require('better-sqlite3');
+const WebSocket = require('ws');
 const dir = mkdtempSync(path.join(os.tmpdir(), 'leafseamer-obs-resource-'));
 const filename = path.join(dir, 'controller.sqlite');
 const chunks = [];
 for await (const chunk of process.stdin) chunks.push(chunk);
-const {port, password} = JSON.parse(Buffer.concat(chunks));
+const {port, password, obs_pid} = JSON.parse(Buffer.concat(chunks));
 const scenes = ['ebc75716-e090-42b1-b9e5-ee8a1dd15879', 'c3a343d6-9f64-4862-a151-baf6201a5ae6'];
 
 async function command(name, args, input) {
@@ -111,3 +115,85 @@ inspect(db => {
   assert.throws(() => db.exec('UPDATE obs_local_resource SET endpoint_port=1'), /immutable_obs_resource/);
 });
 console.log('OBS 本机资源登记、显式迁移回滚、持久回执与端口互斥通过');
+
+const observe = input => command('observe-obs-resource', ['--data-dir', dir], input);
+const input = {device_id: device, password, samples: 2};
+assert.equal((await observe({...input, device_id: alias})).errors?.error, 'obs_resource_unregistered');
+const observation = await observe(input);
+assert.equal(observation.code, 0, JSON.stringify(observation.errors));
+assert.equal(observation.output.event, 'obs_resource_observed');
+assert.equal(observation.output.ready, false);
+assert.deepEqual(observation.output.resource_ref, created.output.resource_ref);
+assert.deepEqual(observation.output.samples, ['1', '2'].map(sample_sequence => ({sample_sequence, program_scene_uuid: scenes[0]})));
+assert.deepEqual(observation.output.catalog.action_ids, []);
+assert.deepEqual(observation.output.catalog.trigger_ids, []);
+
+const lifetime = new AbortController(), resource = created.output.record;
+const open = () => createObsDeviceModule({resource, password, signal: lifetime.signal});
+const binding = {device_id: device, device_session_id: randomUUID(), signal: lifetime.signal};
+const module = open();
+const obsIdentity = await module.connectReadOnly(binding);
+assert.equal(obsIdentity.model, 'obs.studio');
+await assert.rejects(module.captureBaseline({...binding, device_session_id: randomUUID()}), {code: 'obs_device_session'});
+assert.deepEqual(await module.captureBaseline(binding), {sample_sequence: '1', program_scene_uuid: scenes[0]});
+
+// 仅供当前无外网夹具的独立操作方。产品会话必须观察真实 OBS 的变化和关闭。
+async function fixtureOperation(requestType, requestData) {
+  const socket = new WebSocket('ws://127.0.0.1:' + port, 'obswebsocket.json');
+  const hash = value => createHash('sha256').update(value).digest('base64');
+  const requestId = randomUUID();
+  try {
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('OBS fixture operation timeout')), 5000);
+      const settle = (error) => { clearTimeout(timer); if (error) reject(error); else resolve(); };
+      socket.on('error', settle);
+      socket.on('message', raw => {
+        try {
+          const {op, d} = JSON.parse(raw);
+          if (op === 0) {
+            const {salt, challenge} = d.authentication;
+            socket.send(JSON.stringify({op: 1, d: {rpcVersion: 1, authentication: hash(hash(password + salt) + challenge), eventSubscriptions: 0}}));
+          } else if (op === 2) {
+            socket.send(JSON.stringify({op: 6, d: {requestType, requestId, requestData}}));
+          } else if (op === 7) {
+            assert.equal(d.requestId, requestId);
+            assert.equal(d.requestType, requestType);
+            assert.equal(d.requestStatus.result, true);
+            settle();
+          }
+        } catch (error) { settle(error); }
+      });
+    });
+  } finally { socket.terminate(); }
+}
+async function losesCatalog(selected, live, expectedCode) {
+  for (let i = 0; i < 100; i++) {
+    try { await selected.proposeCatalog({...live, identity: obsIdentity}); }
+    catch (error) { assert.ok(expectedCode.includes(error.code), error.code); return; }
+    await delay(25);
+  }
+  assert.fail('OBS 会话没有停止采用目录');
+}
+
+await fixtureOperation('SetCurrentProgramScene', {sceneUuid: scenes[1]});
+// 已完成写入的独立客户端先离开，工作模块在同一条连接发起新的读取。
+await delay(100);
+assert.deepEqual(await module.captureBaseline(binding), {sample_sequence: '2', program_scene_uuid: scenes[1]});
+await fixtureOperation('SetCurrentSceneCollection', {sceneCollectionName: 'Alternate'});
+await losesCatalog(module, binding, ['obs_observation_changed']);
+await assert.rejects(module.captureBaseline(binding), {code: 'obs_observation_changed'});
+await assert.rejects(open().connectReadOnly({...binding, device_session_id: randomUUID()}), {code: 'obs_resource_catalog_changed'});
+await fixtureOperation('SetCurrentSceneCollection', {sceneCollectionName: 'LeafSeamer'});
+await assert.rejects(module.proposeCatalog({...binding, identity: obsIdentity}), {code: 'obs_observation_changed'});
+
+const restarted = open(), anotherBinding = {...binding, device_session_id: randomUUID()};
+await delay(100);
+await restarted.connectReadOnly(anotherBinding);
+assert.equal((await restarted.captureBaseline(anotherBinding)).sample_sequence, '1');
+assert.ok(Number.isInteger(obs_pid) && obs_pid > 1);
+process.kill(obs_pid, 'SIGTERM');
+await losesCatalog(restarted, anotherBinding, ['obs_observation_changed', 'obs_disconnected', 'obs_transport']);
+await assert.rejects(restarted.captureBaseline(anotherBinding), {code: /^obs_(observation_changed|disconnected|transport)$/});
+lifetime.abort();
+inspect(db => assert.equal(db.prepare('SELECT count(*) FROM device_catalog_approval').pluck().get(), 0));
+console.log('OBS 同会话新读回、集合及断连失效通过');

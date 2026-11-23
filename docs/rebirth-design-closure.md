@@ -825,6 +825,8 @@ Controller 每次重新读取控制头、权限来源修订及联表列。完整
 
 **第 16 轮完成 Controller 本机 OBS 资源登记。** 管理员通过私有管道运行 `register-obs-resource`。Controller 对已登记设备实时核验 Cut 配置、集合和场景 UUID，在同一数据库事务保存资源和审计。设备及回环端口在本库内唯一，相同请求返回原回执，OBS 密码只用于当次探测。Ubuntu 24.04 无外网夹具使用已安装的 Controller 与实际 OBS 32.0.4 验证了登记、错密和过期 UUID 拒绝、端口互斥、保护态及回执持久性。临时 SQLite 库的显式 97→98 迁移保留身份与历史，故障时回滚。五项既有数据库回归通过，Seamer 采用经摘要核验的最新 Linux Controller 清单后成功构建。当前 DeviceSession、目录批准及后续执行仍须接入固定 OBS Worker。[隔离资源验收](../test/fixtures/obs-resource-registration.mjs)
 
+**第 17 轮完成已登记 OBS 资源的同连接采样。** Controller 只读设备模块实现现有模块的连接、目录、采样和关闭接口。本机管理员从数据库选择已登记设备，在一次认证后的 WebSocket 会话中取得有序样本。无外网容器中实际 OBS 32.0.4 验证节目场景从 A 变为 B 后的新读回、错误会话拒绝、切换集合和断连使原会话失效，以及切回原集合后只能由新连接重新核验。四项 Windows 环回回归和采用新 Controller 清单的 Seamer 构建通过。观察会话由本机入口持有并在退出时关闭，固定 Worker 的凭据交付与核心 CatalogApproval 仍待接入。[隔离会话验收](../test/fixtures/obs-resource-registration.mjs) · [官方集合变化事件规范](https://github.com/obsproject/obs-websocket/blob/5.6.3/docs/generated/protocol.md#currentscenecollectionchanging)
+
 **2026-11-04已确认的实施顺序。** 全局架构、权限、事务及故障方案已有设计的 SDK、服务和 GUI 开始业务实现；仅影响具体型号适配器的编码、字段及读回精度绑定，保留为首期必须完成的实现任务，不再阻挡其它已定领域开工。对应适配器必须在发送和支持声明前补齐具名绑定、失败行为及验收，不能用未知值占位、猜编码或降低功能范围。发行可信时间等实质产品取舍仍独立保留，未定部分不得凭开工授权代批。
 
 该决定改变实施依赖，不把阶段0六项判据或阶段1—3自动标为通过，也不修改任何历史候选批准标志。后续以实际源码、构建及集成结果推进阶段1，同时完成剩余首期适配任务；各项最终验收保持原标准。

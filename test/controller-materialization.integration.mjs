@@ -344,6 +344,25 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
           try{obsConfiguration=await controllerStore.sealObsResourceCredential({device_id,password,version:'1'},secrets);}
           finally{secrets.close();}
           assert.deepEqual(obsConfiguration.resource_ref,resource.resource_ref);
+           controllerStore.close();
+           const snapshot=file=>{
+             const db=new Database(file,{readonly:true,fileMustExist:true});
+             try{return Object.fromEntries(['obs_local_resource','obs_local_resource_commit','device_resource_identity','schema_migration']
+               .map(table=>[table,db.prepare('SELECT * FROM '+table+' ORDER BY rowid').raw().all()]));}
+             finally{db.close();}
+           };
+           const file=path.join(core,'controller.sqlite'),before=snapshot(file);
+           assert.equal(before.obs_local_resource.length,1);
+           const migrated=await migrateStorage(core,100);
+           assert.equal(migrated.schema_revision,'100');
+           assert.equal(migrated.steps.length,1);
+           assert.deepEqual(snapshot(path.join(core,migrated.backup_file)),before);
+           const after=snapshot(file);
+           assert.equal(after.schema_migration.pop()[2],'100');
+           assert.deepEqual(after,before);
+           controllerStore=openStorage(core);
+           installations=controllerStore.extensionInstallations;
+           installations.bindSource(store);
         }
         const described=await store.describeConfigurationSchema({intake_id:receipt.intake_id,target_authority_service_id:coreIdentity.service_id});
         assert.equal(described.status,'available');assert.deepEqual(described.content.bytes,artifact.payload.get('config').bytes);
@@ -1868,11 +1887,21 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     assert.deepEqual(http.current.body.data,directory);
     assert.equal(http.noPermission.status,403);
     assert.equal(http.noToken.status,401);
-    const withdrawn=frames.find(f=>f.event==='obs-scene-catalog-withdrawn')?.response;
+    const confirmed=frames.find(f=>f.event==='obs-scene-confirmed');
+    assert.equal(confirmed?.denied,'device_read_denied');
+    assert.equal(confirmed.csrf,'session_invalid');
+    assert.equal(confirmed.stale,'obs_scene_confirmation_stale');
+    assert.equal(confirmed.conflict,'obs_scene_confirmation_conflict');
+    assert.deepEqual(confirmed.ready,{...directory,status:'ready',binding_revision:'2'});
+    assert.deepEqual(confirmed.replayed,confirmed.ready);
+    assert.equal(confirmed.current.status,200);
+    assert.deepEqual(confirmed.current.body.data,confirmed.ready);
+    const lost=frames.find(f=>f.event==='obs-scene-catalog-withdrawn'),withdrawn=lost?.response;
     assert.equal(withdrawn?.status,503);
     assert.equal(withdrawn.body.error.code,'WORKER_NOT_READY');
+    assert.ok(['device_capabilities_unavailable','worker_runtime_withdrawn'].includes(lost.confirmation),lost.confirmation);
     const unavailable=frames.find(f=>f.event==='unavailable')?.code;
-    assert.ok(['module_closed','module_channel_closed','worker_runtime_withdrawn'].includes(unavailable),String(unavailable));
+    assert.ok(['module_closed','module_channel_closed','worker_runtime_withdrawn','supervisor_worker_withdrawn'].includes(unavailable),String(unavailable));
     assert.equal(frames.find(f=>f.event==='module-failed-retired')?.result.result,'confirmed_empty');
     child.stdin.end('stop\n');assert.equal((await ended)[0],0);
     const worker=new Database(path.join(core,'supervisor-journal.db'),{readonly:true,fileMustExist:true});
@@ -1882,6 +1911,17 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.equal(retired.active_processes,0);
       assert.equal(business.prepare('SELECT count(*) FROM extension_resource_owner').pluck().get(),1);
       assert.equal(business.prepare('SELECT count(*) FROM device_catalog_approval').pluck().get(),1);
+      const confirmation=business.prepare('SELECT approval_id,session_id,request_id,body_jcs,body_digest FROM obs_scene_confirmation').raw().all();
+      assert.equal(confirmation.length,1);
+      const [approval_id,session_id,request_id,body_jcs,body_digest]=confirmation[0];
+      const record=JSON.parse(body_jcs);
+      assert.equal(approval_id,directory.collection_ref);
+      assert.equal(session_id,confirmed.actor.session_id);
+      assert.equal(request_id,'obs.confirm');
+      assert.equal(record.actor.principal_id,confirmed.actor.principal_id);
+      assert.deepEqual(record.catalog,directory);
+      assert.equal(record.catalog_digest,digestValue(directory));
+      assert.equal(body_digest,digestValue(record));
       assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),2);
       const values=business.prepare('SELECT body_jcs FROM device_baseline_sample ORDER BY sample_sequence').pluck().all();
       assert.deepEqual(values.map(row=>JSON.parse(row).value.scenes),[portable.directory,portable.directory]);

@@ -6,6 +6,7 @@ import {once} from 'node:events';
 import {Readable} from 'node:stream';
 import yauzl from 'yauzl';
 import {decodeArtifactDocument, artifactImportSelection} from './sdk/artifact-import.mjs';
+import {decodeCapabilityTemplate} from './sdk/capability-template.mjs';
 import {digest, InstallationError, requireValue as need} from './import-input.mjs';
 
 const fail = reason => { throw new InstallationError(reason); };
@@ -70,7 +71,12 @@ function manifestClosure(manifest, inventory, platform) {
       const kind = roles.get(id)?.kind; need(['device', 'data_object', 'run'].includes(kind), 'archive_role_reference'); take(id, kind);
     }
   }
-  need(usedRoles.size === roles.size, 'archive_unused_role');
+  if (usedRoles.size === roles.size) return null;
+  const [role] = roles.values();
+  need(roles.size === 1 && role.kind === 'device' && role.minimum === 1 && role.maximum === 1 && templates.size === 0 &&
+    manifest.entrypoints.length === 1 && manifest.entrypoints[0].kind === 'worker' && manifest.capability_template_file_ids.length === 1,
+  'archive_unused_role');
+  return {role:role.role_id, file:byId.get(manifest.capability_template_file_ids[0])};
 }
 
 // 使用yauzl公开的随机读取接口；ZIP对象关闭不接管本函数持有的FD。
@@ -203,7 +209,8 @@ export async function verifyArchive(filename, expected, outputDirectory, {platfo
     await closeZip(); need(control.size === 2, 'archive_control_files');
     const manifest = await decodeArtifactDocument(control.get('extension.json'), 'Manifest');
     const inventory = await decodeArtifactDocument(control.get('files.json'), 'FileInventory');
-    need(digest(manifest) === expected.expected_manifest_digest, 'archive_manifest_digest'); manifestClosure(manifest, inventory, platform);
+    need(digest(manifest) === expected.expected_manifest_digest, 'archive_manifest_digest');
+    const readOnly = manifestClosure(manifest, inventory, platform);
     const files = new Map(inventory.files.map(file => [file.path, file])), directories = new Set();
     for (const file of files.keys()) { const parts = file.split('/'); for (let n = 1; n < parts.length; ++n) directories.add(parts.slice(0, n).join('/') + '/'); }
     need(bounds.count <= files.size + directories.size + 2, 'archive_entry_count');
@@ -222,7 +229,18 @@ export async function verifyArchive(filename, expected, outputDirectory, {platfo
       const declared = files.get(name); need(entry.uncompressedSize === Number(declared.size_bytes), 'archive_inventory_size');
       const target = path.join(outputDirectory, ...name.split('/')); await fsp.mkdir(path.dirname(target), {recursive: true, mode: 0o700});
       const output = await fsp.open(target, 'wx', 0o600);
-      try { const actual = await bytes(entry, Number(declared.size_bytes), output); need(actual.digest === declared.digest, 'archive_file_digest'); total += actual.size; await output.sync(); }
+      try {
+        const checkRole = readOnly?.file === declared;
+        const actual = checkRole ? await bytes(entry, 1048576) : await bytes(entry, Number(declared.size_bytes), output);
+        need(actual.digest === declared.digest, 'archive_file_digest');
+        if (checkRole) {
+          const template = await decodeCapabilityTemplate(actual.bytes);
+          need(template.device_role === readOnly.role && template.actions.length === 0 && template.triggers.length === 0, 'archive_unused_role');
+          await output.writeFile(actual.bytes);
+        }
+        total += actual.size;
+        await output.sync();
+      }
       finally { await output.close(); }
     }
     await closeZip(); need(count === bounds.count && centralBytes === bounds.centralSize && [...files.keys()].every(name => seen.has(name.toLowerCase())), 'archive_inventory');

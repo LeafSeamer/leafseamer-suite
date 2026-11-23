@@ -156,6 +156,8 @@ sealed表示该次内容封存提交，不能代替当前可用性查询、安�
 
 跨仓本机联调使用`test/controller-materialization.integration.mjs`：先构建两仓，将`LEAFSEAMER_CONTROLLER_TEST_ROOT`设为Controller绝对路径，再运行`node --disallow-code-generation-from-strings --test test/controller-materialization.integration.mjs`。它使用临时安装库、真实进程与管道；合成发行／平台批准只供测试，不授予生产资格。
 
+Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指向刚解压的 [OBS Studio 32.0.4 Windows x64 便携包](https://github.com/obsproject/obs-studio/releases/tag/32.0.4)。目录须无 `config`，并由本次测试独占。运行 `node --disallow-code-generation-from-strings --test --test-name-pattern 'supervisor_create_module_obs$' test/controller-materialization.integration.mjs`。用例在临时库登记两个空场景和随机凭据，在本机启动一次性 OBS，验证原生 Worker 的只读采集和目录持久化。测试使用软件实例、临时配置及合成发行批准。
+
 上游兼容检查入口为`node scripts/check-tuf-upstream.mjs <固定源码检出目录>`；先按该提交的package-lock安装测试依赖并构建。入口核对固定提交及源码未变，把该提交的客户端测试映射到本仓实际补丁产物；上游测试依赖只供本地验证，不进入Suite运行包。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。

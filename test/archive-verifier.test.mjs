@@ -64,6 +64,25 @@ test('ZIP拒绝路径穿越、大小写别名、符号链接、错误清单及�
     await assert.rejects(run(t, f, zipFixture(f.entries())), {code: 'archive_document'});
   }
 });
+test('归档中的无权限设备角色必须由同角色的只读能力模板绑定', async t => {
+  const fixture = artifactFixture();
+  const template = JSON.parse(fs.readFileSync(new URL('./fixtures/static-capability.json', import.meta.url)));
+  fixture.manifest.roles = [{role_id:template.device_role,kind:'device',minimum:1,maximum:1,purpose:'只读设备'}];
+  fixture.manifest.capability_template_file_ids = ['capability'];
+  const file = {file_id:'capability',path:'payload/capability.json',role:'schema',executable:false};
+  fixture.inventory.files.unshift(file);
+  function archive(value) {
+    const bytes = Buffer.from(JSON.stringify(value));
+    fixture.payload.set(file.file_id,{path:file.path,role:file.role,bytes});
+    Object.assign(file,{size_bytes:String(bytes.length),digest:rawDigest(bytes)});
+    fixture.manifest.inventory_digest = digestValue(fixture.inventory);
+    return zipFixture(fixture.entries());
+  }
+  const readOnly = {...template,actions:[],triggers:[]};
+  await run(t,fixture,archive(readOnly));
+  await assert.rejects(run(t,fixture,archive({...readOnly,device_role:'other'})),{code:'archive_unused_role'});
+  await assert.rejects(run(t,fixture,archive(template)),{code:'archive_unused_role'});
+});
 async function imported(t, fixture, archive) {
   let store;
   const root = directory(t, () => store?.close()), installation = path.join(root, 'installation'); fs.mkdirSync(installation);

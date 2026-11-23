@@ -15,7 +15,7 @@ function implementation(){
       need(/^[a-zA-Z0-9/_.-]+$/.test(name)&&name.split('/').every(part=>part&&part!=='.'&&part!=='..'),'validation_implementation');
       need(hash(fs.readFileSync(path.join(root,name)))==='sha256:'+expected,'validation_implementation');
     }
-    for(const name of ['archive-verifier.mjs','validation-policy.mjs','import-input.mjs','sdk/artifact-import.mjs'])need(manifest.artifacts[name],'validation_implementation');
+    for(const name of ['archive-verifier.mjs','validation-policy.mjs','import-input.mjs','sdk/artifact-import.mjs','sdk/capability-template.mjs'])need(manifest.artifacts[name],'validation_implementation');
     // 固定静态校验依赖的全部可执行入口；更新依赖时随产品代码明确更新闭包。
     const dependencies={};
     for(const [name,version,relative,files] of [

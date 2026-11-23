@@ -102,6 +102,27 @@ async function verifyModuleEventsMigration(directory){
 }
 const obsMode = 'supervisor_create_module_obs';
 const obsPortableRoot = process.env.LEAFSEAMER_OBS_PORTABLE_TEST_ROOT;
+test('obs_cut_dispatch_guard',{skip:process.platform!=='win32'||!obsPortableRoot,timeout:45000},async t=>{
+  const {inspectObsCut}=await load('obs-discovery.mjs');
+  const {startPortableObs}=await import('./fixtures/obs-portable.mjs');
+  const obs=await startPortableObs(t,obsPortableRoot,inspectObsCut);
+  const input={port:obs.port,password:obs.password,initial:obs.program_scene_uuid,
+    target:obs.scene_uuids.find(scene=>scene!==obs.program_scene_uuid)};
+  const env={...process.env,LEAFSEAMER_OBS_GUARD_TEST:'1'};
+  delete env.NODE_TEST_CONTEXT;
+  const probe=spawn(process.execPath,['--disallow-code-generation-from-strings','--test','--test-isolation=none','--test-reporter=tap',
+    '--test-name-pattern','obs_cut_final_guard$',path.join(controller,'test/device-packet-preparation.test.mjs')],{
+    env,stdio:['pipe','pipe','pipe'],windowsHide:true});
+  const ended=once(probe,'close');
+  t.after(()=>{if(probe.exitCode===null&&probe.signalCode===null)probe.kill();});
+  let stdout='',stderr='';
+  probe.stdout.setEncoding('utf8').on('data',chunk=>stdout+=chunk);
+  probe.stderr.setEncoding('utf8').on('data',chunk=>stderr+=chunk);
+  probe.stdin.on('error',()=>{});
+  probe.stdin.end(JSON.stringify(input));
+  assert.equal((await ended)[0],0,stdout+stderr);
+  assert.match(stdout,/^ok 1 - obs_cut_final_guard\r?$/m);
+});
 test('obs_cut_wire_transport',{skip:process.platform!=='win32'||!obsPortableRoot,timeout:35000},async t=>{
   const {inspectObsCut,openObsCutWriterSession,ObsCutEntryRejected}=await load('obs-discovery.mjs');
   const {startPortableObs}=await import('./fixtures/obs-portable.mjs');

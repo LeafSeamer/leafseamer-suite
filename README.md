@@ -160,6 +160,8 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 同一联调文件的 `obs_cut_wire_transport$` 用例使用独占的 OBS 便携实例，在两个空场景之间验证固定 Cut 传输。用例检查同步拒发、按 UUID 设置场景、匹配应答后发起的新读回以及相同目标重复提交仍产生新的四帧。该用例使用测试提供的许可复核回调。
 
+将运行命令的筛选模式改为 `obs_cut_dispatch_guard$`，可在同样的便携实例上验证 Controller 写门。用例使用合成授权与测试编码包，确认关闭写门时场景保持不变，放行时一次许可只进入一次 OBS 写出口，并核对设置请求、设置应答、读回请求和读回应答。
+
 上游兼容检查入口为`node scripts/check-tuf-upstream.mjs <固定源码检出目录>`；先按该提交的package-lock安装测试依赖并构建。入口核对固定提交及源码未变，把该提交的客户端测试映射到本仓实际补丁产物；上游测试依赖只供本地验证，不进入Suite运行包。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。

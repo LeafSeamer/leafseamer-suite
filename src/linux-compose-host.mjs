@@ -5,7 +5,7 @@ import {spawnSync} from 'node:child_process';
 import {canonical,digest,requireValue as need} from './import-input.mjs';
 import {openInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
-import {renderLinuxCompose} from './linux-compose.mjs';
+import {renderLinuxCompose,verifyLinuxComposeClockInputs} from './linux-compose.mjs';
 import {observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {openLinuxComposeChannel} from './linux-compose-channel.mjs';
 import {admitLinuxMember} from './linux-member-bootstrap.mjs';
@@ -86,11 +86,15 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
   const planIdentity=protectedPath(planFile,stat=>stat.isFile()),outputIdentity=protectedPath(generationDirectory,stat=>stat.isDirectory());
   const planBytes=readDeploymentFile(planFile,65536),plan=JSON.parse(planBytes);
   const generated=renderLinuxCompose(plan,generationDirectory),compose=JSON.parse(generated['compose.json']);
+  const clockInputs=verifyLinuxComposeClockInputs(plan);
   const {driver,generation_id,namespace}=plan.cgroup??{};
   const privateNamespace=namespace==='private';
   const supervised=Object.hasOwn(plan,'bootstrap');
   if(supervised)need(process.geteuid()===0,'compose_host_bootstrap');
   need(driver&&generation_id,'compose_host_cgroup');
+  function verifyClockInputs(){
+    need(equal(clockInputs,verifyLinuxComposeClockInputs(plan)),'compose_host_plan_changed');
+  }
   function verifyFiles(){
     need(equal(planIdentity,protectedPath(planFile,stat=>stat.isFile()))&&planBytes.equals(readDeploymentFile(planFile,65536))&&
       equal(outputIdentity,protectedPath(generationDirectory,stat=>stat.isDirectory())),'compose_host_plan_changed');
@@ -168,7 +172,7 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
     function launch(config){
       need(prepared&&equal(config,spec),'compose_host_intent');
       const {before,images}=prepared;
-      verifyFiles();assertFreshProject();
+      verifyFiles();verifyClockInputs();assertFreshProject();
       need(equal(before,parents()),'compose_host_parent_changed');
       run([...composeArgs,'up','--detach','--no-build','--pull','never','--no-recreate'],45000);
       const after=parents();
@@ -241,7 +245,7 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
       const socket=await channel.accept(scope);
       const result=await admitLinuxMember({intent:{role,generation_id,service_id:spec[role].service_id,launch_id:crypto.randomUUID()},
         detail:{host:daemon.host,...expected}},{policy,source,socket,compose:true,commit(admission){
-          verifyFiles();
+          verifyFiles();verifyClockInputs();
           const core=JSON.parse(run(['container','inspect',bound.containers[role]]));
           need(core.length===1&&core[0].Id===bound.containers[role]&&core[0].State?.Running===true&&
             equal(coreContainment(role,core[0]),expected)&&!socket.destroyed&&!socket.readableEnded,'compose_host_binding');
@@ -257,7 +261,8 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
       async startSupervised(){
         idle();need(supervised&&journal.schemaRevision===2&&source&&typeof source.capture==='function'&&
           typeof source.tick==='function','compose_host_bootstrap');
-        verifyFiles();need(channels.size===0&&!journal.lookup(generation_id),'linux_deployment_generation_used');
+        verifyFiles();verifyClockInputs();
+        need(channels.size===0&&!journal.lookup(generation_id),'linux_deployment_generation_used');
         starting=true;
         try{
           for(const role of coreRoles){

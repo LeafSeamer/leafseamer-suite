@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import {isIP} from 'node:net';
 import {fileURLToPath} from 'node:url';
 import {readDeploymentFile,renderLinuxIngress} from './linux-ingress.mjs';
@@ -12,6 +13,7 @@ const runtime='/etc/leafseamer';
 const data='/var/lib/leafseamer';
 const guiMount='/opt/leafseamer/gui';
 const certificate=runtime+'/tls/certificate.pem',privateKey=runtime+'/tls/private-key.pem';
+const clockKey=runtime+'/clock-public.pem',clockExchange='/run/leafseamer-clock';
 const httpsPort=8443;
 const channelHelper=fileURLToPath(new URL('./native/leafseamer_linux_compose_channel',import.meta.url));
 const json=value=>JSON.stringify(value,null,2)+'\n';
@@ -35,6 +37,43 @@ function existing(value,kind){
   const stat=fs.statSync(location);
   need(kind==='directory'?stat.isDirectory():stat.isFile()&&stat.size>0,'compose_path');
   return location;
+}
+function inode(stat){return stat.dev+':'+stat.ino;}
+function fileInode(file){return inode(fs.statSync(file,{bigint:true}));}
+function rootControlledParents(location){
+  for(let parent=path.posix.dirname(location);parent!=='/';parent=path.posix.dirname(parent)){
+    const stat=fs.lstatSync(parent);
+    const sticky=['/tmp','/var/tmp'].includes(parent)&&(stat.mode&0o1000)!==0;
+    need(stat.isDirectory()&&stat.uid===0&&((stat.mode&0o022)===0||sticky),'compose_clock_scope');
+  }
+}
+
+export function verifyLinuxComposeClockInputs(plan){
+  if(!Object.hasOwn(plan,'clock_evidence'))return null;
+  need(process.platform==='linux'&&process.geteuid()===0&&plan.cgroup?.namespace==='private'&&
+    fields(plan.bootstrap,'controller,seamer')&&fields(plan.clock_evidence,'controller,seamer'),'compose_clock_scope');
+  const witnesses={};
+  for(const role of ['controller','seamer']){
+    const config=plan.clock_evidence[role];
+    need(fields(config,'exchange_directory,policy_digest,public_key_file,public_key_sha256')&&
+      [config.policy_digest,config.public_key_sha256].every(value=>typeof value==='string'&&/^sha256:[a-f0-9]{64}$(?![\s\S])/.test(value)),
+      'compose_clock_scope');
+    const directory=existing(config.exchange_directory,'directory'),file=existing(config.public_key_file,'file');
+    rootControlledParents(directory);rootControlledParents(file);
+    const exchange=fs.lstatSync(directory,{bigint:true}),key=fs.lstatSync(file,{bigint:true});
+    need(exchange.isDirectory()&&exchange.uid===BigInt(plan[role].uid)&&exchange.gid===BigInt(plan[role].gid)&&
+      (exchange.mode&0o777n)===0o700n&&key.isFile()&&key.uid===0n&&(key.mode&0o022n)===0n&&
+      (key.mode&0o004n)!==0n,'compose_clock_scope');
+    const bytes=readDeploymentFile(file,16384);
+    need(/^-----BEGIN PUBLIC KEY-----\r?\n[A-Za-z0-9+/=\r\n]+-----END PUBLIC KEY-----\r?\n?$(?![\s\S])/.test(bytes.toString('ascii'))&&
+      'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex')===config.public_key_sha256,'compose_clock_key');
+    let keyObject;
+    try{keyObject=crypto.createPublicKey(bytes);}
+    catch{fail('compose_clock_key');}
+    need(keyObject.asymmetricKeyType==='ed25519','compose_clock_key');
+    witnesses[role]={exchange_inode:inode(exchange),key_inode:inode(key)};
+  }
+  return witnesses;
 }
 function ipv4(value){
   need(isIP(value)===4,'compose_network');
@@ -75,7 +114,8 @@ export function renderLinuxCompose(plan,output){
   absolute(output);
   const withCgroup=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'cgroup');
   const withBootstrap=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'bootstrap');
-  need(fields(plan,(withBootstrap?'bootstrap,':'')+(withCgroup?'cgroup,':'')+'controller,format,gui,management,nginx,seamer,subnet')&&
+  const withClock=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'clock_evidence');
+  need(fields(plan,(withBootstrap?'bootstrap,':'')+(withCgroup?'cgroup,':'')+(withClock?'clock_evidence,':'')+'controller,format,gui,management,nginx,seamer,subnet')&&
     plan.format==='leafseamer.linux-compose-protected/1','compose_plan');
   const {controller,seamer,nginx,management,gui,subnet,cgroup}=plan;
   const memberFields='address,ca_file,certificate_file,data_dir,database_instance_id,gid,image,private_key_file,server_name,service_id,uid';
@@ -90,8 +130,7 @@ export function renderLinuxCompose(plan,output){
   const certs=[management,...direct].map(tlsFiles);
   const cas=direct.map(record=>existing(record.ca_file,'file'));
   const keys=certs.map(([,key])=>key),publicFiles=[...certs.map(([cert])=>cert),...cas];
-  const inode=file=>{const {dev,ino}=fs.statSync(file,{bigint:true});return dev+':'+ino;};
-  const keyInodes=keys.map(inode),publicInodes=new Set(publicFiles.map(inode));
+  const keyInodes=keys.map(fileInode),publicInodes=new Set(publicFiles.map(fileInode));
   need(new Set(keyInodes).size===keys.length&&keyInodes.every(key=>!publicInodes.has(key))&&
     [...keys,...publicFiles].every(file=>roots.every(dir=>!contained(dir,file))),'compose_tls_scope');
   need(controller.service_id!==seamer.service_id&&controller.database_instance_id!==seamer.database_instance_id,'compose_identity');
@@ -113,6 +152,19 @@ export function renderLinuxCompose(plan,output){
     s.service.cgroup_parent=linuxContainerCgroup({...scope,role:'seamer'}).parent;
     if(privateNamespace){c.service.cgroup='private';s.service.cgroup='private';}
   }
+  const clockFiles={};
+  if(withClock){
+    const witnesses=verifyLinuxComposeClockInputs(plan);
+    const clocks=Object.values(plan.clock_evidence),directories=clocks.map(clock=>clock.exchange_directory);
+    const dataInodes=[controllerData,seamerData,guiDirectory].map(fileInode);
+    const exchanges=Object.values(witnesses).map(witness=>witness.exchange_inode);
+    const allRoots=[...roots,...directories];
+    need(allRoots.every((dir,index)=>allRoots.every((other,i)=>i===index||!contained(dir,other)))&&
+      new Set([...exchanges,...dataInodes]).size===exchanges.length+dataInodes.length&&
+      Object.values(witnesses).every(witness=>!keyInodes.includes(witness.key_inode))&&
+      [...keys,...publicFiles,...clocks.map(clock=>clock.public_key_file)].every(file=>allRoots.every(dir=>!contained(dir,file))),
+      'compose_clock_scope');
+  }
   if(withBootstrap){
     need(cgroup?.namespace==='private'&&fields(plan.bootstrap,'controller,seamer'),'compose_bootstrap');
     existing(channelHelper,'file');
@@ -123,6 +175,14 @@ export function renderLinuxCompose(plan,output){
       service.entrypoint=[runtime+'/compose-channel'];
       service.init=false;
       service.volumes.push(bind(channelHelper,runtime+'/compose-channel'),bind(output+'/bootstrap-'+role,runtime+'/bootstrap'));
+      if(withClock){
+        const {exchange_directory,policy_digest,public_key_file}=plan.clock_evidence[role];
+        const name=role+'-clock.json',target=runtime+'/clock.json';
+        clockFiles[name]=json({format:'leafseamer.'+role+'-linux-clock-evidence-profile/2',service_id:record.service_id,
+          database_instance_id:record.database_instance_id,policy_digest,public_key_file:clockKey,exchange_directory:clockExchange});
+        service.command.push('--clock-evidence-profile',target);
+        service.volumes.push(bind(output+'/'+name,target),bind(public_key_file,clockKey),bind(exchange_directory,clockExchange,false));
+      }
     }
   }
   const proxy={...container(nginx),entrypoint:['/usr/sbin/nginx'],command:['-e','stderr','-p','/tmp/','-c',runtime+'/nginx.conf','-g','daemon off;'],
@@ -133,7 +193,7 @@ export function renderLinuxCompose(plan,output){
     networks:{management:{},backend:{ipv4_address:nginx.address}},depends_on:['controller','seamer']};
   const compose={services:{controller:c.service,seamer:s.service,nginx:proxy},
     networks:{management:{driver:'bridge'},backend:{driver:'bridge',internal:true,ipam:{config:[{subnet}]}}}};
-  return {'controller-ingress.json':json(c.profile),'seamer-ingress.json':json(s.profile),'nginx.conf':config,'compose.json':json(compose)};
+  return {'controller-ingress.json':json(c.profile),'seamer-ingress.json':json(s.profile),...clockFiles,'nginx.conf':config,'compose.json':json(compose)};
 }
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){

@@ -117,11 +117,19 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     nginx:{image:images.nginx,uid,gid,address:range+'.4'},gui:{directory,manifest_sha256:'sha256:'+hash(manifestBytes)},
     ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}})};
   let source,admissions;
+  const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
+  const clocks={};
+  let clockValues;
   if(supervised){
     const {canonical}=await import('../dist/import-input.mjs');
     const clockDir=process.env.LEAFSEAMER_TEST_COMPOSE_CLOCK_DIST;
     assert.ok(clockDir);
     source=(await import(pathToFileURL(path.join(clockDir,'native-clock.mjs')))).openNativeClock();
+    if(chronyFile){
+      assert.equal(process.getuid(),0);
+      clockValues=await import(pathToFileURL(path.join(clockDir,'auth-clock-value.mjs')));
+      plan.clock_evidence={};
+    }
     plan.bootstrap={};
     for(const [role,scope] of [['controller',controller],['seamer',seamer]]){
       const node=bootstrap(role,scope.data_dir,[],['-e',"process.stdout.write(require('crypto').createHash('sha256').update(require('fs').readFileSync('/proc/self/exe')).digest('hex'))"]);
@@ -130,8 +138,27 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       plan.bootstrap[role]={format:'leafseamer-core-bootstrap-policy/1',service_id:scope.service_id,database_instance_id:scope.database_instance_id,
         artifact_manifest_ref:{manifest_id:role+'.compose',revision:'1',digest:'sha256:'+hash(canonical({[role+'_build_sha256']:manifest,node_sha256:node}))},
         platform_profile_ref:{profile_id:'compose-'+role+'-test',revision:'1'},bootstrap_timeout_ms:45000,clock_backend_revision:'1',policy_revision:'1'};
+      if(chronyFile){
+        const {seal,digest}=clockValues,chrony=parseFile(chronyFile);
+        const admin=path.join(root,role+'-signer'),exchange=path.join(root,role+'-exchange'),key=path.join(root,role+'-clock-public.pem');
+        fs.mkdirSync(admin,{mode:0o700});fs.mkdirSync(exchange,{mode:0o700});owned(exchange);
+        const {publicKey,privateKey}=crypto.generateKeyPairSync('ed25519');
+        const publicBytes=publicKey.export({format:'pem',type:'spki'});
+        fs.writeFileSync(key,publicBytes,{mode:0o644});
+        const privateFile=path.join(admin,'private.pem');
+        fs.writeFileSync(privateFile,privateKey.export({format:'pem',type:'pkcs8'}),{mode:0o600});
+        const approval=()=>({id:crypto.randomUUID(),revision:'1',digest:'sha256:'+'a'.repeat(64)});
+        const policy=seal({id:crypto.randomUUID(),revision:'1',service_id:scope.service_id,runtime_profile_ref:approval(),
+          native_artifact_ref:approval(),system_time_source_ref:approval(),environment_approval_ref:approval(),
+          health_profile_ref:{...approval(),digest:digest(chrony)},max_system_error_ns:'100000000',
+          wall_quantization_ns:'100',monotonic_quantization_ns:'10',drift_ppb:1000,capture_limit_ns:'20000000',sample_period_ns:'500000000',
+          sample_ttl_ns:'5000000000',sample_window_policy:'authentication-clock-sample/2'});
+        plan.clock_evidence[role]={exchange_directory:exchange,policy_digest:policy.digest,public_key_file:key,public_key_sha256:'sha256:'+hash(publicBytes)};
+        clocks[role]={admin,exchange,privateFile,policy,chrony,clockDir};
+      }
     }
   }
+  assert.ok(!chronyFile||supervised);
   const aliasOfKey=path.join(root,'ca-alias.pem');
   fs.linkSync(controller.private_key_file,aliasOfKey);
   const generate=['--disallow-code-generation-from-strings',file('../dist/linux-compose.mjs'),'--config',planPath,'--output',output];
@@ -143,7 +170,11 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     [{...plan,seamer:{...seamer,ca_file:aliasOfKey}},'compose_tls_scope'],
     [{...plan,seamer:{...seamer,database_instance_id:controller.database_instance_id}},'compose_identity'],
     [{...plan,cgroup:{driver:'auto',generation_id:crypto.randomUUID()}},'cgroup_scope'],
-    [{...plan,cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'host'}},'compose_cgroup']
+    [{...plan,cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'host'}},'compose_cgroup'],
+    ...(chronyFile?[
+      [{...plan,clock_evidence:{...plan.clock_evidence,seamer:{...plan.clock_evidence.seamer,exchange_directory:clocks.controller.exchange}}},'compose_clock_scope'],
+      [{...plan,clock_evidence:{...plan.clock_evidence,controller:{...plan.clock_evidence.controller,public_key_sha256:'sha256:'+'0'.repeat(64)}}},'compose_clock_key']
+    ]:[])
   ]){
     fs.writeFileSync(planPath,JSON.stringify(invalid));
     const bad=spawnSync(process.execPath,generate,{encoding:'utf8',timeout:10000});
@@ -160,7 +191,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const stem='leafseamer_'+generationId.replaceAll('-','');
   for(const driver of ['cgroupfs','systemd']){
     const observedOutput=path.join(root,'cgroup-'+driver);
-    const {bootstrap:_policy,...protectedPlan}=plan;
+    const {bootstrap:_policy,clock_evidence:_clock,...protectedPlan}=plan;
     fs.writeFileSync(planPath,JSON.stringify({...protectedPlan,cgroup:{driver,generation_id:generationId,namespace:'private'}}));
     run(process.execPath,[...generate.slice(0,-1),observedOutput]);
     const {services}=JSON.parse(docker('compose','--project-name',project,'--file',path.join(observedOutput,'compose.json'),'config','--format','json'));
@@ -258,7 +289,12 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       assert.ok(!container.Mounts.some(value=>[controller.private_key_file,seamer.private_key_file].includes(value.Source)));
     }else{
       assert.deepEqual(bindings,{});
-      assert.deepEqual(container.Mounts.filter(value=>value.RW).map(value=>value.Destination),['/var/lib/leafseamer']);
+      assert.deepEqual(container.Mounts.filter(value=>value.RW).map(value=>value.Destination).sort(),
+        [...(chronyFile?['/run/leafseamer-clock']:[]),'/var/lib/leafseamer']);
+      if(chronyFile){
+        assert.deepEqual(container.Mounts.filter(value=>value.Destination.startsWith('/etc/leafseamer/clock')).map(value=>[value.Source,value.RW]).sort(),
+          [[path.join(output,role+'-clock.json'),false],[plan.clock_evidence[role].public_key_file,false]].sort());
+      }
       assert.deepEqual(container.Mounts.filter(value=>value.Destination.endsWith('/private-key.pem')).map(value=>value.Source),[plan[role].private_key_file]);
       assert.equal(Object.keys(container.NetworkSettings.Networks).length,1);
     }
@@ -298,6 +334,76 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const script=Object.keys(manifest.artifacts).find(name=>name.endsWith('.js'));
   assert.equal(hash((await send('/')).body),manifest.artifacts['index.html']);
   assert.equal(hash((await send('/'+script)).body),manifest.artifacts[script]);
+  if(chronyFile){
+    const {canonical,ref,seal}=clockValues;
+    for(const role of ['controller','seamer']){
+      const clock=clocks[role];
+      const descriptor=admissions[role].descriptor;
+      const [name,...others]=fs.readdirSync(clock.exchange);
+      assert.match(name,/^challenge-[a-f0-9-]+\.json$/);
+      assert.equal(others.length,0);
+      const challenge=parseFile(path.join(clock.exchange,name));
+      const {service_id,service_boot_id,database_instance_id,clock_domain_id,descriptor_digest,continuity,native_binary_digest}=challenge;
+      assert.equal(service_id,plan[role].service_id);
+      assert.equal(database_instance_id,plan[role].database_instance_id);
+      assert.equal(clock_domain_id,descriptor.clock_domain_id);
+      assert.equal(descriptor_digest,descriptor.descriptor_digest);
+      const {policy,chrony,admin,privateFile,exchange,clockDir}=clock;
+      const {runtime_profile_ref,native_artifact_ref,health_profile_ref,system_time_source_ref,environment_approval_ref}=policy;
+      clock.runtime=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,descriptor_digest,
+        policy_ref:ref(policy),runtime_profile_ref,native_artifact_ref,environment_approval_ref,
+        continuity,native_binary_digest,valid_before_tick_ns:String(source.tick()+60000000000n)});
+      const profile=path.join(admin,'profile.json'),statement=path.join(admin,'statement.json'),signed=path.join(admin,'evidence.json');
+      fs.writeFileSync(profile,canonical({format:'leafseamer.authentication-clock-signing-profile/2',service_id,database_instance_id,
+        policy_digest:policy.digest,native_binary_digest,private_key_file:privateFile,evidence_file:signed,chrony}),{mode:0o600});
+      clock.publish=()=>{
+        const health=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,runtime_ref:ref(clock.runtime),
+          policy_ref:ref(policy),health_profile_ref,system_time_source_ref,environment_approval_ref,state:'synchronized',holdover_ref:null,
+          valid_before_tick_ns:String(source.tick()+4600000000n)});
+        fs.writeFileSync(statement,canonical({challenge,evidence:{policy,runtime:clock.runtime,health}}),{mode:0o600});
+        const result=run(process.execPath,[path.join(clockDir,'clock-evidence.mjs'),'--profile',profile,'--statement',statement],5000);
+        assert.deepEqual(JSON.parse(result),{state:'published',service_id,service_boot_id});
+        owned(signed);
+        fs.renameSync(signed,path.join(exchange,'evidence-'+service_boot_id+'.json'));
+        return health;
+      };
+    }
+    const ready=role=>{
+      const lines=docker('logs',containers[role].Id).split('\n').filter(line=>line.startsWith('{'));
+      const {port:localPort}=lines.map(line=>JSON.parse(line)).find(event=>event.event==='listening');
+      const options={hostname:role==='seamer'?'127.0.0.1':plan[role].address,port:localPort,path:'/health/ready',
+        ...(role==='controller'&&{servername:plan[role].server_name,ca:fs.readFileSync(plan[role].certificate_file,'utf8')})};
+      const probe=`const request=require(${JSON.stringify(role==='controller'?'node:https':'node:http')}).get(${JSON.stringify(options)},res=>{
+        let body='';res.on('data',data=>body+=data);res.on('end',()=>process.stdout.write(JSON.stringify([res.statusCode,JSON.parse(body)])));
+      });request.setTimeout(2000,()=>request.destroy());`;
+      return JSON.parse(docker('exec',containers[role].Id,'/usr/local/bin/node','-e',probe));
+    };
+    const state=(role,expected,evidence)=>{
+      const [status,body]=ready(role);
+      assert.equal(status,503);
+      assert.equal(body.ready,false);
+      assert.equal(body.authentication_clock_evidence,evidence);
+      assert.equal(body.authentication_clock,expected);
+    };
+    for(const role of ['controller','seamer']){
+      state(role,'unqualified','missing');
+      clocks[role].publish();
+    }
+    await delay(850);
+    for(const role of ['controller','seamer'])state(role,'available','verified');
+    const old=clocks.controller.publish();
+    for(let i=0;i<4;i++){
+      clocks.seamer.publish();
+      await delay(1400);
+      state('seamer','available','verified');
+    }
+    assert.ok(source.tick()>=BigInt(old.valid_before_tick_ns));
+    state('controller','faulted','expired');
+    clocks.controller.publish();
+    state('controller','faulted','verified');
+    assert.equal((await send('/auth/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(login)})).status,503);
+    assert.equal((await send(draft)).status,401);
+  }
   const [backend]=Object.values(containers.seamer.NetworkSettings.Networks);
   assert.equal(JSON.parse(docker('network','inspect',backend.NetworkID))[0].Internal,true);
   compose('stop','--timeout','8','nginx');
@@ -345,11 +451,18 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         assert.equal(receipt.length,1);
         assert.deepEqual(JSON.parse(receipt[0].receipt_jcs),admissions[role].receipt);
       }
+      if(chronyFile){
+        const {service_boot_id,clock_domain_id}=clocks[role].runtime,args=[service_boot_id,clock_domain_id];
+        const history=db.prepare('SELECT DISTINCT health_digest FROM authentication_clock_acquisition WHERE service_boot_id=? AND clock_domain_id=?').all(...args);
+        assert.ok(history.length>=2,role+' did not persist a renewal');
+        const faults=db.prepare('SELECT count(*) AS count FROM authentication_clock_fault WHERE service_boot_id=? AND clock_domain_id=?').get(...args);
+        assert.equal(faults.count,role==='controller'?1:0);
+      }
     }finally{db.close();}
   }
   if(manage){
     const nextId=crypto.randomUUID(),nextDirectory=path.join(root,'next');
-    const {bootstrap:_policy,...protectedPlan}=plan;
+    const {bootstrap:_policy,clock_evidence:_clock,...protectedPlan}=plan;
     fs.writeFileSync(planPath,JSON.stringify({...protectedPlan,cgroup:{driver:'cgroupfs',generation_id:nextId}}));
     run(process.execPath,[...generate.slice(0,-1),nextDirectory]);
     await prepareParents(nextId);

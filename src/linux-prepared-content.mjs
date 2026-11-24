@@ -29,7 +29,7 @@ function using(filename,flags,fn,permissions=0o600){
 }
 
 // 路径逐段打开，并持有从根到内容的目录描述符。发布者可读写自身安装库，普通运行账户不能更换其路径。
-function withPrivateDirectory(filename,fn){
+function withProtectedDirectory(filename,fn,permissions=0o700n){
   need(typeof filename==='string'&&path.isAbsolute(filename)&&path.normalize(filename)===filename&&filename!=='/'&&
     fs.statfsSync('/proc/self/fd').type===0x9fa0,'preparation_linux_directory');
   const parts=filename.slice(1).split('/'),uid=BigInt(process.geteuid());
@@ -41,7 +41,7 @@ function withPrivateDirectory(filename,fn){
       need(stat.isDirectory()&&(stat.uid===uid||stat.uid===0n)&&((stat.mode&0o022n)===0n||sticky),'preparation_linux_directory');
       pinned.push({fd,name,identity:identity(stat)});
       if(index<parts.length)return visit(path.join(current,parts[index]),index+1,entry(fd,parts[index]));
-      need(stat.uid===uid&&mode(stat)===0o700n,'preparation_linux_permissions');
+      need(stat.uid===uid&&mode(stat)===permissions,'preparation_linux_permissions');
       const assertLinked=()=>{
         for(const item of pinned)need(identity(fs.lstatSync(item.name,{bigint:true}))===item.identity&&
           identity(attributes(item.fd))===item.identity,'preparation_storage_changed');
@@ -88,7 +88,7 @@ function verifyFile(fd,file,buffer,output=null,readLimit=null){
   return bytes;
 }
 
-function scan(root,tree,{copyTo=null,refresh=false}={}){
+function scan(root,tree,{copyTo=null,refresh=false,readerGid=null}={}){
   const anchor=attributes(root),sum=crypto.createHash('sha256'),buffer=Buffer.alloc(65536);let dirs=0,bytes=0;
   const copying=copyTo!==null;
   function walk(fd,directory,relative,target){
@@ -99,7 +99,8 @@ function scan(root,tree,{copyTo=null,refresh=false}={}){
       const isDirectory=item instanceof Map,full=relative+name;
       using(entry(fd,name),readFlags|(isDirectory?O_DIRECTORY:0),child=>{
         const stat=attributes(child);
-        need(stat.uid===anchor.uid&&stat.dev===anchor.dev&&mode(stat)===(isDirectory?(copying?0o700n:0o500n):(copying?0o600n:0o400n))&&
+        const archive=copying&&readerGid===null;
+        need(stat.uid===anchor.uid&&stat.dev===anchor.dev&&mode(stat)===(isDirectory?(archive?0o700n:0o500n):(archive?0o600n:0o400n))&&
           (isDirectory?stat.isDirectory():stat.isFile()&&stat.nlink===1n),'content_permissions');
         sum.update(canonical([full,identity(stat)])+'\n');
         if(isDirectory){
@@ -110,7 +111,9 @@ function scan(root,tree,{copyTo=null,refresh=false}={}){
         }else{
           const inspect=output=>verifyFile(child,item,buffer,output);
           if(copying)using(entry(target,name),O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,output=>{
-            inspect(output);fs.fchmodSync(output,0o400);fs.fsyncSync(output);
+            inspect(output);
+            if(readerGid!==null)fs.fchownSync(output,0,readerGid);
+            fs.fchmodSync(output,readerGid===null?0o400:0o440);fs.fsyncSync(output);
           });
           else{inspect(null);if(refresh)fs.fsyncSync(child);}
           bytes+=Number(item.size_bytes);
@@ -119,7 +122,8 @@ function scan(root,tree,{copyTo=null,refresh=false}={}){
         need(after.ctimeNs===stat.ctimeNs&&identity(fs.lstatSync(entry(fd,name),{bigint:true}))===identity(stat),'preparation_storage_changed');
       });
     }
-    if(copying)fs.fchmodSync(target,0o500);
+    if(copying&&readerGid===null)fs.fchmodSync(target,0o500);
+    if(readerGid!==null&&target!==copyTo){fs.fchownSync(target,0,readerGid);fs.fchmodSync(target,0o550);}
   }
   walk(root,tree,'',copyTo);
   need(attributes(root).ctimeNs===anchor.ctimeNs,'preparation_storage_changed');
@@ -135,7 +139,7 @@ function flushDirectories(root,tree){
 
 function withRoot(parentDirectory,id,fn){
   need(safeName(id),'preparation_linux_directory');
-  return withPrivateDirectory(parentDirectory,(parent,parentStat,assertParent)=>fn({parent,parentStat,assertParent,target:entry(parent,id)}));
+  return withProtectedDirectory(parentDirectory,(parent,parentStat,assertParent)=>fn({parent,parentStat,assertParent,target:entry(parent,id)}));
 }
 
 function observe(root,parentStat,absolute){
@@ -153,7 +157,7 @@ export function prepareLinuxContent({source_directory,parent_directory,directory
   need(Array.isArray(reader_sids)&&reader_sids.length===0,'preparation_policy');
   return checked(()=>withRoot(parent_directory,directory_id,({parent,parentStat,assertParent,target})=>{
     const tree=inventoryTree(inventory);
-    return withPrivateDirectory(source_directory,(source,_stat,assertSource)=>{
+    return withProtectedDirectory(source_directory,(source,_stat,assertSource)=>{
       fs.mkdirSync(target,{mode:0o700});
       return using(target,readFlags|O_DIRECTORY,output=>{
         scan(source,tree,{copyTo:output});assertSource();
@@ -169,14 +173,19 @@ export function prepareLinuxContent({source_directory,parent_directory,directory
   }));
 }
 
-export function withLinuxPreparedContent(parentDirectory,prepared,validated,fn,{refresh=false}={}){
+export function withLinuxPreparedContent(parentDirectory,prepared,validated,fn,{refresh=false,stage=null}={}){
   const report=prepared.body,inventory=validated.report.inventory,tree=inventoryTree(inventory);
   return checked(()=>withRoot(parentDirectory,prepared.preparation_id,({parent,parentStat,assertParent,target})=>using(target,readFlags|O_DIRECTORY,root=>{
     const observed=observe(root,parentStat,path.join(parentDirectory,prepared.preparation_id));
     need(report.access_profile==='linux-installer-only/1'&&same(report.reader_sids,[])&&observed.writer_uid===report.writer_uid&&
       observed.root_identity===report.root_identity&&observed.parent_identity===report.metadata_flush.parent_identity&&
       same(observed.storage_identity,report.storage_identity),'preparation_storage_changed');
-    const summary=scan(root,tree,{refresh});
+    const summary=stage===null?scan(root,tree,{refresh}):withStage(stage,0o700n,target=>{
+      need(fs.readdirSync(descriptor(target)).length===0,'preparation_stage_conflict');
+      const copied=scan(root,tree,{copyTo:target,readerGid:stage.reader_gid});
+      flushDirectories(target,tree);
+      return copied;
+    });
     if(refresh){flushDirectories(root,tree);fs.fsyncSync(parent);}
     assertParent();
     need(summary.tree_identity===report.tree_identity&&identity(fs.lstatSync(target,{bigint:true}))===observed.root_identity,'preparation_storage_changed');
@@ -197,4 +206,40 @@ export function withLinuxPreparedContent(parentDirectory,prepared,validated,fn,{
     const result=fn(observed,refresh?flushReport(observed,summary,inventory):null,read);
     need(!result||typeof result.then!=='function','preparation_async_observation');return result;
   })));
+}
+
+function withStage(stage,permissions,fn){
+  return withProtectedDirectory(stage.directory,(parent,stat,assertParent)=>{
+    const name=path.basename(stage.path),target=entry(parent,name);
+    need(identity(stat)===stage.parent_identity&&safeName(name)&&stage.path===path.join(stage.directory,name),'preparation_stage_identity');
+    return using(target,readFlags|O_DIRECTORY,(fd)=>{
+      const current=attributes(fd);
+      need(identity(current)===stage.root_identity&&current.dev===stat.dev&&current.uid===0n&&mode(current)===permissions&&
+        (permissions===0o700n||current.gid===BigInt(stage.reader_gid)),'preparation_stage_identity');
+      assertParent();return fn(fd,target);
+    });
+  },0o711n);
+}
+
+// 私有准备根在持久资格重核后才可由指定Worker组读取。
+export function createLinuxWorkerStage({directory,uid,gid}){
+  need(process.platform==='linux'&&process.geteuid()===0&&[uid,gid].every(value=>Number.isInteger(value)&&value>0&&value<4294967295),
+    'preparation_stage_account');
+  return checked(()=>withProtectedDirectory(directory,(parent,stat)=>{
+    const name='worker-'+crypto.randomUUID(),target=entry(parent,name);
+    fs.mkdirSync(target,{mode:0o700});
+    const stage=Object.freeze({directory,path:path.join(directory,name),parent_identity:identity(stat),
+      root_identity:identity(fs.lstatSync(target,{bigint:true})),reader_uid:uid,reader_gid:gid});
+    let published=false,discarded=false;
+    return Object.freeze({stage,publish(){
+      checked(()=>withStage(stage,0o700n,fd=>{fs.fchownSync(fd,0,gid);fs.fchmodSync(fd,0o550);}));published=true;
+    },assertCurrent(){
+      need(published&&!discarded,'preparation_stage_unavailable');checked(()=>withStage(stage,0o550n,()=>{}));
+    },discard(){
+      if(!discarded){
+        checked(()=>withStage(stage,published?0o550n:0o700n,(_fd,targetPath)=>fs.rmSync(targetPath,{recursive:true})));
+        discarded=true;
+      }
+    }});
+  },0o711n));
 }

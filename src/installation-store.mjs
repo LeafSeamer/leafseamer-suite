@@ -233,6 +233,7 @@ export function openInstallationStore(dataDirectory) {
       describeConfigurationSchema:value=>materialization.configurationSchema(value),
       describeCapabilityTemplates:value=>materialization.capabilityTemplates(value),
       acquireMaterialization:value=>materialization.acquire(value),
+      acquireLinuxWorkerMaterialization:(value,options)=>materialization.acquireLinux(value,options),
       identity: Object.freeze(identity),
       initializeLinuxDeploymentJournal:()=>deploymentJournal(true,null),
       upgradeLinuxDeploymentJournal:()=>deploymentJournal(false,null,true),

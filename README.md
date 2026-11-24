@@ -296,7 +296,9 @@ Linux 安装协调者可通过 `@leafseamer/suite/installation` 对已校验的�
 
 Linux 的本机 `queryIntake`、`verifyMaterialization` 及三个 `describe` 接口会复核当前发行信任、平台资格、内容身份与库存摘要。读取静态文档受原库存和字节预算约束。观察时间使用 Linux `/proc/uptime` 的启动时钟，按百分之一秒精度保守核验四秒窗口。[Linux 内核 uptime 实现](https://raw.githubusercontent.com/torvalds/linux/v6.12/fs/proc/uptime.c) · [安装库联调](test/content-preparation.test.mjs)
 
-Linux 仍待完成安装进程与受监督 Worker 的内容交接，以及目标文件系统的掉电耐久验收。
+可信 Linux 宿主可调用 `store.acquireLinuxWorkerMaterialization(VerifyMaterialization, {directory, uid, gid})`。宿主提供自己持有的 `0711` 目录及批准的非 root Worker UID／GID。Suite 按原库存复制内容，复核封存、发行授权和平台资格后，才发布该次交接的 `0550` 根和 `0440` 文件。固定 Worker 在首次 `LOAD` 前核对原 intake、启动意图、时钟域、原四秒截止、目录身份及全部库存字节。交接引用在原截止后失效。
+
+宿主在启动和交付准入前调用 `assertCurrent()`。`close()` 释放安装库的观察，`discard()` 用于成员组已经确认退出后的交付副本清理。正式 Controller 启动编排和目标文件系统的掉电耐久验收仍待完成。
 
 Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指向刚解压的 [OBS Studio 32.0.4 Windows x64 便携包](https://github.com/obsproject/obs-studio/releases/tag/32.0.4)。目录须无 `config`，并由本次测试独占。运行 `node --disallow-code-generation-from-strings --test --test-name-pattern 'supervisor_create_module_obs$' test/controller-materialization.integration.mjs`。用例在临时库登记两个空场景和随机凭据，在本机启动一次性 OBS，验证原生 Worker 采集、SQLite 保存，以及 HTTPS 场景目录的权限与失联撤回。测试使用软件实例、临时配置及合成发行批准。
 

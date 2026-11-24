@@ -4,6 +4,7 @@ import {canonical,digest,requireValue as need,InstallationError} from './import-
 import {decodeArtifactDocument} from './sdk/artifact-import.mjs';
 import {observePreparedContent,holdPreparedContent} from './prepared-content.mjs';
 import {installationObservationTick} from './local-peer.mjs';
+import {createLinuxWorkerStage} from './linux-prepared-content.mjs';
 
 const linuxResolution=10000000n;
 function linuxClockScope(){
@@ -51,14 +52,14 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
       history.receipt.artifact_set_digest===validated.report.artifact_set_digest,'installation_record_integrity');
     return {...selected,prepared,validated};
   }
-  async function inspect(kind,input,authorize=()=>{},includeContent=false){
+  async function inspect(kind,input,authorize=()=>{},includeContent=false,stageOptions=null){
     // 在首次等待前复制输入，网络入口另有64KiB帧预算及当前对端认证。
     const bytes=Buffer.from(canonical(input)),request=await decodeArtifactDocument(bytes,kind);authorize(request);
     const start=tick(),domain=clockRef();
     const answer=(result,receipt=null,content=null)=>includeContent?{status:result==='verified'?'available':'unavailable',content}:
       kind==='IntakeQuery'?{intake_id:request.intake_id,status:result==='verified'?'available':'unavailable',receipt:result==='verified'?receipt:null}:
       {request,result,evidence_id:result==='verified'?crypto.randomUUID():null,observer_domain:domain,observed_tick:String(tick())};
-    need(active+holds.size<4,'materialization_capacity');++active;let pendingHold=null,delivered=false;
+    need(active+holds.size<4,'materialization_capacity');++active;let pendingHold=null,stage=null,delivered=false;
     try{
       policies.verifyImplementation();const selected=snapshot(request);if(!selected)return answer('unavailable');
       const schemaFile=includeContent==='configuration_schema'?selected.validated.report.inventory.files.find(file=>
@@ -80,9 +81,11 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
           return trust.currentReleaseForArtifact(selected.receipt.release_authorization_ref,selected.intent);
         });
       };
-      const hold=includeContent==='loader';
-      need(!hold||!linux,'preparation_loader_unavailable');
+      const linuxLoader=includeContent==='linux_loader',hold=linuxLoader||includeContent==='loader';
+      need(!hold||linux===linuxLoader,'preparation_loader_unavailable');
+      if(linuxLoader){checkCurrent();stage=createLinuxWorkerStage(stageOptions);}
       const result=await (hold?holdPreparedContent:observePreparedContent)({parent_directory:contentDirectory,prepared:selected.prepared,validated:selected.validated,
+        ...(stage&&{linux_stage:stage.stage}),
         read_files:(schemaFile?[schemaFile]:capabilityFiles??[]).map(file=>({file_id:file.file_id,path:file.path}))},{
         checkCurrent,timeoutMs:4000,
         complete(description,flushed,documents){
@@ -92,7 +95,8 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
               intake_ref:{kind:'intake',authority_service_id:identity.authority_service_id,database_instance_id:identity.database_instance_id,
                 object_id:selected.receipt.intake_id,revision:'1',digest:digest(selected.receipt)},
               receipt:selected.receipt,manifest:selected.validated.report.manifest,inventory:selected.validated.report.inventory}:null;
-            if(hold)return answer('verified',selected.receipt,{...content,format:'leafseamer-loader-materialization/1',root:description,
+            if(hold)return answer('verified',selected.receipt,{...content,format:'leafseamer-loader-materialization/1',root:stage?.stage??description,
+              ...(stage&&{request,observer_clock:descriptor()}),
               lifetime:{clock:domain,issued_tick:String(start),deadline_tick:String(start+4000000000n)}});
             if(capabilityFiles){
               need(documents?.length===capabilityFiles.length,'installation_record_integrity');
@@ -115,7 +119,11 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
       checkCurrent();transact(()=>qualifications.assertObserved(selected.receipt.platform_profile_ref,observed));
       if(hold){
         const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
-        const held=Object.freeze({status:'available',content:freeze(result.value.content),assertCurrent:result.assertCurrent,close:result.close,closed:result.closed});
+        if(stage)stage.publish();
+        const assertCurrent=()=>{result.assertCurrent();stage?.assertCurrent();};
+        assertCurrent();
+        const held=Object.freeze({status:'available',content:freeze(result.value.content),assertCurrent,close:result.close,closed:result.closed,
+          ...(stage&&{async discard(){await result.close();stage.discard();}})});
         holds.add(held);held.closed.then(()=>holds.delete(held));delivered=true;return held;
       }
       return result;
@@ -124,12 +132,19 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
       // 对端授权错误仍是协议错误，不能以unavailable隐藏当前调用者已经失权的事实。
       if(error instanceof InstallationError&&/^(trust_|import_trust_epoch|import_validation_policy|validation_implementation|platform_qualification|preparation_|content_|peer_native_artifact|materialization_timeout|sealing_)/.test(error.code))return answer('unavailable');
       throw error;
-    }finally{if(pendingHold&&!delivered)await pendingHold.close();--active;}
+    }finally{
+      try{if(!delivered){if(pendingHold)await pendingHold.close();stage?.discard();}}
+      finally{--active;}
+    }
   }
   return {get activeCount(){return active+holds.size;},descriptor,query:(value,authorize)=>inspect('IntakeQuery',value,authorize),
     describe:value=>inspect('IntakeQuery',value,undefined,true),
     configurationSchema:value=>inspect('IntakeQuery',value,undefined,'configuration_schema'),
     capabilityTemplates:value=>inspect('IntakeQuery',value,undefined,'capability_templates'),
     acquire:value=>inspect('IntakeQuery',value,undefined,'loader'),
+    acquireLinux(value,options){
+      need(options&&Object.keys(options).sort().join(',')==='directory,gid,uid','preparation_stage_account');
+      return inspect('VerifyMaterialization',value,undefined,'linux_loader',structuredClone(options));
+    },
     verify:(value,authorize)=>inspect('VerifyMaterialization',value,authorize)};
 }

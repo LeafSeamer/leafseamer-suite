@@ -5,11 +5,11 @@ import {InstallationError} from './import-input.mjs';
 import {withLinuxPreparedContent} from './linux-prepared-content.mjs';
 
 // 持有祖先、目录及文件句柄直到同步回调结束；不修复ACL，不采用未登记目录。
-export function withPreparedContent(parentDirectory,prepared,validated,fn,{refresh=false}={}){
+export function withPreparedContent(parentDirectory,prepared,validated,fn,{refresh=false,linuxStage=null}={}){
   const report=prepared.body;
   need(report.validation_id===validated.validation_id&&report.validation_report_digest===validated.report_digest&&
     report.metadata_flush?.completed===true,'preparation_report');
-  if(process.platform==='linux')return withLinuxPreparedContent(parentDirectory,prepared,validated,fn,{refresh});
+  if(process.platform==='linux')return withLinuxPreparedContent(parentDirectory,prepared,validated,fn,{refresh,stage:linuxStage});
   const native=installationContentPlatform();let root,pin;
   try{
     root=native.reopenPreparedRoot(parentDirectory,prepared.preparation_id,report.reader_sids,report.root_identity);
@@ -114,7 +114,7 @@ if(!isMainThread&&workerData?.format==='leafseamer-prepared-observation/1'){
       const documents=requested.map(file=>{need(remaining>0,'preparation_read_capacity');const bytes=read(file.path,remaining);remaining-=bytes.length;return {file_id:file.file_id,bytes};});
       parentPort.postMessage({description,flushed,documents});Atomics.wait(signal,0,0,workerData.timeout_ms);
       if(workerData.hold)Atomics.compareExchange(signal,0,0,3);
-    },{refresh:workerData.refresh});
+    },{refresh:workerData.refresh,linuxStage:workerData.linux_stage});
   }catch(error){parentPort.postMessage({error:typeof error.code==='string'&&/^(preparation|content|peer)_[a-z_]{1,64}$/.test(error.code)?error.code:'sealing_unavailable'});}
   finally{parentPort.close();}
 }

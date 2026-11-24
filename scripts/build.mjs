@@ -16,7 +16,7 @@ for(const name of ['linux-deployment-journal.mjs','linux-deployment-journal.sql'
 for(const name of ['linux-member-journal.mjs','linux-member-journal.sql','linux-member-bootstrap.mjs','linux-member-retirement.sql','linux-native-host.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(['linux-compose-channel.mjs',await fs.readFile(path.join(root,'src/linux-compose-channel.mjs'))]);
 files.push(['content-preparation.mjs',await fs.readFile(path.join(root,'src/content-preparation.mjs'))]);
-for(const name of ['prepared-content.mjs','platform-qualification.mjs','installation-sealing.mjs','installation-sealing.sql','materialization.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
+for(const name of ['prepared-content.mjs','linux-prepared-content.mjs','platform-qualification.mjs','installation-sealing.mjs','installation-sealing.sql','materialization.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(...await buildTuf());
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const memberTools=['linux-member','linux-compose-channel'];

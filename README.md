@@ -292,6 +292,12 @@ sealed表示该次内容封存提交，不能代替当前可用性查询、安�
 
 跨仓本机联调使用`test/controller-materialization.integration.mjs`：先构建两仓，将`LEAFSEAMER_CONTROLLER_TEST_ROOT`设为Controller绝对路径，再运行`node --disallow-code-generation-from-strings --test test/controller-materialization.integration.mjs`。它使用临时安装库、真实进程与管道；合成发行／平台批准只供测试，不授予生产资格。
 
+Linux 安装协调者可通过 `@leafseamer/suite/installation` 对已校验的包调用 `prepareMaterialization(identity, {reader_sids: [], release_authorization_ref})`。安装账户独占准备目录，实物目录和文件分别使用 `0500` 和 `0400`。准备成功后，`platformQualifications.observe(identity)` 返回绑定当前文件系统和安装实现的资格范围。部署者持有相应验收批准和证据后，使用 `configure` 登记资格，再通过 `sealImport` 在安装库中生成收据。
+
+Linux 的本机 `queryIntake`、`verifyMaterialization` 及三个 `describe` 接口会复核当前发行信任、平台资格、内容身份与库存摘要。读取静态文档受原库存和字节预算约束。观察时间使用 Linux `/proc/uptime` 的启动时钟，按百分之一秒精度保守核验四秒窗口。[Linux 内核 uptime 实现](https://raw.githubusercontent.com/torvalds/linux/v6.12/fs/proc/uptime.c) · [安装库联调](test/content-preparation.test.mjs)
+
+Linux 仍待完成安装进程与受监督 Worker 的内容交接，以及目标文件系统的掉电耐久验收。
+
 Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指向刚解压的 [OBS Studio 32.0.4 Windows x64 便携包](https://github.com/obsproject/obs-studio/releases/tag/32.0.4)。目录须无 `config`，并由本次测试独占。运行 `node --disallow-code-generation-from-strings --test --test-name-pattern 'supervisor_create_module_obs$' test/controller-materialization.integration.mjs`。用例在临时库登记两个空场景和随机凭据，在本机启动一次性 OBS，验证原生 Worker 采集、SQLite 保存，以及 HTTPS 场景目录的权限与失联撤回。测试使用软件实例、临时配置及合成发行批准。
 
 同一联调文件的 `obs_cut_wire_transport$` 用例使用独占的 OBS 便携实例，在两个空场景之间验证固定 Cut 传输。用例检查同步拒发、按 UUID 设置场景、匹配应答后发起的新读回以及相同目标重复提交仍产生新的四帧。该用例使用测试提供的许可复核回调。

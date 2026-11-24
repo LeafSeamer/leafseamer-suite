@@ -16,6 +16,7 @@ import {installationSealing} from './installation-sealing.mjs';
 import {materializationProvider} from './materialization.mjs';
 import {linuxDeploymentJournal} from './linux-deployment-journal.mjs';
 import {linuxMemberJournal} from './linux-member-journal.mjs';
+import {linuxFlush} from './linux-prepared-content.mjs';
 export {createReleaseTransport} from './release-transport.mjs';
 export {InstallationError};
 
@@ -477,6 +478,8 @@ export function openInstallationStore(dataDirectory) {
       async prepareMaterialization(value,options){
         value=importIdentity(value);
         need(options&&Object.keys(options).sort().join(',')==='reader_sids,release_authorization_ref','preparation_policy');readerPolicy(options.reader_sids);
+        const linux=process.platform==='linux';
+        need(!linux||options.reader_sids.length===0,'preparation_policy');
         const policy=JSON.parse(canonical(options));policies.verifyImplementation();
         const validated=store.validatedArtifact(value);
         const first=transact(()=>{
@@ -505,13 +508,22 @@ export function openInstallationStore(dataDirectory) {
             need(report.format==='leafseamer-content-preparation/1'&&report.content_directory===first.preparation&&report.sealed===false&&
               report.directory_durability==='unqualified'&&report.file_flush_completed===true&&report.file_count===validated.report.file_count&&
               report.payload_bytes===validated.report.payload_bytes,'preparation_report');
-            need(report.storage_identity?.format==='windows-content-volume/1'&&report.storage_identity.file_id_volume_serial===report.root_identity.slice(0,16),'preparation_report');
             const directories=new Set();for(const file of validated.report.inventory.files){const parts=file.path.split('/');for(let i=1;i<parts.length;i++)directories.add(parts.slice(0,i).join('/'));}
             const flushed=report.metadata_flush;
-            need(flushed?.format==='windows-content-flush/1'&&flushed.method==='FlushFileBuffers'&&flushed.completed===true&&
-              flushed.file_count===validated.report.file_count&&flushed.directory_count===directories.size+1&&
-              flushed.order==='files_then_directories_bottom_up_then_parent'&&/^[0-9a-f]{48}$/.test(flushed.parent_identity)&&
-              flushed.parent_identity.slice(0,16)===report.root_identity.slice(0,16),'preparation_report');
+            need(flushed?.completed===true&&flushed.file_count===validated.report.file_count&&flushed.directory_count===directories.size+1&&
+              flushed.order==='files_then_directories_bottom_up_then_parent','preparation_report');
+            if(linux){
+              const storage=report.storage_identity,object=/^[0-9]+:[0-9]+$(?![\s\S])/;
+              need(storage?.format==='linux-content-filesystem/1'&&object.test(report.root_identity)&&object.test(flushed.parent_identity)&&
+                storage.device===report.root_identity.split(':')[0]&&storage.device===flushed.parent_identity.split(':')[0]&&
+                /^-?[0-9a-f]+$/.test(storage.filesystem_type)&&report.writer_uid===String(process.geteuid())&&report.access_profile==='linux-installer-only/1'&&
+                canonical(report.reader_sids)==='[]'&&/^sha256:[0-9a-f]{64}$/.test(report.tree_identity)&&flushed.format===linuxFlush.format&&
+                flushed.method===linuxFlush.method,'preparation_report');
+            }else{
+              need(report.storage_identity?.format==='windows-content-volume/1'&&report.storage_identity.file_id_volume_serial===report.root_identity.slice(0,16)&&
+                flushed.format==='windows-content-flush/1'&&flushed.method==='FlushFileBuffers'&&/^[0-9a-f]{48}$/.test(flushed.parent_identity)&&
+                flushed.parent_identity.slice(0,16)===report.root_identity.slice(0,16),'preparation_report');
+            }
             return save('prepared',{...report,validation_id:validated.validation_id,validation_report_digest:validated.report_digest,
               package_digest:first.intent.package_digest,manifest_digest:validated.report.manifest_digest,artifact_set_digest:validated.report.artifact_set_digest,
               release_authorization_ref:policy.release_authorization_ref,validation_policy_ref:first.intent.validation_policy_ref});

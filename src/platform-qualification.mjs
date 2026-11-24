@@ -11,14 +11,17 @@ export function platformQualifications({db,transact,identity,rows,decode,withPre
   const reference=(profileId,bodyDigest)=>({kind:'platform_profile',authority_service_id:identity.authority_service_id,
     database_instance_id:identity.database_instance_id,object_id:profileId,revision:'1',digest:bodyDigest});
   function scope(description){
+    const linux=process.platform==='linux';
     return {format:'leafseamer-installation-durability-scope/1',host_installation_id:identity.host_installation_id,
       installation_epoch:identity.installation_epoch,installation_directory_identity:identity.directory_identity,
       content_parent_identity:description.parent_identity,storage_identity:description.storage_identity,
-      writer_sid:description.writer_sid,platform:process.platform,arch:process.arch,os_release:os.release(),
+      ...(linux?{writer_uid:description.writer_uid,access_profile:'linux-installer-only/1'}:
+        {writer_sid:description.writer_sid,dacl_profile:'windows-installer-only-write/1'}),
+      platform:process.platform,arch:process.arch,os_release:os.release(),
       node_version:process.versions.node,build_manifest_digest:buildDigest,
       sqlite_engine:db.prepare('SELECT sqlite_version(),sqlite_source_id()').raw().get(),
       sqlite_policy:{journal_mode:'wal',synchronous:'full',locking_mode:'exclusive'},
-      dacl_profile:'windows-installer-only-write/1',flush_method:'FlushFileBuffers',
+      flush_method:linux?'fsync':'FlushFileBuffers',
       flush_order:'files_then_directories_bottom_up_then_parent'};
   }
   function historical(ref){

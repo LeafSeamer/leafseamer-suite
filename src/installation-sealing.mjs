@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import {canonical,digest,requireValue as need,importIdentity} from './import-input.mjs';
 import {verifyForSealing} from './prepared-content.mjs';
+import {linuxFlush} from './linux-prepared-content.mjs';
 const id=value=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}(?![\s\S])/.test(value);
 export function installationSealing({db,transact,identity,rows,decode,required,view,event,policies,trust,qualifications,
   preparedArtifact,validatedArtifact,contentDirectory,isUnavailable}){
@@ -42,6 +43,7 @@ export function installationSealing({db,transact,identity,rows,decode,required,v
       if(original)return original;
       policies.verifyImplementation();
       const prepared=preparedArtifact(value),validated=validatedArtifact(value);
+      const protocol=process.platform==='linux'?linuxFlush:{format:'windows-content-flush/1',method:'FlushFileBuffers'};
       // 进入sealing前先核资格；后续commit仍以worker当前观察重核，不能用这次查询替代。
       qualifications.api.assertCurrent(value,policy.platform_profile_ref);
       const attempt=transact(()=>{
@@ -63,7 +65,7 @@ export function installationSealing({db,transact,identity,rows,decode,required,v
             return transact(()=>{
               const prior=current(value,policy,attempt);qualifications.assertObserved(policy.platform_profile_ref,description);
               need(description.root_identity===prepared.body.root_identity&&canonical(description.storage_identity)===canonical(prepared.body.storage_identity)&&
-                flushed.parent_identity===description.parent_identity&&flushed.format==='windows-content-flush/1'&&flushed.method==='FlushFileBuffers'&&
+                flushed.parent_identity===description.parent_identity&&flushed.format===protocol.format&&flushed.method===protocol.method&&
                 flushed.file_count===validated.report.file_count&&flushed.order==='files_then_directories_bottom_up_then_parent','sealing_observation');
               const verification={format:'leafseamer-seal-verification/1',seal_id:attempt.seal_id,preparation_id:prepared.preparation_id,
                 host_trust_epoch:epoch(),validation_id:validated.validation_id,validation_report_digest:validated.report_digest,

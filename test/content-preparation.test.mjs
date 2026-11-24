@@ -15,14 +15,24 @@ import {withPreparedContent} from '../dist/prepared-content.mjs';
 async function fixture(t){
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'leafseamer-content-')),data=path.join(root,'data');fs.mkdirSync(data);createInstallationStore(data);
   let store=openInstallationStore(data),authorized;const jobs=[];
-  t.after(async()=>{await Promise.allSettled(jobs);authorized?.session.close();store.close();assert.equal(path.dirname(path.resolve(root)),path.resolve(os.tmpdir()));fs.rmSync(root,{recursive:true,force:true});});
+  t.after(async()=>{
+    await Promise.allSettled(jobs);authorized?.session.close();store.close();assert.equal(path.dirname(path.resolve(root)),path.resolve(os.tmpdir()));
+    if(process.platform==='linux'){
+      const writable=directory=>{
+        fs.chmodSync(directory,0o700);
+        for(const item of fs.readdirSync(directory,{withFileTypes:true}))if(item.isDirectory())writable(path.join(directory,item.name));
+      };
+      writable(path.join(data,'content'));
+    }
+    fs.rmSync(root,{recursive:true,force:true});
+  });
   const artifact=artifactFixture(),bytes=zipFixture(artifact.entries()).bytes;authorized=await authorizeFixture(store,bytes,digestValue(artifact.manifest));
   const request={identity:{host_installation_id:store.identity.host_installation_id,client_registration_id:'client.synthetic',import_request_id:'request.synthetic'},
     target_authority_service_id:'controller.synthetic',source_attachment_id:'source.synthetic',package_digest:authorized.result.body.package_digest,package_bytes:String(bytes.length),
     expected_manifest_digest:digestValue(artifact.manifest),host_trust_epoch:'1',release_authorization_ref:authorized.result.reference,validation_policy_ref:authorized.validationPolicy.reference};
   store.recordAcceptedImport(request);const source=path.join(root,'source.zip');fs.writeFileSync(source,bytes);const fd=fs.openSync(source,'r');
   try{await store.copyImport(request.identity,fd);}finally{fs.closeSync(fd);}await store.validateImport(request.identity);
-  const options={reader_sids:['S-1-1-0'],release_authorization_ref:authorized.result.reference};
+  const options={reader_sids:process.platform==='linux'?[]:['S-1-1-0'],release_authorization_ref:authorized.result.reference};
   return {root,data,artifact,request,options,get store(){return store;},prepare(value=options){const job=store.prepareMaterialization(request.identity,value);jobs.push(job);return job;},
     seal(value){const job=store.sealImport(request.identity,value);jobs.push(job);return job;},
     async renewTrust(){const release=authorized.release;authorized.session.close();const opened=await openReleaseFixture(store,release);
@@ -216,6 +226,59 @@ test('收据写入故障回滚整个封存事务，重开后沿原操作和新�
 function materializationRequest(status){return {intake_id:status.receipt.intake_id,target_authority_service_id:status.target_authority_service_id,
   manifest_digest:status.receipt.manifest_digest,artifact_set_digest:status.receipt.artifact_set_digest,host_trust_epoch:status.receipt.host_trust_epoch,
   challenge_id:'challenge.synthetic',launch_intent_digest:digestValue('synthetic launch intent')};}
+
+test('Linux 私有安装内容经实际刷新封存，当前查验核对授权和原文件身份',{skip:process.platform!=='linux',timeout:20000},async t=>{
+  const f=await fixture(t);
+  await assert.rejects(f.prepare({...f.options,reader_sids:['S-1-1-0']}),{code:'preparation_policy'});
+  const options=await sealingOptions(f),prepared=f.store.preparedArtifact(f.request.identity),description=f.store.platformQualifications.observe(f.request.identity);
+  assert.equal(description.scope.access_profile,'linux-installer-only/1');
+  assert.equal(description.scope.writer_uid,String(process.geteuid()));
+  assert.equal(prepared.body.directory_durability,'unqualified');
+  assert.equal(prepared.body.metadata_flush.method,'fsync');
+  assert.equal(fs.statSync(prepared.content_directory).mode&0o777,0o500);
+  const filename=path.join(prepared.content_directory,'payload/main.mjs');
+  assert.equal(fs.statSync(filename).mode&0o777,0o400);
+  const sealed=await f.seal(options);
+  assert.equal(sealed.state,'sealed');
+  const historic=f.store.sealedArtifact(f.request.identity),request=materializationRequest(sealed);
+  const query={intake_id:request.intake_id,target_authority_service_id:request.target_authority_service_id};
+  const verified=await f.store.verifyMaterialization(request);
+  assert.equal(verified.result,'verified');
+  assert.deepEqual(await decodeArtifactDocument(Buffer.from(JSON.stringify(verified)),'MaterializationResult'),verified);
+  assert.equal(verified.observer_domain.descriptor_digest,digestValue(f.store.materializationClock()));
+  const schema=await f.store.describeConfigurationSchema(query);
+  assert.equal(schema.status,'available');
+  assert.ok(schema.content.bytes.equals(f.artifact.payload.get('config').bytes));
+  assert.equal((await f.store.acquireMaterialization(query)).status,'unavailable');
+
+  f.reopen();
+  assert.deepEqual(f.store.sealedArtifact(f.request.identity),historic);
+  assert.equal((await f.store.queryIntake(query)).status,'unavailable');
+  await f.renewTrust();
+  assert.equal((await f.store.queryIntake(query)).status,'available');
+  assert.notEqual(f.store.materializationClock().clock_domain_id,verified.observer_domain.clock_domain_id);
+  const directory=path.dirname(filename),original=filename+'.saved';
+  fs.chmodSync(directory,0o700);fs.renameSync(filename,original);fs.copyFileSync(original,filename);
+  fs.chmodSync(filename,0o400);fs.unlinkSync(original);fs.chmodSync(directory,0o500);
+  const withdrawn=await f.store.verifyMaterialization(request);
+  assert.equal(withdrawn.result,'unavailable');assert.equal(withdrawn.evidence_id,null);
+  assert.deepEqual(f.store.sealedArtifact(f.request.identity),historic);
+});
+
+test('Linux 物化拒绝准备目录、链接和意外库存，再次从原校验物准备',{skip:process.platform!=='linux',timeout:20000},async t=>{
+  const f=await fixture(t),parent=path.join(f.data,'content'),source=f.store.validatedArtifact(f.request.identity).payload_directory;
+  fs.chmodSync(parent,0o720);
+  const unsafe=await f.prepare();assert.equal(unsafe.status,'failed');assert.equal(fs.readdirSync(parent).length,0);
+  fs.chmodSync(parent,0o700);
+  const filename=path.join(source,'payload/main.mjs'),original=path.join(f.root,'original.mjs');
+  fs.renameSync(filename,original);fs.symlinkSync(original,filename);
+  assert.equal((await f.prepare()).status,'failed');
+  fs.unlinkSync(filename);fs.renameSync(original,filename);
+  const extra=path.join(source,'unexpected');fs.writeFileSync(extra,'unexpected');
+  assert.equal((await f.prepare()).status,'failed');fs.unlinkSync(extra);
+  assert.equal((await f.prepare()).status,'prepared');
+  assert.equal(f.store.queryImport(f.request.identity).state,'validating');
+});
 test('当前物化观察核真实内容并回显完整挑战，原生时钟观察域在重开后更换',{skip:process.platform!=='win32',timeout:20000},async t=>{
   const f=await fixture(t),status=await f.seal(await sealingOptions(f)),request=materializationRequest(status);
   const query={intake_id:request.intake_id,target_authority_service_id:request.target_authority_service_id};

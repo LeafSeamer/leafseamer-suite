@@ -1,17 +1,38 @@
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 import {canonical,digest,requireValue as need,InstallationError} from './import-input.mjs';
 import {decodeArtifactDocument} from './sdk/artifact-import.mjs';
 import {observePreparedContent,holdPreparedContent} from './prepared-content.mjs';
 import {installationObservationTick} from './local-peer.mjs';
 
+const linuxResolution=10000000n;
+function linuxClockScope(){
+  need(fs.statfsSync('/proc/self/ns').type===0x9fa0,'materialization_clock');
+  const namespace=fs.statSync('/proc/self/ns/time',{bigint:true});
+  return 'linux-'+namespace.dev+':'+namespace.ino;
+}
+function linuxTick(scope){
+  need(linuxClockScope()===scope&&fs.statfsSync('/proc/uptime').type===0x9fa0,'materialization_clock');
+  const sample=fs.readFileSync('/proc/uptime','ascii');
+  const match=/^([0-9]{1,16})\.([0-9]{2}) [0-9]{1,20}\.[0-9]{2}\n$(?![\s\S])/.exec(sample);
+  need(match&&linuxClockScope()===scope,'materialization_clock');
+  return BigInt(match[1])*1000000000n+BigInt(match[2])*linuxResolution;
+}
+
 export function materializationProvider({db,transact,identity,rows,decode,required,sealing,policies,trust,qualifications,
   preparedArtifact,validatedArtifact,contentDirectory,isUnavailable}){
-  let active=0,previousTick=0n;const holds=new Set();const domainId=crypto.randomUUID();
-  function tick(){const value=installationObservationTick();need(value>=previousTick&&value<=18446744073709551615n,'materialization_clock');previousTick=value;return value;}
+  let active=0,previousTick=0n,clockScope=null;const holds=new Set();const domainId=crypto.randomUUID();
+  const linux=process.platform==='linux',resolution=linux?linuxResolution:0n;
+  function tick(){
+    if(linux)clockScope??=linuxClockScope();
+    const value=linux?linuxTick(clockScope):installationObservationTick();
+    need(value>=previousTick&&value<=18446744073709551615n,'materialization_clock');previousTick=value;return value;
+  }
   function descriptor(){
     tick();return Object.freeze({format:'leafseamer-materialization-clock/1',clock_domain_id:domainId,
       host_installation_id:identity.host_installation_id,authority_service_id:identity.authority_service_id,
-      database_instance_id:identity.database_instance_id,backend:'windows_interrupt_precise',unit:'ns',scope:'windows-global',
+      database_instance_id:identity.database_instance_id,
+      ...(linux?{backend:'linux_proc_boottime',scope:clockScope,resolution_ns:String(resolution)}:{backend:'windows_interrupt_precise',scope:'windows-global'}),unit:'ns',
       lifetime:'installation_store_open'});
   }
   function clockRef(){const value=descriptor();return {clock_domain_id:domainId,descriptor_digest:digest(value)};}
@@ -51,7 +72,8 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
         request.artifact_set_digest!==selected.receipt.artifact_set_digest||request.host_trust_epoch!==selected.receipt.host_trust_epoch))return answer('mismatch');
       let observed;
       const checkCurrent=()=>{
-        authorize(request);need(tick()-start<4000000000n,'materialization_timeout');
+        // /proc/uptime向下截断到百分之一秒。用上界核对耗时，避免增加允许窗口。
+        authorize(request);need(tick()+resolution-start<4000000000n,'materialization_timeout');
         return transact(()=>{
           sealing.assertEpoch(selected.intent);policies.assertCurrent(selected.receipt.validation_policy_ref);
           if(observed)qualifications.assertObserved(selected.receipt.platform_profile_ref,observed);
@@ -59,6 +81,7 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
         });
       };
       const hold=includeContent==='loader';
+      need(!hold||!linux,'preparation_loader_unavailable');
       const result=await (hold?holdPreparedContent:observePreparedContent)({parent_directory:contentDirectory,prepared:selected.prepared,validated:selected.validated,
         read_files:(schemaFile?[schemaFile]:capabilityFiles??[]).map(file=>({file_id:file.file_id,path:file.path}))},{
         checkCurrent,timeoutMs:4000,

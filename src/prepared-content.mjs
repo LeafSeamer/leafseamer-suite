@@ -2,13 +2,16 @@ import {installationContentPlatform} from './local-peer.mjs';
 import {canonical,requireValue as need} from './import-input.mjs';
 import {Worker,isMainThread,parentPort,workerData} from 'node:worker_threads';
 import {InstallationError} from './import-input.mjs';
+import {withLinuxPreparedContent} from './linux-prepared-content.mjs';
 
 // 持有祖先、目录及文件句柄直到同步回调结束；不修复ACL，不采用未登记目录。
 export function withPreparedContent(parentDirectory,prepared,validated,fn,{refresh=false}={}){
-  const native=installationContentPlatform(),report=prepared.body;let root,pin;
+  const report=prepared.body;
+  need(report.validation_id===validated.validation_id&&report.validation_report_digest===validated.report_digest&&
+    report.metadata_flush?.completed===true,'preparation_report');
+  if(process.platform==='linux')return withLinuxPreparedContent(parentDirectory,prepared,validated,fn,{refresh});
+  const native=installationContentPlatform();let root,pin;
   try{
-    need(report.validation_id===validated.validation_id&&report.validation_report_digest===validated.report_digest&&
-      report.metadata_flush?.completed===true,'preparation_report');
     root=native.reopenPreparedRoot(parentDirectory,prepared.preparation_id,report.reader_sids,report.root_identity);
     const observed=native.preparedDescribe(root);
     need(observed.writer_sid===report.writer_sid&&canonical(observed.storage_identity)===canonical(report.storage_identity)&&

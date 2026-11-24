@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import {Worker,isMainThread,parentPort,workerData} from 'node:worker_threads';
 import {installationContentPlatform} from './local-peer.mjs';
 import {InstallationError,requireValue as need} from './import-input.mjs';
+import {prepareLinuxContent} from './linux-prepared-content.mjs';
 
 async function prepare(input){
   const native=installationContentPlatform();let sourcePin,targetPin,root;
@@ -74,7 +75,7 @@ export function prepareContent(input,{checkCurrent}){
   });
 }
 if(!isMainThread){
-  try{parentPort.postMessage({report:await prepare(workerData)});}
+  try{parentPort.postMessage({report:await (process.platform==='linux'?prepareLinuxContent(workerData):prepare(workerData))});}
   catch(error){parentPort.postMessage({error:typeof error.code==='string'&&/^(preparation|content|peer)_[a-z_]{1,64}$/.test(error.code)?error.code:'preparation_unavailable'});}
   finally{parentPort.close();}
 }

@@ -174,7 +174,8 @@ export async function approveComposeSimulatorRun({run,baseline,controller,princi
   return {proposal_ref,endorsement_ref,approval_ref,policy,observePreflight};
 }
 
-export function verifyDurableSimulatorRunApproval(receiver,publisher,{proposal_ref,endorsement_ref,approval_ref,policy,preflight},digest){
+export function verifyDurableSimulatorRunApproval(receiver,publisher,{proposal_ref,endorsement_ref,approval_ref,policy,preflight},digest,
+  expectedRunRevision=preflight.run_revision){
   function verify(db,query,reference){
     const {body_jcs,body_digest}=db.prepare(query).get(reference.object_id);
     const body=JSON.parse(body_jcs);
@@ -191,5 +192,5 @@ export function verifyDurableSimulatorRunApproval(receiver,publisher,{proposal_r
   assert.deepEqual(approved.controller_endorsement_refs,[endorsement_ref]);
   const head=receiver.prepare('SELECT approval_id,run_revision FROM automation_run_approval_head WHERE run_id=?').get(approved.run_id);
   assert.equal(head.approval_id,approval_ref.object_id);
-  assert.equal(head.run_revision,preflight.run_revision);
+  assert.equal(head.run_revision,expectedRunRevision);
 }

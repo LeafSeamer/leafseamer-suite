@@ -166,6 +166,10 @@ Linux 布防预检使用可选的 `arm_admission_policy`。其 `approval_file` �
 
 启用 `public_api.local_run_approvals` 后，人员可在 Seamer 回环 TLS 的 `/auth/local-run-approvals/v1` 使用 `create-arm-context` 和 `record-arm-preflight`。令牌须定向 Seamer，持有当前 `request.create`、`run.arm` 和 `run.read`，且人员认证仍在近期窗口内。先用 `ttl_ms` 和 `max_unique_requests` 建立上下文，再用 `run_id`、`expected_revision` 和 `context_id` 记录一次预检。每份原件占用一次上下文额度。 `can_arm` 只描述该期预检，额度持有与运行状态转换由后续布防事务完成。[Compose 预检联调](test/fixtures/linux-compose-first-pairing.mjs)
 
+使用 `observe-and-arm` 在一次请求内记录当前预检并受理布防。请求包含 `run_id` 和 `reservation`，后者包含 `expected_run_revision` 及 `context`。 `context` 包含 `context_id` 和 `idempotency_key`。原子请求占用一次上下文额度。持有当前合格预检时，也可以在原期限内用 `arm` 提交同样的上下文和 `preflight_ref`。成功受理占用激活槽和额度，运行保持 `disarmed`。
+
+使用原 `operation_ref` 调用 `complete-arm`。目标回执尚未采用时，可在原授权期限内重查 `PREPARATION_PENDING`。完成事务核验当前目标资格并封存接收基线，然后把运行置为 `armed`。同键重投受理请求及重复完成操作可查回原结果。[Compose 布防联调](test/fixtures/linux-compose-first-pairing.mjs)
+
 ### Linux 原生成员创建
 
 在 Linux 构建机运行 `npm run build -- --linux-member`，将原生创建工具及其源码和制品摘要纳入 `dist/native/`。由可信宿主装配预先登记启动意图并固定受保护的 ELF 制品、空 cgroup v2 子组及两者的设备号和 inode。装配需拥有目录访问、创建子进程和切换到指定非 root UID／GID 所需的权限。工具使用调用者原有权限，发布文件采用普通可执行模式。

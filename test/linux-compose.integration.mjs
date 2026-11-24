@@ -722,7 +722,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         const data='/var/lib/leafseamer',fileFor=name=>path.join(data,name);
         const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish'),
           runApproval:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1',
-          armPreflight:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1'};
+          armPreflight:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1',
+          armCompletion:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1'};
         const start=fileFor('worker-start'),result=fileFor('worker-result.json');
         fs.writeFileSync(path.join(controller.data_dir,'worker-test.json'),clockValues.canonical({
           policy:pairPlan.bootstrap.controller,launchId,containment,channelDirectory:'/run/leafseamer-worker',data,start,result,intakeRef,paired
@@ -790,5 +791,6 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1')t.diagnostic('模拟器定义发布、审批原件和未布防运行已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1')t.diagnostic('模拟器运行的人类审批、Controller 认可和布防前置观察已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1')t.diagnostic('受保护资格下的模拟器布防预检已持久记录');
+    if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1')t.diagnostic('模拟器正式布防、目标准备和基线封存已核对');
   }
 });

@@ -110,9 +110,11 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const simulatorPublication=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1';
   const simulatorRunApproval=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1';
   const simulatorArmPreflight=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1';
+  const simulatorArmCompletion=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1';
   assert.ok(!simulatorPublication||pairedSimulator&&!verifyPublication);
   assert.ok(!simulatorRunApproval||simulatorPublication);
   assert.ok(!simulatorArmPreflight||simulatorRunApproval);
+  assert.ok(!simulatorArmCompletion||simulatorArmPreflight);
   const verifySourceSubscription=pairedSimulator||process.env.LEAFSEAMER_TEST_COMPOSE_SOURCE_SUBSCRIPTION==='1';
   if(verifySourceSubscription)localParty.permissions.push('event.internal.subscribe');
   if(simulatorPublication)localParty.permissions.push('automation.bindings.read','events.internal.read');
@@ -143,7 +145,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     ...publicationProfile,...armProfile},{...((verifyPublication||simulatorPublication)&&{[approvalFile]:approval}),
       ...(simulatorArmPreflight&&{[armFile]:armApproval})});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights;
+  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights,armedSimulator,verifyReadyArmPreflight;
   try{
     const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready')):null;
     if(baseline)localParty.object_scope_digest=digest(composeSimulatorDeviceScope(controller,baseline));
@@ -250,20 +252,69 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         assert.equal(pending.preflight.observation.can_arm,false);
         assert.equal(pending.preflight.observation.sources[0].state,'baseline_required');
         assert.equal(pending.preflight.basis.admission,null);
-        finishArmPreflights=async()=>{
-          const ready=await call('record-arm-preflight',preflightRequest);
-          assert.equal(ready.preflight.observation.can_arm,true);
-          assert.deepEqual(ready.preflight.observation.approval_ref,approvedSimulator.approval_ref);
-          const [device]=ready.preflight.observation.control_observations[0].devices;
+        if(simulatorArmCompletion){
+          const rejected={run_id:preflightRequest.run_id,reservation:{context:{context_id,idempotency_key:id()},preflight_ref:pending.preflight_ref}};
+          await call('arm',rejected,403,reader);
+          await call('arm',rejected,409);
+        }
+        const budget={profile_ref:{id:'compose-simulator-budget',revision:'1',digest:sha(armApproval)},qualification_ref,capacity,required};
+        verifyReadyArmPreflight=preflight=>{
+          assert.equal(preflight.observation.can_arm,true);
+          assert.deepEqual(preflight.observation.approval_ref,approvedSimulator.approval_ref);
+          const [device]=preflight.observation.control_observations[0].devices;
           assert.equal(device.device_id,baseline.target_device);
           assert.equal(device.state,'automatic');
           assert.equal(device.control.gate_state,'protected');
-          assert.equal(ready.preflight.observation.sources[0].state,'synchronized');
-          assert.deepEqual(ready.preflight.basis.admission,{profile_ref:{id:'compose-simulator-budget',revision:'1',digest:sha(armApproval)},
-            qualification_ref,capacity,required});
-          assert.equal(ready.preflight.basis.observed_receive_cursor.receive_sequence,'1');
-          await call('record-arm-preflight',preflightRequest,429);
-          armPreflights=[pending,ready];
+          assert.equal(preflight.observation.sources[0].state,'synchronized');
+          assert.deepEqual(preflight.basis.admission,budget);
+          assert.equal(preflight.basis.observed_receive_cursor.receive_sequence,'1');
+        };
+        finishArmPreflights=async()=>{
+          if(!simulatorArmCompletion){
+            const ready=await call('record-arm-preflight',preflightRequest);
+            verifyReadyArmPreflight(ready.preflight);
+            armPreflights=[pending,ready];
+            await call('record-arm-preflight',preflightRequest,429);
+            return;
+          }
+          const armRequest={run_id:preflightRequest.run_id,reservation:{context:{context_id,idempotency_key:id()},expected_run_revision:'2'}};
+          const reserved=await call('observe-and-arm',armRequest);
+          const {operation_ref,operation}=reserved;
+          assert.equal(operation.state,'reserved');
+          assert.equal(operation.dispatch_eligible,false);
+          assert.equal(operation.target_arm_generation,'1');
+          assert.deepEqual(operation.budget,budget);
+          const readRun=async()=>{
+            const reply=await send('/services/'+service_id+'/api/v1/runs/'+operation.run_id,{headers:{Authorization:armBearer}});
+            assert.equal(reply.status,200,reply.body.toString());
+            return JSON.parse(reply.body);
+          };
+          const pendingRun=await readRun();
+          assert.equal(pendingRun.lifecycle,'disarmed');
+          assert.equal(pendingRun.active_operation_id,operation.operation_id);
+          let completed;
+          try{
+            completed=await waitFor(async()=>{
+              const reply=await localRequest(runApprovalRoute,'complete-arm',{operation_ref},armBearer);
+              const body=JSON.parse(reply.data);
+              if(reply.status===409&&body.error==='PREPARATION_PENDING')return null;
+              assert.equal(reply.status,200,reply.data);
+              return body.result;
+            });
+          }catch(error){
+            const diagnostics=generation.events('controller').filter(frame=>frame.event==='simulator_preparation_failed');
+            throw new Error('布防目标准备未完成 '+JSON.stringify(diagnostics),{cause:error});
+          }
+          const armed=await readRun();
+          assert.equal(armed.lifecycle,'armed');
+          assert.equal(armed.dispatch_eligible,false);
+          assert.equal(armed.revision,completed.completion.completed_run_revision);
+          assert.equal(armed.active_operation_id,null);
+          assert.equal(armed.last_receive_seq,'1');
+          assert.deepEqual(await call('observe-and-arm',armRequest),reserved);
+          assert.deepEqual(await call('complete-arm',{operation_ref}),completed);
+          armedSimulator={reserved,completed};
+          armPreflights=[pending,{preflight_ref:operation.preflight_ref}];
         };
       }:null;
       const afterWrite=simulatorRunApproval?async()=>{
@@ -332,19 +383,29 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
     if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription});
     if(simulatorPublication){assert.ok(publishedSimulator);verifyDurableSimulatorPublication(store,publishedSimulator,digest);}
-    if(simulatorRunApproval){assert.ok(approvedSimulator);verifyDurableSimulatorRunApproval(store,issuer,approvedSimulator,digest);}
+    if(simulatorRunApproval){
+      assert.ok(approvedSimulator);
+      verifyDurableSimulatorRunApproval(store,issuer,approvedSimulator,digest,armedSimulator?.completed.completion.completed_run_revision);
+    }
     if(simulatorArmPreflight){
       assert.equal(armPreflights?.length,2);
       const select=store.prepare('SELECT body_jcs,body_digest FROM automation_run_preflight WHERE preflight_id=?');
       for(const {preflight_ref,preflight} of armPreflights){
         const {body_jcs,body_digest}=select.get(preflight_ref.object_id);
         assert.equal(body_digest,preflight_ref.digest);
-        assert.equal(digest(JSON.parse(body_jcs)),body_digest);
-        assert.deepEqual(JSON.parse(body_jcs),preflight);
+        const original=JSON.parse(body_jcs);
+        assert.equal(digest(original),body_digest);
+        if(preflight)assert.deepEqual(original,preflight);
+        else{
+          verifyReadyArmPreflight(original);
+          assert.deepEqual(armedSimulator.completed.completion.ingest_baseline.receive_cursor,original.basis.observed_receive_cursor);
+        }
       }
       assert.equal(store.prepare('SELECT count(*) AS n FROM automation_run_preflight').get().n,2);
-      assert.equal(store.prepare('SELECT count(*) AS n FROM automation_arm_budget').get().n,0);
-      assert.equal(store.prepare('SELECT count(*) AS n FROM automation_activation_slot').get().n,0);
+      const expected=simulatorArmCompletion?1:0;
+      assert.equal(store.prepare('SELECT count(*) AS n FROM automation_arm_budget').get().n,expected);
+      assert.equal(store.prepare('SELECT count(*) AS n FROM automation_activation_slot').get().n,expected);
+      if(simulatorArmCompletion)verifyDurableSimulatorArm(store,issuer,armedSimulator,digest);
     }
     if(eventConsumer){
       const stored=issuer.prepare(`SELECT body_jcs FROM service_principal_revision
@@ -359,4 +420,32 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       assert.equal(store.prepare('SELECT count(*) AS n FROM definition_publication_proof').get().n,0);
     }
   }finally{store.close();issuer.close();}
+}
+
+function verifyDurableSimulatorArm(receiver,publisher,{reserved,completed},digest){
+  const {operation,operation_ref}=reserved,{completion,completion_ref}=completed;
+  const {operation_id,run_id}=operation,[target]=operation.targets;
+  const {preparation_id}=target;
+  function original(db,sql,id,expected){
+    const {body_jcs,body_digest}=db.prepare(sql).get(id),body=JSON.parse(body_jcs);
+    assert.equal(digest(body),body_digest);
+    if(expected)assert.equal(body_digest,expected);
+    return body;
+  }
+  assert.deepEqual(original(receiver,'SELECT body_jcs,body_digest FROM automation_run_arm WHERE operation_id=?',operation_id,operation_ref.digest),operation);
+  assert.deepEqual(original(receiver,'SELECT body_jcs,body_digest FROM automation_arm_budget WHERE operation_id=?',operation_id),operation.budget);
+  assert.deepEqual(original(receiver,'SELECT body_jcs,body_digest FROM automation_arm_completion WHERE operation_id=?',operation_id,completion_ref.digest),completion);
+  const adoption=original(receiver,'SELECT body_jcs,body_digest FROM automation_arm_preparation_receipt WHERE preparation_id=?',preparation_id);
+  const durable=publisher.prepare('SELECT receipt_jcs,receipt_digest FROM run_preparation_commit WHERE preparation_id=?').get(preparation_id);
+  assert.deepEqual(adoption.applied_receipt,JSON.parse(durable.receipt_jcs));
+  assert.equal(digest(adoption.applied_receipt),durable.receipt_digest);
+  const grant=original(publisher,'SELECT body_jcs,body_digest FROM run_preparation_grant WHERE preparation_id=?',preparation_id,adoption.applied_receipt.grant_ref.digest);
+  assert.equal(grant.run_id,run_id);
+  assert.equal(grant.arm_generation,'1');
+  assert.equal(grant.principal.principal_kind,'service');
+  assert.deepEqual(grant.device_actions,target.device_actions);
+  assert.equal(publisher.prepare('SELECT count(*) AS n FROM run_preparation WHERE run_id=?').get(run_id).n,1);
+  const slot=receiver.prepare('SELECT run_id,operation_id,revision FROM automation_activation_slot WHERE definition_id=?').get(operation.definition_id);
+  assert.deepEqual([slot.run_id,slot.operation_id,slot.revision],[run_id,operation_id,operation.committed_slot_revision]);
+  assert.deepEqual(publisher.prepare('PRAGMA foreign_key_check').all(),[]);
 }

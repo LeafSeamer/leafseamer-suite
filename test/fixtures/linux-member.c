@@ -4,6 +4,7 @@
 #include <linux/filter.h>
 #include <linux/seccomp.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/prctl.h>
 #include <sys/syscall.h>
@@ -32,10 +33,19 @@ static int cannot_write(const char *filename) {
 
 int main(int argc, char **argv) {
   if (argc > 3 && strcmp(argv[1], "deny-clone3") == 0) return deny_creation(argv + 2);
-  if (argc != 3 || !cannot_write(argv[1]) || !cannot_write(argv[2])) return 3;
+  int fork_child = argc == 4 && strcmp(argv[3], "keep-descendant") == 0;
+  if ((argc != 3 && !fork_child) || !cannot_write(argv[1]) || !cannot_write(argv[2])) return 3;
   for (int fd = 4; fd < 64; ++fd)
     if (fcntl(fd, F_GETFD) >= 0 || errno != EBADF) return 4;
-  if (write(3, "application_entered\n", 20) != 20) return 5;
+  if (fork_child) {
+    pid_t child = fork();
+    if (child < 0) return 5;
+    if (child == 0) {
+      close(3);
+      for (;;) pause();
+    }
+    if (dprintf(3, "descendant %ld\n", (long)child) < 0) return 5;
+  } else if (write(3, "application_entered\n", 20) != 20) return 5;
   char done;
   return read(3, &done, 1) == 1 && done == 'Q' ? 0 : 6;
 }

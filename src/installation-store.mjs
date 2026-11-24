@@ -153,13 +153,13 @@ export function openInstallationStore(dataDirectory) {
       if(!create)linuxJournal=journal;
       return journal;
     }
-    function members(create,assertCurrent){
+    function members(create,assertCurrent,upgrade=false){
       available();
       need(linuxJournal===null&&memberJournal===null,'linux_member_in_use');
       const journal=linuxMemberJournal({root,installation:identity,available,database,pragma,
         checkSchema:(database,source)=>checkJournalSchema(database,source,'linux_member_database'),
-        create,assertCurrent,onClose:()=>{memberJournal=null;}});
-      if(!create)memberJournal=journal;
+        create,upgrade,assertCurrent,onClose:()=>{memberJournal=null;}});
+      if(!create&&!upgrade)memberJournal=journal;
       return journal;
     }
     function key(value) {
@@ -236,6 +236,7 @@ export function openInstallationStore(dataDirectory) {
       initializeLinuxDeploymentJournal:()=>deploymentJournal(true,null),
       openLinuxDeploymentJournal:runtime=>deploymentJournal(false,runtime),
       initializeLinuxMemberJournal:()=>members(true,null),
+      upgradeLinuxMemberJournal:()=>members(false,null,true),
       openLinuxMemberJournal:assertCurrent=>members(false,assertCurrent),
       registerClient(policy){
         need(policy&&Object.keys(policy).sort().join(',')==='approval_reference,client_registration_id,permissions,role,target_authority_service_ids,user_sid'&&

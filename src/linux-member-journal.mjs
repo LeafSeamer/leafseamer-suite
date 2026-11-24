@@ -4,10 +4,12 @@ import crypto from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {InstallationError,canonical,digest,requireValue as need} from './import-input.mjs';
-import {linuxContainerCgroup,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
+import {linuxContainerCgroup,observeLinuxMemberRetirement,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {admitLinuxMember,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 
 const sql=fs.readFileSync(new URL('./linux-member-journal.sql',import.meta.url),'utf8');
+const retirementSql=fs.readFileSync(new URL('./linux-member-retirement.sql',import.meta.url),'utf8');
+const currentSql=sql+'\n'+retirementSql;
 const applicationId=0x4c534c4d;
 const hash=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$(?![\s\S])/;
@@ -106,7 +108,7 @@ function nativeFrames(stream){
   };
 }
 
-export function linuxMemberJournal({root,installation,available,database,pragma,checkSchema,create,assertCurrent,onClose}){
+export function linuxMemberJournal({root,installation,available,database,pragma,checkSchema,create,upgrade=false,assertCurrent,onClose}){
   need(process.platform==='linux','linux_member_platform');
   const file=path.join(root,'linux-member.db'),marker=path.join(root,'linux-member.marker');
   available();
@@ -126,9 +128,9 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
     if(create){
       need(pragma(db,'journal_mode=WAL')==='wal','linux_member_database');
       db.transaction(()=>{
-        db.exec(sql);
+        db.exec(currentSql);
         pragma(db,'application_id='+applicationId);
-        pragma(db,'user_version=1');
+        pragma(db,'user_version=2');
         db.prepare('INSERT INTO linux_member_identity VALUES(1,?)').run(identityText);
       }).immediate();
       const fd=fs.openSync(marker,'wx',0o600);
@@ -138,16 +140,28 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       db.close();
       return Object.freeze(identity);
     }
-    need(typeof assertCurrent==='function','linux_member_authority');
     const markerIdentity=fileIdentity(marker);
+    const version=pragma(db,'user_version');
     need(fs.statSync(marker).size<=4096&&fs.readFileSync(marker).equals(Buffer.from(identityText))&&
-      pragma(db,'application_id')===applicationId&&pragma(db,'user_version')===1&&pragma(db,'journal_mode')==='wal'&&
+      pragma(db,'application_id')===applicationId&&[1,2].includes(version)&&pragma(db,'journal_mode')==='wal'&&
       pragma(db,'quick_check')==='ok'&&db.prepare('SELECT body FROM linux_member_identity WHERE singleton=1').pluck().get()===identityText,
     'linux_member_database');
-    checkSchema(db,sql);
+    checkSchema(db,version===1?sql:currentSql);
+    if(upgrade){
+      if(version===1)db.transaction(()=>{
+        need(pragma(db,'user_version')===1&&same(identity.file_identity,fileIdentity(file))&&same(markerIdentity,fileIdentity(marker)),
+          'linux_member_file_identity');
+        db.exec(retirementSql);
+        pragma(db,'user_version=2');
+        checkSchema(db,currentSql);
+      }).exclusive();
+      db.close();
+      return Object.freeze({schema_revision:2,changed:version===1});
+    }
+    need(typeof assertCurrent==='function','linux_member_authority');
     db.exec('BEGIN EXCLUSIVE; COMMIT;');
     let closed=false,busy=false,failed=false;
-    const live=new Set();
+    const live=new Map();
     function open(){
       available();
       need(!closed&&!failed&&db.open,'linux_member_unavailable');
@@ -172,8 +186,14 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       const record={intent:spec,revision,phase,detail};
       try{
         db.transaction(()=>{
-          if(revision===1)need(!db.prepare('SELECT 1 FROM linux_member_event WHERE role=? LIMIT 1').pluck().get(spec.role),
-            'linux_member_previous_unretired');
+          if(revision===1){
+            const occupied=version===1?'SELECT 1 FROM linux_member_event WHERE role=? LIMIT 1':`SELECT 1 FROM linux_member_event e
+              WHERE e.role=? AND e.revision=1 AND NOT EXISTS
+                (SELECT 1 FROM linux_member_retirement r WHERE r.launch_id=e.launch_id AND r.phase='retired') LIMIT 1`;
+            need(!db.prepare(occupied).pluck().get(spec.role),'linux_member_previous_unretired');
+            need(!db.prepare("SELECT 1 FROM linux_member_event WHERE role=? AND revision=1 AND json_extract(body,'$.intent.generation_id')=? LIMIT 1")
+              .pluck().get(spec.role,spec.generation_id),'linux_member_generation_used');
+          }
           db.prepare('INSERT INTO linux_member_event VALUES(?,?,?,?,?,?)').run(spec.launch_id,spec.role,revision,phase,canonical(record),digest(record));
         }).immediate();
       }catch(error){
@@ -185,6 +205,58 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
     function authorize(record){
       need(assertCurrent(JSON.parse(canonical(record)))===true,'linux_member_authorization');
       open();
+    }
+    function stop(id){
+      const child=live.get(id);
+      if(child){child.stdin.destroy();child.stdio[3].destroy();}
+    }
+    function lookupRetirement(id){
+      open();
+      need(version===2,'linux_member_upgrade_required');
+      need(matches(id,uuid),'linux_member_launch_id');
+      const row=db.prepare('SELECT source_revision,revision,phase,body,digest FROM linux_member_retirement WHERE launch_id=? ORDER BY revision DESC LIMIT 1').raw().get(id);
+      if(!row)return null;
+      const [sourceRevision,revision,phase,body,stored]=row,record=JSON.parse(body);
+      const launch=lookup(id);
+      need(canonical(record)===body&&digest(record)===stored&&record.launch_id===id&&record.revision===revision&&
+        record.phase===phase&&launch?.revision===sourceRevision&&same(record.source,{revision:sourceRevision,digest:digest(launch)}),
+      'linux_member_retirement_integrity');
+      return record;
+    }
+    function appendRetirement(launch,revision,phase,evidence){
+      open();
+      const record={launch_id:launch.intent.launch_id,revision,phase,source:{revision:launch.revision,digest:digest(launch)},evidence};
+      try{
+        db.transaction(()=>db.prepare('INSERT INTO linux_member_retirement VALUES(?,?,?,?,?,?)')
+          .run(record.launch_id,launch.revision,revision,phase,canonical(record),digest(record))).immediate();
+      }catch(error){
+        failed=true;throw new InstallationError('linux_member_storage_unknown',{cause:error});
+      }
+      return record;
+    }
+    function closeIntake(id){
+      need(!busy,'linux_member_busy');
+      const prior=lookupRetirement(id);
+      if(prior){stop(id);return prior;}
+      const launch=lookup(id);
+      need(launch?.detail.leader&&launch.revision>=2,'linux_member_retirement_unproven');
+      try{return appendRetirement(launch,1,'closing',null);}
+      finally{stop(id);}
+    }
+    function retire(id,terminate){
+      need(!busy,'linux_member_busy');
+      const prior=lookupRetirement(id);
+      need(prior,'linux_member_intake_open');
+      if(prior.phase==='retired')return prior;
+      stop(id);
+      const launch=lookup(id),{intent,detail}=launch;
+      let observation;
+      try{
+        observation=observeLinuxMemberRetirement({driver:intent.driver,generationId:intent.generation_id,role:intent.role,
+          host:detail.host,parent:detail.parent_group,core:detail.group,leader:detail.leader,uid:intent.uid},terminate);
+      }catch(error){throw new InstallationError('linux_member_retirement_unproven',{cause:error});}
+      if(observation.populated)return prior;
+      return appendRetirement(launch,2,'retired',observation);
     }
     async function launch(input,bootstrap=null){
       open();
@@ -222,7 +294,7 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         child.stdin.on('error',()=>{});
         child.stdio[3].on('error',()=>{});
         const member=child;
-        member.once('close',()=>live.delete(member));
+        member.once('close',()=>live.delete(spec.launch_id));
         const frames=nativeFrames(member.stdout),pid=await frames('created_closed',group,image.identity);
         const leader=readLinuxCgroupLeader(pid);
         need(leader.group_path===groupPath,'linux_member_group_changed');
@@ -252,7 +324,7 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
           socket.once('end',stop).once('error',stop).once('close',stop).once('data',stop);
           socket.resume();
         }
-        live.add(member);executed=true;
+        live.set(spec.launch_id,member);executed=true;
         return {record,bootstrap:bootstrap?null:socket};
       }finally{
         busy=false;
@@ -261,14 +333,15 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         if(helper)fs.closeSync(helper.fd);
       }
     }
-    return Object.freeze({lookup,launch:input=>launch(input),admit(input,{policy,source}={}){
+    return Object.freeze({lookup,lookupRetirement,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
+      launch:input=>launch(input),admit(input,{policy,source}={}){
       need(source&&typeof source.capture==='function'&&typeof source.tick==='function','linux_bootstrap_clock');
       return launch(input,{policy,source});
     },close(){
       if(closed)return;
       need(!busy,'linux_member_busy');
       closed=true;
-      for(const child of live){child.stdin.destroy();child.stdio[3].destroy();}
+      for(const id of live.keys())stop(id);
       try{db.close();}finally{onClose();}
     }});
   }catch(error){

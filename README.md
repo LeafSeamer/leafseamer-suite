@@ -148,7 +148,9 @@ leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_
 
 启动账本在创建前保存 `reserved`，观察到原生成员后保存 `created_closed`，复核后先保存 `release_requested` 再发送释放字节。`launch(intent)` 返回 `executed_closed` 及一次性的原始引导流。相同意图的重试只返回原记录，其他同角色启动需先取得原成员退役证据。账本关闭时关闭控制和引导流，原记录可通过 `lookup(launchId)` 继续查询。[启动账本联调](test/linux-member-journal.integration.mjs)
 
-启动实际 Linux Controller 或 Seamer 时，可信装配调用 `admit(intent,{policy,source})`，其中 `source` 为同宿主、同时间命名空间的已核验 Linux 原生时钟。宿主在专用流完成既有 SDK 的 Assignment、Proof 和 Admission。它复核实际进程、cgroup 和期限，先在原账本保存闭锁回执才发送 Admission。成功结果携带 `detail.admission`，Suite 保持引导流并监听失效。两服务分别在本地业务库核对并保存回执，再开启保护态回环监听。宿主授时资格和旧子树退役仍待接线。[双服务准入联调](test/linux-core-bootstrap.integration.mjs)
+启动实际 Linux Controller 或 Seamer 时，可信装配调用 `admit(intent,{policy,source})`，其中 `source` 为同宿主、同时间命名空间的已核验 Linux 原生时钟。宿主在专用流完成既有 SDK 的 Assignment、Proof 和 Admission。它复核实际进程、cgroup 和期限，先在原账本保存闭锁回执才发送 Admission。成功结果携带 `detail.admission`，Suite 保持引导流并监听失效。两服务分别在本地业务库核对并保存回执，再开启保护态回环监听。业务授权和宿主授时资格需要独立验收。[双服务准入联调](test/linux-core-bootstrap.integration.mjs)
+
+退役前调用 `closeIntake(launchId)` 写入关闭记录并关闭受控通道。随后可用 `observeRetirement(launchId)` 查询，或显式调用 `terminateRetirement(launchId)` 对已核验的原父组执行 `cgroup.kill`。保留原父组及 `core` 子组直至退役完成。只有原子树整体无活进程并持久记录 `retired`，新运行代才可进入同角色闭锁启动。组被替换、宿主或原成员身份不可证时保持保护。只留下启动预留的未知尝试仍需取得独立恢复证据。新账本使用 Schema 2，已有 Schema 1 可继续查询，采用退役前须显式调用 `upgradeLinuxMemberJournal()`。升级保留原身份标记和原启动记录，普通打开时仍按原版本读取。退役证据只用于进程接替，设备在途事实及资源释放继续使用各自验收条件。[退役联调](test/linux-member-retirement.integration.mjs) · [Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html)
 
 ## 本机安装账本与静态归档验证
 

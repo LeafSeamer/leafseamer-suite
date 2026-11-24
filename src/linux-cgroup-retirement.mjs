@@ -122,6 +122,58 @@ export function readLinuxCgroupParent({driver,generationId,role,host}={}){
   }finally{fs.closeSync(fd);}
 }
 
+export function observeLinuxMemberRetirement({driver,generationId,role,host,parent,core,leader,uid},terminate=false){
+  const {groupPath}=linuxContainerCgroup({driver,generationId,role});
+  const local=assertHost(host),location=cgroupRoot+groupPath,corePath=location+'/core';
+  need(leader?.group_path===groupPath+'/core'&&Number.isSafeInteger(uid)&&uid>0,'cgroup_retirement_scope');
+  const parentFd=fs.openSync(location,directoryFlags);
+  let coreFd;
+  function protect(file){
+    const entry=fs.lstatSync(file,{bigint:true}),procs=fs.lstatSync(file+'/cgroup.procs',{bigint:true});
+    const trusted=stat=>(stat.uid===0n||stat.uid===BigInt(process.geteuid()))&&stat.uid!==BigInt(uid)&&(stat.mode&0o022n)===0n;
+    need(entry.isDirectory()&&procs.isFile()&&trusted(entry)&&trusted(procs),'cgroup_retirement_permissions');
+  }
+  function assertCurrent(){
+    assertHost(local);
+    need(parent.device===local.root.device&&core.device===parent.device&&
+      sameIdentity(parent,descriptorIdentity(parentFd))&&sameIdentity(core,descriptorIdentity(coreFd))&&
+      fs.fstatSync(parentFd).nlink>0&&fs.fstatSync(coreFd).nlink>0&&
+      sameIdentity(parent,pathIdentity(location))&&sameIdentity(core,pathIdentity(corePath)),'cgroup_group_changed');
+    protect(cgroupRoot);protect(location);protect(corePath);
+  }
+  function currentLeader(){
+    let fd;
+    try{fd=openLeader(leader.pid);}
+    catch(error){if(error.code==='ENOENT'||error.code==='ESRCH')return null;throw error;}
+    try{
+      const current=readLeader(fd,leader.pid);
+      need(current===null||sameLeader(current,leader),'cgroup_leader_changed');
+      return current;
+    }finally{fs.closeSync(fd);}
+  }
+  try{
+    coreFd=fs.openSync(fdPath(parentFd)+'/core',directoryFlags);
+    need(fs.statfsSync(fdPath(parentFd)).type===cgroupMagic&&fs.statfsSync(fdPath(coreFd)).type===cgroupMagic,
+      'cgroup_filesystem');
+    assertCurrent();currentLeader();
+    if(terminate&&populated(parentFd)){
+      const handle=fs.openSync(fdPath(parentFd)+'/cgroup.kill',fs.constants.O_WRONLY|fs.constants.O_NOFOLLOW);
+      try{
+        need(fs.fstatSync(handle).isFile()&&fs.statfsSync(fdPath(handle)).type===cgroupMagic,'cgroup_filesystem');
+        assertCurrent();
+        need(fs.writeSync(handle,'1')===1,'cgroup_retirement_signal');
+      }finally{fs.closeSync(handle);}
+    }
+    const live=populated(parentFd),current=currentLeader();
+    need(live||current===null,'cgroup_leader_live');
+    assertCurrent();
+    return Object.freeze({host:local,group_path:groupPath,parent,core,leader,populated:live});
+  }finally{
+    if(coreFd!==undefined)fs.closeSync(coreFd);
+    fs.closeSync(parentFd);
+  }
+}
+
 // An empty observation must be combined with the supervisor's separate launch-intake closure.
 export function openLinuxCgroupRetirement({driver,generationId,role,host,leader}={}){
   const {groupPath}=linuxContainerCgroup({driver,generationId,role});

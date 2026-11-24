@@ -250,7 +250,9 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const recoverSettlement=obsInterruption==='settlement';
   const unsent=obsInterruption==='no_request'||obsInterruption==='no_write';
   const obsResume=obsCommand&&process.env.LEAFSEAMER_OBS_RESUME_TEST==='1';
+  const obsBootRestart=obsCommand&&process.env.LEAFSEAMER_OBS_BOOT_RESTART_TEST==='1';
   if(obsResume)assert.ok(unsent||obsInterruption==='report');
+  if(obsBootRestart)assert.ok(!obsResume&&(unsent||obsInterruption==='report'));
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
   const referenceWatermark=mode.endsWith('_reference_watermark');
   const referenceAcceptance=mode===referenceAcceptanceExecution||referenceRestart||referenceWatermark;
@@ -737,6 +739,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const fixture=path.join(root,'fixture.json');fs.writeFileSync(fixture,JSON.stringify({binding,mode,materials,runtime:runtimeInput,reference_acceptance:referenceAcceptance,reference_schema:referenceSchema,source_reference_capture:sourceReferenceCapture,...(process.env.LEAFSEAMER_CORE_PERFORMANCE?{performance_capture:process.env.LEAFSEAMER_CORE_PERFORMANCE}:{}),...(gui?{gui}:{}),...(automationPeer?{automation_peer:automationPeer}:{}),...(runFence?{run_fence:runFence}:{}),
     ...(obsInterruption?{obs_interruption:obsInterruption}:{}),
     ...(obsResume?{obs_resume:true}:{}),
+    ...(obsBootRestart?{obs_export_restart:true}:{}),
     ...((obs||mode.endsWith('_capabilities')||mode==='supervisor_create_module_writable_evidence_resource_open_dispatch_ready'||commandLifecycleCases.includes(mode)||commandEncodingCases.includes(mode))?{command_tls:certificate()}:{})}));
   const peer=captureInstallationPeer(process.pid).descriptor,descriptor=store.materializationClock(),suffix=crypto.randomUUID(),channelId=crypto.randomUUID();
   const config={format:'leafseamer-installation-peer/1',pipe_suffix:suffix,channel_id:channelId,
@@ -2129,9 +2132,50 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     assert.ok(['module_closed','module_channel_closed','worker_runtime_unavailable','worker_runtime_withdrawn','supervisor_worker_withdrawn'].includes(unavailable),String(unavailable));
     assert.equal(frames.find(f=>f.event==='module-failed-retired')?.result.result,'confirmed_empty');
     child.stdin.end('stop\n');assert.equal((await ended)[0],0);
+    let restart=null,restartInput=null;
+    if(obsBootRestart){
+      restartInput=JSON.parse(fs.readFileSync(fixture+'.restart-state','utf8'));
+      child=spawn(path.join(runtime,'native/leafseamer_process_host.exe'),[core,process.execPath,
+        path.join(controller,'test/fixtures/control-after-restart.mjs'),'contained-core-auth','--bootstrap-policy',canonicalize(policy),
+        '--fixture',fixture+'.restart-state'],{stdio:['pipe','pipe','pipe'],windowsHide:true});
+      ended=once(child,'close');child.stdin.on('error',()=>{});child.stdout.resume();
+      let restartErrors='',pending='';
+      child.stderr.on('data',chunk=>{pending+=chunk;for(;;){
+        const index=pending.indexOf('\n');if(index<0)break;
+        const text=pending.slice(0,index);pending=pending.slice(index+1);
+        try{const value=JSON.parse(text);if(value.event==='obs-boot-control')restart=value;
+          else if(value.event==='obs-boot-control-failed')restartErrors=value.code+' '+value.message;}
+        catch{restartErrors=text;}
+      }});
+      await waitFor(()=>restart||restartErrors||child.exitCode!==null,25000);
+      assert.ok(restart,restartErrors);
+      child.stdin.end('stop\n');assert.equal((await ended)[0],0);
+      assert.notEqual(restart.boot,restartInput.old_boot);
+      assert.equal(restart.old_launch,'worker_authorization_preparation');
+      assert.match(restart.old_context,/context/);
+      assert.equal(restart.released.state,'effective');
+      assert.equal(restart.acquired.state,'effective');
+      assert.equal(restart.control.gate_state,'protected');
+      assert.deepEqual(restart.historical,frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record);
+    }
     const worker=new Database(path.join(core,'supervisor-journal.db'),{readonly:true,fileMustExist:true});
     const business=new Database(path.join(core,'controller.sqlite'),{readonly:true,fileMustExist:true});
     try{
+      if(restart){
+        const readBarrier=id=>JSON.parse(business.prepare('SELECT body_jcs FROM control_barrier_evidence WHERE operation_id=?').pluck().get(id));
+        const release=readBarrier(restart.released.operation_id),acquire=readBarrier(restart.acquired.operation_id);
+        const first=release.receipts[0],retrieved=acquire.receipts[0],observation=first.historical_observation;
+        assert.equal(observation.receiving_service_boot_id,restart.boot);
+        assert.deepEqual(observation.receiving_domain_ref,restart.domain);
+        assert.notDeepEqual(first.retirement.old_domain_ref,restart.domain);
+        assert.equal(observation.core_exit.active_processes,0);
+        assert.equal(first.retirement.result,'confirmed_empty');
+        assert.deepEqual(first.key,restartInput.old_launch);
+        assert.equal(retrieved.prior_barrier.operation_id,restart.released.operation_id);
+        assert.deepEqual(retrieved.historical_observation,observation);
+        assert.deepEqual(business.prepare('SELECT state,closed_reason FROM request_context WHERE context_id=?').raw().get(restartInput.old_context),['closed','restarted']);
+        assert.equal(business.prepare('SELECT count(*) FROM worker_launch_preparation').pluck().get(),1);
+      }
       if(obsResume){
         const old=frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record;
         const resourceRows=business.prepare('SELECT body_jcs FROM device_initial_resource').pluck().all().map(JSON.parse);

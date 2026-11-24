@@ -773,7 +773,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     fs.writeFileSync(fixture+'.continue','continue');
   }
   if(obs){
-    await waitFor(()=>frames.some(f=>f.event==='obs-module-samples'||f.event==='unavailable')||child.exitCode!==null);
+    await waitFor(()=>frames.some(f=>f.event==='obs-module-samples'||f.event==='unavailable')||child.exitCode!==null,obsCommand?45000:15000);
     assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,stage,code,cause})=>({event,stage,code,cause}))));
     const {packet_hex,target,stale}=frames.find(f=>f.event==='obs-cut-packet');
     assert.equal(stale,'obs_cut_packet_stale_reference');
@@ -1983,22 +1983,40 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.equal(Object.hasOwn(inventory,'observed_write_sequence'),false);
     }
     if(obsCommand){
-      const {admitted,stale}=frames.find(f=>f.event==='obs-cut-command-admission');
+      const {stale}=frames.find(f=>f.event==='obs-cut-stale-reference');
       assert.equal(stale.status,422);
-      assert.equal(admitted.status,202);
-      const {finished,evidence,replayed,control,sample}=frames.find(f=>f.event==='obs-cut-command-result');
-      assert.equal(finished.status,200);
-      assert.equal(finished.body.record.command_id,admitted.body.command_ref.object_id);
-      assert.equal(finished.body.record.state.outcome,'succeeded');
-      assert.equal(finished.body.record.state.effect_status,'verified');
-      assert.equal(finished.body.record.state.resource_status,'clear');
-      assert.equal(finished.body.record.completion.achieved,'effect_verified');
-      assert.equal(evidence.status,200);
-      assert.deepEqual(evidence.body.items.map(item=>item.kind),['decision','release']);
-      assert.equal(replayed.status,200);
-      assert.deepEqual(replayed.body,admitted.body);
-      assert.equal(control.gate_state,'protected');
-      assert.equal(sample.program_scene_uuid,frames.find(f=>f.event==='obs-cut-packet').target);
+      const admissions=frames.filter(f=>f.event==='obs-cut-command-admission'),results=frames.filter(f=>f.event==='obs-cut-command-result');
+      assert.deepEqual(admissions.map(f=>f.ordinal),[1,2]);
+      assert.deepEqual(results.map(f=>f.ordinal),[1,2]);
+      const ids=admissions.map((f,index)=>{
+        const {admitted}=f,{finished,evidence,replayed,control}=results[index],record=finished.body.record;
+        assert.equal(admitted.status,202);
+        assert.equal(finished.status,200);
+        assert.equal(record.command_id,admitted.body.command_ref.object_id);
+        assert.equal(record.state.outcome,'succeeded');
+        assert.equal(record.state.effect_status,'verified');
+        assert.equal(record.state.resource_status,'clear');
+        assert.equal(record.completion.achieved,'effect_verified');
+        assert.equal(evidence.status,200);
+        assert.deepEqual(evidence.body.items.map(item=>item.kind),['decision','release']);
+        assert.equal(replayed.status,200);
+        assert.deepEqual(replayed.body,admitted.body);
+        assert.equal(control.gate_state,'protected');
+        return record.command_id;
+      });
+      assert.notEqual(ids[0],ids[1]);
+      const protectedState=frames.find(f=>f.event==='obs-cut-protected');
+      assert.equal(protectedState.blocked.status,503);
+      assert.deepEqual(protectedState.state.ready_devices,[]);
+      assert.equal(frames.find(f=>f.event==='obs-cut-stale-reopen').code,'initial_resource_observed_write');
+      const first=frames.find(f=>f.event==='obs-cut-opened'),reopened=frames.find(f=>f.event==='obs-cut-reopened');
+      assert.equal(reopened.resource.value.provider,'fixed_obs_cut_successor/1');
+      assert.deepEqual(reopened.resource.value.binding,first.resources.value.binding);
+      assert.notDeepEqual(reopened.opened.ready.ref,first.ready.ref);
+      assert.ok(BigInt(reopened.opened.ready.value.gate_after.gate_revision)>BigInt(first.ready.value.gate_after.gate_revision));
+      assert.deepEqual(reopened.resource.value.inventory.obs_cut_observation,{scene_catalog_digest:digestValue(confirmed.ready),program_scene_uuid:frames.find(f=>f.event==='obs-cut-packet').target});
+      assert.equal(reopened.baseline.body.value.program_scene_uuid,reopened.resource.value.inventory.obs_cut_observation.program_scene_uuid);
+      assert.equal(frames.find(f=>f.event==='obs-cut-final-sample').sample.program_scene_uuid,portable.program_scene_uuid);
     }
     const lost=frames.find(f=>f.event==='obs-scene-catalog-withdrawn'),withdrawn=lost?.response;
     assert.equal(withdrawn?.status,503);
@@ -2006,7 +2024,7 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     assert.ok(['device_capabilities_unavailable','worker_runtime_withdrawn'].includes(lost.confirmation),lost.confirmation);
     if(obsOpen)assert.equal(lost.control.gate_state,'protected');
     const unavailable=frames.find(f=>f.event==='unavailable')?.code;
-    assert.ok(['module_closed','module_channel_closed','worker_runtime_withdrawn','supervisor_worker_withdrawn'].includes(unavailable),String(unavailable));
+    assert.ok(['module_closed','module_channel_closed','worker_runtime_unavailable','worker_runtime_withdrawn','supervisor_worker_withdrawn'].includes(unavailable),String(unavailable));
     assert.equal(frames.find(f=>f.event==='module-failed-retired')?.result.result,'confirmed_empty');
     child.stdin.end('stop\n');assert.equal((await ended)[0],0);
     const worker=new Database(path.join(core,'supervisor-journal.db'),{readonly:true,fileMustExist:true});
@@ -2027,7 +2045,7 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.deepEqual(record.catalog,directory);
       assert.equal(record.catalog_digest,digestValue(directory));
       assert.equal(body_digest,digestValue(record));
-      assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),obsCommand?3:2);
+      assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),obsCommand?4:2);
       const values=business.prepare('SELECT body_jcs FROM device_baseline_sample ORDER BY sample_sequence').pluck().all();
       assert.deepEqual(values.map(row=>JSON.parse(row).value.scenes),Array(values.length).fill(portable.directory));
       assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),obsCut?1:0);
@@ -2037,18 +2055,22 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.deepEqual(JSON.parse(saved),bound.value);
         assert.equal(digest,bound.ref.digest);
         assert.equal(business.prepare("SELECT count(*) FROM device_module_frame WHERE message_type='EXECUTION_BOUND'").pluck().get(),2);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='OPEN_GATE'").pluck().get(),obsOpen?1:0);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),obsCommand?1:0);
-        assert.equal(business.prepare('SELECT count(*) FROM device_initial_ready').pluck().get(),obsOpen?1:0);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='OPEN_GATE'").pluck().get(),obsCommand?2:obsOpen?1:0);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),obsCommand?2:0);
+        assert.equal(business.prepare('SELECT count(*) FROM device_initial_ready').pluck().get(),obsCommand?2:obsOpen?1:0);
         if(obsCommand){
-          assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52]);
-          assert.deepEqual(business.prepare('SELECT max_bytes FROM command_encoding_reservation').pluck().all(),[52]);
-          assert.deepEqual(business.prepare('SELECT length(packet_bytes) FROM command_encoding_response').pluck().all(),[52]);
-          const original=JSON.parse(business.prepare("SELECT frame_jcs FROM execution_frame_record WHERE message_type='EVIDENCE_CANDIDATE'").pluck().get());
-          assert.deepEqual(original.body.payload.observation.response.frames.map(frame=>frame.kind),['set_send','set_ack','query_send','query_result']);
-          assert.equal(business.prepare('SELECT count(*) FROM ca_command_initial').pluck().get(),1);
-          assert.equal(business.prepare('SELECT count(*) FROM command_hold_release').pluck().get(),1);
-          assert.equal(business.prepare('SELECT count(*) FROM command_preparation_retirement').pluck().get(),1);
+          assert.equal(business.prepare('SELECT count(*) FROM device_initial_resource').pluck().get(),2);
+          assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52,52]);
+          assert.deepEqual(business.prepare('SELECT max_bytes FROM command_encoding_reservation').pluck().all(),[52,52]);
+          assert.deepEqual(business.prepare('SELECT length(packet_bytes) FROM command_encoding_response').pluck().all(),[52,52]);
+          const wire=business.prepare("SELECT frame_jcs FROM execution_frame_record WHERE message_type='EVIDENCE_CANDIDATE' ORDER BY sequence").pluck().all().map(JSON.parse);
+          assert.equal(wire.length,2);
+          for(const original of wire)assert.deepEqual(original.body.payload.observation.response.frames.map(frame=>frame.kind),['set_send','set_ack','query_send','query_result']);
+          for(const table of ['ca_command_initial','command_hold_release','command_preparation_retirement'])assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),2);
+          const successor=frames.find(f=>f.event==='obs-cut-reopened').resource.value;
+          const original=JSON.parse(business.prepare("SELECT body_jcs FROM device_initial_resource WHERE json_extract(body_jcs,'$.provider')='fixed_obs_cut_successor/1'").pluck().get());
+          assert.deepEqual(original,successor);
+          assert.equal(successor.inventory.retired_preparation_refs.length,1);
         }
       }
       assert.equal(business.prepare('SELECT count(*) FROM worker_runtime_withdrawal').pluck().get(),1);

@@ -123,6 +123,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
   assert.ok(!pairingTest||chronyFile);
   assert.ok(!process.env.LEAFSEAMER_TEST_COMPOSE_BROWSER||pairingTest);
+  assert.ok(process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION!=='1'||pairingTest);
   const clocks={};
   let clockValues;
   if(supervised){
@@ -539,6 +540,6 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         return JSON.parse(output);
       };
     }
-    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,verifyBrowser});
+    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser});
   }
 });

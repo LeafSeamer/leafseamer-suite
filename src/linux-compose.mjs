@@ -115,13 +115,22 @@ export function verifyLinuxComposePairingInputs(plan,excluded=[]){
       local?.host===scope.address&&local.port===9443&&local.network===true&&
       remote.origin==='https://'+peer.address+':9443'&&typeof local.server_name==='string'&&
       (role==='controller'?admin?.origin==='https://127.0.0.1:8444'&&canonical(own)===canonical(plan.bootstrap.controller)&&!Object.hasOwn(profile,'gui'):
-        admin?.host==='127.0.0.1'&&admin.port===8444&&!Object.hasOwn(profile,'publication_policy')&&
+        admin?.host==='127.0.0.1'&&admin.port===8444&&
         (!inbox||profile.first_pairing_authorization_id===null)),'compose_pairing_scope');
     need(Array.isArray(local.ca_files)&&local.ca_files.length>0&&local.ca_files.length<=8,'compose_pairing_scope');
     const referenced=new Set(['profile.json']);
     for(const entry of [local.certificate_file,local.private_key_file,...local.ca_files,remote.certificate_file,admin.certificate_file,admin.private_key_file]){
       const name=typeof entry==='string'&&entry.startsWith(pairingMount+'/')?entry.slice(pairingMount.length+1):'';
       need(name.endsWith('.pem')&&Object.hasOwn(config.files,name),'compose_pairing_scope');
+      referenced.add(name);
+    }
+    if(role==='seamer'&&Object.hasOwn(profile,'publication_policy')){
+      const policy=profile.publication_policy;
+      need(fields(policy,'approval_file,approval_sha256')&&typeof policy.approval_file==='string'&&
+        policy.approval_file.startsWith(pairingMount+'/')&&typeof policy.approval_sha256==='string','compose_pairing_scope');
+      const name=policy.approval_file.slice(pairingMount.length+1);
+      need(name!=='profile.json'&&name.endsWith('.json')&&Object.hasOwn(config.files,name),'compose_pairing_scope');
+      need(config.files[name]===policy.approval_sha256,'compose_pairing_digest');
       referenced.add(name);
     }
     need(referenced.size===entries.length,'compose_pairing_scope');

@@ -160,6 +160,8 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 首次配对联调可附带浏览器验收。为现有联调环境设置 `LEAFSEAMER_TEST_COMPOSE_BROWSER`、`LEAFSEAMER_TEST_COMPOSE_PLAYWRIGHT` 和 `LEAFSEAMER_TEST_COMPOSE_SCREENSHOTS`，分别提供 Chromium 可执行文件、Playwright 模块和截图输出目录的绝对路径。浏览器从同一 Nginx 管理源登录、续期并创建草稿。测试在浏览器端丢弃已提交的成功响应，重载后查回原草稿并核对 SQLite 中仅有一条定义。[Compose 浏览器验收](test/fixtures/linux-compose-browser.mjs)
 
+需要发布策略时，在 Seamer 的 `profile.json` 中设置 `publication_policy.approval_file` 和 `approval_sha256`。审批文件为 `/etc/leafseamer/pairing/` 下独立的 JSON 文件，其相同摘要必须列在 `pairing.seamer.files` 中。Compose 单独只读挂载审批文件。Seamer 核对当前库身份、策略引用、认证时钟期限和审批原件，并在编译前核对绑定批准。运行中撤下或改写审批会锁存撤下状态。联调可设置 `LEAFSEAMER_TEST_COMPOSE_PUBLICATION=1` 验证拒绝路径。
+
 ### Linux 原生成员创建
 
 在 Linux 构建机运行 `npm run build -- --linux-member`，将原生创建工具及其源码和制品摘要纳入 `dist/native/`。由可信宿主装配预先登记启动意图并固定受保护的 ELF 制品、空 cgroup v2 子组及两者的设备号和 inode。装配需拥有目录访问、创建子进程和切换到指定非 root UID／GID 所需的权限。工具使用调用者原有权限，发布文件采用普通可执行模式。

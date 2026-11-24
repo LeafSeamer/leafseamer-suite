@@ -14,7 +14,7 @@ const mount='/etc/leafseamer/pairing/';
 const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='https://127.0.0.1:8444';
 const permissions=['auth.manage','auth.read'];
 
-export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,verifyBrowser=null}){
+export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null}){
   const {canonical,digest}=clockValues;
   const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
   const certificates=path.join(root,'pairing-certificates');
@@ -35,12 +35,13 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const peer=role=>({identity:identity(role),origin:peerOrigin(role),server_name:roles[role].address,
     certificate_file:mount+'peer.pem',trust_bundle_digest:trust});
   const loopbackTls={certificate_file:mount+'member.pem',private_key_file:mount+'member-key.pem'};
-  function profile(role,other,body){
+  function profile(role,other,body,additionalFiles={}){
     const directory=path.join(root,role+'-pairing');
     fs.mkdirSync(directory,{mode:0o755});
     const inputs={'profile.json':Buffer.from(canonical({format:'leafseamer.'+role+'-pairing-profile/2',local:local(role),[other]:peer(other),...body})),
       'ca.pem':ca,'member.pem':fs.readFileSync(roles[role].certificate.certificate_file),
-      'member-key.pem':fs.readFileSync(roles[role].certificate.private_key_file),'peer.pem':fs.readFileSync(roles[other].certificate.certificate_file)};
+      'member-key.pem':fs.readFileSync(roles[role].certificate.private_key_file),'peer.pem':fs.readFileSync(roles[other].certificate.certificate_file),
+      ...additionalFiles};
     for(const [name,bytes] of Object.entries(inputs)){
       const file=path.join(directory,name),secret=name==='member-key.pem';
       fs.writeFileSync(file,bytes,{mode:secret?0o640:0o644});
@@ -97,8 +98,18 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   }
   const localParty=party('seamer',['auth.introspect']);
   const {service_id,database_instance_id}=seamer;
+  const verifyPublication=process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION==='1';
+  const policyScope={authority_service_id:service_id,database_instance_id};
+  const eventLimits={event_age_limits:[{authority_id:controller.service_id,registration_ref:{id:id(),revision:'1',digest:digest('fixture-registration')},
+    capture_semantics:'event_occurrence',max_age_ms:1000}],max_condition_nodes:16};
+  const policyRef={kind:'policy',scope:policyScope,object_id:'compose-publication-fixture',revision:'1',digest:digest(eventLimits)};
+  const approvalFile='publication-approval.json';
+  const approval=Buffer.from(canonical({format:'leafseamer.publication-policy-approval/2',policy_ref:policyRef,
+    not_before_ns:String(start),expires_ns:String(end),...eventLimits}));
+  const publicationProfile=verifyPublication?{publication_policy:{approval_file:mount+approvalFile,approval_sha256:sha(approval)}}:{};
   const seamerPairing=profile('seamer','controller',{scope:{service_id,database_instance_id},first_pairing_authorization_id:null,
-    public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true}});
+    public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true},
+    ...publicationProfile},verifyPublication?{[approvalFile]:approval}:{});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
   let activated,authorizationId,browserDraft;
   try{
@@ -130,7 +141,8 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     activated=await admin(generation,'activate',{request_id:id(),binding_id:staged.binding_id,expected_revision:proved.revision,transcript_digest:proved.transcript_digest});
     assert.equal(activated.state,'activated');
     assert.equal(activated.service_boot_id,staged.service_boot_id);
-    const audiencePermissions=verifyBrowser?[...permissions,'definition.edit','definition.read','request.create','request.read']:permissions;
+    const definitions=verifyBrowser||verifyPublication?['definition.edit','definition.read','request.create','request.read']:[];
+    const audiencePermissions=[...permissions,...definitions,...(verifyPublication?['definition.publish']:[])].sort();
     await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
       not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
     const bearer=await issueToken(actor,service_id,permissions);
@@ -152,11 +164,49 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       return JSON.parse(data).result;
     });
     assert.deepEqual(grant.permissions,permissions);
-    if(verifyBrowser){
+    if(verifyBrowser||verifyPublication){
       const changed=await localPermissions('replace',{request_id:id(),principal_id,principal_kind:'human',expected_revision:grant.revision,
         permissions:audiencePermissions,definition_scope:grant.definition_scope,not_before_ns:grant.not_before_ns,expires_ns:grant.expires_ns});
       assert.equal(changed.status,200,changed.data);
-      browserDraft=await verifyBrowser();
+      if(verifyBrowser)browserDraft=await verifyBrowser();
+    }
+    if(verifyPublication){
+      const token=await issueToken(actor,service_id,[...definitions,'definition.publish'].sort());
+      const api='/services/'+service_id+'/api/v1';
+      const post=(target,body,headers={})=>send(api+target,{method:'POST',headers:{Authorization:token,'Content-Type':'application/json',...headers},body:canonical(body)});
+      const context=async operations=>{
+        const response=await post('/request-contexts',{audience:service_id,selection,operations,ttl_ms:30000,max_unique_requests:1});
+        assert.equal(response.status,201,response.body.toString());
+        return {id:JSON.parse(response.body).data.context_id,csrf:response.headers['x-csrf-token']};
+      };
+      const program={kind:'rule',trigger_binding_id:'fixture-input',condition:{kind:'literal',value:true},
+        groups:[{mode:'sequence',steps:[{step_id:'fixture-delay',depends_on:[],required:true,failure_policy:'stop',kind:'delay',delay_ms:0,max_lateness_ms:100}]}]};
+      const missingSelection={kind:'input',binding_id:'fixture-input',content_ref:{id:id(),revision:'1',digest:digest('unapproved-input')}};
+      async function createDraft(policy_ref,selections){
+        const create=await context(['createDefinition','getDraft']);
+        const draft=await post('/definitions',{context:{context_id:create.id,idempotency_key:id()},content:{program,selections,policy_ref},
+          metadata:{name:'Compose 发布保护验收',description:'',layout:{}}});
+        assert.equal(draft.status,201,draft.body.toString());
+        return JSON.parse(draft.body);
+      }
+      async function expectBlockedPublication({definition_id,revision,content_digest,selection_digest},expected){
+        const publish=await context(['publishDefinition']);
+        assert.match(publish.csrf,/^[A-Za-z0-9_-]{43}$/);
+        const attempt=await post('/definitions/'+definition_id+'/publish',{context:{context_id:publish.id,idempotency_key:id()},
+          expected_draft_revision:revision,expected_content_digest:content_digest,expected_selection_digest:selection_digest},{'X-CSRF-Token':publish.csrf});
+        assert.equal(attempt.status,expected,attempt.body.toString());
+      }
+      const matching=await createDraft(policyRef,[]);
+      // 编译器拒绝缺少触发器的规则。错策略及未批准的选择在到达编译器前就拒绝。
+      await expectBlockedPublication(matching,503);
+      await expectBlockedPublication(await createDraft({...policyRef,revision:'2'},[]),403);
+      await expectBlockedPublication(await createDraft(policyRef,[missingSelection]),403);
+      const mountedApproval=path.join(seamerPairing.directory,approvalFile);
+      try{
+        fs.appendFileSync(mountedApproval,'\n');
+        await expectBlockedPublication(matching,403);
+      }finally{fs.writeFileSync(mountedApproval,approval);}
+      await expectBlockedPublication(matching,403);
     }
   }finally{await generation.stop();}
   assert.equal(generation.phase(),'retired');
@@ -165,6 +215,11 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   try{
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
-    if(browserDraft)assert.deepEqual(store.prepare('SELECT definition_id FROM definition_identity').all().map(row=>row.definition_id),[browserDraft]);
+    if(browserDraft&&!verifyPublication)assert.deepEqual(store.prepare('SELECT definition_id FROM definition_identity').all().map(row=>row.definition_id),[browserDraft]);
+    if(verifyPublication){
+      assert.equal(store.prepare('SELECT count(*) AS n FROM definition_version_reservation').get().n,5);
+      assert.equal(store.prepare('SELECT count(*) AS n FROM definition_publication').get().n,0);
+      assert.equal(store.prepare('SELECT count(*) AS n FROM definition_publication_proof').get().n,0);
+    }
   }finally{store.close();issuer.close();}
 }

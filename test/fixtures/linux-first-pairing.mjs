@@ -14,7 +14,7 @@ const id=()=>crypto.randomUUID();
 const origin=port=>'https://127.0.0.1:'+port;
 const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
 
-function certificates(directory){
+export function linuxPairingCertificates(directory,addresses=['127.0.0.1','127.0.0.1']){
   const config=path.join(directory,'openssl.cnf');
   fs.writeFileSync(config,'[req]\ndistinguished_name=subject\n[subject]\n');
   function openssl(...args){
@@ -25,8 +25,9 @@ function certificates(directory){
   key('ca.key');
   openssl('req','-new','-x509','-key','ca.key','-subj','/CN=Pairing test CA','-days','2',
     '-addext','basicConstraints=critical,CA:TRUE','-addext','keyUsage=critical,keyCertSign','-out','ca.pem');
-  fs.writeFileSync(path.join(directory,'leaf.ext'),'basicConstraints=critical,CA:FALSE\nkeyUsage=critical,digitalSignature\nextendedKeyUsage=serverAuth,clientAuth\nsubjectAltName=IP:127.0.0.1\n');
-  function leaf(role,serial){
+  function leaf(role,serial,address){
+    const names=[...new Set(['127.0.0.1',address])].map(ip=>'IP:'+ip).join(',');
+    fs.writeFileSync(path.join(directory,'leaf.ext'),'basicConstraints=critical,CA:FALSE\nkeyUsage=critical,digitalSignature\nextendedKeyUsage=serverAuth,clientAuth\nsubjectAltName='+names+'\n');
     key(role+'.key');
     openssl('req','-new','-key',role+'.key','-subj','/CN=localhost','-out',role+'.csr');
     openssl('x509','-req','-in',role+'.csr','-CA','ca.pem','-CAkey','ca.key','-set_serial',serial,'-days','1',
@@ -35,7 +36,7 @@ function certificates(directory){
     fs.chownSync(private_key_file,0,65534);fs.chmodSync(private_key_file,0o640);
     return {certificate_file,private_key_file,certificate:new crypto.X509Certificate(fs.readFileSync(certificate_file))};
   }
-  return {caFile:path.join(directory,'ca.pem'),c:leaf('controller','11'),s:leaf('seamer','12')};
+  return {caFile:path.join(directory,'ca.pem'),c:leaf('controller','11',addresses[0]),s:leaf('seamer','12',addresses[1])};
 }
 
 export async function completeLinuxFirstPairing({controller,seamer,scratch,target,admit,stop,clockPublisher,readClockChallenge}){
@@ -57,7 +58,7 @@ export async function completeLinuxFirstPairing({controller,seamer,scratch,targe
     }});
   const s=await target('seamer',seamer,'pair-seamer',{authenticateClock:true,targetRevision:seamerRevision,
     generation_id:c.intent.generation_id,sharedInstallation:c.installation});
-  const tls=certificates(scratch),ca=fs.readFileSync(tls.caFile),trust=digest([sha(new crypto.X509Certificate(ca).raw)]);
+  const tls=linuxPairingCertificates(scratch),ca=fs.readFileSync(tls.caFile),trust=digest([sha(new crypto.X509Certificate(ca).raw)]);
   function write(name,value){const file=path.join(scratch,name);fs.writeFileSync(file,value,{mode:0o644});return file;}
   function scope(actual){return {service_id:actual.policy.service_id,database_instance_id:actual.policy.database_instance_id};}
   function identity(actual,kind){return {...scope(actual),service_kind:kind,credential_id:id(),issuer_id:issuer.issuer_id,issuer_epoch:issuer.issuer_epoch};}

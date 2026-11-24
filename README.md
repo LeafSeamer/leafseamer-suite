@@ -148,7 +148,15 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 私有 cgroup 与 `bootstrap` 同时启用时，可增加 `clock_evidence`，分别为 `controller` 和 `seamer` 填写 `exchange_directory`、`policy_digest`、`public_key_file` 与 `public_key_sha256`。两个摘要均使用 `sha256:<64 位小写十六进制>`。公钥为 root 管理的 Ed25519 PEM，须允许核心账户读取。两个交换目录互不重叠，各由相应核心的 UID/GID 拥有，权限为 `0700`，祖先目录由 root 管理。生成器分别生成服务的 `/2` 配置，配置与公钥只读挂载，交换目录仅挂入相应核心。激活前宿主复核原公钥与目录身份。
 
-闭锁准入后，核心在交换目录发布绑定当前启动和时钟域的 `challenge-<service_boot_id>.json`。宿主的受信签发器用该挑战和批准的 Chrony 配置生成签名原件，由宿主将服务可读的 `evidence-<service_boot_id>.json` 原子放入相应目录。签发私钥留在宿主的受保护目录。核心核对内核已禁用系统睡眠及当前原件的签名与时钟域，持续保存采集。证据到期会在该域锁存认证时钟故障。首次配对另有部署条件，业务入口保持闭锁。[Chrony 签发与 Compose 联调](test/linux-compose.integration.mjs)
+闭锁准入后，核心在交换目录发布绑定当前启动和时钟域的 `challenge-<service_boot_id>.json`。宿主的受信签发器用该挑战和批准的 Chrony 配置生成签名原件，由宿主将服务可读的 `evidence-<service_boot_id>.json` 原子放入相应目录。签发私钥留在宿主的受保护目录。核心核对内核已禁用系统睡眠及当前原件的签名与时钟域，持续保存采集。证据到期会在该域锁存认证时钟故障。[Chrony 签发与 Compose 联调](test/linux-compose.integration.mjs)
+
+#### Compose 首次配对
+
+为启用 Compose 配对，在上述监督和认证时钟计划中加入 `pairing`。其 `controller` 和 `seamer` 项各有宿主绝对 `directory` 与 `files`，后者将文件名映射到 `sha256:` 摘要。主配置名为 `profile.json`，采用对应服务已有的 `/2` 配对格式。配置引用 `/etc/leafseamer/pairing/` 下的已列出 PEM 文件。文件由 root 管理，TLS 私钥权限为 `0640`，组为该核心的 GID。每个文件独立只读挂入该核心。文件摘要进入运行代的 Compose 配置，宿主在交付准入前核对。
+
+每个核心在自身后端地址的 `9443` 监听服务间 mTLS，证书需覆盖配置中的服务端身份。Controller 配置中的 `https.origin` 为 `https://127.0.0.1:8444`，Seamer 的 `public_api.host` 和 `port` 为 `127.0.0.1` 与 `8444`。本机管理 TLS 证书须覆盖回环地址。Controller 的配对管理与 Seamer 的本机权限管理从各自容器内调用。Nginx 的管理源处理人员登录，后续请求使用面向指定服务的访问令牌。
+
+首次部署时设置 `pairing.seamer.await_first_pairing: true`，在 Seamer 配置中预先固定 `public_api.binding_id`，将 `first_pairing_authorization_id` 设为 `null`。管理员从运行中 Controller 的回环使用 `pairing-admin` 登记配对，导出与固定绑定一致的一次性授权。宿主管理员用原子重命名将授权放入该运行代输出目录下的 `first-pairing/authorization.json`。文件归 root 与 Seamer 的 GID 所有，权限为 `0640`。目录只读挂入当前 Seamer，核心采用后在原 Controller 启动域及原期限内完成双向证明和激活。后续运行代省略 `await_first_pairing`，沿用持久化配对。[实际 Compose 首次配对联调](test/fixtures/linux-compose-first-pairing.mjs)
 
 ### Linux 原生成员创建
 

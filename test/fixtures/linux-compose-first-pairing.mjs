@@ -1,0 +1,159 @@
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawn} from 'node:child_process';
+import {once} from 'node:events';
+import {setTimeout as delay} from 'node:timers/promises';
+import {DatabaseSync} from 'node:sqlite';
+import {linuxPairingCertificates} from './linux-first-pairing.mjs';
+
+const id=()=>crypto.randomUUID();
+const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
+const mount='/etc/leafseamer/pairing/';
+const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='https://127.0.0.1:8444';
+const permissions=['auth.manage','auth.read'];
+
+export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send}){
+  const {canonical,digest}=clockValues;
+  const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
+  const certificates=path.join(root,'pairing-certificates');
+  fs.mkdirSync(certificates,{mode:0o700});
+  const tls=linuxPairingCertificates(certificates,[controller.address,seamer.address]);
+  const ca=fs.readFileSync(tls.caFile),trust=digest([sha(new crypto.X509Certificate(ca).raw)]);
+  const roles={
+    controller:{...controller,certificate:tls.c,credential_id:id()},
+    seamer:{...seamer,certificate:tls.s,credential_id:id()}
+  };
+  function identity(kind){
+    const {service_id,database_instance_id,credential_id}=roles[kind];
+    return {service_id,database_instance_id,service_kind:kind,credential_id,issuer_id,issuer_epoch};
+  }
+  const peerOrigin=role=>'https://'+roles[role].address+':9443';
+  const local=role=>({credential_id:roles[role].credential_id,host:roles[role].address,port:9443,network:true,server_name:roles[role].address,
+    certificate_file:mount+'member.pem',private_key_file:mount+'member-key.pem',ca_files:[mount+'ca.pem']});
+  const peer=role=>({identity:identity(role),origin:peerOrigin(role),server_name:roles[role].address,
+    certificate_file:mount+'peer.pem',trust_bundle_digest:trust});
+  const loopbackTls={certificate_file:mount+'member.pem',private_key_file:mount+'member-key.pem'};
+  function profile(role,other,body){
+    const directory=path.join(root,role+'-pairing');
+    fs.mkdirSync(directory,{mode:0o755});
+    const inputs={'profile.json':Buffer.from(canonical({format:'leafseamer.'+role+'-pairing-profile/2',local:local(role),[other]:peer(other),...body})),
+      'ca.pem':ca,'member.pem':fs.readFileSync(roles[role].certificate.certificate_file),
+      'member-key.pem':fs.readFileSync(roles[role].certificate.private_key_file),'peer.pem':fs.readFileSync(roles[other].certificate.certificate_file)};
+    for(const [name,bytes] of Object.entries(inputs)){
+      const file=path.join(directory,name),secret=name==='member-key.pem';
+      fs.writeFileSync(file,bytes,{mode:secret?0o640:0o644});
+      if(secret)fs.chownSync(file,0,roles[role].gid);
+    }
+    return {directory,files:Object.fromEntries(Object.entries(inputs).map(([name,bytes])=>[name,sha(bytes)]))};
+  }
+  const controllerPairing=profile('controller','seamer',{bootstrap:plan.bootstrap.controller,https:{origin:loopback,...loopbackTls}});
+  function execute(container,args,input){
+    const child=spawn('docker',['exec','--interactive',container,node,...args],{stdio:['pipe','pipe','pipe'],signal:AbortSignal.timeout(14000)});
+    let output='',diagnostic='';
+    child.stdout.setEncoding('utf8').on('data',data=>output+=data);
+    child.stderr.setEncoding('utf8').on('data',data=>diagnostic+=data);
+    child.stdin.on('error',()=>{});child.stdin.end(canonical(input));
+    return once(child,'close').then(([status])=>({status,output,diagnostic}));
+  }
+  async function admin(generation,operation,request){
+    const result=await execute(generation.containers.controller,[cli,'pairing-admin','--origin',loopback,'--ca-file',mount+'ca.pem'],
+      {...login,operation,request});
+    assert.equal(result.status,0,operation+' '+result.diagnostic);
+    return JSON.parse(result.output);
+  }
+  async function waitFor(operation){
+    const deadline=performance.now()+12000;
+    do{
+      const result=await operation();
+      if(result)return result;
+      await delay(100);
+    }while(performance.now()<deadline);
+    assert.fail('Compose pairing state did not become available');
+  }
+  async function loginThroughProxy(){
+    const request={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(login)};
+    return waitFor(async()=>{
+      const response=await send('/auth/sessions',request).catch(()=>null);
+      if(!response||[502,503].includes(response.status))return null;
+      assert.equal(response.status,201,response.body.toString());
+      const cookie=response.headers['set-cookie'][0].split(';')[0],csrf=response.headers['x-csrf-token'];
+      return {Cookie:cookie,'X-CSRF-Token':csrf};
+    });
+  }
+  async function issueToken(actor,audience,requested_scopes){
+    const token=await send('/auth/service-tokens',{method:'POST',headers:{...actor,'Content-Type':'application/json'},
+      body:JSON.stringify({audience,requested_scopes,extension_instance_id:null})});
+    assert.equal(token.status,201,token.body.toString());
+    return 'Bearer '+JSON.parse(token.body).data.access_token;
+  }
+  const start=BigInt(Date.now()-5000)*1000000n,end=start+110000000000n;
+  function party(role,permissions){
+    const {certificate}=roles[role].certificate;
+    return {...identity(role),binding_id:id(),permissions,object_scope_digest:digest({devices:[]}),not_before_ns:String(start),expires_ns:String(end),
+      certificate_der_sha256:sha(certificate.raw),spki_sha256:sha(certificate.publicKey.export({type:'spki',format:'der'})),
+      trust_bundle_digest:trust,endpoint_config_digest:digest({origin:peerOrigin(role),server_name:roles[role].address})};
+  }
+  const localParty=party('seamer',['auth.introspect']);
+  const {service_id,database_instance_id}=seamer;
+  const seamerPairing=profile('seamer','controller',{scope:{service_id,database_instance_id},first_pairing_authorization_id:null,
+    public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true}});
+  const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
+  let activated,authorizationId;
+  try{
+    const actor=await loginThroughProxy();
+    const identityToken=await issueToken(actor,controller.service_id,['session.read']);
+    const session=await send('/api/v1/session',{headers:{Authorization:identityToken}});
+    assert.equal(session.status,200,session.body.toString());
+    assert.equal((await send('/auth/local-pairing/v1',{method:'POST',headers:actor,body:'{}'})).status,404);
+    const staged=await admin(generation,'stage',{request_id:id(),transcript:{format:'leafseamer.peer-pairing/1',pair_attempt_id:id(),parties:[party('controller',[]),localParty]}});
+    const authorization=await admin(generation,'export',{binding_id:staged.binding_id,transcript_digest:staged.transcript_digest});
+    assert.equal(authorization.authorization.administrator.principal_id,principal_id);
+    authorizationId=authorization.authorization.authorization_id;
+    await waitFor(async()=>{
+      const response=await send('/services/'+service_id+'/api/v1/definitions/'+id()+'/draft').catch(()=>null);
+      return response?.status===401;
+    });
+    assert.deepEqual(fs.readdirSync(generation.inbox),[]);
+    assert.equal(generation.events('seamer').some(event=>event.event==='first_pairing_staged'),false);
+    const temporary=path.join(generation.inbox,'.authorization');
+    fs.writeFileSync(temporary,canonical(authorization),{mode:0o640,flag:'wx'});
+    fs.chownSync(temporary,0,seamer.gid);
+    fs.renameSync(temporary,path.join(generation.inbox,'authorization.json'));
+    await waitFor(()=>generation.events('seamer').some(event=>event.event==='first_pairing_staged'&&event.authorization_id===authorizationId));
+    const proof=await admin(generation,'prove',{binding_id:staged.binding_id});
+    const proved=proof.state==='proved'?proof:await waitFor(async()=>{
+      const state=await admin(generation,'inspect',{binding_id:staged.binding_id});
+      return state.state==='proved'&&state;
+    });
+    activated=await admin(generation,'activate',{request_id:id(),binding_id:staged.binding_id,expected_revision:proved.revision,transcript_digest:proved.transcript_digest});
+    assert.equal(activated.state,'activated');
+    assert.equal(activated.service_boot_id,staged.service_boot_id);
+    await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions,
+      not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
+    const bearer=await issueToken(actor,service_id,permissions);
+    assert.equal((await send('/services/'+service_id+'/auth/local-permissions/v1',{method:'POST',headers:{Authorization:bearer},body:'{}'})).status,404);
+    const inspection=`const https=require('node:https'),fs=require('node:fs');
+      const input=JSON.parse(fs.readFileSync(0,'utf8')),body=Buffer.from(input.body);
+      const req=https.request(${JSON.stringify(loopback+'/auth/local-permissions/v1')},{ca:fs.readFileSync(${JSON.stringify(mount+'ca.pem')}),
+        method:'POST',headers:{Authorization:input.bearer,'Content-Type':'application/json','Content-Length':body.length}},res=>{
+        let data='';res.on('data',chunk=>data+=chunk);res.on('end',()=>process.stdout.write(JSON.stringify({status:res.statusCode,data})));
+      });req.setTimeout(5000,()=>req.destroy());req.end(body);`;
+    const grant=await waitFor(async()=>{
+      const response=await execute(generation.containers.seamer,['-e',inspection],{bearer,body:canonical({operation:'inspect',request:{principal_id}})});
+      assert.equal(response.status,0,response.diagnostic);
+      const {status,data}=JSON.parse(response.output);
+      if(status!==200)return null;
+      return JSON.parse(data).result;
+    });
+    assert.deepEqual(grant.permissions,permissions);
+  }finally{await generation.stop();}
+  assert.equal(generation.phase(),'retired');
+  const store=new DatabaseSync(path.join(seamer.data_dir,'seamer.sqlite'),{readOnly:true});
+  const issuer=new DatabaseSync(path.join(controller.data_dir,'controller.sqlite'),{readOnly:true});
+  try{
+    assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
+    assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
+  }finally{store.close();issuer.close();}
+}

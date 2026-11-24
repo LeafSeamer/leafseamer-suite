@@ -56,6 +56,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const host='manage.fixture.invalid',authority=host+':'+port,origin='https://'+authority;
   const range='10.234.'+crypto.randomInt(1,255);
   const login={login:'compose.fixture',password:'Synthetic-compose-test-password-632'};
+  let enrollment;
   function certificates(role,serverName){
     const certificate_file=path.join(root,role+'.pem'),private_key_file=path.join(root,role+'.key');
     run('openssl',['req','-x509','-newkey','ec','-pkeyopt','ec_paramgen_curve:P-256','-nodes','-days','1','-subj','/CN='+serverName,
@@ -77,7 +78,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       fs.writeFileSync(config,JSON.stringify({package_root:'/opt/leafseamer',data_dir:'/var/lib/leafseamer',login}),{mode:0o600});owned(config);
       const seed=bootstrap(role,data_dir,['--mount','type=bind,source='+file('./fixtures/linux-ingress-service.mjs')+',target=/tmp/seed.mjs,readonly',
         '--mount','type=bind,source='+config+',target=/tmp/config.json,readonly'],['/tmp/seed.mjs','/tmp/config.json']);
-      identity=JSON.parse(seed).identity;
+      enrollment=JSON.parse(seed);
+      identity=enrollment.identity;
     }else{
       const args=['/opt/leafseamer/dist/cli.mjs'],directory=['--data-dir','/var/lib/leafseamer'];
       identity=JSON.parse(bootstrap(role,data_dir,[],[...args,'init-storage',...directory]));
@@ -118,6 +120,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}})};
   let source,admissions;
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
+  const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
+  assert.ok(!pairingTest||chronyFile);
   const clocks={};
   let clockValues;
   if(supervised){
@@ -334,40 +338,42 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const script=Object.keys(manifest.artifacts).find(name=>name.endsWith('.js'));
   assert.equal(hash((await send('/')).body),manifest.artifacts['index.html']);
   assert.equal(hash((await send('/'+script)).body),manifest.artifacts[script]);
-  if(chronyFile){
+  function bindClockPublisher(role,descriptor){
     const {canonical,ref,seal}=clockValues;
-    for(const role of ['controller','seamer']){
-      const clock=clocks[role];
-      const descriptor=admissions[role].descriptor;
-      const [name,...others]=fs.readdirSync(clock.exchange);
-      assert.match(name,/^challenge-[a-f0-9-]+\.json$/);
-      assert.equal(others.length,0);
-      const challenge=parseFile(path.join(clock.exchange,name));
-      const {service_id,service_boot_id,database_instance_id,clock_domain_id,descriptor_digest,continuity,native_binary_digest}=challenge;
-      assert.equal(service_id,plan[role].service_id);
-      assert.equal(database_instance_id,plan[role].database_instance_id);
-      assert.equal(clock_domain_id,descriptor.clock_domain_id);
-      assert.equal(descriptor_digest,descriptor.descriptor_digest);
-      const {policy,chrony,admin,privateFile,exchange,clockDir}=clock;
-      const {runtime_profile_ref,native_artifact_ref,health_profile_ref,system_time_source_ref,environment_approval_ref}=policy;
-      clock.runtime=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,descriptor_digest,
-        policy_ref:ref(policy),runtime_profile_ref,native_artifact_ref,environment_approval_ref,
-        continuity,native_binary_digest,valid_before_tick_ns:String(source.tick()+60000000000n)});
-      const profile=path.join(admin,'profile.json'),statement=path.join(admin,'statement.json'),signed=path.join(admin,'evidence.json');
-      fs.writeFileSync(profile,canonical({format:'leafseamer.authentication-clock-signing-profile/2',service_id,database_instance_id,
-        policy_digest:policy.digest,native_binary_digest,private_key_file:privateFile,evidence_file:signed,chrony}),{mode:0o600});
-      clock.publish=()=>{
-        const health=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,runtime_ref:ref(clock.runtime),
-          policy_ref:ref(policy),health_profile_ref,system_time_source_ref,environment_approval_ref,state:'synchronized',holdover_ref:null,
-          valid_before_tick_ns:String(source.tick()+4600000000n)});
-        fs.writeFileSync(statement,canonical({challenge,evidence:{policy,runtime:clock.runtime,health}}),{mode:0o600});
-        const result=run(process.execPath,[path.join(clockDir,'clock-evidence.mjs'),'--profile',profile,'--statement',statement],5000);
-        assert.deepEqual(JSON.parse(result),{state:'published',service_id,service_boot_id});
-        owned(signed);
-        fs.renameSync(signed,path.join(exchange,'evidence-'+service_boot_id+'.json'));
-        return health;
-      };
-    }
+    const clock=clocks[role];
+    const challenges=fs.readdirSync(clock.exchange).filter(name=>/^challenge-[a-f0-9-]+\.json$/.test(name))
+      .map(name=>parseFile(path.join(clock.exchange,name))).filter(challenge=>challenge.descriptor_digest===descriptor.descriptor_digest);
+    if(challenges.length===0)return false;
+    assert.equal(challenges.length,1);
+    const [challenge]=challenges;
+    const {service_id,service_boot_id,database_instance_id,clock_domain_id,descriptor_digest,continuity,native_binary_digest}=challenge;
+    assert.equal(service_id,plan[role].service_id);
+    assert.equal(database_instance_id,plan[role].database_instance_id);
+    assert.equal(clock_domain_id,descriptor.clock_domain_id);
+    assert.equal(descriptor_digest,descriptor.descriptor_digest);
+    const {policy,chrony,admin,privateFile,exchange,clockDir}=clock;
+    const {runtime_profile_ref,native_artifact_ref,health_profile_ref,system_time_source_ref,environment_approval_ref}=policy;
+    clock.runtime=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,descriptor_digest,
+      policy_ref:ref(policy),runtime_profile_ref,native_artifact_ref,environment_approval_ref,
+      continuity,native_binary_digest,valid_before_tick_ns:String(source.tick()+60000000000n)});
+    const profile=path.join(admin,'profile.json'),statement=path.join(admin,'statement.json'),signed=path.join(admin,'evidence.json');
+    fs.writeFileSync(profile,canonical({format:'leafseamer.authentication-clock-signing-profile/2',service_id,database_instance_id,
+      policy_digest:policy.digest,native_binary_digest,private_key_file:privateFile,evidence_file:signed,chrony}),{mode:0o600});
+    clock.publish=()=>{
+      const health=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,runtime_ref:ref(clock.runtime),
+        policy_ref:ref(policy),health_profile_ref,system_time_source_ref,environment_approval_ref,state:'synchronized',holdover_ref:null,
+        valid_before_tick_ns:String(source.tick()+4600000000n)});
+      fs.writeFileSync(statement,canonical({challenge,evidence:{policy,runtime:clock.runtime,health}}),{mode:0o600});
+      const result=run(process.execPath,[path.join(clockDir,'clock-evidence.mjs'),'--profile',profile,'--statement',statement],5000);
+      assert.deepEqual(JSON.parse(result),{state:'published',service_id,service_boot_id});
+      owned(signed);
+      fs.renameSync(signed,path.join(exchange,'evidence-'+service_boot_id+'.json'));
+      return health;
+    };
+    return true;
+  }
+  if(chronyFile){
+    for(const role of ['controller','seamer'])assert.ok(bindClockPublisher(role,admissions[role].descriptor));
     const ready=role=>{
       const lines=docker('logs',containers[role].Id).split('\n').filter(line=>line.startsWith('{'));
       const {port:localPort}=lines.map(line=>JSON.parse(line)).find(event=>event.event==='listening');
@@ -477,4 +483,43 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }else compose('down','--timeout','8');
   assert.equal(compose('ps','--all','--quiet').trim(),'');
   created=false;
+  if(pairingTest){
+    const {completeLinuxComposeFirstPairing}=await import('./fixtures/linux-compose-first-pairing.mjs');
+    async function launch(pairing){
+      const id=crypto.randomUUID(),generationDirectory=path.join(root,id);
+      fs.writeFileSync(planPath,JSON.stringify({...plan,pairing,cgroup:{...plan.cgroup,generation_id:id}}));
+      run(process.execPath,[...generate.slice(0,-1),generationDirectory]);
+      await prepareParents(id);
+      managedHost?.close();
+      managedHost=openLinuxComposeHost({...hostOptions,generationDirectory});
+      project=projectFor(id);composePath=path.join(generationDirectory,'compose.json');created=true;
+      const {record,admissions}=await managedHost.startSupervised();
+      for(const role of ['controller','seamer']){
+        const limit=performance.now()+5000;
+        while(!bindClockPublisher(role,admissions[role].descriptor)){
+          assert.ok(performance.now()<limit,role+' clock challenge did not arrive');
+          await delay(50);
+        }
+        clocks[role].publish();
+      }
+      let renewalFailure=null,phase=record.phase;
+      const renew=setInterval(()=>{
+        try{for(const role of ['controller','seamer'])clocks[role].publish();}
+        catch(error){renewalFailure=error;clearInterval(renew);}
+      },1200);
+      const containers=record.detail.runtime_binding.containers;
+      return {containers,inbox:path.join(generationDirectory,'first-pairing'),phase:()=>phase,
+        events:role=>docker('logs',containers[role]).split('\n').filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)),
+        async stop(){
+          clearInterval(renew);
+          try{
+            phase=managedHost.retire().phase;
+            assert.equal(phase,'retired');
+            created=false;
+          }finally{managedHost.close();managedHost=null;}
+          assert.ifError(renewalFailure);
+        }};
+    }
+    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send});
+  }
 });

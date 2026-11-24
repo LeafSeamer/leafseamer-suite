@@ -13,6 +13,7 @@ await migrateStorage(dataDir,currentStorageRevision);
 const store=openStorage(dataDir);
 try{
   const capability=store.enrollment.begin();
-  await store.enrollment.complete({...input.login,mode:'suite_issuer',token_id:capability.token_id,secret:capability.secret});
-  process.stdout.write(JSON.stringify({identity:store.identity})+'\n');
+  const {principal_id}=await store.enrollment.complete({...input.login,mode:'suite_issuer',token_id:capability.token_id,secret:capability.secret});
+  const {issuer_id,issuer_epoch}=store.enrollment.summary();
+  process.stdout.write(JSON.stringify({identity:store.identity,principal_id,issuer_id,issuer_epoch})+'\n');
 }finally{store.close();}

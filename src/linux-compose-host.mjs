@@ -5,7 +5,7 @@ import {spawnSync} from 'node:child_process';
 import {canonical,digest,requireValue as need} from './import-input.mjs';
 import {openInstallationStore,requireInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
-import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs} from './linux-compose.mjs';
+import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs,verifyLinuxComposeReferenceCapture} from './linux-compose.mjs';
 import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent,readLinuxReferenceGroup} from './linux-cgroup-retirement.mjs';
 import {openLinuxComposeChannel,openLinuxInstallationChannel,openLinuxReferenceChannel} from './linux-compose-channel.mjs';
 import {serveLinuxInstallationRead} from './linux-installation-read.mjs';
@@ -105,6 +105,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
   need(driver&&generation_id,'compose_host_cgroup');
   function verifyAdmissionInputs(){
     need(equal(clockInputs,verifyLinuxComposeClockInputs(plan))&&equal(pairingInputs,verifyLinuxComposePairingInputs(plan)),'compose_host_plan_changed');
+    verifyLinuxComposeReferenceCapture(plan);
     if(inbox)need(equal(inboxIdentity,protectedPath(inbox,stat=>stat.isDirectory())),'compose_host_plan_changed');
   }
   function verifyFiles(){

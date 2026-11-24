@@ -146,7 +146,13 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 私有 cgroup 计划可配置 `reference_providers`。在 `image.file` 和 `image.sha256` 固定本机 Linux 授时提供者制品，分别给 `controller` 和 `seamer` 配置独立宿主 `uid`、`gid`。管理员在两个父组下各预建一个空的 `reference` 子组，将其保留至该代退役完成。启用需要宿主账本修订 `3`、Controller Schema `110` 和 Seamer Schema `34`。已有库按各组件的显式迁移入口升级。
 
-`startSupervised()` 返回两端的 `referenceAdmissions`。宿主在专用套接字核验对应核心的 PID 和账号，交付原准入并转接受监督的提供者。各核心先写入原运行绑定，再完成连接握手，随后开启保护态 HTTPS。采集连接失联会关闭该代的两个核心。退役后可通过 `referenceAdmission(role)` 读回原件。业务授时源配置及持续采样仍待接入。[Compose 宿主入口](src/linux-compose-host.mjs)
+`startSupervised()` 返回两端的 `referenceAdmissions`。宿主在专用套接字核验对应核心的 PID 和账号，交付原准入并转接受监督的提供者。各核心先写入原运行绑定，再完成连接握手，随后开启保护态 HTTPS。采集连接失联会关闭该代的两个核心。退役后可通过 `referenceAdmission(role)` 读回原件。[Compose 宿主入口](src/linux-compose-host.mjs)
+
+启用受保护的业务授时采集时，另配置 `clock_evidence` 与 `reference_providers.capture`。后者的 `controller` 和 `seamer` 分别提供 `directory` 和 `approval_sha256`，每个目录专用并只读挂载。目录归 root 所有，属组为对应核心 GID，权限 `0750`。目录内的 `approval.json` 和 `capture.key` 归同一所有者及属组，权限 `0440`，密钥使用独立的 32 字节随机值。
+
+`approval.json` 采用规范 JSON `leafseamer-linux-reference-capture-approval/1`，使用 `scope.service_id`、`scope.database_instance_id` 和 `provider_digest` 绑定服务与制品。`approval_id`、`approval_revision` 和 `capture_key_id` 标识批准及归档密钥，`not_before_ns` 与 `expires_ns` 采用 UTC 纳秒十进制字符串。`network` 填写 `authentication: "trusted_network"` 和已批准的数字端点 `endpoint`。`archive_budget_bytes` 为累计归档预留上限，为 16 KiB 至 1 GiB 的整数，每次采样预留 16 KiB。
+
+有效的独立认证时钟限定采集授权期限。移走或改写批准文件会使当前运行停止后续采集。采集结果写入加密归档，同运行域内按至少 16 秒的间隔发起下一次采集。业务 UTC 锚点和跨运行域恢复仍待接入。
 
 核心准入需要启停账本 Schema 2 或更高版本。首次初始化采用 Schema 3。已有 Schema 1 可继续运行普通保护态计划，也可在停机时显式升级，保留身份标记与原启停记录。`admission(role)` 查询已持久保存的核心准入原件。[Compose 联调](test/linux-compose.integration.mjs)
 

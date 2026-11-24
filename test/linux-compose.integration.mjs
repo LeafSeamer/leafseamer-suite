@@ -6,6 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import https from 'node:https';
 import net from 'node:net';
+import dgram from 'node:dgram';
 import {once} from 'node:events';
 import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -139,6 +140,36 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       controller:{uid:1002,gid:1002},seamer:{uid:1003,gid:1003}};
   }
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
+  const captureTest=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_CAPTURE==='1';
+  const captureKeys={},capturePackets=new Map();
+  assert.ok(!captureTest||referenceExecutable&&chronyFile);
+  if(captureTest){
+    const provider=dgram.createSocket('udp4');
+    provider.bind(0,'127.0.0.1');await once(provider,'listening');
+    t.after(()=>new Promise(resolve=>provider.close(resolve)));
+    provider.on('message',(request,peer)=>{
+      if(request.length!==48||request[0]!==35)return;
+      const reply=Buffer.alloc(48);reply[0]=36;reply[1]=1;reply[19]=1;reply[35]=2;reply[43]=3;
+      request.copy(reply,24,40,48);
+      capturePackets.set(request.toString('base64url'),reply.toString('base64url'));
+      provider.send(reply,peer.port,peer.address);
+    });
+    const {canonical}=await import('../dist/import-input.mjs'),now=BigInt(Date.now())*1000000n;
+    const network={authentication:'trusted_network',endpoint:'127.0.0.1:'+provider.address().port};
+    plan.reference_providers.capture=Object.fromEntries([['controller',controller],['seamer',seamer]].map(([role,scope])=>{
+      const directory=path.join(root,role+'-reference-source'),key=crypto.randomBytes(32);
+      fs.mkdirSync(directory,{mode:0o750});fs.chownSync(directory,0,scope.gid);
+      captureKeys[role]=key;
+      const approval=canonical({format:'leafseamer-linux-reference-capture-approval/1',
+        scope:{service_id:scope.service_id,database_instance_id:scope.database_instance_id},
+        provider_digest:plan.reference_providers.image.sha256,approval_id:crypto.randomUUID(),approval_revision:'1',network,
+        archive_budget_bytes:65536,capture_key_id:crypto.randomUUID(),not_before_ns:String(now-60000000000n),expires_ns:String(now+180000000000n)});
+      for(const [name,bytes] of [['approval.json',approval],['capture.key',key]]){
+        const filename=path.join(directory,name);fs.writeFileSync(filename,bytes,{mode:0o440});fs.chownSync(filename,0,scope.gid);
+      }
+      return [role,{directory,approval_sha256:'sha256:'+hash(approval)}];
+    }));
+  }
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
   const pairedSimulator=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRED_SIMULATOR==='1';
   assert.ok(!pairingTest||chronyFile);
@@ -370,6 +401,15 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     });
   }
   const draft='/services/'+seamer.service_id+'/api/v1/definitions/'+crypto.randomUUID()+'/draft';
+  if(captureTest){
+    const expires=performance.now()+10000;
+    for(const role of ['controller','seamer']){
+      while(!bindClockPublisher(role,admissions[role].descriptor)){
+        assert.ok(performance.now()<expires,role+' did not issue its authentication challenge');await delay(100);
+      }
+      clocks[role].publish();
+    }
+  }
   const deadline=performance.now()+15000;
   let signedIn,protectedDraft;
   for(;;){
@@ -426,7 +466,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     return true;
   }
   if(chronyFile){
-    for(const role of ['controller','seamer'])assert.ok(bindClockPublisher(role,admissions[role].descriptor));
+    if(!captureTest)for(const role of ['controller','seamer'])assert.ok(bindClockPublisher(role,admissions[role].descriptor));
     const ready=role=>{
       const lines=docker('logs',containers[role].Id).split('\n').filter(line=>line.startsWith('{'));
       const {port:localPort}=lines.map(line=>JSON.parse(line)).find(event=>event.event==='listening');
@@ -444,12 +484,27 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       assert.equal(body.authentication_clock_evidence,evidence);
       assert.equal(body.authentication_clock,expected);
     };
-    for(const role of ['controller','seamer']){
-      state(role,'unqualified','missing');
-      clocks[role].publish();
+    if(!captureTest)for(const role of ['controller','seamer']){
+      state(role,'unqualified','missing');clocks[role].publish();
     }
     await delay(850);
     for(const role of ['controller','seamer'])state(role,'available','verified');
+    if(captureTest){
+      async function awaitCaptures(count,wait){
+        const deadline=performance.now()+wait;
+        while(capturePackets.size<count){
+          if(performance.now()>=deadline)assert.fail('reference capture timeout\n'+compose('logs','--no-color'));
+          clocks.controller.publish();clocks.seamer.publish();await delay(1000);
+        }
+        assert.equal(capturePackets.size,count);
+      }
+      await awaitCaptures(2,6000);
+      const directory=plan.reference_providers.capture.controller.directory;
+      fs.renameSync(path.join(directory,'approval.json'),path.join(directory,'withdrawn.json'));
+      await awaitCaptures(3,22000);
+      await delay(500);
+      assert.equal(capturePackets.size,3);
+    }
     const old=clocks.controller.publish();
     for(let i=0;i<4;i++){
       clocks.seamer.publish();
@@ -583,6 +638,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           assert.equal(original.body_jcs,prior.text);
           assert.equal(original.body_digest,prior.digest);
           assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
+          if(captureTest)checkReferenceCaptures(db,role,captureKeys[role],capturePackets,plan.reference_providers.capture[role]);
         }
       }
       if(workerControl&&role==='controller'){
@@ -888,6 +944,33 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1')t.diagnostic('模拟器正式布防、目标准备和基线封存已核对');
   }
 });
+
+function checkReferenceCaptures(db,role,key,packets,settings){
+  const rows=db.prepare(`SELECT c.ciphertext,c.nonce,c.tag,c.body_jcs,r.body_jcs AS reservation,x.confirmation_jcs AS acknowledgement,
+    a.body_jcs AS attempt FROM time_provider_capture c JOIN time_provider_poll_reservation r USING(poll_id)
+    JOIN time_provider_poll_attempt a USING(poll_id) JOIN time_provider_poll_release x USING(poll_id) ORDER BY c.rowid`).all();
+  assert.equal(rows.length,role==='controller'?1:2);
+  assert.equal(db.prepare('SELECT count(*) AS count FROM time_provider_poll_attempt').get().count,rows.length);
+  let previous;
+  for(const row of rows){
+    const capture=JSON.parse(row.body_jcs),reservation=JSON.parse(row.reservation),attempt=JSON.parse(row.attempt);
+    const ack=JSON.parse(row.acknowledgement);
+    assert.equal(reservation.authorization.approval_ref.digest,settings.approval_sha256);
+    assert.equal(ack.type,'POLL_STORED_ACK');assert.equal(ack.receipt.capture_ref.id,capture.capture_id);
+    assert.equal(ack.receipt.plaintext_digest,capture.plaintext_digest);
+    const decipher=crypto.createDecipheriv('aes-256-gcm',key,row.nonce);decipher.setAuthTag(row.tag);
+    decipher.setAAD(Buffer.from(row.body_jcs));
+    const plain=Buffer.concat([decipher.update(row.ciphertext),decipher.final()]);
+    try{
+      assert.equal('sha256:'+hash(plain),capture.plaintext_digest);
+      const candidate=JSON.parse(plain.toString('utf8'));
+      assert.equal(packets.get(candidate.request),candidate.response);
+      assert.ok(BigInt(candidate.m1_tick_ns)>=BigInt(attempt.attempted_tick_ns));
+      if(previous)assert.ok(BigInt(candidate.m1_tick_ns)-BigInt(previous.m4_tick_ns)>=16000000000n);
+      previous=candidate;
+    }finally{plain.fill(0);}
+  }
+}
 
 function seedPreviousReferenceBinding(db,role,identity){
   const id=crypto.randomUUID(),next=()=>crypto.randomUUID();

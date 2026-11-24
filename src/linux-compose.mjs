@@ -17,6 +17,7 @@ const clockKey=runtime+'/clock-public.pem',clockExchange='/run/leafseamer-clock'
 const pairingMount=runtime+'/pairing';
 const pairingInbox='/run/leafseamer-first-pairing';
 const workerChannelMount='/run/leafseamer-worker';
+const referenceMount=runtime+'/reference-source';
 export const composePairingLabel='io.leafseamer.pairing-inputs';
 const httpsPort=8443;
 const channelHelper=fileURLToPath(new URL('./native/leafseamer_linux_compose_channel',import.meta.url));
@@ -49,6 +50,21 @@ function rootControlledParents(location,code='compose_clock_scope'){
     const stat=fs.lstatSync(parent);
     const sticky=['/tmp','/var/tmp'].includes(parent)&&(stat.mode&0o1000)!==0;
     need(stat.isDirectory()&&stat.uid===0&&((stat.mode&0o022)===0||sticky),code);
+  }
+}
+
+export function verifyLinuxComposeReferenceCapture(plan){
+  const capture=plan.reference_providers?.capture;
+  if(!capture)return;
+  for(const role of ['controller','seamer']){
+    const {directory,approval_sha256}=capture[role],gid=plan[role].gid;
+    const approval=path.join(directory,'approval.json'),key=path.join(directory,'capture.key');
+    const parent=fs.lstatSync(directory),profile=fs.lstatSync(approval),secret=fs.lstatSync(key);
+    const protectedFile=stat=>stat.isFile()&&stat.uid===0&&stat.gid===gid&&(stat.mode&0o777)===0o440&&stat.nlink===1;
+    need(parent.isDirectory()&&parent.uid===0&&parent.gid===gid&&(parent.mode&0o777)===0o750&&
+      protectedFile(profile)&&protectedFile(secret)&&secret.size===32&&profile.size>0&&profile.size<=16384&&
+      'sha256:'+crypto.createHash('sha256').update(readDeploymentFile(approval,16384)).digest('hex')===approval_sha256,
+    'compose_reference_capture_files');
   }
 }
 
@@ -213,7 +229,8 @@ export function renderLinuxCompose(plan,output){
   const roots=[controllerData,seamerData,guiDirectory,output];
   if(withReference){
     const reference=plan.reference_providers;
-    need(withBootstrap&&cgroup?.namespace==='private'&&fields(reference,'controller,image,seamer')&&
+    const withCapture=reference&&Object.hasOwn(reference,'capture');
+    need(withBootstrap&&cgroup?.namespace==='private'&&fields(reference,(withCapture?'capture,':'')+'controller,image,seamer')&&
       fields(reference.image,'file,sha256')&&/^sha256:[a-f0-9]{64}$(?![\s\S])/.test(reference.image.sha256)&&
       ['controller','seamer'].every(role=>fields(reference[role],'gid,uid')&&id(reference[role].uid)&&id(reference[role].gid)),
     'compose_reference_providers');
@@ -223,6 +240,20 @@ export function renderLinuxCompose(plan,output){
     const image=existing(reference.image.file,'file'),stat=fs.lstatSync(image);
     rootControlledParents(image,'compose_reference_providers');
     need(stat.uid===0&&(stat.mode&0o6022)===0&&!roots.some(root=>contained(root,image)),'compose_reference_providers');
+    if(withCapture){
+      need(withClock&&fields(reference.capture,'controller,seamer'),'compose_reference_capture');
+      const paths=['controller','seamer'].map(role=>{
+        const input=reference.capture[role];
+        need(fields(input,'approval_sha256,directory')&&/^sha256:[a-f0-9]{64}$(?![\s\S])/.test(input.approval_sha256),'compose_reference_capture');
+        const directory=existing(input.directory,'directory');
+        rootControlledParents(directory,'compose_reference_capture');return directory;
+      });
+      const other=[...roots,image,...Object.values(plan.clock_evidence).map(value=>value.exchange_directory),
+        ...Object.values(plan.pairing??{}).map(value=>value.directory),...(withWorkerRuntime?[plan.worker_runtime.directory,plan.worker_runtime.channel_directory,
+          plan.worker_runtime.distribution.directory]:[])];
+      need(paths.every((directory,index)=>[paths[1-index],...other].every(item=>!contained(item,directory)&&!contained(directory,item))),
+        'compose_reference_capture');
+    }
   }
   if(withWorkerRuntime){
     const worker=plan.worker_runtime;
@@ -293,6 +324,11 @@ export function renderLinuxCompose(plan,output){
       service.init=false;
       service.volumes.push(bind(channelHelper,runtime+'/compose-channel'),bind(output+'/bootstrap-'+role,runtime+'/bootstrap'));
       if(withReference)service.command.push('--reference-provider',plan.reference_providers.image.sha256);
+      if(plan.reference_providers?.capture){
+        const {directory,approval_sha256}=plan.reference_providers.capture[role];
+        service.command.push('--reference-capture',approval_sha256);
+        service.volumes.push(bind(directory,referenceMount));
+      }
       if(withWorkerControl&&role==='controller')service.command.push('--worker-control','inherited');
       if(withWorkerRuntime&&role==='controller'){
         service.command.push('--worker-channel-dir',workerChannelMount,'--installation-source','inherited');

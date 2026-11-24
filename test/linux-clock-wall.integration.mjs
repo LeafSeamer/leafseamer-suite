@@ -12,7 +12,7 @@ const modules=process.platform==='linux'&&controller&&seamer?[
   pathToFileURL(path.join(seamer,'dist/runtime/native-clock.mjs')).href
 ]:null;
 
-test('双服务 Linux 原生墙钟观察在采集两侧锁存故障，单调读取继续可用',{
+test('双服务 Linux 原生时钟在采集两侧锁存墙钟与挂起故障，单调读取继续可用',{
   skip:modules===null,timeout:30000
 },async t=>{
   const scratch=fs.mkdtempSync(path.join(os.tmpdir(),'leafseamer-clock-wall-'));
@@ -24,8 +24,8 @@ test('双服务 Linux 原生墙钟观察在采集两侧锁存故障，单调读�
   const source=fileURLToPath(new URL('./fixtures/linux-clock-fault.c',import.meta.url));
   const compiled=spawnSync('cc',['-shared','-fPIC','-Wall','-Wextra','-Werror','-o',shim,source,'-ldl'],{encoding:'utf8',timeout:10000});
   assert.equal(compiled.status,0,compiled.stderr);
-  const invoke=(mode,program)=>{
-    const env={...process.env,LD_PRELOAD:shim,LEAFSEAMER_TEST_WALL_MONITOR:mode};
+  const invoke=(monitor,mode,program)=>{
+    const env={...process.env,LD_PRELOAD:shim,['LEAFSEAMER_TEST_'+monitor+'_MONITOR']:mode};
     const result=spawnSync(process.execPath,['--disallow-code-generation-from-strings','--input-type=module','--eval',program],
       {env,encoding:'utf8',timeout:10000});
     assert.equal(result.status,0,result.stderr||result.error?.message);
@@ -37,7 +37,7 @@ test('双服务 Linux 原生墙钟观察在采集两侧锁存故障，单调读�
     assert.equal(capture.continuity_available,false);
     for(const [mode,expected] of [['before','clock_wall_discontinuity'],['after','clock_wall_discontinuity'],
       ['read','clock_wall_monitor_unavailable'],['arm','clock_wall_monitor_unavailable']]){
-      invoke(mode,`
+      invoke('WALL',mode,`
 import assert from 'node:assert/strict';
 import {ClockError,openNativeClock} from ${JSON.stringify(module)};
 const source=openNativeClock(),start=source.tick();
@@ -48,9 +48,23 @@ for(const clock of [source,source,openNativeClock()]){
 }
 `);
     }
+    for(const [mode,expected] of [['before','clock_suspend_discontinuity'],['after','clock_suspend_discontinuity'],
+      ['read','clock_suspend_monitor_unavailable']]){
+      invoke('SUSPEND',mode,`
+import assert from 'node:assert/strict';
+import {ClockError,openNativeClock} from ${JSON.stringify(module)};
+const source=openNativeClock();
+if (${JSON.stringify(mode)}!=='read') assert.equal(source.capture().continuity_available,false);
+const start=source.tick();
+for(const clock of [source,source,openNativeClock()]){
+  assert.throws(()=>clock.capture(),error=>error instanceof ClockError&&error.code===${JSON.stringify(expected)});
+  assert(clock.tick()>=start);
+}
+`);
+    }
   }
   const directory=path.join(scratch,'controller');
-  invoke('after',`
+  invoke('WALL','after',`
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';

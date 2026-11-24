@@ -134,6 +134,12 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 启用 `cgroup.namespace=private` 时，宿主从实际核心进程核对非 root UID／GID、`no_new_privs` 及空权限集。该进程的只读 cgroup 挂载必须指向宿主上与 Docker 容器 ID 匹配的成员组。设备号、inode、挂载 ID 和命名空间身份随 `runtime_binding.core_containment` 持久保存。退役操作在停止仍运行的核心容器前复核这些证据。这个入口使用 Compose 的容器私有 cgroup 选项。[Docker Compose 容器规范](https://docs.docker.com/reference/compose-file/container-spec/)
 
+#### Compose 专用引导通道
+
+`npm run build -- --linux-member` 同时构建 `dist/native/leafseamer_linux_compose_channel`。可信装配可从 `@leafseamer/suite/linux-compose-channel` 打开 `openLinuxComposeChannel({directory, uid, gid, timeoutMs})`，等待 `ready` 后将该次启动专用目录只读挂入目标容器。容器入口工具以 `connect <容器内套接字绝对路径> <宿主所有者 UID> -- <固定核心入口和参数>` 调用。它须为容器 PID 1，以计划中的非 root 账户运行，核对 Unix 服务器凭据后将连接作为 FD 3 交给核心。
+
+宿主用 `accept({driver, generationId, role, host, expected})` 提供已从固定 Compose 运行代取得的 `core_containment`。发布通道前核对内核对端 PID、UID、GID，并重新核验当前容器 cgroup 及挂载身份。每个通道只使用一次。关闭宿主数据流或调用 `close()` 会终止中继，`ended` 在中继退出并清理仍与原 inode 一致的套接字后完成。实际 Compose 用例验证了同 UID／GID 的错容器拒绝、FD 3 数据往返和宿主断连退出。将通道接到产品核心的 DF02 准入和认证时钟属于后续验收。[Linux Unix socket 手册](https://man7.org/linux/man-pages/man7/unix.7.html) · [通道联调](test/linux-compose-channel.integration.mjs)
+
 ### Linux 原生成员创建
 
 在 Linux 构建机运行 `npm run build -- --linux-member`，将原生创建工具及其源码和制品摘要纳入 `dist/native/`。由可信宿主装配预先登记启动意图并固定受保护的 ELF 制品、空 cgroup v2 子组及两者的设备号和 inode。装配需拥有目录访问、创建子进程和切换到指定非 root UID／GID 所需的权限。工具使用调用者原有权限，发布文件采用普通可执行模式。

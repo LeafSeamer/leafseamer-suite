@@ -62,8 +62,7 @@ function pinExecutable(file,expected,maximum){
 }
 
 const helperFile=fileURLToPath(new URL('./native/leafseamer_linux_member',import.meta.url));
-function pinHelper(){
-  const file=new URL('./native/linux-member-manifest.json',import.meta.url);
+export function pinLinuxHelper(helperFile,file,format){
   const stat=fs.lstatSync(file,{bigint:true});
   need(stat.isFile()&&stat.uid===0n&&(stat.mode&0o022n)===0n&&stat.size<=4096n,'linux_member_helper_manifest');
   for(let directory=path.dirname(helperFile);directory!=='/';directory=path.dirname(directory)){
@@ -72,11 +71,14 @@ function pinHelper(){
     need(info.isDirectory()&&info.uid===0n&&((info.mode&0o022n)===0n||sticky),'linux_member_helper_manifest');
   }
   const value=JSON.parse(fs.readFileSync(file,'utf8'));
-  need(fields(value,'arch,binary_sha256,format,platform,source_sha256')&&value.format==='leafseamer-linux-member/1'&&
+  need(fields(value,'arch,binary_sha256,format,platform,source_sha256')&&value.format===format&&
     value.arch===process.arch&&value.platform==='linux'&&matches(value.binary_sha256,rawSha)&&matches(value.source_sha256,rawSha),
   'linux_member_helper_manifest');
   const digest='sha256:'+value.binary_sha256;
   return {...pinExecutable(helperFile,digest,4*1024*1024),digest};
+}
+function pinHelper(){
+  return pinLinuxHelper(helperFile,new URL('./native/linux-member-manifest.json',import.meta.url),'leafseamer-linux-member/1');
 }
 
 function groupIdentity(groupPath){

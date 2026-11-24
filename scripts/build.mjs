@@ -14,13 +14,15 @@ const names = ['installation-store.mjs', 'installation.sql', 'import-input.mjs',
 const files = await Promise.all(names.map(async name => [name, await fs.readFile(path.join(root, 'src', name))]));
 for(const name of ['linux-deployment-journal.mjs','linux-deployment-journal.sql','linux-compose-host.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 for(const name of ['linux-member-journal.mjs','linux-member-journal.sql','linux-member-bootstrap.mjs','linux-member-retirement.sql','linux-native-host.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
+files.push(['linux-compose-channel.mjs',await fs.readFile(path.join(root,'src/linux-compose-channel.mjs'))]);
 files.push(['content-preparation.mjs',await fs.readFile(path.join(root,'src/content-preparation.mjs'))]);
 for(const name of ['prepared-content.mjs','platform-qualification.mjs','installation-sealing.mjs','installation-sealing.sql','materialization.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(...await buildTuf());
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const memberBinary='native/leafseamer_linux_member';
-if(linuxMember){
-  const source=path.join(root,'native/linux-member.c');
+const memberTools=['linux-member','linux-compose-channel'];
+const executablePath=name=>'native/leafseamer_'+name.replaceAll('-','_');
+if(linuxMember)for(const tool of memberTools){
+  const source=path.join(root,'native',tool+'.c');
   const directory=await fs.mkdtemp(path.join(os.tmpdir(),'leafseamer-linux-member-'));
   try{
     const executable=path.join(directory,'leafseamer_linux_member');
@@ -30,8 +32,8 @@ if(linuxMember){
     if(result.error||result.status!==0)throw new Error('linux_member_build',{cause:result.error});
     if(hash(await fs.readFile(source))!==sourceHash)throw new Error('linux_member_source_changed');
     const bytes=await fs.readFile(executable);
-    files.push([memberBinary,bytes],['native/linux-member-manifest.json',Buffer.from(JSON.stringify({
-      format:'leafseamer-linux-member/1',platform:process.platform,arch:process.arch,
+    files.push([executablePath(tool),bytes],['native/'+tool+'-manifest.json',Buffer.from(JSON.stringify({
+      format:'leafseamer-'+tool+'/1',platform:process.platform,arch:process.arch,
       source_sha256:sourceHash,binary_sha256:hash(bytes)
     },null,2)+'\n')]);
   }finally{
@@ -64,7 +66,7 @@ const output = path.resolve(root, 'dist');
 if (path.dirname(output) !== path.resolve(root)) throw new Error('output_path');
 await fs.rm(output, {recursive: true, force: true}); await fs.mkdir(output);
 for (const [name, bytes] of files) { await fs.mkdir(path.dirname(path.join(output, name)), {recursive: true}); await fs.writeFile(path.join(output, name), bytes); }
-if(linuxMember)await fs.chmod(path.join(output,memberBinary),0o755);
+if(linuxMember)for(const tool of memberTools)await fs.chmod(path.join(output,executablePath(tool)),0o755);
 await fs.writeFile(path.join(output, 'build-manifest.json'), JSON.stringify({format: 'leafseamer-suite-build/1',
   artifacts: Object.fromEntries(files.map(([name, bytes]) => [name, crypto.createHash('sha256').update(bytes).digest('hex')]))}, null, 2) + '\n');
 console.log(JSON.stringify({artifacts: files.length, runtime_ready: false}));

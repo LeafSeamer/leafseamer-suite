@@ -163,20 +163,22 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }while(performance.now()<until);
     assert.deepEqual(body,expected);
   }
-  async function checkClock(member,peer){
+  function clockPublisher(member){
     const {actual:{clock},challenge}=member;
-    const {directory,privateKey,clockPolicy,authenticateClock}=clock;
+    const {directory,privateKey,clockPolicy}=clock;
     const {service_id,service_boot_id,database_instance_id,clock_domain_id,descriptor_digest,continuity,native_binary_digest}=challenge;
     const file=evidenceFile(member);
     const format='leafseamer.authentication-clock-evidence/1';
-    function publish({boot=service_boot_id,domain=clock_domain_id,deadline=source.tick()+4000000000n,signer=privateKey,useChrony=false}={}){
-      const {runtime_profile_ref,native_artifact_ref,environment_approval_ref,health_profile_ref,system_time_source_ref}=clockPolicy;
+    const {runtime_profile_ref,native_artifact_ref,environment_approval_ref,health_profile_ref,system_time_source_ref}=clockPolicy;
+    const runtime={id:id(),revision:'1',service_id,service_boot_id,clock_domain_id,descriptor_digest,
+      policy_ref:ref(clockPolicy),runtime_profile_ref,native_artifact_ref,environment_approval_ref,native_binary_digest,
+      continuity,valid_before_tick_ns:String(source.tick()+30000000000n)};
+    return function publish({boot=service_boot_id,domain=clock_domain_id,deadline=source.tick()+4800000000n,signer=privateKey,useChrony=false}={}){
       const scope={service_id,service_boot_id:boot,clock_domain_id:domain};
-      const runtime=seal({id:id(),revision:'1',...scope,descriptor_digest,policy_ref:ref(clockPolicy),runtime_profile_ref,native_artifact_ref,
-        environment_approval_ref,native_binary_digest,continuity,valid_before_tick_ns:String(source.tick()+30000000000n)});
-      const health=seal({id:id(),revision:'1',...scope,runtime_ref:ref(runtime),policy_ref:ref(clockPolicy),health_profile_ref,system_time_source_ref,
+      const boundRuntime=seal({...runtime,...scope});
+      const health=seal({id:id(),revision:'1',...scope,runtime_ref:ref(boundRuntime),policy_ref:ref(clockPolicy),health_profile_ref,system_time_source_ref,
         environment_approval_ref,state:'synchronized',holdover_ref:null,valid_before_tick_ns:String(deadline)});
-      const evidence={policy:clockPolicy,runtime,health};
+      const evidence={policy:clockPolicy,runtime:boundRuntime,health};
       if(useChrony){
         const admin=fs.mkdtempSync(path.join(path.dirname(directory),'signer-'));
         const profileFile=path.join(admin,'profile.json'),statement=path.join(admin,'statement.json'),keyFile=path.join(admin,'key.pem');
@@ -195,11 +197,14 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
         fs.writeFileSync(file,canonical({format,evidence,signature}),{mode:0o644});
       }
       return deadline;
-    }
+    };
+  }
+  async function checkClock(member,peer){
+    const file=evidenceFile(member),publish=clockPublisher(member);
     const deadline=publish({useChrony:chrony!==null});await expectEvidence(member,'verified','available');
     if(peer){
       for(const field of ['service_id','service_boot_id','database_instance_id','clock_domain_id']){
-        assert.notEqual(challenge[field],peer.challenge[field]);
+        assert.notEqual(member.challenge[field],peer.challenge[field]);
       }
       const destination=evidenceFile(peer);
       fs.copyFileSync(file,destination,fs.constants.COPYFILE_EXCL);
@@ -212,10 +217,6 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       while(source.tick()<deadline)await delay(100);
       assert.deepEqual(fs.readFileSync(file),original);
       await expectEvidence(member,'expired');
-      if(authenticateClock){
-        publish({useChrony:true});
-        await expectEvidence(member,'verified','faulted');
-      }
     }
     publish({boot:id()});await expectEvidence(member,'rejected');
     publish({domain:id()});await expectEvidence(member,'rejected');
@@ -223,6 +224,37 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     publish({deadline:source.tick()});await expectEvidence(member,'expired');
     publish();fs.chmodSync(file,0o666);await expectEvidence(member,'rejected');
     fs.unlinkSync(file);await expectEvidence(member,'missing');
+  }
+  async function checkAuthenticationRenewal(members){
+    const clocks=members.map(member=>({member,publish:clockPublisher(member),file:evidenceFile(member)}));
+    for(const clock of clocks)clock.originalEnd=clock.publish({useChrony:true});
+    for(const {member} of clocks)await expectEvidence(member,'verified','available');
+    for(const clock of clocks){
+      assert.ok(source.tick()<clock.originalEnd);
+      clock.renewedEnd=clock.publish({useChrony:true});
+    }
+    const originalEnd=clocks.reduce((latest,clock)=>clock.originalEnd>latest?clock.originalEnd:latest,0n);
+    while(source.tick()<originalEnd)await delay(50);
+    for(const {member} of clocks)await expectEvidence(member,'verified','available');
+
+    const [revoked,...remaining]=clocks;
+    const previous=fs.readFileSync(revoked.file);
+    fs.unlinkSync(revoked.file);
+    await expectEvidence(revoked.member,'missing');
+    for(const {member} of remaining)await expectEvidence(member,'verified','available');
+    fs.writeFileSync(revoked.file,previous,{mode:0o644});
+    await expectEvidence(revoked.member,'verified');
+
+    for(const clock of remaining){
+      const bytes=fs.readFileSync(clock.file);
+      while(source.tick()<clock.renewedEnd)await delay(50);
+      assert.deepEqual(fs.readFileSync(clock.file),bytes);
+      await expectEvidence(clock.member,'expired');
+    }
+    for(const {member,publish} of clocks){
+      publish({useChrony:true});
+      await expectEvidence(member,'verified');
+    }
   }
   for(const [role,distribution] of cores){
     const wrong=await target(role,distribution,role+'-wrong-database',{wrongDatabase:true});
@@ -243,8 +275,8 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }finally{detail.close();}
     journal.close();store.close();journal=store=null;
   }
-  if(sleepProfile==='available'){
-    const rejected=await target('controller',controller,'controller-sleep-capable',{authenticateClock:true});
+  for(const [role,distribution] of sleepProfile==='available'?cores:[]){
+    const rejected=await target(role,distribution,role+'-sleep-capable',{authenticateClock:true});
     const {record}=await journal.admit(rejected.intent,{policy:rejected.policy,source});
     assert.equal(record.phase,'executed_closed');
     await empty(rejected.group);
@@ -256,7 +288,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
   for(const [role,distribution] of cores){
     const existing=accepted[0]?.actual;
     const actual=await target(role,distribution,role+'-accepted',{sharedInstallation:existing?.installation??null,
-      generation_id:existing?.intent.generation_id,inspectClock:true,authenticateClock:sleepProfile==='disabled'&&role==='controller'});
+      generation_id:existing?.intent.generation_id,inspectClock:true,authenticateClock:sleepProfile==='disabled'});
     const {record,bootstrap}=await journal.admit(actual.intent,{policy:actual.policy,source});
     assert.equal(bootstrap,null);
     assert.equal(record.phase,'executed_closed');
@@ -277,7 +309,8 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     const challenge=readClockChallenge(actual,descriptor,body);
     accepted.push({role,actual,record,receipt,url,challenge});
   }
-  for(const member of accepted){
+  if(sleepProfile==='disabled')await checkAuthenticationRenewal(accepted);
+  else for(const member of accepted){
     await checkClock(member,accepted.find(candidate=>candidate!==member));
   }
   journal.close();store.close();journal=store=null;
@@ -292,8 +325,12 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       assert.equal(detail.prepare('SELECT count(*) AS total FROM core_runtime_binding').get().total,1);
       const samples=detail.prepare('SELECT body FROM authentication_clock_acquisition WHERE service_boot_id=?').all(saved.service_boot_id);
       if(actual.clock.authenticateClock){
-        assert.ok(samples.length>0);
-        for(const row of samples)assert.equal(JSON.parse(Buffer.from(row.body)).raw.continuity_monitor,'kernel_sleep_disabled');
+        const originals=samples.map(row=>JSON.parse(Buffer.from(row.body)));
+        assert.ok(new Set(originals.map(value=>value.health_evidence_ref.id)).size>=2);
+        for(const value of originals){
+          assert.equal(value.raw.continuity_monitor,'kernel_sleep_disabled');
+          assert.equal(value.clock_domain_id,challenge.clock_domain_id);
+        }
         assert.equal(detail.prepare('SELECT count(*) AS total FROM authentication_clock_fault WHERE service_boot_id=?').get(saved.service_boot_id).total,1);
       }else assert.equal(samples.length,0);
     }finally{detail.close();}

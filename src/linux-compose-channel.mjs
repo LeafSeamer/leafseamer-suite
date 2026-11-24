@@ -135,3 +135,24 @@ export function openLinuxInstallationChannel({directory,uid,gid,corePid,timeoutM
   peer.catch(channel.close);
   return Object.freeze({...channel,peer});
 }
+
+export function openLinuxReferenceChannel({directory,uid,gid,corePid,timeoutMs,provider,coreReceiptId}){
+  need(Number.isInteger(corePid)&&corePid>1&&provider?.collector&&!provider.collector.destroyed,'compose_reference_channel');
+  const {intent,descriptor,receipt,process_observation}=provider.admission;
+  const preamble=canonical({format:'leafseamer-linux-reference-admission/1',core_receipt_id:coreReceiptId,
+    provider:{intent,descriptor,receipt,process_observation}})+'\n';
+  need(Buffer.byteLength(preamble)<=16385,'compose_reference_channel');
+  const channel=openChannel({directory,name:'reference.sock',uid,gid,timeoutMs,expectedPid:corePid});
+  const timer=setTimeout(channel.close,timeoutMs);timer.unref();
+  void channel.ended.then(()=>clearTimeout(timer));
+  void channel.accept(pid=>{need(pid===corePid,'compose_channel_peer');provider.assertCurrent();}).then(async socket=>{
+    socket.once('end',channel.close).once('close',channel.close).once('error',channel.close);
+    provider.collector.once('end',channel.close).once('close',channel.close).once('error',channel.close);
+    await new Promise((resolve,reject)=>socket.write(preamble,error=>error?reject(error):resolve()));
+    provider.assertCurrent();
+    provider.collector.pipe(socket,{end:false});
+    socket.pipe(provider.collector,{end:false});
+    clearTimeout(timer);
+  }).catch(channel.close);
+  return channel;
+}

@@ -7,7 +7,7 @@ import {openInstallationStore,requireInstallationStore} from './installation-sto
 import {readDeploymentFile} from './linux-ingress.mjs';
 import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs} from './linux-compose.mjs';
 import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent,readLinuxReferenceGroup} from './linux-cgroup-retirement.mjs';
-import {openLinuxComposeChannel,openLinuxInstallationChannel} from './linux-compose-channel.mjs';
+import {openLinuxComposeChannel,openLinuxInstallationChannel,openLinuxReferenceChannel} from './linux-compose-channel.mjs';
 import {serveLinuxInstallationRead} from './linux-installation-read.mjs';
 import {admitLinuxMember} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
@@ -294,6 +294,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
           need(core.length===1&&core[0].Id===bound.containers[role]&&core[0].State?.Running===true&&
             equal(coreContainment(role,core[0]),expected)&&!socket.destroyed&&!socket.readableEnded,'compose_host_binding');
           const saved=journal.recordAdmission(generation_id,role,admission);
+          if(reference)await startReference(role,record,saved);
           if(controllerControl){
             const {uid,gid}=plan.controller;
             function assertLive(){
@@ -350,7 +351,11 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       if(draining){await provider.retire();need(false,'compose_host_reference_binding');}
       providers.set(role,provider);
       void provider.ended.then(closeAfterLoss);
-      return provider.admission;
+      const forward=openLinuxReferenceChannel({directory:path.join(generationDirectory,'bootstrap-'+role),uid,gid,
+        corePid:expected.leader.pid,timeoutMs:core.policy.bootstrap_timeout_ms,provider,coreReceiptId:core.receipt.receipt_id});
+      channels.set('reference-'+role,forward);
+      void forward.ended.then(closeAfterLoss);
+      await forward.ready;
     }
     return Object.freeze({
       current:()=>journal.current(),
@@ -377,9 +382,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
           const record=start(),admissions={};
           for(const role of coreRoles)admissions[role]=await admit(role,record);
           if(!reference)return {record,admissions};
-          const referenceAdmissions={};
-          for(const role of coreRoles)referenceAdmissions[role]=await startReference(role,record,admissions[role]);
-          return {record,admissions,referenceAdmissions};
+          return {record,admissions,referenceAdmissions:Object.fromEntries(coreRoles.map(role=>[role,providers.get(role).admission]))};
         }catch(error){await closeChannels();throw error;}
         finally{starting=false;}
       },

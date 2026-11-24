@@ -56,6 +56,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const host='manage.fixture.invalid',authority=host+':'+port,origin='https://'+authority;
   const range='10.234.'+crypto.randomInt(1,255);
   const login={login:'compose.fixture',password:'Synthetic-compose-test-password-632'};
+  const referenceExecutable=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER,legacyReference={};
   let enrollment;
   function certificates(role,serverName,loopback=false){
     const certificate_file=path.join(root,role+'.pem'),private_key_file=path.join(root,role+'.key');
@@ -74,17 +75,25 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     const data_dir=path.join(root,role);
     fs.mkdirSync(data_dir,{mode:0o700});owned(data_dir);
     let identity;
+    const args=['/opt/leafseamer/dist/cli.mjs'],directoryArgs=['--data-dir','/var/lib/leafseamer'];
     if(role==='controller'){
       const config=path.join(root,'controller-init.json');
-      fs.writeFileSync(config,JSON.stringify({package_root:'/opt/leafseamer',data_dir:'/var/lib/leafseamer',login}),{mode:0o600});owned(config);
+      fs.writeFileSync(config,JSON.stringify({package_root:'/opt/leafseamer',data_dir:'/var/lib/leafseamer',login,
+        ...(referenceExecutable&&{storage_revision:109})}),{mode:0o600});owned(config);
       const seed=bootstrap(role,data_dir,['--mount','type=bind,source='+file('./fixtures/linux-ingress-service.mjs')+',target=/tmp/seed.mjs,readonly',
         '--mount','type=bind,source='+config+',target=/tmp/config.json,readonly'],['/tmp/seed.mjs','/tmp/config.json']);
       enrollment=JSON.parse(seed);
       identity=enrollment.identity;
     }else{
-      const args=['/opt/leafseamer/dist/cli.mjs'],directory=['--data-dir','/var/lib/leafseamer'];
-      identity=JSON.parse(bootstrap(role,data_dir,[],[...args,'init-storage',...directory]));
-      bootstrap(role,data_dir,[],[...args,'migrate-storage',...directory,'--to-revision','33']);
+      identity=JSON.parse(bootstrap(role,data_dir,[],[...args,'init-storage',...directoryArgs]));
+      bootstrap(role,data_dir,[],[...args,'migrate-storage',...directoryArgs,'--to-revision','33']);
+    }
+    if(referenceExecutable){
+      const filename=path.join(data_dir,role+'.sqlite');
+      const db=new DatabaseSync(filename);
+      try{legacyReference[role]=seedPreviousReferenceBinding(db,role,identity);}
+      finally{db.close();}
+      bootstrap(role,data_dir,[],[...args,'migrate-storage',...directoryArgs,'--to-revision',role==='controller'?'110':'34']);
     }
     const server_name=role+'.fixture.invalid',tls=certificates(role,server_name);
     return {image:images[role],uid,gid,address:range+'.'+number,data_dir,server_name,
@@ -122,7 +131,6 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     nginx:{image:images.nginx,uid,gid,address:range+'.4'},gui:{directory,manifest_sha256:'sha256:'+hash(manifestBytes)},
     ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}}),...(workerControl&&{worker_control:true})};
   let source,admissions,referenceAdmissions;
-  const referenceExecutable=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER;
   assert.ok(!referenceExecutable||supervised);
   if(referenceExecutable){
     const executable=path.join(root,'reference-provider');
@@ -500,6 +508,16 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         }
       }finally{fs.writeFileSync(composePath,original);}
     }
+    if(referenceExecutable&&!workerControl){
+      const pid=referenceAdmissions.controller.process_observation.provider_pid;
+      assert.equal(fs.readlinkSync('/proc/'+pid+'/exe'),plan.reference_providers.image.file);
+      process.kill(pid,'SIGTERM');
+      const deadline=performance.now()+10000;
+      for(const role of ['controller','seamer'])while(JSON.parse(docker('container','inspect',containers[role].Id))[0].State.Running){
+        assert.ok(performance.now()<deadline,role+' did not exit after the reference provider was lost');
+        await delay(50);
+      }
+    }
     let retired=managedHost.retire();
     if(referenceExecutable){
       const deadline=performance.now()+5000;
@@ -548,9 +566,24 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       assert.equal(db.prepare('SELECT count(*) AS count FROM service_boot WHERE state=?').get('started').count,0);
       assert.equal(db.prepare('SELECT service_id FROM service_state').get().service_id,plan[role].service_id);
       if(supervised){
-        const receipt=db.prepare('SELECT receipt_jcs FROM core_runtime_binding').all();
+        const receipt=db.prepare('SELECT receipt_jcs FROM core_runtime_binding WHERE receipt_id=?').all(admissions[role].receipt.receipt_id);
         assert.equal(receipt.length,1);
         assert.deepEqual(JSON.parse(receipt[0].receipt_jcs),admissions[role].receipt);
+        if(referenceExecutable){
+          const rows=db.prepare('SELECT body_jcs,body_digest FROM time_provider_runtime_binding WHERE receipt_id=?').all(referenceAdmissions[role].receipt.receipt_id);
+          assert.equal(rows.length,1);
+          const {body_jcs,body_digest}=rows[0],binding=JSON.parse(body_jcs),saved=referenceAdmissions[role];
+          assert.equal(binding.format,'leafseamer-time-provider-runtime-binding/2');
+          assert.equal(binding.core_receipt_id,admissions[role].receipt.receipt_id);
+          assert.deepEqual(binding.admission_receipt,saved.receipt);
+          assert.deepEqual(binding.process_observation,saved.process_observation);
+          assert.equal(body_digest,'sha256:'+hash(body_jcs));
+          const prior=legacyReference[role];
+          const original=db.prepare('SELECT body_jcs,body_digest FROM time_provider_runtime_binding WHERE service_boot_id=?').get(prior.id);
+          assert.equal(original.body_jcs,prior.text);
+          assert.equal(original.body_digest,prior.digest);
+          assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
+        }
       }
       if(workerControl&&role==='controller'){
         const {receipt,descriptor}=admissions.controller;
@@ -855,3 +888,24 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1')t.diagnostic('模拟器正式布防、目标准备和基线封存已核对');
   }
 });
+
+function seedPreviousReferenceBinding(db,role,identity){
+  const id=crypto.randomUUID(),next=()=>crypto.randomUUID();
+  const {service_id,database_instance_id}=identity;
+  const core={receipt_id:next(),bootstrap_id:next(),member_boot_id:next(),gate_state:'closed'};
+  const descriptor={clock_backend_id:'windows_interrupt_precise'},provider={receipt_id:next(),bootstrap_id:next(),member_boot_id:next()};
+  const time=JSON.stringify({format:'leafseamer-time-provider-runtime-binding/1',service_id,database_instance_id,service_boot_id:id,
+    core_receipt_id:core.receipt_id,runtime_binding_id:next(),launch_intent:{launch_id:next(),role:'time_provider'},
+    clock_domain_descriptor:descriptor,admission_receipt:provider,gate_state:'closed'});
+  const digest='sha256:'+hash(time),body=JSON.parse(time);
+  const started=new Date().toISOString();
+  if(role==='controller')db.prepare("INSERT INTO service_boot VALUES(?,?,?,?,NULL,'started')").run(service_id,database_instance_id,id,started);
+  else db.prepare("INSERT INTO service_boot VALUES(?,?,?,'started')").run(service_id,database_instance_id,id);
+  db.prepare('INSERT INTO core_runtime_binding VALUES(?,?,?,?,?,?,?,?)').run(id,core.receipt_id,core.bootstrap_id,core.member_boot_id,
+    JSON.stringify({role:'core',service_id}),JSON.stringify(descriptor),JSON.stringify(core),JSON.stringify({service_id,database_instance_id}));
+  db.prepare('INSERT INTO time_provider_runtime_binding VALUES(?,?,?,?,?,?,?,?)').run(id,body.runtime_binding_id,body.launch_intent.launch_id,
+    provider.receipt_id,provider.bootstrap_id,provider.member_boot_id,time,digest);
+  if(role==='controller')db.prepare("UPDATE service_boot SET state='stopped',stopped_utc=? WHERE service_boot_id=?").run(started,id);
+  else db.prepare("UPDATE service_boot SET state='stopped' WHERE service_boot_id=?").run(id);
+  return {id,text:time,digest};
+}

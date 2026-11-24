@@ -9,7 +9,7 @@ const {initializeStorage,migrateStorage,openStorage}=await load('storage.mjs');
 const {currentStorageRevision}=await load('storage-revision.mjs');
 const dataDir=input.data_dir;
 initializeStorage(dataDir);
-await migrateStorage(dataDir,currentStorageRevision);
+await migrateStorage(dataDir,input.storage_revision??currentStorageRevision);
 const store=openStorage(dataDir);
 try{
   const capability=store.enrollment.begin();

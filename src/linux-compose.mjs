@@ -292,6 +292,7 @@ export function renderLinuxCompose(plan,output){
       service.entrypoint=[runtime+'/compose-channel'];
       service.init=false;
       service.volumes.push(bind(channelHelper,runtime+'/compose-channel'),bind(output+'/bootstrap-'+role,runtime+'/bootstrap'));
+      if(withReference)service.command.push('--reference-provider',plan.reference_providers.image.sha256);
       if(withWorkerControl&&role==='controller')service.command.push('--worker-control','inherited');
       if(withWorkerRuntime&&role==='controller'){
         service.command.push('--worker-channel-dir',workerChannelMount,'--installation-source','inherited');

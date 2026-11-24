@@ -194,6 +194,8 @@ leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_
 
 Compose 的 `worker_runtime` 固定宿主 `distribution.directory`、`distribution.manifest_sha256`、`image.file`、`image.sha256`、暂存 `directory`、独立 `uid`／`gid` 及 `channel_directory`。宿主 Node 和 Controller 制品摘要须匹配引导策略。套接字目录应专用、启动前为空、由 root 管理，绝对路径最多 60 字节。Compose 只把它以只读方式挂到 Controller 的 `/run/leafseamer-worker`。在已持有当前发行验证会话的宿主进程中，把同一安装库通过 `installationStore` 交给 `openLinuxComposeHost()`，由宿主按当前封存件和启动授权创建 Worker。Worker 使用同代 Controller 父组下预建的专属空 cgroup。[Compose 宿主入口](src/linux-compose-host.mjs)
 
+配置 `worker_runtime` 后，宿主还会在该只读挂载提供 `installation.sock`。套接字只接纳当前准入的 Controller 进程。Controller 在启动时确认宿主安装库身份，按当前服务读取封存收据、清单、文件库存、配置 Schema 和能力模板。安装查询使用独立连接，宿主在处理查询和回复时检查当前进程身份。关闭该连接会触发当前运行代的监督关闭。由调用方提供安装库时，等待宿主的 `close()` 完成再关闭该安装库。[Compose 联调](test/linux-compose.integration.mjs)
+
 将 `leafseamer.linux-native-core/1` 计划保存于安装目录下的 `linux-native/`。填入 `host_installation_id`、`role`、`driver`、`generation_id`、`launch_id`、运行账户的 `uid` 与 `gid`、`data_directory`、回环 `port` 及现有 `bootstrap` 策略。`image`、`clock_profile` 与 `pairing_profile` 各提供绝对 `file` 和 `sha256`，`distribution` 提供绝对 `directory` 和 `manifest_sha256`。摘要使用 `sha256:` 前缀，配对和时钟配置均使用各服务的 `/2` 格式。安装制品及依赖树由 root 管理，业务库目录由所选运行账户管理。
 
 `start({planFile, planDigest})` 接受已批准计划的绝对路径与摘要。宿主核对安装身份、制品清单和各资产、权限、服务身份以及配置摘要，再组装固定的 `contained-core-linux` 启动参数。核心准入回执持久写入后返回，同一启动标识的重投返回原记录。业务 TLS 随两端认证采集另行启用。`retire(launchId)` 先持久关闭原入口并关闭监督通道，再观察原父组。仍有进程时保留 `closing`，父组清空后持久返回 `retired`。`lookup(launchId)` 查回原启动与退役记录，`close()` 释放宿主句柄。Compose 容器的认证准入继续使用单独部署验收。[原生配对联调](test/linux-core-bootstrap.integration.mjs)

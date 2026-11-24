@@ -138,9 +138,9 @@ export function materializationProvider({db,transact,identity,rows,decode,requir
     }
   }
   return {get activeCount(){return active+holds.size;},descriptor,query:(value,authorize)=>inspect('IntakeQuery',value,authorize),
-    describe:value=>inspect('IntakeQuery',value,undefined,true),
-    configurationSchema:value=>inspect('IntakeQuery',value,undefined,'configuration_schema'),
-    capabilityTemplates:value=>inspect('IntakeQuery',value,undefined,'capability_templates'),
+    describe:(value,authorize)=>inspect('IntakeQuery',value,authorize,true),
+    configurationSchema:(value,authorize)=>inspect('IntakeQuery',value,authorize,'configuration_schema'),
+    capabilityTemplates:(value,authorize)=>inspect('IntakeQuery',value,authorize,'capability_templates'),
     acquire:value=>inspect('IntakeQuery',value,undefined,'loader'),
     acquireLinux(value,options){
       need(options&&Object.keys(options).sort().join(',')==='directory,gid,uid','preparation_stage_account');

@@ -127,3 +127,11 @@ export function openLinuxWorkerChannel({directory,memberBootId,purpose,uid,gid,c
   void channel.accept(pid=>{need(pid===corePid,'compose_channel_peer');assertCurrent();}).catch(channel.close);
   return channel;
 }
+
+export function openLinuxInstallationChannel({directory,uid,gid,corePid,timeoutMs,assertCurrent}){
+  need(Number.isInteger(corePid)&&corePid>1&&typeof assertCurrent==='function','linux_installation_channel');
+  const channel=openChannel({directory,name:'installation.sock',uid,gid,timeoutMs,expectedPid:corePid});
+  const peer=channel.accept(pid=>{need(pid===corePid,'compose_channel_peer');assertCurrent();});
+  peer.catch(channel.close);
+  return Object.freeze({...channel,peer});
+}

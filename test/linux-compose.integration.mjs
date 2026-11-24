@@ -34,9 +34,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const compose=(...args)=>docker('compose','--project-name',project,'--file',composePath,...args);
   let created=false,managedHost,extraContainer;
   const groups=[];
-  t.after(()=>{
+  t.after(async()=>{
     try{
-      managedHost?.close();
+      await managedHost?.close();
       if(extraContainer)docker('container','rm','--force',extraContainer);
       if(created)compose('down','--timeout','8');
     }
@@ -573,13 +573,13 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     const {dev,ino}=fs.statSync(groupFile,{bigint:true}),boot_id=fs.readFileSync('/proc/sys/kernel/random/boot_id','utf8').trim();
     const containment={backend:'linux_cgroup_v2',generation,group_id:'group_'+digest({boot_id,group_path,group:{device:String(dev),inode:String(ino)}}).slice(7)};
     const store=openInstallationStore(installationDirectory);
-    let sealed;
+    let sealed,failure;
     try{
       sealed=await sealSimulatorWorker(t,{dist,directory:root,serviceId:identity.service_id,profileId:workerPlan.bootstrap.controller.platform_profile_ref.profile_id,
         protocol:deviceModuleEventProtocol,store});
       fs.writeFileSync(path.join(dataDir,'worker-test.json'),canonical({policy:workerPlan.bootstrap.controller,launchId,containment,
         channelDirectory:'/run/leafseamer-worker',data:'/var/lib/leafseamer',start:'/var/lib/leafseamer/worker-start',
-        result:'/var/lib/leafseamer/worker-result.json',materialization:sealed.materialization}));
+        result:'/var/lib/leafseamer/worker-result.json',intakeRef:sealed.intakeRef}));
       project=projectFor(generation);composePath=path.join(deployment,'compose.json');
       managedHost=openLinuxComposeHost({...hostOptions,generationDirectory:deployment,installationStore:store});
       created=true;
@@ -594,7 +594,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       const result=parseFile(resultPath);assert.equal(result.ok,true,result.error);
       assert.equal(result.workerReceipt.gate_state,'closed');
       assert.match(fs.readFileSync(groupFile+'/cgroup.events','utf8'),/^populated 0$/m);
-      assert.deepEqual(fs.readdirSync(directory),[]);assert.deepEqual(fs.readdirSync(channelDirectory),[]);
+      assert.deepEqual(fs.readdirSync(directory),[]);
+      assert.ok(fs.readdirSync(channelDirectory).every(name=>name==='installation.sock'));
       const {receipt}=outcome.admissions.controller;
       assert.equal(managedHost.retire().phase,'retired');created=false;
       const log=new DatabaseSync(path.join(installationDirectory,'linux-worker-control-'+receipt.launch_id+'.db'),{readOnly:true});
@@ -607,7 +608,48 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM device_baseline_sample').get().total,1);
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM device_event_source').get().total,1);
       }finally{log.close();controllerDb.close();}
-    }finally{managedHost?.close();managedHost=null;sealed?.close();store.close();}
+      await managedHost.close();managedHost=null;
+      const cleanupDeadline=performance.now()+5000;
+      while(fs.readdirSync(channelDirectory).length){
+        assert.ok(performance.now()<cleanupDeadline,'Installation socket remained after Controller retirement');
+        await delay(20);
+      }
+
+      const normalGeneration=crypto.randomUUID(),normalDeployment=path.join(root,'worker-service');
+      const normalDist=process.env.LEAFSEAMER_TEST_COMPOSE_CLOCK_DIST;
+      const normalManifest='sha256:'+hash(fs.readFileSync(path.join(normalDist,'build-manifest.json')));
+      const normalPlan={...workerPlan,controller:{...workerPlan.controller,image:images.controller},
+        cgroup:{...workerPlan.cgroup,generation_id:normalGeneration},
+        bootstrap:{...workerPlan.bootstrap,controller:{...workerPlan.bootstrap.controller,
+          artifact_manifest_ref:{...plan.bootstrap.controller.artifact_manifest_ref}}},
+        worker_runtime:{...workerPlan.worker_runtime,distribution:{directory:normalDist,manifest_sha256:normalManifest}}};
+      fs.writeFileSync(planPath,JSON.stringify(normalPlan));
+      run(process.execPath,[...generate.slice(0,-1),normalDeployment]);await prepareParents(normalGeneration);
+      project=projectFor(normalGeneration);composePath=path.join(normalDeployment,'compose.json');
+      managedHost=openLinuxComposeHost({...hostOptions,generationDirectory:normalDeployment,installationStore:store});
+      created=true;
+      await managedHost.startSupervised().catch(error=>{
+        throw new Error(compose('logs','--no-color','controller','seamer').trim(),{cause:error});
+      });
+      const normalDeadline=performance.now()+10000;
+      for(;;){
+        const logs=compose('logs','--no-color','controller');
+        if(logs.includes('"event":"listening"'))break;
+        assert.ok(performance.now()<normalDeadline,logs||'Controller CLI did not start with the installation source');
+        await delay(50);
+      }
+      assert.deepEqual(fs.readdirSync(channelDirectory),['installation.sock']);
+      assert.equal(managedHost.retire().phase,'retired');created=false;
+    }catch(error){failure=error;throw error;}
+    finally{
+      try{
+        await managedHost?.close();managedHost=null;
+        sealed?.close();store.close();
+      }catch(error){
+        if(failure)throw new AggregateError([failure,error],'Compose installation test and cleanup failed');
+        throw error;
+      }
+    }
   }
   if(pairingTest){
     const {completeLinuxComposeFirstPairing}=await import('./fixtures/linux-compose-first-pairing.mjs');

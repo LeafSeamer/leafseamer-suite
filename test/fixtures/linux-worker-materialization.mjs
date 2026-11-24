@@ -57,8 +57,5 @@ export async function sealSimulatorWorker(t,{dist,directory,serviceId,profileId,
       manifest.permission_templates=[{request_id:'device.request',kind:'device_scope',purpose:'请求设备动作',
         scope:{device_role:'device',action_ids:template.actions.map(action=>action.action_id),trigger_ids:[]}}];
     }});
-  const {host_installation_id,authority_service_id,database_instance_id}=store.identity;
-  const {receipt,intake_ref}=sealed.sealed,{manifest,inventory}=sealed.artifact;
-  return {close:sealed.close,materialization:{identity:{host_installation_id,authority_service_id,database_instance_id},
-    content:{format:'leafseamer-intake-content/1',intake_ref,receipt,manifest,inventory}}};
+  return {close:sealed.close,intakeRef:sealed.sealed.intake_ref};
 }

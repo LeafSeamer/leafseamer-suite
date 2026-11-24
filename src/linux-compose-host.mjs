@@ -7,7 +7,8 @@ import {openInstallationStore,requireInstallationStore} from './installation-sto
 import {readDeploymentFile} from './linux-ingress.mjs';
 import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs} from './linux-compose.mjs';
 import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
-import {openLinuxComposeChannel} from './linux-compose-channel.mjs';
+import {openLinuxComposeChannel,openLinuxInstallationChannel} from './linux-compose-channel.mjs';
+import {serveLinuxInstallationRead} from './linux-installation-read.mjs';
 import {admitLinuxMember} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
 import {linuxWorkerRuntimeOptions} from './linux-member-journal.mjs';
@@ -120,13 +121,13 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
   const closeInstallation=()=>{if(installationStore===null)installation.close();};
   let journal;
   let starting=false;
-  let control=null;
+  let control=null,installationReader=null,closing=null;
   const channels=new Map();
   function closeChannels(){
     const closing=[...channels.values()];channels.clear();
     for(const channel of closing)channel.close();
     control?.close();control=null;
-    return Promise.all(closing.map(channel=>channel.ended));
+    return Promise.all([...closing.map(channel=>channel.ended),installationReader]);
   }
   try{
     const worker=plan.worker_runtime?composeLinuxWorkerRuntime(plan.worker_runtime,plan.controller,plan.bootstrap.controller,installation):null;
@@ -270,7 +271,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       const socket=await channel.accept(scope);
       const controllerControl=workerControl&&role==='controller';
       const result=await admitLinuxMember({intent:{role,generation_id,service_id:spec[role].service_id,launch_id:crypto.randomUUID()},
-        detail:{host:daemon.host,...expected}},{policy,source,socket,compose:true,commit(admission){
+        detail:{host:daemon.host,...expected}},{policy,source,socket,compose:true,async commit(admission){
           verifyFiles();verifyAdmissionInputs();
           const core=JSON.parse(run(['container','inspect',bound.containers[role]]));
           need(core.length===1&&core[0].Id===bound.containers[role]&&core[0].State?.Running===true&&
@@ -278,18 +279,26 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
           const saved=journal.recordAdmission(generation_id,role,admission);
           if(controllerControl){
             const {uid,gid}=plan.controller;
+            function assertLive(){
+              verifyFiles();
+              need(equal(observeLinuxComposeCore({...scope,leader:expected.leader,containerId:expected.container_id,uid,gid}),expected),
+                'compose_host_binding');
+            }
             if(worker){
               const identity=file=>{const {dev,ino}=fs.statSync(file,{bigint:true});return {device:String(dev),inode:String(ino)};};
               worker.runtime.assertCurrent();
               need(equal(identity('/proc/'+expected.leader.pid+'/root/run/leafseamer-worker'),identity(worker.runtime.channelDirectory)),
                 'compose_host_worker_mount');
+              const reader=openLinuxInstallationChannel({directory:worker.runtime.channelDirectory,uid,gid,
+                corePid:expected.leader.pid,timeoutMs:policy.bootstrap_timeout_ms,assertCurrent:assertLive});
+              channels.set('installation',reader);
+              void reader.ended.then(closeChannels);
+              installationReader=reader.peer.then(connection=>serveLinuxInstallationRead({socket:connection,installation,receipt:admission.receipt,
+                serviceId:policy.service_id,assertCurrent:assertLive})).catch(reader.close);
+              await reader.ready;
             }
             control=bindLinuxWorkerControl({directory:installationDirectory,socket,core:admission,source,
-              assertLive(){
-                verifyFiles();
-                need(equal(observeLinuxComposeCore({...scope,leader:expected.leader,containerId:expected.container_id,uid,gid}),expected),
-                  'compose_host_binding');
-              },
+              assertLive,
               checkGroup:intent=>checkLinuxWorkerGroup({driver,generationId:generation_id,host:daemon.host,
                 launchId:intent.launch_id,groupId:intent.containment_ref.group_id}),
               ...linuxWorkerRuntimeOptions({runtime:worker?.runtime,core:admission,spec:worker?.spec,host:daemon.host,
@@ -344,7 +353,16 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
         run([...composeArgs,'down','--timeout','8'],45000);
         return journal.observeRetirement(generation_id);
       },
-      close(){idle();closeChannels();try{journal.close();}finally{closeInstallation();}}
+      close(){
+        idle();
+        if(closing)return closing;
+        const drained=closeChannels();
+        try{journal.close();}finally{
+          if(installationReader)closing=drained.then(closeInstallation);
+          else{closeInstallation();closing=drained;}
+        }
+        return closing;
+      }
     });
   }catch(error){journal?.close();closeInstallation();throw error;}
 }

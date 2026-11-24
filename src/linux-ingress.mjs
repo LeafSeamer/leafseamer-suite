@@ -84,6 +84,7 @@ function staticLocation(route,file){
 }
 function proxyLocation(route,upstream,service,authority,websocket=false){
   const readOnly=websocket||upstream==='/.well-known/leafseamer-contracts';
+  const upstreamHost=service.role==='controller'?authority:socket(service.address,service.port);
   const events=websocket?`
       proxy_set_header Upgrade $leaf_upgrade;
       proxy_set_header Connection $leaf_connection;
@@ -97,7 +98,7 @@ ${readOnly?'      if ($request_method !~ ^(?:GET|HEAD)$) { return 405; }\n':''} 
       proxy_ssl_name ${service.server_name};
       proxy_ssl_trusted_certificate ${quote(service.ca_file)};
       proxy_ssl_verify on;
-      proxy_set_header Host ${quote(authority)};
+      proxy_set_header Host ${quote(upstreamHost)};
       proxy_set_header Origin $http_origin;
 ${upstream.startsWith('/auth/')?'':'      proxy_set_header Cookie "";\n'}      proxy_set_header Forwarded "";
       proxy_set_header X-Forwarded-For "";

@@ -127,6 +127,7 @@ test('Nginx 使用真实 TLS 提供静态 GUI 与固定逐服务路由', {skip:p
   assert.deepEqual(JSON.parse(qualified.body),{service:seamer,path:'/api/v1/drafts?window=3'});
   assert.equal(qualified.headers['x-leafseamer-contract-digest'],selection.contract_digest);
   assert.equal(qualified.headers['cache-control'],'no-store');assert.equal(seen.at(-1).headers.cookie,undefined);
+  assert.equal(seen.at(-1).headers.host,'127.0.0.1:'+seamerPort);
   assert.equal(seen.at(-1).raw.filter((value,index)=>index%2===0&&value.toLowerCase()==='x-leafseamer-contract').length,2);
   assert.equal(JSON.parse((await request(`/services/${seamer}/.well-known/leafseamer-contracts`)).body).path,'/.well-known/leafseamer-contracts');
   assert.equal((await request(`/services/${seamer}/.well-known/leafseamer-contracts`,{method:'POST'})).status,405);

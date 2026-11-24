@@ -73,7 +73,9 @@ nginx -t -p /srv/leafseamer/runtime/ -c /srv/leafseamer/runtime/nginx.conf
 
 已配置服务使用 `/services/<service_id>/api/v1/` 和逐服务发现路径。现有 GUI 使用的同源 `/api/v1/` 固定到签发 Controller，认证路径仅转发列出的会话与令牌接口。当前部署入口对代理到应用的 TLS 强制检查证书及名称，内部配对与本机管理接口留在独立信任边界。应用继续负责权限、幂等和设备屏障。
 
-[Linux 联调用例](test/linux-ingress.integration.mjs) 使用真实 Nginx、临时证书及独立 HTTPS 测试上游。验证范围覆盖静态交付、路由、握手、请求头、上游故障和写请求转发。完整 Compose 装配、真实服务信任与设备启动继续按 C12 验收。
+代理保留请求的 Origin。Controller 上游收到管理源的 Host，Seamer 上游收到计划里它自己的监听地址及端口。Seamer 的公开 API 配置须把管理源列入 `allowed_origins`。
+
+[Linux 代理联调用例](test/linux-ingress.integration.mjs) 使用真实 Nginx、临时证书及独立 HTTPS 测试上游，验证静态交付、路由、握手、请求头、上游故障和写请求转发。[Linux 实际服务联调用例](test/linux-service-ingress.integration.mjs) 另行启动已构建的 Linux Controller 与 Seamer，验证代理后的签发方身份与保护响应。完整 Compose 装配、真实服务信任与设备启动继续按 C12 验收。
 
 ## 本机安装账本与静态归档验证
 

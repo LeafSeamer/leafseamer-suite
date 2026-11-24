@@ -659,13 +659,14 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   if(runtimeInput)runtimeInput.installation_client={peer_module:new URL('../dist/local-peer.mjs',import.meta.url).href,client_module:new URL('../dist/local-import.mjs',import.meta.url).href,
     name:'\\\\.\\pipe\\LeafSeamer.Install.'+crypto.randomUUID(),channel_id:crypto.randomUUID(),server_pid:process.pid};
   let gui=null;
-  if((mode.includes('_cleanup_successor')||mode.endsWith('_capabilities'))&&process.env.LEAFSEAMER_GUI_TEST_ROOT){
+  if((obsCommand||mode.includes('_cleanup_successor')||mode.endsWith('_capabilities'))&&process.env.LEAFSEAMER_GUI_TEST_ROOT){
     const guiRoot=process.env.LEAFSEAMER_GUI_TEST_ROOT;assert.ok(path.isAbsolute(guiRoot));
     for(const key of ['LEAFSEAMER_PLAYWRIGHT_MODULE','LEAFSEAMER_BROWSER_EXECUTABLE'])assert.ok(process.env[key]&&path.isAbsolute(process.env[key]),key);
-    const config=path.join(root,'gui-site.json');fs.writeFileSync(config,JSON.stringify({site_label:'模拟器联调',service_id:coreIdentity.service_id,database_instance_id:coreIdentity.database_instance_id}));
+    const config=path.join(root,'gui-site.json');fs.writeFileSync(config,JSON.stringify({site_label:obsCommand?'OBS 联调':'模拟器联调',service_id:coreIdentity.service_id,database_instance_id:coreIdentity.database_instance_id}));
     const build=spawnSync(process.execPath,[path.join(guiRoot,'scripts/build.mjs'),'--config',config],{cwd:guiRoot,encoding:'utf8',windowsHide:true});
     assert.equal(build.status,0,build.stderr);
     gui={root:guiRoot,directory:path.join(guiRoot,'dist'),capability_request:path.join(root,'gui-capability-request.json'),capability_result:path.join(root,'gui-capability-result.json'),control:mode.endsWith('_successor_control'),revoke_request:path.join(root,'gui-revoke-request'),revoke_result:path.join(root,'gui-revoke-result.json')};
+    if(obsCommand)gui.obs=Object.fromEntries(['ready','opened','submitted','settled','checked','disconnected'].map(phase=>[phase,path.join(root,'obs-browser-'+phase)]));
   }
   let automationPeer=null,automationMaterials=null;
   const publicationGuiRoot=firstEnrollment?process.env.LEAFSEAMER_PUBLICATION_GUI_TEST_ROOT:null;
@@ -773,7 +774,26 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     fs.writeFileSync(fixture+'.continue','continue');
   }
   if(obs){
+    let browserCheck;
+    if(gui?.obs){
+      await waitFor(()=>frames.some(f=>f.event==='obs-cut-execution-bound'||f.event==='unavailable')||child.exitCode!==null);
+      const endpoint=frames.find(f=>f.event==='gui-endpoint');assert.ok(endpoint);
+      const shown=frames.find(f=>f.event==='obs-cut-packet'),catalog=frames.find(f=>f.event==='obs-scene-confirmed');
+      assert.ok(shown&&catalog,JSON.stringify(frames.map(({event,code})=>({event,code}))));
+      const scene=catalog.ready.entries.find(entry=>entry.obs_scene_uuid===shown.target),input=path.join(root,'gui-obs-browser.json');
+      fs.writeFileSync(input,JSON.stringify({...endpoint,...gui.obs,scene:scene.display_name,scene_id:scene.scene_id,
+        artifact_directory:process.env.LEAFSEAMER_BROWSER_ARTIFACTS}));
+      const driver=spawn(process.execPath,[path.join(gui.root,'test/controller-obs-browser-check.mjs'),process.env.LEAFSEAMER_PLAYWRIGHT_MODULE,
+        process.env.LEAFSEAMER_BROWSER_EXECUTABLE,input],{stdio:['ignore','pipe','pipe'],windowsHide:true});
+      t.after(()=>{if(driver.exitCode===null&&driver.signalCode===null)driver.kill();});
+      let stdout='',stderr='';driver.stdout.on('data',chunk=>{stdout+=chunk;});driver.stderr.on('data',chunk=>{stderr+=chunk;});
+      browserCheck=once(driver,'close').then(([code])=>({code,stdout,stderr}));
+      browserCheck.catch(()=>{});
+    }
     await waitFor(()=>frames.some(f=>f.event==='obs-module-samples'||f.event==='unavailable')||child.exitCode!==null,obsCommand?45000:15000);
+    if(browserCheck&&!frames.some(f=>f.event==='obs-module-samples')){
+      const result=await browserCheck;assert.equal(result.code,0,result.stderr);
+    }
     assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,stage,code,cause})=>({event,stage,code,cause}))));
     const {packet_hex,target,stale}=frames.find(f=>f.event==='obs-cut-packet');
     assert.equal(stale,'obs_cut_packet_stale_reference');
@@ -782,6 +802,11 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     await portable.stop();
     fs.writeFileSync(fixture+'.obs-stopped','stopped');
     await waitFor(()=>frames.some(f=>f.event==='module-failed-retired')||child.exitCode!==null);
+    if(browserCheck){
+      fs.writeFileSync(gui.obs.disconnected,'disconnected');
+      const result=await browserCheck;assert.equal(result.code,0,result.stderr);
+      assert.deepEqual(JSON.parse(result.stdout.trim()),{browser:'Edge',command_responses:'real_controller',commands:1,protected:true,disconnected:503});
+    }
   }
   if(automationPeer&&!targetGateOnly){
     const seamer=process.env.LEAFSEAMER_SEAMER_TEST_ROOT??path.join(path.dirname(controller),'leafseamer');

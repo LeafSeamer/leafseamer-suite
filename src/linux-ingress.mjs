@@ -22,7 +22,7 @@ function absolute(value){
   return value;
 }
 const quote=value=>'"'+value+'"';
-function read(file,limit){
+export function readDeploymentFile(file,limit){
   const fd=fs.openSync(file,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW|fs.constants.O_NONBLOCK);
   try{
     const stat=fs.fstatSync(fd);need(stat.isFile()&&stat.size>0&&stat.size<=limit,'ingress_file');
@@ -40,7 +40,7 @@ function selection(value){
 function guiAssets(gui,origin,issuer,services){
   need(exact(gui,'directory,manifest_sha256')&&typeof gui.manifest_sha256==='string'&&gui.manifest_sha256.startsWith('sha256:')&&
     checksum(gui.manifest_sha256.slice(7)),'ingress_gui');
-  const root=absolute(gui.directory),bytes=read(root+'/gui-manifest.json',65536);
+  const root=absolute(gui.directory),bytes=readDeploymentFile(root+'/gui-manifest.json',65536);
   need(gui.manifest_sha256==='sha256:'+hash(bytes),'ingress_gui_manifest');
   const manifest=JSON.parse(bytes);
   need(exact(manifest,'artifacts,format,sdk_manifest_sha256,selection')&&manifest.format==='leafseamer.gui.build/1'&&
@@ -51,7 +51,7 @@ function guiAssets(gui,origin,issuer,services){
   let site=null,total=0;
   for(const [file,digest] of entries){
     need(/^(index\.html|site\.json|SDK-LICENSE\.txt|THIRD-PARTY-LICENSES\.txt|assets\/[A-Za-z0-9_-]+\.(?:js|css))$(?![\s\S])/.test(file)&&checksum(digest),'ingress_gui_asset');
-    const content=read(root+'/'+file,file==='site.json'?32768:16777216);total+=content.length;
+    const content=readDeploymentFile(root+'/'+file,file==='site.json'?32768:16777216);total+=content.length;
     need(total<=33554432&&hash(content)===digest,'ingress_gui_digest');
     if(file==='site.json')site=JSON.parse(content);
   }
@@ -112,22 +112,28 @@ ${upstream.startsWith('/auth/')?'':'      proxy_set_header Cookie "";\n'}      p
     }`;
 }
 
-export function renderLinuxIngress(plan){
+export function renderLinuxIngress(plan,{listenPort,guiMount,tempDirectory}={}){
   need(exact(plan,'format,gui,issuer_service_id,management,services')&&plan.format==='leafseamer.linux-ingress/1'&&uuid(plan.issuer_service_id),'ingress_plan');
   const {management:m,services}=plan;
   need(exact(m,'address,certificate_file,host,port,private_key_file')&&address(m.address)&&dnsName(m.host)&&port(m.port),'ingress_management');
   const certificate=absolute(m.certificate_file),key=absolute(m.private_key_file),authority=m.host+(m.port===443?'':':'+m.port);
+  const listener=listenPort??m.port;
+  need(port(listener),'ingress_management');
   need(Array.isArray(services)&&services.length>=1&&services.length<=32,'ingress_services');
   const ids=new Set();
   for(const service of services){
     need(exact(service,'address,ca_file,database_instance_id,port,role,server_name,service_id')&&uuid(service.service_id)&&uuid(service.database_instance_id)&&
       !ids.has(service.service_id)&&['controller','seamer'].includes(service.role)&&address(service.address)&&port(service.port)&&dnsName(service.server_name)&&
-      socket(service.address,service.port)!==socket(m.address,m.port),'ingress_service');
+      socket(service.address,service.port)!==socket(m.address,listener),'ingress_service');
     absolute(service.ca_file);ids.add(service.service_id);
   }
   const issuer=services.find(service=>service.service_id===plan.issuer_service_id&&service.role==='controller');need(issuer,'ingress_issuer');
   const {root,listed}=guiAssets(plan.gui,'https://'+authority,issuer,services);
-  const locations=listed.map(file=>staticLocation('/'+file,root+'/'+file));
+  const assetRoot=guiMount===undefined?root:absolute(guiMount);
+  const scratch=tempDirectory===undefined?null:absolute(tempDirectory);
+  const tempPaths=scratch===null?'':['client_body','proxy','fastcgi','uwsgi','scgi'].map(kind=>
+    '  '+kind+'_temp_path '+quote(scratch+'/'+kind)+';\n').join('');
+  const locations=listed.map(file=>staticLocation('/'+file,assetRoot+'/'+file));
   locations.push('    location = / { rewrite ^ /index.html last; }');
   for(const auth of ['/auth/sessions','/auth/sessions/refresh','/auth/sessions/current','/auth/service-tokens'])
     locations.push(proxyLocation('= '+auth,auth,issuer,authority));
@@ -160,13 +166,13 @@ http {
   proxy_ssl_protocols TLSv1.2 TLSv1.3;
   map $http_upgrade $leaf_upgrade { default ""; ~*^websocket$ websocket; }
   map $leaf_upgrade $leaf_connection { default upgrade; "" ""; }
-  server {
-    listen ${socket(m.address,m.port)} ssl default_server;
+${tempPaths}  server {
+    listen ${socket(m.address,listener)} ssl default_server;
     ssl_reject_handshake on;
     return 421;
   }
   server {
-    listen ${socket(m.address,m.port)} ssl;
+    listen ${socket(m.address,listener)} ssl;
     server_name ${m.host};
     ssl_certificate ${quote(certificate)};
     ssl_certificate_key ${quote(key)};
@@ -182,7 +188,7 @@ ${locations.join('\n')}
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   try{
     need(process.argv.length===4&&process.argv[2]==='--config','ingress_arguments');
-    const plan=JSON.parse(read(absolute(process.argv[3]),65536));
+    const plan=JSON.parse(readDeploymentFile(absolute(process.argv[3]),65536));
     process.stdout.write(renderLinuxIngress(plan));
   }catch(error){
     const code=/^ingress_[a-z_]+$/.test(error.code??'')?error.code:'ingress_input';

@@ -79,6 +79,32 @@ Linux Controller 与 Seamer 的安装包都提供 `start-protected-ingress` 命�
 
 [Linux 代理联调用例](test/linux-ingress.integration.mjs) 使用真实 Nginx、临时证书及独立 HTTPS 测试上游，验证静态交付、路由、握手、请求头、上游故障和写请求转发。[Linux 实际服务联调用例](test/linux-service-ingress.integration.mjs) 通过安装包 CLI 启动双服务，验证代理后的服务身份、保护响应、正常停止及临时库状态。完整 Compose 装配、真实服务信任与设备启动继续按 C12 验收。
 
+### Docker Compose 保护态部署
+
+`dist/linux-compose.mjs` 从 `leafseamer.linux-compose-protected/1` 计划生成双服务启动配置、Nginx 配置和 `compose.json`。先分开初始化并显式迁移两个服务库，再准备按实际服务身份构建的 GUI、三套 TLS 材料和已加载至本机的 Linux amd64 镜像。业务镜像须提供 `/usr/local/bin/node` 和 `/opt/leafseamer/dist/cli.mjs`，以及锁定的运行依赖。代理镜像须提供 `/usr/sbin/nginx`。
+
+| 计划字段 | 内容 |
+| --- | --- |
+| `format` | `leafseamer.linux-compose-protected/1` |
+| `subnet` | 独立且无冲突的 RFC 1918 IPv4 CIDR，前缀 16 至 29 |
+| `management` | `bind_address`、`host`、`port`、`certificate_file`、`private_key_file`。`host` 为管理证书覆盖的 DNS 名，`bind_address` 是宿主发布地址 |
+| `controller`、`seamer` | `image`、`uid`、`gid`、`address`、`data_dir`、`service_id`、`database_instance_id`、`server_name`、`certificate_file`、`private_key_file`、`ca_file` |
+| `nginx` | `image`、`uid`、`gid`、`address` |
+| `gui` | `directory` 与 `manifest_sha256`，沿用上面的 GUI 清单 |
+
+镜像填写 `仓库@sha256:摘要` 或预装镜像的 `sha256:镜像ID`。子网内为三个容器分配不同地址，避开网络、广播和默认网关地址。数据目录、GUI 和 TLS 路径使用独立的绝对路径。数据目录由对应服务的 UID/GID 写入，三个私钥分别授予对应容器进程读取权限。输出目录的父目录应已存在，输出目录由生成器创建。
+
+```sh
+node dist/linux-compose.mjs --config /srv/leafseamer/plan.json --output /srv/leafseamer/generation
+docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json config
+docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json up -d --no-build --pull never
+docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
+```
+
+只有 Nginx 发布管理端口。业务容器加入内部桥接网络，分别挂载自己的可写数据库目录和只读 TLS 文件。Compose 使用固定镜像、非 root 用户、只读根文件系统和禁止提权设置，关闭自动重启。该路径运行保护态 HTTPS，可信运行域、宿主认证时钟和首次配对由后续受信装配提供。[Docker Compose 服务配置](https://docs.docker.com/reference/compose-file/services/)、[Docker Compose 网络配置](https://docs.docker.com/reference/compose-file/networks/)
+
+[Compose 联调用例](test/linux-compose.integration.mjs) 使用 `LEAFSEAMER_COMPOSE_CONTROLLER_IMAGE`、`LEAFSEAMER_COMPOSE_SEAMER_IMAGE`、`LEAFSEAMER_COMPOSE_NGINX_IMAGE` 指定本机镜像，以 `LEAFSEAMER_COMPOSE_GUI_ROOT` 指向构建好的 GUI。用例运行在独立 Compose 项目，使用临时数据库与证书。
+
 ## 本机安装账本与静态归档验证
 
 Suite 已提供 `@leafseamer/suite/installation` 内部运行模块，使用与当前产品相同的 Node 24.22.0、better-sqlite3 13.0.3／SQLite 3.53.4 和 canonicalize 5.1.0。依赖固定于本仓 `package-lock.json`；构建后的包不需要相邻仓库。Windows开发环境先安装依赖并构建固定原生输入，再运行检查：

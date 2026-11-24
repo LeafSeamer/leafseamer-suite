@@ -14,7 +14,7 @@ const mount='/etc/leafseamer/pairing/';
 const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='https://127.0.0.1:8444';
 const permissions=['auth.manage','auth.read'];
 
-export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null}){
+export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,verifyLocalExtension=false}){
   const {canonical,digest}=clockValues;
   const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
   const certificates=path.join(root,'pairing-certificates');
@@ -118,6 +118,13 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     const session=await send('/api/v1/session',{headers:{Authorization:identityToken}});
     assert.equal(session.status,200,session.body.toString());
     assert.equal((await send('/auth/local-pairing/v1',{method:'POST',headers:actor,body:'{}'})).status,404);
+    if(verifyLocalExtension){
+      assert.equal((await send('/auth/local-extension/v1',{method:'POST',headers:actor,body:'{}'})).status,404);
+      const denied=await execute(generation.containers.controller,[cli,'extension-admin','--origin',loopback,'--ca-file',mount+'ca.pem'],
+        {...login,operation:'start',request:{}});
+      assert.equal(denied.status,1,denied.diagnostic);
+      assert.equal(JSON.parse(denied.diagnostic).error,'extension_management_denied');
+    }
     const staged=await admin(generation,'stage',{request_id:id(),transcript:{format:'leafseamer.peer-pairing/1',pair_attempt_id:id(),parties:[party('controller',[]),localParty]}});
     const authorization=await admin(generation,'export',{binding_id:staged.binding_id,transcript_digest:staged.transcript_digest});
     assert.equal(authorization.authorization.administrator.principal_id,principal_id);

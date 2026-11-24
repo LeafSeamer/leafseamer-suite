@@ -196,6 +196,8 @@ Compose 的 `worker_runtime` 固定宿主 `distribution.directory`、`distributi
 
 配置 `worker_runtime` 后，宿主还会在该只读挂载提供 `installation.sock`。套接字只接纳当前准入的 Controller 进程。Controller 在启动时确认宿主安装库身份，按当前服务读取封存收据、清单、文件库存、配置 Schema 和能力模板。安装查询使用独立连接，宿主在处理查询和回复时检查当前进程身份。关闭该连接会触发当前运行代的监督关闭。由调用方提供安装库时，等待宿主的 `close()` 完成再关闭该安装库。[Compose 联调](test/linux-compose.integration.mjs)
 
+已配置上述安装来源及 Controller 配对管理回环的部署支持 `extension-admin --origin https://127.0.0.1:8444 --ca-file /etc/leafseamer/pairing/ca.pem`。命令从私有标准输入管道读取含 `login`、`password`、`operation` 和 `request` 的 JSON。人员需要当前的 `extension.manage` 权限和近期认证。可对已审阅的候选安装执行 `approve`，用 `plan` 固定影响，再提交匹配计划的 `activate` 或 `enable`。收到受理后，用 `start` 提交原 `activation_ref`、宿主分配的 `launch_id` 和专属空组 `containment_ref`，启动保持闭锁。回环 API 的 `lookup-plan` 和 `lookup-activation` 要求在原人员会话使用同一请求标识及当前 `extension.read` 权限。[Compose 联调](test/linux-compose.integration.mjs)
+
 将 `leafseamer.linux-native-core/1` 计划保存于安装目录下的 `linux-native/`。填入 `host_installation_id`、`role`、`driver`、`generation_id`、`launch_id`、运行账户的 `uid` 与 `gid`、`data_directory`、回环 `port` 及现有 `bootstrap` 策略。`image`、`clock_profile` 与 `pairing_profile` 各提供绝对 `file` 和 `sha256`，`distribution` 提供绝对 `directory` 和 `manifest_sha256`。摘要使用 `sha256:` 前缀，配对和时钟配置均使用各服务的 `/2` 格式。安装制品及依赖树由 root 管理，业务库目录由所选运行账户管理。
 
 `start({planFile, planDigest})` 接受已批准计划的绝对路径与摘要。宿主核对安装身份、制品清单和各资产、权限、服务身份以及配置摘要，再组装固定的 `contained-core-linux` 启动参数。核心准入回执持久写入后返回，同一启动标识的重投返回原记录。业务 TLS 随两端认证采集另行启用。`retire(launchId)` 先持久关闭原入口并关闭监督通道，再观察原父组。仍有进程时保留 `closing`，父组清空后持久返回 `retired`。`lookup(launchId)` 查回原启动与退役记录，`close()` 释放宿主句柄。Compose 容器的认证准入继续使用单独部署验收。[原生配对联调](test/linux-core-bootstrap.integration.mjs)

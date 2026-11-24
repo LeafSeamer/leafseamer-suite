@@ -57,10 +57,10 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const range='10.234.'+crypto.randomInt(1,255);
   const login={login:'compose.fixture',password:'Synthetic-compose-test-password-632'};
   let enrollment;
-  function certificates(role,serverName){
+  function certificates(role,serverName,loopback=false){
     const certificate_file=path.join(root,role+'.pem'),private_key_file=path.join(root,role+'.key');
     run('openssl',['req','-x509','-newkey','ec','-pkeyopt','ec_paramgen_curve:P-256','-nodes','-days','1','-subj','/CN='+serverName,
-      '-addext','subjectAltName=DNS:'+serverName,'-keyout',private_key_file,'-out',certificate_file]);
+      '-addext','subjectAltName=DNS:'+serverName+(loopback?',IP:127.0.0.1':''),'-keyout',private_key_file,'-out',certificate_file]);
     owned(private_key_file);
     return {certificate_file,private_key_file};
   }
@@ -555,7 +555,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     const {openInstallationStore}=await import('../dist/installation-store.mjs');
     const {sealSimulatorWorker}=await import('./fixtures/linux-worker-materialization.mjs');
     const {deviceModuleEventProtocol}=await import(pathToFileURL(path.join(dist,'sdk','device-module.mjs')));
-    const workerPlan={...plan,controller:{...controller,image:fixtureImage,data_dir:dataDir,service_id:identity.service_id,database_instance_id:identity.database_instance_id},
+    const workerTls=certificates('worker-controller',controller.server_name,true);
+    const workerPlan={...plan,controller:{...controller,...workerTls,ca_file:workerTls.certificate_file,image:fixtureImage,data_dir:dataDir,
+      service_id:identity.service_id,database_instance_id:identity.database_instance_id},
       gui:{directory:workerGui,manifest_sha256:'sha256:'+hash(workerGuiManifest)},
       cgroup:{...plan.cgroup,generation_id:generation},bootstrap:{...plan.bootstrap},
       worker_runtime:{directory,channel_directory:channelDirectory,uid:1001,gid:1001,
@@ -653,12 +655,22 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
   if(pairingTest){
     const {completeLinuxComposeFirstPairing}=await import('./fixtures/linux-compose-first-pairing.mjs');
+    let pairingWorkerRuntime;
+    if(workerControl){
+      const directory=path.join(root,'pairing-worker'),channel_directory=path.join(root,'pairing-sockets');
+      fs.mkdirSync(directory,{mode:0o711});fs.mkdirSync(channel_directory,{mode:0o755});
+      const dist=process.env.LEAFSEAMER_TEST_COMPOSE_CLOCK_DIST;
+      pairingWorkerRuntime={directory,channel_directory,uid:1001,gid:1001,
+        distribution:{directory:dist,manifest_sha256:'sha256:'+hash(fs.readFileSync(path.join(dist,'build-manifest.json')))},
+        image:{file:process.execPath,sha256:'sha256:'+hash(fs.readFileSync(process.execPath))}};
+    }
     async function launch(pairing){
       const id=crypto.randomUUID(),generationDirectory=path.join(root,id);
-      fs.writeFileSync(planPath,JSON.stringify({...plan,pairing,cgroup:{...plan.cgroup,generation_id:id}}));
+      fs.writeFileSync(planPath,JSON.stringify({...plan,pairing,cgroup:{...plan.cgroup,generation_id:id},
+        ...(pairingWorkerRuntime&&{worker_runtime:pairingWorkerRuntime})}));
       run(process.execPath,[...generate.slice(0,-1),generationDirectory]);
       await prepareParents(id);
-      managedHost?.close();
+      await managedHost?.close();
       managedHost=openLinuxComposeHost({...hostOptions,generationDirectory});
       project=projectFor(id);composePath=path.join(generationDirectory,'compose.json');created=true;
       const {record,admissions}=await managedHost.startSupervised();
@@ -684,7 +696,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
             phase=managedHost.retire().phase;
             assert.equal(phase,'retired');
             created=false;
-          }finally{managedHost.close();managedHost=null;}
+          }finally{await managedHost.close();managedHost=null;}
           assert.ifError(renewalFailure);
         }};
     }
@@ -706,6 +718,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         return JSON.parse(output);
       };
     }
-    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser});
+    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
+      verifyLocalExtension:!!pairingWorkerRuntime});
   }
 });

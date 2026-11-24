@@ -244,6 +244,7 @@ async function verifyReferenceRestart(core,policy,workerExit){
 
 for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime','supervisor_create_module_writable_capabilities','supervisor_create_module_writable_peer_capabilities','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore','supervisor_create_module_control','supervisor_create_module_writable','supervisor_create_module_writable_catalog_template','supervisor_create_module_writable_catalog_policy','supervisor_create_module_writable_binding_fail','supervisor_create_module_writable_binding_ignore','supervisor_create_module_writable_handshake_fail','supervisor_create_module_writable_handshake_write_ignore','supervisor_create_module_writable_control_fence_request_fail','supervisor_create_module_writable_control_fence_ack_ignore','supervisor_create_module_writable_control_fence_write_ignore','supervisor_create_module_writable_manual_authority_source_fail','supervisor_create_module_writable_manual_authority_commit_ignore','supervisor_create_module_writable_manual_authority_core_source_fail','supervisor_create_module_writable_manual_authority_core_commit_ignore','supervisor_create_module_writable_evaluator_source_fail','supervisor_create_module_writable_evaluator_commit_ignore','supervisor_create_module_writable_recovery_request_ignore','supervisor_create_module_writable_recovery_authorization_ignore','supervisor_create_module_writable_recovery_commit_ignore','supervisor_create_module_writable_consumption_record_ignore','supervisor_create_module_writable_consumption_state_ignore','supervisor_create_module_writable_consumption_commit_ignore','supervisor_create_module_writable_consumption_head_ignore','supervisor_create_module_writable_manual_challenge_record_ignore','supervisor_create_module_writable_manual_challenge_commit_ignore','supervisor_create_module_writable_manual_challenge_response_ignore','supervisor_create_module_writable_manual_challenge_checks','supervisor_create_module_writable_evidence_checks','supervisor_create_module_writable_evidence_cut_ignore','supervisor_create_module_writable_evidence_record_ignore','supervisor_create_module_writable_evidence_commit_ignore','supervisor_create_module_writable_evidence_head_ignore','supervisor_create_module_writable_evidence_resource_checks','supervisor_create_module_writable_evidence_resource_record_ignore','supervisor_create_module_writable_evidence_resource_commit_ignore','supervisor_create_module_writable_evidence_resource_open_checks','supervisor_create_module_writable_evidence_resource_open_record_ignore','supervisor_create_module_writable_evidence_resource_open_commit_ignore',"supervisor_create_module_writable_evidence_resource_open_dispatch","supervisor_create_module_writable_evidence_resource_open_dispatch_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_request_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ack_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_automatic","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_manual_migration","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_control_ignore",...commandAdmissionFaults,...commandLifecycleFaults,...commandLifecycleCases,...commandEncodingCases,obsMode,obsCutMode,obsCutOpenMode,obsCutCommandMode])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32'||mode===obsMode&&!obsPortableRoot,timeout:mode===obsCutCommandMode?90000:(mode==='supervisor_create_module_writable_peer_capabilities'||mode.endsWith('_capture_events'))?(exerciseReceiverAge&&mode.endsWith('_capture_events')?160000:120000):(mode.includes('_cleanup_successor')||mode.endsWith('_capabilities'))&&process.env.LEAFSEAMER_GUI_TEST_ROOT?120000:60000},async t=>{
   const obsCommand=mode===obsCutCommandMode,obsOpen=mode===obsCutOpenMode||obsCommand,obsCut=mode===obsCutMode||obsOpen,obs=mode===obsMode||obsCut;
+  const obsRecovery=obsCommand&&process.env.LEAFSEAMER_OBS_BROWSER_RECOVERY==='1';
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
   const referenceWatermark=mode.endsWith('_reference_watermark');
   const referenceAcceptance=mode===referenceAcceptanceExecution||referenceRestart||referenceWatermark;
@@ -667,6 +668,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     assert.equal(build.status,0,build.stderr);
     gui={root:guiRoot,directory:path.join(guiRoot,'dist'),capability_request:path.join(root,'gui-capability-request.json'),capability_result:path.join(root,'gui-capability-result.json'),control:mode.endsWith('_successor_control'),revoke_request:path.join(root,'gui-revoke-request'),revoke_result:path.join(root,'gui-revoke-result.json')};
     if(obsCommand)gui.obs=Object.fromEntries(['ready','opened','submitted','settled','checked','disconnected'].map(phase=>[phase,path.join(root,'obs-browser-'+phase)]));
+    if(obsRecovery)gui.obs.recovery=true;
   }
   let automationPeer=null,automationMaterials=null;
   const publicationGuiRoot=firstEnrollment?process.env.LEAFSEAMER_PUBLICATION_GUI_TEST_ROOT:null;
@@ -797,6 +799,10 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,stage,code,cause})=>({event,stage,code,cause}))));
     const {packet_hex,target,stale}=frames.find(f=>f.event==='obs-cut-packet');
     assert.equal(stale,'obs_cut_packet_stale_reference');
+    if(obsRecovery){
+      const sample=await (await load('obs-discovery.mjs')).inspectObsCut({port:portable.port,password:portable.password});
+      assert.equal(sample.program_scene_uuid,portable.program_scene_uuid);
+    }
     if(!obsCut)await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
       catalog:frames.find(f=>f.event==='obs-scene-confirmed').ready,packet_hex});
     await portable.stop();
@@ -805,7 +811,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     if(browserCheck){
       fs.writeFileSync(gui.obs.disconnected,'disconnected');
       const result=await browserCheck;assert.equal(result.code,0,result.stderr);
-      assert.deepEqual(JSON.parse(result.stdout.trim()),{browser:'Edge',command_responses:'real_controller',commands:1,protected:true,disconnected:503});
+      const expected=obsRecovery?{commands:0,rejected:true}:{commands:1,disconnected:503};
+      assert.deepEqual(JSON.parse(result.stdout.trim()),{browser:'Edge',command_responses:'real_controller',...expected,protected:true});
     }
   }
   if(automationPeer&&!targetGateOnly){
@@ -2007,7 +2014,13 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.deepEqual(inventory.obs_cut_observation,{scene_catalog_digest:digestValue(confirmed.ready),program_scene_uuid:portable.program_scene_uuid});
       assert.equal(Object.hasOwn(inventory,'observed_write_sequence'),false);
     }
-    if(obsCommand){
+    if(obsRecovery){
+      const {response,replayed}=frames.find(f=>f.event==='obs-cut-browser-rejected');
+      assert.equal(response.status,200);
+      assert.equal(response.body.decision,'rejected');
+      assert.equal(response.body.command_ref,null);
+      assert.deepEqual(replayed,response);
+    }else if(obsCommand){
       const {stale}=frames.find(f=>f.event==='obs-cut-stale-reference');
       assert.equal(stale.status,422);
       const admissions=frames.filter(f=>f.event==='obs-cut-command-admission'),results=frames.filter(f=>f.event==='obs-cut-command-result');
@@ -2070,7 +2083,7 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.deepEqual(record.catalog,directory);
       assert.equal(record.catalog_digest,digestValue(directory));
       assert.equal(body_digest,digestValue(record));
-      assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),obsCommand?4:2);
+      assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),obsCommand&&!obsRecovery?4:2);
       const values=business.prepare('SELECT body_jcs FROM device_baseline_sample ORDER BY sample_sequence').pluck().all();
       assert.deepEqual(values.map(row=>JSON.parse(row).value.scenes),Array(values.length).fill(portable.directory));
       assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),obsCut?1:0);
@@ -2080,10 +2093,14 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.deepEqual(JSON.parse(saved),bound.value);
         assert.equal(digest,bound.ref.digest);
         assert.equal(business.prepare("SELECT count(*) FROM device_module_frame WHERE message_type='EXECUTION_BOUND'").pluck().get(),2);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='OPEN_GATE'").pluck().get(),obsCommand?2:obsOpen?1:0);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),obsCommand?2:0);
-        assert.equal(business.prepare('SELECT count(*) FROM device_initial_ready').pluck().get(),obsCommand?2:obsOpen?1:0);
-        if(obsCommand){
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='OPEN_GATE'").pluck().get(),obsCommand&&!obsRecovery?2:obsOpen?1:0);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),obsCommand&&!obsRecovery?2:0);
+        assert.equal(business.prepare('SELECT count(*) FROM device_initial_ready').pluck().get(),obsCommand&&!obsRecovery?2:obsOpen?1:0);
+        if(obsRecovery){
+          assert.deepEqual(business.prepare('SELECT decision FROM ca_adjudication').pluck().all(),['rejected']);
+          assert.equal(business.prepare('SELECT count(*) FROM ca_rejection').pluck().get(),1);
+          for(const table of ['ca_command_initial','command_transmission_issue','command_device_hold'])assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),0);
+        }else if(obsCommand){
           assert.equal(business.prepare('SELECT count(*) FROM device_initial_resource').pluck().get(),2);
           assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52,52]);
           assert.deepEqual(business.prepare('SELECT max_bytes FROM command_encoding_reservation').pluck().all(),[52,52]);

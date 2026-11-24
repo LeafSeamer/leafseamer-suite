@@ -132,6 +132,18 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 在与测试进程同宿主的隔离 daemon 上，向 [Compose 用例](test/linux-compose.integration.mjs) 同时提供 `LEAFSEAMER_TEST_DOCKER_SOCKET` 和 `LEAFSEAMER_TEST_DOCKER_PID_FILE`，可运行经过启停账本的双代联调。当前已接通保护态生命周期，DF02 受监督运行准入仍待接线。
 
+### Linux 原生成员创建
+
+在 Linux 构建机运行 `npm run build -- --linux-member`，将原生创建工具及其源码和制品摘要纳入 `dist/native/`。由可信宿主装配预先登记启动意图并固定受保护的 ELF 制品、空 cgroup v2 子组及两者的设备号和 inode。装配需拥有目录访问、创建子进程和切换到指定非 root UID／GID 所需的权限。工具使用调用者原有权限，发布文件采用普通可执行模式。
+
+```text
+leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_INODE UID GID -- [ARG ...]
+```
+
+装配为子进程提供已连接的 AF_UNIX 流 socket 作为 FD 3，并保留另一端作为引导通道。工具以 `clone3` 在目标 cgroup 中创建成员并保留 pidfd。它先核对成员归属并输出 JSON `created_closed`，调用者登记该观察后可在 stdin 发送单字节 `R`。组路径、成员归属及控制权限复核后，工具通过已打开的 ELF 描述符执行制品，再输出 `executed`。stdin 应保持连接至正常退出，关闭会使工具退出并触发直属成员的父进程死亡保护。创建受阻、组被占用或释放前发现漂移时拒绝执行。
+
+后续装配还需完成 DF02 身份证明、准入回执和旧子树退役。执行成功只建立成员观察。可在专用 Linux 测试宿主编译 [成员夹具](test/fixtures/linux-member.c)，将其绝对路径放入 `LEAFSEAMER_TEST_NATIVE_MEMBER_FIXTURE`，再用 `LEAFSEAMER_TEST_NATIVE_CGROUP=1` 运行 [原生创建联调](test/linux-member.integration.mjs)。[Linux clone3 手册](https://man7.org/linux/man-pages/man2/clone.2.html)
+
 ## 本机安装账本与静态归档验证
 
 Suite 已提供 `@leafseamer/suite/installation` 内部运行模块，使用与当前产品相同的 Node 24.22.0、better-sqlite3 13.0.3／SQLite 3.53.4 和 canonicalize 5.1.0。依赖固定于本仓 `package-lock.json`；构建后的包不需要相邻仓库。Windows开发环境先安装依赖并构建固定原生输入，再运行检查：

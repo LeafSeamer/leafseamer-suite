@@ -158,6 +158,8 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 首次部署时设置 `pairing.seamer.await_first_pairing: true`，在 Seamer 配置中预先固定 `public_api.binding_id`，将 `first_pairing_authorization_id` 设为 `null`。管理员从运行中 Controller 的回环使用 `pairing-admin` 登记配对，导出与固定绑定一致的一次性授权。宿主管理员用原子重命名将授权放入该运行代输出目录下的 `first-pairing/authorization.json`。文件归 root 与 Seamer 的 GID 所有，权限为 `0640`。目录只读挂入当前 Seamer，核心采用后在原 Controller 启动域及原期限内完成双向证明和激活。后续运行代省略 `await_first_pairing`，沿用持久化配对。[实际 Compose 首次配对联调](test/fixtures/linux-compose-first-pairing.mjs)
 
+首次配对联调可附带浏览器验收。为现有联调环境设置 `LEAFSEAMER_TEST_COMPOSE_BROWSER`、`LEAFSEAMER_TEST_COMPOSE_PLAYWRIGHT` 和 `LEAFSEAMER_TEST_COMPOSE_SCREENSHOTS`，分别提供 Chromium 可执行文件、Playwright 模块和截图输出目录的绝对路径。浏览器从同一 Nginx 管理源登录、续期并创建草稿。测试在浏览器端丢弃已提交的成功响应，重载后查回原草稿并核对 SQLite 中仅有一条定义。[Compose 浏览器验收](test/fixtures/linux-compose-browser.mjs)
+
 ### Linux 原生成员创建
 
 在 Linux 构建机运行 `npm run build -- --linux-member`，将原生创建工具及其源码和制品摘要纳入 `dist/native/`。由可信宿主装配预先登记启动意图并固定受保护的 ELF 制品、空 cgroup v2 子组及两者的设备号和 inode。装配需拥有目录访问、创建子进程和切换到指定非 root UID／GID 所需的权限。工具使用调用者原有权限，发布文件采用普通可执行模式。

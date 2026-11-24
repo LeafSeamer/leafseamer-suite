@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import https from 'node:https';
 import net from 'node:net';
 import {once} from 'node:events';
-import {spawnSync} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
 import {DatabaseSync} from 'node:sqlite';
@@ -122,6 +122,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
   assert.ok(!pairingTest||chronyFile);
+  assert.ok(!process.env.LEAFSEAMER_TEST_COMPOSE_BROWSER||pairingTest);
   const clocks={};
   let clockValues;
   if(supervised){
@@ -520,6 +521,24 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           assert.ifError(renewalFailure);
         }};
     }
-    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send});
+    let verifyBrowser=null;
+    if(process.env.LEAFSEAMER_TEST_COMPOSE_BROWSER){
+      verifyBrowser=async()=>{
+        // Playwright 将页面求值函数序列化，与受保护核心的入口独立运行。
+        const browser=spawn(process.execPath,[file('./fixtures/linux-compose-browser.mjs')],{
+          stdio:['pipe','pipe','pipe'],signal:AbortSignal.timeout(65000)
+        });
+        let output='',diagnostic='';
+        browser.stdout.setEncoding('utf8').on('data',chunk=>output+=chunk);
+        browser.stderr.setEncoding('utf8').on('data',chunk=>diagnostic+=chunk);
+        const closed=once(browser,'close');
+        browser.stdin.on('error',()=>{});
+        browser.stdin.end(JSON.stringify({origin,management:{certificate_file:management.certificate_file},login,
+          seamer:{service_id:seamer.service_id,database_instance_id:seamer.database_instance_id}}));
+        assert.equal((await closed)[0],0,diagnostic);
+        return JSON.parse(output);
+      };
+    }
+    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,verifyBrowser});
   }
 });

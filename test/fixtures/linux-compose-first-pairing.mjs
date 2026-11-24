@@ -14,7 +14,7 @@ const mount='/etc/leafseamer/pairing/';
 const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='https://127.0.0.1:8444';
 const permissions=['auth.manage','auth.read'];
 
-export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send}){
+export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,verifyBrowser=null}){
   const {canonical,digest}=clockValues;
   const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
   const certificates=path.join(root,'pairing-certificates');
@@ -100,7 +100,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const seamerPairing=profile('seamer','controller',{scope:{service_id,database_instance_id},first_pairing_authorization_id:null,
     public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true}});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId;
+  let activated,authorizationId,browserDraft;
   try{
     const actor=await loginThroughProxy();
     const identityToken=await issueToken(actor,controller.service_id,['session.read']);
@@ -130,7 +130,8 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     activated=await admin(generation,'activate',{request_id:id(),binding_id:staged.binding_id,expected_revision:proved.revision,transcript_digest:proved.transcript_digest});
     assert.equal(activated.state,'activated');
     assert.equal(activated.service_boot_id,staged.service_boot_id);
-    await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions,
+    const audiencePermissions=verifyBrowser?[...permissions,'definition.edit','definition.read','request.create','request.read']:permissions;
+    await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
       not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
     const bearer=await issueToken(actor,service_id,permissions);
     assert.equal((await send('/services/'+service_id+'/auth/local-permissions/v1',{method:'POST',headers:{Authorization:bearer},body:'{}'})).status,404);
@@ -140,14 +141,23 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         method:'POST',headers:{Authorization:input.bearer,'Content-Type':'application/json','Content-Length':body.length}},res=>{
         let data='';res.on('data',chunk=>data+=chunk);res.on('end',()=>process.stdout.write(JSON.stringify({status:res.statusCode,data})));
       });req.setTimeout(5000,()=>req.destroy());req.end(body);`;
-    const grant=await waitFor(async()=>{
-      const response=await execute(generation.containers.seamer,['-e',inspection],{bearer,body:canonical({operation:'inspect',request:{principal_id}})});
+    async function localPermissions(operation,request){
+      const response=await execute(generation.containers.seamer,['-e',inspection],{bearer,body:canonical({operation,request})});
       assert.equal(response.status,0,response.diagnostic);
-      const {status,data}=JSON.parse(response.output);
+      return JSON.parse(response.output);
+    }
+    const grant=await waitFor(async()=>{
+      const {status,data}=await localPermissions('inspect',{principal_id});
       if(status!==200)return null;
       return JSON.parse(data).result;
     });
     assert.deepEqual(grant.permissions,permissions);
+    if(verifyBrowser){
+      const changed=await localPermissions('replace',{request_id:id(),principal_id,principal_kind:'human',expected_revision:grant.revision,
+        permissions:audiencePermissions,definition_scope:grant.definition_scope,not_before_ns:grant.not_before_ns,expires_ns:grant.expires_ns});
+      assert.equal(changed.status,200,changed.data);
+      browserDraft=await verifyBrowser();
+    }
   }finally{await generation.stop();}
   assert.equal(generation.phase(),'retired');
   const store=new DatabaseSync(path.join(seamer.data_dir,'seamer.sqlite'),{readOnly:true});
@@ -155,5 +165,6 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   try{
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
+    if(browserDraft)assert.deepEqual(store.prepare('SELECT definition_id FROM definition_identity').all().map(row=>row.definition_id),[browserDraft]);
   }finally{store.close();issuer.close();}
 }

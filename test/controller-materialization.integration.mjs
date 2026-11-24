@@ -245,6 +245,9 @@ async function verifyReferenceRestart(core,policy,workerExit){
 for(const mode of ['verified','receipt','observer','challenge','target','peer','revoke_pending','timeout','stage','configuration','roles','review','approval','capability','launch_prepare','load_handoff','load_close','supervisor_load','supervisor_deny','supervisor_bad_root','supervisor_bad_manifest','supervisor_bad_entry','supervisor_create','supervisor_create_exit','supervisor_create_deny_pending','supervisor_create_bad_profile','supervisor_create_runtime','supervisor_create_module_writable_capabilities','supervisor_create_module_writable_peer_capabilities','supervisor_create_module','supervisor_create_module_store_fail','supervisor_create_module_store_ignore','supervisor_create_module_catalog_template','supervisor_create_module_catalog_policy','supervisor_create_module_catalog_fail','supervisor_create_module_catalog_ignore','supervisor_create_module_baseline_fail','supervisor_create_module_baseline_ignore','supervisor_create_module_control','supervisor_create_module_writable','supervisor_create_module_writable_catalog_template','supervisor_create_module_writable_catalog_policy','supervisor_create_module_writable_binding_fail','supervisor_create_module_writable_binding_ignore','supervisor_create_module_writable_handshake_fail','supervisor_create_module_writable_handshake_write_ignore','supervisor_create_module_writable_control_fence_request_fail','supervisor_create_module_writable_control_fence_ack_ignore','supervisor_create_module_writable_control_fence_write_ignore','supervisor_create_module_writable_manual_authority_source_fail','supervisor_create_module_writable_manual_authority_commit_ignore','supervisor_create_module_writable_manual_authority_core_source_fail','supervisor_create_module_writable_manual_authority_core_commit_ignore','supervisor_create_module_writable_evaluator_source_fail','supervisor_create_module_writable_evaluator_commit_ignore','supervisor_create_module_writable_recovery_request_ignore','supervisor_create_module_writable_recovery_authorization_ignore','supervisor_create_module_writable_recovery_commit_ignore','supervisor_create_module_writable_consumption_record_ignore','supervisor_create_module_writable_consumption_state_ignore','supervisor_create_module_writable_consumption_commit_ignore','supervisor_create_module_writable_consumption_head_ignore','supervisor_create_module_writable_manual_challenge_record_ignore','supervisor_create_module_writable_manual_challenge_commit_ignore','supervisor_create_module_writable_manual_challenge_response_ignore','supervisor_create_module_writable_manual_challenge_checks','supervisor_create_module_writable_evidence_checks','supervisor_create_module_writable_evidence_cut_ignore','supervisor_create_module_writable_evidence_record_ignore','supervisor_create_module_writable_evidence_commit_ignore','supervisor_create_module_writable_evidence_head_ignore','supervisor_create_module_writable_evidence_resource_checks','supervisor_create_module_writable_evidence_resource_record_ignore','supervisor_create_module_writable_evidence_resource_commit_ignore','supervisor_create_module_writable_evidence_resource_open_checks','supervisor_create_module_writable_evidence_resource_open_record_ignore','supervisor_create_module_writable_evidence_resource_open_commit_ignore',"supervisor_create_module_writable_evidence_resource_open_dispatch","supervisor_create_module_writable_evidence_resource_open_dispatch_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_request_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ack_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_automatic","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_manual_migration","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_stale","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_expired","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_ignore","supervisor_create_module_writable_evidence_resource_open_dispatch_ready_control_ignore",...commandAdmissionFaults,...commandLifecycleFaults,...commandLifecycleCases,...commandEncodingCases,obsMode,obsCutMode,obsCutOpenMode,obsCutCommandMode])test((['launch_prepare','load_handoff','load_close'].includes(mode)?'安装服务与启动准备联调（合成核心域）：':'安装服务与原生监督器联调：')+mode,{skip:process.platform!=='win32'||mode===obsMode&&!obsPortableRoot,timeout:mode===obsCutCommandMode?90000:(mode==='supervisor_create_module_writable_peer_capabilities'||mode.endsWith('_capture_events'))?(exerciseReceiverAge&&mode.endsWith('_capture_events')?160000:120000):(mode.includes('_cleanup_successor')||mode.endsWith('_capabilities'))&&process.env.LEAFSEAMER_GUI_TEST_ROOT?120000:60000},async t=>{
   const obsCommand=mode===obsCutCommandMode,obsOpen=mode===obsCutOpenMode||obsCommand,obsCut=mode===obsCutMode||obsOpen,obs=mode===obsMode||obsCut;
   const obsRecovery=obsCommand&&process.env.LEAFSEAMER_OBS_BROWSER_RECOVERY==='1';
+  const obsInterruption=obsCommand?process.env.LEAFSEAMER_OBS_INTERRUPTION_TEST:null;
+  if(obsInterruption)assert.ok(!obsRecovery&&!process.env.LEAFSEAMER_GUI_TEST_ROOT&&['report','closure','settlement'].includes(obsInterruption));
+  const recoverSettlement=obsInterruption==='settlement';
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
   const referenceWatermark=mode.endsWith('_reference_watermark');
   const referenceAcceptance=mode===referenceAcceptanceExecution||referenceRestart||referenceWatermark;
@@ -387,6 +390,11 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
                  const stage103=snapshot(file);
                  assert.equal(stage103.schema_migration.pop()[2],'103');
                  assert.deepEqual(stage103,snapshot(path.join(core,commandMigration.backup_file)));
+                 const recoveryMigration=await migrateStorage(core,104);
+                 assert.equal(recoveryMigration.steps.length,1);
+                 const stage104=snapshot(file);
+                 assert.equal(stage104.schema_migration.pop()[2],'104');
+                 assert.deepEqual(stage104,snapshot(path.join(core,recoveryMigration.backup_file)));
                }
              }
            }
@@ -643,6 +651,15 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }
   if(commandDispatchFailure||settlementFailure||cleanupFailure){const {table,operation,condition}=commandDispatchFailure??settlementFailure??cleanupFailure;const fault=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
     try{fault.exec(`CREATE TRIGGER dispatch_fault BEFORE ${operation} ON ${table}${condition?' WHEN '+condition:''} BEGIN SELECT RAISE(IGNORE); END`);}finally{fault.close();}}
+  if(obsInterruption){
+    const table=recoverSettlement?'command_settlement':obsInterruption==='report'?'command_dispatch_report':'command_closure_ack';
+    const untilSessionEnds=recoverSettlement?` WHEN NOT EXISTS(
+      SELECT 1 FROM command_dispatch_request d JOIN execution_frame_record f ON f.record_id=d.record_id
+      JOIN execution_session_end e USING(ipc_session_id) WHERE d.permit_id=NEW.permit_id)`:'';
+    const fault=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
+    try{fault.exec(`CREATE TRIGGER obs_interruption_fault BEFORE INSERT ON ${table}${untilSessionEnds} BEGIN SELECT RAISE(IGNORE); END`);}
+    finally{fault.close();}
+  }
   const binding={intake_ref:sealed.intake_ref,platform_profile_ref:profile,host_installation_id:store.identity.host_installation_id,
     host_trust_epoch:receipt.host_trust_epoch,manifest_digest:receipt.manifest_digest,artifact_set_digest:receipt.artifact_set_digest};
   if(mode==='receipt')binding.intake_ref={...binding.intake_ref,digest:digestValue('wrong receipt')};
@@ -703,6 +720,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     runFence={origin_scope,run_id,...(mode===retirementSchemaExecution?{after_retirement:true,rejection_id:receipt.receipt_id}:{})};
   }
   const fixture=path.join(root,'fixture.json');fs.writeFileSync(fixture,JSON.stringify({binding,mode,materials,runtime:runtimeInput,reference_acceptance:referenceAcceptance,reference_schema:referenceSchema,source_reference_capture:sourceReferenceCapture,...(process.env.LEAFSEAMER_CORE_PERFORMANCE?{performance_capture:process.env.LEAFSEAMER_CORE_PERFORMANCE}:{}),...(gui?{gui}:{}),...(automationPeer?{automation_peer:automationPeer}:{}),...(runFence?{run_fence:runFence}:{}),
+    ...(obsInterruption?{obs_interruption:obsInterruption}:{}),
     ...((obs||mode.endsWith('_capabilities')||mode==='supervisor_create_module_writable_evidence_resource_open_dispatch_ready'||commandLifecycleCases.includes(mode)||commandEncodingCases.includes(mode))?{command_tls:certificate()}:{})}));
   const peer=captureInstallationPeer(process.pid).descriptor,descriptor=store.materializationClock(),suffix=crypto.randomUUID(),channelId=crypto.randomUUID();
   const config={format:'leafseamer-installation-peer/1',pipe_suffix:suffix,channel_id:channelId,
@@ -799,9 +817,9 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,stage,code,cause})=>({event,stage,code,cause}))));
     const {packet_hex,target,stale}=frames.find(f=>f.event==='obs-cut-packet');
     assert.equal(stale,'obs_cut_packet_stale_reference');
-    if(obsRecovery){
+    if(obsRecovery||obsInterruption){
       const sample=await (await load('obs-discovery.mjs')).inspectObsCut({port:portable.port,password:portable.password});
-      assert.equal(sample.program_scene_uuid,portable.program_scene_uuid);
+      assert.equal(sample.program_scene_uuid,obsInterruption?target:portable.program_scene_uuid);
     }
     if(!obsCut)await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
       catalog:frames.find(f=>f.event==='obs-scene-confirmed').ready,packet_hex});
@@ -2020,6 +2038,25 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.equal(response.body.decision,'rejected');
       assert.equal(response.body.command_ref,null);
       assert.deepEqual(replayed,response);
+    }else if(obsInterruption){
+      const {admitted,finished,replayed,blocked,control}=frames.find(f=>f.event==='obs-cut-interrupted'),{record}=finished.body;
+      assert.equal(admitted.status,202);
+      assert.equal(finished.status,200);
+      assert.equal(replayed.status,200);
+      assert.deepEqual(replayed.body,admitted.body);
+      assert.equal(blocked.status,503);
+      assert.equal(record.command_id,admitted.body.command_ref.object_id);
+      const revision=obsInterruption==='report'?'4':'5';
+      assert.equal(record.state.revision,revision);
+      assert.equal(record.state.terminal_revision,revision);
+      assert.equal(record.state.phase,'finished');
+      assert.equal(record.state.outcome,recoverSettlement?'succeeded':'unknown');
+      assert.equal(record.state.effect_status,recoverSettlement?'verified':'possible');
+      assert.equal(record.state.resource_status,recoverSettlement?'clear':'unresolved');
+      assert.equal(record.state.automation_continuation,recoverSettlement?'eligible':'paused_latched');
+      assert.equal(record.completion.achieved,recoverSettlement?'effect_verified':null);
+      assert.equal(record.attempts.length,1);
+      assert.equal(control.gate_state,'protected');
     }else if(obsCommand){
       const {stale}=frames.find(f=>f.event==='obs-cut-stale-reference');
       assert.equal(stale.status,422);
@@ -2083,7 +2120,8 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.deepEqual(record.catalog,directory);
       assert.equal(record.catalog_digest,digestValue(directory));
       assert.equal(body_digest,digestValue(record));
-      assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),obsCommand&&!obsRecovery?4:2);
+      const repeatedCut=obsCommand&&!obsRecovery&&!obsInterruption;
+      assert.equal(business.prepare('SELECT count(*) FROM device_baseline_sample').pluck().get(),repeatedCut?4:2);
       const values=business.prepare('SELECT body_jcs FROM device_baseline_sample ORDER BY sample_sequence').pluck().all();
       assert.deepEqual(values.map(row=>JSON.parse(row).value.scenes),Array(values.length).fill(portable.directory));
       assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),obsCut?1:0);
@@ -2093,13 +2131,39 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.deepEqual(JSON.parse(saved),bound.value);
         assert.equal(digest,bound.ref.digest);
         assert.equal(business.prepare("SELECT count(*) FROM device_module_frame WHERE message_type='EXECUTION_BOUND'").pluck().get(),2);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='OPEN_GATE'").pluck().get(),obsCommand&&!obsRecovery?2:obsOpen?1:0);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),obsCommand&&!obsRecovery?2:0);
-        assert.equal(business.prepare('SELECT count(*) FROM device_initial_ready').pluck().get(),obsCommand&&!obsRecovery?2:obsOpen?1:0);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='OPEN_GATE'").pluck().get(),repeatedCut?2:obsOpen?1:0);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),repeatedCut?2:obsInterruption?1:0);
+        assert.equal(business.prepare('SELECT count(*) FROM device_initial_ready').pluck().get(),repeatedCut?2:obsOpen?1:0);
         if(obsRecovery){
           assert.deepEqual(business.prepare('SELECT decision FROM ca_adjudication').pluck().all(),['rejected']);
           assert.equal(business.prepare('SELECT count(*) FROM ca_rejection').pluck().get(),1);
           for(const table of ['ca_command_initial','command_transmission_issue','command_device_hold'])assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),0);
+        }else if(obsInterruption){
+          const {finished}=frames.find(f=>f.event==='obs-cut-interrupted'),id=finished.body.record.command_id;
+          const prior=obsInterruption==='report'?3:4;
+          if(!recoverSettlement){
+            const [revision,text,digest]=business.prepare('SELECT previous_revision,body_jcs,body_digest FROM command_dispatch_interruption WHERE command_id=?').raw().get(id);
+            const saved=JSON.parse(text);
+            assert.equal(revision,prior);
+            assert.equal(digest,digestValue(saved));
+            assert.deepEqual(business.prepare('SELECT transaction_id,reason FROM execution_session_end WHERE ipc_session_id=?').raw().get(saved.ipc_session_id),
+              [saved.end.transaction_id,saved.end.reason]);
+            assert.ok(saved.write_ref);
+            assert.equal(saved.report_ref!==null,obsInterruption==='closure');
+            assert.equal(saved.evidence_ref!==null,obsInterruption==='closure');
+          }
+          const {readCommandRecord,readCommandRevision}=await load('command-record-store.mjs');
+          business.transaction(()=>{
+            assert.deepEqual(readCommandRecord(business,id).record,finished.body.record);
+            assert.equal(readCommandRevision(business,id,String(prior)).record.state.outcome,'pending');
+          })();
+          for(const table of ['ca_command_initial','command_dispatch_write','command_device_hold'])
+            assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),1);
+          assert.equal(business.prepare('SELECT count(*) FROM command_dispatch_interruption').pluck().get(),recoverSettlement?0:1);
+          for(const table of ['command_hold_release','command_closure_ack','command_settlement'])
+            assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),recoverSettlement?1:0);
+          assert.equal(business.prepare('SELECT count(*) FROM command_preparation_retirement').pluck().get(),0);
+          assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52]);
         }else if(obsCommand){
           assert.equal(business.prepare('SELECT count(*) FROM device_initial_resource').pluck().get(),2);
           assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52,52]);

@@ -605,6 +605,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         assert.equal(JSON.parse(log.prepare('SELECT body FROM retirement').get().body).result,'confirmed_empty');
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM execution_handshake').get().total,1);
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM device_baseline_sample').get().total,1);
+        assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM device_event_source').get().total,1);
       }finally{log.close();controllerDb.close();}
     }finally{managedHost?.close();managedHost=null;sealed?.close();store.close();}
   }

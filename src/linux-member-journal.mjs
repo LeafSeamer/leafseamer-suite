@@ -5,6 +5,7 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {InstallationError,canonical,digest,requireValue as need} from './import-input.mjs';
 import {linuxContainerCgroup,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
+import {admitLinuxMember,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 
 const sql=fs.readFileSync(new URL('./linux-member-journal.sql',import.meta.url),'utf8');
 const applicationId=0x4c534c4d;
@@ -185,15 +186,17 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       need(assertCurrent(JSON.parse(canonical(record)))===true,'linux_member_authorization');
       open();
     }
-    async function launch(input){
+    async function launch(input,bootstrap=null){
       open();
       need(!busy,'linux_member_busy');
       busy=true;
       let helper,image,child,executed=false;
       try{
         const {spec,groupPath}=intent(input),prior=lookup(spec.launch_id);
+        const policy=bootstrap?validateLinuxBootstrapPolicy(spec,bootstrap.policy):null;
+        const policyDigest=policy?digest(policy):null;
         if(prior){
-          need(same(prior.intent,spec),'linux_member_launch_conflict');
+          need(same(prior.intent,spec)&&(prior.detail.bootstrap_policy_digest??null)===policyDigest,'linux_member_launch_conflict');
           return {record:prior,bootstrap:null};
         }
         const host=readLinuxCgroupHost();
@@ -203,7 +206,8 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         need(!parent.populated&&group.device===parent.group.device,'linux_member_group');
         helper=pinHelper();
         image=pinExecutable(spec.image_path,spec.image_sha256,256*1024*1024);
-        const detail={host,parent_group:parent.group,group_path:groupPath,group,image:image.identity,helper_digest:helper.digest};
+        const detail={host,parent_group:parent.group,group_path:groupPath,group,image:image.identity,helper_digest:helper.digest,
+          ...(policy&&{bootstrap_policy_digest:policyDigest})};
         function checkGroup(){
           const current=readLinuxCgroupParent(parentInput);
           need(current.populated&&same(parent.group,current.group)&&same(group,groupIdentity(groupPath)),
@@ -234,9 +238,22 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         need(await frames('executed',group,image.identity)===pid&&same(leader,readLinuxCgroupLeader(pid)),
           'linux_member_execution_changed');
         checkGroup();
-        const record=append(spec,4,'executed_closed',closedRecord.detail);
+        function commit(admission){
+          checkGroup();
+          need(same(leader,readLinuxCgroupLeader(pid)),'linux_member_execution_changed');
+          const detail={...closedRecord.detail,...(admission&&{admission})};
+          if(admission)authorize({intent:spec,revision:4,phase:'executed_closed',detail});
+          return append(spec,4,'executed_closed',detail);
+        }
+        const socket=member.stdio[3];
+        const record=bootstrap?await admitLinuxMember(closedRecord,{policy,source:bootstrap.source,socket,commit}):commit(null);
+        if(bootstrap){
+          const stop=()=>{member.stdin.destroy();socket.destroy();};
+          socket.once('end',stop).once('error',stop).once('close',stop).once('data',stop);
+          socket.resume();
+        }
         live.add(member);executed=true;
-        return {record,bootstrap:member.stdio[3]};
+        return {record,bootstrap:bootstrap?null:socket};
       }finally{
         busy=false;
         if(child&&!executed){child.stdin.destroy();child.stdio[3].destroy();}
@@ -244,7 +261,10 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         if(helper)fs.closeSync(helper.fd);
       }
     }
-    return Object.freeze({lookup,launch,close(){
+    return Object.freeze({lookup,launch:input=>launch(input),admit(input,{policy,source}={}){
+      need(source&&typeof source.capture==='function'&&typeof source.tick==='function','linux_bootstrap_clock');
+      return launch(input,{policy,source});
+    },close(){
       if(closed)return;
       need(!busy,'linux_member_busy');
       closed=true;

@@ -146,7 +146,9 @@ leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_
 
 可信装配可通过安装账本先显式调用 `initializeLinuxMemberJournal()`，再用 `openLinuxMemberJournal(assertCurrent)` 打开独立原生成员启动账本。其 `launch(intent)` 使用固定的服务、数据库、运行代、启动标识、角色、UID／GID、绝对制品路径与 SHA-256，以及非敏感 argv。父组沿现有命名规则，核心成员放入预建的 `core` 子组。装配提供同步的 `assertCurrent(record)` 核对有效批准，返回 `true` 才继续。
 
-启动账本在创建前保存 `reserved`，观察到原生成员后保存 `created_closed`，复核后先保存 `release_requested` 再发送释放字节。成功时返回 `executed_closed` 及一次性的引导流。相同意图的重试只返回原记录，其他同角色启动需先取得原成员退役证据。账本关闭时关闭控制和引导流，原记录可通过 `lookup(launchId)` 继续查询。引导流的身份认证和已登记子树的退役采用仍待接通。[启动账本联调](test/linux-member-journal.integration.mjs)
+启动账本在创建前保存 `reserved`，观察到原生成员后保存 `created_closed`，复核后先保存 `release_requested` 再发送释放字节。`launch(intent)` 返回 `executed_closed` 及一次性的原始引导流。相同意图的重试只返回原记录，其他同角色启动需先取得原成员退役证据。账本关闭时关闭控制和引导流，原记录可通过 `lookup(launchId)` 继续查询。[启动账本联调](test/linux-member-journal.integration.mjs)
+
+启动实际 Linux Controller 时，可信装配调用 `admit(intent,{policy,source})`，其中 `source` 为同宿主、同时间命名空间的已核验 Linux 原生时钟。宿主在专用流完成既有 SDK 的 Assignment、Proof 和 Admission。它复核实际进程、cgroup 和期限，先在原账本保存闭锁回执才发送 Admission。成功结果携带 `detail.admission`，Suite 保持引导流并监听失效。Controller 在自己的业务库核对并保存回执，再开启保护态回环监听。Seamer、宿主授时资格和旧子树退役继续接线。[Controller 双向准入联调](test/linux-core-bootstrap.integration.mjs)
 
 ## 本机安装账本与静态归档验证
 

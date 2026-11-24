@@ -86,15 +86,28 @@ static bool no_file_capabilities(int fd) {
   return fgetxattr(fd, "security.capability", NULL, 0) < 0 && (errno == ENODATA || errno == EOPNOTSUPP);
 }
 
-static bool bootstrap_socket(void) {
+static bool inherited_socket(int fd, struct stat *identity) {
   int type, domain;
   socklen_t size = sizeof(int);
-  if (getsockopt(boot_fd, SOL_SOCKET, SO_TYPE, &type, &size) < 0 || type != SOCK_STREAM) return false;
+  if (getsockopt(fd, SOL_SOCKET, SO_TYPE, &type, &size) < 0 || type != SOCK_STREAM) return false;
   size = sizeof(int);
   struct sockaddr_storage peer;
   socklen_t peer_size = sizeof(peer);
-  return getsockopt(boot_fd, SOL_SOCKET, SO_DOMAIN, &domain, &size) == 0 && domain == AF_UNIX &&
-    getpeername(boot_fd, (struct sockaddr *)&peer, &peer_size) == 0 && peer.ss_family == AF_UNIX;
+  return getsockopt(fd, SOL_SOCKET, SO_DOMAIN, &domain, &size) == 0 && domain == AF_UNIX &&
+    getpeername(fd, (struct sockaddr *)&peer, &peer_size) == 0 && peer.ss_family == AF_UNIX &&
+    fstat(fd, identity) == 0 && S_ISSOCK(identity->st_mode);
+}
+
+static bool member_channels(int last_fd) {
+  struct stat identities[3];
+  for (int fd = boot_fd; fd <= last_fd; ++fd) {
+    struct stat *current = &identities[fd - boot_fd];
+    if (!inherited_socket(fd, current)) return false;
+    for (int prior = boot_fd; prior < fd; ++prior)
+      if (current->st_dev == identities[prior - boot_fd].st_dev && current->st_ino == identities[prior - boot_fd].st_ino)
+        return false;
+  }
+  return true;
 }
 
 static bool child_identity(uid_t uid, gid_t gid, pid_t parent) {
@@ -106,14 +119,16 @@ static bool child_identity(uid_t uid, gid_t gid, pid_t parent) {
     prctl(PR_SET_NO_NEW_PRIVS, 1L, 0L, 0L, 0L) == 0;
 }
 
-static _Noreturn void child_run(int image, int null_fd, int release, int status, uid_t uid, gid_t gid,
+static _Noreturn void child_run(int image, int null_fd, int release, int status, int last_fd, uid_t uid, gid_t gid,
                                pid_t parent, char **args) {
   if (prctl(PR_SET_PDEATHSIG, SIGKILL, 0L, 0L, 0L) < 0 || getppid() != parent ||
       !child_identity(uid, gid, parent) ||
-      syscall(SYS_close_range, boot_fd + 1U, ~0U, CLOSE_RANGE_CLOEXEC) < 0 ||
-      fcntl(boot_fd, F_SETFD, 0) < 0 || dup2(null_fd, STDIN_FILENO) < 0 ||
+      syscall(SYS_close_range, (unsigned)last_fd + 1U, ~0U, CLOSE_RANGE_CLOEXEC) < 0 ||
+      dup2(null_fd, STDIN_FILENO) < 0 ||
       dup2(null_fd, STDOUT_FILENO) < 0 || dup2(null_fd, STDERR_FILENO) < 0 ||
       chdir("/") < 0 || signal(SIGPIPE, SIG_DFL) == SIG_ERR) _exit(125);
+  for (int fd = boot_fd; fd <= last_fd; ++fd)
+    if (fcntl(fd, F_SETFD, 0) < 0) _exit(125);
   umask(077);
   char go;
   if (write(status, "C", 1) != 1 || read(release, &go, 1) != 1 || go != 'R') _exit(125);
@@ -168,13 +183,15 @@ static int reject(const char *phase) {
 int main(int argc, char **argv) {
   uint64_t group_device, group_inode, image_device, image_inode, uid, gid;
   const size_t prefix_length = sizeof(cgroup_prefix) - 1;
-  if (argc < 10 || argc > 74 || strncmp(argv[1], cgroup_prefix, prefix_length) != 0 ||
+  bool worker = argc > 10 && strcmp(argv[9], "--device-worker") == 0;
+  int delimiter = worker ? 10 : 9, last_fd = worker ? 5 : boot_fd;
+  if (argc <= delimiter || argc > delimiter + 65 || strncmp(argv[1], cgroup_prefix, prefix_length) != 0 ||
       !argv[1][prefix_length] || argv[4][0] != '/' || !argv[4][1] ||
       !decimal(argv[2], &group_device) || !decimal(argv[3], &group_inode) ||
       !decimal(argv[5], &image_device) || !decimal(argv[6], &image_inode) ||
       !decimal(argv[7], &uid) || !decimal(argv[8], &gid) ||
-      uid == 0 || uid >= UINT32_MAX || gid == 0 || gid >= UINT32_MAX || strcmp(argv[9], "--") != 0 ||
-      !bootstrap_socket() || signal(SIGCHLD, SIG_DFL) == SIG_ERR ||
+      uid == 0 || uid >= UINT32_MAX || gid == 0 || gid >= UINT32_MAX || strcmp(argv[delimiter], "--") != 0 ||
+      !member_channels(last_fd) || signal(SIGCHLD, SIG_DFL) == SIG_ERR ||
       signal(SIGPIPE, SIG_IGN) == SIG_ERR) return reject("linux_member_inputs");
 
   int root = open(cgroup_root, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
@@ -206,10 +223,10 @@ int main(int argc, char **argv) {
   if (pid == 0) {
     close(release[1]);
     close(status[0]);
-    argv[9] = argv[4];
-    child_run(image, null_fd, release[0], status[1], (uid_t)uid, (gid_t)gid, parent, argv + 9);
+    argv[delimiter] = argv[4];
+    child_run(image, null_fd, release[0], status[1], last_fd, (uid_t)uid, (gid_t)gid, parent, argv + delimiter);
   }
-  close(boot_fd);
+  for (int fd = boot_fd; fd <= last_fd; ++fd) close(fd);
   close(release[0]);
   close(status[1]);
   char message;

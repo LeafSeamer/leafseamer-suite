@@ -191,10 +191,12 @@ export function renderLinuxCompose(plan,output){
   const withBootstrap=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'bootstrap');
   const withClock=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'clock_evidence');
   const withPairing=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'pairing');
+  const withWorkerControl=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'worker_control');
   need(fields(plan,(withBootstrap?'bootstrap,':'')+(withCgroup?'cgroup,':'')+(withClock?'clock_evidence,':'')+
-    'controller,format,gui,management,nginx,'+(withPairing?'pairing,':'')+'seamer,subnet')&&
+    'controller,format,gui,management,nginx,'+(withPairing?'pairing,':'')+'seamer,subnet'+(withWorkerControl?',worker_control':''))&&
     plan.format==='leafseamer.linux-compose-protected/1','compose_plan');
   const {controller,seamer,nginx,management,gui,subnet,cgroup}=plan;
+  need(!withWorkerControl||plan.worker_control===true&&withBootstrap&&cgroup?.namespace==='private','compose_worker_control');
   const memberFields='address,ca_file,certificate_file,data_dir,database_instance_id,gid,image,private_key_file,server_name,service_id,uid';
   need(fields(controller,memberFields)&&fields(seamer,memberFields)&&fields(nginx,'address,gid,image,uid')&&
     fields(management,'bind_address,certificate_file,host,port,private_key_file')&&fields(gui,'directory,manifest_sha256'),'compose_plan');
@@ -258,6 +260,7 @@ export function renderLinuxCompose(plan,output){
       service.entrypoint=[runtime+'/compose-channel'];
       service.init=false;
       service.volumes.push(bind(channelHelper,runtime+'/compose-channel'),bind(output+'/bootstrap-'+role,runtime+'/bootstrap'));
+      if(withWorkerControl&&role==='controller')service.command.push('--worker-control','inherited');
       if(withClock){
         const {exchange_directory,policy_digest,public_key_file}=plan.clock_evidence[role];
         const name=role+'-clock.json',target=runtime+'/clock.json';

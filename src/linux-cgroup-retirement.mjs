@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {digest} from './import-input.mjs';
 
 const cgroupRoot='/sys/fs/cgroup',procRoot='/proc';
 const cgroupMagic=0x63677270,procMagic=0x9fa0;
@@ -120,6 +121,27 @@ export function readLinuxCgroupParent({driver,generationId,role,host}={}){
     need(fs.fstatSync(fd).nlink>0&&sameIdentity(group,pathIdentity(location)),'cgroup_group_changed');
     return Object.freeze({group,populated:live});
   }finally{fs.closeSync(fd);}
+}
+
+export function checkLinuxWorkerGroup({driver,generationId,host,launchId,groupId}){
+  need(uuid.test(launchId),'cgroup_scope');
+  const {groupPath:parent}=linuxContainerCgroup({driver,generationId,role:'controller'});
+  const group_path=parent+'/worker_'+launchId.replaceAll('-',''),location=cgroupRoot+group_path;
+  const owner=BigInt(process.geteuid());
+  let fd,procsFd;
+  try{
+    fd=fs.openSync(location,directoryFlags);
+    procsFd=fs.openSync(fdPath(fd)+'/cgroup.procs',fileFlags);
+    const directory=fs.fstatSync(fd,{bigint:true}),procs=fs.fstatSync(procsFd,{bigint:true}),group=identity(directory);
+    const trusted=stat=>stat.uid===owner&&(stat.mode&0o022n)===0n;
+    if(!directory.isDirectory()||!procs.isFile()||!trusted(directory)||!trusted(procs)||
+      group.device!==host.root.device||fs.statfsSync(fdPath(fd)).type!==cgroupMagic||
+      fs.statfsSync(fdPath(procsFd)).type!==cgroupMagic||populated(fd)||
+      groupId!=='group_'+digest({boot_id:host.boot_id,group_path,group}).slice(7))return null;
+    assertHost(host);
+    return directory.nlink>0n&&sameIdentity(group,pathIdentity(location))?{group_path,identity:group}:null;
+  }catch(error){if(error.code==='ENOENT')return null;throw error;}
+  finally{if(procsFd!==undefined)fs.closeSync(procsFd);if(fd!==undefined)fs.closeSync(fd);}
 }
 
 function composeMount(processPath,groupPath,mountFd){

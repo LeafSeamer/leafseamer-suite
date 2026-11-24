@@ -66,6 +66,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
   function bootstrap(role,directory,extraMounts,args){
     return docker('run','--rm','--pull','never','--network','none','--user',user,'--read-only','--cap-drop','ALL',
+      '--tmpfs','/tmp:rw,noexec,nosuid,nodev,mode=1777,size=67108864',
       '--mount','type=bind,source='+directory+',target=/var/lib/leafseamer',...extraMounts,
       '--entrypoint','/usr/local/bin/node',images[role],...args);
   }
@@ -113,11 +114,13 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   assert.equal(Boolean(socketPath),Boolean(pidFile));
   const manage=Boolean(socketPath),generationId=crypto.randomUUID();
   const supervised=process.env.LEAFSEAMER_TEST_COMPOSE_BOOTSTRAP==='1';
+  const workerControl=process.env.LEAFSEAMER_TEST_COMPOSE_WORKER_CONTROL==='1';
   assert.ok(!supervised||manage);
+  assert.ok(!workerControl||supervised);
   if(manage)assert.equal(process.env.DOCKER_HOST,'unix://'+socketPath);
   const plan={format:'leafseamer.linux-compose-protected/1',subnet:range+'.0/29',management,controller,seamer,
     nginx:{image:images.nginx,uid,gid,address:range+'.4'},gui:{directory,manifest_sha256:'sha256:'+hash(manifestBytes)},
-    ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}})};
+    ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}}),...(workerControl&&{worker_control:true})};
   let source,admissions;
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
@@ -175,8 +178,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     [{...plan,seamer:{...seamer,ca_file:controller.private_key_file}},'compose_tls_scope'],
     [{...plan,seamer:{...seamer,ca_file:aliasOfKey}},'compose_tls_scope'],
     [{...plan,seamer:{...seamer,database_instance_id:controller.database_instance_id}},'compose_identity'],
-    [{...plan,cgroup:{driver:'auto',generation_id:crypto.randomUUID()}},'cgroup_scope'],
-    [{...plan,cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'host'}},'compose_cgroup'],
+    [{...plan,cgroup:{driver:'auto',generation_id:crypto.randomUUID(),namespace:'private'}},'cgroup_scope'],
+    [{...plan,cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'host'}},workerControl?'compose_worker_control':'compose_cgroup'],
+    ...(workerControl?[ [{...plan,worker_control:false},'compose_worker_control'] ]:[]),
     ...(chronyFile?[
       [{...plan,clock_evidence:{...plan.clock_evidence,seamer:{...plan.clock_evidence.seamer,exchange_directory:clocks.controller.exchange}}},'compose_clock_scope'],
       [{...plan,clock_evidence:{...plan.clock_evidence,controller:{...plan.clock_evidence.controller,public_key_sha256:'sha256:'+'0'.repeat(64)}}},'compose_clock_key']
@@ -197,7 +201,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const stem='leafseamer_'+generationId.replaceAll('-','');
   for(const driver of ['cgroupfs','systemd']){
     const observedOutput=path.join(root,'cgroup-'+driver);
-    const {bootstrap:_policy,clock_evidence:_clock,...protectedPlan}=plan;
+    const {bootstrap:_policy,clock_evidence:_clock,worker_control:_workerControl,...protectedPlan}=plan;
     fs.writeFileSync(planPath,JSON.stringify({...protectedPlan,cgroup:{driver,generation_id:generationId,namespace:'private'}}));
     run(process.execPath,[...generate.slice(0,-1),observedOutput]);
     const {services}=JSON.parse(docker('compose','--project-name',project,'--file',path.join(observedOutput,'compose.json'),'config','--format','json'));
@@ -224,7 +228,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   if(manage){
     ({openLinuxComposeHost}=await import('../dist/linux-compose-host.mjs'));
     const {createInstallationStore,openInstallationStore}=await import('../dist/installation-store.mjs');
-    fs.mkdirSync(installationDirectory);
+    fs.mkdirSync(installationDirectory,{mode:0o700});
     installation=createInstallationStore(installationDirectory);
     const store=openInstallationStore(installationDirectory);
     try{store.initializeLinuxDeploymentJournal();}finally{store.close();}
@@ -252,6 +256,11 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     if(supervised)for(const role of ['controller','seamer']){
       assert.deepEqual(managedHost.admission(role),admissions[role]);
       assert.equal(admissions[role].receipt.gate_state,'closed');
+    }
+    if(workerControl){
+      const generated=JSON.parse(fs.readFileSync(composePath,'utf8')).services;
+      assert.ok(generated.controller.command.includes('--worker-control'));
+      assert.ok(!generated.seamer.command.includes('--worker-control'));
     }
     assert.equal(started.phase,'running');
     assert.equal(started.detail.runtime_binding.project,project);
@@ -435,6 +444,28 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       managedHost=openLinuxComposeHost(hostOptions);
       assert.deepEqual(managedHost.current(),active);
     }
+    if(workerControl){
+      const controllerLog=new DatabaseSync(path.join(controller.data_dir,'controller.sqlite'),{readOnly:true});
+      try{
+        const deadline=performance.now()+5000,ack=controllerLog.prepare('SELECT 1 FROM worker_fence_ack');
+        while(!ack.get()){
+          assert.ok(performance.now()<deadline,'Controller did not persist the initial worker fence acknowledgement');
+          await delay(50);
+        }
+      }finally{controllerLog.close();}
+      const original=fs.readFileSync(composePath);
+      // 使原监督器主动关闭连接，并保留它已持有的进程和 cgroup 描述符用于退役。
+      fs.appendFileSync(composePath,'\n');
+      try{
+        const limit=performance.now()+15000;
+        for(const role of ['controller','seamer']){
+          while(JSON.parse(docker('container','inspect',containers[role].Id))[0].State.Running){
+            assert.ok(performance.now()<limit,role+' did not exit after the plan changed');
+            await delay(50);
+          }
+        }
+      }finally{fs.writeFileSync(composePath,original);}
+    }
     const retired=managedHost.retire();
     assert.equal(retired.phase,'retired');
     assert.match(retired.detail.endpoint_evidence_digest,/^sha256:[a-f0-9]{64}$/);
@@ -459,6 +490,23 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         assert.equal(receipt.length,1);
         assert.deepEqual(JSON.parse(receipt[0].receipt_jcs),admissions[role].receipt);
       }
+      if(workerControl&&role==='controller'){
+        const {receipt,descriptor}=admissions.controller;
+        const hostLog=new DatabaseSync(path.join(installationDirectory,'linux-worker-control-'+receipt.launch_id+'.db'),{readOnly:true});
+        try{
+          const stored=JSON.parse(hostLog.prepare('SELECT body FROM identity').get().body);
+          assert.deepEqual(stored.core_receipt,receipt);
+          assert.deepEqual(stored.scope.domain_ref,receipt.domain_ref);
+          assert.equal(stored.scope.supervisor_instance_id,descriptor.supervisor_instance_id);
+          const fence=hostLog.prepare('SELECT revision,digest,body FROM fence').get();
+          const ack=db.prepare('SELECT revision,body_jcs FROM worker_fence_ack').get();
+          assert.ok(fence&&ack,'the confirmed worker fence must survive retirement');
+          assert.deepEqual(JSON.parse(fence.body),{scope:stored.scope,revision:String(fence.revision),items:[]});
+          assert.equal(ack.revision,fence.revision);
+          assert.deepEqual(JSON.parse(ack.body_jcs),{revision:String(fence.revision),snapshot_digest:fence.digest,journal_committed:true});
+          assert.equal(hostLog.prepare('SELECT count(*) AS total FROM attempt').get().total,0);
+        }finally{hostLog.close();}
+      }
       if(chronyFile){
         const {service_boot_id,clock_domain_id}=clocks[role].runtime,args=[service_boot_id,clock_domain_id];
         const history=db.prepare('SELECT DISTINCT health_digest FROM authentication_clock_acquisition WHERE service_boot_id=? AND clock_domain_id=?').all(...args);
@@ -470,7 +518,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
   if(manage){
     const nextId=crypto.randomUUID(),nextDirectory=path.join(root,'next');
-    const {bootstrap:_policy,clock_evidence:_clock,...protectedPlan}=plan;
+    const {bootstrap:_policy,clock_evidence:_clock,worker_control:_workerControl,...protectedPlan}=plan;
     fs.writeFileSync(planPath,JSON.stringify({...protectedPlan,cgroup:{driver:'cgroupfs',generation_id:nextId}}));
     run(process.execPath,[...generate.slice(0,-1),nextDirectory]);
     await prepareParents(nextId);

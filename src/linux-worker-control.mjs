@@ -274,4 +274,5 @@ export function bindLinuxWorkerControl({directory,socket,core,source,assertLive,
     const bytes=buffer.subarray(0,end);buffer=Buffer.alloc(0);busy=true;
     void handle(bytes).catch(stop);
   });
+  return Object.freeze({close:stop});
 }

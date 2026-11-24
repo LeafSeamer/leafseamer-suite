@@ -5,7 +5,7 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
 import {InstallationError,canonical,digest,requireValue as need} from './import-input.mjs';
-import {linuxContainerCgroup,observeLinuxMemberRetirement,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
+import {checkLinuxWorkerGroup,linuxContainerCgroup,observeLinuxMemberRetirement,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {admitLinuxMember,admitLinuxWorker,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
 import {pinExecutable,pinLinuxHelper} from './linux-native-artifact.mjs';
@@ -371,20 +371,10 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
           if(admission)authorize({intent:spec,revision:4,phase:'executed_closed',detail});
           const record=append(spec,4,'executed_closed',detail);
           if(bootstrap?.workerControl){
-            function checkGroup(intent){
-              const group_path=groupPath.slice(0,-'/core'.length)+'/worker_'+intent.launch_id.replaceAll('-','');
-              try{
-                const worker=groupIdentity(group_path),directory='/sys/fs/cgroup'+group_path;
-                const stat=fs.lstatSync(directory,{bigint:true}),procs=fs.lstatSync(directory+'/cgroup.procs',{bigint:true});
-                const valid=stat.uid===BigInt(process.geteuid())&&(stat.mode&0o022n)===0n&&
-                  procs.isFile()&&procs.uid===stat.uid&&(procs.mode&0o022n)===0n&&
-                  /^populated 0$/m.test(fs.readFileSync(directory+'/cgroup.events','utf8'))&&
-                  intent.containment_ref.group_id==='group_'+digest({boot_id:host.boot_id,group_path,group:worker}).slice(7);
-                return valid?{group_path,identity:worker}:null;
-              }catch(error){if(error.code==='ENOENT')return false;throw error;}
-            }
             const runtime=bootstrap.workerRuntime;
-            bindLinuxWorkerControl({directory:root,socket,core:admission,source:bootstrap.source,assertLive:assertCoreCurrent,checkGroup,
+            bindLinuxWorkerControl({directory:root,socket,core:admission,source:bootstrap.source,assertLive:assertCoreCurrent,
+              checkGroup:intent=>checkLinuxWorkerGroup({driver:spec.driver,generationId:spec.generation_id,host,
+                launchId:intent.launch_id,groupId:intent.containment_ref.group_id}),
               ...(runtime&&{
                 acquire(intent,challenge_id){
                   runtime.assertCurrent();const binding=intent.extension_binding;

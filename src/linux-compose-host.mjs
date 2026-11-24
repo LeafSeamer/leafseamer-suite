@@ -6,9 +6,10 @@ import {canonical,digest,requireValue as need} from './import-input.mjs';
 import {openInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
 import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs} from './linux-compose.mjs';
-import {observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
+import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {openLinuxComposeChannel} from './linux-compose-channel.mjs';
 import {admitLinuxMember} from './linux-member-bootstrap.mjs';
+import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
 
 const docker='/usr/bin/docker';
 const roles=['controller','seamer','nginx'];
@@ -93,7 +94,9 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
   const {driver,generation_id,namespace}=plan.cgroup??{};
   const privateNamespace=namespace==='private';
   const supervised=Object.hasOwn(plan,'bootstrap');
+  const workerControl=plan.worker_control===true;
   if(supervised)need(process.geteuid()===0,'compose_host_bootstrap');
+  const controlDirectory=workerControl&&protectedPath(installationDirectory,stat=>stat.isDirectory()&&(stat.mode&0o077n)===0n);
   need(driver&&generation_id,'compose_host_cgroup');
   function verifyAdmissionInputs(){
     need(equal(clockInputs,verifyLinuxComposeClockInputs(plan))&&equal(pairingInputs,verifyLinuxComposePairingInputs(plan)),'compose_host_plan_changed');
@@ -102,6 +105,8 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
   function verifyFiles(){
     need(equal(planIdentity,protectedPath(planFile,stat=>stat.isFile()))&&planBytes.equals(readDeploymentFile(planFile,65536))&&
       equal(outputIdentity,protectedPath(generationDirectory,stat=>stat.isDirectory())),'compose_host_plan_changed');
+    if(workerControl)need(equal(controlDirectory,protectedPath(installationDirectory,stat=>stat.isDirectory()&&(stat.mode&0o077n)===0n)),
+      'compose_host_plan_changed');
     for(const [name,bytes]of Object.entries(generated)){
       const filename=path.join(generationDirectory,name);
       protectedPath(filename,stat=>stat.isFile());
@@ -112,10 +117,12 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
   const installation=openInstallationStore(installationDirectory);
   let journal;
   let starting=false;
+  let control=null;
   const channels=new Map();
   function closeChannels(){
     const closing=[...channels.values()];channels.clear();
     for(const channel of closing)channel.close();
+    control?.close();control=null;
     return Promise.all(closing.map(channel=>channel.ended));
   }
   try{
@@ -248,15 +255,29 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
       const bound=binding(record),expected=bound.core_containment[role],channel=channels.get(role),policy=plan.bootstrap[role];
       const scope={driver,generationId:generation_id,role,host:daemon.host,expected};
       const socket=await channel.accept(scope);
+      const controllerControl=workerControl&&role==='controller';
       const result=await admitLinuxMember({intent:{role,generation_id,service_id:spec[role].service_id,launch_id:crypto.randomUUID()},
         detail:{host:daemon.host,...expected}},{policy,source,socket,compose:true,commit(admission){
           verifyFiles();verifyAdmissionInputs();
           const core=JSON.parse(run(['container','inspect',bound.containers[role]]));
           need(core.length===1&&core[0].Id===bound.containers[role]&&core[0].State?.Running===true&&
             equal(coreContainment(role,core[0]),expected)&&!socket.destroyed&&!socket.readableEnded,'compose_host_binding');
-          return journal.recordAdmission(generation_id,role,admission);
+          const saved=journal.recordAdmission(generation_id,role,admission);
+          if(controllerControl){
+            const {uid,gid}=plan.controller;
+            control=bindLinuxWorkerControl({directory:installationDirectory,socket,core:admission,source,
+              assertLive(){
+                verifyFiles();
+                need(equal(observeLinuxComposeCore({...scope,leader:expected.leader,containerId:expected.container_id,uid,gid}),expected),
+                  'compose_host_binding');
+              },
+              checkGroup:intent=>checkLinuxWorkerGroup({driver,generationId:generation_id,host:daemon.host,
+                launchId:intent.launch_id,groupId:intent.containment_ref.group_id})});
+          }
+          return saved;
         }});
-      socket.once('data',channel.close);socket.resume();
+      if(!controllerControl)socket.once('data',channel.close);
+      socket.resume();
       return result;
     }
     return Object.freeze({

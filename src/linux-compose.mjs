@@ -196,8 +196,9 @@ export function renderLinuxCompose(plan,output){
   const withPairing=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'pairing');
   const withWorkerControl=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'worker_control');
   const withWorkerRuntime=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'worker_runtime');
+  const withReference=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'reference_providers');
   need(fields(plan,(withBootstrap?'bootstrap,':'')+(withCgroup?'cgroup,':'')+(withClock?'clock_evidence,':'')+
-    'controller,format,gui,management,nginx,'+(withPairing?'pairing,':'')+'seamer,subnet'+(withWorkerControl?',worker_control':'')+
+    'controller,format,gui,management,nginx,'+(withPairing?'pairing,':'')+(withReference?'reference_providers,':'')+'seamer,subnet'+(withWorkerControl?',worker_control':'')+
     (withWorkerRuntime?',worker_runtime':''))&&
     plan.format==='leafseamer.linux-compose-protected/1','compose_plan');
   const {controller,seamer,nginx,management,gui,subnet,cgroup}=plan;
@@ -210,6 +211,19 @@ export function renderLinuxCompose(plan,output){
   const direct=[controller,seamer];
   const [controllerData,seamerData,guiDirectory]=[...direct.map(record=>existing(record.data_dir,'directory')),existing(gui.directory,'directory')];
   const roots=[controllerData,seamerData,guiDirectory,output];
+  if(withReference){
+    const reference=plan.reference_providers;
+    need(withBootstrap&&cgroup?.namespace==='private'&&fields(reference,'controller,image,seamer')&&
+      fields(reference.image,'file,sha256')&&/^sha256:[a-f0-9]{64}$(?![\s\S])/.test(reference.image.sha256)&&
+      ['controller','seamer'].every(role=>fields(reference[role],'gid,uid')&&id(reference[role].uid)&&id(reference[role].gid)),
+    'compose_reference_providers');
+    const accounts=[controller,seamer,nginx,reference.controller,reference.seamer,...(withWorkerRuntime?[plan.worker_runtime]:[])];
+    for(const role of ['controller','seamer'])need(accounts.every(account=>account===reference[role]||
+      account?.uid!==reference[role].uid&&account?.gid!==reference[role].gid),'compose_reference_providers');
+    const image=existing(reference.image.file,'file'),stat=fs.lstatSync(image);
+    rootControlledParents(image,'compose_reference_providers');
+    need(stat.uid===0&&(stat.mode&0o6022)===0&&!roots.some(root=>contained(root,image)),'compose_reference_providers');
+  }
   if(withWorkerRuntime){
     const worker=plan.worker_runtime;
     const digest=value=>typeof value==='string'&&/^sha256:[a-f0-9]{64}$(?![\s\S])/.test(value);

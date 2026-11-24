@@ -6,7 +6,10 @@ import {linuxContainerCgroup,openLinuxCgroupRetirement,readLinuxCgroupHost,readL
 
 const sql=fs.readFileSync(new URL('./linux-deployment-journal.sql',import.meta.url),'utf8');
 const admissionSql=fs.readFileSync(new URL('./linux-deployment-admission.sql',import.meta.url),'utf8');
-const currentSql=sql+'\n'+admissionSql;
+const referenceSql=fs.readFileSync(new URL('./linux-deployment-reference.sql',import.meta.url),'utf8');
+const admissionSchema=sql+'\n'+admissionSql;
+const currentSql=admissionSchema+'\n'+referenceSql;
+const currentVersion=3;
 const applicationId=0x4c53444c;
 const schemaDigest='sha256:'+crypto.createHash('sha256').update(sql).digest('hex');
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$(?![\s\S])/;
@@ -20,7 +23,9 @@ const fileIdentity=file=>{
   return stat.dev+':'+stat.ino;
 };
 function intent(value){
-  need(fields(value,'compose_digest,controller,driver,generation_id,seamer')&&matches(value.compose_digest,hash),'linux_deployment_intent');
+  const reference=value?.reference_digest!==undefined;
+  need(fields(value,'compose_digest,controller,driver,generation_id,'+(reference?'reference_digest,':'')+'seamer')&&
+    matches(value.compose_digest,hash)&&(!reference||matches(value.reference_digest,hash)),'linux_deployment_intent');
   for(const role of roles){
     const member=value[role];
     need(fields(member,'database_instance_id,service_id')&&Object.values(member).every(id=>matches(id,uuid)),'linux_deployment_intent');
@@ -52,7 +57,7 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
       db.transaction(()=>{
         db.exec(currentSql);
         pragma(db,'application_id='+applicationId);
-        pragma(db,'user_version=2');
+        pragma(db,'user_version='+currentVersion);
         db.prepare('INSERT INTO linux_deployment_identity VALUES(1,?)').run(identityText);
       }).immediate();
       const fd=fs.openSync(marker,'wx',0o600);
@@ -65,22 +70,23 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
     const markerIdentity=fileIdentity(marker);
     need(fs.statSync(marker).size<=4096,'linux_deployment_identity');
     const version=pragma(db,'user_version');
-    need(pragma(db,'application_id')===applicationId&&[1,2].includes(version)&&pragma(db,'journal_mode')==='wal'&&
+    need(pragma(db,'application_id')===applicationId&&[1,2,currentVersion].includes(version)&&pragma(db,'journal_mode')==='wal'&&
       pragma(db,'quick_check')==='ok','linux_deployment_integrity');
-    checkSchema(db,version===1?sql:currentSql);
+    checkSchema(db,version===1?sql:version===2?admissionSchema:currentSql);
     need(fs.readFileSync(marker).equals(Buffer.from(identityText))&&
       db.prepare('SELECT body FROM linux_deployment_identity WHERE singleton=1').pluck().get()===identityText,'linux_deployment_identity');
     db.exec('BEGIN EXCLUSIVE; COMMIT;');
     if(upgrade){
-      if(version===1)db.transaction(()=>{
-        need(pragma(db,'user_version')===1&&fileIdentity(filename)===identity.file_identity&&fileIdentity(marker)===markerIdentity,
+      if(version<currentVersion)db.transaction(()=>{
+        need(pragma(db,'user_version')===version&&fileIdentity(filename)===identity.file_identity&&fileIdentity(marker)===markerIdentity,
           'linux_deployment_file');
-        db.exec(admissionSql);
-        pragma(db,'user_version=2');
+        if(version===1)db.exec(admissionSql);
+        db.exec(referenceSql);
+        pragma(db,'user_version='+currentVersion);
         checkSchema(db,currentSql);
       }).exclusive();
       db.close();
-      return Object.freeze({schema_revision:2,changed:version===1});
+      return Object.freeze({schema_revision:currentVersion,changed:version<currentVersion});
     }
     need(fields(runtime,'endpointClosure,launch')&&typeof runtime.launch==='function'&&typeof runtime.endpointClosure==='function','linux_deployment_runtime');
     const launch=runtime.launch,endpointClosure=runtime.endpointClosure;
@@ -146,34 +152,79 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
       need(prior?.intent.generation_id===id&&prior.phase===phase,'linux_deployment_phase');
       return prior;
     };
+    function record(table,id,role){
+      const row=db.prepare('SELECT body,digest FROM '+table+' WHERE generation_id=? AND role=?').raw().get(id,role);
+      if(!row)return null;
+      const value=JSON.parse(row[0]);
+      need(canonical(value)===row[0]&&digest(value)===row[1],'linux_deployment_integrity');
+      return value;
+    }
+    function insert(table,id,role,value){
+      const body=canonical(value);
+      need(db.prepare('INSERT INTO '+table+' VALUES(?,?,?,?)').run(id,role,body,digest(value)).changes===1,'linux_deployment_write');
+      return JSON.parse(body);
+    }
+    const coreTable='linux_deployment_admission',launchTable='linux_deployment_reference_launch',referenceTable='linux_deployment_reference_admission';
+    const same=(left,right)=>canonical(left)===canonical(right);
+    function referenceScope(id,role){
+      currentFile();need(version===currentVersion&&matches(id,uuid)&&roles.includes(role),'linux_deployment_reference');
+    }
     return Object.freeze({
       schemaRevision:version,
       current:()=>lookup(),
       lookup(id){need(matches(id,uuid),'linux_deployment_generation');return lookup(id);},
       admission(id,role){
-        currentFile();need(version===2&&matches(id,uuid)&&roles.includes(role),'linux_deployment_admission');
-        const row=db.prepare('SELECT body,digest FROM linux_deployment_admission WHERE generation_id=? AND role=?').raw().get(id,role);
-        if(!row)return null;
-        const value=JSON.parse(row[0]);
-        need(canonical(value)===row[0]&&digest(value)===row[1],'linux_deployment_integrity');
-        return value;
+        currentFile();need(version>=2&&matches(id,uuid)&&roles.includes(role),'linux_deployment_admission');
+        return record(coreTable,id,role);
       },
       recordAdmission(id,role,value){return operation(()=>transaction(()=>{
-        need(version===2&&roles.includes(role),'linux_deployment_admission');
+        need(version>=2&&roles.includes(role),'linux_deployment_admission');
         const prior=active(id,'running'),scope=prior.intent[role];
         need(value?.descriptor?.runtime_generation===id&&value.descriptor.authority_service_id===scope.service_id&&
           value.policy?.service_id===scope.service_id&&value.policy?.database_instance_id===scope.database_instance_id&&
           value.receipt?.gate_state==='closed'&&prior.detail.runtime_binding?.core_containment?.[role],
           'linux_deployment_admission');
-        need(!db.prepare('SELECT 1 FROM linux_deployment_admission WHERE generation_id=? AND role=?').get(id,role),
-          'linux_deployment_admission_used');
-        const body=canonical(value);
-        need(db.prepare('INSERT INTO linux_deployment_admission VALUES(?,?,?,?)').run(id,role,body,digest(value)).changes===1,
-          'linux_deployment_write');
-        return JSON.parse(body);
+        need(!record(coreTable,id,role),'linux_deployment_admission_used');
+        return insert(coreTable,id,role,value);
       }));},
+      referenceLaunch(id,role){referenceScope(id,role);return record(launchTable,id,role);},
+      referenceAdmission(id,role){referenceScope(id,role);return record(referenceTable,id,role);},
+      reserveReference(id,role,settings,value){
+        referenceScope(id,role);
+        return operation(()=>transaction(()=>{
+          need(fields(value,'descriptor,group,group_path,image,intent')&&settings?.image&&value.intent&&
+            fields(value.group,'device,inode')&&fields(value.image,'device,inode'),'linux_deployment_reference_binding');
+          const prior=active(id,'running'),core=record(coreTable,id,role),{intent,descriptor,group_path,group,image}=value;
+          const expectedGroup=linuxContainerCgroup({driver:prior.intent.driver,generationId:id,role}).groupPath+'/reference';
+          need(core&&prior.intent.reference_digest===digest(settings)&&same(core.descriptor,descriptor)&&
+            intent.role==='time_provider'&&Array.isArray(intent.device_ids)&&intent.device_ids.length===0&&intent.runtime_generation===id&&
+            intent.service_id===core.policy.service_id&&intent.artifact_manifest_ref?.digest===settings.image.sha256&&group_path===expectedGroup&&
+            same(group,prior.detail.runtime_binding?.reference_groups?.[role]?.group??null),
+          'linux_deployment_reference_binding');
+          need(!record(launchTable,id,role),'linux_deployment_reference_used');
+          return insert(launchTable,id,role,{intent,descriptor,group_path,group,image,core_receipt_id:core.receipt.receipt_id});
+        }));
+      },
+      recordReferenceAdmission(id,role,value){
+        referenceScope(id,role);
+        return operation(()=>transaction(()=>{
+          need(fields(value,'descriptor,intent,policy,process_observation,receipt')&&value.receipt&&value.process_observation,
+            'linux_deployment_reference_binding');
+          active(id,'running');
+          const reserved=record(launchTable,id,role),core=record(coreTable,id,role),{intent,descriptor,receipt,policy,process_observation:observed}=value;
+          need(reserved&&same(reserved.intent,intent)&&same(reserved.descriptor,descriptor)&&same(core.policy,policy)&&
+            receipt.role==='time_provider'&&receipt.gate_state==='closed'&&receipt.launch_id===intent.launch_id&&
+            receipt.launch_intent_digest===digest(intent)&&same(receipt.domain_ref,core.receipt.domain_ref)&&
+            same(receipt.containment_ref,intent.containment_ref)&&observed.observation_id===receipt.os_observation_ref&&
+            observed.image_device===reserved.image.device&&observed.image_inode===reserved.image.inode,
+          'linux_deployment_reference_binding');
+          need(!record(referenceTable,id,role),'linux_deployment_reference_used');
+          return insert(referenceTable,id,role,value);
+        }));
+      },
       start(input){return operation(()=>{
         const spec=intent(input),host=readLinuxCgroupHost();
+        need(!spec.reference_digest||version===currentVersion,'linux_deployment_reference');
         transaction(()=>{
           const prior=lookup();
           need(!prior||prior.phase==='retired','linux_deployment_previous_open');

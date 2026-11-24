@@ -144,7 +144,9 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 在私有 cgroup 计划中增加 `bootstrap` 对象，分别填写 `controller` 和 `seamer` 的 `leafseamer-core-bootstrap-policy/1`。策略固定服务和数据库身份及制品摘要。生成配置会为每个核心建立独立的只读通道挂载，固定 `contained-compose-linux` 入口。root 管理的宿主向 `openLinuxComposeHost` 提供同宿主原生时钟 `source`，并调用 `startSupervised()`。宿主只向已核对的原容器交付通道，先在启停账本持久写入 `closed` 准入回执，再将其发给核心。核心在自身库保存同一回执后开启保护态 HTTPS。通道丢失会关闭两端通道。
 
-准入使用启停账本 Schema 2。首次初始化直接采用 Schema 2，已有 Schema 1 可继续运行普通保护态计划，也可在停机时调用 `upgradeLinuxDeploymentJournal()` 显式升级，保留身份标记与原启停记录。`admission(role)` 查询已持久保存的准入原件。[Compose 联调](test/linux-compose.integration.mjs)
+私有 cgroup 计划可配置 `reference_providers`。在 `image.file` 和 `image.sha256` 固定本机 Linux 授时提供者制品，分别给 `controller` 和 `seamer` 配置独立宿主 `uid`、`gid`。管理员在两个父组下各预建一个空的 `reference` 子组，将其保留至该代退役完成。已有宿主账本通过 `upgradeLinuxDeploymentJournal()` 显式升级至修订 `3`。启用后，`startSupervised()` 返回两端 `referenceAdmissions`。退役后仍可通过 `referenceAdmission(role)` 读回原件；提供者的采集连接由宿主保管，核心采用与持续采样仍待接入。[Compose 宿主入口](src/linux-compose-host.mjs)
+
+核心准入需要启停账本 Schema 2 或更高版本。首次初始化采用 Schema 3。已有 Schema 1 可继续运行普通保护态计划，也可在停机时显式升级，保留身份标记与原启停记录。`admission(role)` 查询已持久保存的核心准入原件。[Compose 联调](test/linux-compose.integration.mjs)
 
 私有 cgroup 与 `bootstrap` 同时启用时，可增加 `clock_evidence`，分别为 `controller` 和 `seamer` 填写 `exchange_directory`、`policy_digest`、`public_key_file` 与 `public_key_sha256`。两个摘要均使用 `sha256:<64 位小写十六进制>`。公钥为 root 管理的 Ed25519 PEM，须允许核心账户读取。两个交换目录互不重叠，各由相应核心的 UID/GID 拥有，权限为 `0700`，祖先目录由 root 管理。生成器分别生成服务的 `/2` 配置，配置与公钥只读挂载，交换目录仅挂入相应核心。激活前宿主复核原公钥与目录身份。
 

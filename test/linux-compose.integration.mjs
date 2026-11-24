@@ -121,7 +121,15 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const plan={format:'leafseamer.linux-compose-protected/1',subnet:range+'.0/29',management,controller,seamer,
     nginx:{image:images.nginx,uid,gid,address:range+'.4'},gui:{directory,manifest_sha256:'sha256:'+hash(manifestBytes)},
     ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}}),...(workerControl&&{worker_control:true})};
-  let source,admissions;
+  let source,admissions,referenceAdmissions;
+  const referenceExecutable=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER;
+  assert.ok(!referenceExecutable||supervised);
+  if(referenceExecutable){
+    const executable=path.join(root,'reference-provider');
+    fs.copyFileSync(referenceExecutable,executable);fs.chmodSync(executable,0o555);
+    plan.reference_providers={image:{file:executable,sha256:'sha256:'+hash(fs.readFileSync(executable))},
+      controller:{uid:1002,gid:1002},seamer:{uid:1003,gid:1003}};
+  }
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
   const pairedSimulator=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRED_SIMULATOR==='1';
@@ -181,7 +189,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     [{...plan,seamer:{...seamer,ca_file:aliasOfKey}},'compose_tls_scope'],
     [{...plan,seamer:{...seamer,database_instance_id:controller.database_instance_id}},'compose_identity'],
     [{...plan,cgroup:{driver:'auto',generation_id:crypto.randomUUID(),namespace:'private'}},'cgroup_scope'],
-    [{...plan,cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'host'}},workerControl?'compose_worker_control':'compose_cgroup'],
+    [{...plan,cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'host'}},workerControl?'compose_worker_control':referenceExecutable?'compose_reference_providers':'compose_cgroup'],
+    ...(referenceExecutable?[[{...plan,reference_providers:{...plan.reference_providers,controller:{uid,gid}}},'compose_reference_providers']]:[]),
     ...(workerControl?[ [{...plan,worker_control:false},'compose_worker_control'] ]:[]),
     ...(chronyFile?[
       [{...plan,clock_evidence:{...plan.clock_evidence,seamer:{...plan.clock_evidence.seamer,exchange_directory:clocks.controller.exchange}}},'compose_clock_scope'],
@@ -203,7 +212,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const stem='leafseamer_'+generationId.replaceAll('-','');
   for(const driver of ['cgroupfs','systemd']){
     const observedOutput=path.join(root,'cgroup-'+driver);
-    const {bootstrap:_policy,clock_evidence:_clock,worker_control:_workerControl,...protectedPlan}=plan;
+    const {bootstrap:_policy,clock_evidence:_clock,worker_control:_workerControl,reference_providers:_reference,...protectedPlan}=plan;
     fs.writeFileSync(planPath,JSON.stringify({...protectedPlan,cgroup:{driver,generation_id:generationId,namespace:'private'}}));
     run(process.execPath,[...generate.slice(0,-1),observedOutput]);
     const {services}=JSON.parse(docker('compose','--project-name',project,'--file',path.join(observedOutput,'compose.json'),'config','--format','json'));
@@ -224,6 +233,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     for(const role of ['controller','seamer']){
       const group='/sys/fs/cgroup'+linuxContainerCgroup({driver:'cgroupfs',generationId:id,role}).groupPath;
       fs.mkdirSync(group);groups.push(group);
+      if(referenceExecutable&&id===generationId){fs.mkdirSync(group+'/reference');groups.unshift(group+'/reference');}
     }
   };
   const projectFor=(id,hostId=installation.host_installation_id)=>'leafseamer-'+hostId.replaceAll('-','')+'-'+id.replaceAll('-','');
@@ -242,6 +252,17 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     const wrongPid=path.join(root,'wrong.pid');
     fs.writeFileSync(wrongPid,String(process.pid));
     assert.throws(()=>openLinuxComposeHost({...hostOptions,pidFile:wrongPid}),{code:'compose_host_daemon'});
+    if(referenceExecutable){
+      const legacy=new DatabaseSync(path.join(installationDirectory,'linux-deployment.db'));
+      try{legacy.exec('DROP TABLE linux_deployment_reference_admission; DROP TABLE linux_deployment_reference_launch; PRAGMA user_version=2');}
+      finally{legacy.close();}
+      managedHost=openLinuxComposeHost(hostOptions);
+      await assert.rejects(managedHost.startSupervised(),{code:'compose_host_bootstrap'});
+      assert.equal(managedHost.current(),null);
+      await managedHost.close();
+      const migration=openInstallationStore(installationDirectory);
+      try{assert.deepEqual(migration.upgradeLinuxDeploymentJournal(),{schema_revision:3,changed:true});}finally{migration.close();}
+    }
     managedHost=openLinuxComposeHost(hostOptions);
     if(supervised){
       assert.throws(()=>managedHost.start(),{code:'compose_host_bootstrap'});
@@ -255,9 +276,20 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     const outcome=supervised?await managedHost.startSupervised():{record:managedHost.start()};
     const {record:started}=outcome;
     admissions=outcome.admissions;
+    referenceAdmissions=outcome.referenceAdmissions;
     if(supervised)for(const role of ['controller','seamer']){
       assert.deepEqual(managedHost.admission(role),admissions[role]);
       assert.equal(admissions[role].receipt.gate_state,'closed');
+      if(referenceExecutable){
+        const provider=referenceAdmissions[role];
+        assert.deepEqual(managedHost.referenceAdmission(role),provider);
+        assert.deepEqual(provider.receipt.domain_ref,admissions[role].receipt.domain_ref);
+        assert.equal(provider.intent.role,'time_provider');
+        assert.equal(provider.intent.artifact_manifest_ref.digest,plan.reference_providers.image.sha256);
+        const pid=provider.process_observation.provider_pid,group=started.detail.runtime_binding.reference_groups[role];
+        assert.equal(fs.readFileSync('/proc/'+pid+'/cgroup','utf8'),'0::'+group.group_path+'\n');
+        assert.equal(fs.readlinkSync('/proc/'+pid+'/exe'),plan.reference_providers.image.file);
+      }
     }
     if(workerControl){
       const generated=JSON.parse(fs.readFileSync(composePath,'utf8')).services;
@@ -468,18 +500,46 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         }
       }finally{fs.writeFileSync(composePath,original);}
     }
-    const retired=managedHost.retire();
+    let retired=managedHost.retire();
+    if(referenceExecutable){
+      const deadline=performance.now()+5000;
+      while(retired.phase==='closing'&&performance.now()<deadline){await delay(50);retired=managedHost.retire();}
+      for(const role of ['controller','seamer']){
+        assert.equal(fs.existsSync('/proc/'+referenceAdmissions[role].process_observation.provider_pid),false);
+        const group=retired.detail.runtime_binding.reference_groups[role];
+        assert.match(fs.readFileSync('/sys/fs/cgroup'+group.group_path+'/cgroup.events','utf8'),/^populated 0$/m);
+      }
+    }
     assert.equal(retired.phase,'retired');
     assert.match(retired.detail.endpoint_evidence_digest,/^sha256:[a-f0-9]{64}$/);
     assert.deepEqual(managedHost.retire(),retired);
     assert.equal(compose('ps','--all','--quiet').trim(),'');
     created=false;
-    managedHost.close();
+    await managedHost.close();
     if(supervised){
       managedHost=openLinuxComposeHost(hostOptions);
       assert.deepEqual(managedHost.current(),retired);
-      for(const role of ['controller','seamer'])assert.deepEqual(managedHost.admission(role),admissions[role]);
-      managedHost.close();
+      for(const role of ['controller','seamer']){
+        assert.deepEqual(managedHost.admission(role),admissions[role]);
+        if(referenceExecutable)assert.deepEqual(managedHost.referenceAdmission(role),referenceAdmissions[role]);
+      }
+      await managedHost.close();
+      if(referenceExecutable){
+        const ledger=new DatabaseSync(path.join(installationDirectory,'linux-deployment.db'));
+        try{
+          assert.deepEqual(ledger.prepare('PRAGMA foreign_key_check').all(),[]);
+          const originals=ledger.prepare('SELECT role, body FROM linux_deployment_reference_launch WHERE generation_id=? ORDER BY role').all(generationId);
+          assert.deepEqual(originals.map(value=>value.role),['controller','seamer']);
+          for(const {role,body} of originals){
+            const original=JSON.parse(body);
+            assert.equal(original.core_receipt_id,admissions[role].receipt.receipt_id);
+            assert.deepEqual(original.intent,referenceAdmissions[role].intent);
+            assert.deepEqual(original.group,retired.detail.runtime_binding.reference_groups[role].group);
+          }
+          assert.throws(()=>ledger.exec('UPDATE linux_deployment_reference_launch SET digest=digest'),/linux_deployment_reference_immutable/);
+          assert.throws(()=>ledger.exec('DELETE FROM linux_deployment_reference_admission'),/linux_deployment_reference_immutable/);
+        }finally{ledger.close();}
+      }
     }
   }else compose('stop','--timeout','8');
   for(const role of ['controller','seamer']){
@@ -520,7 +580,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
   if(manage){
     const nextId=crypto.randomUUID(),nextDirectory=path.join(root,'next');
-    const {bootstrap:_policy,clock_evidence:_clock,worker_control:_workerControl,...protectedPlan}=plan;
+    const {bootstrap:_policy,clock_evidence:_clock,worker_control:_workerControl,reference_providers:_reference,...protectedPlan}=plan;
     fs.writeFileSync(planPath,JSON.stringify({...protectedPlan,cgroup:{driver:'cgroupfs',generation_id:nextId}}));
     run(process.execPath,[...generate.slice(0,-1),nextDirectory]);
     await prepareParents(nextId);
@@ -535,6 +595,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }else compose('down','--timeout','8');
   assert.equal(compose('ps','--all','--quiet').trim(),'');
   created=false;
+  delete plan.reference_providers;
   if(process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE){
     assert.ok(workerControl);
     managedHost.close();managedHost=null;

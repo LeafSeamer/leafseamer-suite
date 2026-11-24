@@ -111,6 +111,16 @@ function populated(fd){
 
 export function readLinuxCgroupParent({driver,generationId,role,host}={}){
   const {groupPath}=linuxContainerCgroup({driver,generationId,role});
+  return readLinuxGroup(groupPath,host);
+}
+
+export function readLinuxReferenceGroup({driver,generationId,role,host}={}){
+  const {groupPath}=linuxContainerCgroup({driver,generationId,role});
+  const child=groupPath+'/reference';
+  return {group_path:child,...readLinuxGroup(child,host)};
+}
+
+function readLinuxGroup(groupPath,host){
   const local=assertHost(host),location=cgroupRoot+groupPath;
   const fd=fs.openSync(location,directoryFlags);
   try{

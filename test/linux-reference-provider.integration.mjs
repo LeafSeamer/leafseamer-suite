@@ -47,7 +47,10 @@ test('Linux 原生宿主先纳管再启动授时提供者，交付独占采集�
     return BigInt(seconds)*1000000000n+BigInt(hundredths)*10000000n;
   }};
   let active=true,committed;
-  const inputs={core,provider,groupPath,source,assertLive(){assert.equal(active,true);},commit(value){
+  const inputs={core,provider,groupPath,source,assertLive(){assert.equal(active,true);},reserve(value){
+    assert.deepEqual(value.intent.artifact_manifest_ref,provider.artifact_manifest_ref);
+    assert.match(fs.readFileSync(group+'/cgroup.events','utf8'),/^populated 0$/m);
+  },commit(value){
     assert.equal(committed,undefined);committed=structuredClone(value);
     assert.match(fs.readFileSync(group+'/cgroup.events','utf8'),/^populated 1$/m);
     assert.match(fs.readFileSync('/proc/'+value.process_observation.provider_pid+'/status','utf8'),/^Uid:\s+65534\s+65534\s+65534\s+65534$/m);

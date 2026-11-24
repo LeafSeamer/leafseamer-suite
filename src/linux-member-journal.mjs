@@ -78,8 +78,8 @@ function nativeFrames(stream){
   };
 }
 
-export async function startLinuxReferenceProvider({core,groupPath,provider,source,assertLive,commit}){
-  need(process.platform==='linux'&&process.geteuid()===0&&typeof assertLive==='function'&&typeof commit==='function',
+export async function startLinuxReferenceProvider({core,groupPath,provider,source,assertLive,reserve,commit}){
+  need(process.platform==='linux'&&process.geteuid()===0&&typeof assertLive==='function'&&typeof reserve==='function'&&typeof commit==='function',
     'linux_reference_provider_host');
   const {descriptor,policy,receipt:coreReceipt}=core;
   const {artifact_manifest_ref,image_path,uid,gid}=provider;
@@ -124,6 +124,8 @@ export async function startLinuxReferenceProvider({core,groupPath,provider,sourc
   try{
     assertLive();
     image=pinExecutable(image_path,artifact_manifest_ref.digest,64*1024*1024);helper=pinHelper();
+    await reserve({intent:launch,descriptor,group_path:groupPath,group,image:image.identity});
+    assertLive();sameGroup();assertImage();
     child=spawn('/proc/self/fd/5',[location,group.device,group.inode,image_path,image.identity.device,image.identity.inode,String(uid),String(gid),
       '--time-provider','--','--intent',canonical(launch),'--domain',canonical(descriptor),'--timeout-ms',String(policy.bootstrap_timeout_ms),
       '--core-receipt-id',coreReceipt.receipt_id,'--database-instance',policy.database_instance_id],

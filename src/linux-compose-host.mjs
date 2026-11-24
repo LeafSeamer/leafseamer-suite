@@ -6,12 +6,13 @@ import {canonical,digest,requireValue as need} from './import-input.mjs';
 import {openInstallationStore,requireInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
 import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs} from './linux-compose.mjs';
-import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
+import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent,readLinuxReferenceGroup} from './linux-cgroup-retirement.mjs';
 import {openLinuxComposeChannel,openLinuxInstallationChannel} from './linux-compose-channel.mjs';
 import {serveLinuxInstallationRead} from './linux-installation-read.mjs';
 import {admitLinuxMember} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
-import {linuxWorkerRuntimeOptions} from './linux-member-journal.mjs';
+import {linuxWorkerRuntimeOptions,startLinuxReferenceProvider} from './linux-member-journal.mjs';
+import {pinExecutable} from './linux-native-artifact.mjs';
 import {composeLinuxWorkerRuntime} from './linux-native-host.mjs';
 
 const docker='/usr/bin/docker';
@@ -97,6 +98,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
   const {driver,generation_id,namespace}=plan.cgroup??{};
   const privateNamespace=namespace==='private';
   const supervised=Object.hasOwn(plan,'bootstrap');
+  const reference=plan.reference_providers??null;
   const workerControl=plan.worker_control===true;
   if(supervised)need(process.geteuid()===0,'compose_host_bootstrap');
   const controlDirectory=workerControl&&protectedPath(installationDirectory,stat=>stat.isDirectory()&&(stat.mode&0o077n)===0n);
@@ -121,14 +123,18 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
   const closeInstallation=()=>{if(installationStore===null)installation.close();};
   let journal;
   let starting=false;
-  let control=null,installationReader=null,closing=null;
-  const channels=new Map();
+  let control=null,installationReader=null,closing=null,draining=null;
+  const channels=new Map(),providers=new Map();
   function closeChannels(){
-    const closing=[...channels.values()];channels.clear();
-    for(const channel of closing)channel.close();
+    if(draining)return draining;
+    const active=[...channels.values()];channels.clear();
+    const children=[...providers.values()];providers.clear();
+    const finished=children.map(provider=>provider.retire());
+    for(const channel of active)channel.close();
     control?.close();control=null;
-    return Promise.all([...closing.map(channel=>channel.ended),installationReader]);
+    return draining=Promise.all([...active.map(channel=>channel.ended),installationReader,...finished]);
   }
+  const closeAfterLoss=()=>{void closeChannels().catch(()=>{});};
   try{
     const worker=plan.worker_runtime?composeLinuxWorkerRuntime(plan.worker_runtime,plan.controller,plan.bootstrap.controller,installation):null;
     if(worker){
@@ -140,6 +146,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
     const composeArgs=['compose','--project-name',project,'--project-directory',generationDirectory,'--env-file','/dev/null',
       '--file',path.join(generationDirectory,'compose.json')];
     const spec={generation_id,driver,compose_digest:fileHash(Buffer.from(generated['compose.json'])),
+      ...(reference&&{reference_digest:digest(reference)}),
       ...Object.fromEntries(coreRoles.map(role=>[role,{
         service_id:plan[role].service_id,database_instance_id:plan[role].database_instance_id}]))};
     const daemon=daemonIdentity(socketPath,pidFile);
@@ -167,6 +174,8 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
           readLinuxCgroupParent({driver,generationId:generation_id,role,host:daemon.host})]));
       }catch{need(false,'compose_host_parent_unavailable');}
     }
+    const referenceGroup=role=>readLinuxReferenceGroup({driver,generationId:generation_id,role,host:daemon.host});
+    const referenceGroups=()=>Object.fromEntries(coreRoles.map(role=>[role,referenceGroup(role)]));
     function assertFreshProject(){
       need(containerIds().length===0&&networkIds().length===0,'compose_host_project_exists');
     }
@@ -180,12 +189,18 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       assertFreshProject();
       const before=parents();
       need(Object.values(before).every(group=>!group.populated),'compose_host_parent_populated');
+      const referenceBefore=reference&&referenceGroups();
+      if(reference){
+        need(Object.values(referenceBefore).every(group=>!group.populated),'compose_host_reference_populated');
+        const executable=pinExecutable(reference.image.file,reference.image.sha256,64*1024*1024);
+        fs.closeSync(executable.fd);
+      }
       const images=Object.fromEntries(roles.map(role=>{
         const id=run(['image','inspect','--format','{{.Id}}',plan[role].image]).trim();
         need(imageId.test(id),'compose_host_image');
         return [role,id];
       }));
-      return {before,images};
+      return {before,images,referenceBefore};
     }
     function coreContainment(role,container){
       need(container.HostConfig?.CgroupnsMode==='private','compose_host_cgroup_namespace');
@@ -196,13 +211,14 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
     let prepared=null;
     function launch(config){
       need(prepared&&equal(config,spec),'compose_host_intent');
-      const {before,images}=prepared;
+      const {before,images,referenceBefore}=prepared;
       verifyFiles();verifyAdmissionInputs();assertFreshProject();
       need(equal(before,parents()),'compose_host_parent_changed');
       run([...composeArgs,'up','--detach','--no-build','--pull','never','--no-recreate'],45000);
       const after=parents();
       need(coreRoles.every(role=>after[role].populated&&equal(before[role].group,after[role].group)),
         'compose_host_parent_changed');
+      if(reference)need(equal(referenceBefore,referenceGroups()),'compose_host_reference_group_changed');
       const ids=containerIds(),networks=networkIds();
       need(ids.length===3&&networks.length===2,'compose_host_inventory');
       const observed=JSON.parse(run(['container','inspect',...ids])),containers={},pids={},core_containment={};
@@ -226,7 +242,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
         }
       }
       return {controller:pids.controller,seamer:pids.seamer,runtime_binding:{project,daemon,containers,networks,images,
-        ...(privateNamespace&&{core_containment})}};
+        ...(privateNamespace&&{core_containment}),...(reference&&{reference_groups:referenceBefore})}};
     }
     function binding(record){
       const bound=record?.detail.runtime_binding;
@@ -242,6 +258,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       verifyFiles();
       const bound=binding(record);
       if(containerIds().length!==0||networkIds().length!==0)return null;
+      if(reference)need(equal(bound.reference_groups,referenceGroups()),'compose_host_reference_group_changed');
       return digest({format:'leafseamer.compose-endpoints-closed/1',runtime_binding:bound});
     }
     function assertSurvivingCores(bound,present){
@@ -292,7 +309,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
               const reader=openLinuxInstallationChannel({directory:worker.runtime.channelDirectory,uid,gid,
                 corePid:expected.leader.pid,timeoutMs:policy.bootstrap_timeout_ms,assertCurrent:assertLive});
               channels.set('installation',reader);
-              void reader.ended.then(closeChannels);
+              void reader.ended.then(closeAfterLoss);
               installationReader=reader.peer.then(connection=>serveLinuxInstallationRead({socket:connection,installation,receipt:admission.receipt,
                 serviceId:policy.service_id,assertCurrent:assertLive})).catch(reader.close);
               await reader.ready;
@@ -310,29 +327,59 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       socket.resume();
       return result;
     }
+    async function startReference(role,record,core){
+      const bound=binding(record),expected=bound.core_containment[role],assigned=bound.reference_groups[role];
+      const {uid,gid}=plan[role],scope={driver,generationId:generation_id,role,host:daemon.host,expected};
+      function assertLive(){
+        verifyFiles();
+        const {group,group_path}=referenceGroup(role),phase=journal.current();
+        need(channels.has(role)&&phase?.phase==='running'&&phase.intent.generation_id===generation_id&&
+          equal({group,group_path},{group:assigned.group,group_path:assigned.group_path})&&
+          equal(observeLinuxComposeCore({...scope,leader:expected.leader,containerId:expected.container_id,uid,gid}),expected),
+        'compose_host_reference_binding');
+      }
+      const provider=await startLinuxReferenceProvider({core,groupPath:assigned.group_path,source,assertLive,
+        provider:{...reference[role],image_path:reference.image.file,
+          artifact_manifest_ref:{manifest_id:'linux-reference-time-provider',revision:'1',digest:reference.image.sha256}},
+        reserve(original){
+          need(equal(original.group,assigned.group),'compose_host_reference_group_changed');
+          journal.reserveReference(generation_id,role,reference,original);
+        },
+        commit(original){journal.recordReferenceAdmission(generation_id,role,original);}
+      });
+      if(draining){await provider.retire();need(false,'compose_host_reference_binding');}
+      providers.set(role,provider);
+      void provider.ended.then(closeAfterLoss);
+      return provider.admission;
+    }
     return Object.freeze({
       current:()=>journal.current(),
       admission:role=>journal.admission(generation_id,role),
+      referenceAdmission:role=>journal.referenceAdmission(generation_id,role),
       start(){idle();need(!supervised,'compose_host_bootstrap');return start();},
       async startSupervised(){
-        idle();need(supervised&&journal.schemaRevision===2&&source&&typeof source.capture==='function'&&
+        idle();need(supervised&&journal.schemaRevision>=2&&(!reference||journal.schemaRevision>=3)&&source&&typeof source.capture==='function'&&
           typeof source.tick==='function','compose_host_bootstrap');
         verifyFiles();verifyAdmissionInputs();
         need(channels.size===0&&!journal.lookup(generation_id),'linux_deployment_generation_used');
         starting=true;
+        draining=null;
         try{
           for(const role of coreRoles){
             const {uid,gid}=plan[role];
             const channel=openLinuxComposeChannel({directory:path.join(generationDirectory,'bootstrap-'+role),uid,gid,
               timeoutMs:plan.bootstrap[role].bootstrap_timeout_ms});
             channels.set(role,channel);
-            void channel.ended.then(closeChannels);
+            void channel.ended.then(closeAfterLoss);
             await channel.ready;
           }
           need(channels.size===coreRoles.length,'compose_host_bootstrap');
           const record=start(),admissions={};
           for(const role of coreRoles)admissions[role]=await admit(role,record);
-          return {record,admissions};
+          if(!reference)return {record,admissions};
+          const referenceAdmissions={};
+          for(const role of coreRoles)referenceAdmissions[role]=await startReference(role,record,admissions[role]);
+          return {record,admissions,referenceAdmissions};
         }catch(error){await closeChannels();throw error;}
         finally{starting=false;}
       },
@@ -349,7 +396,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
         const present=containerIds();
         need(within(present,Object.values(bound.containers))&&within(networkIds(),bound.networks),'compose_host_inventory_changed');
         if(privateNamespace)assertSurvivingCores(bound,present);
-        closeChannels();
+        closeAfterLoss();
         run([...composeArgs,'down','--timeout','8'],45000);
         return journal.observeRetirement(generation_id);
       },
@@ -358,7 +405,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
         if(closing)return closing;
         const drained=closeChannels();
         try{journal.close();}finally{
-          if(installationReader)closing=drained.then(closeInstallation);
+          if(installationReader||reference)closing=drained.finally(closeInstallation);
           else{closeInstallation();closing=drained;}
         }
         return closing;

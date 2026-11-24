@@ -110,7 +110,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     [{...plan,seamer:{...seamer,data_dir:controller.data_dir}},'compose_path_overlap'],
     [{...plan,seamer:{...seamer,ca_file:controller.private_key_file}},'compose_tls_scope'],
     [{...plan,seamer:{...seamer,ca_file:aliasOfKey}},'compose_tls_scope'],
-    [{...plan,seamer:{...seamer,database_instance_id:controller.database_instance_id}},'compose_identity']
+    [{...plan,seamer:{...seamer,database_instance_id:controller.database_instance_id}},'compose_identity'],
+    [{...plan,cgroup:{driver:'auto',generation_id:crypto.randomUUID()}},'cgroup_scope']
   ]){
     fs.writeFileSync(planPath,JSON.stringify(invalid));
     const bad=spawnSync(process.execPath,generate,{encoding:'utf8',timeout:10000});
@@ -124,6 +125,17 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   assert.equal(spawnSync(process.execPath,generate,{encoding:'utf8',timeout:10000}).status,1);
   assert.equal(hash(fs.readFileSync(composePath)),composeDigest);
   assert.deepEqual(compose('config','--services').trim().split('\n').sort(),['controller','nginx','seamer']);
+  const generationId=crypto.randomUUID(),stem='leafseamer_'+generationId.replaceAll('-','');
+  for(const driver of ['cgroupfs','systemd']){
+    const observedOutput=path.join(root,'cgroup-'+driver);
+    fs.writeFileSync(planPath,JSON.stringify({...plan,cgroup:{driver,generation_id:generationId}}));
+    run(process.execPath,[...generate.slice(0,-1),observedOutput]);
+    const {services}=JSON.parse(docker('compose','--project-name',project,'--file',path.join(observedOutput,'compose.json'),'config','--format','json'));
+    const parent=role=>driver==='cgroupfs'?'/'+stem+'_'+role:stem+'_'+role+'.slice';
+    assert.equal(services.controller.cgroup_parent,parent('controller'));
+    assert.equal(services.seamer.cgroup_parent,parent('seamer'));
+    assert.equal(services.nginx.cgroup_parent,undefined);
+  }
   created=true;
   compose('up','--detach','--no-build','--pull','never');
   const containers=Object.fromEntries(['controller','seamer','nginx'].map(role=>{

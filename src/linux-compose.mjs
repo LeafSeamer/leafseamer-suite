@@ -4,6 +4,7 @@ import path from 'node:path';
 import {isIP} from 'node:net';
 import {fileURLToPath} from 'node:url';
 import {readDeploymentFile,renderLinuxIngress} from './linux-ingress.mjs';
+import {linuxContainerCgroup} from './linux-cgroup-retirement.mjs';
 
 const runtime='/etc/leafseamer';
 const data='/var/lib/leafseamer';
@@ -69,8 +70,10 @@ function member(role,record,origin,output){
 
 export function renderLinuxCompose(plan,output){
   absolute(output);
-  need(fields(plan,'controller,format,gui,management,nginx,seamer,subnet')&&plan.format==='leafseamer.linux-compose-protected/1','compose_plan');
-  const {controller,seamer,nginx,management,gui,subnet}=plan;
+  const withCgroup=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'cgroup');
+  need(fields(plan,(withCgroup?'cgroup,':'')+'controller,format,gui,management,nginx,seamer,subnet')&&
+    plan.format==='leafseamer.linux-compose-protected/1','compose_plan');
+  const {controller,seamer,nginx,management,gui,subnet,cgroup}=plan;
   const memberFields='address,ca_file,certificate_file,data_dir,database_instance_id,gid,image,private_key_file,server_name,service_id,uid';
   need(fields(controller,memberFields)&&fields(seamer,memberFields)&&fields(nginx,'address,gid,image,uid')&&
     fields(management,'bind_address,certificate_file,host,port,private_key_file')&&fields(gui,'directory,manifest_sha256'),'compose_plan');
@@ -98,6 +101,12 @@ export function renderLinuxCompose(plan,output){
   },{listenPort:httpsPort,guiMount,tempDirectory:'/tmp'});
   const origin='https://'+management.host+(management.port===443?'':':'+management.port);
   const c=member('controller',controller,origin,output),s=member('seamer',seamer,origin,output);
+  if(withCgroup){
+    need(fields(cgroup,'driver,generation_id'),'compose_cgroup');
+    const scope={driver:cgroup.driver,generationId:cgroup.generation_id};
+    c.service.cgroup_parent=linuxContainerCgroup({...scope,role:'controller'}).parent;
+    s.service.cgroup_parent=linuxContainerCgroup({...scope,role:'seamer'}).parent;
+  }
   const proxy={...container(nginx),entrypoint:['/usr/sbin/nginx'],command:['-e','stderr','-p','/tmp/','-c',runtime+'/nginx.conf','-g','daemon off;'],
     volumes:[bind(output+'/nginx.conf',runtime+'/nginx.conf'),bind(gui.directory,guiMount),
       bind(management.certificate_file,certificate),bind(management.private_key_file,privateKey),
@@ -120,7 +129,7 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
     // Compose 文件最后落盘，只有完整生成后才出现可启动入口。
     for(const [name,bytes] of Object.entries(files))fs.writeFileSync(output+'/'+name,bytes,{flag:'wx',mode:0o644});
   }catch(error){
-    const code=/^(?:compose|ingress)_[a-z_]+$/.test(error.code??'')?error.code:'compose_input';
+    const code=/^(?:compose|ingress|cgroup)_[a-z_]+$/.test(error.code??'')?error.code:'compose_input';
     process.stderr.write(json({error:code}));
     process.exitCode=1;
   }

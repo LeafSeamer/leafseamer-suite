@@ -91,6 +91,7 @@ Linux Controller 与 Seamer 的安装包都提供 `start-protected-ingress` 命�
 | `controller`、`seamer` | `image`、`uid`、`gid`、`address`、`data_dir`、`service_id`、`database_instance_id`、`server_name`、`certificate_file`、`private_key_file`、`ca_file` |
 | `nginx` | `image`、`uid`、`gid`、`address` |
 | `gui` | `directory` 与 `manifest_sha256`，沿用上面的 GUI 清单 |
+| `cgroup` | 可选。提供本机 Docker 的 `driver`（`cgroupfs` 或 `systemd`）和新启动代的 UUID v4 `generation_id` |
 
 镜像填写 `仓库@sha256:摘要` 或预装镜像的 `sha256:镜像ID`。子网内为三个容器分配不同地址，避开网络、广播和默认网关地址。数据目录、GUI 和 TLS 路径使用独立的绝对路径。数据目录由对应服务的 UID/GID 写入，三个私钥分别授予对应容器进程读取权限。输出目录的父目录应已存在，输出目录由生成器创建。
 
@@ -104,6 +105,14 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 只有 Nginx 发布管理端口。业务容器加入内部桥接网络，分别挂载自己的可写数据库目录和只读 TLS 文件。Compose 使用固定镜像、非 root 用户、只读根文件系统和禁止提权设置，关闭自动重启。该路径运行保护态 HTTPS，可信运行域、宿主认证时钟和首次配对由后续受信装配提供。[Docker Compose 服务配置](https://docs.docker.com/reference/compose-file/services/)、[Docker Compose 网络配置](https://docs.docker.com/reference/compose-file/networks/)
 
 [Compose 联调用例](test/linux-compose.integration.mjs) 使用 `LEAFSEAMER_COMPOSE_CONTROLLER_IMAGE`、`LEAFSEAMER_COMPOSE_SEAMER_IMAGE`、`LEAFSEAMER_COMPOSE_NGINX_IMAGE` 指定本机镜像，以 `LEAFSEAMER_COMPOSE_GUI_ROOT` 指向构建好的 GUI。用例运行在独立 Compose 项目，使用临时数据库与证书。
+
+### Linux 父组退役观察
+
+设置 `cgroup` 后，生成器按启动代和服务配置不同的 Docker `cgroup_parent`。宿主需采用与计划相同的 cgroup 驱动，并保留观察所用父组。systemd 驱动采用独立的顶层 slice。[Docker cgroup 父组](https://docs.docker.com/reference/cli/dockerd/#default-cgroup-parent) · [systemd slice](https://www.freedesktop.org/software/systemd/man/latest/systemd.slice.html)
+
+`dist/linux-cgroup-retirement.mjs` 提供只读宿主接口。部署装配从本机取得 `readLinuxCgroupHost()`，对已核对的容器主进程取得 `readLinuxCgroupLeader(pid)`，在进程存活时用这些事实和固定角色、驱动、启动代调用 `openLinuxCgroupRetirement()`。观察绑定原父组描述符，并复核启动身份、命名空间、组 inode、主进程启动时刻和归属。`observe()` 返回 `populated`、`empty` 或 `indeterminate`。只要子组仍有活进程，父组仍为 `populated`。组丢失、换代或已绑定主进程移出原组时，当前观察锁存为 `indeterminate`。[Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html#un-populated-notification)
+
+受信退役还需由宿主生命周期装配证明旧启动入口已关闭，并把观察写入该运行域的退役记录。本接口提供实时内核事实，消费方使用后调用 `close()`。在专用 Linux 测试宿主上可用 `LEAFSEAMER_TEST_CGROUP_HOST=1` 运行 [cgroup 联调用例](test/linux-cgroup-retirement.integration.mjs)，附加 `LEAFSEAMER_TEST_SYSTEMD_CGROUP=1` 验证临时 systemd 单元。
 
 ## 本机安装账本与静态归档验证
 

@@ -130,7 +130,7 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 启动时重新生成并核对固定 Compose 文件，检查本机 daemon、预载镜像、空父组及项目清单，再用独立项目名启动保护态服务。停机先在账本关闭旧入口，只处理原记录内的容器和网络。项目端点已退出且两个原父组均为空后，才写入退役结果。临时检查失败可重试原代，未知容器或网络进入原项目时拒绝停机命令。若重开后无法重获原活进程观察，继续保留未证实状态。[Docker Compose 启动](https://docs.docker.com/reference/cli/docker/compose/up/) · [Docker Compose 停机](https://docs.docker.com/reference/cli/docker/compose/down/)
 
-在与测试进程同宿主的隔离 daemon 上，向 [Compose 用例](test/linux-compose.integration.mjs) 同时提供 `LEAFSEAMER_TEST_DOCKER_SOCKET` 和 `LEAFSEAMER_TEST_DOCKER_PID_FILE`，可运行经过启停账本的双代联调。当前已接通保护态生命周期，DF02 受监督运行准入仍待接线。
+在与测试进程同宿主的隔离 daemon 上，向 [Compose 用例](test/linux-compose.integration.mjs) 同时提供 `LEAFSEAMER_TEST_DOCKER_SOCKET` 和 `LEAFSEAMER_TEST_DOCKER_PID_FILE`，可运行经过启停账本的双代联调。普通计划使用保护态入口，带 `bootstrap` 的计划使用下述 DF02 受监督入口。
 
 启用 `cgroup.namespace=private` 时，宿主从实际核心进程核对非 root UID／GID、`no_new_privs` 及空权限集。该进程的只读 cgroup 挂载必须指向宿主上与 Docker 容器 ID 匹配的成员组。设备号、inode、挂载 ID 和命名空间身份随 `runtime_binding.core_containment` 持久保存。退役操作在停止仍运行的核心容器前复核这些证据。这个入口使用 Compose 的容器私有 cgroup 选项。[Docker Compose 容器规范](https://docs.docker.com/reference/compose-file/container-spec/)
 
@@ -138,7 +138,13 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 `npm run build -- --linux-member` 同时构建 `dist/native/leafseamer_linux_compose_channel`。可信装配可从 `@leafseamer/suite/linux-compose-channel` 打开 `openLinuxComposeChannel({directory, uid, gid, timeoutMs})`，等待 `ready` 后将该次启动专用目录只读挂入目标容器。容器入口工具以 `connect <容器内套接字绝对路径> <宿主所有者 UID> -- <固定核心入口和参数>` 调用。它须为容器 PID 1，以计划中的非 root 账户运行，核对 Unix 服务器凭据后将连接作为 FD 3 交给核心。
 
-宿主用 `accept({driver, generationId, role, host, expected})` 提供已从固定 Compose 运行代取得的 `core_containment`。发布通道前核对内核对端 PID、UID、GID，并重新核验当前容器 cgroup 及挂载身份。每个通道只使用一次。关闭宿主数据流或调用 `close()` 会终止中继，`ended` 在中继退出并清理仍与原 inode 一致的套接字后完成。实际 Compose 用例验证了同 UID／GID 的错容器拒绝、FD 3 数据往返和宿主断连退出。将通道接到产品核心的 DF02 准入和认证时钟属于后续验收。[Linux Unix socket 手册](https://man7.org/linux/man-pages/man7/unix.7.html) · [通道联调](test/linux-compose-channel.integration.mjs)
+宿主用 `accept({driver, generationId, role, host, expected})` 提供已从固定 Compose 运行代取得的 `core_containment`。发布通道前核对内核对端 PID、UID、GID，并重新核验当前容器 cgroup 及挂载身份。每个通道只使用一次。关闭宿主数据流或调用 `close()` 会终止中继，`ended` 在中继退出并清理仍与原 inode 一致的套接字后完成。实际 Compose 用例验证了同 UID／GID 的错容器拒绝、FD 3 数据往返和宿主断连退出。[Linux Unix socket 手册](https://man7.org/linux/man-pages/man7/unix.7.html) · [通道联调](test/linux-compose-channel.integration.mjs)
+
+#### Compose DF02 准入
+
+在私有 cgroup 计划中增加 `bootstrap` 对象，分别填写 `controller` 和 `seamer` 的 `leafseamer-core-bootstrap-policy/1`。策略固定服务和数据库身份及制品摘要。生成配置会为每个核心建立独立的只读通道挂载，固定 `contained-compose-linux` 入口。root 管理的宿主向 `openLinuxComposeHost` 提供同宿主原生时钟 `source`，并调用 `startSupervised()`。宿主只向已核对的原容器交付通道，先在启停账本持久写入 `closed` 准入回执，再将其发给核心。核心在自身库保存同一回执后开启保护态 HTTPS。通道丢失会关闭两端通道。
+
+准入使用启停账本 Schema 2。首次初始化直接采用 Schema 2，已有 Schema 1 可继续运行普通保护态计划，也可在停机时调用 `upgradeLinuxDeploymentJournal()` 显式升级，保留身份标记与原启停记录。`admission(role)` 查询已持久保存的准入原件。容器内认证时钟与首次配对仍需后续装配。[Compose 联调](test/linux-compose.integration.mjs)
 
 ### Linux 原生成员创建
 

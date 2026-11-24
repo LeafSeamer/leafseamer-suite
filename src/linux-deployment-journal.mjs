@@ -5,6 +5,8 @@ import {InstallationError,canonical,digest,requireValue as need} from './import-
 import {linuxContainerCgroup,openLinuxCgroupRetirement,readLinuxCgroupHost,readLinuxCgroupLeader} from './linux-cgroup-retirement.mjs';
 
 const sql=fs.readFileSync(new URL('./linux-deployment-journal.sql',import.meta.url),'utf8');
+const admissionSql=fs.readFileSync(new URL('./linux-deployment-admission.sql',import.meta.url),'utf8');
+const currentSql=sql+'\n'+admissionSql;
 const applicationId=0x4c53444c;
 const schemaDigest='sha256:'+crypto.createHash('sha256').update(sql).digest('hex');
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$(?![\s\S])/;
@@ -33,7 +35,7 @@ function ledgerIdentity(installation,filename){
     file_identity:fileIdentity(filename),schema_digest:schemaDigest};
 }
 
-export function linuxDeploymentJournal({root,installation,available,database,pragma,checkSchema,create,runtime,onClose}){
+export function linuxDeploymentJournal({root,installation,available,database,pragma,checkSchema,create,upgrade=false,runtime,onClose}){
   need(process.platform==='linux','linux_deployment_platform');
   const filename=path.join(root,'linux-deployment.db'),marker=path.join(root,'linux-deployment.marker');
   available();
@@ -48,9 +50,9 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
     if(create){
       need(pragma(db,'journal_mode=WAL')==='wal','linux_deployment_journal_mode');
       db.transaction(()=>{
-        db.exec(sql);
+        db.exec(currentSql);
         pragma(db,'application_id='+applicationId);
-        pragma(db,'user_version=1');
+        pragma(db,'user_version=2');
         db.prepare('INSERT INTO linux_deployment_identity VALUES(1,?)').run(identityText);
       }).immediate();
       const fd=fs.openSync(marker,'wx',0o600);
@@ -62,14 +64,26 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
     }
     const markerIdentity=fileIdentity(marker);
     need(fs.statSync(marker).size<=4096,'linux_deployment_identity');
-    need(fields(runtime,'endpointClosure,launch')&&typeof runtime.launch==='function'&&typeof runtime.endpointClosure==='function','linux_deployment_runtime');
-    const launch=runtime.launch,endpointClosure=runtime.endpointClosure;
-    need(pragma(db,'application_id')===applicationId&&pragma(db,'user_version')===1&&pragma(db,'journal_mode')==='wal'&&
+    const version=pragma(db,'user_version');
+    need(pragma(db,'application_id')===applicationId&&[1,2].includes(version)&&pragma(db,'journal_mode')==='wal'&&
       pragma(db,'quick_check')==='ok','linux_deployment_integrity');
-    checkSchema(db,sql);
+    checkSchema(db,version===1?sql:currentSql);
     need(fs.readFileSync(marker).equals(Buffer.from(identityText))&&
       db.prepare('SELECT body FROM linux_deployment_identity WHERE singleton=1').pluck().get()===identityText,'linux_deployment_identity');
     db.exec('BEGIN EXCLUSIVE; COMMIT;');
+    if(upgrade){
+      if(version===1)db.transaction(()=>{
+        need(pragma(db,'user_version')===1&&fileIdentity(filename)===identity.file_identity&&fileIdentity(marker)===markerIdentity,
+          'linux_deployment_file');
+        db.exec(admissionSql);
+        pragma(db,'user_version=2');
+        checkSchema(db,currentSql);
+      }).exclusive();
+      db.close();
+      return Object.freeze({schema_revision:2,changed:version===1});
+    }
+    need(fields(runtime,'endpointClosure,launch')&&typeof runtime.launch==='function'&&typeof runtime.endpointClosure==='function','linux_deployment_runtime');
+    const launch=runtime.launch,endpointClosure=runtime.endpointClosure;
 
     let closed=false,busy=false,poisoned=false,readers=null;
     function currentFile(){
@@ -133,8 +147,31 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
       return prior;
     };
     return Object.freeze({
+      schemaRevision:version,
       current:()=>lookup(),
       lookup(id){need(matches(id,uuid),'linux_deployment_generation');return lookup(id);},
+      admission(id,role){
+        currentFile();need(version===2&&matches(id,uuid)&&roles.includes(role),'linux_deployment_admission');
+        const row=db.prepare('SELECT body,digest FROM linux_deployment_admission WHERE generation_id=? AND role=?').raw().get(id,role);
+        if(!row)return null;
+        const value=JSON.parse(row[0]);
+        need(canonical(value)===row[0]&&digest(value)===row[1],'linux_deployment_integrity');
+        return value;
+      },
+      recordAdmission(id,role,value){return operation(()=>transaction(()=>{
+        need(version===2&&roles.includes(role),'linux_deployment_admission');
+        const prior=active(id,'running'),scope=prior.intent[role];
+        need(value?.descriptor?.runtime_generation===id&&value.descriptor.authority_service_id===scope.service_id&&
+          value.policy?.service_id===scope.service_id&&value.policy?.database_instance_id===scope.database_instance_id&&
+          value.receipt?.gate_state==='closed'&&prior.detail.runtime_binding?.core_containment?.[role],
+          'linux_deployment_admission');
+        need(!db.prepare('SELECT 1 FROM linux_deployment_admission WHERE generation_id=? AND role=?').get(id,role),
+          'linux_deployment_admission_used');
+        const body=canonical(value);
+        need(db.prepare('INSERT INTO linux_deployment_admission VALUES(?,?,?,?)').run(id,role,body,digest(value)).changes===1,
+          'linux_deployment_write');
+        return JSON.parse(body);
+      }));},
       start(input){return operation(()=>{
         const spec=intent(input),host=readLinuxCgroupHost();
         transaction(()=>{

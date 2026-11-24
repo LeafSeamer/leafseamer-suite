@@ -5,12 +5,15 @@ import {isIP} from 'node:net';
 import {fileURLToPath} from 'node:url';
 import {readDeploymentFile,renderLinuxIngress} from './linux-ingress.mjs';
 import {linuxContainerCgroup} from './linux-cgroup-retirement.mjs';
+import {canonical} from './import-input.mjs';
+import {validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 
 const runtime='/etc/leafseamer';
 const data='/var/lib/leafseamer';
 const guiMount='/opt/leafseamer/gui';
 const certificate=runtime+'/tls/certificate.pem',privateKey=runtime+'/tls/private-key.pem';
 const httpsPort=8443;
+const channelHelper=fileURLToPath(new URL('./native/leafseamer_linux_compose_channel',import.meta.url));
 const json=value=>JSON.stringify(value,null,2)+'\n';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const need=(condition,code)=>{if(!condition)fail(code);};
@@ -71,7 +74,8 @@ function member(role,record,origin,output){
 export function renderLinuxCompose(plan,output){
   absolute(output);
   const withCgroup=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'cgroup');
-  need(fields(plan,(withCgroup?'cgroup,':'')+'controller,format,gui,management,nginx,seamer,subnet')&&
+  const withBootstrap=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'bootstrap');
+  need(fields(plan,(withBootstrap?'bootstrap,':'')+(withCgroup?'cgroup,':'')+'controller,format,gui,management,nginx,seamer,subnet')&&
     plan.format==='leafseamer.linux-compose-protected/1','compose_plan');
   const {controller,seamer,nginx,management,gui,subnet,cgroup}=plan;
   const memberFields='address,ca_file,certificate_file,data_dir,database_instance_id,gid,image,private_key_file,server_name,service_id,uid';
@@ -109,6 +113,18 @@ export function renderLinuxCompose(plan,output){
     s.service.cgroup_parent=linuxContainerCgroup({...scope,role:'seamer'}).parent;
     if(privateNamespace){c.service.cgroup='private';s.service.cgroup='private';}
   }
+  if(withBootstrap){
+    need(cgroup?.namespace==='private'&&fields(plan.bootstrap,'controller,seamer'),'compose_bootstrap');
+    existing(channelHelper,'file');
+    for(const [role,record,{service}]of [['controller',controller,c],['seamer',seamer,s]]){
+      const policy=validateLinuxBootstrapPolicy(record,plan.bootstrap[role]);
+      service.command=['connect',runtime+'/bootstrap/bootstrap.sock','0','--',...service.entrypoint,
+        'contained-compose-linux','--data-dir',data,'--ingress-profile',runtime+'/ingress.json','--bootstrap-policy',canonical(policy)];
+      service.entrypoint=[runtime+'/compose-channel'];
+      service.init=false;
+      service.volumes.push(bind(channelHelper,runtime+'/compose-channel'),bind(output+'/bootstrap-'+role,runtime+'/bootstrap'));
+    }
+  }
   const proxy={...container(nginx),entrypoint:['/usr/sbin/nginx'],command:['-e','stderr','-p','/tmp/','-c',runtime+'/nginx.conf','-g','daemon off;'],
     volumes:[bind(output+'/nginx.conf',runtime+'/nginx.conf'),bind(gui.directory,guiMount),
       bind(management.certificate_file,certificate),bind(management.private_key_file,privateKey),
@@ -128,6 +144,7 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
     const plan=JSON.parse(readDeploymentFile(absolute(process.argv[3]),65536));
     const files=renderLinuxCompose(plan,output);
     fs.mkdirSync(output,{mode:0o755});
+    if(Object.hasOwn(plan,'bootstrap'))for(const role of ['controller','seamer'])fs.mkdirSync(output+'/bootstrap-'+role,{mode:0o755});
     // Compose 文件最后落盘，只有完整生成后才出现可启动入口。
     for(const [name,bytes] of Object.entries(files))fs.writeFileSync(output+'/'+name,bytes,{flag:'wx',mode:0o644});
   }catch(error){

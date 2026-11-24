@@ -145,12 +145,12 @@ export function openInstallationStore(dataDirectory) {
       }
     };
     let linuxJournal=null,memberJournal=null;
-    function deploymentJournal(create,runtime){
+    function deploymentJournal(create,runtime,upgrade=false){
       available();
       need(linuxJournal===null&&memberJournal===null,'linux_deployment_in_use');
       const journal=linuxDeploymentJournal({root,installation:identity,available,database,pragma,checkSchema:checkJournalSchema,
-        create,runtime,onClose:()=>{linuxJournal=null;}});
-      if(!create)linuxJournal=journal;
+        create,runtime,upgrade,onClose:()=>{linuxJournal=null;}});
+      if(!create&&!upgrade)linuxJournal=journal;
       return journal;
     }
     function members(create,assertCurrent,upgrade=false){
@@ -234,6 +234,7 @@ export function openInstallationStore(dataDirectory) {
       acquireMaterialization:value=>materialization.acquire(value),
       identity: Object.freeze(identity),
       initializeLinuxDeploymentJournal:()=>deploymentJournal(true,null),
+      upgradeLinuxDeploymentJournal:()=>deploymentJournal(false,null,true),
       openLinuxDeploymentJournal:runtime=>deploymentJournal(false,runtime),
       initializeLinuxMemberJournal:()=>members(true,null),
       upgradeLinuxMemberJournal:()=>members(false,null,true),

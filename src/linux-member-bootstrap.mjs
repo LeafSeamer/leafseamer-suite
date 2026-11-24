@@ -55,7 +55,7 @@ function send(socket,type,payload){
   return new Promise((resolve,reject)=>socket.write(body+'\n',error=>error?reject(error):resolve()));
 }
 
-export async function admitLinuxMember(record,{policy,source,socket,commit}){
+export async function admitLinuxMember(record,{policy,source,socket,commit,compose=false}){
   const {intent,detail}=record;
   const namespace=fs.statSync('/proc/self/ns/time',{bigint:true});
   const namespaceIdentity=String(namespace.dev)+':'+namespace.ino;
@@ -74,8 +74,9 @@ export async function admitLinuxMember(record,{policy,source,socket,commit}){
     platform_profile_id:policy.platform_profile_ref.profile_id,platform_profile_revision:policy.platform_profile_ref.revision};
   const descriptorDigest=digest(descriptorBody),domain={clock_domain_id:'clock_'+descriptorDigest.slice(7),descriptor_digest:descriptorDigest};
   const descriptor={...descriptorBody,...domain};
-  const containment={backend:'linux_cgroup_v2',generation:intent.generation_id,
-    group_id:'group_'+digest({boot_id:boot,group_path:detail.group_path,group:detail.group}).slice(7)};
+  const group=compose?{boot_id:boot,generation:intent.generation_id,service_kind:intent.role,group:detail.group}:
+    {boot_id:boot,group_path:detail.group_path,group:detail.group};
+  const containment={backend:'linux_cgroup_v2',generation:intent.generation_id,group_id:'group_'+digest(group).slice(7)};
   const launch=await decodeProtectedLaunchIntent(Buffer.from(canonical({launch_id:intent.launch_id,service_id:intent.service_id,
     supervisor_instance_id:descriptor.supervisor_instance_id,runtime_generation:intent.generation_id,member_id:id(),role:'core',
     artifact_manifest_ref:policy.artifact_manifest_ref,containment_ref:containment,device_ids:[],policy_revision:policy.policy_revision})));

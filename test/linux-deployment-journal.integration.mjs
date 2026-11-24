@@ -114,10 +114,23 @@ test('宿主账本持久关闭旧入口，等待真实父组与端点，再放�
   assert.equal(retired.detail.endpoint_evidence_digest,endpointEvidence);
   journal.close();installationStore.close();
   const raw=new DatabaseSync(path.join(root,'linux-deployment.db'));
-  try{assert.throws(()=>raw.exec('DELETE FROM linux_deployment_event'),/linux_deployment_event_immutable/);}
+  try{
+    assert.throws(()=>raw.exec('DELETE FROM linux_deployment_event'),/linux_deployment_event_immutable/);
+    // 准入表在旧版布局中不存在。保留已退役的实际运行代和原身份标记。
+    raw.exec('DROP TABLE linux_deployment_admission; PRAGMA user_version=1');
+  }
   finally{raw.close();}
   installationStore=openInstallationStore(root);
   journal=installationStore.openLinuxDeploymentJournal(runtime);
+  assert.equal(journal.schemaRevision,1);
+  assert.deepEqual(journal.lookup(first.generation_id),retired);
+  assert.throws(()=>journal.admission(first.generation_id,'controller'),{code:'linux_deployment_admission'});
+  journal.close();
+  assert.deepEqual(installationStore.upgradeLinuxDeploymentJournal(),{schema_revision:2,changed:true});
+  assert.deepEqual(installationStore.upgradeLinuxDeploymentJournal(),{schema_revision:2,changed:false});
+  journal=installationStore.openLinuxDeploymentJournal(runtime);
+  assert.equal(journal.schemaRevision,2);
+  assert.equal(journal.admission(first.generation_id,'controller'),null);
   assert.deepEqual(journal.lookup(first.generation_id),retired);
   assert.throws(()=>journal.start(first),{code:'linux_deployment_generation_used'});
   assert.equal(journal.start(second).phase,'running');

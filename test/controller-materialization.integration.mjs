@@ -251,6 +251,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const unsent=obsInterruption==='no_request'||obsInterruption==='no_write';
   const obsResume=obsCommand&&process.env.LEAFSEAMER_OBS_RESUME_TEST==='1';
   const obsBootRestart=obsCommand&&process.env.LEAFSEAMER_OBS_BOOT_RESTART_TEST==='1';
+  const obsBootContinue=obsBootRestart&&process.env.LEAFSEAMER_OBS_BOOT_CONTINUE_TEST==='1';
   if(obsResume)assert.ok(unsent||obsInterruption==='report');
   if(obsBootRestart)assert.ok(!obsResume&&(unsent||obsInterruption==='report'));
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
@@ -410,6 +411,13 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
                  assert.equal(priorMigration.steps.length,1);
                  assert.equal(stage106.schema_migration.pop()[2],'106');
                  assert.deepEqual(stage106,snapshot(path.join(core,priorMigration.backup_file)));
+                 if(!obsBootContinue){
+                   const restartMigration=await migrateStorage(core,107);
+                   const stage107=snapshot(file);
+                   assert.equal(restartMigration.steps.length,1);
+                   assert.equal(stage107.schema_migration.pop()[2],'107');
+                   assert.deepEqual(stage107,snapshot(path.join(core,restartMigration.backup_file)));
+                 }
                }
              }
            }
@@ -673,7 +681,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       SELECT 1 FROM command_dispatch_request d JOIN execution_frame_record f ON f.record_id=d.record_id
       JOIN execution_session_end e USING(ipc_session_id) WHERE d.permit_id=NEW.permit_id)`:'';
     const fault=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
-    const condition=obsResume?' WHEN (SELECT count(*) FROM device_execution_binding)=1':untilSessionEnds;
+    const condition=obsResume||obsBootContinue?' WHEN (SELECT count(*) FROM device_execution_binding)=1':untilSessionEnds;
     try{fault.exec(`CREATE TRIGGER obs_interruption_fault BEFORE INSERT ON ${table}${condition} BEGIN SELECT RAISE(IGNORE); END`);}
     finally{fault.close();}
   }
@@ -740,6 +748,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     ...(obsInterruption?{obs_interruption:obsInterruption}:{}),
     ...(obsResume?{obs_resume:true}:{}),
     ...(obsBootRestart?{obs_export_restart:true}:{}),
+    ...(obsBootContinue?{obs_keep_running:true}:{}),
     ...((obs||mode.endsWith('_capabilities')||mode==='supervisor_create_module_writable_evidence_resource_open_dispatch_ready'||commandLifecycleCases.includes(mode)||commandEncodingCases.includes(mode))?{command_tls:certificate()}:{})}));
   const peer=captureInstallationPeer(process.pid).descriptor,descriptor=store.materializationClock(),suffix=crypto.randomUUID(),channelId=crypto.randomUUID();
   const config={format:'leafseamer-installation-peer/1',pipe_suffix:suffix,channel_id:channelId,
@@ -845,8 +854,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     }
     if(!obsCut)await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
       catalog:frames.find(f=>f.event==='obs-scene-confirmed').ready,packet_hex});
-    await portable.stop();
-    fs.writeFileSync(fixture+'.obs-stopped','stopped');
+    if(!obsBootContinue)await portable.stop();
+    fs.writeFileSync(fixture+(obsBootContinue?'.check-old-worker':'.obs-stopped'),'ready');
     await waitFor(()=>frames.some(f=>f.event==='module-failed-retired')||child.exitCode!==null);
     if(browserCheck){
       fs.writeFileSync(gui.obs.disconnected,'disconnected');
@@ -2133,26 +2142,90 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     assert.equal(frames.find(f=>f.event==='module-failed-retired')?.result.result,'confirmed_empty');
     child.stdin.end('stop\n');assert.equal((await ended)[0],0);
     let restart=null,restartInput=null;
+    const restartFrames=[];
     if(obsBootRestart){
       restartInput=JSON.parse(fs.readFileSync(fixture+'.restart-state','utf8'));
+      const nextFixture=obsBootContinue?fixture+'.next':fixture+'.restart-state';
+      const nextConfig={...config,pipe_suffix:crypto.randomUUID(),channel_id:crypto.randomUUID()};
+      const nextClient={...runtimeInput.installation_client,name:'\\\\.\\pipe\\LeafSeamer.Install.'+crypto.randomUUID(),channel_id:crypto.randomUUID()};
+      if(obsBootContinue){
+        const history=file=>{
+          const db=new Database(file,{readonly:true,fileMustExist:true});
+          try{return Object.entries({service_boot:'service_boot_id',extension_activation:'operation_id',worker_launch_preparation:'launch_id',
+            worker_runtime_binding:'runtime_id',device_execution_binding:'binding_id',execution_session_end:'ipc_session_id',
+            command_lifecycle_revision:'command_id,revision',command_device_hold:'hold_id',command_hold_clearance:'hold_id',
+            schema_migration:'CAST(to_revision AS INTEGER)'})
+            .map(([table,order])=>db.prepare(`SELECT * FROM ${table} ORDER BY ${order}`).raw().all());}
+          finally{db.close();}
+        };
+        const file=path.join(core,'controller.sqlite'),before=history(file);
+        const migrated=await migrateStorage(core,107),after=history(file);
+        assert.equal(migrated.steps.length,1);
+        assert.equal(after.at(-1).pop()[2],'107');
+        assert.deepEqual(after,before);
+        assert.deepEqual(history(path.join(core,migrated.backup_file)),before);
+        const {binding,mode,materials,command_tls}=JSON.parse(fs.readFileSync(fixture,'utf8'));
+        fs.writeFileSync(nextFixture,JSON.stringify({binding,mode,materials,command_tls,runtime:{...runtimeInput,installation_client:nextClient},
+          obs_restart:restartInput,obs_interruption:obsInterruption}));
+        service?.close();intakeService?.close();await service?.done.catch(()=>{});await intakeService?.done.catch(()=>{});
+      }
       child=spawn(path.join(runtime,'native/leafseamer_process_host.exe'),[core,process.execPath,
-        path.join(controller,'test/fixtures/control-after-restart.mjs'),'contained-core-auth','--bootstrap-policy',canonicalize(policy),
-        '--fixture',fixture+'.restart-state'],{stdio:['pipe','pipe','pipe'],windowsHide:true});
+        path.join(controller,'test/fixtures',obsBootContinue?'materialization-core.mjs':'control-after-restart.mjs'),
+        'contained-core-auth','--bootstrap-policy',canonicalize(policy),'--fixture',nextFixture,
+        ...(obsBootContinue?['--installation-peer',canonicalize(nextConfig)]:[])],{stdio:['pipe','pipe','pipe'],windowsHide:true});
       ended=once(child,'close');child.stdin.on('error',()=>{});child.stdout.resume();
       let restartErrors='',pending='';
       child.stderr.on('data',chunk=>{pending+=chunk;for(;;){
         const index=pending.indexOf('\n');if(index<0)break;
         const text=pending.slice(0,index);pending=pending.slice(index+1);
-        try{const value=JSON.parse(text);if(value.event==='obs-boot-control')restart=value;
-          else if(value.event==='obs-boot-control-failed')restartErrors=value.code+' '+value.message;}
+        try{const value=JSON.parse(text);restartFrames.push(value);if(value.event==='obs-boot-control')restart=value;
+          else if(['obs-boot-control-failed','unavailable'].includes(value.event))restartErrors=value.code+' '+value.message;}
         catch{restartErrors=text;}
       }});
+      const findRestart=event=>restartFrames.find(frame=>frame.event===event);
+      const waitRestart=async event=>{
+        await waitFor(()=>findRestart(event)||restartErrors||child.exitCode!==null,25000);
+        const frame=findRestart(event);
+        assert.ok(frame,JSON.stringify({event,restartErrors,frames:restartFrames.map(({event,stage,code,cause})=>({event,stage,code,cause}))}));
+        return frame;
+      };
+      if(obsBootContinue){
+        const {pid}=await waitRestart('intake-peer');
+        const intakeChannel=createInstallationChannel({name:nextClient.name,peer:captureInstallationPeer(pid),server:true});
+        intakeService=serveInstallationClient({store,registration_id:'core.intake',channel_id:nextClient.channel_id,channel:intakeChannel,request_idle_ms:90000});
+        intakeService.done.catch(()=>{});fs.writeFileSync(nextFixture+'.intake-ready','ready');
+        await waitRestart('registered');
+        const channel=createInstallationChannel({name:'\\\\.\\pipe\\LeafSeamer.Install.'+nextConfig.pipe_suffix,
+          peer:captureInstallationPeer(child.pid),server:true});
+        service=serveInstallationClient({store,registration_id:'coordinator.synthetic',channel_id:nextConfig.channel_id,channel,request_idle_ms:90000});
+        service.done.catch(()=>{});fs.writeFileSync(nextFixture+'.coordinator-ready','ready');
+        await waitRestart('loaded');fs.writeFileSync(nextFixture+'.continue','continue');
+        if(unsent){
+          const {target,retained}=await waitRestart('obs-boot-cut');
+          assert.equal(findRestart('obs-cut-opened').control.gate_state,'ready');
+          assert.equal(findRestart('obs-cut-stale-reference').stale.status,422);
+          assert.deepEqual(retained.body.record,frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record);
+          const command=findRestart('obs-cut-command-result').finished.body.record;
+          assert.deepEqual([command.state.phase,command.state.effect_status,command.state.resource_status],['finished','verified','clear']);
+          assert.equal(command.completion.achieved,'effect_verified');
+          const actual=await (await load('obs-discovery.mjs')).inspectObsCut({port:portable.port,password:portable.password});
+          assert.equal(actual.program_scene_uuid,target);
+        }else{
+          const protectedResult=await waitRestart('obs-boot-protected');
+          assert.equal(protectedResult.control.gate_state,'protected');
+          assert.equal(protectedResult.code,'obs_prior_execution_holds');
+        }
+        assert.equal((await waitRestart('obs-boot-worker-retired')).result.result,'confirmed_empty');
+        await waitRestart('done');
+        await portable.stop();
+      }
       await waitFor(()=>restart||restartErrors||child.exitCode!==null,25000);
       assert.ok(restart,restartErrors);
       child.stdin.end('stop\n');assert.equal((await ended)[0],0);
       assert.notEqual(restart.boot,restartInput.old_boot);
       assert.equal(restart.old_launch,'worker_authorization_preparation');
       assert.match(restart.old_context,/context/);
+      if(obsBootContinue)assert.equal(restart.before_acquisition,'obs_prior_execution_replacement_retirement');
       assert.equal(restart.released.state,'effective');
       assert.equal(restart.acquired.state,'effective');
       assert.equal(restart.control.gate_state,'protected');
@@ -2171,12 +2244,21 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.equal(observation.core_exit.active_processes,0);
         assert.equal(first.retirement.result,'confirmed_empty');
         assert.deepEqual(first.key,restartInput.old_launch);
-        assert.equal(retrieved.prior_barrier.operation_id,restart.released.operation_id);
-        assert.deepEqual(retrieved.historical_observation,observation);
+        assert.equal(retrieved.prior_barrier,undefined);
+        assert.equal(retrieved.historical_observation.receiving_service_boot_id,restart.boot);
+        assert.deepEqual(retrieved.historical_observation.core_receipt,observation.core_receipt);
         assert.deepEqual(business.prepare('SELECT state,closed_reason FROM request_context WHERE context_id=?').raw().get(restartInput.old_context),['closed','restarted']);
-        assert.equal(business.prepare('SELECT count(*) FROM worker_launch_preparation').pluck().get(),1);
+        assert.equal(business.prepare('SELECT count(*) FROM worker_launch_preparation').pluck().get(),obsBootContinue?2:1);
+        if(obsBootContinue){
+          const replacement=JSON.parse(business.prepare('SELECT body_jcs FROM obs_worker_launch_replacement').pluck().get());
+          assert.equal(replacement.control_operation_id,restart.acquired.operation_id);
+          assert.equal(replacement.previous_launch_id,restartInput.old_launch.launch_id);
+          assert.equal(replacement.launch_id,'worker.restart');
+          assert.equal(business.prepare('SELECT count(DISTINCT activation_operation_id) FROM worker_launch_preparation').pluck().get(),1);
+          assert.equal(business.prepare('SELECT count(*) FROM device_initial_open_commit').pluck().get(),unsent?2:1);
+        }
       }
-      if(obsResume){
+      if(obsResume||obsBootContinue){
         const old=frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record;
         const resourceRows=business.prepare('SELECT body_jcs FROM device_initial_resource').pluck().all().map(JSON.parse);
         assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),2);
@@ -2190,7 +2272,11 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.deepEqual(worker.prepare('SELECT observation_jcs FROM worker_retirement').pluck().all().map(value=>JSON.parse(value).active_processes),[0,0]);
         assert.equal(business.prepare("SELECT count(*) FROM execution_write_attempt JOIN execution_frame_record USING(record_id) WHERE message_type='DISPATCH'").pluck().get(),1);
         if(unsent){
-          const {opened,released,acquired,sample,stale,retained}=frames.find(f=>f.event==='obs-recovery-cut');
+          const {opened,released,acquired,sample,stale,retained}=obsBootContinue?{
+            opened:restartFrames.find(f=>f.event==='obs-cut-opened'),released:restart.released,acquired:restart.acquired,
+            sample:restartFrames.find(f=>f.event==='obs-cut-opened').resources.value.inventory.obs_cut_observation,
+            stale:restartFrames.find(f=>f.event==='obs-cut-stale-reference').stale,retained:restartFrames.find(f=>f.event==='obs-boot-cut').retained
+          }:frames.find(f=>f.event==='obs-recovery-cut');
           const prior=opened.resources.value.inventory.prior_execution;
           assert.equal(released.state,'effective');
           assert.equal(acquired.state,'effective');
@@ -2207,13 +2293,13 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
           assert.equal(prior[0].retirement.state,'retired');
           assert.deepEqual(prior[0].commands.map(value=>value.command_id),[old.command_id]);
           assert.deepEqual(resourceRows.find(value=>value.id===opened.resources.ref.id),opened.resources.value);
-          const result=frames.find(f=>f.event==='obs-cut-command-result').finished.body.record;
+          const result=(obsBootContinue?restartFrames:frames).find(f=>f.event==='obs-cut-command-result').finished.body.record;
           assert.notEqual(result.command_id,old.command_id);
           assert.equal(result.state.outcome,'succeeded');
           assert.equal(result.state.resource_status,'clear');
           assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52,52]);
         }else{
-          const protectedState=frames.find(f=>f.event==='obs-recovery-protected');
+          const protectedState=obsBootContinue?restartFrames.find(f=>f.event==='obs-boot-protected'):frames.find(f=>f.event==='obs-recovery-protected');
           assert.equal(protectedState?.code,'obs_prior_execution_holds');
           assert.equal(protectedState.control.gate_state,'protected');
           assert.equal(resourceRows.length,1);

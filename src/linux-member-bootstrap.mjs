@@ -60,12 +60,6 @@ export async function admitLinuxMember(record,{policy,source,socket,commit,compo
   const namespace=fs.statSync('/proc/self/ns/time',{bigint:true});
   const namespaceIdentity=String(namespace.dev)+':'+namespace.ino;
   const boot=detail.host.boot_id;
-  function tick(){
-    const sample=source.capture(),now=source.tick();
-    need(sample.continuity==='linux:'+namespaceIdentity&&typeof now==='bigint'&&now>=0n&&now<=(1n<<64n)-1n,
-      'linux_bootstrap_clock');
-    return now;
-  }
   const descriptorBody={descriptor_version:'clock-domain/1',domain_kind:'supervised_runtime',authority_service_id:intent.service_id,
     runtime_generation:intent.generation_id,supervisor_instance_id:id(),clock_backend_id:'linux_boottime',
     clock_backend_revision:policy.clock_backend_revision,tick_unit:'ns',suspend_accounting:'included',
@@ -80,6 +74,24 @@ export async function admitLinuxMember(record,{policy,source,socket,commit,compo
   const launch=await decodeProtectedLaunchIntent(Buffer.from(canonical({launch_id:intent.launch_id,service_id:intent.service_id,
     supervisor_instance_id:descriptor.supervisor_instance_id,runtime_generation:intent.generation_id,member_id:id(),role:'core',
     artifact_manifest_ref:policy.artifact_manifest_ref,containment_ref:containment,device_ids:[],policy_revision:policy.policy_revision})));
+  return exchangeAdmission({launch,descriptor,detail,policy,source,socket,commit});
+}
+
+export function admitLinuxWorker({intent,descriptor,detail,policy,source,socket,commit}){
+  need(intent.role==='worker'&&intent.supervisor_instance_id===descriptor.supervisor_instance_id&&
+    intent.runtime_generation===descriptor.runtime_generation&&detail.host.boot_id===descriptor.os_boot_identity.value,'linux_bootstrap_worker');
+  return exchangeAdmission({launch:intent,descriptor,detail,policy,source,socket,commit});
+}
+
+async function exchangeAdmission({launch,descriptor,detail,policy,source,socket,commit}){
+  const domain={clock_domain_id:descriptor.clock_domain_id,descriptor_digest:descriptor.descriptor_digest};
+  function tick(){
+    const sample=source.capture(),now=source.tick();
+    need(typeof sample.continuity==='string'&&sample.continuity.startsWith('linux:')&&
+      'linux_'+sample.continuity.slice(6).replace(':','_')===descriptor.namespace_identity&&typeof now==='bigint'&&now>=0n&&now<=(1n<<64n)-1n,
+    'linux_bootstrap_clock');
+    return now;
+  }
   const issued=tick(),expires=issued+BigInt(policy.bootstrap_timeout_ms)*1000000n;
   need(expires<=(1n<<64n)-1n,'linux_bootstrap_clock');
   const common={bootstrap_id:id(),launch_id:launch.launch_id,launch_intent_digest:digest(launch),member_id:launch.member_id,member_boot_id:id(),
@@ -101,7 +113,7 @@ export async function admitLinuxMember(record,{policy,source,socket,commit,compo
     need(candidate.length===mac.length&&candidate.toString('base64url')===proof&&crypto.timingSafeEqual(candidate,mac),'linux_bootstrap_proof');
     const admitted=tick();
     need(admitted>=issued&&admitted<expires,'linux_bootstrap_expired');
-    const receipt={...common,receipt_id:id(),domain_ref:domain,containment_ref:containment,
+    const receipt={...common,receipt_id:id(),domain_ref:domain,containment_ref:launch.containment_ref,
       os_observation_ref:'observation_'+digest(detail).slice(7),admitted_tick_ns:String(admitted),gate_state:'closed'};
     await decodeBootstrap(Buffer.from(canonical({version:bootstrapVersion,type:'ADMISSION',payload:receipt})),'ADMISSION');
     const record=commit({intent:launch,descriptor,receipt,policy});

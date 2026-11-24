@@ -3,9 +3,10 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {setTimeout as delay} from 'node:timers/promises';
 import {InstallationError,canonical,digest,requireValue as need} from './import-input.mjs';
 import {linuxContainerCgroup,observeLinuxMemberRetirement,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
-import {admitLinuxMember,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
+import {admitLinuxMember,admitLinuxWorker,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
 
 const sql=fs.readFileSync(new URL('./linux-member-journal.sql',import.meta.url),'utf8');
@@ -109,6 +110,73 @@ function nativeFrames(stream){
       pending=Buffer.concat([pending,next.value]);
     }
   };
+}
+
+async function launchWorker({intent,core,spec,host,group,source,held,runtime,assertCreate,commit}){
+  const {uid,gid,entry,directory}=runtime,content=held.content;
+  let helper,image,child,contextDir,success=false,retirement;
+  const location='/sys/fs/cgroup'+group.group_path;
+  const sameGroup=()=>need(same(group.identity,groupIdentity(group.group_path)),'linux_worker_group_changed');
+  const empty=()=>{
+    sameGroup();const facts=fs.readFileSync(location+'/cgroup.events','utf8');
+    need(/^populated [01]$/m.test(facts),'linux_worker_group_events');return /^populated 0$/m.test(facts);
+  };
+  function retire(){
+    return retirement??=(async()=>{
+      if(child){child.stdin.destroy();for(const socket of child.stdio.slice(3,6))socket.destroy();}
+      if(child&&!empty()){
+        fs.writeFileSync(location+'/cgroup.kill','1');
+        for(let attempt=0;attempt<40&&!empty();attempt++)await delay(25);
+      }
+      if(child)need(empty(),'linux_worker_retirement_unconfirmed');
+      await held.discard();
+      if(contextDir){fs.rmSync(path.join(contextDir,'worker.json'),{force:true});fs.rmdirSync(contextDir);}
+      return {group_path:group.group_path,group:group.identity,populated:false};
+    })();
+  }
+  try{
+    need(same(content.intake_ref,intent.extension_binding.intake_ref)&&content.root.directory===directory&&
+      content.root.reader_uid===uid&&content.root.reader_gid===gid,'linux_worker_materialization_binding');
+    runtime.assertCurrent();held.assertCurrent();
+    helper=pinHelper();image=pinExecutable(spec.image_path,spec.image_sha256,256*1024*1024);
+    const {root,intake_ref,lifetime,observer_clock,request,manifest,inventory}=content;
+    const context=canonical({format:'leafseamer-device-worker-start/3',descriptor:core.descriptor,
+      identity:{service_id:spec.service_id,database_instance_id:spec.database_instance_id},intent,timeout_ms:core.policy.bootstrap_timeout_ms,
+      execution:{controller_boot_id:core.receipt.member_boot_id},module:{root_path:root.path,
+        linux_materialization:{root,intake_ref,lifetime,observer_clock,request},manifest,inventory}});
+    need(Buffer.byteLength(context)<=16777216,'linux_worker_context');
+    contextDir=fs.mkdtempSync(path.join(directory,'context-'));
+    const contextFile=path.join(contextDir,'worker.json');
+    fs.writeFileSync(contextFile,context,{flag:'wx',mode:0o440});
+    fs.chownSync(contextFile,0,gid);fs.chmodSync(contextFile,0o440);fs.chmodSync(contextDir,0o711);
+    held.assertCurrent();assertCreate();need(empty(),'linux_worker_group_busy');
+    child=spawn('/proc/self/fd/6',[location,group.identity.device,group.identity.inode,spec.image_path,
+      image.identity.device,image.identity.inode,String(uid),String(gid),'--device-worker','--','--disallow-code-generation-from-strings',entry,
+      '--context-file',contextFile,'--context-digest',hash(context)],
+    {stdio:['pipe','pipe','ignore','pipe','pipe','pipe',helper.fd],env:{LANG:'C',LC_ALL:'C',PATH:'/usr/bin:/bin'}});
+    child.on('error',()=>{});child.stdin.on('error',()=>{});
+    for(const socket of child.stdio.slice(3,6))socket.on('error',()=>{});
+    const frames=nativeFrames(child.stdout),pid=await frames('created_closed',group.identity,image.identity);
+    const leader=readLinuxCgroupLeader(pid),socket=child.stdio[3];
+    function assertCurrent(){
+      sameGroup();need(!socket.destroyed&&!socket.readableEnded&&leader.group_path===group.group_path&&
+        same(leader,readLinuxCgroupLeader(pid)),'linux_worker_execution_changed');
+    }
+    assertCurrent();held.assertCurrent();child.stdin.write('R');
+    need(await frames('executed',group.identity,image.identity)===pid,'linux_worker_execution_changed');
+    assertCurrent();
+    await admitLinuxWorker({intent,descriptor:core.descriptor,policy:core.policy,source,socket,
+      detail:{host,group,leader,image:image.identity},commit(admission){assertCurrent();held.assertCurrent();return commit(admission.receipt);}});
+    assertCurrent();await held.close();
+    const close=()=>{void retire().catch(()=>{});};
+    socket.once('end',close).once('close',close).once('error',close).once('data',close);socket.resume();
+    child.once('close',close);success=true;
+    return {assertCurrent,retire};
+  }finally{
+    if(image)fs.closeSync(image.fd);
+    if(helper)fs.closeSync(helper.fd);
+    if(!success){await held.close();await retire();}
+  }
 }
 
 export function linuxMemberJournal({root,installation,available,database,pragma,checkSchema,create,upgrade=false,assertCurrent,onClose}){
@@ -323,18 +391,32 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
           const detail={...closedRecord.detail,...(admission&&{admission})};
           if(admission)authorize({intent:spec,revision:4,phase:'executed_closed',detail});
           const record=append(spec,4,'executed_closed',detail);
-          if(bootstrap?.workerControl)bindLinuxWorkerControl({directory:root,socket,core:admission,source:bootstrap.source,
-            assertLive:assertCoreCurrent,checkGroup(intent){
+          if(bootstrap?.workerControl){
+            function checkGroup(intent){
               const group_path=groupPath.slice(0,-'/core'.length)+'/worker_'+intent.launch_id.replaceAll('-','');
               try{
                 const worker=groupIdentity(group_path),directory='/sys/fs/cgroup'+group_path;
                 const stat=fs.lstatSync(directory,{bigint:true}),procs=fs.lstatSync(directory+'/cgroup.procs',{bigint:true});
-                return stat.uid===BigInt(process.geteuid())&&(stat.mode&0o022n)===0n&&
+                const valid=stat.uid===BigInt(process.geteuid())&&(stat.mode&0o022n)===0n&&
                   procs.isFile()&&procs.uid===stat.uid&&(procs.mode&0o022n)===0n&&
                   /^populated 0$/m.test(fs.readFileSync(directory+'/cgroup.events','utf8'))&&
                   intent.containment_ref.group_id==='group_'+digest({boot_id:host.boot_id,group_path,group:worker}).slice(7);
+                return valid?{group_path,identity:worker}:null;
               }catch(error){if(error.code==='ENOENT')return false;throw error;}
-            }});
+            }
+            const runtime=bootstrap.workerRuntime;
+            bindLinuxWorkerControl({directory:root,socket,core:admission,source:bootstrap.source,assertLive:assertCoreCurrent,checkGroup,
+              ...(runtime&&{
+                acquire(intent,challenge_id){
+                  runtime.assertCurrent();const binding=intent.extension_binding;
+                  return runtime.acquire({intake_id:binding.intake_ref.object_id,target_authority_service_id:spec.service_id,
+                    manifest_digest:binding.manifest_digest,artifact_set_digest:binding.artifact_set_digest,host_trust_epoch:binding.host_trust_epoch,
+                    launch_intent_digest:digest(intent),challenge_id},{directory:runtime.directory,uid:runtime.uid,gid:runtime.gid});
+                },
+                launch(intent,group,held,assertCreate,commit){return launchWorker({intent,core:admission,spec,host,group,source:bootstrap.source,
+                  held,runtime,assertCreate,commit});}
+              })});
+          }
           return record;
         }
         const record=bootstrap?await admitLinuxMember(closedRecord,{policy,source:bootstrap.source,socket,commit}):commit(null);
@@ -354,10 +436,13 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       }
     }
     return Object.freeze({schemaRevision:version,lookup,lookupRetirement,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
-      launch:input=>launch(input),admit(input,{policy,source,workerControl=false}={}){
+      launch:input=>launch(input),admit(input,{policy,source,workerControl=false,workerRuntime=null}={}){
       need(source&&typeof source.capture==='function'&&typeof source.tick==='function','linux_bootstrap_clock');
       need(workerControl===false||workerControl===true&&input.role==='controller'&&version===2,'linux_worker_control_scope');
-      return launch(input,{policy,source,workerControl});
+      need(workerRuntime===null||workerControl&&[workerRuntime.uid,workerRuntime.gid].every(id=>Number.isInteger(id)&&id>0&&id<0xffffffff)&&
+        workerRuntime.uid!==input.uid&&workerRuntime.gid!==input.gid&&path.isAbsolute(workerRuntime.directory)&&path.isAbsolute(workerRuntime.entry)&&
+        typeof workerRuntime.acquire==='function'&&typeof workerRuntime.assertCurrent==='function','linux_worker_runtime');
+      return launch(input,{policy,source,workerControl,workerRuntime});
     },close(){
       if(closed)return;
       need(!busy,'linux_member_busy');

@@ -5,15 +5,16 @@ import {createInstallationStore,openInstallationStore} from '../../dist/installa
 import {artifactFixture,digestValue,rawDigest,zipFixture} from './artifact-package.mjs';
 import {authorizeFixture} from './release-authorization.mjs';
 
-export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protocol}){
+export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protocol,sharedStore=null,profileId='worker.test.platform',customize=()=>{}}){
   const data=path.join(directory,'installation');
-  fs.mkdirSync(data,{mode:0o700});createInstallationStore(data);
-  const store=openInstallationStore(data);let authorization,closed=false;
-  const close=()=>{if(!closed){authorization?.session.close();store.close();closed=true;}};
+  if(sharedStore===null){fs.mkdirSync(data,{mode:0o700});createInstallationStore(data);}
+  const store=sharedStore??openInstallationStore(data);let authorization,closed=false;
+  const close=()=>{if(!closed){authorization?.session.close();if(sharedStore===null)store.close();closed=true;}};
   t.after(close);
   const artifact=artifactFixture(),entry=artifact.payload.get('worker');
   entry.bytes=moduleBytes;
   Object.assign(artifact.inventory.files.find(file=>file.file_id==='worker'),{size_bytes:String(moduleBytes.length),digest:rawDigest(moduleBytes)});
+  customize(artifact);
   Object.assign(artifact.manifest,{inventory_digest:digestValue(artifact.inventory),api_versions:['leafseamer-device-module/2'],ipc_versions:[protocol]});
   const bytes=zipFixture(artifact.entries()).bytes,manifestDigest=digestValue(artifact.manifest);
   authorization=await authorizeFixture(store,bytes,manifestDigest);
@@ -28,7 +29,7 @@ export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protoco
   assert.equal((await store.validateImport(identity)).state,'validating');
   const prepared=await store.prepareMaterialization(identity,{reader_sids:[],release_authorization_ref:result.reference});
   assert.equal(prepared.status,'prepared');
-  const qualification=store.platformQualifications.configure(identity,{profile_id:'worker.test.platform',approval_reference:'worker.test.approval',
+  const qualification=store.platformQualifications.configure(identity,{profile_id:profileId,approval_reference:'worker.test.approval',
     evidence_digest:digestValue('temporary integration filesystem'),scope_digest:store.platformQualifications.observe(identity).scope_digest});
   const sealed=await store.sealImport(identity,{platform_profile_ref:qualification.reference,release_authorization_ref:result.reference});
   assert.equal(sealed.state,'sealed');

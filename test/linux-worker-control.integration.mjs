@@ -12,6 +12,7 @@ import test from 'node:test';
 import {createInstallationStore,openInstallationStore} from '../dist/installation-store.mjs';
 import {linuxContainerCgroup} from '../dist/linux-cgroup-retirement.mjs';
 import {canonical,digest} from '../dist/import-input.mjs';
+import {sealLinuxWorker} from './fixtures/linux-worker-materialization.mjs';
 
 const controller=process.env.LEAFSEAMER_CONTROLLER_BOOTSTRAP_DIST;
 const options={skip:process.platform!=='linux'||process.env.LEAFSEAMER_TEST_NATIVE_CGROUP!=='1'||!controller,timeout:40000};
@@ -27,7 +28,7 @@ async function until(operation){
   assert.fail('Linux native control did not reach the expected state');
 }
 
-async function start(t,{authorization=false}={}){
+async function start(t,{authorization=false,create=false}={}){
   assert.equal(process.geteuid(),0);
   const {initializeStorage,migrateStorage}=await load('storage.mjs'),{openNativeClock}=await load('native-clock.mjs');
   const source=openNativeClock(),scratch=fs.mkdtempSync(path.join(os.tmpdir(),'leafseamer-worker-control-'));
@@ -43,8 +44,8 @@ async function start(t,{authorization=false}={}){
   const {groupPath}=linuxContainerCgroup({driver:'cgroupfs',generationId:generation,role});
   const parent='/sys/fs/cgroup'+groupPath,core=parent+'/core',worker=parent+'/worker_'+workerId.replaceAll('-','');
   for(const directory of [parent,core,worker])fs.mkdirSync(directory);
-  let closed=false;
-  function close(){if(!closed){closed=true;journal.close();store.close();}}
+  let closed=false,sealed;
+  function close(){if(!closed){closed=true;sealed?.close();journal.close();store.close();}}
   t.after(async()=>{
     close();fs.writeFileSync(parent+'/cgroup.kill','1');await until(()=>empty(parent));
     for(const directory of [worker,core,parent])fs.rmdirSync(directory);
@@ -59,20 +60,44 @@ async function start(t,{authorization=false}={}){
   const {port}=listener.address();await new Promise(resolve=>listener.close(resolve));
   const args=['--disallow-code-generation-from-strings'];
   const result=path.join(data,'authorization.json');
+  let materialization=null,runtime=null;
+  if(create){
+    const {deviceModuleProtocol}=await load('sdk/device-module.mjs');
+    const directory=path.join(scratch,'worker-runtime');fs.mkdirSync(directory,{mode:0o711});
+    const template=Buffer.from(JSON.stringify(JSON.parse(fs.readFileSync(path.resolve(controller,'../test/fixtures/static-capability.json'),'utf8'))));
+    const fileHash=bytes=>'sha256:'+sum(bytes);
+    sealed=await sealLinuxWorker(t,{directory:scratch,serviceId:identity.service_id,sharedStore:store,profileId:policy.platform_profile_ref.profile_id,
+      moduleBytes:fs.readFileSync(path.join(controller,'simulator-module.mjs')),protocol:deviceModuleProtocol,customize({payload,manifest,inventory}){
+        const config={path:'config.txt',role:'schema',bytes:Buffer.from('{}')};payload.set('config',config);
+        Object.assign(inventory.files.find(file=>file.file_id==='config'),{path:config.path,size_bytes:'2',digest:fileHash(config.bytes)});
+        payload.set('capability',{path:'capability.json',role:'schema',bytes:template});
+        inventory.files.unshift({file_id:'capability',path:'capability.json',role:'schema',size_bytes:String(template.length),digest:fileHash(template),executable:false});
+        manifest.capability_template_file_ids=['capability'];
+        manifest.roles=[{role_id:'device',kind:'device',minimum:1,maximum:1,purpose:'设备绑定'}];
+        manifest.permission_templates=[{request_id:'device.request',kind:'device_scope',purpose:'请求设备动作',
+          scope:{device_role:'device',action_ids:['get','set'],trigger_ids:[]}}];
+      }});
+    const {host_installation_id,authority_service_id,database_instance_id}=store.identity;
+    const {receipt,intake_ref}=sealed.sealed,{manifest,inventory}=sealed.artifact;
+    materialization={identity:{host_installation_id,authority_service_id,database_instance_id},
+      content:{format:'leafseamer-intake-content/1',intake_ref,receipt,manifest,inventory}};
+    runtime={directory,uid:65533,gid:65533,entry:path.join(controller,'device-worker-entry.mjs'),assertCurrent(){},
+      acquire:(...args)=>store.acquireLinuxWorkerMaterialization(...args)};
+  }
   if(authorization){
     const group=fs.lstatSync(worker,{bigint:true}),boot_id=fs.readFileSync('/proc/sys/kernel/random/boot_id','utf8').trim();
     const group_path=worker.slice('/sys/fs/cgroup'.length);
     const containment={backend:'linux_cgroup_v2',generation,group_id:'group_'+digest({boot_id,group_path,
       group:{device:String(group.dev),inode:String(group.ino)}}).slice(7)};
-    const config=path.join(scratch,'input.json');fs.writeFileSync(config,canonical({policy,data,result,containment,launchId:workerId}),{mode:0o644});
+    const config=path.join(scratch,'input.json');fs.writeFileSync(config,canonical({policy,data,result,containment,launchId:workerId,materialization}),{mode:0o644});
     args.push(path.resolve(controller,'../test/fixtures/linux-worker-authorization.mjs'),config);
   }else args.push(path.join(controller,'cli.mjs'),'contained-core-linux','--data-dir',data,'--port',String(port),
     '--bootstrap-policy',canonical(policy),'--worker-control','inherited');
   const issued=await journal.admit({role,driver:'cgroupfs',generation_id:generation,launch_id:launchId,service_id:identity.service_id,
     database_instance_id:identity.database_instance_id,uid:65534,gid:65534,image_path:node,image_sha256:'sha256:'+nodeDigest,args},
-  {policy,source,workerControl:true});
+  {policy,source,workerControl:true,workerRuntime:runtime});
   assert.equal(issued.record.phase,'executed_closed');
-  return {close,core,worker,result,port,coreReceipt:issued.record.detail.admission.receipt,
+  return {close,core,worker,result,port,runtime,coreReceipt:issued.record.detail.admission.receipt,
     business:path.join(data,'controller.sqlite'),control:path.join(installation,'linux-worker-control-'+launchId+'.db')};
 }
 
@@ -95,6 +120,26 @@ test('Linux Controller 实际入口持续交换核心确认，断开监督后退
   assert.equal(ack.revision,persisted.fence.revision);
   assert.equal(JSON.parse(ack.body_jcs).snapshot_digest,persisted.fence.digest);
   assert.deepEqual(persisted.identity.core_receipt,running.coreReceipt);
+});
+
+test('Linux CREATE 只产生一次受监督 Worker，Controller 持久采用并在撤销后退役',options,async t=>{
+  const running=await start(t,{authorization:true,create:true});
+  const result=await until(()=>fs.existsSync(running.result)?JSON.parse(fs.readFileSync(running.result,'utf8')):null);
+  assert.equal(result.ok,true,result.error);assert(result.workerReceipt);await until(()=>empty(running.core));
+  assert(empty(running.worker));assert.deepEqual(fs.readdirSync(running.runtime.directory),[]);
+  const proof=inspect(running.control,db=>({
+    attempts:db.prepare('SELECT count(*) AS total FROM attempt').get().total,
+    admission:JSON.parse(db.prepare('SELECT body FROM admission').get().body),
+    retirement:JSON.parse(db.prepare('SELECT body FROM retirement').get().body)}));
+  assert.equal(proof.attempts,1);assert.deepEqual(proof.admission,result.workerReceipt);
+  assert.equal(proof.retirement.result,'confirmed_empty');
+  assert.deepEqual(proof.retirement.containment_ref,proof.admission.containment_ref);
+  inspect(running.business,db=>{
+    const originals=db.prepare('SELECT body_jcs FROM worker_runtime_binding').all();
+    assert.equal(originals.length,1);assert.deepEqual(JSON.parse(originals[0].body_jcs).admission_receipt,proof.admission);
+    assert.equal(db.prepare('SELECT count(*) AS total FROM worker_runtime_commit').get().total,1);
+    assert.equal(db.prepare('SELECT count(*) AS total FROM worker_runtime_withdrawal').get().total,1);
+  });
 });
 
 test('Linux 业务启动授权穿过实际监督通道登记并持久撤销',options,async t=>{

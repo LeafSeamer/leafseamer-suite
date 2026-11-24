@@ -120,13 +120,14 @@ static bool child_identity(uid_t uid, gid_t gid, pid_t parent) {
 }
 
 static _Noreturn void child_run(int image, int null_fd, int release, int status, int last_fd, uid_t uid, gid_t gid,
-                               pid_t parent, char **args) {
+                               pid_t parent, char **args, int provider_bootstrap, int provider_link) {
   if (prctl(PR_SET_PDEATHSIG, SIGKILL, 0L, 0L, 0L) < 0 || getppid() != parent ||
       !child_identity(uid, gid, parent) ||
       syscall(SYS_close_range, (unsigned)last_fd + 1U, ~0U, CLOSE_RANGE_CLOEXEC) < 0 ||
-      dup2(null_fd, STDIN_FILENO) < 0 ||
-      dup2(null_fd, STDOUT_FILENO) < 0 || dup2(null_fd, STDERR_FILENO) < 0 ||
+      dup2(provider_bootstrap < 0 ? null_fd : provider_bootstrap, STDIN_FILENO) < 0 ||
+      dup2(provider_bootstrap < 0 ? null_fd : provider_bootstrap, STDOUT_FILENO) < 0 || dup2(null_fd, STDERR_FILENO) < 0 ||
       chdir("/") < 0 || signal(SIGPIPE, SIG_DFL) == SIG_ERR) _exit(125);
+  if (provider_link >= 0 && (dup2(provider_link, boot_fd) < 0 || close(boot_fd + 1) < 0)) _exit(125);
   for (int fd = boot_fd; fd <= last_fd; ++fd)
     if (fcntl(fd, F_SETFD, 0) < 0) _exit(125);
   umask(077);
@@ -175,6 +176,44 @@ static bool report_member(const char *phase, pid_t pid, const struct stat *group
     fflush(stdout) == 0;
 }
 
+struct relay_buffer {
+  unsigned char bytes[16384];
+  size_t position, length;
+};
+
+/* The child sees two distinct socketpairs created by its direct native parent. */
+static void relay_provider(int pidfd, int bootstrap, int collector) {
+  const int streams[] = {boot_fd, bootstrap, boot_fd + 1, collector};
+  struct relay_buffer pending[4] = {0};
+  for (;;) {
+    struct pollfd waiting[6] = {{.fd = STDIN_FILENO, .events = POLLIN}, {.fd = pidfd, .events = POLLIN}};
+    for (int i = 0; i < 4; i++) {
+      waiting[i + 2] = (struct pollfd){ .fd = streams[i], .events = POLLRDHUP |
+        (pending[i ^ 1].length == 0 ? POLLIN : 0) | (pending[i].length > 0 ? POLLOUT : 0) };
+    }
+    int ready;
+    do { ready = poll(waiting, 6, -1); } while (ready < 0 && errno == EINTR);
+    if (ready < 0 || waiting[0].revents || waiting[1].revents) return;
+    for (int i = 0; i < 4; i++) {
+      const short events = waiting[i + 2].revents;
+      if (events & (POLLERR | POLLHUP | POLLRDHUP | POLLNVAL)) return;
+      struct relay_buffer *outgoing = &pending[i], *incoming = &pending[i ^ 1];
+      if (events & POLLOUT) {
+        ssize_t count = send(streams[i], outgoing->bytes + outgoing->position,
+          outgoing->length - outgoing->position, MSG_DONTWAIT | MSG_NOSIGNAL);
+        if (!count || (count < 0 && errno != EAGAIN && errno != EINTR)) return;
+        if (count > 0 && (outgoing->position += (size_t)count) == outgoing->length)
+          outgoing->position = outgoing->length = 0;
+      }
+      if (events & POLLIN) {
+        ssize_t count = recv(streams[i], incoming->bytes, sizeof(incoming->bytes), MSG_DONTWAIT);
+        if (!count || (count < 0 && errno != EAGAIN && errno != EINTR)) return;
+        if (count > 0) incoming->length = (size_t)count;
+      }
+    }
+  }
+}
+
 static int reject(const char *phase) {
   fprintf(stderr, "%s\n", phase);
   return 1;
@@ -184,7 +223,8 @@ int main(int argc, char **argv) {
   uint64_t group_device, group_inode, image_device, image_inode, uid, gid;
   const size_t prefix_length = sizeof(cgroup_prefix) - 1;
   bool worker = argc > 10 && strcmp(argv[9], "--device-worker") == 0;
-  int delimiter = worker ? 10 : 9, last_fd = worker ? 5 : boot_fd;
+  bool provider = argc > 10 && strcmp(argv[9], "--time-provider") == 0;
+  int delimiter = worker || provider ? 10 : 9, last_fd = worker ? 5 : provider ? 4 : boot_fd;
   if (argc <= delimiter || argc > delimiter + 65 || strncmp(argv[1], cgroup_prefix, prefix_length) != 0 ||
       !argv[1][prefix_length] || argv[4][0] != '/' || !argv[4][1] ||
       !decimal(argv[2], &group_device) || !decimal(argv[3], &group_inode) ||
@@ -214,7 +254,10 @@ int main(int argc, char **argv) {
       memcmp(magic, "\x7f" "ELF", sizeof(magic)) != 0 || null_fd < 0) return reject("linux_member_image");
 
   int release[2], status[2], pidfd = -1;
+  int provider_bootstrap[2] = {-1, -1}, provider_link[2] = {-1, -1};
   if (pipe2(release, O_CLOEXEC) < 0 || pipe2(status, O_CLOEXEC) < 0) return reject("linux_member_channel");
+  if (provider && (socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, provider_bootstrap) < 0 ||
+      socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, provider_link) < 0)) return reject("linux_member_channel");
   struct clone_args request = { .flags = CLONE_INTO_CGROUP | CLONE_PIDFD, .exit_signal = SIGCHLD,
     .pidfd = (uint64_t)(uintptr_t)&pidfd, .cgroup = (uint64_t)group };
   pid_t parent = getpid();
@@ -223,10 +266,13 @@ int main(int argc, char **argv) {
   if (pid == 0) {
     close(release[1]);
     close(status[0]);
+    if (provider) { close(provider_bootstrap[0]); close(provider_link[0]); }
     argv[delimiter] = argv[4];
-    child_run(image, null_fd, release[0], status[1], last_fd, (uid_t)uid, (gid_t)gid, parent, argv + delimiter);
+    child_run(image, null_fd, release[0], status[1], provider ? boot_fd : last_fd,
+      (uid_t)uid, (gid_t)gid, parent, argv + delimiter, provider_bootstrap[1], provider_link[1]);
   }
-  for (int fd = boot_fd; fd <= last_fd; ++fd) close(fd);
+  if (provider) { close(provider_bootstrap[1]); close(provider_link[1]); }
+  else for (int fd = boot_fd; fd <= last_fd; ++fd) close(fd);
   close(release[0]);
   close(status[1]);
   char message;
@@ -245,7 +291,11 @@ int main(int argc, char **argv) {
       !report_member("executed", pid, &group_info, &image_info)) return reject("linux_member_exec");
   close(status[0]);
   struct pollfd live[] = {{ .fd = STDIN_FILENO, .events = POLLIN }, { .fd = pidfd, .events = POLLIN }};
-  if (poll(live, 2, -1) < 0 || !live[1].revents) return reject("linux_member_control_closed");
+  if (provider) {
+    relay_provider(pidfd, provider_bootstrap[0], provider_link[0]);
+    if (shutdown(provider_bootstrap[0], SHUT_WR) < 0 && errno != ENOTCONN) return reject("linux_member_control_closed");
+    if (poll(live + 1, 1, 2000) != 1 || !(live[1].revents & POLLIN)) return reject("linux_member_control_closed");
+  } else if (poll(live, 2, -1) < 0 || !live[1].revents) return reject("linux_member_control_closed");
   int result;
   if (waitpid(pid, &result, 0) != pid || !WIFEXITED(result)) return reject("linux_member_exit");
   return WEXITSTATUS(result);

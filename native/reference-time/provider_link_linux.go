@@ -12,6 +12,21 @@ import (
 const providerRuntimeFormat = "leafseamer-time-provider-runtime-binding/2"
 const providerLinkFD = 3
 
+func validBootstrapStreams(input, output *os.File) bool {
+	if bootstrapPipes(input, output) {
+		return true
+	}
+	parent := os.Getppid()
+	if !privateSupervisorLink(int(input.Fd()), parent) || !privateSupervisorLink(int(output.Fd()), parent) ||
+		!privateSupervisorLink(providerLinkFD, parent) {
+		return false
+	}
+	var first, second, collector unix.Stat_t
+	return unix.Fstat(int(input.Fd()), &first) == nil && unix.Fstat(int(output.Fd()), &second) == nil &&
+		unix.Fstat(providerLinkFD, &collector) == nil && first.Dev == second.Dev && first.Ino == second.Ino &&
+		(first.Dev != collector.Dev || first.Ino != collector.Ino)
+}
+
 // The supervisor creates a private socketpair before launching the provider and
 // retains its end for the PID-bound relay. There is no pathname to reconnect to.
 func openProviderLink(string) (*os.File, error) {

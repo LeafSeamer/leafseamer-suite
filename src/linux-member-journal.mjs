@@ -4,9 +4,10 @@ import crypto from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
+import {decodeProtectedLaunchIntent} from './sdk/bootstrap.mjs';
 import {InstallationError,canonical,digest,requireValue as need} from './import-input.mjs';
 import {checkLinuxWorkerGroup,linuxContainerCgroup,observeLinuxMemberRetirement,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
-import {admitLinuxMember,admitLinuxWorker,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
+import {admitLinuxMember,admitLinuxReferenceProvider,admitLinuxWorker,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
 import {pinExecutable,pinLinuxHelper} from './linux-native-artifact.mjs';
 import {openLinuxWorkerChannel} from './linux-compose-channel.mjs';
@@ -76,6 +77,90 @@ function nativeFrames(stream){
     }
   };
 }
+
+export async function startLinuxReferenceProvider({core,groupPath,provider,source,assertLive,commit}){
+  need(process.platform==='linux'&&process.geteuid()===0&&typeof assertLive==='function'&&typeof commit==='function',
+    'linux_reference_provider_host');
+  const {descriptor,policy,receipt:coreReceipt}=core;
+  const {artifact_manifest_ref,image_path,uid,gid}=provider;
+  need(coreReceipt.role==='core'&&coreReceipt.gate_state==='closed'&&coreReceipt.receipt_id&&policy.service_id===descriptor.authority_service_id&&
+    matches(policy.database_instance_id,uuid)&&Number.isInteger(policy.bootstrap_timeout_ms)&&policy.bootstrap_timeout_ms>0&&policy.bootstrap_timeout_ms<=60000&&
+    typeof groupPath==='string'&&/^\/[A-Za-z0-9_.\/-]+$/.test(groupPath)&&path.posix.normalize(groupPath)===groupPath&&
+    [uid,gid].every(value=>Number.isInteger(value)&&value>0&&value<0xffffffff),'linux_reference_provider_scope');
+  const host=readLinuxCgroupHost(),group=groupIdentity(groupPath),location='/sys/fs/cgroup'+groupPath;
+  const timeNamespace=fs.statSync('/proc/self/ns/time',{bigint:true});
+  need(descriptor.namespace_identity==='linux_'+timeNamespace.dev+'_'+timeNamespace.ino&&
+    descriptor.os_boot_identity?.value===host.boot_id&&same(coreReceipt.domain_ref,{
+      clock_domain_id:descriptor.clock_domain_id,descriptor_digest:descriptor.descriptor_digest}),'linux_reference_provider_clock');
+  const launch=await decodeProtectedLaunchIntent(Buffer.from(canonical({launch_id:crypto.randomUUID(),service_id:descriptor.authority_service_id,
+    supervisor_instance_id:descriptor.supervisor_instance_id,runtime_generation:descriptor.runtime_generation,member_id:crypto.randomUUID(),
+    role:'time_provider',artifact_manifest_ref,containment_ref:{backend:'linux_cgroup_v2',generation:descriptor.runtime_generation,
+      group_id:'group_'+digest({host,group,groupPath}).slice(7)},device_ids:[],policy_revision:policy.policy_revision})));
+  let helper,image,child,exited,ended=false,completed=false,retirement,leader;
+  function sameGroup(){need(same(group,groupIdentity(groupPath)),'linux_reference_provider_group_changed');}
+  function assertImage(){
+    const stat=fs.fstatSync(image.fd,{bigint:true});
+    need(stat.mtimeNs===image.mtime&&stat.ctimeNs===image.ctime&&same(fileIdentity(image_path),image.identity),
+      'linux_reference_provider_image_changed');
+  }
+  function assertCurrent(){
+    assertLive();sameGroup();
+    need(!ended&&child&&!child.stdio[3].destroyed&&!child.stdio[4].destroyed&&leader.group_path===groupPath&&
+      same(leader,readLinuxCgroupLeader(leader.pid)),'linux_reference_provider_process_changed');
+  }
+  function retire(){
+    return retirement??=(async()=>{
+      if(!child)return;
+      child.stdin.destroy();child.stdio[3].destroy();child.stdio[4].destroy();
+      await exited;
+      for(let attempt=0;attempt<40;attempt++){
+        sameGroup();
+        if(/^populated 0$/m.test(fs.readFileSync(location+'/cgroup.events','utf8')))return;
+        await delay(25);
+      }
+      need(false,'linux_reference_provider_retirement_unconfirmed');
+    })();
+  }
+  try{
+    assertLive();
+    image=pinExecutable(image_path,artifact_manifest_ref.digest,64*1024*1024);helper=pinHelper();
+    child=spawn('/proc/self/fd/5',[location,group.device,group.inode,image_path,image.identity.device,image.identity.inode,String(uid),String(gid),
+      '--time-provider','--','--intent',canonical(launch),'--domain',canonical(descriptor),'--timeout-ms',String(policy.bootstrap_timeout_ms),
+      '--core-receipt-id',coreReceipt.receipt_id,'--database-instance',policy.database_instance_id],
+    {stdio:['pipe','pipe','ignore','pipe','pipe',helper.fd],env:{LANG:'C',LC_ALL:'C',PATH:'/usr/bin:/bin'}});
+    child.on('error',()=>{});
+    for(const channel of [child.stdin,child.stdio[3],child.stdio[4]])channel.on('error',()=>{});
+    exited=new Promise(resolve=>child.once('close',()=>{ended=true;resolve();}));
+    const frames=nativeFrames(child.stdout),pid=await frames('created_closed',group,image.identity);
+    leader=readLinuxCgroupLeader(pid);
+    assertCurrent();assertImage();child.stdin.write('R');
+    need(await frames('executed',group,image.identity)===pid,'linux_reference_provider_process_changed');
+    const imageIdentity=descriptorForProvider(pid);
+    need(same(imageIdentity,image.identity),'linux_reference_provider_image_changed');
+    assertCurrent();
+    const detail={host,group,leader,image:imageIdentity};
+    const observed=source.tick();
+    const admission=await admitLinuxReferenceProvider({intent:launch,descriptor,detail,policy,source,socket:child.stdio[3],async commit(original){
+      assertCurrent();assertImage();
+      const observation={observation_id:original.receipt.os_observation_ref,observed_tick_ns:String(observed),provider_pid:pid,
+        start_ticks:leader.start_ticks,image_device:imageIdentity.device,image_inode:imageIdentity.inode};
+      const value={...original,process_observation:observation};
+      await commit(structuredClone(value));assertCurrent();assertImage();return value;
+    }});
+    assertCurrent();
+    const stop=()=>{void retire().catch(()=>{});};
+    child.stdio[3].once('end',stop).once('close',stop).once('error',stop).once('data',stop).resume();
+    child.stdio[4].once('end',stop).once('close',stop).once('error',stop);
+    completed=true;
+    return {admission,collector:child.stdio[4],assertCurrent,retire,ended:exited};
+  }finally{
+    if(helper)fs.closeSync(helper.fd);
+    if(image)fs.closeSync(image.fd);
+    if(!completed)await retire();
+  }
+}
+
+function descriptorForProvider(pid){return descriptor(fs.statSync('/proc/'+pid+'/exe',{bigint:true}));}
 
 async function launchWorker({intent,core,spec,host,group,source,held,runtime,corePid,assertCreate,assertAllowed,commit}){
   const {uid,gid,entry,directory}=runtime,content=held.content;

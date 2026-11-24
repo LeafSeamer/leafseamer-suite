@@ -48,11 +48,8 @@ func BootstrapTimeProvider(ctx context.Context, input, output *os.File, expected
 		expected.Timeout > time.Minute || expected.Timeout%time.Millisecond != 0 {
 		return result, errProviderBootstrap
 	}
-	for _, file := range []*os.File{input, output} {
-		info, statErr := file.Stat()
-		if statErr != nil || info.Mode()&os.ModeNamedPipe == 0 {
-			return result, errProviderBootstrap
-		}
+	if !validBootstrapStreams(input, output) {
+		return result, errProviderBootstrap
 	}
 	defer func() {
 		if err != nil {
@@ -133,6 +130,12 @@ func BootstrapTimeProvider(ctx context.Context, input, output *os.File, expected
 		return result, errProviderBootstrap
 	}
 	return ProviderAdmission{intentBytes, descriptorBytes, receiptBytes}, nil
+}
+
+func bootstrapPipes(input, output *os.File) bool {
+	first, firstErr := input.Stat()
+	second, secondErr := output.Stat()
+	return firstErr == nil && secondErr == nil && first.Mode()&os.ModeNamedPipe != 0 && second.Mode()&os.ModeNamedPipe != 0
 }
 
 func checkedLaunch(intentBytes, descriptorBytes []byte) (wireObject, wireObject, error) {

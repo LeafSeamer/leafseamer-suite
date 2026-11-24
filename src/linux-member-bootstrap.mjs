@@ -83,6 +83,13 @@ export function admitLinuxWorker({intent,descriptor,detail,policy,source,socket,
   return exchangeAdmission({launch:intent,descriptor,detail,policy,source,socket,commit});
 }
 
+export function admitLinuxReferenceProvider({intent,descriptor,detail,policy,source,socket,commit}){
+  need(intent.role==='time_provider'&&intent.device_ids.length===0&&intent.service_id===descriptor.authority_service_id&&
+    intent.supervisor_instance_id===descriptor.supervisor_instance_id&&intent.runtime_generation===descriptor.runtime_generation&&
+    detail.host.boot_id===descriptor.os_boot_identity.value,'linux_bootstrap_time_provider');
+  return exchangeAdmission({launch:intent,descriptor,detail,policy,source,socket,commit});
+}
+
 async function exchangeAdmission({launch,descriptor,detail,policy,source,socket,commit}){
   const domain={clock_domain_id:descriptor.clock_domain_id,descriptor_digest:descriptor.descriptor_digest};
   function tick(){
@@ -94,7 +101,8 @@ async function exchangeAdmission({launch,descriptor,detail,policy,source,socket,
   }
   const issued=tick(),expires=issued+BigInt(policy.bootstrap_timeout_ms)*1000000n;
   need(expires<=(1n<<64n)-1n,'linux_bootstrap_clock');
-  const common={bootstrap_id:id(),launch_id:launch.launch_id,launch_intent_digest:digest(launch),member_id:launch.member_id,member_boot_id:id(),
+  const memberBoot=launch.role==='time_provider'?crypto.randomBytes(16).toString('hex'):id();
+  const common={bootstrap_id:id(),launch_id:launch.launch_id,launch_intent_digest:digest(launch),member_id:launch.member_id,member_boot_id:memberBoot,
     role:launch.role,artifact_manifest_ref:launch.artifact_manifest_ref,channel_binding_id:id()};
   const projection={...common,...domain,bootstrap_version:bootstrapVersion,challenge_id:id(),
     challenge_nonce:nonce(),issued_tick_ns:String(issued),expires_tick_ns:String(expires)};

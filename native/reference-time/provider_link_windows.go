@@ -11,6 +11,8 @@ import (
 
 const providerRuntimeFormat = "leafseamer-time-provider-runtime-binding/1"
 
+func validBootstrapStreams(input, output *os.File) bool { return bootstrapPipes(input, output) }
+
 func openProviderLink(boot string) (*os.File, error) {
 	return os.OpenFile(`\\.\pipe\LeafSeamer.TimeCollector.`+boot+".provider",
 		os.O_RDWR|windows.FILE_FLAG_OVERLAPPED|syscall.O_CLOEXEC, 0)

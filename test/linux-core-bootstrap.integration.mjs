@@ -18,6 +18,7 @@ const controller=process.env.LEAFSEAMER_CONTROLLER_BOOTSTRAP_DIST;
 const seamer=process.env.LEAFSEAMER_SEAMER_BOOTSTRAP_DIST;
 const enabled=process.platform==='linux'&&process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1'&&Boolean(controller);
 const chronyProfile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
+const sleepProfile=process.env.LEAFSEAMER_TEST_KERNEL_SLEEP_PROFILE;
 const id=()=>crypto.randomUUID();
 const sum=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 
@@ -28,6 +29,22 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
   const {openNativeClock}=await import(pathToFileURL(path.join(controller,'native-clock.mjs')));
   const {digest,seal,ref}=await import(pathToFileURL(path.join(controller,'auth-clock-value.mjs')));
   const chrony=chronyProfile?JSON.parse(fs.readFileSync(chronyProfile,'utf8')):null;
+  if(sleepProfile==='disabled'){
+    assert.ok(chrony);
+    assert.equal(fs.existsSync('/sys/power/state'),false);
+    assert.equal(openNativeClock({linuxWithoutSystemSleep:true}).capture().raw.continuity_monitor,'kernel_sleep_disabled');
+    const probe=`import assert from 'node:assert/strict';
+      const {openNativeClock}=await import(process.argv[1]);
+      assert.throws(()=>openNativeClock({linuxWithoutSystemSleep:true}).capture(),{code:'clock_kernel_sleep_unverified'});`;
+    const masked=spawnSync('/bin/busybox',['unshare','-m','/bin/sh','-ec',
+      '/bin/busybox mount --make-rprivate /; /bin/busybox mount --bind /sys/kernel /sys; exec "$@"',
+      'sleep-mount-test',process.execPath,'--input-type=module','-e',probe,pathToFileURL(path.join(controller,'native-clock.mjs')).href],
+      {encoding:'utf8',timeout:7000});
+    assert.equal(masked.status,0,masked.stderr||masked.error?.message);
+  }else if(sleepProfile==='available'){
+    assert.equal(fs.existsSync('/sys/power/state'),true);
+    assert.throws(()=>openNativeClock({linuxWithoutSystemSleep:true}).capture(),{code:'clock_kernel_sleep_available'});
+  }
   const source=openNativeClock(),scratch=fs.mkdtempSync(path.join(os.tmpdir(),'leafseamer-core-admission-'));
   const image=path.join(scratch,'node'),directories=[];
   fs.chmodSync(scratch,0o755);
@@ -55,7 +72,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     fs.rmSync(scratch,{recursive:true,force:true});
   });
   async function target(role,distribution,label,{wrongDatabase=false,sharedInstallation=null,generation_id=id(),
-    inspectClock=false,targetRevision=role==='controller'?11:'20'}={}){
+    inspectClock=false,authenticateClock=false,targetRevision=role==='controller'?11:'20'}={}){
     const {initializeStorage,migrateStorage}=await import(pathToFileURL(path.join(distribution,'storage.mjs')));
     const root=path.join(scratch,label),data=path.join(root,role);
     const installation=sharedInstallation??path.join(root,'installation');
@@ -83,7 +100,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       image_sha256:'sha256:'+nodeDigest,args:['--disallow-code-generation-from-strings',path.join(distribution,'cli.mjs'),
         'contained-core-linux','--data-dir',data,'--port',String(port),'--bootstrap-policy',canonical(policy)]};
     let clock=null;
-    if(inspectClock){
+    if(inspectClock||authenticateClock){
       const directory=path.join(root,'clock'),keyFile=path.join(root,'clock-key.pem'),profileFile=path.join(root,'clock-profile.json');
       fs.mkdirSync(directory,{mode:0o700});fs.chownSync(directory,65534,65534);
       const {privateKey,publicKey}=signingKey;
@@ -94,10 +111,10 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
         health_profile_ref:chrony?{...approval(),digest:digest(chrony)}:approval(),max_system_error_ns:'100000000',
         wall_quantization_ns:'100',monotonic_quantization_ns:'10',drift_ppb:1000,capture_limit_ns:'20000000',sample_period_ns:'500000000',
         sample_ttl_ns:'5000000000',sample_window_policy:'authentication-clock-sample/2'});
-      fs.writeFileSync(profileFile,canonical({format:`leafseamer.${role}-linux-clock-evidence-profile/1`,service_id:policy.service_id,
+      fs.writeFileSync(profileFile,canonical({format:`leafseamer.${role}-linux-clock-evidence-profile/${authenticateClock?2:1}`,service_id:policy.service_id,
         database_instance_id:policy.database_instance_id,policy_digest:clockPolicy.digest,public_key_file:keyFile,exchange_directory:directory}),{mode:0o644});
       intent.args.push('--clock-evidence-profile',profileFile);
-      clock={directory,privateKey,clockPolicy};
+      clock={directory,privateKey,clockPolicy,authenticateClock};
     }
     if(sharedInstallation===null){
       fs.mkdirSync(installation,{mode:0o700});
@@ -113,7 +130,8 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
   }
   function readClockChallenge({clock,policy},descriptor,body){
     const {directory}=clock;
-    assert.deepEqual(body,{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:'missing'});
+    assert.deepEqual(body,{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:'missing',
+      ...(clock.authenticateClock&&{authentication_clock:'unqualified'})});
     const files=fs.readdirSync(directory);
     assert.equal(files.length,1);
     const challenge=JSON.parse(fs.readFileSync(path.join(directory,files[0]),'utf8'));
@@ -130,14 +148,24 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
   function evidenceFile({actual,challenge}){
     return path.join(actual.clock.directory,`evidence-${challenge.service_boot_id}.json`);
   }
-  async function expectEvidence(url,value){
-    const response=await fetch(url,{signal:AbortSignal.timeout(1000)});
-    assert.equal(response.status,503);
-    assert.deepEqual(await response.json(),{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:value});
+  async function expectEvidence({url,actual:{clock}},value,authentication='faulted'){
+    const expected={ready:false,reason:clock.authenticateClock&&authentication==='available'?'business_incomplete':'authentication_clock_unqualified',
+      authentication_clock_evidence:value,...(clock.authenticateClock&&{authentication_clock:authentication})};
+    const until=performance.now()+2000;
+    let body;
+    do{
+      const response=await fetch(url,{signal:AbortSignal.timeout(1000)});
+      assert.equal(response.status,503);
+      body=await response.json();
+      if(canonical(body)===canonical(expected))return;
+      if(!clock.authenticateClock)break;
+      await delay(50);
+    }while(performance.now()<until);
+    assert.deepEqual(body,expected);
   }
   async function checkClock(member,peer){
-    const {actual:{clock},challenge,url}=member;
-    const {directory,privateKey,clockPolicy}=clock;
+    const {actual:{clock},challenge}=member;
+    const {directory,privateKey,clockPolicy,authenticateClock}=clock;
     const {service_id,service_boot_id,database_instance_id,clock_domain_id,descriptor_digest,continuity,native_binary_digest}=challenge;
     const file=evidenceFile(member);
     const format='leafseamer.authentication-clock-evidence/1';
@@ -152,21 +180,23 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       if(useChrony){
         const admin=fs.mkdtempSync(path.join(path.dirname(directory),'signer-'));
         const profileFile=path.join(admin,'profile.json'),statement=path.join(admin,'statement.json'),keyFile=path.join(admin,'key.pem');
+        const signedFile=path.join(admin,'evidence.json');
         fs.writeFileSync(keyFile,signer.export({format:'pem',type:'pkcs8'}),{mode:0o600});
         fs.writeFileSync(profileFile,canonical({format:'leafseamer.authentication-clock-signing-profile/2',service_id,database_instance_id,
-          policy_digest:clockPolicy.digest,native_binary_digest,private_key_file:keyFile,evidence_file:file,chrony}));
+          policy_digest:clockPolicy.digest,native_binary_digest,private_key_file:keyFile,evidence_file:signedFile,chrony}));
         fs.writeFileSync(statement,canonical({challenge,evidence}));
         const result=spawnSync(process.execPath,['--disallow-code-generation-from-strings',path.join(controller,'clock-evidence.mjs'),
           '--profile',profileFile,'--statement',statement],{encoding:'utf8',timeout:5000});
         assert.equal(result.status,0,result.stderr||result.error?.message);
-        fs.chownSync(file,65534,65534);
+        fs.chownSync(signedFile,65534,65534);
+        fs.renameSync(signedFile,file);
       }else{
         const signature=crypto.sign(null,Buffer.from(format+'\0'+canonical(evidence)),signer).toString('base64url');
         fs.writeFileSync(file,canonical({format,evidence,signature}),{mode:0o644});
       }
       return deadline;
     }
-    const deadline=publish({useChrony:chrony!==null});await expectEvidence(url,'verified');
+    const deadline=publish({useChrony:chrony!==null});await expectEvidence(member,'verified','available');
     if(peer){
       for(const field of ['service_id','service_boot_id','database_instance_id','clock_domain_id']){
         assert.notEqual(challenge[field],peer.challenge[field]);
@@ -174,21 +204,25 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       const destination=evidenceFile(peer);
       fs.copyFileSync(file,destination,fs.constants.COPYFILE_EXCL);
       fs.chmodSync(destination,0o644);
-      await expectEvidence(peer.url,'rejected');
+      await expectEvidence(peer,'rejected');
       fs.unlinkSync(destination);
     }
     if(chrony){
       const original=fs.readFileSync(file);
       while(source.tick()<deadline)await delay(100);
       assert.deepEqual(fs.readFileSync(file),original);
-      await expectEvidence(url,'expired');
+      await expectEvidence(member,'expired');
+      if(authenticateClock){
+        publish({useChrony:true});
+        await expectEvidence(member,'verified','faulted');
+      }
     }
-    publish({boot:id()});await expectEvidence(url,'rejected');
-    publish({domain:id()});await expectEvidence(url,'rejected');
-    publish({signer:crypto.generateKeyPairSync('ed25519').privateKey});await expectEvidence(url,'rejected');
-    publish({deadline:source.tick()});await expectEvidence(url,'expired');
-    publish();fs.chmodSync(file,0o666);await expectEvidence(url,'rejected');
-    fs.unlinkSync(file);await expectEvidence(url,'missing');
+    publish({boot:id()});await expectEvidence(member,'rejected');
+    publish({domain:id()});await expectEvidence(member,'rejected');
+    publish({signer:crypto.generateKeyPairSync('ed25519').privateKey});await expectEvidence(member,'rejected');
+    publish({deadline:source.tick()});await expectEvidence(member,'expired');
+    publish();fs.chmodSync(file,0o666);await expectEvidence(member,'rejected');
+    fs.unlinkSync(file);await expectEvidence(member,'missing');
   }
   for(const [role,distribution] of cores){
     const wrong=await target(role,distribution,role+'-wrong-database',{wrongDatabase:true});
@@ -209,11 +243,20 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }finally{detail.close();}
     journal.close();store.close();journal=store=null;
   }
+  if(sleepProfile==='available'){
+    const rejected=await target('controller',controller,'controller-sleep-capable',{authenticateClock:true});
+    const {record}=await journal.admit(rejected.intent,{policy:rejected.policy,source});
+    assert.equal(record.phase,'executed_closed');
+    await empty(rejected.group);
+    assert.deepEqual(fs.readdirSync(rejected.clock.directory),[]);
+    await assert.rejects(fetch('http://127.0.0.1:'+rejected.port+'/health/ready',{signal:AbortSignal.timeout(500)}));
+    journal.close();store.close();journal=store=null;
+  }
   const accepted=[];
   for(const [role,distribution] of cores){
     const existing=accepted[0]?.actual;
     const actual=await target(role,distribution,role+'-accepted',{sharedInstallation:existing?.installation??null,
-      generation_id:existing?.intent.generation_id,inspectClock:true});
+      generation_id:existing?.intent.generation_id,inspectClock:true,authenticateClock:sleepProfile==='disabled'&&role==='controller'});
     const {record,bootstrap}=await journal.admit(actual.intent,{policy:actual.policy,source});
     assert.equal(bootstrap,null);
     assert.equal(record.phase,'executed_closed');
@@ -247,6 +290,12 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       assert.equal(saved?.receipt_jcs,canonical(receipt));
       assert.equal(saved.service_boot_id,challenge.service_boot_id);
       assert.equal(detail.prepare('SELECT count(*) AS total FROM core_runtime_binding').get().total,1);
+      const samples=detail.prepare('SELECT body FROM authentication_clock_acquisition WHERE service_boot_id=?').all(saved.service_boot_id);
+      if(actual.clock.authenticateClock){
+        assert.ok(samples.length>0);
+        for(const row of samples)assert.equal(JSON.parse(Buffer.from(row.body)).raw.continuity_monitor,'kernel_sleep_disabled');
+        assert.equal(detail.prepare('SELECT count(*) AS total FROM authentication_clock_fault WHERE service_boot_id=?').get(saved.service_boot_id).total,1);
+      }else assert.equal(samples.length,0);
     }finally{detail.close();}
   }
   store=openInstallationStore(accepted[0].actual.installation);

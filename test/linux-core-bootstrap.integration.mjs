@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
-import {spawnSync} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {once} from 'node:events';
 import {DatabaseSync} from 'node:sqlite';
 import {pathToFileURL} from 'node:url';
@@ -19,10 +19,11 @@ const seamer=process.env.LEAFSEAMER_SEAMER_BOOTSTRAP_DIST;
 const enabled=process.platform==='linux'&&process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1'&&Boolean(controller);
 const chronyProfile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
 const sleepProfile=process.env.LEAFSEAMER_TEST_KERNEL_SLEEP_PROFILE;
+const firstPairing=process.env.LEAFSEAMER_TEST_LINUX_FIRST_PAIRING==='1';
 const id=()=>crypto.randomUUID();
 const sum=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 
-test('实际 Linux 核心经专用通道持久双向准入，错库无回执，断开即关闭',{
+test(firstPairing?'受监督 Linux 双核心以实际认证时钟完成首次配对和权限读取':'实际 Linux 核心经专用通道持久双向准入，错库无回执，断开即关闭',{
   skip:!enabled,timeout:chronyProfile?120000:65000
 },async t=>{
   assert.equal(process.getuid(),0);
@@ -72,13 +73,14 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     fs.rmSync(scratch,{recursive:true,force:true});
   });
   async function target(role,distribution,label,{wrongDatabase=false,sharedInstallation=null,generation_id=id(),
-    inspectClock=false,authenticateClock=false,targetRevision=role==='controller'?11:'20'}={}){
-    const {initializeStorage,migrateStorage}=await import(pathToFileURL(path.join(distribution,'storage.mjs')));
+    inspectClock=false,authenticateClock=false,targetRevision=role==='controller'?11:'20',provision=null}={}){
+    const {initializeStorage,migrateStorage,openStorage}=await import(pathToFileURL(path.join(distribution,'storage.mjs')));
     const root=path.join(scratch,label),data=path.join(root,role);
     const installation=sharedInstallation??path.join(root,'installation');
     fs.mkdirSync(root,{mode:0o755});fs.mkdirSync(data,{mode:0o700});
     const identity=initializeStorage(data);
     await migrateStorage(data,targetRevision);
+    if(provision!==null){const storage=openStorage(data);try{await provision(storage);}finally{storage.close();}}
     for(const entry of fs.readdirSync(data))fs.chownSync(path.join(data,entry),65534,65534);
     fs.chownSync(data,65534,65534);
     const listener=net.createServer().listen(0,'127.0.0.1');
@@ -128,10 +130,8 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }
     return {intent,policy,group,data,installation,port,clock};
   }
-  function readClockChallenge({clock,policy},descriptor,body){
+  function readClockChallenge({clock,policy},descriptor){
     const {directory}=clock;
-    assert.deepEqual(body,{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:'missing',
-      ...(clock.authenticateClock&&{authentication_clock:'unqualified'})});
     const files=fs.readdirSync(directory);
     assert.equal(files.length,1);
     const challenge=JSON.parse(fs.readFileSync(path.join(directory,files[0]),'utf8'));
@@ -163,7 +163,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }while(performance.now()<until);
     assert.deepEqual(body,expected);
   }
-  function clockPublisher(member){
+  function clockPublisher(member,runtimeLifetime=30000000000n,{asynchronous=false}={}){
     const {actual:{clock},challenge}=member;
     const {directory,privateKey,clockPolicy}=clock;
     const {service_id,service_boot_id,database_instance_id,clock_domain_id,descriptor_digest,continuity,native_binary_digest}=challenge;
@@ -172,7 +172,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     const {runtime_profile_ref,native_artifact_ref,environment_approval_ref,health_profile_ref,system_time_source_ref}=clockPolicy;
     const runtime={id:id(),revision:'1',service_id,service_boot_id,clock_domain_id,descriptor_digest,
       policy_ref:ref(clockPolicy),runtime_profile_ref,native_artifact_ref,environment_approval_ref,native_binary_digest,
-      continuity,valid_before_tick_ns:String(source.tick()+30000000000n)};
+      continuity,valid_before_tick_ns:String(source.tick()+runtimeLifetime)};
     return function publish({boot=service_boot_id,domain=clock_domain_id,deadline=source.tick()+4800000000n,signer=privateKey,useChrony=false}={}){
       const scope={service_id,service_boot_id:boot,clock_domain_id:domain};
       const boundRuntime=seal({...runtime,...scope});
@@ -187,11 +187,21 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
         fs.writeFileSync(profileFile,canonical({format:'leafseamer.authentication-clock-signing-profile/2',service_id,database_instance_id,
           policy_digest:clockPolicy.digest,native_binary_digest,private_key_file:keyFile,evidence_file:signedFile,chrony}));
         fs.writeFileSync(statement,canonical({challenge,evidence}));
-        const result=spawnSync(process.execPath,['--disallow-code-generation-from-strings',path.join(controller,'clock-evidence.mjs'),
-          '--profile',profileFile,'--statement',statement],{encoding:'utf8',timeout:5000});
-        assert.equal(result.status,0,result.stderr||result.error?.message);
-        fs.chownSync(signedFile,65534,65534);
-        fs.renameSync(signedFile,file);
+        const args=['--disallow-code-generation-from-strings',path.join(controller,'clock-evidence.mjs'),
+          '--profile',profileFile,'--statement',statement];
+        function install(status,diagnostic){
+          assert.equal(status,0,diagnostic);
+          fs.chownSync(signedFile,65534,65534);
+          fs.renameSync(signedFile,file);
+          return deadline;
+        }
+        if(asynchronous){
+          const child=spawn(process.execPath,args,{stdio:['ignore','ignore','pipe'],signal:AbortSignal.timeout(5000)});
+          let diagnostic='';child.stderr.setEncoding('utf8').on('data',chunk=>{diagnostic+=chunk;});
+          return once(child,'close').then(([status])=>install(status,diagnostic));
+        }
+        const result=spawnSync(process.execPath,args,{encoding:'utf8',timeout:5000});
+        return install(result.status,result.stderr||result.error?.message);
       }else{
         const signature=crypto.sign(null,Buffer.from(format+'\0'+canonical(evidence)),signer).toString('base64url');
         fs.writeFileSync(file,canonical({format,evidence,signature}),{mode:0o644});
@@ -256,6 +266,14 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       await expectEvidence(member,'verified');
     }
   }
+  if(firstPairing){
+    assert.ok(seamer&&chrony&&sleepProfile==='disabled');
+    const {completeLinuxFirstPairing}=await import('./fixtures/linux-first-pairing.mjs');
+    await completeLinuxFirstPairing({controller,seamer,scratch,target,empty,source,
+      admit:actual=>journal.admit(actual.intent,{policy:actual.policy,source}),
+      stop(){journal.close();store.close();journal=store=null;},clockPublisher,readClockChallenge});
+    return;
+  }
   for(const [role,distribution] of cores){
     const wrong=await target(role,distribution,role+'-wrong-database',{wrongDatabase:true});
     await assert.rejects(journal.admit(wrong.intent,{policy:wrong.policy,source}),{code:'linux_bootstrap_channel'});
@@ -306,7 +324,9 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }
     assert.equal(response?.status,503);
     const body=await response.json();
-    const challenge=readClockChallenge(actual,descriptor,body);
+    assert.deepEqual(body,{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:'missing',
+      ...(actual.clock.authenticateClock&&{authentication_clock:'unqualified'})});
+    const challenge=readClockChallenge(actual,descriptor);
     accepted.push({role,actual,record,receipt,url,challenge});
   }
   if(sleepProfile==='disabled')await checkAuthenticationRenewal(accepted);

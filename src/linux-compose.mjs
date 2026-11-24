@@ -125,12 +125,14 @@ export function verifyLinuxComposePairingInputs(plan,excluded=[]){
       need(name.endsWith('.pem')&&Object.hasOwn(config.files,name),'compose_pairing_scope');
       referenced.add(name);
     }
-    if(role==='seamer'&&Object.hasOwn(profile,'publication_policy')){
-      const policy=profile.publication_policy;
+    for(const key of ['publication_policy','arm_admission_policy']){
+      if(!Object.hasOwn(profile,key))continue;
+      const policy=profile[key];
+      need(role==='seamer','compose_pairing_scope');
       need(fields(policy,'approval_file,approval_sha256')&&typeof policy.approval_file==='string'&&
         policy.approval_file.startsWith(pairingMount+'/')&&typeof policy.approval_sha256==='string','compose_pairing_scope');
       const name=policy.approval_file.slice(pairingMount.length+1);
-      need(name!=='profile.json'&&name.endsWith('.json')&&Object.hasOwn(config.files,name),'compose_pairing_scope');
+      need(name.endsWith('.json')&&!referenced.has(name)&&Object.hasOwn(config.files,name),'compose_pairing_scope');
       need(config.files[name]===policy.approval_sha256,'compose_pairing_digest');
       referenced.add(name);
     }

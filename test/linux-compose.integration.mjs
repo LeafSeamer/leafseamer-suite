@@ -670,6 +670,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
   if(pairingTest){
     const {completeLinuxComposeFirstPairing}=await import('./fixtures/linux-compose-first-pairing.mjs');
+    const {readSimulatorFile}=await import('./fixtures/linux-compose-simulator-subscription.mjs');
     let pairingWorkerRuntime,simulator;
     let pairPlan=plan;
     if(workerControl){
@@ -697,8 +698,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       const {sealSimulatorWorker}=await import('./fixtures/linux-worker-materialization.mjs');
       const dist=distribution.directory;
       const {deviceModuleEventProtocol}=await import(pathToFileURL(path.join(dist,'sdk','device-module.mjs')));
+      const deviceCount=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1'?2:1;
       sealed=await sealSimulatorWorker(t,{dist,directory:rootDir,serviceId:controller.service_id,profileId:plan.bootstrap.controller.platform_profile_ref.profile_id,
-        protocol:deviceModuleEventProtocol,store:installation});
+        protocol:deviceModuleEventProtocol,store:installation,deviceCount});
       simulator={installation,installDir,intakeRef:sealed.intakeRef,launchId:crypto.randomUUID()};
     }
     async function launch(pairing){
@@ -719,7 +721,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           group_id:'group_'+clockValues.digest({boot_id,group_path,group:{device:String(dev),inode:String(ino)}}).slice(7)};
         const data='/var/lib/leafseamer',fileFor=name=>path.join(data,name);
         const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish'),
-          runApproval:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1'};
+          runApproval:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1',
+          armPreflight:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1'};
         const start=fileFor('worker-start'),result=fileFor('worker-result.json');
         fs.writeFileSync(path.join(controller.data_dir,'worker-test.json'),clockValues.canonical({
           policy:pairPlan.bootstrap.controller,launchId,containment,channelDirectory:'/run/leafseamer-worker',data,start,result,intakeRef,paired
@@ -738,6 +741,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       for(const role of ['controller','seamer']){
         const limit=performance.now()+5000;
         while(!bindClockPublisher(role,admissions[role].descriptor)){
+          if(simulatorFiles)readSimulatorFile(simulatorFiles,'ready');
           assert.ok(performance.now()<limit,role+' clock challenge did not arrive');
           await delay(50);
         }
@@ -785,5 +789,6 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1')t.diagnostic('模拟器定义发布、审批原件和未布防运行已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1')t.diagnostic('模拟器运行的人类审批、Controller 认可和布防前置观察已核对');
+    if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1')t.diagnostic('受保护资格下的模拟器布防预检已持久记录');
   }
 });

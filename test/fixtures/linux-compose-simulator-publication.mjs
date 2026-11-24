@@ -5,6 +5,10 @@ const id=()=>crypto.randomUUID();
 const condition={kind:'literal',value:true};
 const eventRoute='/auth/local-event-bindings/v1';
 export const runApprovalRoute='/auth/local-run-approvals/v1';
+export function composeSimulatorDeviceScope(controller,{device,target_device}){
+  return {format:'leafseamer.device-binding-scope/1',authority_service_id:controller.service_id,
+    database_instance_id:controller.database_instance_id,device_ids:target_device?[device,target_device].sort():[device]};
+}
 
 export async function publishComposeSimulatorDefinition({serviceId,controller,baseline,bindingId,policyRef,selection,
   bearer,send,localRequest,canonical,digest}){
@@ -32,8 +36,7 @@ export async function publishComposeSimulatorDefinition({serviceId,controller,ba
   const {body:initial}=await request('POST','/definitions',{context:use(create),content:draftContent,
     metadata:{name:'模拟器事件规则',description:'',layout:{}}},201);
   const definition_id=initial.definition_id,target='/definitions/'+definition_id;
-  const query={binding_id:bindingId,scope:{format:'leafseamer.device-binding-scope/1',authority_service_id:controller.service_id,
-    database_instance_id:controller.database_instance_id,device_ids:[baseline.device]},device_id:baseline.device,expected_registration_ref:null};
+  const query={binding_id:bindingId,scope:composeSimulatorDeviceScope(controller,baseline),device_id:baseline.device,expected_registration_ref:null};
   const source={...query,expected_source_ref:baseline.source_ref};
   const candidate=await event('candidate',{definition_id,query:source});
   assert.deepEqual(candidate.source_ref,baseline.source_ref);
@@ -43,14 +46,16 @@ export async function publishComposeSimulatorDefinition({serviceId,controller,ba
     approval:{request_id:id(),approval_id:id(),definition_id,expected_candidate_digest:candidate.candidate_digest}});
   assert.equal(eventApproval.state,'approved');
   assert.deepEqual(eventApproval.candidate,candidate);
-  const deviceQuery={...query,expected_registration_ref:candidate.device_registration_ref};
+  const targetDevice=baseline.target_device??baseline.device;
+  const deviceQuery={...query,device_id:targetDevice,expected_registration_ref:baseline.target_device?null:candidate.device_registration_ref};
   const {body:deviceCandidate}=await request('POST',target+'/binding-candidates/query',deviceQuery,200);
   const deviceContext=await context(['approveDefinitionBindings']);
   const {body:deviceApproval}=await request('POST',target+'/binding-approvals',{context:{context_id:deviceContext.context_id},
-    request_id:id(),approval_id:id(),source:deviceQuery,expected_bundle_digest:deviceCandidate.bundle_digest},201,deviceContext.csrf);
+    request_id:id(),approval_id:id(),source:{...deviceQuery,expected_registration_ref:deviceCandidate.bundle.registration_ref},
+    expected_bundle_digest:deviceCandidate.bundle_digest},201,deviceContext.csrf);
   assert.equal(deviceApproval.state,'approved');
   const action=deviceApproval.bundle.bindings.find(binding=>binding.kind==='action');
-  assert.equal(action.value.device_id,baseline.device);
+  assert.equal(action.value.device_id,targetDevice);
   const input=candidate.binding;
   const program={kind:'rule',trigger_binding_id:input.binding_id,condition,groups:[{mode:'sequence',steps:[{
     kind:'action',step_id:'set-simulator',depends_on:[],required:true,failure_policy:'stop',action_binding_id:action.binding_id,
@@ -104,6 +109,7 @@ export function verifyDurableSimulatorPublication(store,{published,compiled,arti
 
 export async function approveComposeSimulatorRun({run,baseline,controller,principalId,bindingId,pairing,admin,localRequest,issueBearer}){
   const run_id=run.run_id,context={ttl_ms:30000,max_unique_requests:1};
+  const targetDevice=baseline.target_device??baseline.device;
   const approver=await issueBearer(['run.approve','run.read','request.create']);
   const reader=await issueBearer(['run.read','request.create']);
   async function operation(name,request,granted=true,expected=200){
@@ -117,17 +123,17 @@ export async function approveComposeSimulatorRun({run,baseline,controller,princi
   const {targets:[target]}=await operation('targets',{run_id});
   assert.deepEqual(target.controller_scope,{authority_service_id:controller.service_id,database_instance_id:controller.database_instance_id});
   assert.equal(target.device_actions.length,1);
-  assert.equal(target.device_actions[0].device_id,baseline.device);
+  assert.equal(target.device_actions[0].device_id,targetDevice);
   const principal=await admin('create-automation-principal',{request_id:id(),display_name:'Compose simulator automation'});
   assert.equal(principal.purpose,'automation');
   assert.equal(principal.state,'disabled');
   const service_principal={issuer_id:principal.issuer_id,issuer_epoch:principal.issuer_epoch,principal_id:principal.id};
   const {not_before_ns,expires_ns}=pairing,interval={not_before_ns,expires_ns};
   const pairing_ref={id:pairing.binding_id,revision:pairing.revision,digest:pairing.digest};
-  const device_scope={format:'leafseamer.device-binding-scope/1',...target.controller_scope,device_ids:[baseline.device]};
+  const device_scope=composeSimulatorDeviceScope(controller,baseline);
   const {principal:approved}=await admin('approve-automation-principal',{request_id:id(),principal_id:principal.id,
     expected_revision:principal.revision,audiences:[controller.service_id],permissions:['automation.prepare'],
-    device_ids:[baseline.device],...interval,automation_origin:{seamer_scope:run.scope,pairing_ref,device_scope}});
+    device_ids:[targetDevice],...interval,automation_origin:{seamer_scope:run.scope,pairing_ref,device_scope}});
   const human={issuer_id:principal.issuer_id,issuer_epoch:principal.issuer_epoch,principal_id:principalId};
   const policy=await admin('replace-run-endorsement-policy',{request_id:id(),expected_policy_ref:null,
     human,service_principal,service_approval_ref:approved.approval_ref,device_actions:target.device_actions,parameter_constraints:[],...interval});
@@ -158,8 +164,9 @@ export async function approveComposeSimulatorRun({run,baseline,controller,princi
     const [control]=preflight.control_observations;
     assert.deepEqual(control.endorsement_ref,endorsement_ref);
     assert.equal(control.devices.length,1);
-    assert.equal(control.devices[0].device_id,baseline.device);
-    assert.equal(control.devices[0].state,'manual');
+    assert.equal(control.devices[0].device_id,targetDevice);
+    assert.equal(control.devices[0].state,baseline.target_device?'automatic':'manual');
+    if(baseline.target_device)assert.equal(control.devices[0].control.gate_state,'protected');
     assert.equal(preflight.can_arm,false);
     return preflight;
   }

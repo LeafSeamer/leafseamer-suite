@@ -162,6 +162,10 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 需要发布策略时，在 Seamer 的 `profile.json` 中设置 `publication_policy.approval_file` 和 `approval_sha256`。审批文件为 `/etc/leafseamer/pairing/` 下独立的 JSON 文件，其相同摘要必须列在 `pairing.seamer.files` 中。Compose 单独只读挂载审批文件。Seamer 核对当前库身份、策略引用、认证时钟期限和审批原件，并在编译前核对绑定批准。运行中撤下或改写审批会锁存撤下状态。联调可设置 `LEAFSEAMER_TEST_COMPOSE_PUBLICATION=1` 验证拒绝路径。
 
+Linux 布防预检使用可选的 `arm_admission_policy`。其 `approval_file` 和 `approval_sha256` 指向同目录下另一份独立、只读挂载的 JSON 文件，原字节摘要也列入 `pairing.seamer.files`。文件采用规范 JSON，`format` 为 `leafseamer.arm-admission-approval/1`，包含 Seamer 的 `scope`、`profile_id`、`revision`、资格证据的 `qualification_ref`、允许的 `controller_scopes`、认证时间半开区间 `not_before_ns` 和 `expires_ns`。资格应覆盖整个允许规模。 `limits` 固定编译程序字节数、预检证据字节数、目标 Controller 数、设备动作数和来源数，键为 `artifact_bytes`、`preflight_bytes`、`controller_targets`、`device_actions` 和 `sources`。 `capacity` 与单次 `required` 均以十进制字符串给出 `logical_bytes`、`queue_slots`、`rows` 和 `work_units`。额度按逻辑资源计量，物理磁盘、排队和故障保障须取得相应环境证据。
+
+启用 `public_api.local_run_approvals` 后，人员可在 Seamer 回环 TLS 的 `/auth/local-run-approvals/v1` 使用 `create-arm-context` 和 `record-arm-preflight`。令牌须定向 Seamer，持有当前 `request.create`、`run.arm` 和 `run.read`，且人员认证仍在近期窗口内。先用 `ttl_ms` 和 `max_unique_requests` 建立上下文，再用 `run_id`、`expected_revision` 和 `context_id` 记录一次预检。每份原件占用一次上下文额度。 `can_arm` 只描述该期预检，额度持有与运行状态转换由后续布防事务完成。[Compose 预检联调](test/fixtures/linux-compose-first-pairing.mjs)
+
 ### Linux 原生成员创建
 
 在 Linux 构建机运行 `npm run build -- --linux-member`，将原生创建工具及其源码和制品摘要纳入 `dist/native/`。由可信宿主装配预先登记启动意图并固定受保护的 ELF 制品、空 cgroup v2 子组及两者的设备号和 inode。装配需拥有目录访问、创建子进程和切换到指定非 root UID／GID 所需的权限。工具使用调用者原有权限，发布文件采用普通可执行模式。

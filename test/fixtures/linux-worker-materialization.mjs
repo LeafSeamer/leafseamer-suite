@@ -37,7 +37,7 @@ export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protoco
   return {store,artifact,sealed:store.sealedArtifact(identity),close};
 }
 
-export async function sealSimulatorWorker(t,{dist,directory,serviceId,profileId,protocol,store}){
+export async function sealSimulatorWorker(t,{dist,directory,serviceId,profileId,protocol,store,deviceCount=1}){
   const template=JSON.parse(fs.readFileSync(path.join(dist,'simulator-control-capability.json'),'utf8'));
   const bytes=Buffer.from(JSON.stringify(template));
   const sealed=await sealLinuxWorker(t,{directory,serviceId,profileId,protocol,sharedStore:store,
@@ -53,7 +53,7 @@ export async function sealSimulatorWorker(t,{dist,directory,serviceId,profileId,
       add('policy',{...payload.get('policy'),bytes:fs.readFileSync(path.join(dist,'simulator-control-policy.json'))});
       add('capability',{path:'capability.json',role:'schema',bytes});
       manifest.capability_template_file_ids=['capability'];
-      manifest.roles=[{role_id:'device',kind:'device',minimum:1,maximum:1,purpose:'设备绑定'}];
+      manifest.roles=[{role_id:'device',kind:'device',minimum:deviceCount,maximum:deviceCount,purpose:'设备绑定'}];
       manifest.permission_templates=[{request_id:'device.request',kind:'device_scope',purpose:'请求设备动作',
         scope:{device_role:'device',action_ids:template.actions.map(action=>action.action_id),trigger_ids:[]}}];
     }});

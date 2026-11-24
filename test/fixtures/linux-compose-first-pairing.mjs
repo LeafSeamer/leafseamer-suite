@@ -8,7 +8,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {DatabaseSync} from 'node:sqlite';
 import {linuxPairingCertificates} from './linux-first-pairing.mjs';
 import {readSimulatorFile,verifyComposeSimulatorSubscription,verifyDurableSimulatorSubscription} from './linux-compose-simulator-subscription.mjs';
-import {approveComposeSimulatorRun,publishComposeSimulatorDefinition,runApprovalRoute,verifyDurableSimulatorPublication,
+import {approveComposeSimulatorRun,composeSimulatorDeviceScope,publishComposeSimulatorDefinition,runApprovalRoute,verifyDurableSimulatorPublication,
   verifyDurableSimulatorRunApproval} from './linux-compose-simulator-publication.mjs';
 
 const id=()=>crypto.randomUUID();
@@ -109,8 +109,10 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const verifyPublication=process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION==='1';
   const simulatorPublication=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1';
   const simulatorRunApproval=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1';
+  const simulatorArmPreflight=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1';
   assert.ok(!simulatorPublication||pairedSimulator&&!verifyPublication);
   assert.ok(!simulatorRunApproval||simulatorPublication);
+  assert.ok(!simulatorArmPreflight||simulatorRunApproval);
   const verifySourceSubscription=pairedSimulator||process.env.LEAFSEAMER_TEST_COMPOSE_SOURCE_SUBSCRIPTION==='1';
   if(verifySourceSubscription)localParty.permissions.push('event.internal.subscribe');
   if(simulatorPublication)localParty.permissions.push('automation.bindings.read','events.internal.read');
@@ -125,17 +127,26 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const approval=Buffer.from(canonical({format:simulatorPublication?'leafseamer.publication-policy-approval/1':'leafseamer.publication-policy-approval/2',
     policy_ref:policyRef,not_before_ns:String(start),expires_ns:String(end),...(!simulatorPublication&&eventLimits)}));
   const publicationProfile=verifyPublication||simulatorPublication?{publication_policy:{approval_file:mount+approvalFile,approval_sha256:sha(approval)}}:{};
+  const armFile='arm-admission-approval.json',armScope={authority_service_id:controller.service_id,database_instance_id:controller.database_instance_id};
+  const capacity={logical_bytes:'8388608',queue_slots:'64',rows:'4096',work_units:'8192'};
+  const required={logical_bytes:'1048576',queue_slots:'8',rows:'512',work_units:'1024'};
+  const qualification_ref={id:'compose-simulator-budget-qualification',revision:'1',digest:digest({armScope,capacity,required})};
+  const armApproval=Buffer.from(canonical({format:'leafseamer.arm-admission-approval/1',scope:policyScope,
+    profile_id:'compose-simulator-budget',revision:'1',qualification_ref,controller_scopes:[armScope],
+    limits:{artifact_bytes:65536,controller_targets:1,device_actions:1,preflight_bytes:65536,sources:1},
+    capacity,required,not_before_ns:String(start),expires_ns:String(end)}));
+  const armProfile=simulatorArmPreflight?{arm_admission_policy:{approval_file:mount+armFile,approval_sha256:sha(armApproval)}}:{};
   const seamerPairing=profile('seamer','controller',{scope:{service_id,database_instance_id},first_pairing_authorization_id:null,
     public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true,
       ...(verifySourceSubscription&&{local_source_subscriptions:true}),...(simulatorPublication&&{local_event_bindings:true}),
       ...(simulatorRunApproval&&{local_run_approvals:true})},
-    ...publicationProfile},verifyPublication||simulatorPublication?{[approvalFile]:approval}:{});
+    ...publicationProfile,...armProfile},{...((verifyPublication||simulatorPublication)&&{[approvalFile]:approval}),
+      ...(simulatorArmPreflight&&{[armFile]:armApproval})});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator;
+  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights;
   try{
     const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready')):null;
-    if(baseline)localParty.object_scope_digest=digest({format:'leafseamer.device-binding-scope/1',authority_service_id:controller.service_id,
-      database_instance_id:controller.database_instance_id,device_ids:[baseline.device]});
+    if(baseline)localParty.object_scope_digest=digest(composeSimulatorDeviceScope(controller,baseline));
     const actor=await loginThroughProxy();
     const identityToken=await issueToken(actor,controller.service_id,['session.read']);
     const session=await send('/api/v1/session',{headers:{Authorization:identityToken}});
@@ -183,7 +194,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     }
     const definitions=verifyBrowser||verifyPublication||simulatorPublication?['definition.edit','definition.read','request.create','request.read']:[];
     const audiencePermissions=[...permissions,...definitions,...(verifyPublication||simulatorPublication?['definition.publish']:[]),
-      ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[])].sort();
+      ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[]),...(simulatorArmPreflight?['run.arm']:[])].sort();
     await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
       not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
     const bearer=await issueToken(actor,service_id,permissions);
@@ -213,6 +224,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       assert.equal(changed.status,200,changed.data);
     }
     if(pairedSimulator){
+      let finishArmPreflights;
       const beforeWrite=simulatorPublication?async()=>{
         const publicationBearer=await issueToken(actor,service_id,audiencePermissions);
         publishedSimulator=await publishComposeSimulatorDefinition({serviceId:service_id,controller,baseline,bindingId:localParty.binding_id,
@@ -220,9 +232,43 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         if(simulatorRunApproval)approvedSimulator=await approveComposeSimulatorRun({run:publishedSimulator.run,baseline,controller,principalId:principal_id,
           bindingId:localParty.binding_id,pairing:activated,admin:(operation,request)=>admin(generation,operation,request),
           localRequest,issueBearer:scopes=>issueToken(actor,service_id,scopes)});
+        if(!simulatorArmPreflight)return;
+        assert.ok(baseline.target_device&&baseline.target_device!==baseline.device);
+        const armBearer=await issueToken(actor,service_id,['request.create','run.read','run.arm']);
+        const reader=await issueToken(actor,service_id,['request.create','run.read']);
+        const contextRequest={ttl_ms:30000,max_unique_requests:2};
+        const call=async(operation,request,status=200,authorization=armBearer)=>{
+          const reply=await localRequest(runApprovalRoute,operation,request,authorization);
+          assert.equal(reply.status,status,operation+' '+reply.data);
+          return JSON.parse(reply.data).result;
+        };
+        await call('create-arm-context',contextRequest,403,reader);
+        const {context_id}=await call('create-arm-context',contextRequest);
+        const preflightRequest={run_id:publishedSimulator.run.run_id,expected_revision:'2',context_id};
+        await call('record-arm-preflight',{...preflightRequest,context_id:null},422);
+        const pending=await call('record-arm-preflight',preflightRequest);
+        assert.equal(pending.preflight.observation.can_arm,false);
+        assert.equal(pending.preflight.observation.sources[0].state,'baseline_required');
+        assert.equal(pending.preflight.basis.admission,null);
+        finishArmPreflights=async()=>{
+          const ready=await call('record-arm-preflight',preflightRequest);
+          assert.equal(ready.preflight.observation.can_arm,true);
+          assert.deepEqual(ready.preflight.observation.approval_ref,approvedSimulator.approval_ref);
+          const [device]=ready.preflight.observation.control_observations[0].devices;
+          assert.equal(device.device_id,baseline.target_device);
+          assert.equal(device.state,'automatic');
+          assert.equal(device.control.gate_state,'protected');
+          assert.equal(ready.preflight.observation.sources[0].state,'synchronized');
+          assert.deepEqual(ready.preflight.basis.admission,{profile_ref:{id:'compose-simulator-budget',revision:'1',digest:sha(armApproval)},
+            qualification_ref,capacity,required});
+          assert.equal(ready.preflight.basis.observed_receive_cursor.receive_sequence,'1');
+          await call('record-arm-preflight',preflightRequest,429);
+          armPreflights=[pending,ready];
+        };
       }:null;
       const afterWrite=simulatorRunApproval?async()=>{
         approvedSimulator.preflight=await approvedSimulator.observePreflight('synchronized');
+        await finishArmPreflights?.();
       }:null;
       simulatorSubscription=await verifyComposeSimulatorSubscription({plan,simulator:generation.simulator,baseline,pairing:activated,
         admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite,afterWrite});
@@ -287,6 +333,19 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription});
     if(simulatorPublication){assert.ok(publishedSimulator);verifyDurableSimulatorPublication(store,publishedSimulator,digest);}
     if(simulatorRunApproval){assert.ok(approvedSimulator);verifyDurableSimulatorRunApproval(store,issuer,approvedSimulator,digest);}
+    if(simulatorArmPreflight){
+      assert.equal(armPreflights?.length,2);
+      const select=store.prepare('SELECT body_jcs,body_digest FROM automation_run_preflight WHERE preflight_id=?');
+      for(const {preflight_ref,preflight} of armPreflights){
+        const {body_jcs,body_digest}=select.get(preflight_ref.object_id);
+        assert.equal(body_digest,preflight_ref.digest);
+        assert.equal(digest(JSON.parse(body_jcs)),body_digest);
+        assert.deepEqual(JSON.parse(body_jcs),preflight);
+      }
+      assert.equal(store.prepare('SELECT count(*) AS n FROM automation_run_preflight').get().n,2);
+      assert.equal(store.prepare('SELECT count(*) AS n FROM automation_arm_budget').get().n,0);
+      assert.equal(store.prepare('SELECT count(*) AS n FROM automation_activation_slot').get().n,0);
+    }
     if(eventConsumer){
       const stored=issuer.prepare(`SELECT body_jcs FROM service_principal_revision
         WHERE principal_id=? AND revision=1`).get(eventConsumer.id);

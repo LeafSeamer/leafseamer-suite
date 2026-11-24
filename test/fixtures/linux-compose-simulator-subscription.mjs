@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
+import {composeSimulatorDeviceScope} from './linux-compose-simulator-publication.mjs';
 
 const id=()=>crypto.randomUUID();
 const reference=({id,revision,digest})=>({id,revision,digest});
@@ -15,7 +16,7 @@ export function readSimulatorFile(files,name){
 }
 
 export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null,afterWrite=null}){
-  const {controller,seamer}=plan,{device,scope}=baseline;
+  const {controller,seamer}=plan,{scope}=baseline;
   const pairing_ref={id:pairing.binding_id,revision:pairing.revision,digest:pairing.digest};
   const {not_before_ns,expires_ns}=pairing;
   const consumer_id='canonical-simulator',permissions=['event.internal.subscribe','status.read'];
@@ -26,7 +27,8 @@ export async function verifyComposeSimulatorSubscription({plan,simulator,baselin
   const request={request_id:id(),consumer_id,scope:scope.scope};
   const submit=()=>localRequest(route,'connect',request);
   assert.equal((await submit()).status,403);
-  const common={principal_id:principal.id,permissions,device_ids:[device],not_before_ns,expires_ns,consumer_slots};
+  const {device_ids}=composeSimulatorDeviceScope(controller,baseline);
+  const common={principal_id:principal.id,permissions,device_ids,not_before_ns,expires_ns,consumer_slots};
   const {approval,principal:subject}=await admin('approve-event-consumer',{...common,request_id:id(),expected_revision:principal.revision,audiences:[controller.service_id]});
   assert.equal(approval.format,'local-service-approval/2');
   assert.equal((await submit()).status,403);

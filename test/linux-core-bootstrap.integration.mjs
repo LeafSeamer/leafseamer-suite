@@ -22,7 +22,7 @@ const id=()=>crypto.randomUUID();
 const sum=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 
 test('实际 Linux 核心经专用通道持久双向准入，错库无回执，断开即关闭',{
-  skip:!enabled,timeout:65000
+  skip:!enabled,timeout:chronyProfile?120000:65000
 },async t=>{
   assert.equal(process.getuid(),0);
   const {openNativeClock}=await import(pathToFileURL(path.join(controller,'native-clock.mjs')));
@@ -35,6 +35,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
   fs.chmodSync(image,0o755);
   const nodeDigest=sum(fs.readFileSync(image));
   const cores=[['controller',controller],...(seamer?[['seamer',seamer]]:[])];
+  const signingKey=crypto.generateKeyPairSync('ed25519');
   let store,journal;
   async function empty(group){
     for(let index=0;index<80;index++){
@@ -85,7 +86,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     if(inspectClock){
       const directory=path.join(root,'clock'),keyFile=path.join(root,'clock-key.pem'),profileFile=path.join(root,'clock-profile.json');
       fs.mkdirSync(directory,{mode:0o700});fs.chownSync(directory,65534,65534);
-      const {privateKey,publicKey}=crypto.generateKeyPairSync('ed25519');
+      const {privateKey,publicKey}=signingKey;
       fs.writeFileSync(keyFile,publicKey.export({format:'pem',type:'spki'}),{mode:0o644});
       const approval=()=>({id:id(),revision:'1',digest:'sha256:'+'a'.repeat(64)});
       const clockPolicy=seal({id:id(),revision:'1',service_id:policy.service_id,runtime_profile_ref:approval(),native_artifact_ref:approval(),
@@ -93,7 +94,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
         health_profile_ref:chrony?{...approval(),digest:digest(chrony)}:approval(),max_system_error_ns:'100000000',
         wall_quantization_ns:'100',monotonic_quantization_ns:'10',drift_ppb:1000,capture_limit_ns:'20000000',sample_period_ns:'500000000',
         sample_ttl_ns:'5000000000',sample_window_policy:'authentication-clock-sample/2'});
-      fs.writeFileSync(profileFile,canonical({format:'leafseamer.controller-linux-clock-evidence-profile/1',service_id:policy.service_id,
+      fs.writeFileSync(profileFile,canonical({format:`leafseamer.${role}-linux-clock-evidence-profile/1`,service_id:policy.service_id,
         database_instance_id:policy.database_instance_id,policy_digest:clockPolicy.digest,public_key_file:keyFile,exchange_directory:directory}),{mode:0o644});
       intent.args.push('--clock-evidence-profile',profileFile);
       clock={directory,privateKey,clockPolicy};
@@ -110,9 +111,9 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }
     return {intent,policy,group,data,installation,port,clock};
   }
-  async function checkClock({clock,policy},descriptor,url,body){
-    const {directory,privateKey,clockPolicy}=clock;
-    assert.equal(body.authentication_clock_evidence,'missing');
+  function readClockChallenge({clock,policy},descriptor,body){
+    const {directory}=clock;
+    assert.deepEqual(body,{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:'missing'});
     const files=fs.readdirSync(directory);
     assert.equal(files.length,1);
     const challenge=JSON.parse(fs.readFileSync(path.join(directory,files[0]),'utf8'));
@@ -124,7 +125,21 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     assert.equal(descriptor_digest,descriptor.descriptor_digest);
     assert.equal(continuity,source.capture().continuity);
     assert.equal(native_binary_digest,source.artifactDigest);
-    const file=path.join(directory,`evidence-${service_boot_id}.json`);
+    return challenge;
+  }
+  function evidenceFile({actual,challenge}){
+    return path.join(actual.clock.directory,`evidence-${challenge.service_boot_id}.json`);
+  }
+  async function expectEvidence(url,value){
+    const response=await fetch(url,{signal:AbortSignal.timeout(1000)});
+    assert.equal(response.status,503);
+    assert.deepEqual(await response.json(),{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:value});
+  }
+  async function checkClock(member,peer){
+    const {actual:{clock},challenge,url}=member;
+    const {directory,privateKey,clockPolicy}=clock;
+    const {service_id,service_boot_id,database_instance_id,clock_domain_id,descriptor_digest,continuity,native_binary_digest}=challenge;
+    const file=evidenceFile(member);
     const format='leafseamer.authentication-clock-evidence/1';
     function publish({boot=service_boot_id,domain=clock_domain_id,deadline=source.tick()+4000000000n,signer=privateKey,useChrony=false}={}){
       const {runtime_profile_ref,native_artifact_ref,environment_approval_ref,health_profile_ref,system_time_source_ref}=clockPolicy;
@@ -151,25 +166,29 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
       }
       return deadline;
     }
-    async function expectEvidence(value){
-      const response=await fetch(url,{signal:AbortSignal.timeout(1000)});
-      assert.equal(response.status,503);
-      assert.deepEqual(await response.json(),{ready:false,reason:'authentication_clock_unqualified',authentication_clock_evidence:value});
+    const deadline=publish({useChrony:chrony!==null});await expectEvidence(url,'verified');
+    if(peer){
+      for(const field of ['service_id','service_boot_id','database_instance_id','clock_domain_id']){
+        assert.notEqual(challenge[field],peer.challenge[field]);
+      }
+      const destination=evidenceFile(peer);
+      fs.copyFileSync(file,destination,fs.constants.COPYFILE_EXCL);
+      fs.chmodSync(destination,0o644);
+      await expectEvidence(peer.url,'rejected');
+      fs.unlinkSync(destination);
     }
-    const deadline=publish({useChrony:chrony!==null});await expectEvidence('verified');
     if(chrony){
       const original=fs.readFileSync(file);
       while(source.tick()<deadline)await delay(100);
       assert.deepEqual(fs.readFileSync(file),original);
-      await expectEvidence('expired');
+      await expectEvidence(url,'expired');
     }
-    publish({boot:id()});await expectEvidence('rejected');
-    publish({domain:id()});await expectEvidence('rejected');
-    publish({signer:crypto.generateKeyPairSync('ed25519').privateKey});await expectEvidence('rejected');
-    publish({deadline:source.tick()});await expectEvidence('expired');
-    publish();fs.chmodSync(file,0o666);await expectEvidence('rejected');
-    fs.unlinkSync(file);await expectEvidence('missing');
-    return service_boot_id;
+    publish({boot:id()});await expectEvidence(url,'rejected');
+    publish({domain:id()});await expectEvidence(url,'rejected');
+    publish({signer:crypto.generateKeyPairSync('ed25519').privateKey});await expectEvidence(url,'rejected');
+    publish({deadline:source.tick()});await expectEvidence(url,'expired');
+    publish();fs.chmodSync(file,0o666);await expectEvidence(url,'rejected');
+    fs.unlinkSync(file);await expectEvidence(url,'missing');
   }
   for(const [role,distribution] of cores){
     const wrong=await target(role,distribution,role+'-wrong-database',{wrongDatabase:true});
@@ -194,7 +213,7 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
   for(const [role,distribution] of cores){
     const existing=accepted[0]?.actual;
     const actual=await target(role,distribution,role+'-accepted',{sharedInstallation:existing?.installation??null,
-      generation_id:existing?.intent.generation_id,inspectClock:role==='controller'});
+      generation_id:existing?.intent.generation_id,inspectClock:true});
     const {record,bootstrap}=await journal.admit(actual.intent,{policy:actual.policy,source});
     assert.equal(bootstrap,null);
     assert.equal(record.phase,'executed_closed');
@@ -212,23 +231,21 @@ test('实际 Linux 核心经专用通道持久双向准入，错库无回执，�
     }
     assert.equal(response?.status,503);
     const body=await response.json();
-    const clockBoot=actual.clock?await checkClock(actual,descriptor,url,body):null;
-    accepted.push({role,actual,record,receipt,url,clockBoot});
+    const challenge=readClockChallenge(actual,descriptor,body);
+    accepted.push({role,actual,record,receipt,url,challenge});
   }
-  for(const {url} of accepted){
-    const response=await fetch(url,{signal:AbortSignal.timeout(1000)});
-    assert.equal(response.status,503);
-    await response.json();
+  for(const member of accepted){
+    await checkClock(member,accepted.find(candidate=>candidate!==member));
   }
   journal.close();store.close();journal=store=null;
-  for(const {role,actual,receipt,url,clockBoot} of accepted){
+  for(const {role,actual,receipt,url,challenge} of accepted){
     await empty(actual.group);
     await assert.rejects(fetch(url,{signal:AbortSignal.timeout(500)}));
     const detail=new DatabaseSync(path.join(actual.data,role+'.sqlite'),{readOnly:true});
     try{
       const saved=detail.prepare('SELECT receipt_jcs,service_boot_id FROM core_runtime_binding').get();
       assert.equal(saved?.receipt_jcs,canonical(receipt));
-      if(clockBoot!==null)assert.equal(saved.service_boot_id,clockBoot);
+      assert.equal(saved.service_boot_id,challenge.service_boot_id);
       assert.equal(detail.prepare('SELECT count(*) AS total FROM core_runtime_binding').get().total,1);
     }finally{detail.close();}
   }

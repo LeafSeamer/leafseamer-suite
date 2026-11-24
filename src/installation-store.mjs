@@ -15,6 +15,7 @@ import {platformQualifications} from './platform-qualification.mjs';
 import {installationSealing} from './installation-sealing.mjs';
 import {materializationProvider} from './materialization.mjs';
 import {linuxDeploymentJournal} from './linux-deployment-journal.mjs';
+import {linuxMemberJournal} from './linux-member-journal.mjs';
 export {createReleaseTransport} from './release-transport.mjs';
 export {InstallationError};
 
@@ -55,11 +56,11 @@ function database(filename) {
   } catch (error) { db.close(); throw error; }
 }
 function shape(db) { return db.prepare("SELECT type,name,tbl_name,sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name").raw().all(); }
-function checkJournalSchema(db,source){
+function checkJournalSchema(db,source,code='linux_deployment_integrity'){
   const memory=new Database(':memory:');
   try{
     memory.exec(source);
-    need(canonical(shape(db))===canonical(shape(memory))&&rows(db,'PRAGMA foreign_key_check').length===0,'linux_deployment_integrity');
+    need(canonical(shape(db))===canonical(shape(memory))&&rows(db,'PRAGMA foreign_key_check').length===0,code);
   }finally{memory.close();}
 }
 let expectedShape;
@@ -143,13 +144,22 @@ export function openInstallationStore(dataDirectory) {
         poisoned = true; throw new InstallationError('installation_storage_unknown', {cause: error});
       }
     };
-    let linuxJournal=null;
+    let linuxJournal=null,memberJournal=null;
     function deploymentJournal(create,runtime){
       available();
-      need(linuxJournal===null,'linux_deployment_in_use');
+      need(linuxJournal===null&&memberJournal===null,'linux_deployment_in_use');
       const journal=linuxDeploymentJournal({root,installation:identity,available,database,pragma,checkSchema:checkJournalSchema,
         create,runtime,onClose:()=>{linuxJournal=null;}});
       if(!create)linuxJournal=journal;
+      return journal;
+    }
+    function members(create,assertCurrent){
+      available();
+      need(linuxJournal===null&&memberJournal===null,'linux_member_in_use');
+      const journal=linuxMemberJournal({root,installation:identity,available,database,pragma,
+        checkSchema:(database,source)=>checkJournalSchema(database,source,'linux_member_database'),
+        create,assertCurrent,onClose:()=>{memberJournal=null;}});
+      if(!create)memberJournal=journal;
       return journal;
     }
     function key(value) {
@@ -225,6 +235,8 @@ export function openInstallationStore(dataDirectory) {
       identity: Object.freeze(identity),
       initializeLinuxDeploymentJournal:()=>deploymentJournal(true,null),
       openLinuxDeploymentJournal:runtime=>deploymentJournal(false,runtime),
+      initializeLinuxMemberJournal:()=>members(true,null),
+      openLinuxMemberJournal:assertCurrent=>members(false,assertCurrent),
       registerClient(policy){
         need(policy&&Object.keys(policy).sort().join(',')==='approval_reference,client_registration_id,permissions,role,target_authority_service_ids,user_sid'&&
           clientId(policy.client_registration_id)&&clientId(policy.approval_reference)&&['management_tool','authority','launch_coordinator'].includes(policy.role)&&typeof policy.user_sid==='string'&&
@@ -519,6 +531,7 @@ export function openInstallationStore(dataDirectory) {
       },
       close() {
         need(linuxJournal===null,'linux_deployment_in_use');
+        need(memberJournal===null,'linux_member_in_use');
         need(activeCopies.size === 0 && activeValidations.size === 0&&activePreparations.size===0&&sealing.activeCount===0&&materialization.activeCount===0&&activeImports.size===0 && trust.activeCount === 0 && clientBindings.size===0, 'import_copy_in_progress');
         if (!closed) { closed = true; db.close(); }
       }

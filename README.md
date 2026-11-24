@@ -144,6 +144,10 @@ leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_
 
 后续装配还需完成 DF02 身份证明、准入回执和旧子树退役。执行成功只建立成员观察。可在专用 Linux 测试宿主编译 [成员夹具](test/fixtures/linux-member.c)，将其绝对路径放入 `LEAFSEAMER_TEST_NATIVE_MEMBER_FIXTURE`，再用 `LEAFSEAMER_TEST_NATIVE_CGROUP=1` 运行 [原生创建联调](test/linux-member.integration.mjs)。[Linux clone3 手册](https://man7.org/linux/man-pages/man2/clone.2.html)
 
+可信装配可通过安装账本先显式调用 `initializeLinuxMemberJournal()`，再用 `openLinuxMemberJournal(assertCurrent)` 打开独立原生成员启动账本。其 `launch(intent)` 使用固定的服务、数据库、运行代、启动标识、角色、UID／GID、绝对制品路径与 SHA-256，以及非敏感 argv。父组沿现有命名规则，核心成员放入预建的 `core` 子组。装配提供同步的 `assertCurrent(record)` 核对有效批准，返回 `true` 才继续。
+
+启动账本在创建前保存 `reserved`，观察到原生成员后保存 `created_closed`，复核后先保存 `release_requested` 再发送释放字节。成功时返回 `executed_closed` 及一次性的引导流。相同意图的重试只返回原记录，其他同角色启动需先取得原成员退役证据。账本关闭时关闭控制和引导流，原记录可通过 `lookup(launchId)` 继续查询。引导流的身份认证和已登记子树的退役采用仍待接通。[启动账本联调](test/linux-member-journal.integration.mjs)
+
 ## 本机安装账本与静态归档验证
 
 Suite 已提供 `@leafseamer/suite/installation` 内部运行模块，使用与当前产品相同的 Node 24.22.0、better-sqlite3 13.0.3／SQLite 3.53.4 和 canonicalize 5.1.0。依赖固定于本仓 `package-lock.json`；构建后的包不需要相邻仓库。Windows开发环境先安装依赖并构建固定原生输入，再运行检查：

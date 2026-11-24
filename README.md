@@ -75,6 +75,8 @@ nginx -t -p /srv/leafseamer/runtime/ -c /srv/leafseamer/runtime/nginx.conf
 
 代理保留请求的 Origin。Controller 上游收到管理源的 Host，Seamer 上游收到计划里它自己的监听地址及端口。Seamer 的公开 API 配置须把管理源列入 `allowed_origins`。
 
+Linux Controller 安装包提供 `start-protected-ingress` 命令。将 Controller 配置中的上游地址、端口及数据库身份与 `services` 条目对应，并把 `origin` 固定为计划的管理 HTTPS 源。只从代理网络访问后端监听。此启动路径用于保护态联调，登录和配对仍依赖可信运行装配。
+
 [Linux 代理联调用例](test/linux-ingress.integration.mjs) 使用真实 Nginx、临时证书及独立 HTTPS 测试上游，验证静态交付、路由、握手、请求头、上游故障和写请求转发。[Linux 实际服务联调用例](test/linux-service-ingress.integration.mjs) 另行启动已构建的 Linux Controller 与 Seamer，验证代理后的签发方身份与保护响应。完整 Compose 装配、真实服务信任与设备启动继续按 C12 验收。
 
 ## 本机安装账本与静态归档验证

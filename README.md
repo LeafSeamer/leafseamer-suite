@@ -54,6 +54,27 @@ LeafSeamer 是直播软硬件控制与自动化项目。各组件独立仓库、
 
 新版运行库采用 SQLite，支持指定 NTP 时间源，GUI 脱离 NodeCG；播出图文通过可选 NodeCG 桥接提供。完整功能仍在实施，实际完成范围以上述统一收敛清单为准。五仓的 `rebirth` 已通过 merge commit 合入 `main`，后续在 `main` 推进设计与实施。
 
+## Linux 管理入口
+
+`dist/linux-ingress.mjs` 为 C12 的 Linux 部署生成 Nginx 配置。生成器读取受保护的 `leafseamer.linux-ingress/1` 计划，核对 GUI 清单及其资产摘要，再将明确配置的服务写成静态路由。计划、证书、私钥和生成结果放在本机部署目录。GUI 目录应由部署层固定在已核验的制品代，并允许 Nginx Worker 读取。
+
+| 计划字段 | 内容 |
+| --- | --- |
+| `format` | `leafseamer.linux-ingress/1` |
+| `management` | `address`、`port`、`host`、`certificate_file`、`private_key_file`。监听地址为 IP，管理源使用证书覆盖的 DNS 主机名 |
+| `issuer_service_id` | 唯一负责管理登录的 Controller 服务 ID |
+| `services` | 每项提供 `role`、`service_id`、`database_instance_id`、`address`、`port`、`server_name`、`ca_file`。地址为固定 IP，`server_name` 绑定上游 TLS 身份 |
+| `gui` | `directory` 和 `manifest_sha256`。站点须绑定签发 Controller 的身份，Seamer 配置须采用管理源下对应的 `/services/<service_id>` |
+
+```sh
+node dist/linux-ingress.mjs --config /srv/leafseamer/ingress-plan.json > /srv/leafseamer/runtime/nginx.conf
+nginx -t -p /srv/leafseamer/runtime/ -c /srv/leafseamer/runtime/nginx.conf
+```
+
+已配置服务使用 `/services/<service_id>/api/v1/` 和逐服务发现路径。现有 GUI 使用的同源 `/api/v1/` 固定到签发 Controller，认证路径仅转发列出的会话与令牌接口。当前部署入口对代理到应用的 TLS 强制检查证书及名称，内部配对与本机管理接口留在独立信任边界。应用继续负责权限、幂等和设备屏障。
+
+[Linux 联调用例](test/linux-ingress.integration.mjs) 使用真实 Nginx、临时证书及独立 HTTPS 测试上游。验证范围覆盖静态交付、路由、握手、请求头、上游故障和写请求转发。完整 Compose 装配、真实服务信任与设备启动继续按 C12 验收。
+
 ## 本机安装账本与静态归档验证
 
 Suite 已提供 `@leafseamer/suite/installation` 内部运行模块，使用与当前产品相同的 Node 24.22.0、better-sqlite3 13.0.3／SQLite 3.53.4 和 canonicalize 5.1.0。依赖固定于本仓 `package-lock.json`；构建后的包不需要相邻仓库。Windows开发环境先安装依赖并构建固定原生输入，再运行检查：

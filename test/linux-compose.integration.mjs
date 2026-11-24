@@ -124,7 +124,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   let source,admissions;
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
+  const pairedSimulator=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRED_SIMULATOR==='1';
   assert.ok(!pairingTest||chronyFile);
+  assert.ok(!pairedSimulator||pairingTest&&workerControl&&process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE);
   assert.ok(!process.env.LEAFSEAMER_TEST_COMPOSE_BROWSER||pairingTest);
   assert.ok(process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION!=='1'||pairingTest);
   const clocks={};
@@ -224,7 +226,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       fs.mkdirSync(group);groups.push(group);
     }
   };
-  const projectFor=id=>'leafseamer-'+installation.host_installation_id.replaceAll('-','')+'-'+id.replaceAll('-','');
+  const projectFor=(id,hostId=installation.host_installation_id)=>'leafseamer-'+hostId.replaceAll('-','')+'-'+id.replaceAll('-','');
   if(manage){
     ({openLinuxComposeHost}=await import('../dist/linux-compose-host.mjs'));
     const {createInstallationStore,openInstallationStore}=await import('../dist/installation-store.mjs');
@@ -668,25 +670,70 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
   if(pairingTest){
     const {completeLinuxComposeFirstPairing}=await import('./fixtures/linux-compose-first-pairing.mjs');
-    let pairingWorkerRuntime;
+    let pairingWorkerRuntime,simulator;
+    let pairPlan=plan;
     if(workerControl){
       const directory=path.join(root,'pairing-worker'),channel_directory=path.join(root,'pairing-sockets');
       fs.mkdirSync(directory,{mode:0o711});fs.mkdirSync(channel_directory,{mode:0o755});
-      const dist=process.env.LEAFSEAMER_TEST_COMPOSE_CLOCK_DIST;
+      const dist=pairedSimulator?process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_DIST:process.env.LEAFSEAMER_TEST_COMPOSE_CLOCK_DIST;
+      const image=pairedSimulator?process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_NODE:process.execPath;
       pairingWorkerRuntime={directory,channel_directory,uid:1001,gid:1001,
         distribution:{directory:dist,manifest_sha256:'sha256:'+hash(fs.readFileSync(path.join(dist,'build-manifest.json')))},
-        image:{file:process.execPath,sha256:'sha256:'+hash(fs.readFileSync(process.execPath))}};
+        image:{file:image,sha256:'sha256:'+hash(fs.readFileSync(image))}};
+    }
+    if(pairedSimulator){
+      const {digest}=clockValues,{distribution,image}=pairingWorkerRuntime;
+      pairPlan={...plan,controller:{...controller,image:process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE},bootstrap:{...plan.bootstrap,
+        controller:{...plan.bootstrap.controller,artifact_manifest_ref:{...plan.bootstrap.controller.artifact_manifest_ref,
+          digest:digest({controller_build_sha256:distribution.manifest_sha256.slice(7),node_sha256:image.sha256.slice(7)})}}}};
+      const rootDir=path.join(root,'paired-simulator');
+      const installDir=path.join(rootDir,'installation');
+      const {createInstallationStore,openInstallationStore}=await import('../dist/installation-store.mjs');
+      fs.mkdirSync(installDir,{recursive:true,mode:0o700});createInstallationStore(installDir);
+      const installation=openInstallationStore(installDir);
+      let sealed;
+      t.after(()=>{try{sealed?.close();}finally{installation.close();}});
+      installation.initializeLinuxDeploymentJournal();
+      const {sealSimulatorWorker}=await import('./fixtures/linux-worker-materialization.mjs');
+      const dist=distribution.directory;
+      const {deviceModuleEventProtocol}=await import(pathToFileURL(path.join(dist,'sdk','device-module.mjs')));
+      sealed=await sealSimulatorWorker(t,{dist,directory:rootDir,serviceId:controller.service_id,profileId:plan.bootstrap.controller.platform_profile_ref.profile_id,
+        protocol:deviceModuleEventProtocol,store:installation});
+      simulator={installation,installDir,intakeRef:sealed.intakeRef,launchId:crypto.randomUUID()};
     }
     async function launch(pairing){
       const id=crypto.randomUUID(),generationDirectory=path.join(root,id);
-      fs.writeFileSync(planPath,JSON.stringify({...plan,pairing,cgroup:{...plan.cgroup,generation_id:id},
+      fs.writeFileSync(planPath,JSON.stringify({...pairPlan,pairing,cgroup:{...plan.cgroup,generation_id:id},
         ...(pairingWorkerRuntime&&{worker_runtime:pairingWorkerRuntime})}));
       run(process.execPath,[...generate.slice(0,-1),generationDirectory]);
       await prepareParents(id);
+      let simulatorFiles=null;
+      if(simulator){
+        const {linuxContainerCgroup}=await import('../dist/linux-cgroup-retirement.mjs');
+        const parent=linuxContainerCgroup({driver:'cgroupfs',generationId:id,role:'controller'}).groupPath;
+        const {launchId,intakeRef}=simulator;
+        const group_path=parent+'/worker_'+launchId.replaceAll('-',''),groupFile='/sys/fs/cgroup'+group_path;
+        fs.mkdirSync(groupFile);groups.unshift(groupFile);
+        const {dev,ino}=fs.statSync(groupFile,{bigint:true}),boot_id=fs.readFileSync('/proc/sys/kernel/random/boot_id','utf8').trim();
+        const containment={backend:'linux_cgroup_v2',generation:id,
+          group_id:'group_'+clockValues.digest({boot_id,group_path,group:{device:String(dev),inode:String(ino)}}).slice(7)};
+        const data='/var/lib/leafseamer',fileFor=name=>path.join(data,name);
+        const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish')};
+        const start=fileFor('worker-start'),result=fileFor('worker-result.json');
+        fs.writeFileSync(path.join(controller.data_dir,'worker-test.json'),clockValues.canonical({
+          policy:pairPlan.bootstrap.controller,launchId,containment,channelDirectory:'/run/leafseamer-worker',data,start,result,intakeRef,paired
+        }),{mode:0o640});
+        owned(path.join(controller.data_dir,'worker-test.json'));
+        const hostFile=file=>path.join(controller.data_dir,path.basename(file));
+        simulatorFiles={start:hostFile(start),result:hostFile(result),ready:hostFile(paired.ready),
+          proceed:hostFile(paired.proceed),finish:hostFile(paired.finish),groupFile};
+      }
       await managedHost?.close();
-      managedHost=openLinuxComposeHost({...hostOptions,generationDirectory});
-      project=projectFor(id);composePath=path.join(generationDirectory,'compose.json');created=true;
+      managedHost=openLinuxComposeHost({...hostOptions,generationDirectory,
+        ...(simulator&&{installationDirectory:simulator.installDir,installationStore:simulator.installation})});
+      project=projectFor(id,simulator?.installation.identity.host_installation_id);composePath=path.join(generationDirectory,'compose.json');created=true;
       const {record,admissions}=await managedHost.startSupervised();
+      if(simulatorFiles)fs.writeFileSync(simulatorFiles.start,'');
       for(const role of ['controller','seamer']){
         const limit=performance.now()+5000;
         while(!bindClockPublisher(role,admissions[role].descriptor)){
@@ -702,6 +749,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       },1200);
       const containers=record.detail.runtime_binding.containers;
       return {containers,inbox:path.join(generationDirectory,'first-pairing'),phase:()=>phase,
+        simulator:simulatorFiles,
         events:role=>docker('logs',containers[role]).split('\n').filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)),
         async stop(){
           clearInterval(renew);
@@ -731,7 +779,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         return JSON.parse(output);
       };
     }
-    await completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
-      verifyLocalExtension:!!pairingWorkerRuntime});
+    await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
+      verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator});
+    if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');
   }
 });

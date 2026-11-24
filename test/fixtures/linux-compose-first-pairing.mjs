@@ -7,6 +7,7 @@ import {once} from 'node:events';
 import {setTimeout as delay} from 'node:timers/promises';
 import {DatabaseSync} from 'node:sqlite';
 import {linuxPairingCertificates} from './linux-first-pairing.mjs';
+import {readSimulatorFile,verifyComposeSimulatorSubscription,verifyDurableSimulatorSubscription} from './linux-compose-simulator-subscription.mjs';
 
 const id=()=>crypto.randomUUID();
 const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
@@ -14,7 +15,7 @@ const mount='/etc/leafseamer/pairing/';
 const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='https://127.0.0.1:8444';
 const permissions=['auth.manage','auth.read'];
 
-export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,verifyLocalExtension=false}){
+export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,verifyLocalExtension=false,pairedSimulator=false}){
   const {canonical,digest}=clockValues;
   const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
   const certificates=path.join(root,'pairing-certificates');
@@ -104,7 +105,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const localParty=party('seamer',['auth.introspect']);
   const {service_id,database_instance_id}=seamer;
   const verifyPublication=process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION==='1';
-  const verifySourceSubscription=process.env.LEAFSEAMER_TEST_COMPOSE_SOURCE_SUBSCRIPTION==='1';
+  const verifySourceSubscription=pairedSimulator||process.env.LEAFSEAMER_TEST_COMPOSE_SOURCE_SUBSCRIPTION==='1';
   if(verifySourceSubscription)localParty.permissions.push('event.internal.subscribe');
   const policyScope={authority_service_id:service_id,database_instance_id};
   const eventLimits={event_age_limits:[{authority_id:controller.service_id,registration_ref:{id:id(),revision:'1',digest:digest('fixture-registration')},
@@ -119,8 +120,11 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       ...(verifySourceSubscription&&{local_source_subscriptions:true})},
     ...publicationProfile},verifyPublication?{[approvalFile]:approval}:{});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft,eventConsumer;
+  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription;
   try{
+    const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready')):null;
+    if(baseline)localParty.object_scope_digest=digest({format:'leafseamer.device-binding-scope/1',authority_service_id:controller.service_id,
+      database_instance_id:controller.database_instance_id,device_ids:[baseline.device]});
     const actor=await loginThroughProxy();
     const identityToken=await issueToken(actor,controller.service_id,['session.read']);
     const session=await send('/api/v1/session',{headers:{Authorization:identityToken}});
@@ -189,7 +193,10 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       return JSON.parse(data).result;
     });
     assert.deepEqual(grant.permissions,permissions);
-    if(verifySourceSubscription){
+    if(pairedSimulator){
+      simulatorSubscription=await verifyComposeSimulatorSubscription({plan,simulator:generation.simulator,baseline,pairing:activated,
+        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest});
+    }else if(verifySourceSubscription){
       const route='/auth/local-source-subscriptions/v1',reference=entity_kind=>({authority_service_id:controller.service_id,
         database_instance_id:controller.database_instance_id,entity_kind,entity_id:id(),entity_epoch:id(),revision:'1',content_digest:'a'.repeat(64)});
       const request={request_id:id(),consumer_id:'compose-unapproved',scope:{scope_id:id(),scope_revision:'1',
@@ -252,6 +259,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   try{
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
+    if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription});
     if(eventConsumer){
       const stored=issuer.prepare(`SELECT body_jcs FROM service_principal_revision
         WHERE principal_id=? AND revision=1`).get(eventConsumer.id);

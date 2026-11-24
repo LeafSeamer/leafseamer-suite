@@ -145,7 +145,9 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
         const file=absolute(planFile);
         need(path.dirname(file)===path.join(installationDirectory,'linux-native'),'linux_native_plan_path');
         const plan=verifyPlan(file,planDigest);
-        need(fields(plan,'bootstrap,clock_profile,data_directory,distribution,driver,format,generation_id,gid,host_installation_id,image,launch_id,pairing_profile,port,role,uid')&&
+        const required='bootstrap,clock_profile,data_directory,distribution,driver,format,generation_id,gid,host_installation_id,image,launch_id,pairing_profile,port,role,uid';
+        const workerControl=plan.worker_control===true;
+        need(fields(plan,workerControl?required+',worker_control':required)&&(!workerControl||plan.role==='controller')&&
           plan.format==='leafseamer.linux-native-core/1'&&plan.host_installation_id===installation.identity.host_installation_id&&
           fields(plan.distribution,'directory,manifest_sha256')&&fields(plan.image,'file,sha256')&&
           fields(plan.clock_profile,'file,sha256')&&fields(plan.pairing_profile,'file,sha256')&&
@@ -159,13 +161,14 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
         const spec={role,driver,generation_id,launch_id,uid,gid,service_id,database_instance_id,image_path:absolute(image.file),image_sha256:image.sha256,
           args:['--disallow-code-generation-from-strings',path.join(absolute(distribution.directory),'cli.mjs'),'contained-core-linux',
             '--data-dir',absolute(plan.data_directory),'--port',String(plan.port),'--bootstrap-policy',canonical(bootstrap),
-            '--clock-evidence-profile',absolute(plan.clock_profile.file),'--pairing-profile',absolute(plan.pairing_profile.file)]};
+            '--clock-evidence-profile',absolute(plan.clock_profile.file),'--pairing-profile',absolute(plan.pairing_profile.file),
+            ...(workerControl?['--worker-control','inherited']:[])]};
         const policy=validateLinuxBootstrapPolicy(spec,bootstrap);
         need(policy.artifact_manifest_ref.digest===digest({[role+'_build_sha256']:distribution.manifest_sha256.slice(7),node_sha256:image.sha256.slice(7)}),
           'linux_native_manifest');
         verifyInputs(plan,spec,policy);
         openPlan={file,expected:planDigest,spec,policy};
-        try{return (await journal.admit(spec,{policy,source})).record;}
+        try{return (await journal.admit(spec,{policy,source,workerControl})).record;}
         finally{openPlan=null;}
       },
       retire(launchId){idle();journal.closeIntake(launchId);return journal.observeRetirement(launchId);},

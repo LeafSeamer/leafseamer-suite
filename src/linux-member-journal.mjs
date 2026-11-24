@@ -6,6 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {InstallationError,canonical,digest,requireValue as need} from './import-input.mjs';
 import {linuxContainerCgroup,observeLinuxMemberRetirement,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {admitLinuxMember,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
+import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
 
 const sql=fs.readFileSync(new URL('./linux-member-journal.sql',import.meta.url),'utf8');
 const retirementSql=fs.readFileSync(new URL('./linux-member-retirement.sql',import.meta.url),'utf8');
@@ -312,18 +313,35 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         need(await frames('executed',group,image.identity)===pid&&same(leader,readLinuxCgroupLeader(pid)),
           'linux_member_execution_changed');
         checkGroup();
-        function commit(admission){
-          checkGroup();
+        function assertCoreCurrent(){
+          open();checkGroup();
           need(same(leader,readLinuxCgroupLeader(pid)),'linux_member_execution_changed');
-          const detail={...closedRecord.detail,...(admission&&{admission})};
-          if(admission)authorize({intent:spec,revision:4,phase:'executed_closed',detail});
-          return append(spec,4,'executed_closed',detail);
         }
         const socket=member.stdio[3];
+        function commit(admission){
+          assertCoreCurrent();
+          const detail={...closedRecord.detail,...(admission&&{admission})};
+          if(admission)authorize({intent:spec,revision:4,phase:'executed_closed',detail});
+          const record=append(spec,4,'executed_closed',detail);
+          if(bootstrap?.workerControl)bindLinuxWorkerControl({directory:root,socket,core:admission,source:bootstrap.source,
+            assertLive:assertCoreCurrent,checkGroup(intent){
+              const group_path=groupPath.slice(0,-'/core'.length)+'/worker_'+intent.launch_id.replaceAll('-','');
+              try{
+                const worker=groupIdentity(group_path),directory='/sys/fs/cgroup'+group_path;
+                const stat=fs.lstatSync(directory,{bigint:true}),procs=fs.lstatSync(directory+'/cgroup.procs',{bigint:true});
+                return stat.uid===BigInt(process.geteuid())&&(stat.mode&0o022n)===0n&&
+                  procs.isFile()&&procs.uid===stat.uid&&(procs.mode&0o022n)===0n&&
+                  /^populated 0$/m.test(fs.readFileSync(directory+'/cgroup.events','utf8'))&&
+                  intent.containment_ref.group_id==='group_'+digest({boot_id:host.boot_id,group_path,group:worker}).slice(7);
+              }catch(error){if(error.code==='ENOENT')return false;throw error;}
+            }});
+          return record;
+        }
         const record=bootstrap?await admitLinuxMember(closedRecord,{policy,source:bootstrap.source,socket,commit}):commit(null);
         if(bootstrap){
           const stop=()=>{member.stdin.destroy();socket.destroy();};
-          socket.once('end',stop).once('error',stop).once('close',stop).once('data',stop);
+          socket.once('end',stop).once('error',stop).once('close',stop);
+          if(!bootstrap.workerControl)socket.once('data',stop);
           socket.resume();
         }
         live.set(spec.launch_id,member);executed=true;
@@ -336,9 +354,10 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       }
     }
     return Object.freeze({schemaRevision:version,lookup,lookupRetirement,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
-      launch:input=>launch(input),admit(input,{policy,source}={}){
+      launch:input=>launch(input),admit(input,{policy,source,workerControl=false}={}){
       need(source&&typeof source.capture==='function'&&typeof source.tick==='function','linux_bootstrap_clock');
-      return launch(input,{policy,source});
+      need(workerControl===false||workerControl===true&&input.role==='controller'&&version===2,'linux_worker_control_scope');
+      return launch(input,{policy,source,workerControl});
     },close(){
       if(closed)return;
       need(!busy,'linux_member_busy');

@@ -184,6 +184,8 @@ leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_
 
 可信 Linux 原生装配可从 `@leafseamer/suite/linux-native-host` 调用 `openLinuxNativeHost({installationDirectory, source})`。安装目录由宿主装配账户持有，启动计划和程序制品由 root 管理。安装账本须已显式初始化原生成员 Schema 2，宿主须预建本次运行代的父组和 `core` 子组。核心使用独立的非 root 账户，`source` 沿用已核验的同宿主原生时钟。
 
+已显式迁移至 Controller Schema 109 的原生部署可在固定 Controller 计划设置 `worker_control: true`。核心使用同一条受监督继承流确认当前回执，并提交完整 Worker 启动快照。宿主为每次核心准入创建独立 SQLite 账本。登记绑定当前允许项、短授权摘要、原截止以及宿主预建的空 Worker cgroup。撤销在宿主账本持久生效，监督通道丢失时核心退出。Worker 的实际 CREATE、运行绑定及 Compose 装配仍待接通。[Linux 监督联调](test/linux-worker-control.integration.mjs)
+
 将 `leafseamer.linux-native-core/1` 计划保存于安装目录下的 `linux-native/`。填入 `host_installation_id`、`role`、`driver`、`generation_id`、`launch_id`、运行账户的 `uid` 与 `gid`、`data_directory`、回环 `port` 及现有 `bootstrap` 策略。`image`、`clock_profile` 与 `pairing_profile` 各提供绝对 `file` 和 `sha256`，`distribution` 提供绝对 `directory` 和 `manifest_sha256`。摘要使用 `sha256:` 前缀，配对和时钟配置均使用各服务的 `/2` 格式。安装制品及依赖树由 root 管理，业务库目录由所选运行账户管理。
 
 `start({planFile, planDigest})` 接受已批准计划的绝对路径与摘要。宿主核对安装身份、制品清单和各资产、权限、服务身份以及配置摘要，再组装固定的 `contained-core-linux` 启动参数。核心准入回执持久写入后返回，同一启动标识的重投返回原记录。业务 TLS 随两端认证采集另行启用。`retire(launchId)` 先持久关闭原入口并关闭监督通道，再观察原父组。仍有进程时保留 `closing`，父组清空后持久返回 `retired`。`lookup(launchId)` 查回原启动与退役记录，`close()` 释放宿主句柄。Compose 容器的认证准入继续使用单独部署验收。[原生配对联调](test/linux-core-bootstrap.integration.mjs)

@@ -252,8 +252,12 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const obsResume=obsCommand&&process.env.LEAFSEAMER_OBS_RESUME_TEST==='1';
   const obsBootRestart=obsCommand&&process.env.LEAFSEAMER_OBS_BOOT_RESTART_TEST==='1';
   const obsBootContinue=obsBootRestart&&process.env.LEAFSEAMER_OBS_BOOT_CONTINUE_TEST==='1';
+  const obsReconcile=obsBootContinue&&process.env.LEAFSEAMER_OBS_RECONCILIATION_TEST==='1';
+  const reconciledCut=obsReconcile&&obsInterruption==='closure';
+  const resumedWrite=unsent||reconciledCut;
+  if(obsReconcile)assert.ok(['closure','report'].includes(obsInterruption));
   if(obsResume)assert.ok(unsent||obsInterruption==='report');
-  if(obsBootRestart)assert.ok(!obsResume&&(unsent||obsInterruption==='report'));
+  if(obsBootRestart)assert.ok(!obsResume&&(resumedWrite||obsInterruption==='report'));
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
   const referenceWatermark=mode.endsWith('_reference_watermark');
   const referenceAcceptance=mode===referenceAcceptanceExecution||referenceRestart||referenceWatermark;
@@ -417,6 +421,10 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
                    assert.equal(restartMigration.steps.length,1);
                    assert.equal(stage107.schema_migration.pop()[2],'107');
                    assert.deepEqual(stage107,snapshot(path.join(core,restartMigration.backup_file)));
+                   if(!obsBootRestart){
+                     const reconciliationMigration=await migrateStorage(core,108);
+                     assert.equal(reconciliationMigration.steps.length,1);
+                   }
                  }
                }
              }
@@ -2164,9 +2172,21 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.equal(after.at(-1).pop()[2],'107');
         assert.deepEqual(after,before);
         assert.deepEqual(history(path.join(core,migrated.backup_file)),before);
+        if(obsReconcile){
+          const revision107=history(file),next=await migrateStorage(core,108),revision108=history(file);
+          assert.equal(next.steps.length,1);
+          assert.equal(revision108.at(-1).pop()[2],'108');
+          assert.deepEqual(revision108,revision107);
+          assert.deepEqual(history(path.join(core,next.backup_file)),revision107);
+        }
+        if(reconciledCut){
+          const db=new Database(file,{fileMustExist:true});
+          try{db.exec(`CREATE TRIGGER obs_reconciliation_commit_fault BEFORE INSERT ON command_lifecycle_commit
+            WHEN NEW.revision=6 BEGIN SELECT RAISE(IGNORE); END`);}finally{db.close();}
+        }
         const {binding,mode,materials,command_tls}=JSON.parse(fs.readFileSync(fixture,'utf8'));
         fs.writeFileSync(nextFixture,JSON.stringify({binding,mode,materials,command_tls,runtime:{...runtimeInput,installation_client:nextClient},
-          obs_restart:restartInput,obs_interruption:obsInterruption}));
+          obs_restart:restartInput,obs_interruption:obsInterruption,obs_reconcile:obsReconcile}));
         service?.close();intakeService?.close();await service?.done.catch(()=>{});await intakeService?.done.catch(()=>{});
       }
       child=spawn(path.join(runtime,'native/leafseamer_process_host.exe'),[core,process.execPath,
@@ -2194,17 +2214,45 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         const intakeChannel=createInstallationChannel({name:nextClient.name,peer:captureInstallationPeer(pid),server:true});
         intakeService=serveInstallationClient({store,registration_id:'core.intake',channel_id:nextClient.channel_id,channel:intakeChannel,request_idle_ms:90000});
         intakeService.done.catch(()=>{});fs.writeFileSync(nextFixture+'.intake-ready','ready');
+        if(reconciledCut){
+          const failed=await waitRestart('obs-reconciliation-failed-commit');
+          assert.equal(failed.code,'obs_cut_reconciliation_storage');
+          assert.deepEqual(failed.current,frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record);
+          const db=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
+          try{
+            assert.equal(db.prepare('SELECT count(*) FROM obs_cut_reconciliation').pluck().get(),0);
+            assert.equal(db.prepare('SELECT count(*) FROM command_lifecycle_revision WHERE revision=6').pluck().get(),0);
+            assert.equal(db.prepare('SELECT count(*) FROM command_hold_clearance').pluck().get(),0);
+            db.exec('DROP TRIGGER obs_reconciliation_commit_fault');
+          }finally{db.close();}
+          fs.writeFileSync(nextFixture+'.reconcile-ready','ready');
+        }
         await waitRestart('registered');
         const channel=createInstallationChannel({name:'\\\\.\\pipe\\LeafSeamer.Install.'+nextConfig.pipe_suffix,
           peer:captureInstallationPeer(child.pid),server:true});
         service=serveInstallationClient({store,registration_id:'coordinator.synthetic',channel_id:nextConfig.channel_id,channel,request_idle_ms:90000});
         service.done.catch(()=>{});fs.writeFileSync(nextFixture+'.coordinator-ready','ready');
         await waitRestart('loaded');fs.writeFileSync(nextFixture+'.continue','continue');
-        if(unsent){
+        if(resumedWrite){
           const {target,retained}=await waitRestart('obs-boot-cut');
           assert.equal(findRestart('obs-cut-opened').control.gate_state,'ready');
           assert.equal(findRestart('obs-cut-stale-reference').stale.status,422);
-          assert.deepEqual(retained.body.record,frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record);
+          const original=frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record;
+          if(reconciledCut){
+            const {previous,result,receipt,replayed,evidence,resolved,denied,csrf,stale,control}=findRestart('obs-reconciled');
+            assert.deepEqual(previous,original);
+            assert.deepEqual(receipt,replayed);
+            assert.deepEqual(receipt.state_ref,result.state_ref);
+            assert.deepEqual(retained.body.record,result);
+            assert.deepEqual([result.state.outcome,result.state.terminal_revision,result.state.resource_status,result.state.automation_continuation],
+              ['unknown','5','clear','paused_latched']);
+            assert.deepEqual([denied,csrf,stale,control.gate_state],['obs_cut_reconciliation_permission','session_invalid','obs_cut_reconciliation_conflict','protected']);
+            assert.equal(evidence.status,200);
+            assert.deepEqual(evidence.body.items.map(item=>item.kind),['decision','resolution','release']);
+            assert.equal(resolved.status,200);
+            assert.deepEqual(resolved.body,evidence.body.items[1]);
+            assert.equal(resolved.body.body.resolved_outcome,'succeeded');
+          }else assert.deepEqual(retained.body.record,original);
           const command=findRestart('obs-cut-command-result').finished.body.record;
           assert.deepEqual([command.state.phase,command.state.effect_status,command.state.resource_status],['finished','verified','clear']);
           assert.equal(command.completion.achieved,'effect_verified');
@@ -2214,6 +2262,7 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
           const protectedResult=await waitRestart('obs-boot-protected');
           assert.equal(protectedResult.control.gate_state,'protected');
           assert.equal(protectedResult.code,'obs_prior_execution_holds');
+          if(obsReconcile)assert.equal(findRestart('obs-reconciliation-refused').code,'obs_cut_reconciliation_state');
         }
         assert.equal((await waitRestart('obs-boot-worker-retired')).result.result,'confirmed_empty');
         await waitRestart('done');
@@ -2255,7 +2304,7 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
           assert.equal(replacement.previous_launch_id,restartInput.old_launch.launch_id);
           assert.equal(replacement.launch_id,'worker.restart');
           assert.equal(business.prepare('SELECT count(DISTINCT activation_operation_id) FROM worker_launch_preparation').pluck().get(),1);
-          assert.equal(business.prepare('SELECT count(*) FROM device_initial_open_commit').pluck().get(),unsent?2:1);
+          assert.equal(business.prepare('SELECT count(*) FROM device_initial_open_commit').pluck().get(),resumedWrite?2:1);
         }
       }
       if(obsResume||obsBootContinue){
@@ -2270,8 +2319,8 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.equal(replacement.retirement.state,'retired');
         assert.equal(business.prepare('SELECT count(DISTINCT activation_operation_id) FROM worker_launch_preparation').pluck().get(),1);
         assert.deepEqual(worker.prepare('SELECT observation_jcs FROM worker_retirement').pluck().all().map(value=>JSON.parse(value).active_processes),[0,0]);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_write_attempt JOIN execution_frame_record USING(record_id) WHERE message_type='DISPATCH'").pluck().get(),1);
-        if(unsent){
+        assert.equal(business.prepare("SELECT count(*) FROM execution_write_attempt JOIN execution_frame_record USING(record_id) WHERE message_type='DISPATCH'").pluck().get(),reconciledCut?2:1);
+        if(resumedWrite){
           const {opened,released,acquired,sample,stale,retained}=obsBootContinue?{
             opened:restartFrames.find(f=>f.event==='obs-cut-opened'),released:restart.released,acquired:restart.acquired,
             sample:restartFrames.find(f=>f.event==='obs-cut-opened').resources.value.inventory.obs_cut_observation,
@@ -2281,9 +2330,15 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
           assert.equal(released.state,'effective');
           assert.equal(acquired.state,'effective');
           assert.equal(opened.control.gate_state,'ready');
-          assert.equal(sample.program_scene_uuid,portable.program_scene_uuid);
+          assert.equal(sample.program_scene_uuid,reconciledCut?frames.find(f=>f.event==='obs-cut-packet').target:portable.program_scene_uuid);
           assert.equal(stale.status,422);
-          assert.deepEqual(retained.body.record,old);
+          if(reconciledCut){
+            const {readCommandRevision}=await load('command-record-store.mjs');
+            assert.deepEqual(business.transaction(()=>readCommandRevision(business,old.command_id,'5').record)(),old);
+            assert.equal(retained.body.record.revision,'6');
+            assert.equal(business.prepare('SELECT count(*) FROM obs_cut_reconciliation').pluck().get(),1);
+            assert.equal(prior[0].commands[0].evidence_ref.id,old.command_id+'.reconcile-release');
+          }else assert.deepEqual(retained.body.record,old);
           assert.equal(prior.length,1);
           assert.notEqual(prior[0].ipc_session_id,opened.ready.value.binding.ipc_session_id);
           assert.equal(prior[0].ipc_session_id,replacement.previous_session_id);

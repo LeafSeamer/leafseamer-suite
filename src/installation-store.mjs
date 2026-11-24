@@ -102,6 +102,13 @@ export function createInstallationStore(dataDirectory) {
     throw new InstallationError('installation_initialization_incomplete');
   } finally { db?.close(); }
 }
+const openInstallationStores=new WeakMap();
+export function requireInstallationStore(store,dataDirectory){
+  const current=openInstallationStores.get(store);
+  need(current&&current.root===location(dataDirectory).root,'installation_binding');
+  current.available();return store;
+}
+
 export function openInstallationStore(dataDirectory) {
   const {root, directory_identity} = location(dataDirectory), filename = path.join(root, 'installation.db'); let db;
   try {
@@ -551,6 +558,7 @@ export function openInstallationStore(dataDirectory) {
         if (!closed) { closed = true; db.close(); }
       }
     };
+    openInstallationStores.set(store,{root,available});
     return Object.freeze(store);
   } catch (error) {
     db?.close(); if (error instanceof InstallationError) throw error;

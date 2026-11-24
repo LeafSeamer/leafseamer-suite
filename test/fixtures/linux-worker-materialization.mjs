@@ -36,3 +36,29 @@ export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protoco
   assert.equal(sealed.state,'sealed');
   return {store,artifact,sealed:store.sealedArtifact(identity),close};
 }
+
+export async function sealSimulatorWorker(t,{dist,directory,serviceId,profileId,protocol,store}){
+  const template=JSON.parse(fs.readFileSync(path.join(dist,'simulator-control-capability.json'),'utf8'));
+  const bytes=Buffer.from(JSON.stringify(template));
+  const sealed=await sealLinuxWorker(t,{directory,serviceId,profileId,protocol,sharedStore:store,
+    moduleBytes:fs.readFileSync(path.join(dist,'simulator-control-module.mjs')),
+    apiVersions:['leafseamer-device-event-capture/1','leafseamer-device-module/2','leafseamer-device-primitives/1'],customize({payload,manifest,inventory}){
+      function add(fileId,file){
+        payload.set(fileId,file);
+        const entry={file_id:fileId,path:file.path,role:file.role,size_bytes:String(file.bytes.length),digest:rawDigest(file.bytes),executable:false};
+        const prior=inventory.files.find(value=>value.file_id===fileId);
+        if(prior)Object.assign(prior,entry);else inventory.files.unshift(entry);
+      }
+      add('config',{path:'config.txt',role:'schema',bytes:Buffer.from('{}')});
+      add('policy',{...payload.get('policy'),bytes:fs.readFileSync(path.join(dist,'simulator-control-policy.json'))});
+      add('capability',{path:'capability.json',role:'schema',bytes});
+      manifest.capability_template_file_ids=['capability'];
+      manifest.roles=[{role_id:'device',kind:'device',minimum:1,maximum:1,purpose:'设备绑定'}];
+      manifest.permission_templates=[{request_id:'device.request',kind:'device_scope',purpose:'请求设备动作',
+        scope:{device_role:'device',action_ids:template.actions.map(action=>action.action_id),trigger_ids:[]}}];
+    }});
+  const {host_installation_id,authority_service_id,database_instance_id}=store.identity;
+  const {receipt,intake_ref}=sealed.sealed,{manifest,inventory}=sealed.artifact;
+  return {close:sealed.close,materialization:{identity:{host_installation_id,authority_service_id,database_instance_id},
+    content:{format:'leafseamer-intake-content/1',intake_ref,receipt,manifest,inventory}}};
+}

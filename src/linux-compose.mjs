@@ -16,6 +16,7 @@ const certificate=runtime+'/tls/certificate.pem',privateKey=runtime+'/tls/privat
 const clockKey=runtime+'/clock-public.pem',clockExchange='/run/leafseamer-clock';
 const pairingMount=runtime+'/pairing';
 const pairingInbox='/run/leafseamer-first-pairing';
+const workerChannelMount='/run/leafseamer-worker';
 export const composePairingLabel='io.leafseamer.pairing-inputs';
 const httpsPort=8443;
 const channelHelper=fileURLToPath(new URL('./native/leafseamer_linux_compose_channel',import.meta.url));
@@ -192,8 +193,10 @@ export function renderLinuxCompose(plan,output){
   const withClock=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'clock_evidence');
   const withPairing=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'pairing');
   const withWorkerControl=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'worker_control');
+  const withWorkerRuntime=plan!==null&&typeof plan==='object'&&Object.hasOwn(plan,'worker_runtime');
   need(fields(plan,(withBootstrap?'bootstrap,':'')+(withCgroup?'cgroup,':'')+(withClock?'clock_evidence,':'')+
-    'controller,format,gui,management,nginx,'+(withPairing?'pairing,':'')+'seamer,subnet'+(withWorkerControl?',worker_control':''))&&
+    'controller,format,gui,management,nginx,'+(withPairing?'pairing,':'')+'seamer,subnet'+(withWorkerControl?',worker_control':'')+
+    (withWorkerRuntime?',worker_runtime':''))&&
     plan.format==='leafseamer.linux-compose-protected/1','compose_plan');
   const {controller,seamer,nginx,management,gui,subnet,cgroup}=plan;
   need(!withWorkerControl||plan.worker_control===true&&withBootstrap&&cgroup?.namespace==='private','compose_worker_control');
@@ -205,6 +208,19 @@ export function renderLinuxCompose(plan,output){
   const direct=[controller,seamer];
   const [controllerData,seamerData,guiDirectory]=[...direct.map(record=>existing(record.data_dir,'directory')),existing(gui.directory,'directory')];
   const roots=[controllerData,seamerData,guiDirectory,output];
+  if(withWorkerRuntime){
+    const worker=plan.worker_runtime;
+    const digest=value=>typeof value==='string'&&/^sha256:[a-f0-9]{64}$(?![\s\S])/.test(value);
+    need(withWorkerControl&&fields(worker,'channel_directory,directory,distribution,gid,image,uid')&&
+      fields(worker.distribution,'directory,manifest_sha256')&&fields(worker.image,'file,sha256')&&
+      digest(worker.distribution.manifest_sha256)&&digest(worker.image.sha256)&&id(worker.uid)&&id(worker.gid)&&
+      [controller,seamer,nginx].every(member=>member.uid!==worker.uid&&member.gid!==worker.gid),'compose_worker_runtime');
+    const workerRoots=[worker.directory,worker.channel_directory,worker.distribution.directory].map(dir=>existing(dir,'directory'));
+    const allRoots=[...roots,...workerRoots,...Object.values(plan.clock_evidence??{}).map(clock=>clock.exchange_directory),
+      ...Object.values(plan.pairing??{}).map(pairing=>pairing.directory)];
+    need(Buffer.byteLength(worker.channel_directory)<=60&&allRoots.every((dir,i)=>allRoots.every((other,j)=>i===j||!contained(dir,other)))&&
+      !workerRoots.some(dir=>contained(dir,existing(worker.image.file,'file'))),'compose_worker_runtime');
+  }
   need(roots.every((dir,index)=>roots.every((other,i)=>i===index||!contained(dir,other))),'compose_path_overlap');
   const certs=[management,...direct].map(tlsFiles);
   const cas=direct.map(record=>existing(record.ca_file,'file'));
@@ -261,6 +277,10 @@ export function renderLinuxCompose(plan,output){
       service.init=false;
       service.volumes.push(bind(channelHelper,runtime+'/compose-channel'),bind(output+'/bootstrap-'+role,runtime+'/bootstrap'));
       if(withWorkerControl&&role==='controller')service.command.push('--worker-control','inherited');
+      if(withWorkerRuntime&&role==='controller'){
+        service.command.push('--worker-channel-dir',workerChannelMount);
+        service.volumes.push(bind(plan.worker_runtime.channel_directory,workerChannelMount));
+      }
       if(withClock){
         const {exchange_directory,policy_digest,public_key_file}=plan.clock_evidence[role];
         const name=role+'-clock.json',target=runtime+'/clock.json';

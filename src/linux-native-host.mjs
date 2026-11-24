@@ -6,6 +6,7 @@ import {readDeploymentFile} from './linux-ingress.mjs';
 import {openInstallationStore} from './installation-store.mjs';
 import {validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 import {linuxContainerCgroup} from './linux-cgroup-retirement.mjs';
+import {pinExecutable} from './linux-native-artifact.mjs';
 
 const sha=/^sha256:[a-f0-9]{64}$(?![\s\S])/;
 const filename=/^[A-Za-z0-9_.-]+$(?![\s\S])/;
@@ -109,6 +110,33 @@ function protectedDependencies(distribution){
     if(stat)visit(dependencies);
     if(directory==='/')return;
   }
+}
+
+export function composeLinuxWorkerRuntime(config,controller,policy,installation){
+  const {distribution,image,uid,gid}=config;
+  const directory=absolute(config.directory),channelDirectory=absolute(config.channel_directory);
+  const entry=path.join(absolute(distribution.directory),'device-worker-entry.mjs');
+  const image_path=absolute(image.file),image_sha256=image.sha256;
+  need(policy.artifact_manifest_ref.digest===digest({controller_build_sha256:distribution.manifest_sha256.slice(7),
+    node_sha256:image_sha256.slice(7)}),'linux_native_manifest');
+  const paths=[directory,channelDirectory],initial=paths.map(dir=>{
+    protectedPath(dir,{directory:true});return fs.lstatSync(dir,{bigint:true});
+  });
+  const runtime={uid,gid,directory,channelDirectory,entry,
+    acquire:(...args)=>installation.acquireLinuxWorkerMaterialization(...args),
+    assertCurrent(){
+      for(const [index,dir] of paths.entries()){
+        protectedPath(dir,{directory:true});const actual=fs.lstatSync(dir,{bigint:true});
+        need(actual.dev===initial[index].dev&&actual.ino===initial[index].ino,'linux_worker_directory_changed');
+      }
+      inspectDistribution(distribution.directory,distribution.manifest_sha256,'controller');
+      protectedDependencies(distribution.directory);protectedPath(entry);
+    }};
+  runtime.assertCurrent();
+  const executable=pinExecutable(image_path,image_sha256,256*1024*1024);
+  fs.closeSync(executable.fd);
+  return {runtime,spec:{uid:controller.uid,gid:controller.gid,service_id:controller.service_id,
+    database_instance_id:controller.database_instance_id,image_path,image_sha256}};
 }
 
 // 受信宿主传入本机时钟和已批准的计划摘要，运行账户只能读取安装物。

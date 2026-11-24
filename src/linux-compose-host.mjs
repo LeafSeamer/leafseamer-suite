@@ -3,13 +3,15 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {canonical,digest,requireValue as need} from './import-input.mjs';
-import {openInstallationStore} from './installation-store.mjs';
+import {openInstallationStore,requireInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
 import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs} from './linux-compose.mjs';
 import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {openLinuxComposeChannel} from './linux-compose-channel.mjs';
 import {admitLinuxMember} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
+import {linuxWorkerRuntimeOptions} from './linux-member-journal.mjs';
+import {composeLinuxWorkerRuntime} from './linux-native-host.mjs';
 
 const docker='/usr/bin/docker';
 const roles=['controller','seamer','nginx'];
@@ -79,7 +81,7 @@ function daemonIdentity(socketPath,pidFile){
   return {host:readLinuxCgroupHost(),leader,listener:sockets[0],socket:{device:String(socket.dev),inode:String(socket.ino)}};
 }
 
-export function openLinuxComposeHost({installationDirectory,planFile,generationDirectory,socketPath='/run/docker.sock',pidFile='/run/docker.pid',source=null}={}){
+export function openLinuxComposeHost({installationDirectory,installationStore=null,planFile,generationDirectory,socketPath='/run/docker.sock',pidFile='/run/docker.pid',source=null}={}){
   need(process.platform==='linux','compose_host_platform');
   absolute(installationDirectory);absolute(planFile);absolute(generationDirectory);absolute(socketPath);absolute(pidFile);
   need(!socketPath.includes(' '),'compose_host_socket');
@@ -114,7 +116,8 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
     }
   }
   verifyFiles();
-  const installation=openInstallationStore(installationDirectory);
+  const installation=installationStore===null?openInstallationStore(installationDirectory):requireInstallationStore(installationStore,installationDirectory);
+  const closeInstallation=()=>{if(installationStore===null)installation.close();};
   let journal;
   let starting=false;
   let control=null;
@@ -126,6 +129,12 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
     return Promise.all(closing.map(channel=>channel.ended));
   }
   try{
+    const worker=plan.worker_runtime?composeLinuxWorkerRuntime(plan.worker_runtime,plan.controller,plan.bootstrap.controller,installation):null;
+    if(worker){
+      const overlaps=(a,b)=>a===b||a.startsWith(b+'/')||b.startsWith(a+'/');
+      need(![worker.runtime.directory,worker.runtime.channelDirectory,plan.worker_runtime.distribution.directory].some(dir=>
+        overlaps(dir,installationDirectory)),'compose_worker_runtime');
+    }
     const project='leafseamer-'+installation.identity.host_installation_id.replaceAll('-','')+'-'+generation_id.replaceAll('-','');
     const composeArgs=['compose','--project-name',project,'--project-directory',generationDirectory,'--env-file','/dev/null',
       '--file',path.join(generationDirectory,'compose.json')];
@@ -161,6 +170,10 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
       need(containerIds().length===0&&networkIds().length===0,'compose_host_project_exists');
     }
     function prepareLaunch(){
+      if(worker){
+        worker.runtime.assertCurrent();
+        need(fs.readdirSync(worker.runtime.channelDirectory).length===0,'compose_host_worker_mount');
+      }
       const info=JSON.parse(run(['info','--format','{{json .}}']));
       need(info.OSType==='linux'&&String(info.CgroupVersion)==='2'&&info.CgroupDriver===driver,'compose_host_engine');
       assertFreshProject();
@@ -265,6 +278,12 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
           const saved=journal.recordAdmission(generation_id,role,admission);
           if(controllerControl){
             const {uid,gid}=plan.controller;
+            if(worker){
+              const identity=file=>{const {dev,ino}=fs.statSync(file,{bigint:true});return {device:String(dev),inode:String(ino)};};
+              worker.runtime.assertCurrent();
+              need(equal(identity('/proc/'+expected.leader.pid+'/root/run/leafseamer-worker'),identity(worker.runtime.channelDirectory)),
+                'compose_host_worker_mount');
+            }
             control=bindLinuxWorkerControl({directory:installationDirectory,socket,core:admission,source,
               assertLive(){
                 verifyFiles();
@@ -272,7 +291,9 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
                   'compose_host_binding');
               },
               checkGroup:intent=>checkLinuxWorkerGroup({driver,generationId:generation_id,host:daemon.host,
-                launchId:intent.launch_id,groupId:intent.containment_ref.group_id})});
+                launchId:intent.launch_id,groupId:intent.containment_ref.group_id}),
+              ...linuxWorkerRuntimeOptions({runtime:worker?.runtime,core:admission,spec:worker?.spec,host:daemon.host,
+                source,corePid:expected.leader.pid})});
           }
           return saved;
         }});
@@ -323,7 +344,7 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
         run([...composeArgs,'down','--timeout','8'],45000);
         return journal.observeRetirement(generation_id);
       },
-      close(){idle();closeChannels();try{journal.close();}finally{installation.close();}}
+      close(){idle();closeChannels();try{journal.close();}finally{closeInstallation();}}
     });
-  }catch(error){journal?.close();installation.close();throw error;}
+  }catch(error){journal?.close();closeInstallation();throw error;}
 }

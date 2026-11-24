@@ -158,6 +158,21 @@ async function launchWorker({intent,core,spec,host,group,source,held,runtime,cor
   }
 }
 
+export function linuxWorkerRuntimeOptions({runtime,core,spec,host,source,corePid}){
+  if(!runtime)return {};
+  return {
+    acquire(intent,challenge_id){
+      runtime.assertCurrent();const binding=intent.extension_binding;
+      return runtime.acquire({intake_id:binding.intake_ref.object_id,target_authority_service_id:spec.service_id,
+        manifest_digest:binding.manifest_digest,artifact_set_digest:binding.artifact_set_digest,host_trust_epoch:binding.host_trust_epoch,
+        launch_intent_digest:digest(intent),challenge_id},{directory:runtime.directory,uid:runtime.uid,gid:runtime.gid});
+    },
+    launch(intent,group,held,assertCreate,assertAllowed,commit){
+      return launchWorker({intent,core,spec,host,group,source,held,runtime,corePid,assertCreate,assertAllowed,commit});
+    }
+  };
+}
+
 export function linuxMemberJournal({root,installation,available,database,pragma,checkSchema,create,upgrade=false,assertCurrent,onClose}){
   need(process.platform==='linux','linux_member_platform');
   const file=path.join(root,'linux-member.db'),marker=path.join(root,'linux-member.marker');
@@ -371,20 +386,10 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
           if(admission)authorize({intent:spec,revision:4,phase:'executed_closed',detail});
           const record=append(spec,4,'executed_closed',detail);
           if(bootstrap?.workerControl){
-            const runtime=bootstrap.workerRuntime;
             bindLinuxWorkerControl({directory:root,socket,core:admission,source:bootstrap.source,assertLive:assertCoreCurrent,
               checkGroup:intent=>checkLinuxWorkerGroup({driver:spec.driver,generationId:spec.generation_id,host,
                 launchId:intent.launch_id,groupId:intent.containment_ref.group_id}),
-              ...(runtime&&{
-                acquire(intent,challenge_id){
-                  runtime.assertCurrent();const binding=intent.extension_binding;
-                  return runtime.acquire({intake_id:binding.intake_ref.object_id,target_authority_service_id:spec.service_id,
-                    manifest_digest:binding.manifest_digest,artifact_set_digest:binding.artifact_set_digest,host_trust_epoch:binding.host_trust_epoch,
-                    launch_intent_digest:digest(intent),challenge_id},{directory:runtime.directory,uid:runtime.uid,gid:runtime.gid});
-                },
-                launch(intent,group,held,assertCreate,assertAllowed,commit){return launchWorker({intent,core:admission,spec,host,group,source:bootstrap.source,
-                  held,runtime,corePid:leader.pid,assertCreate,assertAllowed,commit});}
-              })});
+              ...linuxWorkerRuntimeOptions({runtime:bootstrap.workerRuntime,core:admission,spec,host,source:bootstrap.source,corePid:leader.pid})});
           }
           return record;
         }

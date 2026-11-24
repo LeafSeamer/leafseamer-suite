@@ -533,6 +533,81 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }else compose('down','--timeout','8');
   assert.equal(compose('ps','--all','--quiet').trim(),'');
   created=false;
+  if(process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE){
+    assert.ok(workerControl);
+    managedHost.close();managedHost=null;
+    const fixtureImage=process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE;
+    const dist=process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_DIST,node=process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_NODE;
+    const generation=crypto.randomUUID(),deployment=path.join(root,'worker'),launchId=crypto.randomUUID();
+    const dataDir=path.join(root,'worker-controller'),directory=path.join(root,'worker-stage'),channelDirectory=path.join(root,'worker-sockets');
+    fs.mkdirSync(dataDir,{mode:0o700});owned(dataDir);
+    fs.mkdirSync(directory,{mode:0o711});fs.mkdirSync(channelDirectory,{mode:0o755});
+    const storageArgs=['/opt/leafseamer/dist/cli.mjs'],dataArgs=['--data-dir','/var/lib/leafseamer'];
+    const identity=JSON.parse(bootstrap('controller',dataDir,[],[...storageArgs,'init-storage',...dataArgs]));
+    bootstrap('controller',dataDir,[],[...storageArgs,'migrate-storage',...dataArgs,'--to-revision','109']);
+    const workerGui=path.join(root,'worker-gui');fs.cpSync(plan.gui.directory,workerGui,{recursive:true});
+    const workerSite=JSON.stringify({...site,service_id:identity.service_id,database_instance_id:identity.database_instance_id})+'\n';
+    fs.writeFileSync(path.join(workerGui,'site.json'),workerSite);
+    const workerManifest=structuredClone(manifest);workerManifest.artifacts['site.json']=hash(workerSite);
+    const workerGuiManifest=JSON.stringify(workerManifest)+'\n';fs.writeFileSync(path.join(workerGui,'gui-manifest.json'),workerGuiManifest);
+    const {canonical,digest}=await import('../dist/import-input.mjs');
+    const {linuxContainerCgroup}=await import('../dist/linux-cgroup-retirement.mjs');
+    const {openInstallationStore}=await import('../dist/installation-store.mjs');
+    const {sealSimulatorWorker}=await import('./fixtures/linux-worker-materialization.mjs');
+    const {deviceModuleEventProtocol}=await import(pathToFileURL(path.join(dist,'sdk','device-module.mjs')));
+    const workerPlan={...plan,controller:{...controller,image:fixtureImage,data_dir:dataDir,service_id:identity.service_id,database_instance_id:identity.database_instance_id},
+      gui:{directory:workerGui,manifest_sha256:'sha256:'+hash(workerGuiManifest)},
+      cgroup:{...plan.cgroup,generation_id:generation},bootstrap:{...plan.bootstrap},
+      worker_runtime:{directory,channel_directory:channelDirectory,uid:1001,gid:1001,
+        distribution:{directory:dist,manifest_sha256:'sha256:'+hash(fs.readFileSync(path.join(dist,'build-manifest.json')))},
+        image:{file:node,sha256:'sha256:'+hash(fs.readFileSync(node))}}};
+    workerPlan.bootstrap.controller={...plan.bootstrap.controller,service_id:identity.service_id,database_instance_id:identity.database_instance_id,
+      artifact_manifest_ref:{...plan.bootstrap.controller.artifact_manifest_ref,
+        digest:digest({controller_build_sha256:workerPlan.worker_runtime.distribution.manifest_sha256.slice(7),node_sha256:workerPlan.worker_runtime.image.sha256.slice(7)})}};
+    delete workerPlan.clock_evidence;
+    fs.writeFileSync(planPath,JSON.stringify(workerPlan));run(process.execPath,[...generate.slice(0,-1),deployment]);
+    await prepareParents(generation);
+    const parent=linuxContainerCgroup({driver:'cgroupfs',generationId:generation,role:'controller'}).groupPath;
+    const group_path=parent+'/worker_'+launchId.replaceAll('-',''),groupFile='/sys/fs/cgroup'+group_path;
+    fs.mkdirSync(groupFile);groups.unshift(groupFile);
+    const {dev,ino}=fs.statSync(groupFile,{bigint:true}),boot_id=fs.readFileSync('/proc/sys/kernel/random/boot_id','utf8').trim();
+    const containment={backend:'linux_cgroup_v2',generation,group_id:'group_'+digest({boot_id,group_path,group:{device:String(dev),inode:String(ino)}}).slice(7)};
+    const store=openInstallationStore(installationDirectory);
+    let sealed;
+    try{
+      sealed=await sealSimulatorWorker(t,{dist,directory:root,serviceId:identity.service_id,profileId:workerPlan.bootstrap.controller.platform_profile_ref.profile_id,
+        protocol:deviceModuleEventProtocol,store});
+      fs.writeFileSync(path.join(dataDir,'worker-test.json'),canonical({policy:workerPlan.bootstrap.controller,launchId,containment,
+        channelDirectory:'/run/leafseamer-worker',data:'/var/lib/leafseamer',start:'/var/lib/leafseamer/worker-start',
+        result:'/var/lib/leafseamer/worker-result.json',materialization:sealed.materialization}));
+      project=projectFor(generation);composePath=path.join(deployment,'compose.json');
+      managedHost=openLinuxComposeHost({...hostOptions,generationDirectory:deployment,installationStore:store});
+      created=true;
+      const outcome=await managedHost.startSupervised().catch(error=>{
+        throw new Error(compose('logs','--no-color','controller','seamer').trim(),{cause:error});
+      });
+      fs.writeFileSync(path.join(dataDir,'worker-start'),'');
+      const limit=performance.now()+15000,resultPath=path.join(dataDir,'worker-result.json');
+      while(!fs.existsSync(resultPath)||!fs.statSync(resultPath).size){
+        assert.ok(performance.now()<limit,'Compose Worker did not finish the launch and revoke flow');await delay(50);
+      }
+      const result=parseFile(resultPath);assert.equal(result.ok,true,result.error);
+      assert.equal(result.workerReceipt.gate_state,'closed');
+      assert.match(fs.readFileSync(groupFile+'/cgroup.events','utf8'),/^populated 0$/m);
+      assert.deepEqual(fs.readdirSync(directory),[]);assert.deepEqual(fs.readdirSync(channelDirectory),[]);
+      const {receipt}=outcome.admissions.controller;
+      assert.equal(managedHost.retire().phase,'retired');created=false;
+      const log=new DatabaseSync(path.join(installationDirectory,'linux-worker-control-'+receipt.launch_id+'.db'),{readOnly:true});
+      const controllerDb=new DatabaseSync(path.join(dataDir,'controller.sqlite'),{readOnly:true});
+      try{
+        assert.equal(log.prepare('SELECT count(*) AS total FROM attempt').get().total,1);
+        assert.deepEqual(JSON.parse(log.prepare('SELECT body FROM admission').get().body),result.workerReceipt);
+        assert.equal(JSON.parse(log.prepare('SELECT body FROM retirement').get().body).result,'confirmed_empty');
+        assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM execution_handshake').get().total,1);
+        assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM device_baseline_sample').get().total,1);
+      }finally{log.close();controllerDb.close();}
+    }finally{managedHost?.close();managedHost=null;sealed?.close();store.close();}
+  }
   if(pairingTest){
     const {completeLinuxComposeFirstPairing}=await import('./fixtures/linux-compose-first-pairing.mjs');
     async function launch(pairing){

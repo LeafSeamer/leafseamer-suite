@@ -152,6 +152,12 @@ leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_
 
 退役前调用 `closeIntake(launchId)` 写入关闭记录并关闭受控通道。随后可用 `observeRetirement(launchId)` 查询，或显式调用 `terminateRetirement(launchId)` 对已核验的原父组执行 `cgroup.kill`。保留原父组及 `core` 子组直至退役完成。只有原子树整体无活进程并持久记录 `retired`，新运行代才可进入同角色闭锁启动。组被替换、宿主或原成员身份不可证时保持保护。只留下启动预留的未知尝试仍需取得独立恢复证据。新账本使用 Schema 2，已有 Schema 1 可继续查询，采用退役前须显式调用 `upgradeLinuxMemberJournal()`。升级保留原身份标记和原启动记录，普通打开时仍按原版本读取。退役证据只用于进程接替，设备在途事实及资源释放继续使用各自验收条件。[退役联调](test/linux-member-retirement.integration.mjs) · [Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html)
 
+可信 Linux 原生装配可从 `@leafseamer/suite/linux-native-host` 调用 `openLinuxNativeHost({installationDirectory, source})`。安装目录由宿主装配账户持有，启动计划和程序制品由 root 管理。安装账本须已显式初始化原生成员 Schema 2，宿主须预建本次运行代的父组和 `core` 子组。核心使用独立的非 root 账户，`source` 沿用已核验的同宿主原生时钟。
+
+将 `leafseamer.linux-native-core/1` 计划保存于安装目录下的 `linux-native/`。填入 `host_installation_id`、`role`、`driver`、`generation_id`、`launch_id`、运行账户的 `uid` 与 `gid`、`data_directory`、回环 `port` 及现有 `bootstrap` 策略。`image`、`clock_profile` 与 `pairing_profile` 各提供绝对 `file` 和 `sha256`，`distribution` 提供绝对 `directory` 和 `manifest_sha256`。摘要使用 `sha256:` 前缀，配对和时钟配置均使用各服务的 `/2` 格式。安装制品及依赖树由 root 管理，业务库目录由所选运行账户管理。
+
+`start({planFile, planDigest})` 接受已批准计划的绝对路径与摘要。宿主核对安装身份、制品清单和各资产、权限、服务身份以及配置摘要，再组装固定的 `contained-core-linux` 启动参数。核心准入回执持久写入后返回，同一启动标识的重投返回原记录。业务 TLS 随两端认证采集另行启用。`retire(launchId)` 先持久关闭原入口并关闭监督通道，再观察原父组。仍有进程时保留 `closing`，父组清空后持久返回 `retired`。`lookup(launchId)` 查回原启动与退役记录，`close()` 释放宿主句柄。Compose 容器的认证准入继续使用单独部署验收。[原生配对联调](test/linux-core-bootstrap.integration.mjs)
+
 ## 本机安装账本与静态归档验证
 
 Suite 已提供 `@leafseamer/suite/installation` 内部运行模块，使用与当前产品相同的 Node 24.22.0、better-sqlite3 13.0.3／SQLite 3.53.4 和 canonicalize 5.1.0。依赖固定于本仓 `package-lock.json`；构建后的包不需要相邻仓库。Windows开发环境先安装依赖并构建固定原生输入，再运行检查：

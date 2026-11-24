@@ -333,7 +333,7 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         if(helper)fs.closeSync(helper.fd);
       }
     }
-    return Object.freeze({lookup,lookupRetirement,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
+    return Object.freeze({schemaRevision:version,lookup,lookupRetirement,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
       launch:input=>launch(input),admit(input,{policy,source}={}){
       need(source&&typeof source.capture==='function'&&typeof source.tick==='function','linux_bootstrap_clock');
       return launch(input,{policy,source});

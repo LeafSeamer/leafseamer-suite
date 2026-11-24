@@ -54,7 +54,7 @@ test(firstPairing?'受监督 Linux 双核心以实际认证时钟完成首次配
   const nodeDigest=sum(fs.readFileSync(image));
   const cores=[['controller',controller],...(seamer?[['seamer',seamer]]:[])];
   const signingKey=crypto.generateKeyPairSync('ed25519');
-  let store,journal;
+  let store,journal,nativeHost,installationId;
   async function empty(group){
     for(let index=0;index<80;index++){
       if(/^populated 0$/m.test(fs.readFileSync(group+'/cgroup.events','utf8')))return;
@@ -63,6 +63,7 @@ test(firstPairing?'受监督 Linux 双核心以实际认证时钟完成首次配
     assert.fail('member not retired');
   }
   t.after(async()=>{
+    nativeHost?.close();
     journal?.close();
     store?.close();
     for(const directory of directories.filter(group=>group.endsWith('/core'))){
@@ -123,12 +124,20 @@ test(firstPairing?'受监督 Linux 双核心以实际认证时钟完成首次配
       createInstallationStore(installation);
       store=openInstallationStore(installation);
       store.initializeLinuxMemberJournal();
-      journal=store.openLinuxMemberJournal(record=>{
-        if(record.detail.admission)assert.equal(journal.lookup(record.intent.launch_id).phase,'release_requested');
-        return true;
-      });
+      if(firstPairing){
+        installationId=store.identity.host_installation_id;
+        fs.mkdirSync(path.join(installation,'linux-native'),{mode:0o700});
+        store.close();store=null;
+        const {openLinuxNativeHost}=await import('../dist/linux-native-host.mjs');
+        nativeHost=openLinuxNativeHost({installationDirectory:installation,source});
+      }else{
+        journal=store.openLinuxMemberJournal(record=>{
+          if(record.detail.admission)assert.equal(journal.lookup(record.intent.launch_id).phase,'release_requested');
+          return true;
+        });
+      }
     }
-    return {intent,policy,group,data,installation,port,clock};
+    return {intent,policy,group,data,distribution,installation,port,clock};
   }
   function readClockChallenge({clock,policy},descriptor){
     const {directory}=clock;
@@ -269,9 +278,48 @@ test(firstPairing?'受监督 Linux 双核心以实际认证时钟完成首次配
   if(firstPairing){
     assert.ok(seamer&&chrony&&sleepProfile==='disabled');
     const {completeLinuxFirstPairing}=await import('./fixtures/linux-first-pairing.mjs');
-    await completeLinuxFirstPairing({controller,seamer,scratch,target,empty,source,
-      admit:actual=>journal.admit(actual.intent,{policy:actual.policy,source}),
-      stop(){journal.close();store.close();journal=store=null;},clockPublisher,readClockChallenge});
+    await completeLinuxFirstPairing({controller,seamer,scratch,target,source,
+      async admit(actual){
+        const {role,driver,generation_id,launch_id,uid,gid,image_path,image_sha256,args}=actual.intent;
+        const pin=file=>({file,sha256:'sha256:'+sum(fs.readFileSync(file))});
+        const profile=name=>pin(args[args.indexOf(name)+1]);
+        const plan={format:'leafseamer.linux-native-core/1',host_installation_id:installationId,
+          role,driver,generation_id,launch_id,uid,gid,port:actual.port,bootstrap:actual.policy,
+          image:{file:image_path,sha256:image_sha256},data_directory:actual.data,
+          distribution:{directory:actual.distribution,manifest_sha256:pin(path.join(actual.distribution,'build-manifest.json')).sha256},
+          clock_profile:profile('--clock-evidence-profile'),pairing_profile:profile('--pairing-profile')};
+        const planFile=path.join(actual.installation,'linux-native',role+'.json');
+        fs.writeFileSync(planFile,canonical(plan),{flag:'wx',mode:0o600});
+        const planDigest=pin(planFile).sha256;
+        await assert.rejects(nativeHost.start({planFile,planDigest:'sha256:'+'0'.repeat(64)}),{code:'linux_native_artifact_changed'});
+        const unlisted=path.join(actual.distribution,'unlisted-test-asset.txt');
+        fs.writeFileSync(unlisted,'test fixture',{flag:'wx',mode:0o600});
+        try{await assert.rejects(nativeHost.start({planFile,planDigest}),{code:'linux_native_manifest'});}
+        finally{fs.unlinkSync(unlisted);}
+        const {file:clockProfile}=plan.clock_profile,original=fs.readFileSync(clockProfile);
+        fs.appendFileSync(clockProfile,'\n');
+        try{await assert.rejects(nativeHost.start({planFile,planDigest}),{code:'linux_native_artifact_changed'});}
+        finally{fs.writeFileSync(clockProfile,original);}
+        assert.equal(nativeHost.lookup(launch_id).launch,null);
+        actual.approvedPlan={planFile,planDigest};
+        return {record:await nativeHost.start(actual.approvedPlan)};
+      },
+      async stop(...members){
+        for(const member of members)nativeHost.retire(member.intent.launch_id);
+        await Promise.all(members.map(member=>empty(member.group)));
+        for(const member of members)assert.equal(nativeHost.retire(member.intent.launch_id).phase,'retired');
+        nativeHost.close();nativeHost=null;
+        const {openLinuxNativeHost}=await import('../dist/linux-native-host.mjs');
+        nativeHost=openLinuxNativeHost({installationDirectory:members[0].installation,source});
+        for(const member of members){
+          const record=nativeHost.lookup(member.intent.launch_id);
+          assert.equal(record.retirement.phase,'retired');
+          assert.deepEqual(await nativeHost.start(member.approvedPlan),record.launch);
+          assert.equal(nativeHost.lookup(member.intent.launch_id).retirement.phase,'retired');
+          await empty(member.group);
+        }
+        nativeHost.close();nativeHost=null;
+      },clockPublisher,readClockChallenge});
     return;
   }
   for(const [role,distribution] of cores){

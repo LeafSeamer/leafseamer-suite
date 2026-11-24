@@ -38,22 +38,24 @@ function certificates(directory){
   return {caFile:path.join(directory,'ca.pem'),c:leaf('controller','11'),s:leaf('seamer','12')};
 }
 
-export async function completeLinuxFirstPairing({controller,seamer,scratch,target,empty,admit,stop,clockPublisher,readClockChallenge}){
+export async function completeLinuxFirstPairing({controller,seamer,scratch,target,admit,stop,clockPublisher,readClockChallenge}){
   const {canonical,digest}=await import(pathToFileURL(path.join(controller,'auth-clock-value.mjs')));
   const {contractSelection}=await import(pathToFileURL(path.join(controller,'sdk','index.mjs')));
+  const {currentStorageRevision}=await import(pathToFileURL(path.join(controller,'storage-revision.mjs')));
+  const seamerRevision='33';
   const credentials={login:'first.pair',password:'Fixture-6!'+crypto.randomBytes(18).toString('base64url')};
   let principal_id,issuer;
   const reservations=Array.from({length:3},()=>net.createServer().listen(0,'127.0.0.1'));
   await Promise.all(reservations.map(server=>once(server,'listening')));
   const [controllerPeer,seamerPeer,seamerPublic]=reservations.map(server=>server.address().port);
   await Promise.all(reservations.map(server=>new Promise(resolve=>server.close(resolve))));
-  const c=await target('controller',controller,'pair-controller',{authenticateClock:true,targetRevision:93,
+  const c=await target('controller',controller,'pair-controller',{authenticateClock:true,targetRevision:currentStorageRevision,
     async provision(storage){
       const {token_id,secret}=storage.enrollment.begin();
       ({principal_id}=await storage.enrollment.complete({token_id,secret,...credentials,mode:'standalone'}));
       issuer=storage.enrollment.summary();
     }});
-  const s=await target('seamer',seamer,'pair-seamer',{authenticateClock:true,targetRevision:'28',
+  const s=await target('seamer',seamer,'pair-seamer',{authenticateClock:true,targetRevision:seamerRevision,
     generation_id:c.intent.generation_id,sharedInstallation:c.installation});
   const tls=certificates(scratch),ca=fs.readFileSync(tls.caFile),trust=digest([sha(new crypto.X509Certificate(ca).raw)]);
   function write(name,value){const file=path.join(scratch,name);fs.writeFileSync(file,value,{mode:0o644});return file;}
@@ -171,17 +173,18 @@ export async function completeLinuxFirstPairing({controller,seamer,scratch,targe
     assert.deepEqual(grant.permissions,permissions);
     assert.ifError(failure);
     stage='retirement-and-persistence';
-    stop();
-    await Promise.all([empty(c.group),empty(s.group)]);
+    await stop(c,s);
     await assert.rejects(inspect(),{code:'ECONNREFUSED'});
     const database=new DatabaseSync(path.join(s.data,'seamer.sqlite'),{readOnly:true});
     try{
+      assert.equal(database.prepare('PRAGMA user_version').get().user_version,Number(seamerRevision));
       assert.equal(database.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
       assert.equal(database.prepare('SELECT service_boot_id FROM core_runtime_binding').get().service_boot_id,seamerChallenge.service_boot_id);
       assert.ok(database.prepare('SELECT count(*) AS n FROM authentication_clock_acquisition WHERE service_boot_id=?').get(seamerChallenge.service_boot_id).n>0);
     }finally{database.close();}
     const controllerDatabase=new DatabaseSync(path.join(c.data,'controller.sqlite'),{readOnly:true});
     try{
+      assert.equal(controllerDatabase.prepare('PRAGMA user_version').get().user_version,currentStorageRevision);
       assert.equal(controllerDatabase.prepare('SELECT service_boot_id FROM core_runtime_binding').get().service_boot_id,controllerChallenge.service_boot_id);
       assert.equal(controllerDatabase.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
     }finally{controllerDatabase.close();}

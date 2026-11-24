@@ -6,10 +6,11 @@ import {canonical,digest,requireValue as need} from './import-input.mjs';
 import {openInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
 import {renderLinuxCompose} from './linux-compose.mjs';
-import {readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
+import {observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 
 const docker='/usr/bin/docker';
 const roles=['controller','seamer','nginx'];
+const coreRoles=['controller','seamer'];
 const env=Object.freeze({PATH:'/usr/sbin:/usr/bin:/sbin:/bin',HOME:'/nonexistent',DOCKER_CONFIG:'/etc/docker',LC_ALL:'C'});
 const imageId=/^sha256:[a-f0-9]{64}$(?![\s\S])/;
 const objectId=/^[a-f0-9]{64}$(?![\s\S])/;
@@ -83,7 +84,8 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
   const planIdentity=protectedPath(planFile,stat=>stat.isFile()),outputIdentity=protectedPath(generationDirectory,stat=>stat.isDirectory());
   const planBytes=readDeploymentFile(planFile,65536),plan=JSON.parse(planBytes);
   const generated=renderLinuxCompose(plan,generationDirectory),compose=JSON.parse(generated['compose.json']);
-  const {driver,generation_id}=plan.cgroup??{};
+  const {driver,generation_id,namespace}=plan.cgroup??{};
+  const privateNamespace=namespace==='private';
   need(driver&&generation_id,'compose_host_cgroup');
   function verifyFiles(){
     need(equal(planIdentity,protectedPath(planFile,stat=>stat.isFile()))&&planBytes.equals(readDeploymentFile(planFile,65536))&&
@@ -102,7 +104,7 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
     const composeArgs=['compose','--project-name',project,'--project-directory',generationDirectory,'--env-file','/dev/null',
       '--file',path.join(generationDirectory,'compose.json')];
     const spec={generation_id,driver,compose_digest:fileHash(Buffer.from(generated['compose.json'])),
-      ...Object.fromEntries(['controller','seamer'].map(role=>[role,{
+      ...Object.fromEntries(coreRoles.map(role=>[role,{
         service_id:plan[role].service_id,database_instance_id:plan[role].database_instance_id}]))};
     const daemon=daemonIdentity(socketPath,pidFile);
     function assertDaemon(){
@@ -125,7 +127,7 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
     const networkIds=()=>list(run(['network','ls','--no-trunc','--quiet','--filter',label]));
     function parents(){
       try{
-        return Object.fromEntries(['controller','seamer'].map(role=>[role,
+        return Object.fromEntries(coreRoles.map(role=>[role,
           readLinuxCgroupParent({driver,generationId:generation_id,role,host:daemon.host})]));
       }catch{need(false,'compose_host_parent_unavailable');}
     }
@@ -145,6 +147,12 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
       }));
       return {before,images};
     }
+    function coreContainment(role,container){
+      need(container.HostConfig?.CgroupnsMode==='private','compose_host_cgroup_namespace');
+      const {uid,gid}=plan[role];
+      return observeLinuxComposeCore({driver,generationId:generation_id,role,host:daemon.host,
+        leader:readLinuxCgroupLeader(container.State.Pid),containerId:container.Id,uid,gid});
+    }
     let prepared=null;
     function launch(config){
       need(prepared&&equal(config,spec),'compose_host_intent');
@@ -153,11 +161,11 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
       need(equal(before,parents()),'compose_host_parent_changed');
       run([...composeArgs,'up','--detach','--no-build','--pull','never','--no-recreate'],45000);
       const after=parents();
-      need(['controller','seamer'].every(role=>after[role].populated&&equal(before[role].group,after[role].group)),
+      need(coreRoles.every(role=>after[role].populated&&equal(before[role].group,after[role].group)),
         'compose_host_parent_changed');
       const ids=containerIds(),networks=networkIds();
       need(ids.length===3&&networks.length===2,'compose_host_inventory');
-      const observed=JSON.parse(run(['container','inspect',...ids])),containers={},pids={};
+      const observed=JSON.parse(run(['container','inspect',...ids])),containers={},pids={},core_containment={};
       need(Array.isArray(observed)&&observed.length===3,'compose_host_inventory');
       for(const container of observed){
         const labels=container.Config?.Labels,role=labels?.['com.docker.compose.service'],config=container.HostConfig;
@@ -168,13 +176,19 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
           config.CgroupParent===(compose.services[role].cgroup_parent??'')&&config.PidMode!=='host','compose_host_container');
         containers[role]=container.Id;
         pids[role]=container.State.Pid;
+        if(privateNamespace&&coreRoles.includes(role))core_containment[role]=coreContainment(role,container);
       }
-      return {controller:pids.controller,seamer:pids.seamer,runtime_binding:{project,daemon,containers,networks,images}};
+      return {controller:pids.controller,seamer:pids.seamer,runtime_binding:{project,daemon,containers,networks,images,
+        ...(privateNamespace&&{core_containment})}};
     }
     function binding(record){
       const bound=record?.detail.runtime_binding;
       need(record&&equal(record.intent,spec)&&bound?.project===project&&equal(bound.daemon,daemon)&&
         roles.every(role=>objectId.test(bound.containers?.[role]??'')),'compose_host_binding');
+      if(privateNamespace)need(coreRoles.every(role=>{
+        const scope=bound.core_containment?.[role];
+        return scope?.container_id===bound.containers[role]&&equal(scope.leader,record.detail.members[role].leader);
+      }),'compose_host_binding');
       return bound;
     }
     function endpointClosure(record){
@@ -182,6 +196,17 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
       const bound=binding(record);
       if(containerIds().length!==0||networkIds().length!==0)return null;
       return digest({format:'leafseamer.compose-endpoints-closed/1',runtime_binding:bound});
+    }
+    function assertSurvivingCores(bound,present){
+      const ids=coreRoles.map(role=>bound.containers[role]).filter(id=>present.includes(id));
+      if(!ids.length)return;
+      const cores=JSON.parse(run(['container','inspect',...ids]));
+      need(Array.isArray(cores)&&cores.length===ids.length&&ids.every(id=>cores.filter(core=>core.Id===id).length===1),
+        'compose_host_inventory_changed');
+      for(const role of coreRoles){
+        const core=cores.find(core=>core.Id===bound.containers[role]);
+        if(core?.State?.Running===true)need(equal(coreContainment(role,core),bound.core_containment[role]),'compose_host_binding');
+      }
     }
     journal=installation.openLinuxDeploymentJournal({launch,endpointClosure});
     return Object.freeze({
@@ -203,7 +228,9 @@ export function openLinuxComposeHost({installationDirectory,planFile,generationD
         // Rebind live original members before removing any container after a host helper restart.
         const observation=journal.observeRetirement(generation_id);
         if(observation.phase!=='closing')return observation;
-        need(within(containerIds(),Object.values(bound.containers))&&within(networkIds(),bound.networks),'compose_host_inventory_changed');
+        const present=containerIds();
+        need(within(present,Object.values(bound.containers))&&within(networkIds(),bound.networks),'compose_host_inventory_changed');
+        if(privateNamespace)assertSurvivingCores(bound,present);
         run([...composeArgs,'down','--timeout','8'],45000);
         return journal.observeRetirement(generation_id);
       },

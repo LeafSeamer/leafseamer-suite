@@ -91,7 +91,7 @@ Linux Controller 与 Seamer 的安装包都提供 `start-protected-ingress` 命�
 | `controller`、`seamer` | `image`、`uid`、`gid`、`address`、`data_dir`、`service_id`、`database_instance_id`、`server_name`、`certificate_file`、`private_key_file`、`ca_file` |
 | `nginx` | `image`、`uid`、`gid`、`address` |
 | `gui` | `directory` 与 `manifest_sha256`，沿用上面的 GUI 清单 |
-| `cgroup` | 可选。提供本机 Docker 的 `driver`（`cgroupfs` 或 `systemd`）和新启动代的 UUID v4 `generation_id` |
+| `cgroup` | 可选。提供本机 Docker 的 `driver`（`cgroupfs` 或 `systemd`）和新启动代的 UUID v4 `generation_id`。需要固定容器私有 cgroup 证据时设置 `namespace` 为 `private` |
 
 镜像填写 `仓库@sha256:摘要` 或预装镜像的 `sha256:镜像ID`。子网内为三个容器分配不同地址，避开网络、广播和默认网关地址。数据目录、GUI 和 TLS 路径使用独立的绝对路径。数据目录由对应服务的 UID/GID 写入，三个私钥分别授予对应容器进程读取权限。输出目录的父目录应已存在，输出目录由生成器创建。
 
@@ -131,6 +131,8 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 启动时重新生成并核对固定 Compose 文件，检查本机 daemon、预载镜像、空父组及项目清单，再用独立项目名启动保护态服务。停机先在账本关闭旧入口，只处理原记录内的容器和网络。项目端点已退出且两个原父组均为空后，才写入退役结果。临时检查失败可重试原代，未知容器或网络进入原项目时拒绝停机命令。若重开后无法重获原活进程观察，继续保留未证实状态。[Docker Compose 启动](https://docs.docker.com/reference/cli/docker/compose/up/) · [Docker Compose 停机](https://docs.docker.com/reference/cli/docker/compose/down/)
 
 在与测试进程同宿主的隔离 daemon 上，向 [Compose 用例](test/linux-compose.integration.mjs) 同时提供 `LEAFSEAMER_TEST_DOCKER_SOCKET` 和 `LEAFSEAMER_TEST_DOCKER_PID_FILE`，可运行经过启停账本的双代联调。当前已接通保护态生命周期，DF02 受监督运行准入仍待接线。
+
+启用 `cgroup.namespace=private` 时，宿主从实际核心进程核对非 root UID／GID、`no_new_privs` 及空权限集。该进程的只读 cgroup 挂载必须指向宿主上与 Docker 容器 ID 匹配的成员组。设备号、inode、挂载 ID 和命名空间身份随 `runtime_binding.core_containment` 持久保存。退役操作在停止仍运行的核心容器前复核这些证据。这个入口使用 Compose 的容器私有 cgroup 选项。[Docker Compose 容器规范](https://docs.docker.com/reference/compose-file/container-spec/)
 
 ### Linux 原生成员创建
 

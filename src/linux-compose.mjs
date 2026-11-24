@@ -102,10 +102,12 @@ export function renderLinuxCompose(plan,output){
   const origin='https://'+management.host+(management.port===443?'':':'+management.port);
   const c=member('controller',controller,origin,output),s=member('seamer',seamer,origin,output);
   if(withCgroup){
-    need(fields(cgroup,'driver,generation_id'),'compose_cgroup');
+    const privateNamespace=fields(cgroup,'driver,generation_id,namespace')&&cgroup.namespace==='private';
+    need(fields(cgroup,'driver,generation_id')||privateNamespace,'compose_cgroup');
     const scope={driver:cgroup.driver,generationId:cgroup.generation_id};
     c.service.cgroup_parent=linuxContainerCgroup({...scope,role:'controller'}).parent;
     s.service.cgroup_parent=linuxContainerCgroup({...scope,role:'seamer'}).parent;
+    if(privateNamespace){c.service.cgroup='private';s.service.cgroup='private';}
   }
   const proxy={...container(nginx),entrypoint:['/usr/sbin/nginx'],command:['-e','stderr','-p','/tmp/','-c',runtime+'/nginx.conf','-g','daemon off;'],
     volumes:[bind(output+'/nginx.conf',runtime+'/nginx.conf'),bind(gui.directory,guiMount),

@@ -113,7 +113,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   if(manage)assert.equal(process.env.DOCKER_HOST,'unix://'+socketPath);
   const plan={format:'leafseamer.linux-compose-protected/1',subnet:range+'.0/29',management,controller,seamer,
     nginx:{image:images.nginx,uid,gid,address:range+'.4'},gui:{directory,manifest_sha256:'sha256:'+hash(manifestBytes)},
-    ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId}})};
+    ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}})};
   const aliasOfKey=path.join(root,'ca-alias.pem');
   fs.linkSync(controller.private_key_file,aliasOfKey);
   const generate=['--disallow-code-generation-from-strings',file('../dist/linux-compose.mjs'),'--config',planPath,'--output',output];
@@ -124,7 +124,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     [{...plan,seamer:{...seamer,ca_file:controller.private_key_file}},'compose_tls_scope'],
     [{...plan,seamer:{...seamer,ca_file:aliasOfKey}},'compose_tls_scope'],
     [{...plan,seamer:{...seamer,database_instance_id:controller.database_instance_id}},'compose_identity'],
-    [{...plan,cgroup:{driver:'auto',generation_id:crypto.randomUUID()}},'cgroup_scope']
+    [{...plan,cgroup:{driver:'auto',generation_id:crypto.randomUUID()}},'cgroup_scope'],
+    [{...plan,cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'host'}},'compose_cgroup']
   ]){
     fs.writeFileSync(planPath,JSON.stringify(invalid));
     const bad=spawnSync(process.execPath,generate,{encoding:'utf8',timeout:10000});
@@ -141,13 +142,16 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const stem='leafseamer_'+generationId.replaceAll('-','');
   for(const driver of ['cgroupfs','systemd']){
     const observedOutput=path.join(root,'cgroup-'+driver);
-    fs.writeFileSync(planPath,JSON.stringify({...plan,cgroup:{driver,generation_id:generationId}}));
+    fs.writeFileSync(planPath,JSON.stringify({...plan,cgroup:{driver,generation_id:generationId,namespace:'private'}}));
     run(process.execPath,[...generate.slice(0,-1),observedOutput]);
     const {services}=JSON.parse(docker('compose','--project-name',project,'--file',path.join(observedOutput,'compose.json'),'config','--format','json'));
     const parent=role=>driver==='cgroupfs'?'/'+stem+'_'+role:stem+'_'+role+'.slice';
     assert.equal(services.controller.cgroup_parent,parent('controller'));
     assert.equal(services.seamer.cgroup_parent,parent('seamer'));
+    assert.equal(services.controller.cgroup,'private');
+    assert.equal(services.seamer.cgroup,'private');
     assert.equal(services.nginx.cgroup_parent,undefined);
+    assert.equal(services.nginx.cgroup,undefined);
   }
   fs.writeFileSync(planPath,JSON.stringify(plan));
   const installationDirectory=path.join(root,'installation');
@@ -186,6 +190,23 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     const started=managedHost.start();
     assert.equal(started.phase,'running');
     assert.equal(started.detail.runtime_binding.project,project);
+    const {observeLinuxComposeCore}=await import('../dist/linux-cgroup-retirement.mjs');
+    const {core_containment,containers,daemon}=started.detail.runtime_binding;
+    for(const role of ['controller','seamer']){
+      const saved=core_containment[role],{leader}=started.detail.members[role];
+      const request={driver:'cgroupfs',generationId,role,host:daemon.host,leader,containerId:containers[role],uid,gid};
+      assert.deepEqual(saved,observeLinuxComposeCore(request));
+      const identity=location=>{const {dev,ino}=fs.statSync(location,{bigint:true});return {device:String(dev),inode:String(ino)};};
+      assert.deepEqual(saved.group,identity('/sys/fs/cgroup'+leader.group_path));
+      assert.deepEqual(saved.group,identity('/proc/'+leader.pid+'/root/sys/fs/cgroup'));
+      assert.notDeepEqual(saved.cgroup_namespace,daemon.host.cgroup_namespace);
+      const mount=fs.readFileSync('/proc/'+leader.pid+'/mountinfo','utf8').split('\n')
+        .map(line=>line.split(' ')).find(fields=>fields[4]==='/sys/fs/cgroup');
+      assert.equal(saved.cgroup_mount_id,mount[0]);
+      assert.ok(mount[5].split(',').includes('ro'));
+      assert.throws(()=>observeLinuxComposeCore({...request,containerId:'0'.repeat(64)}),{code:'cgroup_compose_container'});
+      assert.throws(()=>observeLinuxComposeCore({...request,gid:gid+1}),{code:'cgroup_compose_account'});
+    }
     assert.throws(()=>managedHost.start(),{code:'linux_deployment_previous_open'});
   }else compose('up','--detach','--no-build','--pull','never');
   const containers=Object.fromEntries(['controller','seamer','nginx'].map(role=>{
@@ -293,7 +314,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     composePath=path.join(nextDirectory,'compose.json');
     managedHost=openLinuxComposeHost({...hostOptions,generationDirectory:nextDirectory});
     created=true;
-    assert.equal(managedHost.start().intent.generation_id,nextId);
+    const next=managedHost.start();
+    assert.equal(next.intent.generation_id,nextId);
+    assert.equal(next.detail.runtime_binding.core_containment,undefined);
     assert.equal(managedHost.retire().phase,'retired');
   }else compose('down','--timeout','8');
   assert.equal(compose('ps','--all','--quiet').trim(),'');

@@ -23,11 +23,11 @@ export function linuxContainerCgroup({driver,generationId,role}={}){
   return Object.freeze({parent:driver==='systemd'?groupPath.slice(1):groupPath,groupPath});
 }
 
-function readText(file,type){
+function readText(file,type,maximum=4096){
   const fd=fs.openSync(file,fileFlags);
   try{
     need(fs.fstatSync(fd).isFile()&&fs.statfsSync(fdPath(fd)).type===type,'cgroup_filesystem');
-    const bytes=Buffer.alloc(4097);
+    const bytes=Buffer.alloc(maximum+1);
     let total=0,count;
     while(total<bytes.length&&(count=fs.readSync(fd,bytes,total,bytes.length-total,null))>0)total+=count;
     need(total>0&&total<bytes.length,'cgroup_read');
@@ -120,6 +120,57 @@ export function readLinuxCgroupParent({driver,generationId,role,host}={}){
     need(fs.fstatSync(fd).nlink>0&&sameIdentity(group,pathIdentity(location)),'cgroup_group_changed');
     return Object.freeze({group,populated:live});
   }finally{fs.closeSync(fd);}
+}
+
+function composeMount(processPath,groupPath,mountFd){
+  const descriptor=readText(procRoot+'/self/fdinfo/'+mountFd,procMagic);
+  const id=descriptor.match(/^mnt_id:\s+([0-9]+)$/m)?.[1];
+  const mounts=readText(processPath+'/mountinfo',procMagic,131072).split('\n').map(line=>line.split(' '))
+    .filter(fields=>fields[4]===cgroupRoot);
+  const fields=mounts[0],separator=fields?.indexOf('-')??-1;
+  need(id&&mounts.length===1&&separator>5&&fields[0]===id&&fields[3]===groupPath&&
+    fields[5].split(',').includes('ro')&&fields[separator+1]==='cgroup2','cgroup_compose_mount');
+  return id;
+}
+
+export function observeLinuxComposeCore({driver,generationId,role,host,leader,containerId,uid,gid}){
+  const {groupPath:parent}=linuxContainerCgroup({driver,generationId,role});
+  const local=assertHost(host);
+  need(typeof containerId==='string'&&/^[a-f0-9]{64}$(?![\s\S])/.test(containerId),'cgroup_compose_container');
+  const member=driver==='systemd'?'docker-'+containerId+'.scope':containerId;
+  const group_path=parent+'/'+member,location=cgroupRoot+group_path;
+  need(leader?.group_path===group_path,'cgroup_compose_container');
+  const processFd=openLeader(leader.pid),processPath=fdPath(processFd);
+  let groupFd,mountFd;
+  try{
+    need(sameLeader(readLeader(processFd,leader.pid),leader),'cgroup_leader_changed');
+    groupFd=fs.openSync(location,directoryFlags);
+    mountFd=fs.openSync(processPath+'/root'+cgroupRoot,directoryFlags);
+    const group=descriptorIdentity(groupFd),mount=descriptorIdentity(mountFd);
+    need(fs.statfsSync(fdPath(groupFd)).type===cgroupMagic&&fs.statfsSync(fdPath(mountFd)).type===cgroupMagic&&
+      group.device===local.root.device&&sameIdentity(group,mount),'cgroup_compose_mount');
+    const cgroup_namespace=pathIdentity(processPath+'/ns/cgroup'),mount_namespace=pathIdentity(processPath+'/ns/mnt');
+    need(!sameIdentity(cgroup_namespace,local.cgroup_namespace)&&!sameIdentity(mount_namespace,local.mount_namespace),
+      'cgroup_compose_namespace');
+    const cgroup_mount_id=composeMount(processPath,group_path,mountFd);
+    const status=new Map(readText(processPath+'/status',procMagic,32768).split('\n').filter(line=>line.includes(':'))
+      .map(line=>{const end=line.indexOf(':');return [line.slice(0,end),line.slice(end+1).trim()];}));
+    const account=(field,id)=>Number.isInteger(id)&&id>0&&status.get(field)?.split(/\s+/).join(' ')===Array(4).fill(id).join(' ');
+    need(account('Uid',uid)&&account('Gid',gid)&&status.get('NoNewPrivs')==='1'&&
+      ['CapInh','CapPrm','CapEff','CapAmb'].every(field=>/^0+$/.test(status.get(field)??'')),'cgroup_compose_account');
+    assertHost(local);
+    need(sameLeader(readLeader(processFd,leader.pid),leader)&&populated(groupFd)&&fs.fstatSync(groupFd).nlink>0&&
+      sameIdentity(group,pathIdentity(location))&&sameIdentity(mount,pathIdentity(processPath+'/root'+cgroupRoot))&&
+      sameIdentity(cgroup_namespace,pathIdentity(processPath+'/ns/cgroup'))&&sameIdentity(mount_namespace,pathIdentity(processPath+'/ns/mnt'))&&
+      composeMount(processPath,group_path,mountFd)===cgroup_mount_id,
+      'cgroup_compose_changed');
+    return Object.freeze({format:'leafseamer.compose-core-containment/1',container_id:containerId,leader,group_path,group,
+      cgroup_namespace,mount_namespace,cgroup_mount_id});
+  }finally{
+    if(mountFd!==undefined)fs.closeSync(mountFd);
+    if(groupFd!==undefined)fs.closeSync(groupFd);
+    fs.closeSync(processFd);
+  }
 }
 
 export function observeLinuxMemberRetirement({driver,generationId,role,host,parent,core,leader,uid},terminate=false){

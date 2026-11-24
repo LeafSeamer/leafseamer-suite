@@ -8,6 +8,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {DatabaseSync} from 'node:sqlite';
 import {linuxPairingCertificates} from './linux-first-pairing.mjs';
 import {readSimulatorFile,verifyComposeSimulatorSubscription,verifyDurableSimulatorSubscription} from './linux-compose-simulator-subscription.mjs';
+import {publishComposeSimulatorDefinition,verifyDurableSimulatorPublication} from './linux-compose-simulator-publication.mjs';
 
 const id=()=>crypto.randomUUID();
 const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
@@ -105,22 +106,27 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const localParty=party('seamer',['auth.introspect']);
   const {service_id,database_instance_id}=seamer;
   const verifyPublication=process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION==='1';
+  const simulatorPublication=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1';
+  assert.ok(!simulatorPublication||pairedSimulator&&!verifyPublication);
   const verifySourceSubscription=pairedSimulator||process.env.LEAFSEAMER_TEST_COMPOSE_SOURCE_SUBSCRIPTION==='1';
   if(verifySourceSubscription)localParty.permissions.push('event.internal.subscribe');
+  if(simulatorPublication)localParty.permissions.push('automation.bindings.read','events.internal.read');
+  localParty.permissions.sort();
   const policyScope={authority_service_id:service_id,database_instance_id};
   const eventLimits={event_age_limits:[{authority_id:controller.service_id,registration_ref:{id:id(),revision:'1',digest:digest('fixture-registration')},
     capture_semantics:'event_occurrence',max_age_ms:1000}],max_condition_nodes:16};
-  const policyRef={kind:'policy',scope:policyScope,object_id:'compose-publication-fixture',revision:'1',digest:digest(eventLimits)};
+  const policyRef={kind:'policy',scope:policyScope,object_id:'compose-publication-fixture',revision:'1',
+    digest:digest(simulatorPublication?{purpose:'simulator_definition_publication'}:eventLimits)};
   const approvalFile='publication-approval.json';
-  const approval=Buffer.from(canonical({format:'leafseamer.publication-policy-approval/2',policy_ref:policyRef,
-    not_before_ns:String(start),expires_ns:String(end),...eventLimits}));
-  const publicationProfile=verifyPublication?{publication_policy:{approval_file:mount+approvalFile,approval_sha256:sha(approval)}}:{};
+  const approval=Buffer.from(canonical({format:simulatorPublication?'leafseamer.publication-policy-approval/1':'leafseamer.publication-policy-approval/2',
+    policy_ref:policyRef,not_before_ns:String(start),expires_ns:String(end),...(!simulatorPublication&&eventLimits)}));
+  const publicationProfile=verifyPublication||simulatorPublication?{publication_policy:{approval_file:mount+approvalFile,approval_sha256:sha(approval)}}:{};
   const seamerPairing=profile('seamer','controller',{scope:{service_id,database_instance_id},first_pairing_authorization_id:null,
     public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true,
-      ...(verifySourceSubscription&&{local_source_subscriptions:true})},
-    ...publicationProfile},verifyPublication?{[approvalFile]:approval}:{});
+      ...(verifySourceSubscription&&{local_source_subscriptions:true}),...(simulatorPublication&&{local_event_bindings:true})},
+    ...publicationProfile},verifyPublication||simulatorPublication?{[approvalFile]:approval}:{});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription;
+  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator;
   try{
     const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready')):null;
     if(baseline)localParty.object_scope_digest=digest({format:'leafseamer.device-binding-scope/1',authority_service_id:controller.service_id,
@@ -169,8 +175,9 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       await admin(generation,'approve-event-consumer',{permissions:['event.internal.subscribe','device.command']},'service_identity_input');
       await admin(generation,'approve-event-policy',{permissions:['event.internal.subscribe','device.command']},'service_identity_input');
     }
-    const definitions=verifyBrowser||verifyPublication?['definition.edit','definition.read','request.create','request.read']:[];
-    const audiencePermissions=[...permissions,...definitions,...(verifyPublication?['definition.publish']:[])].sort();
+    const definitions=verifyBrowser||verifyPublication||simulatorPublication?['definition.edit','definition.read','request.create','request.read']:[];
+    const audiencePermissions=[...permissions,...definitions,...(verifyPublication||simulatorPublication?['definition.publish']:[]),
+      ...(simulatorPublication?['run.manage','run.read']:[])].sort();
     await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
       not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
     const bearer=await issueToken(actor,service_id,permissions);
@@ -193,9 +200,19 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       return JSON.parse(data).result;
     });
     assert.deepEqual(grant.permissions,permissions);
+    if(verifyBrowser||verifyPublication||simulatorPublication){
+      const changed=await localPermissions('replace',{request_id:id(),principal_id,principal_kind:'human',expected_revision:grant.revision,
+        permissions:audiencePermissions,definition_scope:grant.definition_scope,not_before_ns:grant.not_before_ns,expires_ns:grant.expires_ns});
+      assert.equal(changed.status,200,changed.data);
+    }
     if(pairedSimulator){
+      const beforeWrite=simulatorPublication?async()=>{
+        const publicationBearer=await issueToken(actor,service_id,audiencePermissions);
+        publishedSimulator=await publishComposeSimulatorDefinition({serviceId:service_id,controller,baseline,bindingId:localParty.binding_id,
+          policyRef,selection,bearer:publicationBearer,send,localRequest,canonical,digest});
+      }:null;
       simulatorSubscription=await verifyComposeSimulatorSubscription({plan,simulator:generation.simulator,baseline,pairing:activated,
-        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest});
+        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite});
     }else if(verifySourceSubscription){
       const route='/auth/local-source-subscriptions/v1',reference=entity_kind=>({authority_service_id:controller.service_id,
         database_instance_id:controller.database_instance_id,entity_kind,entity_id:id(),entity_epoch:id(),revision:'1',content_digest:'a'.repeat(64)});
@@ -208,12 +225,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       assert.equal(denied.status,403,denied.data);
       assert.deepEqual(JSON.parse(denied.data),{error:'PERMISSION_DENIED'});
     }
-    if(verifyBrowser||verifyPublication){
-      const changed=await localPermissions('replace',{request_id:id(),principal_id,principal_kind:'human',expected_revision:grant.revision,
-        permissions:audiencePermissions,definition_scope:grant.definition_scope,not_before_ns:grant.not_before_ns,expires_ns:grant.expires_ns});
-      assert.equal(changed.status,200,changed.data);
-      if(verifyBrowser)browserDraft=await verifyBrowser();
-    }
+    if(verifyBrowser)browserDraft=await verifyBrowser();
     if(verifyPublication){
       const token=await issueToken(actor,service_id,[...definitions,'definition.publish'].sort());
       const api='/services/'+service_id+'/api/v1';
@@ -260,6 +272,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
     if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription});
+    if(simulatorPublication){assert.ok(publishedSimulator);verifyDurableSimulatorPublication(store,publishedSimulator,digest);}
     if(eventConsumer){
       const stored=issuer.prepare(`SELECT body_jcs FROM service_principal_revision
         WHERE principal_id=? AND revision=1`).get(eventConsumer.id);

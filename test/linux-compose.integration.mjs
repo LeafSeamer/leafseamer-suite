@@ -782,5 +782,6 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
       verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator});
     if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');
+    if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1')t.diagnostic('模拟器定义发布、审批原件和未布防运行已核对');
   }
 });

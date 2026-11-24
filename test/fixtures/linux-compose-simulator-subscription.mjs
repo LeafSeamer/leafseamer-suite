@@ -14,7 +14,7 @@ export function readSimulatorFile(files,name){
   return fs.existsSync(files[name])&&fs.statSync(files[name]).size?JSON.parse(fs.readFileSync(files[name],'utf8')):null;
 }
 
-export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest}){
+export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null}){
   const {controller,seamer}=plan,{device,scope}=baseline;
   const pairing_ref={id:pairing.binding_id,revision:pairing.revision,digest:pairing.digest};
   const {not_before_ns,expires_ns}=pairing;
@@ -40,6 +40,7 @@ export async function verifyComposeSimulatorSubscription({plan,simulator,baselin
     return result.transport_ready&&result;
   });
   assert.equal(linked.state,'confirmed');
+  await beforeWrite?.();
   const publisher=new DatabaseSync(path.join(controller.data_dir,'controller.sqlite'),{readOnly:true,timeout:500});
   try{
     fs.writeFileSync(simulator.proceed,'');

@@ -8,6 +8,8 @@ import {InstallationError,canonical,digest,requireValue as need} from './import-
 import {linuxContainerCgroup,observeLinuxMemberRetirement,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {admitLinuxMember,admitLinuxWorker,validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
+import {pinExecutable,pinLinuxHelper} from './linux-native-artifact.mjs';
+import {openLinuxWorkerChannel} from './linux-compose-channel.mjs';
 
 const sql=fs.readFileSync(new URL('./linux-member-journal.sql',import.meta.url),'utf8');
 const retirementSql=fs.readFileSync(new URL('./linux-member-retirement.sql',import.meta.url),'utf8');
@@ -16,7 +18,6 @@ const applicationId=0x4c534c4d;
 const hash=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$(?![\s\S])/;
 const sha=/^sha256:[0-9a-f]{64}$(?![\s\S])/;
-const rawSha=/^[0-9a-f]{64}$(?![\s\S])/;
 const fields=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===keys;
 const matches=(value,pattern)=>typeof value==='string'&&pattern.test(value);
 const descriptor=stat=>({device:String(stat.dev),inode:String(stat.ino)});
@@ -42,43 +43,7 @@ function intent(value){
   return {spec:JSON.parse(body),groupPath:group.groupPath+'/core'};
 }
 
-function pinExecutable(file,expected,maximum){
-  need(fs.realpathSync.native(file)===file,'linux_member_artifact_path');
-  const fd=fs.openSync(file,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW|fs.constants.O_NONBLOCK);
-  try{
-    const info=fs.fstatSync(fd,{bigint:true});
-    need(info.isFile()&&info.nlink===1n&&info.uid===0n&&(info.mode&0o6022n)===0n&&info.size>0n&&info.size<=BigInt(maximum),
-      'linux_member_artifact');
-    const sum=crypto.createHash('sha256'),bytes=Buffer.alloc(65536);
-    let offset=0;
-    while(offset<Number(info.size)){
-      const count=fs.readSync(fd,bytes,0,Math.min(bytes.length,Number(info.size)-offset),offset);
-      need(count>0,'linux_member_artifact');
-      sum.update(bytes.subarray(0,count));offset+=count;
-    }
-    const after=fs.fstatSync(fd,{bigint:true});
-    need(after.size===info.size&&after.mtimeNs===info.mtimeNs&&after.ctimeNs===info.ctimeNs&&
-      'sha256:'+sum.digest('hex')===expected,'linux_member_artifact_digest');
-    return {fd,identity:descriptor(info),mtime:info.mtimeNs,ctime:info.ctimeNs};
-  }catch(error){fs.closeSync(fd);throw error;}
-}
-
 const helperFile=fileURLToPath(new URL('./native/leafseamer_linux_member',import.meta.url));
-export function pinLinuxHelper(helperFile,file,format){
-  const stat=fs.lstatSync(file,{bigint:true});
-  need(stat.isFile()&&stat.uid===0n&&(stat.mode&0o022n)===0n&&stat.size<=4096n,'linux_member_helper_manifest');
-  for(let directory=path.dirname(helperFile);directory!=='/';directory=path.dirname(directory)){
-    const info=fs.lstatSync(directory,{bigint:true});
-    const sticky=(directory==='/tmp'||directory==='/var/tmp')&&(info.mode&0o1000n)!==0n;
-    need(info.isDirectory()&&info.uid===0n&&((info.mode&0o022n)===0n||sticky),'linux_member_helper_manifest');
-  }
-  const value=JSON.parse(fs.readFileSync(file,'utf8'));
-  need(fields(value,'arch,binary_sha256,format,platform,source_sha256')&&value.format===format&&
-    value.arch===process.arch&&value.platform==='linux'&&matches(value.binary_sha256,rawSha)&&matches(value.source_sha256,rawSha),
-  'linux_member_helper_manifest');
-  const digest='sha256:'+value.binary_sha256;
-  return {...pinExecutable(helperFile,digest,4*1024*1024),digest};
-}
 function pinHelper(){
   return pinLinuxHelper(helperFile,new URL('./native/linux-member-manifest.json',import.meta.url),'leafseamer-linux-member/1');
 }
@@ -112,8 +77,9 @@ function nativeFrames(stream){
   };
 }
 
-async function launchWorker({intent,core,spec,host,group,source,held,runtime,assertCreate,commit}){
+async function launchWorker({intent,core,spec,host,group,source,held,runtime,corePid,assertCreate,assertAllowed,commit}){
   const {uid,gid,entry,directory}=runtime,content=held.content;
+  const channels=[];
   let helper,image,child,contextDir,success=false,retirement;
   const location='/sys/fs/cgroup'+group.group_path;
   const sameGroup=()=>need(same(group.identity,groupIdentity(group.group_path)),'linux_worker_group_changed');
@@ -123,12 +89,14 @@ async function launchWorker({intent,core,spec,host,group,source,held,runtime,ass
   };
   function retire(){
     return retirement??=(async()=>{
+      for(const channel of channels)channel.close();
       if(child){child.stdin.destroy();for(const socket of child.stdio.slice(3,6))socket.destroy();}
       if(child&&!empty()){
         fs.writeFileSync(location+'/cgroup.kill','1');
         for(let attempt=0;attempt<40&&!empty();attempt++)await delay(25);
       }
       if(child)need(empty(),'linux_worker_retirement_unconfirmed');
+      await Promise.all(channels.map(channel=>channel.ended));
       await held.discard();
       if(contextDir){fs.rmSync(path.join(contextDir,'worker.json'),{force:true});fs.rmdirSync(contextDir);}
       return {group_path:group.group_path,group:group.identity,populated:false};
@@ -166,9 +134,20 @@ async function launchWorker({intent,core,spec,host,group,source,held,runtime,ass
     need(await frames('executed',group.identity,image.identity)===pid,'linux_worker_execution_changed');
     assertCurrent();
     await admitLinuxWorker({intent,descriptor:core.descriptor,policy:core.policy,source,socket,
-      detail:{host,group,leader,image:image.identity},commit(admission){assertCurrent();held.assertCurrent();return commit(admission.receipt);}});
+      detail:{host,group,leader,image:image.identity},async commit(admission){
+        if(runtime.channelDirectory){
+          for(const [index,purpose] of ['module','execution'].entries()){
+            channels.push(openLinuxWorkerChannel({directory:runtime.channelDirectory,memberBootId:admission.receipt.member_boot_id,
+              purpose,uid:spec.uid,gid:spec.gid,corePid,timeoutMs:core.policy.bootstrap_timeout_ms,upstream:child.stdio[4+index],
+              assertCurrent:()=>{assertAllowed();assertCurrent();}}));
+          }
+          await Promise.all(channels.map(channel=>channel.ready));
+        }
+        assertAllowed();assertCurrent();held.assertCurrent();return commit(admission.receipt);
+      }});
     assertCurrent();await held.close();
     const close=()=>{void retire().catch(()=>{});};
+    for(const channel of channels)void channel.ended.then(close);
     socket.once('end',close).once('close',close).once('error',close).once('data',close);socket.resume();
     child.once('close',close);success=true;
     return {assertCurrent,retire};
@@ -413,8 +392,8 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
                     manifest_digest:binding.manifest_digest,artifact_set_digest:binding.artifact_set_digest,host_trust_epoch:binding.host_trust_epoch,
                     launch_intent_digest:digest(intent),challenge_id},{directory:runtime.directory,uid:runtime.uid,gid:runtime.gid});
                 },
-                launch(intent,group,held,assertCreate,commit){return launchWorker({intent,core:admission,spec,host,group,source:bootstrap.source,
-                  held,runtime,assertCreate,commit});}
+                launch(intent,group,held,assertCreate,assertAllowed,commit){return launchWorker({intent,core:admission,spec,host,group,source:bootstrap.source,
+                  held,runtime,corePid:leader.pid,assertCreate,assertAllowed,commit});}
               })});
           }
           return record;
@@ -441,6 +420,7 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       need(workerControl===false||workerControl===true&&input.role==='controller'&&version===2,'linux_worker_control_scope');
       need(workerRuntime===null||workerControl&&[workerRuntime.uid,workerRuntime.gid].every(id=>Number.isInteger(id)&&id>0&&id<0xffffffff)&&
         workerRuntime.uid!==input.uid&&workerRuntime.gid!==input.gid&&path.isAbsolute(workerRuntime.directory)&&path.isAbsolute(workerRuntime.entry)&&
+        (!workerRuntime.channelDirectory||path.isAbsolute(workerRuntime.channelDirectory))&&
         typeof workerRuntime.acquire==='function'&&typeof workerRuntime.assertCurrent==='function','linux_worker_runtime');
       return launch(input,{policy,source,workerControl,workerRuntime});
     },close(){

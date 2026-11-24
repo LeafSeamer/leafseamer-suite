@@ -186,7 +186,9 @@ leafseamer_linux_member GROUP GROUP_DEVICE GROUP_INODE IMAGE IMAGE_DEVICE IMAGE_
 
 已显式迁移至 Controller Schema 109 的原生部署可在固定 Controller 计划设置 `worker_control: true`。核心使用同一条受监督继承流确认当前回执，并提交完整 Worker 启动快照。宿主为每次核心准入创建独立 SQLite 账本。登记绑定当前允许项、短授权摘要、原截止以及宿主预建的空 Worker cgroup。撤销在宿主账本持久生效，监督通道丢失时核心退出。[Linux 监督联调](test/linux-worker-control.integration.mjs)
 
-需要创建 Worker 时，在同一计划配置 `worker_runtime` 的 `directory`、`uid`、`gid`。目录须为受保护的暂存目录，Worker 使用与 Controller 独立的非 root UID 和 GID。宿主从安装库取得本次封存件，确认专属 cgroup 为空，并在启动固定 Worker 入口前持久登记创建尝试。Controller 只采用绑定当前核心代、专属 cgroup 和本次封存件的闭锁回执。撤销后宿主确认子组清空、保存退役证据并移除暂存副本。Compose 模块与执行通道仍待接通。[Linux 宿主入口](src/linux-native-host.mjs)
+需要创建 Worker 时，在同一计划配置 `worker_runtime` 的 `directory`、`uid`、`gid`。目录须为受保护的暂存目录，Worker 使用与 Controller 独立的非 root UID 和 GID。宿主从安装库取得本次封存件，确认专属 cgroup 为空，并在启动固定 Worker 入口前持久登记创建尝试。Controller 只采用绑定当前核心代、专属 cgroup 和本次封存件的闭锁回执。撤销后宿主确认子组清空、保存退役证据并移除暂存副本。[Linux 宿主入口](src/linux-native-host.mjs)
+
+原生部署要打开模块与执行通道，在 `worker_runtime` 增加 `channel_directory`。使用 root 所有、Controller 可遍历、组和其他用户不可写的目录，绝对路径最多 60 字节。宿主为每份闭锁回执建立一次性 Unix 通道，核对 Controller 的 PID、UID、GID 和当前进程身份，再转接 Worker 的继承描述符。Controller 以当前运行绑定打开通道。断连或撤销后关闭通道并移除套接字。Compose 集成仍待接通。[Linux 监督联调](test/linux-worker-control.integration.mjs)
 
 将 `leafseamer.linux-native-core/1` 计划保存于安装目录下的 `linux-native/`。填入 `host_installation_id`、`role`、`driver`、`generation_id`、`launch_id`、运行账户的 `uid` 与 `gid`、`data_directory`、回环 `port` 及现有 `bootstrap` 策略。`image`、`clock_profile` 与 `pairing_profile` 各提供绝对 `file` 和 `sha256`，`distribution` 提供绝对 `directory` 和 `manifest_sha256`。摘要使用 `sha256:` 前缀，配对和时钟配置均使用各服务的 `/2` 格式。安装制品及依赖树由 root 管理，业务库目录由所选运行账户管理。
 

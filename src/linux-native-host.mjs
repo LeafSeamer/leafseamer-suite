@@ -148,7 +148,7 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
         const required='bootstrap,clock_profile,data_directory,distribution,driver,format,generation_id,gid,host_installation_id,image,launch_id,pairing_profile,port,role,uid';
         const workerControl=plan.worker_control===true,workerRuntime=plan.worker_runtime;
         need(fields(plan,required+(workerControl?',worker_control':'')+(workerRuntime?',worker_runtime':''))&&(!workerControl||plan.role==='controller')&&
-          (!workerRuntime||workerControl&&fields(workerRuntime,'directory,gid,uid'))&&
+          (!workerRuntime||workerControl&&(fields(workerRuntime,'directory,gid,uid')||fields(workerRuntime,'channel_directory,directory,gid,uid')))&&
           plan.format==='leafseamer.linux-native-core/1'&&plan.host_installation_id===installation.identity.host_installation_id&&
           fields(plan.distribution,'directory,manifest_sha256')&&fields(plan.image,'file,sha256')&&
           fields(plan.clock_profile,'file,sha256')&&fields(plan.pairing_profile,'file,sha256')&&
@@ -163,15 +163,21 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
           args:['--disallow-code-generation-from-strings',path.join(absolute(distribution.directory),'cli.mjs'),'contained-core-linux',
             '--data-dir',absolute(plan.data_directory),'--port',String(plan.port),'--bootstrap-policy',canonical(bootstrap),
             '--clock-evidence-profile',absolute(plan.clock_profile.file),'--pairing-profile',absolute(plan.pairing_profile.file),
-            ...(workerControl?['--worker-control','inherited']:[])]};
+            ...(workerControl?['--worker-control','inherited']:[]),
+            ...(workerRuntime&&Object.hasOwn(workerRuntime,'channel_directory')?['--worker-channel-dir',absolute(workerRuntime.channel_directory)]:[])]};
         const policy=validateLinuxBootstrapPolicy(spec,bootstrap);
         need(policy.artifact_manifest_ref.digest===digest({[role+'_build_sha256']:distribution.manifest_sha256.slice(7),node_sha256:image.sha256.slice(7)}),
           'linux_native_manifest');
         verifyInputs(plan,spec,policy);
         const runtime=workerRuntime?{uid:workerRuntime.uid,gid:workerRuntime.gid,directory:absolute(workerRuntime.directory),
+          channelDirectory:Object.hasOwn(workerRuntime,'channel_directory')?absolute(workerRuntime.channel_directory):null,
           entry:path.join(absolute(distribution.directory),'device-worker-entry.mjs'),
           acquire:(...args)=>installation.acquireLinuxWorkerMaterialization(...args),
-          assertCurrent(){verifyInputs(verifyPlan(file,planDigest),spec,policy);protectedPath(this.entry);}}:null;
+          assertCurrent(){verifyInputs(verifyPlan(file,planDigest),spec,policy);protectedPath(this.entry);
+            if(this.channelDirectory){
+              need(Buffer.byteLength(this.channelDirectory)<=60,'linux_worker_channel');
+              protectedPath(this.channelDirectory,{directory:true});
+            }}}:null;
         runtime?.assertCurrent();
         openPlan={file,expected:planDigest,spec,policy};
         try{return (await journal.admit(spec,{policy,source,workerControl,workerRuntime:runtime})).record;}

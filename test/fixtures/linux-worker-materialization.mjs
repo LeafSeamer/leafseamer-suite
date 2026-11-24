@@ -5,7 +5,8 @@ import {createInstallationStore,openInstallationStore} from '../../dist/installa
 import {artifactFixture,digestValue,rawDigest,zipFixture} from './artifact-package.mjs';
 import {authorizeFixture} from './release-authorization.mjs';
 
-export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protocol,sharedStore=null,profileId='worker.test.platform',customize=()=>{}}){
+export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protocol,sharedStore=null,profileId='worker.test.platform',customize=()=>{},
+  apiVersions=['leafseamer-device-module/2']}){
   const data=path.join(directory,'installation');
   if(sharedStore===null){fs.mkdirSync(data,{mode:0o700});createInstallationStore(data);}
   const store=sharedStore??openInstallationStore(data);let authorization,closed=false;
@@ -15,7 +16,7 @@ export async function sealLinuxWorker(t,{directory,serviceId,moduleBytes,protoco
   entry.bytes=moduleBytes;
   Object.assign(artifact.inventory.files.find(file=>file.file_id==='worker'),{size_bytes:String(moduleBytes.length),digest:rawDigest(moduleBytes)});
   customize(artifact);
-  Object.assign(artifact.manifest,{inventory_digest:digestValue(artifact.inventory),api_versions:['leafseamer-device-module/2'],ipc_versions:[protocol]});
+  Object.assign(artifact.manifest,{inventory_digest:digestValue(artifact.inventory),api_versions:apiVersions,ipc_versions:[protocol]});
   const bytes=zipFixture(artifact.entries()).bytes,manifestDigest=digestValue(artifact.manifest);
   authorization=await authorizeFixture(store,bytes,manifestDigest);
   const {result,validationPolicy}=authorization;

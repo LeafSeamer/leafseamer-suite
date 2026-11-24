@@ -14,7 +14,7 @@ const names = ['installation-store.mjs', 'installation.sql', 'import-input.mjs',
 const files = await Promise.all(names.map(async name => [name, await fs.readFile(path.join(root, 'src', name))]));
 for(const name of ['linux-deployment-journal.mjs','linux-deployment-journal.sql','linux-deployment-admission.sql','linux-compose-host.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 for(const name of ['linux-member-journal.mjs','linux-member-journal.sql','linux-member-bootstrap.mjs','linux-member-retirement.sql','linux-native-host.mjs','linux-worker-control.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
-files.push(['linux-compose-channel.mjs',await fs.readFile(path.join(root,'src/linux-compose-channel.mjs'))]);
+for(const name of ['linux-compose-channel.mjs','linux-native-artifact.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(['content-preparation.mjs',await fs.readFile(path.join(root,'src/content-preparation.mjs'))]);
 for(const name of ['prepared-content.mjs','linux-prepared-content.mjs','platform-qualification.mjs','installation-sealing.mjs','installation-sealing.sql','materialization.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(...await buildTuf());

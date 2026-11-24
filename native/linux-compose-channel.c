@@ -81,7 +81,7 @@ static void relay(int peer) {
   }
 }
 
-static int listen_channel(const char *name, uint32_t uid, uint32_t gid) {
+static int listen_channel(const char *name, uint32_t uid, uint32_t gid, uint32_t expected_pid) {
   struct sockaddr_un endpoint;
   socklen_t length = address(&endpoint, name);
   struct ucred control;
@@ -93,13 +93,20 @@ static int listen_channel(const char *name, uint32_t uid, uint32_t gid) {
       chmod(name, 0660) < 0 || listen(server, 1) < 0 || dprintf(STDOUT_FILENO, "ready\n") < 0) return 1;
   struct pollfd pending[] = {{.fd = STDIN_FILENO, .events = POLLIN}, {.fd = 3, .events = POLLRDHUP},
                              {.fd = server, .events = POLLIN}};
-  if (wait_poll(pending, 3) < 0 || pending[0].revents || pending[1].revents || pending[2].revents != POLLIN) return 1;
-  int peer = accept4(server, NULL, NULL, SOCK_CLOEXEC);
-  close(server);
   struct ucred identity;
-  if (peer < 0 || !credentials(peer, &identity) || identity.pid <= 1 || identity.uid != uid || identity.gid != gid ||
-      dprintf(STDOUT_FILENO, "peer %jd\n", (intmax_t)identity.pid) < 0) return 1;
-  pending[2] = (struct pollfd){.fd = peer, .events = POLLIN | POLLRDHUP};
+  int peer;
+  for (;;) {
+    if (wait_poll(pending, 3) < 0 || pending[0].revents || pending[1].revents || pending[2].revents != POLLIN) return 1;
+    peer = accept4(server, NULL, NULL, SOCK_CLOEXEC);
+    if (peer < 0) return 1;
+    if (credentials(peer, &identity) && identity.pid > 1 && identity.uid == uid && identity.gid == gid &&
+        (!expected_pid || (uint32_t)identity.pid == expected_pid)) break;
+    close(peer);
+    if (!expected_pid) return 1;
+  }
+  close(server);
+  if (dprintf(STDOUT_FILENO, "peer %jd\n", (intmax_t)identity.pid) < 0) return 1;
+  pending[2] = (struct pollfd){.fd = peer, .events = expected_pid ? POLLRDHUP : POLLIN | POLLRDHUP};
   if (wait_poll(pending, 3) < 0 || pending[0].revents != POLLIN || pending[1].revents || pending[2].revents) return 1;
   char decision;
   if (read(STDIN_FILENO, &decision, 1) != 1 || decision != 'A' || dprintf(STDOUT_FILENO, "opened\n") < 0) return 1;
@@ -143,9 +150,12 @@ static int connect_channel(const char *name, uint32_t owner, char **program) {
 }
 
 int main(int argc, char **argv) {
-  uint32_t uid, gid;
+  uint32_t uid, gid, pid;
   if (argc == 5 && strcmp(argv[1], "listen") == 0 && number(argv[3], &uid) && number(argv[4], &gid))
-    return listen_channel(argv[2], uid, gid);
+    return listen_channel(argv[2], uid, gid, 0);
+  if (argc == 6 && strcmp(argv[1], "listen-worker") == 0 && number(argv[3], &uid) && number(argv[4], &gid) &&
+      number(argv[5], &pid) && pid > 1)
+    return listen_channel(argv[2], uid, gid, pid);
   if (argc >= 6 && strcmp(argv[1], "connect") == 0 && number(argv[3], &uid) && strcmp(argv[4], "--") == 0)
     return connect_channel(argv[2], uid, argv + 5);
   return 1;

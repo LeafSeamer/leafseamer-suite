@@ -60,28 +60,33 @@ async function start(t,{authorization=false,create=false}={}){
   const {port}=listener.address();await new Promise(resolve=>listener.close(resolve));
   const args=['--disallow-code-generation-from-strings'];
   const result=path.join(data,'authorization.json');
-  let materialization=null,runtime=null;
+  let materialization=null,runtime=null,channelDirectory;
   if(create){
-    const {deviceModuleProtocol}=await load('sdk/device-module.mjs');
+    const {deviceModuleEventProtocol}=await load('sdk/device-module.mjs');
     const directory=path.join(scratch,'worker-runtime');fs.mkdirSync(directory,{mode:0o711});
-    const template=Buffer.from(JSON.stringify(JSON.parse(fs.readFileSync(path.resolve(controller,'../test/fixtures/static-capability.json'),'utf8'))));
+    channelDirectory=path.join(scratch,'channels');fs.mkdirSync(channelDirectory,{mode:0o755});
+    const capability=JSON.parse(fs.readFileSync(path.join(controller,'simulator-control-capability.json'),'utf8'));
+    const template=Buffer.from(JSON.stringify(capability));
     const fileHash=bytes=>'sha256:'+sum(bytes);
     sealed=await sealLinuxWorker(t,{directory:scratch,serviceId:identity.service_id,sharedStore:store,profileId:policy.platform_profile_ref.profile_id,
-      moduleBytes:fs.readFileSync(path.join(controller,'simulator-module.mjs')),protocol:deviceModuleProtocol,customize({payload,manifest,inventory}){
+      moduleBytes:fs.readFileSync(path.join(controller,'simulator-control-module.mjs')),protocol:deviceModuleEventProtocol,
+      apiVersions:['leafseamer-device-event-capture/1','leafseamer-device-module/2','leafseamer-device-primitives/1'],customize({payload,manifest,inventory}){
         const config={path:'config.txt',role:'schema',bytes:Buffer.from('{}')};payload.set('config',config);
         Object.assign(inventory.files.find(file=>file.file_id==='config'),{path:config.path,size_bytes:'2',digest:fileHash(config.bytes)});
+        const policy=payload.get('policy');policy.bytes=fs.readFileSync(path.join(controller,'simulator-control-policy.json'));
+        Object.assign(inventory.files.find(file=>file.file_id==='policy'),{size_bytes:String(policy.bytes.length),digest:fileHash(policy.bytes)});
         payload.set('capability',{path:'capability.json',role:'schema',bytes:template});
         inventory.files.unshift({file_id:'capability',path:'capability.json',role:'schema',size_bytes:String(template.length),digest:fileHash(template),executable:false});
         manifest.capability_template_file_ids=['capability'];
         manifest.roles=[{role_id:'device',kind:'device',minimum:1,maximum:1,purpose:'设备绑定'}];
         manifest.permission_templates=[{request_id:'device.request',kind:'device_scope',purpose:'请求设备动作',
-          scope:{device_role:'device',action_ids:['get','set'],trigger_ids:[]}}];
+          scope:{device_role:'device',action_ids:capability.actions.map(action=>action.action_id),trigger_ids:[]}}];
       }});
     const {host_installation_id,authority_service_id,database_instance_id}=store.identity;
     const {receipt,intake_ref}=sealed.sealed,{manifest,inventory}=sealed.artifact;
     materialization={identity:{host_installation_id,authority_service_id,database_instance_id},
       content:{format:'leafseamer-intake-content/1',intake_ref,receipt,manifest,inventory}};
-    runtime={directory,uid:65533,gid:65533,entry:path.join(controller,'device-worker-entry.mjs'),assertCurrent(){},
+    runtime={directory,channelDirectory,uid:65533,gid:65533,entry:path.join(controller,'device-worker-entry.mjs'),assertCurrent(){},
       acquire:(...args)=>store.acquireLinuxWorkerMaterialization(...args)};
   }
   if(authorization){
@@ -89,7 +94,8 @@ async function start(t,{authorization=false,create=false}={}){
     const group_path=worker.slice('/sys/fs/cgroup'.length);
     const containment={backend:'linux_cgroup_v2',generation,group_id:'group_'+digest({boot_id,group_path,
       group:{device:String(group.dev),inode:String(group.ino)}}).slice(7)};
-    const config=path.join(scratch,'input.json');fs.writeFileSync(config,canonical({policy,data,result,containment,launchId:workerId,materialization}),{mode:0o644});
+    const config=path.join(scratch,'input.json');fs.writeFileSync(config,canonical({policy,data,result,containment,launchId:workerId,materialization,
+      ...(channelDirectory&&{channelDirectory})}),{mode:0o644});
     args.push(path.resolve(controller,'../test/fixtures/linux-worker-authorization.mjs'),config);
   }else args.push(path.join(controller,'cli.mjs'),'contained-core-linux','--data-dir',data,'--port',String(port),
     '--bootstrap-policy',canonical(policy),'--worker-control','inherited');
@@ -122,11 +128,12 @@ test('Linux Controller 实际入口持续交换核心确认，断开监督后退
   assert.deepEqual(persisted.identity.core_receipt,running.coreReceipt);
 });
 
-test('Linux CREATE 只产生一次受监督 Worker，Controller 持久采用并在撤销后退役',options,async t=>{
+test('Linux CREATE 单次启动受监督 Worker，模块与执行通道闭环并在撤销后退役',options,async t=>{
   const running=await start(t,{authorization:true,create:true});
   const result=await until(()=>fs.existsSync(running.result)?JSON.parse(fs.readFileSync(running.result,'utf8')):null);
   assert.equal(result.ok,true,result.error);assert(result.workerReceipt);await until(()=>empty(running.core));
   assert(empty(running.worker));assert.deepEqual(fs.readdirSync(running.runtime.directory),[]);
+  assert.deepEqual(fs.readdirSync(running.runtime.channelDirectory),[]);
   const proof=inspect(running.control,db=>({
     attempts:db.prepare('SELECT count(*) AS total FROM attempt').get().total,
     admission:JSON.parse(db.prepare('SELECT body FROM admission').get().body),
@@ -139,6 +146,10 @@ test('Linux CREATE 只产生一次受监督 Worker，Controller 持久采用并�
     assert.equal(originals.length,1);assert.deepEqual(JSON.parse(originals[0].body_jcs).admission_receipt,proof.admission);
     assert.equal(db.prepare('SELECT count(*) AS total FROM worker_runtime_commit').get().total,1);
     assert.equal(db.prepare('SELECT count(*) AS total FROM worker_runtime_withdrawal').get().total,1);
+    assert.equal(db.prepare('SELECT count(*) AS total FROM device_baseline_sample').get().total,1);
+    assert.equal(db.prepare('SELECT count(*) AS total FROM execution_handshake').get().total,1);
+    assert.equal(db.prepare('SELECT count(*) AS total FROM execution_session_end').get().total,1);
+    assert.equal(db.prepare('SELECT count(*) AS total FROM device_event_source').get().total,1);
   });
 });
 

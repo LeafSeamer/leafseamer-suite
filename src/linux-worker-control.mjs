@@ -212,8 +212,9 @@ export function bindLinuxWorkerControl({directory,socket,core,source,assertLive,
       canonical({key,authorization,group,materialization_challenge_id,load_id}))).immediate();
     staged.delete(id);
     try{
-      const worker=await launch(intent,group,entry.held,assertCreate,admitted=>{
-        live();allow(key);
+      const assertAllowed=()=>{live();allow(key);};
+      const worker=await launch(intent,group,entry.held,assertCreate,assertAllowed,admitted=>{
+        assertAllowed();
         db.transaction(()=>db.prepare('INSERT INTO admission VALUES(?,?,?)').run(id,canonical(admitted),digest(admitted))).immediate();
       });
       if(closed){await worker.retire();throw new RequestDenied('indeterminate');}

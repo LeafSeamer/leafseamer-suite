@@ -116,7 +116,7 @@ async function exchangeAdmission({launch,descriptor,detail,policy,source,socket,
     const receipt={...common,receipt_id:id(),domain_ref:domain,containment_ref:launch.containment_ref,
       os_observation_ref:'observation_'+digest(detail).slice(7),admitted_tick_ns:String(admitted),gate_state:'closed'};
     await decodeBootstrap(Buffer.from(canonical({version:bootstrapVersion,type:'ADMISSION',payload:receipt})),'ADMISSION');
-    const record=commit({intent:launch,descriptor,receipt,policy});
+    const record=await commit({intent:launch,descriptor,receipt,policy});
     const current=tick();
     need(current>=admitted&&current<expires,'linux_bootstrap_expired');
     await send(socket,'ADMISSION',receipt);

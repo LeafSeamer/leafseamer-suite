@@ -4,7 +4,7 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {canonical,requireValue as need} from './import-input.mjs';
 import {observeLinuxComposeCore} from './linux-cgroup-retirement.mjs';
-import {pinLinuxHelper} from './linux-member-journal.mjs';
+import {pinLinuxHelper} from './linux-native-artifact.mjs';
 
 const helper=fileURLToPath(new URL('./native/leafseamer_linux_compose_channel',import.meta.url));
 const manifest=new URL('./native/linux-compose-channel-manifest.json',import.meta.url);
@@ -44,21 +44,22 @@ function controlFrames(stream){
   };
 }
 
-// `expected` 由宿主从已核验的 Docker 运行代取得，连接方不提供自己的启动身份。
-export function openLinuxComposeChannel({directory,uid,gid,timeoutMs}={}){
+function openChannel({directory,name,uid,gid,timeoutMs,upstream=null,expectedPid=null}){
   need(process.platform==='linux'&&nonRoot(uid)&&nonRoot(gid)&&uid!==process.geteuid()&&
     Number.isInteger(timeoutMs)&&timeoutMs>0&&timeoutMs<=60000,'compose_channel_options');
-  const parent=protectedDirectory(directory),socketPath=path.join(directory,'bootstrap.sock');
+  const parent=protectedDirectory(directory),socketPath=path.join(directory,name);
   need(Buffer.byteLength(socketPath)<=107&&!fs.lstatSync(socketPath,{throwIfNoEntry:false}),'compose_channel_path');
   const pinned=pinLinuxHelper(helper,manifest,'leafseamer-linux-compose-channel/1');
   let child;
   try{
-    child=spawn('/proc/self/fd/4',['listen',socketPath,String(uid),String(gid)],{
-      stdio:['pipe','pipe','ignore','pipe',pinned.fd],env:{LANG:'C',LC_ALL:'C',PATH:'/usr/bin:/bin'}
+    const args=[expectedPid===null?'listen':'listen-worker',socketPath,String(uid),String(gid)];
+    if(expectedPid!==null)args.push(String(expectedPid));
+    child=spawn('/proc/self/fd/4',args,{
+      stdio:['pipe','pipe','ignore',upstream??'pipe',pinned.fd],env:{LANG:'C',LC_ALL:'C',PATH:'/usr/bin:/bin'}
     });
   }finally{fs.closeSync(pinned.fd);}
   const socket=child.stdio[3],read=controlFrames(child.stdout);
-  for(const handle of [child,child.stdin,child.stdout,socket])handle.on('error',()=>{});
+  for(const handle of [child,child.stdin,child.stdout,socket])handle?.on('error',()=>{});
   let closed=false,claimed=false,bound;
   const owner=BigInt(process.geteuid());
   const timer=setTimeout(close,timeoutMs);timer.unref();
@@ -71,7 +72,7 @@ export function openLinuxComposeChannel({directory,uid,gid,timeoutMs}={}){
   }
   function close(){
     if(closed)return;
-    closed=true;clearTimeout(timer);child.stdin.destroy();socket.destroy();
+    closed=true;clearTimeout(timer);child.stdin.destroy();socket?.destroy();
   }
   const ended=new Promise(resolve=>child.once('close',()=>{
     close();
@@ -83,20 +84,17 @@ export function openLinuxComposeChannel({directory,uid,gid,timeoutMs}={}){
   const ready=(async()=>{
     need(await read()==='ready'&&!closed,'compose_channel_frame');
     checkBinding();
+    if(expectedPid!==null)clearTimeout(timer);
   })();
   ready.catch(close);
   return Object.freeze({socketPath,ready,ended,close,
-    async accept(scope={}){
+    async accept(checkPeer){
       need(!closed&&!claimed,'compose_channel_closed');
       claimed=true;
       try{
-        const {driver,generationId,role,host,expected}=structuredClone(scope);
         await ready;
         const peer=(await read()).match(/^peer ([1-9][0-9]{0,9})$/);
-        need(!closed&&peer&&Number(peer[1])===expected?.leader?.pid,'compose_channel_peer');
-        const observed=observeLinuxComposeCore({driver,generationId,role,host,leader:expected.leader,
-          containerId:expected.container_id,uid,gid});
-        need(same(observed,expected),'compose_channel_peer');
+        need(!closed&&peer,'compose_channel_peer');checkPeer(Number(peer[1]));
         checkBinding();
         await new Promise((resolve,reject)=>child.stdin.write('A',error=>error?reject(error):resolve()));
         need(await read()==='opened'&&!closed,'compose_channel_closed');
@@ -105,4 +103,27 @@ export function openLinuxComposeChannel({directory,uid,gid,timeoutMs}={}){
       }catch(error){close();throw error;}
     }
   });
+}
+
+// `expected` 由宿主从已核验的 Docker 运行代取得，连接方不提供自己的启动身份。
+export function openLinuxComposeChannel({directory,uid,gid,timeoutMs}={}){
+  const channel=openChannel({directory,uid,gid,timeoutMs,name:'bootstrap.sock'});
+  return Object.freeze({...channel,accept(scope={}){
+    const {driver,generationId,role,host,expected}=structuredClone(scope);
+    return channel.accept(pid=>{
+      need(pid===expected?.leader?.pid,'compose_channel_peer');
+      const observed=observeLinuxComposeCore({driver,generationId,role,host,leader:expected.leader,
+        containerId:expected.container_id,uid,gid});
+      need(same(observed,expected),'compose_channel_peer');
+    });
+  }});
+}
+
+export function openLinuxWorkerChannel({directory,memberBootId,purpose,uid,gid,corePid,timeoutMs,upstream,assertCurrent}){
+  need(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$(?![\s\S])/.test(memberBootId)&&
+    ['module','execution'].includes(purpose)&&Number.isInteger(corePid)&&corePid>1&&upstream&&!upstream.destroyed&&
+    typeof assertCurrent==='function','linux_worker_channel');
+  const channel=openChannel({directory,name:memberBootId+'.'+purpose,uid,gid,timeoutMs,upstream,expectedPid:corePid});
+  void channel.accept(pid=>{need(pid===corePid,'compose_channel_peer');assertCurrent();}).catch(channel.close);
+  return channel;
 }

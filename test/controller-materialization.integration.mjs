@@ -246,8 +246,9 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const obsCommand=mode===obsCutCommandMode,obsOpen=mode===obsCutOpenMode||obsCommand,obsCut=mode===obsCutMode||obsOpen,obs=mode===obsMode||obsCut;
   const obsRecovery=obsCommand&&process.env.LEAFSEAMER_OBS_BROWSER_RECOVERY==='1';
   const obsInterruption=obsCommand?process.env.LEAFSEAMER_OBS_INTERRUPTION_TEST:null;
-  if(obsInterruption)assert.ok(!obsRecovery&&!process.env.LEAFSEAMER_GUI_TEST_ROOT&&['report','closure','settlement'].includes(obsInterruption));
+  if(obsInterruption)assert.ok(!obsRecovery&&!process.env.LEAFSEAMER_GUI_TEST_ROOT&&['report','closure','settlement','no_request','no_write'].includes(obsInterruption));
   const recoverSettlement=obsInterruption==='settlement';
+  const unsent=obsInterruption==='no_request'||obsInterruption==='no_write';
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
   const referenceWatermark=mode.endsWith('_reference_watermark');
   const referenceAcceptance=mode===referenceAcceptanceExecution||referenceRestart||referenceWatermark;
@@ -395,6 +396,11 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
                  const stage104=snapshot(file);
                  assert.equal(stage104.schema_migration.pop()[2],'104');
                  assert.deepEqual(stage104,snapshot(path.join(core,recoveryMigration.backup_file)));
+                 const unsentMigration=await migrateStorage(core,105);
+                 const stage105=snapshot(file);
+                 assert.equal(unsentMigration.steps.length,1);
+                 assert.equal(stage105.schema_migration.pop()[2],'105');
+                 assert.deepEqual(stage105,snapshot(path.join(core,unsentMigration.backup_file)));
                }
              }
            }
@@ -652,7 +658,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   if(commandDispatchFailure||settlementFailure||cleanupFailure){const {table,operation,condition}=commandDispatchFailure??settlementFailure??cleanupFailure;const fault=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
     try{fault.exec(`CREATE TRIGGER dispatch_fault BEFORE ${operation} ON ${table}${condition?' WHEN '+condition:''} BEGIN SELECT RAISE(IGNORE); END`);}finally{fault.close();}}
   if(obsInterruption){
-    const table=recoverSettlement?'command_settlement':obsInterruption==='report'?'command_dispatch_report':'command_closure_ack';
+    const table={settlement:'command_settlement',report:'command_dispatch_report',closure:'command_closure_ack',
+      no_request:'command_dispatch_request',no_write:'command_dispatch_write'}[obsInterruption];
     const untilSessionEnds=recoverSettlement?` WHEN NOT EXISTS(
       SELECT 1 FROM command_dispatch_request d JOIN execution_frame_record f ON f.record_id=d.record_id
       JOIN execution_session_end e USING(ipc_session_id) WHERE d.permit_id=NEW.permit_id)`:'';
@@ -819,7 +826,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     assert.equal(stale,'obs_cut_packet_stale_reference');
     if(obsRecovery||obsInterruption){
       const sample=await (await load('obs-discovery.mjs')).inspectObsCut({port:portable.port,password:portable.password});
-      assert.equal(sample.program_scene_uuid,obsInterruption?target:portable.program_scene_uuid);
+      assert.equal(sample.program_scene_uuid,obsInterruption&&!unsent?target:portable.program_scene_uuid);
     }
     if(!obsCut)await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
       catalog:frames.find(f=>f.event==='obs-scene-confirmed').ready,packet_hex});
@@ -2039,24 +2046,32 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
       assert.equal(response.body.command_ref,null);
       assert.deepEqual(replayed,response);
     }else if(obsInterruption){
-      const {admitted,finished,replayed,blocked,control}=frames.find(f=>f.event==='obs-cut-interrupted'),{record}=finished.body;
+      const {admitted,finished,replayed,blocked,control,evidence,evidenceRevision}=frames.find(f=>f.event==='obs-cut-interrupted'),{record}=finished.body;
       assert.equal(admitted.status,202);
       assert.equal(finished.status,200);
       assert.equal(replayed.status,200);
       assert.deepEqual(replayed.body,admitted.body);
       assert.equal(blocked.status,503);
       assert.equal(record.command_id,admitted.body.command_ref.object_id);
-      const revision=obsInterruption==='report'?'4':'5';
+      const revision=unsent?'3':obsInterruption==='report'?'4':'5';
       assert.equal(record.state.revision,revision);
       assert.equal(record.state.terminal_revision,revision);
       assert.equal(record.state.phase,'finished');
-      assert.equal(record.state.outcome,recoverSettlement?'succeeded':'unknown');
-      assert.equal(record.state.effect_status,recoverSettlement?'verified':'possible');
-      assert.equal(record.state.resource_status,recoverSettlement?'clear':'unresolved');
+      assert.equal(record.state.outcome,unsent?'blocked':recoverSettlement?'succeeded':'unknown');
+      assert.equal(record.state.effect_status,unsent?'not_sent':recoverSettlement?'verified':'possible');
+      assert.equal(record.state.resource_status,recoverSettlement||unsent?'clear':'unresolved');
       assert.equal(record.state.automation_continuation,recoverSettlement?'eligible':'paused_latched');
       assert.equal(record.completion.achieved,recoverSettlement?'effect_verified':null);
       assert.equal(record.attempts.length,1);
       assert.equal(control.gate_state,'protected');
+      if(unsent){
+        assert.equal(record.attempts[0].outcome,'not_sent');
+        assert.equal(evidence.status,200);
+        assert.deepEqual(evidence.body.items.map(item=>[item.kind,item.body.kind]),[['release','never_sent']]);
+        assert.deepEqual(record.state.resource_evidence_refs,[evidence.body.items[0].source_ref]);
+        assert.equal(evidenceRevision.status,200);
+        assert.deepEqual(evidenceRevision.body,evidence.body.items[0]);
+      }
     }else if(obsCommand){
       const {stale}=frames.find(f=>f.event==='obs-cut-stale-reference');
       assert.equal(stale.status,422);
@@ -2132,12 +2147,28 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
         assert.equal(digest,bound.ref.digest);
         assert.equal(business.prepare("SELECT count(*) FROM device_module_frame WHERE message_type='EXECUTION_BOUND'").pluck().get(),2);
         assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='OPEN_GATE'").pluck().get(),repeatedCut?2:obsOpen?1:0);
-        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),repeatedCut?2:obsInterruption?1:0);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_frame_record WHERE message_type='DISPATCH'").pluck().get(),repeatedCut?2:obsInterruption&&obsInterruption!=='no_request'?1:0);
         assert.equal(business.prepare('SELECT count(*) FROM device_initial_ready').pluck().get(),repeatedCut?2:obsOpen?1:0);
         if(obsRecovery){
           assert.deepEqual(business.prepare('SELECT decision FROM ca_adjudication').pluck().all(),['rejected']);
           assert.equal(business.prepare('SELECT count(*) FROM ca_rejection').pluck().get(),1);
           for(const table of ['ca_command_initial','command_transmission_issue','command_device_hold'])assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),0);
+        }else if(unsent){
+          const {finished}=frames.find(f=>f.event==='obs-cut-interrupted'),id=finished.body.record.command_id;
+          const [hold,text,hash]=business.prepare('SELECT hold_id,body_jcs,body_digest FROM command_unsent_closure WHERE command_id=?').raw().get(id);
+          const closure=JSON.parse(text);
+          assert.equal(hash,digestValue(closure));
+          assert.equal(closure.cut.dispatch_ref!==null,obsInterruption==='no_write');
+          assert.deepEqual(business.prepare('SELECT hold_id FROM command_hold_clearance WHERE command_id=?').pluck().all(id),[hold]);
+          assert.equal(business.prepare("SELECT count(*) FROM execution_write_attempt JOIN execution_frame_record USING(record_id) WHERE message_type='DISPATCH'").pluck().get(),0);
+          for(const table of ['command_dispatch_write','command_dispatch_interruption','command_settlement','command_hold_release'])
+            assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),0);
+          assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52]);
+          const {readCommandRecord,readCommandRevision}=await load('command-record-store.mjs');
+          business.transaction(()=>{
+            assert.deepEqual(readCommandRecord(business,id).record,finished.body.record);
+            assert.equal(readCommandRevision(business,id,'2').record.state.resource_status,'held');
+          })();
         }else if(obsInterruption){
           const {finished}=frames.find(f=>f.event==='obs-cut-interrupted'),id=finished.body.record.command_id;
           const prior=obsInterruption==='report'?3:4;
@@ -2162,6 +2193,7 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
           assert.equal(business.prepare('SELECT count(*) FROM command_dispatch_interruption').pluck().get(),recoverSettlement?0:1);
           for(const table of ['command_hold_release','command_closure_ack','command_settlement'])
             assert.equal(business.prepare('SELECT count(*) FROM '+table).pluck().get(),recoverSettlement?1:0);
+          assert.equal(business.prepare('SELECT count(*) FROM command_hold_clearance').pluck().get(),recoverSettlement?1:0);
           assert.equal(business.prepare('SELECT count(*) FROM command_preparation_retirement').pluck().get(),0);
           assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52]);
         }else if(obsCommand){

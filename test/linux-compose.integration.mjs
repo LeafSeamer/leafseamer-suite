@@ -595,6 +595,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       }
       const result=parseFile(resultPath);assert.equal(result.ok,true,result.error);
       assert.equal(result.workerReceipt.gate_state,'closed');
+      assert.deepEqual(result.simulatorEvent.event.origin.payload.value,{value:7,write_sequence:'1'});
       assert.match(fs.readFileSync(groupFile+'/cgroup.events','utf8'),/^populated 0$/m);
       assert.deepEqual(fs.readdirSync(directory),[]);
       assert.ok(fs.readdirSync(channelDirectory).every(name=>name==='installation.sock'));
@@ -609,6 +610,15 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM execution_handshake').get().total,1);
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM device_baseline_sample').get().total,1);
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM device_event_source').get().total,1);
+        const originals=controllerDb.prepare(`SELECT e.origin_jcs,e.origin_digest,o.body_jcs AS outbox
+          FROM device_source_event e JOIN device_source_event_outbox o USING(record_id,transaction_id)`).all();
+        assert.equal(originals.length,1);
+        const {origin_jcs,origin_digest,outbox}=originals[0],event=result.simulatorEvent.event;
+        assert.deepEqual({origin:JSON.parse(origin_jcs),origin_digest},event);
+        assert.equal(digest(event.origin),origin_digest);
+        assert.deepEqual(JSON.parse(outbox).origin,event.origin);
+        assert.equal(controllerDb.prepare("SELECT count(*) AS total FROM device_module_frame WHERE message_type='EVENT_ACKED'").get().total,1);
+        assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM command_settlement').get().total,1);
       }finally{log.close();controllerDb.close();}
       await managedHost.close();managedHost=null;
       const cleanupDeadline=performance.now()+5000;

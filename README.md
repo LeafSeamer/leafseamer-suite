@@ -114,6 +114,16 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 受信退役还需由宿主生命周期装配证明旧启动入口已关闭，并把观察写入该运行域的退役记录。本接口提供实时内核事实，消费方使用后调用 `close()`。在专用 Linux 测试宿主上可用 `LEAFSEAMER_TEST_CGROUP_HOST=1` 运行 [cgroup 联调用例](test/linux-cgroup-retirement.integration.mjs)，附加 `LEAFSEAMER_TEST_SYSTEMD_CGROUP=1` 验证临时 systemd 单元。
 
+### Linux 宿主启停账本
+
+可信首次安装流程在确认无旧运行代后，调用 `openInstallationStore(...).initializeLinuxDeploymentJournal()`，创建与安装身份绑定的 `linux-deployment.db` 和标记。此账本有独立的 SQLite 事务和追加记录，既有安装库沿用原 Schema。日常打开使用 `openLinuxDeploymentJournal({launch, endpointClosure})`。两个同步回调由可信宿主装配提供，且应使用有界的本机运行时操作。[SQLite 事务](https://www.sqlite.org/lang_transaction.html) · [SQLite 同步设置](https://www.sqlite.org/pragma.html#pragma_synchronous)
+
+- `start(intent)` 接收 `generation_id`、`driver`、`compose_digest` 和两端服务及数据库身份。先持久预留，再调用 `launch`。回调返回两端已核对的本机 PID，账本绑定其实际父组。
+- `closeIntake(generationId)` 持久关闭旧代启动入口。宿主停止旧运行后调用 `observeRetirement(generationId)`。两个原组均为空时才查询端点，`endpointClosure` 返回已核对的端点证据摘要，待核对时返回 `null`。
+- `current()` 和 `lookup(generationId)` 查询原记录。旧代有活进程、端点未关闭或结果未证实时，新的 `start` 被拒绝。重开后仅可重新绑定仍存活且身份和组完全一致的原成员。丢失原观察时保持未证实。关闭顺序为启停账本、安装账本。
+
+旧代启停和端点查询目前通过可信宿主接口接入。生产 Docker 驱动与 DF02 的运行准入仍需完成装配。[宿主账本联调用例](test/linux-deployment-journal.integration.mjs)
+
 ## 本机安装账本与静态归档验证
 
 Suite 已提供 `@leafseamer/suite/installation` 内部运行模块，使用与当前产品相同的 Node 24.22.0、better-sqlite3 13.0.3／SQLite 3.53.4 和 canonicalize 5.1.0。依赖固定于本仓 `package-lock.json`；构建后的包不需要相邻仓库。Windows开发环境先安装依赖并构建固定原生输入，再运行检查：

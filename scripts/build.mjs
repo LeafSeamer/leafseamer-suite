@@ -7,6 +7,7 @@ import {buildTuf} from './build-tuf.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const names = ['installation-store.mjs', 'installation.sql', 'import-input.mjs', 'archive-verifier.mjs', 'trust-metadata.mjs', 'trust-metadata.sql', 'tuf-input.mjs', 'release-transport.mjs', 'release-authorization.mjs', 'local-peer.mjs', 'local-import.mjs', 'validation-policy.mjs', 'linux-ingress.mjs', 'linux-compose.mjs', 'linux-cgroup-retirement.mjs'];
 const files = await Promise.all(names.map(async name => [name, await fs.readFile(path.join(root, 'src', name))]));
+for(const name of ['linux-deployment-journal.mjs','linux-deployment-journal.sql'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(['content-preparation.mjs',await fs.readFile(path.join(root,'src/content-preparation.mjs'))]);
 for(const name of ['prepared-content.mjs','platform-qualification.mjs','installation-sealing.mjs','installation-sealing.sql','materialization.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(...await buildTuf());

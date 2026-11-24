@@ -14,6 +14,7 @@ import {withPreparedContent} from './prepared-content.mjs';
 import {platformQualifications} from './platform-qualification.mjs';
 import {installationSealing} from './installation-sealing.mjs';
 import {materializationProvider} from './materialization.mjs';
+import {linuxDeploymentJournal} from './linux-deployment-journal.mjs';
 export {createReleaseTransport} from './release-transport.mjs';
 export {InstallationError};
 
@@ -54,6 +55,13 @@ function database(filename) {
   } catch (error) { db.close(); throw error; }
 }
 function shape(db) { return db.prepare("SELECT type,name,tbl_name,sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name").raw().all(); }
+function checkJournalSchema(db,source){
+  const memory=new Database(':memory:');
+  try{
+    memory.exec(source);
+    need(canonical(shape(db))===canonical(shape(memory))&&rows(db,'PRAGMA foreign_key_check').length===0,'linux_deployment_integrity');
+  }finally{memory.close();}
+}
 let expectedShape;
 function schemaShape() {
   if (!expectedShape) {
@@ -135,6 +143,15 @@ export function openInstallationStore(dataDirectory) {
         poisoned = true; throw new InstallationError('installation_storage_unknown', {cause: error});
       }
     };
+    let linuxJournal=null;
+    function deploymentJournal(create,runtime){
+      available();
+      need(linuxJournal===null,'linux_deployment_in_use');
+      const journal=linuxDeploymentJournal({root,installation:identity,available,database,pragma,checkSchema:checkJournalSchema,
+        create,runtime,onClose:()=>{linuxJournal=null;}});
+      if(!create)linuxJournal=journal;
+      return journal;
+    }
     function key(value) {
       const checked = importIdentity(value); need(checked.host_installation_id === identity.host_installation_id, 'import_wrong_host');
       return [checked.host_installation_id, checked.client_registration_id, checked.import_request_id];
@@ -206,6 +223,8 @@ export function openInstallationStore(dataDirectory) {
       describeCapabilityTemplates:value=>materialization.capabilityTemplates(value),
       acquireMaterialization:value=>materialization.acquire(value),
       identity: Object.freeze(identity),
+      initializeLinuxDeploymentJournal:()=>deploymentJournal(true,null),
+      openLinuxDeploymentJournal:runtime=>deploymentJournal(false,runtime),
       registerClient(policy){
         need(policy&&Object.keys(policy).sort().join(',')==='approval_reference,client_registration_id,permissions,role,target_authority_service_ids,user_sid'&&
           clientId(policy.client_registration_id)&&clientId(policy.approval_reference)&&['management_tool','authority','launch_coordinator'].includes(policy.role)&&typeof policy.user_sid==='string'&&
@@ -498,7 +517,11 @@ export function openInstallationStore(dataDirectory) {
           return {preparation_id:row.preparation_id,body,content_directory:path.join(contentDirectory,row.preparation_id)};
         });
       },
-      close() { need(activeCopies.size === 0 && activeValidations.size === 0&&activePreparations.size===0&&sealing.activeCount===0&&materialization.activeCount===0&&activeImports.size===0 && trust.activeCount === 0 && clientBindings.size===0, 'import_copy_in_progress'); if (!closed) { closed = true; db.close(); } }
+      close() {
+        need(linuxJournal===null,'linux_deployment_in_use');
+        need(activeCopies.size === 0 && activeValidations.size === 0&&activePreparations.size===0&&sealing.activeCount===0&&materialization.activeCount===0&&activeImports.size===0 && trust.activeCount === 0 && clientBindings.size===0, 'import_copy_in_progress');
+        if (!closed) { closed = true; db.close(); }
+      }
     };
     return Object.freeze(store);
   } catch (error) {

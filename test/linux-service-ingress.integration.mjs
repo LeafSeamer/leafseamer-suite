@@ -34,52 +34,41 @@ test('Linux Nginx 对接实际 Controller 和 Seamer 的受保护入口',{
     }
     assert.equal(path.dirname(root),os.tmpdir());fs.rmSync(root,{recursive:true,force:true});
   });
-  function certificate(host,peer=false){
+  function certificate(host){
     const cert=path.join(root,host+'.pem'),key=path.join(root,host+'.key');
-    if(peer){
-      const ca=path.join(root,'peer-ca.pem'),caKey=path.join(root,'peer-ca.key'),csr=path.join(root,'peer.csr'),ext=path.join(root,'peer.ext');
-      tool('openssl',['req','-x509','-newkey','ec','-pkeyopt','ec_paramgen_curve:P-256','-nodes','-days','2','-sha256','-subj','/CN=Ingress test CA',
-        '-addext','basicConstraints=critical,CA:TRUE,pathlen:0','-keyout',caKey,'-out',ca]);
-      tool('openssl',['req','-new','-newkey','ec','-pkeyopt','ec_paramgen_curve:P-256','-nodes','-subj','/CN='+host,'-keyout',key,'-out',csr]);
-      fs.writeFileSync(ext,'basicConstraints=critical,CA:FALSE\nextendedKeyUsage=serverAuth,clientAuth\nsubjectAltName=DNS:'+host+'\n');
-      tool('openssl',['x509','-req','-in',csr,'-CA',ca,'-CAkey',caKey,'-CAcreateserial','-days','1','-sha256','-extfile',ext,'-out',cert]);
-      return {cert,key,ca,peerName:host};
-    }
     tool('openssl',['req','-x509','-newkey','ec','-pkeyopt','ec_paramgen_curve:P-256','-nodes','-days','1','-subj','/CN='+host,
       '-addext','subjectAltName=DNS:'+host,'-keyout',key,'-out',cert]);return {cert,key,ca:cert};
   }
   const host='manage.fixture.invalid',controlName='controller.fixture.invalid',seamerName='seamer.fixture.invalid';
-  const site=certificate(host),controlTls=certificate(controlName),seamerTls=certificate(seamerName,true);
+  const site=certificate(host),controlTls=certificate(controlName),seamerTls=certificate(seamerName);
   const port=await freePort('127.0.0.1'),authority=host+':'+port,origin='https://'+authority;
   const login={login:'ingress.fixture',password:'Synthetic-ingress-test-password-321'};
-  function fixture(role,packageRoot,tls,issuer){
-    const config=path.join(root,role+'.json');
-    fs.writeFileSync(config,JSON.stringify({role,package_root:packageRoot,data_dir:path.join(root,role),origin,...tls,login,issuer}));
-    return [file('./fixtures/linux-ingress-service.mjs'),config];
-  }
-  async function start(args,stop){
+  async function start(args){
     const child=spawn(process.execPath,args,{stdio:['pipe','pipe','pipe']});
-    child.stdin.on('error',()=>{});const exit=once(child,'close');children.push({child,exit,stop:()=>stop(child)});
+    child.stdin.on('error',()=>{});const exit=once(child,'close');children.push({child,exit,stop:()=>child.kill('SIGTERM')});
     let output='',errors='';child.stdout.setEncoding('utf8').on('data',data=>{output+=data;});child.stderr.setEncoding('utf8').on('data',data=>{errors+=data;});
     const deadline=performance.now()+65000;
     while(!output.includes('\n')){assert.ok(performance.now()<deadline&&child.exitCode===null,errors);await delay(25);}
     return {child,exit,result:JSON.parse(output.split('\n')[0])};
   }
-  const c=JSON.parse(tool(process.execPath,fixture('controller',controller,controlTls),65000));
-  const controllerAddress=Object.values(os.networkInterfaces()).flat().find(entry=>entry.family==='IPv4'&&!entry.internal)?.address;
-  assert.ok(controllerAddress,'需要容器桥接接口');
-  c.public_port=await freePort(controllerAddress);
   const dataDir=path.join(root,'controller'),profileFile=path.join(root,'controller-ingress.json');
-  const profile={format:'leafseamer.controller-protected-ingress/1',address:controllerAddress,port:c.public_port,origin,
+  const setup=path.join(root,'controller-init.json');
+  fs.writeFileSync(setup,JSON.stringify({package_root:controller,data_dir:dataDir,login}),{mode:0o600});
+  const c=JSON.parse(tool(process.execPath,[file('./fixtures/linux-ingress-service.mjs'),setup],65000));
+  const address=Object.values(os.networkInterfaces()).flat().find(entry=>entry.family==='IPv4'&&!entry.internal)?.address;
+  assert.ok(address,'需要容器桥接接口');
+  c.public_port=await freePort(address);
+  const profile={format:'leafseamer.controller-protected-ingress/1',address,port:c.public_port,origin,
     service_id:c.identity.service_id,database_instance_id:c.identity.database_instance_id,
     certificate_file:controlTls.cert,private_key_file:controlTls.key};
   const cliArgs=['--disallow-code-generation-from-strings',path.join(controller,'dist/cli.mjs'),'start-protected-ingress',
     '--data-dir',dataDir,'--ingress-profile',profileFile];
-  function bootRows(){
-    const db=new DatabaseSync(path.join(dataDir,'controller.sqlite'),{readOnly:true});
-    try{return db.prepare('SELECT service_boot_id,state FROM service_boot ORDER BY service_boot_id').all();}
+  function query(database,sql){
+    const db=new DatabaseSync(database,{readOnly:true});
+    try{return db.prepare(sql).all();}
     finally{db.close();}
   }
+  const bootRows=(database=path.join(dataDir,'controller.sqlite'))=>query(database,'SELECT service_boot_id,state FROM service_boot ORDER BY service_boot_id');
   const before=bootRows();
   for(const [overrides,code]of [
     [{database_instance_id:crypto.randomUUID()},'protected_ingress_identity'],
@@ -94,13 +83,39 @@ test('Linux Nginx 对接实际 Controller 和 Seamer 的受保护入口',{
   }
   assert.deepEqual(bootRows(),before);
   fs.writeFileSync(profileFile,JSON.stringify(profile),{mode:0o600});
-  const control=await start(cliArgs,child=>child.kill('SIGTERM'));
+  const control=await start(cliArgs);
   assert.equal(control.result.event,'listening');assert.equal(control.result.ready,false);
-  assert.equal(control.result.host,controllerAddress);assert.equal(control.result.port,c.public_port);
+  assert.equal(control.result.host,address);assert.equal(control.result.port,c.public_port);
   assert.equal(control.result.service_id,c.identity.service_id);
   assert.equal(control.result.database_instance_id,c.identity.database_instance_id);
-  const {result:s}=await start(fixture('seamer',seamer,seamerTls,c.issuer),child=>child.stdin.end());
-  assert.equal(s.event,'started');assert.equal(s.qualified,false);
+  const seamerDir=path.join(root,'seamer'),seamerDatabase=path.join(seamerDir,'seamer.sqlite');
+  const seamerProfileFile=path.join(root,'seamer-ingress.json');
+  const seamerCli=['--disallow-code-generation-from-strings',path.join(seamer,'dist/cli.mjs')];
+  const s={identity:JSON.parse(tool(process.execPath,[...seamerCli,'init-storage','--data-dir',seamerDir])),public_port:await freePort(address)};
+  tool(process.execPath,[...seamerCli,'migrate-storage','--data-dir',seamerDir,'--to-revision','33']);
+  const seamerProfile={...profile,format:'leafseamer.seamer-protected-ingress/1',port:s.public_port,
+    service_id:s.identity.service_id,database_instance_id:s.identity.database_instance_id,
+    certificate_file:seamerTls.cert,private_key_file:seamerTls.key};
+  const seamerArgs=[...seamerCli,'start-protected-ingress','--data-dir',seamerDir,'--ingress-profile',seamerProfileFile];
+  for(const [overrides,code]of [
+    [{service_id:crypto.randomUUID()},'protected_ingress_identity'],
+    [{database_instance_id:crypto.randomUUID()},'protected_ingress_identity'],
+    [{address:'0.0.0.0'},'protected_ingress_address'],
+    [{origin:'http://'+authority},'protected_ingress_profile'],
+    [{private_key_file:site.key},'protected_ingress_profile']
+  ]){
+    fs.writeFileSync(seamerProfileFile,JSON.stringify({...seamerProfile,...overrides}),{mode:0o600});
+    const failed=spawnSync(process.execPath,seamerArgs,{encoding:'utf8',timeout:10000});
+    assert.equal(failed.status,1,failed.stderr);assert.equal(failed.stdout,'');assert.equal(JSON.parse(failed.stderr).error,code);
+  }
+  assert.deepEqual(bootRows(seamerDatabase),[]);
+  fs.writeFileSync(seamerProfileFile,JSON.stringify(seamerProfile),{mode:0o600});
+  const automation=await start(seamerArgs);
+  assert.equal(automation.result.event,'listening');assert.equal(automation.result.ready,false);
+  assert.equal(automation.result.public_origin,'https://'+address+':'+s.public_port);
+  assert.equal(automation.result.host,'127.0.0.1');
+  assert.equal(automation.result.service_id,s.identity.service_id);
+  assert.equal(automation.result.database_instance_id,s.identity.database_instance_id);
   const loadSelection=async root=>(await import(pathToFileURL(path.join(root,'dist/sdk/index.mjs')))).contractSelection;
   const selection=await loadSelection(controller);assert.deepEqual(await loadSelection(seamer),selection);
   const directory=path.join(root,'gui');fs.mkdirSync(path.join(directory,'assets'),{recursive:true});
@@ -114,7 +129,7 @@ test('Linux Nginx 对接实际 Controller 和 Seamer 的受保护入口',{
     selection,artifacts:Object.fromEntries(Object.entries(assets).map(([name,content])=>[name,hash(content)]))});
   fs.writeFileSync(path.join(directory,'gui-manifest.json'),manifest);
   const backend=(role,r,name,tls)=>({role,service_id:r.identity.service_id,database_instance_id:r.identity.database_instance_id,
-    address:role==='controller'?controllerAddress:'127.0.0.1',port:r.public_port,server_name:name,ca_file:tls.ca});
+    address,port:r.public_port,server_name:name,ca_file:tls.ca});
   const plan=path.join(root,'plan.json'),config=path.join(root,'nginx.conf');
   fs.writeFileSync(plan,JSON.stringify({format:'leafseamer.linux-ingress/1',issuer_service_id:c.identity.service_id,
     management:{address:'127.0.0.1',port,host,certificate_file:site.cert,private_key_file:site.key},
@@ -148,11 +163,21 @@ test('Linux Nginx 对接实际 Controller 和 Seamer 的受保护入口',{
   const protectedDraft=await send(draft);
   assert.equal(protectedDraft.status,401,protectedDraft.body);assert.equal(JSON.parse(protectedDraft.body).code,'AUTH_REQUIRED');
   assert.equal(protectedDraft.headers['access-control-allow-origin'],origin);
+  const authorization='Bearer v1.'+crypto.randomUUID()+'.'+crypto.randomBytes(32).toString('base64url');
+  const rejectedDraft=await send(draft,{headers:{Authorization:authorization}});
+  assert.equal(rejectedDraft.status,503,rejectedDraft.body);
+  assert.equal(JSON.parse(rejectedDraft.body).code,'WORKER_NOT_READY');
   assert.equal((await send(draft,{headers:{Origin:'https://unqualified.fixture.invalid'}})).status,403);
   assert.equal((await send(`/services/${s.identity.service_id}/auth/local-permissions/v1`)).status,404);
   assert.equal((await send('/auth/local-pairing/v1')).status,404);
   assert.equal((await send('/internal/test')).status,404);
   control.child.kill('SIGTERM');
+  automation.child.kill('SIGTERM');
   assert.deepEqual(await control.exit,[0,null]);
+  assert.deepEqual(await automation.exit,[0,null]);
   assert.equal(bootRows().find(row=>row.service_boot_id===control.result.service_boot_id)?.state,'stopped');
+  assert.deepEqual(bootRows(seamerDatabase).map(({service_boot_id,state})=>[service_boot_id,state]),[[automation.result.service_boot_id,'stopped']]);
+  for(const table of ['authentication_clock_acquisition','peer_pairing_revision','definition_identity','definition_request']){
+    assert.equal(query(seamerDatabase,'SELECT COUNT(*) AS count FROM '+table)[0].count,0);
+  }
 });

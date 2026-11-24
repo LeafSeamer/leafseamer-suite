@@ -145,10 +145,12 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
         });
         try{
           const pids=launch(JSON.parse(canonical(spec)));
-          need(fields(pids,'controller,seamer')&&pids.controller!==pids.seamer,'linux_deployment_runtime');
+          need((fields(pids,'controller,seamer')||fields(pids,'controller,runtime_binding,seamer'))&&
+            pids.controller!==pids.seamer,'linux_deployment_runtime');
           const leaders=Object.fromEntries(roles.map(role=>[role,readLinuxCgroupLeader(pids[role])]));
           const members=bind(spec,host,leaders);
-          return transaction(()=>append(active(spec.generation_id,'launching').intent,2,'running',{members}));
+          const detail={members,...(Object.hasOwn(pids,'runtime_binding')&&{runtime_binding:JSON.parse(canonical(pids.runtime_binding))})};
+          return transaction(()=>append(active(spec.generation_id,'launching').intent,2,'running',detail));
         }catch(error){unbind();throw new InstallationError('linux_deployment_launch_unproven',{cause:error});}
       });},
       closeIntake(id){return operation(()=>transaction(()=>{
@@ -161,10 +163,10 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
           const prior=active(id,'closing'),{members}=prior.detail;
           if(!readers){
             try{bind(prior.intent,members.controller.host,Object.fromEntries(roles.map(role=>[role,members[role].leader])),members);}
-            catch{return append(prior.intent,4,'indeterminate',{members,reason:'linux_deployment_observation_lost'});}
+            catch{return append(prior.intent,4,'indeterminate',{...prior.detail,reason:'linux_deployment_observation_lost'});}
           }
           const observe=()=>roles.map(role=>readers[role].observe().result);
-          const lost=()=>append(prior.intent,4,'indeterminate',{members,reason:'linux_deployment_observation_lost'});
+          const lost=()=>append(prior.intent,4,'indeterminate',{...prior.detail,reason:'linux_deployment_observation_lost'});
           const before=observe();
           if(before.includes('indeterminate'))return lost();
           if(before.includes('populated'))return prior;
@@ -176,7 +178,7 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
           const after=observe();
           if(after.includes('indeterminate'))return lost();
           if(after.includes('populated'))return prior;
-          return append(prior.intent,4,'retired',{members,endpoint_evidence_digest:endpointDigest});
+          return append(prior.intent,4,'retired',{...prior.detail,endpoint_evidence_digest:endpointDigest});
         });
         if(result.phase!=='closing')unbind();
         return result;

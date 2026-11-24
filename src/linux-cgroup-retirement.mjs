@@ -108,6 +108,20 @@ function populated(fd){
   return values[0]==='populated 1';
 }
 
+export function readLinuxCgroupParent({driver,generationId,role,host}={}){
+  const {groupPath}=linuxContainerCgroup({driver,generationId,role});
+  const local=assertHost(host),location=cgroupRoot+groupPath;
+  const fd=fs.openSync(location,directoryFlags);
+  try{
+    const group=descriptorIdentity(fd);
+    need(group.device===local.root.device&&fs.statfsSync(fdPath(fd)).type===cgroupMagic,'cgroup_filesystem');
+    const live=populated(fd);
+    assertHost(local);
+    need(fs.fstatSync(fd).nlink>0&&sameIdentity(group,pathIdentity(location)),'cgroup_group_changed');
+    return Object.freeze({group,populated:live});
+  }finally{fs.closeSync(fd);}
+}
+
 // An empty observation must be combined with the supervisor's separate launch-intake closure.
 export function openLinuxCgroupRetirement({driver,generationId,role,host,leader}={}){
   const {groupPath}=linuxContainerCgroup({driver,generationId,role});

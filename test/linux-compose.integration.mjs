@@ -14,6 +14,7 @@ import {DatabaseSync} from 'node:sqlite';
 
 const images={controller:process.env.LEAFSEAMER_COMPOSE_CONTROLLER_IMAGE,seamer:process.env.LEAFSEAMER_COMPOSE_SEAMER_IMAGE,nginx:process.env.LEAFSEAMER_COMPOSE_NGINX_IMAGE};
 const guiRoot=process.env.LEAFSEAMER_COMPOSE_GUI_ROOT;
+const socketPath=process.env.LEAFSEAMER_TEST_DOCKER_SOCKET,pidFile=process.env.LEAFSEAMER_TEST_DOCKER_PID_FILE;
 const file=name=>fileURLToPath(new URL(name,import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const parseFile=name=>JSON.parse(fs.readFileSync(name,'utf8'));
@@ -28,13 +29,21 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   skip:process.platform!=='linux'||!guiRoot||Object.values(images).some(value=>!value),timeout:180000
 },async t=>{
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'leafseamer-compose-'));
-  const output=path.join(root,'generation'),planPath=path.join(root,'plan.json'),composePath=path.join(output,'compose.json');
-  const project='leafseamer-test-'+crypto.randomBytes(6).toString('hex');
+  const output=path.join(root,'generation'),planPath=path.join(root,'plan.json');
+  let composePath=path.join(output,'compose.json'),project='leafseamer-test-'+crypto.randomBytes(6).toString('hex');
   const compose=(...args)=>docker('compose','--project-name',project,'--file',composePath,...args);
-  let created=false;
+  let created=false,managedHost,extraContainer;
+  const groups=[];
   t.after(()=>{
-    try{if(created)compose('down','--timeout','8');}
-    finally{assert.equal(path.dirname(root),os.tmpdir());fs.rmSync(root,{recursive:true,force:true});}
+    try{
+      managedHost?.close();
+      if(extraContainer)docker('container','rm','--force',extraContainer);
+      if(created)compose('down','--timeout','8');
+    }
+    finally{
+      for(const group of groups)fs.rmdirSync(group);
+      assert.equal(path.dirname(root),os.tmpdir());fs.rmSync(root,{recursive:true,force:true});
+    }
   });
   fs.chmodSync(root,0o755);
   const uid=process.getuid()||1000,gid=process.getgid()||1000,user=uid+':'+gid;
@@ -99,8 +108,12 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   manifest.artifacts['site.json']=hash(siteBytes);
   const manifestBytes=JSON.stringify(manifest);
   fs.writeFileSync(path.join(directory,'gui-manifest.json'),manifestBytes);
+  assert.equal(Boolean(socketPath),Boolean(pidFile));
+  const manage=Boolean(socketPath),generationId=crypto.randomUUID();
+  if(manage)assert.equal(process.env.DOCKER_HOST,'unix://'+socketPath);
   const plan={format:'leafseamer.linux-compose-protected/1',subnet:range+'.0/29',management,controller,seamer,
-    nginx:{image:images.nginx,uid,gid,address:range+'.4'},gui:{directory,manifest_sha256:'sha256:'+hash(manifestBytes)}};
+    nginx:{image:images.nginx,uid,gid,address:range+'.4'},gui:{directory,manifest_sha256:'sha256:'+hash(manifestBytes)},
+    ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId}})};
   const aliasOfKey=path.join(root,'ca-alias.pem');
   fs.linkSync(controller.private_key_file,aliasOfKey);
   const generate=['--disallow-code-generation-from-strings',file('../dist/linux-compose.mjs'),'--config',planPath,'--output',output];
@@ -125,7 +138,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   assert.equal(spawnSync(process.execPath,generate,{encoding:'utf8',timeout:10000}).status,1);
   assert.equal(hash(fs.readFileSync(composePath)),composeDigest);
   assert.deepEqual(compose('config','--services').trim().split('\n').sort(),['controller','nginx','seamer']);
-  const generationId=crypto.randomUUID(),stem='leafseamer_'+generationId.replaceAll('-','');
+  const stem='leafseamer_'+generationId.replaceAll('-','');
   for(const driver of ['cgroupfs','systemd']){
     const observedOutput=path.join(root,'cgroup-'+driver);
     fs.writeFileSync(planPath,JSON.stringify({...plan,cgroup:{driver,generation_id:generationId}}));
@@ -136,8 +149,45 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     assert.equal(services.seamer.cgroup_parent,parent('seamer'));
     assert.equal(services.nginx.cgroup_parent,undefined);
   }
+  fs.writeFileSync(planPath,JSON.stringify(plan));
+  const installationDirectory=path.join(root,'installation');
+  const hostOptions={installationDirectory,planFile:planPath,generationDirectory:output,socketPath,pidFile};
+  let openLinuxComposeHost,installation;
+  const prepareParents=async id=>{
+    const {linuxContainerCgroup}=await import('../dist/linux-cgroup-retirement.mjs');
+    for(const role of ['controller','seamer']){
+      const group='/sys/fs/cgroup'+linuxContainerCgroup({driver:'cgroupfs',generationId:id,role}).groupPath;
+      fs.mkdirSync(group);groups.push(group);
+    }
+  };
+  const projectFor=id=>'leafseamer-'+installation.host_installation_id.replaceAll('-','')+'-'+id.replaceAll('-','');
+  if(manage){
+    ({openLinuxComposeHost}=await import('../dist/linux-compose-host.mjs'));
+    const {createInstallationStore,openInstallationStore}=await import('../dist/installation-store.mjs');
+    fs.mkdirSync(installationDirectory);
+    installation=createInstallationStore(installationDirectory);
+    const store=openInstallationStore(installationDirectory);
+    try{store.initializeLinuxDeploymentJournal();}finally{store.close();}
+    project=projectFor(generationId);
+    const unchanged=fs.readFileSync(composePath);
+    fs.appendFileSync(composePath,'\n');
+    assert.throws(()=>openLinuxComposeHost(hostOptions),{code:'compose_host_plan_changed'});
+    fs.writeFileSync(composePath,unchanged);
+    const wrongPid=path.join(root,'wrong.pid');
+    fs.writeFileSync(wrongPid,String(process.pid));
+    assert.throws(()=>openLinuxComposeHost({...hostOptions,pidFile:wrongPid}),{code:'compose_host_daemon'});
+    managedHost=openLinuxComposeHost(hostOptions);
+    assert.throws(()=>managedHost.start(),{code:'compose_host_parent_unavailable'});
+    assert.equal(managedHost.current(),null);
+    await prepareParents(generationId);
+  }
   created=true;
-  compose('up','--detach','--no-build','--pull','never');
+  if(manage){
+    const started=managedHost.start();
+    assert.equal(started.phase,'running');
+    assert.equal(started.detail.runtime_binding.project,project);
+    assert.throws(()=>managedHost.start(),{code:'linux_deployment_previous_open'});
+  }else compose('up','--detach','--no-build','--pull','never');
   const containers=Object.fromEntries(['controller','seamer','nginx'].map(role=>{
     const id=compose('ps','--all','--quiet',role).trim();
     assert.ok(id,role);
@@ -206,7 +256,27 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     assert.equal(state.State.Running,true);
     assert.equal(state.State.StartedAt,containers[role].State.StartedAt);
   }
-  compose('stop','--timeout','8');
+  if(manage){
+    extraContainer=docker('run','--detach','--pull','never','--network','none','--label','com.docker.compose.project='+project,
+      '--entrypoint','/bin/sleep',images.nginx,'120').trim();
+    assert.throws(()=>managedHost.retire(),{code:'compose_host_inventory_changed'});
+    for(const role of ['controller','seamer'])assert.equal(JSON.parse(docker('container','inspect',containers[role].Id))[0].State.Running,true);
+    docker('container','rm','--force',extraContainer);
+    extraContainer=null;
+    docker('container','rm',containers.nginx.Id);
+    const active=managedHost.current();
+    assert.equal(active.phase,'closing');
+    managedHost.close();
+    managedHost=openLinuxComposeHost(hostOptions);
+    assert.deepEqual(managedHost.current(),active);
+    const retired=managedHost.retire();
+    assert.equal(retired.phase,'retired');
+    assert.match(retired.detail.endpoint_evidence_digest,/^sha256:[a-f0-9]{64}$/);
+    assert.deepEqual(managedHost.retire(),retired);
+    assert.equal(compose('ps','--all','--quiet').trim(),'');
+    created=false;
+    managedHost.close();
+  }else compose('stop','--timeout','8');
   for(const role of ['controller','seamer']){
     const db=new DatabaseSync(path.join(plan[role].data_dir,role+'.sqlite'),{readOnly:true});
     try{
@@ -214,7 +284,18 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       assert.equal(db.prepare('SELECT service_id FROM service_state').get().service_id,plan[role].service_id);
     }finally{db.close();}
   }
-  compose('down','--timeout','8');
+  if(manage){
+    const nextId=crypto.randomUUID(),nextDirectory=path.join(root,'next');
+    fs.writeFileSync(planPath,JSON.stringify({...plan,cgroup:{driver:'cgroupfs',generation_id:nextId}}));
+    run(process.execPath,[...generate.slice(0,-1),nextDirectory]);
+    await prepareParents(nextId);
+    project=projectFor(nextId);
+    composePath=path.join(nextDirectory,'compose.json');
+    managedHost=openLinuxComposeHost({...hostOptions,generationDirectory:nextDirectory});
+    created=true;
+    assert.equal(managedHost.start().intent.generation_id,nextId);
+    assert.equal(managedHost.retire().phase,'retired');
+  }else compose('down','--timeout','8');
   assert.equal(compose('ps','--all','--quiet').trim(),'');
   created=false;
 });

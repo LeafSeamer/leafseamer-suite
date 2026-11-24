@@ -122,7 +122,15 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 - `closeIntake(generationId)` 持久关闭旧代启动入口。宿主停止旧运行后调用 `observeRetirement(generationId)`。两个原组均为空时才查询端点，`endpointClosure` 返回已核对的端点证据摘要，待核对时返回 `null`。
 - `current()` 和 `lookup(generationId)` 查询原记录。旧代有活进程、端点未关闭或结果未证实时，新的 `start` 被拒绝。重开后仅可重新绑定仍存活且身份和组完全一致的原成员。丢失原观察时保持未证实。关闭顺序为启停账本、安装账本。
 
-旧代启停和端点查询目前通过可信宿主接口接入。生产 Docker 驱动与 DF02 的运行准入仍需完成装配。[宿主账本联调用例](test/linux-deployment-journal.integration.mjs)
+宿主账本联调使用实际 cgroup 和本机 Unix socket 验证停机屏障与重开恢复。[宿主账本联调用例](test/linux-deployment-journal.integration.mjs)
+
+### Docker 宿主启停
+
+可信宿主装配可从 `@leafseamer/suite/linux-compose-host` 调用 `openLinuxComposeHost({installationDirectory, planFile, generationDirectory})`，再调用 `start()`、`current()`、`retire()` 和 `close()`。宿主需预建并保留计划中的两个 cgroup 父组，安装目录需已显式初始化启停账本。默认使用 `/usr/bin/docker`、`/run/docker.sock` 和 `/run/docker.pid`。明确配置本机 Unix socket 和 PID 文件时，使用 `socketPath` 与 `pidFile`。装配用户须能核对 daemon 的进程和 socket 归属。
+
+启动时重新生成并核对固定 Compose 文件，检查本机 daemon、预载镜像、空父组及项目清单，再用独立项目名启动保护态服务。停机先在账本关闭旧入口，只处理原记录内的容器和网络。项目端点已退出且两个原父组均为空后，才写入退役结果。临时检查失败可重试原代，未知容器或网络进入原项目时拒绝停机命令。若重开后无法重获原活进程观察，继续保留未证实状态。[Docker Compose 启动](https://docs.docker.com/reference/cli/docker/compose/up/) · [Docker Compose 停机](https://docs.docker.com/reference/cli/docker/compose/down/)
+
+在与测试进程同宿主的隔离 daemon 上，向 [Compose 用例](test/linux-compose.integration.mjs) 同时提供 `LEAFSEAMER_TEST_DOCKER_SOCKET` 和 `LEAFSEAMER_TEST_DOCKER_PID_FILE`，可运行经过启停账本的双代联调。当前已接通保护态生命周期，DF02 受监督运行准入仍待接线。
 
 ## 本机安装账本与静态归档验证
 

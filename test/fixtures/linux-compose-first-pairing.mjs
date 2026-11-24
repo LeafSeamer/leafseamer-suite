@@ -58,9 +58,14 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     child.stdin.on('error',()=>{});child.stdin.end(canonical(input));
     return once(child,'close').then(([status])=>({status,output,diagnostic}));
   }
-  async function admin(generation,operation,request){
+  async function admin(generation,operation,request,expectedError=null){
     const result=await execute(generation.containers.controller,[cli,'pairing-admin','--origin',loopback,'--ca-file',mount+'ca.pem'],
       {...login,operation,request});
+    if(expectedError){
+      assert.equal(result.status,1,operation+' '+result.output);
+      assert.equal(JSON.parse(result.diagnostic).error,expectedError);
+      return;
+    }
     assert.equal(result.status,0,operation+' '+result.diagnostic);
     return JSON.parse(result.output);
   }
@@ -111,7 +116,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true},
     ...publicationProfile},verifyPublication?{[approvalFile]:approval}:{});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft;
+  let activated,authorizationId,browserDraft,eventConsumer;
   try{
     const actor=await loginThroughProxy();
     const identityToken=await issueToken(actor,controller.service_id,['session.read']);
@@ -148,6 +153,15 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     activated=await admin(generation,'activate',{request_id:id(),binding_id:staged.binding_id,expected_revision:proved.revision,transcript_digest:proved.transcript_digest});
     assert.equal(activated.state,'activated');
     assert.equal(activated.service_boot_id,staged.service_boot_id);
+    if(verifyLocalExtension){
+      const request={request_id:id(),display_name:'Compose source consumer'};
+      eventConsumer=await admin(generation,'create-event-consumer',request);
+      assert.equal(eventConsumer.purpose,'event_consumer');
+      assert.equal(eventConsumer.state,'disabled');
+      assert.deepEqual(await admin(generation,'create-event-consumer',request),eventConsumer);
+      await admin(generation,'approve-event-consumer',{permissions:['event.internal.subscribe','device.command']},'service_identity_input');
+      await admin(generation,'approve-event-policy',{permissions:['event.internal.subscribe','device.command']},'service_identity_input');
+    }
     const definitions=verifyBrowser||verifyPublication?['definition.edit','definition.read','request.create','request.read']:[];
     const audiencePermissions=[...permissions,...definitions,...(verifyPublication?['definition.publish']:[])].sort();
     await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
@@ -222,6 +236,12 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   try{
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
+    if(eventConsumer){
+      const stored=issuer.prepare(`SELECT body_jcs FROM service_principal_revision
+        WHERE principal_id=? AND revision=1`).get(eventConsumer.id);
+      assert.deepEqual(JSON.parse(stored.body_jcs),eventConsumer);
+      assert.equal(issuer.prepare('SELECT count(*) AS n FROM service_approval WHERE principal_id=?').get(eventConsumer.id).n,0);
+    }
     if(browserDraft&&!verifyPublication)assert.deepEqual(store.prepare('SELECT definition_id FROM definition_identity').all().map(row=>row.definition_id),[browserDraft]);
     if(verifyPublication){
       assert.equal(store.prepare('SELECT count(*) AS n FROM definition_version_reservation').get().n,5);

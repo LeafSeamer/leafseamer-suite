@@ -619,6 +619,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         assert.deepEqual(JSON.parse(outbox).origin,event.origin);
         assert.equal(controllerDb.prepare("SELECT count(*) AS total FROM device_module_frame WHERE message_type='EVENT_ACKED'").get().total,1);
         assert.equal(controllerDb.prepare('SELECT count(*) AS total FROM command_settlement').get().total,1);
+        const revoked=controllerDb.prepare('SELECT reference_jcs FROM device_subscription_scope_revocation WHERE scope_id=?')
+          .get(result.simulatorEvent.scope_ref.entity_id);
+        assert.deepEqual(JSON.parse(revoked.reference_jcs),result.simulatorEvent.scope_ref);
       }finally{log.close();controllerDb.close();}
       await managedHost.close();managedHost=null;
       const cleanupDeadline=performance.now()+5000;

@@ -79,7 +79,7 @@ func providerLinkReply(raw []byte, admission ProviderAdmission, coreReceiptID, d
 		!fields(frame, "binding binding_digest request_id type version") || !ids(frame, "request_id") ||
 		frame["version"] != providerLinkVersion || frame["type"] != "BIND" || !validDigest(digest) ||
 		!fields(body, "admission_receipt clock_domain_descriptor core_receipt_id database_instance_id format gate_state launch_intent process_observation runtime_binding_id service_boot_id service_id") ||
-		!ids(body, "service_boot_id") || body["format"] != "leafseamer-time-provider-runtime-binding/1" ||
+		!ids(body, "service_boot_id") || body["format"] != providerRuntimeFormat ||
 		body["gate_state"] != "closed" || body["core_receipt_id"] != coreReceiptID ||
 		body["database_instance_id"] != databaseInstanceID || body["service_id"] != intent["service_id"] ||
 		!sameWire(body["launch_intent"], intent) || !sameWire(body["clock_domain_descriptor"], descriptor) ||
@@ -89,15 +89,8 @@ func providerLinkReply(raw []byte, admission ProviderAdmission, coreReceiptID, d
 	observation, _ := body["process_observation"].(map[string]any)
 	observed, observedOK := bootstrapUint(observation["observed_tick_ns"])
 	admitted, admittedOK := bootstrapUint(receipt["admitted_tick_ns"])
-	created, createdOK := bootstrapUint(observation["creation_time_filetime"])
-	image, _ := observation["image_id"].(string)
-	if !fields(observation, "creation_time_filetime image_id observation_id observed_tick_ns provider_pid") ||
-		observation["observation_id"] != receipt["os_observation_ref"] || observation["provider_pid"] != float64(pid) ||
-		!observedOK || !admittedOK || observed > admitted || !createdOK || created == 0 ||
-		len(image) != 48 || strings.ToLower(image) != image {
-		return nil, errProviderLink
-	}
-	if _, err := hex.DecodeString(image); err != nil {
+	if observation["observation_id"] != receipt["os_observation_ref"] || observation["provider_pid"] != float64(pid) ||
+		!observedOK || !admittedOK || observed > admitted || !validProviderObservation(observation) {
 		return nil, errProviderLink
 	}
 	complete, err := json.Marshal(body)

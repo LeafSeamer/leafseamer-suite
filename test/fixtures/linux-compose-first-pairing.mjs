@@ -8,7 +8,8 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {DatabaseSync} from 'node:sqlite';
 import {linuxPairingCertificates} from './linux-first-pairing.mjs';
 import {readSimulatorFile,verifyComposeSimulatorSubscription,verifyDurableSimulatorSubscription} from './linux-compose-simulator-subscription.mjs';
-import {publishComposeSimulatorDefinition,verifyDurableSimulatorPublication} from './linux-compose-simulator-publication.mjs';
+import {approveComposeSimulatorRun,publishComposeSimulatorDefinition,runApprovalRoute,verifyDurableSimulatorPublication,
+  verifyDurableSimulatorRunApproval} from './linux-compose-simulator-publication.mjs';
 
 const id=()=>crypto.randomUUID();
 const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
@@ -107,10 +108,13 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const {service_id,database_instance_id}=seamer;
   const verifyPublication=process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION==='1';
   const simulatorPublication=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1';
+  const simulatorRunApproval=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1';
   assert.ok(!simulatorPublication||pairedSimulator&&!verifyPublication);
+  assert.ok(!simulatorRunApproval||simulatorPublication);
   const verifySourceSubscription=pairedSimulator||process.env.LEAFSEAMER_TEST_COMPOSE_SOURCE_SUBSCRIPTION==='1';
   if(verifySourceSubscription)localParty.permissions.push('event.internal.subscribe');
   if(simulatorPublication)localParty.permissions.push('automation.bindings.read','events.internal.read');
+  if(simulatorRunApproval)localParty.permissions.push('automation.prepare','automation.prepare.read');
   localParty.permissions.sort();
   const policyScope={authority_service_id:service_id,database_instance_id};
   const eventLimits={event_age_limits:[{authority_id:controller.service_id,registration_ref:{id:id(),revision:'1',digest:digest('fixture-registration')},
@@ -123,10 +127,11 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const publicationProfile=verifyPublication||simulatorPublication?{publication_policy:{approval_file:mount+approvalFile,approval_sha256:sha(approval)}}:{};
   const seamerPairing=profile('seamer','controller',{scope:{service_id,database_instance_id},first_pairing_authorization_id:null,
     public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true,
-      ...(verifySourceSubscription&&{local_source_subscriptions:true}),...(simulatorPublication&&{local_event_bindings:true})},
+      ...(verifySourceSubscription&&{local_source_subscriptions:true}),...(simulatorPublication&&{local_event_bindings:true}),
+      ...(simulatorRunApproval&&{local_run_approvals:true})},
     ...publicationProfile},verifyPublication||simulatorPublication?{[approvalFile]:approval}:{});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator;
+  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator;
   try{
     const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready')):null;
     if(baseline)localParty.object_scope_digest=digest({format:'leafseamer.device-binding-scope/1',authority_service_id:controller.service_id,
@@ -143,7 +148,8 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       assert.equal(denied.status,1,denied.diagnostic);
       assert.equal(JSON.parse(denied.diagnostic).error,'extension_management_denied');
     }
-    const staged=await admin(generation,'stage',{request_id:id(),transcript:{format:'leafseamer.peer-pairing/1',pair_attempt_id:id(),parties:[party('controller',[]),localParty]}});
+    const controllerPurposes=simulatorRunApproval?['automation.prepare.read']:[];
+    const staged=await admin(generation,'stage',{request_id:id(),transcript:{format:'leafseamer.peer-pairing/1',pair_attempt_id:id(),parties:[party('controller',controllerPurposes),localParty]}});
     const authorization=await admin(generation,'export',{binding_id:staged.binding_id,transcript_digest:staged.transcript_digest});
     assert.equal(authorization.authorization.administrator.principal_id,principal_id);
     authorizationId=authorization.authorization.authorization_id;
@@ -177,11 +183,12 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     }
     const definitions=verifyBrowser||verifyPublication||simulatorPublication?['definition.edit','definition.read','request.create','request.read']:[];
     const audiencePermissions=[...permissions,...definitions,...(verifyPublication||simulatorPublication?['definition.publish']:[]),
-      ...(simulatorPublication?['run.manage','run.read']:[])].sort();
+      ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[])].sort();
     await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
       not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
     const bearer=await issueToken(actor,service_id,permissions);
     assert.equal((await send('/services/'+service_id+'/auth/local-permissions/v1',{method:'POST',headers:{Authorization:bearer},body:'{}'})).status,404);
+    if(simulatorRunApproval)assert.equal((await send('/services/'+service_id+runApprovalRoute,{method:'POST',headers:{Authorization:bearer},body:'{}'})).status,404);
     const inspection=`const https=require('node:https'),fs=require('node:fs');
       const input=JSON.parse(fs.readFileSync(0,'utf8')),body=Buffer.from(input.body);
       const req=https.request(${JSON.stringify(loopback)}+input.route,{ca:fs.readFileSync(${JSON.stringify(mount+'ca.pem')}),
@@ -210,9 +217,15 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         const publicationBearer=await issueToken(actor,service_id,audiencePermissions);
         publishedSimulator=await publishComposeSimulatorDefinition({serviceId:service_id,controller,baseline,bindingId:localParty.binding_id,
           policyRef,selection,bearer:publicationBearer,send,localRequest,canonical,digest});
+        if(simulatorRunApproval)approvedSimulator=await approveComposeSimulatorRun({run:publishedSimulator.run,baseline,controller,principalId:principal_id,
+          bindingId:localParty.binding_id,pairing:activated,admin:(operation,request)=>admin(generation,operation,request),
+          localRequest,issueBearer:scopes=>issueToken(actor,service_id,scopes)});
+      }:null;
+      const afterWrite=simulatorRunApproval?async()=>{
+        approvedSimulator.preflight=await approvedSimulator.observePreflight('synchronized');
       }:null;
       simulatorSubscription=await verifyComposeSimulatorSubscription({plan,simulator:generation.simulator,baseline,pairing:activated,
-        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite});
+        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite,afterWrite});
     }else if(verifySourceSubscription){
       const route='/auth/local-source-subscriptions/v1',reference=entity_kind=>({authority_service_id:controller.service_id,
         database_instance_id:controller.database_instance_id,entity_kind,entity_id:id(),entity_epoch:id(),revision:'1',content_digest:'a'.repeat(64)});
@@ -273,6 +286,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
     if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription});
     if(simulatorPublication){assert.ok(publishedSimulator);verifyDurableSimulatorPublication(store,publishedSimulator,digest);}
+    if(simulatorRunApproval){assert.ok(approvedSimulator);verifyDurableSimulatorRunApproval(store,issuer,approvedSimulator,digest);}
     if(eventConsumer){
       const stored=issuer.prepare(`SELECT body_jcs FROM service_principal_revision
         WHERE principal_id=? AND revision=1`).get(eventConsumer.id);

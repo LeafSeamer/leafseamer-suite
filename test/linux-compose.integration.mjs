@@ -718,7 +718,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         const containment={backend:'linux_cgroup_v2',generation:id,
           group_id:'group_'+clockValues.digest({boot_id,group_path,group:{device:String(dev),inode:String(ino)}}).slice(7)};
         const data='/var/lib/leafseamer',fileFor=name=>path.join(data,name);
-        const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish')};
+        const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish'),
+          runApproval:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1'};
         const start=fileFor('worker-start'),result=fileFor('worker-result.json');
         fs.writeFileSync(path.join(controller.data_dir,'worker-test.json'),clockValues.canonical({
           policy:pairPlan.bootstrap.controller,launchId,containment,channelDirectory:'/run/leafseamer-worker',data,start,result,intakeRef,paired
@@ -783,5 +784,6 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator});
     if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1')t.diagnostic('模拟器定义发布、审批原件和未布防运行已核对');
+    if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1')t.diagnostic('模拟器运行的人类审批、Controller 认可和布防前置观察已核对');
   }
 });

@@ -14,7 +14,7 @@ export function readSimulatorFile(files,name){
   return fs.existsSync(files[name])&&fs.statSync(files[name]).size?JSON.parse(fs.readFileSync(files[name],'utf8')):null;
 }
 
-export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null}){
+export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null,afterWrite=null}){
   const {controller,seamer}=plan,{device,scope}=baseline;
   const pairing_ref={id:pairing.binding_id,revision:pairing.revision,digest:pairing.digest};
   const {not_before_ns,expires_ns}=pairing;
@@ -60,6 +60,7 @@ export async function verifyComposeSimulatorSubscription({plan,simulator,baselin
     const replay=await submit();
     assert.equal(replay.status,200,replay.data);
     assert.deepEqual(JSON.parse(replay.data).result,linked);
+    await afterWrite?.();
     fs.writeFileSync(simulator.finish,'');
     const result=await waitFor(()=>readSimulatorFile(simulator,'result'));
     assert.deepEqual(result.simulatorEvent.incremental.event,event);

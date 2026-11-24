@@ -1011,6 +1011,12 @@ Controller 每次重新读取控制头、权限来源修订及联表列。完整
 
 **第 86 轮验证同代 Linux Compose 模拟器定义发布与运行登记。** Seamer 正式 CLI 使用受保护的发布审批文件。人员从已配对的实际模拟器来源取得并分别批准事件与设备动作，通过管理代理更新草稿和发布定义。验收确认缺少 CSRF 的请求被拒绝、同键重投只返回原发布，以及编译结果和制品摘要与正式接口读回一致。Seamer 用精确制品引用登记未布防运行，随后同代模拟器增量继续完成摄取和确认。正常退役后，SQLite 回读核对唯一发布版本、两份人员审批引用、制品和未布防运行。本轮采用 `publication-policy-approval/1`。首期仍需验证适用事件年龄策略、布防、自动命令回写和实设备。[发布验收](../test/fixtures/linux-compose-simulator-publication.mjs)
 
+**第 87 轮接通本机组织运行审批。** Controller 的 `pairing-admin` 提供自动化主体创建和批准、目标认可策略变更及运行认可。人员通过本机会话操作，认可操作要求当前 `grant.manage`，同键查回原认可另核 `grant.read`。Seamer 受保护配对配置的 `public_api.local_run_approvals` 显式启用回环 TLS 上的 `POST /auth/local-run-approvals/v1`。该入口使用定向 Bearer 和规范 JSON 的 `operation`、`request` 封套，支持读取固定设备目标、创建提案／审批上下文、提交提案及审批、读取本机批准和实时观察布防前置条件。提案与审批要求人员的 `run.approve` 及近期认证，观察读取用 `run.read`。[配对与审批联调](../test/fixtures/linux-compose-first-pairing.mjs)
+
+同代 Linux Compose 验收使用 Seamer 正式 CLI 和 Controller 受监督的模拟器联调装配。代理转发、缺少 `run.approve` 及缺少完整认可的审批均被拒绝。同键认可重投查回原件。人员批准后，Seamer 从手动控制中的实际目标读取控制状态。收到第二条模拟器事件的增量与确认后，来源从 `baseline_required` 转为 `synchronized`，布防前置结果保持 `can_arm=false`。退役后在两端 SQLite 核对提案、认可及组织批准的原件摘要与引用链。[审批验收](../test/fixtures/linux-compose-simulator-publication.mjs)
+
+**第 85 至 87 轮整体收敛。** 阶段 1 已在同一 Linux 运行代内验证配对订阅及增量摄取、受保护的定义发布和未布防运行登记、本机人员审批和目标 Controller 认可。下一关键路径是接入受保护的布防额度策略，完成设备准备回执及正式布防，再用可信运行参考时间和适用事件年龄策略验证自动命令回写。跨主机部署与恢复及实设备验收仍开放。[Compose 联调](../test/linux-compose.integration.mjs)
+
 **2026-11-04已确认的实施顺序。** 全局架构、权限、事务及故障方案已有设计的 SDK、服务和 GUI 开始业务实现；仅影响具体型号适配器的编码、字段及读回精度绑定，保留为首期必须完成的实现任务，不再阻挡其它已定领域开工。对应适配器必须在发送和支持声明前补齐具名绑定、失败行为及验收，不能用未知值占位、猜编码或降低功能范围。发行可信时间等实质产品取舍仍独立保留，未定部分不得凭开工授权代批。
 
 该决定改变实施依赖，不把阶段0六项判据或阶段1—3自动标为通过，也不修改任何历史候选批准标志。后续以实际源码、构建及集成结果推进阶段1，同时完成剩余首期适配任务；各项最终验收保持原标准。

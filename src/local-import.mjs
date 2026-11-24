@@ -9,8 +9,10 @@ async function decode(bytes,types){
   need(Buffer.isBuffer(bytes)&&bytes.length<=65536,'import_channel_frame');
   const type=JSON.parse(bytes.toString('utf8')).type;need(types.has(type),'import_channel_direction');return decodeImportFrame(bytes,type);
 }
-export function serveInstallationClient({store,registration_id:registrationId,channel_id:channelId,channel,validation_policy_ref:validationPolicyRef=null,reader_sids:readerSids=[],platform_profile_ref:platformProfileRef=null}){
-  need(id(registrationId)&&id(channelId),'import_channel_identity');let closed=false,binding;const jobs=new Set();
+export function serveInstallationClient({store,registration_id:registrationId,channel_id:channelId,channel,validation_policy_ref:validationPolicyRef=null,reader_sids:readerSids=[],platform_profile_ref:platformProfileRef=null,request_idle_ms:requestIdleMs=5000}){
+  need(id(registrationId)&&id(channelId),'import_channel_identity');
+  need(Number.isInteger(requestIdleMs)&&requestIdleMs>=5000&&requestIdleMs<=90000,'import_channel_request_idle');
+  let closed=false,binding;const jobs=new Set();
   // 启动配置在首次await前复制；管理工具不能通过IMPORT_BEGIN指定本机读取身份。
   const fixedReaders=Array.isArray(readerSids)?[...readerSids]:readerSids;
   const fixedPlatform=platformProfileRef===null?null:JSON.parse(canonical(platformProfileRef));
@@ -19,7 +21,7 @@ export function serveInstallationClient({store,registration_id:registrationId,ch
     try{
       await channel.ready;binding=store.bindImportClient(channel,registrationId,{validationPolicyRef,readerSids:fixedReaders,platformProfileRef:fixedPlatform});let incoming=1n,outgoing=1n,attachments=0;const messages=new Set();
       while(!closed){
-        const received=await channel.receive();
+        const received=await channel.receive(requestIdleMs);
         // Windows传输附件记录，不属于SDK业务帧；请求固定为标记0及uint64句柄。
         if(received[0]===0){
           need(received.length===9&&++attachments<=4096,'import_attachment_frame');installationChannelPeer(channel);let response;

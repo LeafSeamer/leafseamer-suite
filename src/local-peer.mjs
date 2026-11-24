@@ -28,9 +28,9 @@ export function createInstallationChannel({name,peer,server}){
     if(closed)return;closed=true;failure=error;clearInterval(timer);clearTimeout(handshake);module.close(handle);queue.length=0;rejectReady(error);
     for(const pending of [receiver,writer])if(pending){clearTimeout(pending.timeout);pending.reject(error);}receiver=null;writer=null;
   }
-  function pending(kind){
+  function pending(kind,timeoutMs=5000){
     let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});
-    const value={resolve,reject,timeout:setTimeout(()=>finish(new InstallationError('peer_'+kind+'_timeout')),5000)};return {promise,value};
+    const value={resolve,reject,timeout:setTimeout(()=>finish(new InstallationError('peer_'+kind+'_timeout')),timeoutMs)};return {promise,value};
   }
   timer=setInterval(()=>{
     if(closed)return;
@@ -48,7 +48,11 @@ export function createInstallationChannel({name,peer,server}){
     ready,
     async send(bytes){await ready;if(closed)throw failure;need(Buffer.isBuffer(bytes)&&bytes.length>0&&bytes.length<=65536&&!writer,'peer_send_state');
       const operation=pending('write');writer=operation.value;try{module.send(handle,bytes);}catch(error){finish(error);}return operation.promise;},
-    async receive(){await ready;if(closed)throw failure;need(!receiver,'peer_receive_state');if(queue.length)return queue.shift();const operation=pending('read');receiver=operation.value;return operation.promise;},
+    async receive(timeoutMs=5000){
+      need(Number.isInteger(timeoutMs)&&timeoutMs>=5000&&timeoutMs<=90000&&(server||timeoutMs===5000),'peer_receive_timeout');
+      await ready;if(closed)throw failure;need(!receiver,'peer_receive_state');if(queue.length)return queue.shift();
+      const operation=pending('read',timeoutMs);receiver=operation.value;return operation.promise;
+    },
     close:finish
   });
   channels.set(value,{source(sourceHandle){

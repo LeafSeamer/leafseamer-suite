@@ -249,6 +249,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   if(obsInterruption)assert.ok(!obsRecovery&&!process.env.LEAFSEAMER_GUI_TEST_ROOT&&['report','closure','settlement','no_request','no_write'].includes(obsInterruption));
   const recoverSettlement=obsInterruption==='settlement';
   const unsent=obsInterruption==='no_request'||obsInterruption==='no_write';
+  const obsResume=obsCommand&&process.env.LEAFSEAMER_OBS_RESUME_TEST==='1';
+  if(obsResume)assert.ok(unsent||obsInterruption==='report');
   const referenceRestart=mode.includes('_reference_restart'), missingRetirement=mode.endsWith('_reference_restart_missing');
   const referenceWatermark=mode.endsWith('_reference_watermark');
   const referenceAcceptance=mode===referenceAcceptanceExecution||referenceRestart||referenceWatermark;
@@ -401,6 +403,11 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
                  assert.equal(unsentMigration.steps.length,1);
                  assert.equal(stage105.schema_migration.pop()[2],'105');
                  assert.deepEqual(stage105,snapshot(path.join(core,unsentMigration.backup_file)));
+                 const priorMigration=await migrateStorage(core,106);
+                 const stage106=snapshot(file);
+                 assert.equal(priorMigration.steps.length,1);
+                 assert.equal(stage106.schema_migration.pop()[2],'106');
+                 assert.deepEqual(stage106,snapshot(path.join(core,priorMigration.backup_file)));
                }
              }
            }
@@ -664,7 +671,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       SELECT 1 FROM command_dispatch_request d JOIN execution_frame_record f ON f.record_id=d.record_id
       JOIN execution_session_end e USING(ipc_session_id) WHERE d.permit_id=NEW.permit_id)`:'';
     const fault=new Database(path.join(core,'controller.sqlite'),{fileMustExist:true});
-    try{fault.exec(`CREATE TRIGGER obs_interruption_fault BEFORE INSERT ON ${table}${untilSessionEnds} BEGIN SELECT RAISE(IGNORE); END`);}
+    const condition=obsResume?' WHEN (SELECT count(*) FROM device_execution_binding)=1':untilSessionEnds;
+    try{fault.exec(`CREATE TRIGGER obs_interruption_fault BEFORE INSERT ON ${table}${condition} BEGIN SELECT RAISE(IGNORE); END`);}
     finally{fault.close();}
   }
   const binding={intake_ref:sealed.intake_ref,platform_profile_ref:profile,host_installation_id:store.identity.host_installation_id,
@@ -728,6 +736,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }
   const fixture=path.join(root,'fixture.json');fs.writeFileSync(fixture,JSON.stringify({binding,mode,materials,runtime:runtimeInput,reference_acceptance:referenceAcceptance,reference_schema:referenceSchema,source_reference_capture:sourceReferenceCapture,...(process.env.LEAFSEAMER_CORE_PERFORMANCE?{performance_capture:process.env.LEAFSEAMER_CORE_PERFORMANCE}:{}),...(gui?{gui}:{}),...(automationPeer?{automation_peer:automationPeer}:{}),...(runFence?{run_fence:runFence}:{}),
     ...(obsInterruption?{obs_interruption:obsInterruption}:{}),
+    ...(obsResume?{obs_resume:true}:{}),
     ...((obs||mode.endsWith('_capabilities')||mode==='supervisor_create_module_writable_evidence_resource_open_dispatch_ready'||commandLifecycleCases.includes(mode)||commandEncodingCases.includes(mode))?{command_tls:certificate()}:{})}));
   const peer=captureInstallationPeer(process.pid).descriptor,descriptor=store.materializationClock(),suffix=crypto.randomUUID(),channelId=crypto.randomUUID();
   const config={format:'leafseamer-installation-peer/1',pipe_suffix:suffix,channel_id:channelId,
@@ -773,7 +782,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   }};}};
   const startCoordinator=()=>{
     const channel=createInstallationChannel({name:'\\\\.\\pipe\\LeafSeamer.Install.'+suffix,peer:clientPeer,server:true});
-    service=serveInstallationClient({store:instrumented,registration_id:'coordinator.synthetic',channel_id:channelId,channel});
+    service=serveInstallationClient({store:instrumented,registration_id:'coordinator.synthetic',channel_id:channelId,channel,
+      ...(obsResume?{request_idle_ms:90000}:{})});
     service.done.catch(error=>frames.push({event:'installation-channel-failed',code:error.code??error.name}));
   };
   if(!runtimeMode)startCoordinator();
@@ -785,7 +795,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
     store.registerClient({client_registration_id:'core.intake',role:'launch_coordinator',user_sid:corePeer.descriptor.user_sid,
       target_authority_service_ids:[coreIdentity.service_id],permissions:['intake.query'],approval_reference:'approval.synthetic'});
     const client=runtimeInput.installation_client,intakeChannel=createInstallationChannel({name:client.name,peer:corePeer,server:true});
-    intakeService=serveInstallationClient({store,registration_id:'core.intake',channel_id:client.channel_id,channel:intakeChannel});intakeService.done.catch(()=>{});
+    intakeService=serveInstallationClient({store,registration_id:'core.intake',channel_id:client.channel_id,channel:intakeChannel,
+      ...(obsResume?{request_idle_ms:90000}:{})});intakeService.done.catch(()=>{});
     fs.writeFileSync(fixture+'.intake-ready','ready');
     await waitFor(()=>frames.find(frame=>frame.event==='registered')||child.exitCode!==null);
     assert.ok(frames.find(frame=>frame.event==='registered'),JSON.stringify({frames,stdout,stderr}));
@@ -817,16 +828,17 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       browserCheck=once(driver,'close').then(([code])=>({code,stdout,stderr}));
       browserCheck.catch(()=>{});
     }
-    await waitFor(()=>frames.some(f=>f.event==='obs-module-samples'||f.event==='unavailable')||child.exitCode!==null,obsCommand?45000:15000);
+    await waitFor(()=>frames.some(f=>f.event==='obs-module-samples'||f.event==='unavailable')||child.exitCode!==null,obsResume?65000:obsCommand?45000:15000);
     if(browserCheck&&!frames.some(f=>f.event==='obs-module-samples')){
       const result=await browserCheck;assert.equal(result.code,0,result.stderr);
     }
-    assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,stage,code,cause})=>({event,stage,code,cause}))));
+    assert.ok(frames.some(f=>f.event==='obs-module-samples'),JSON.stringify(frames.map(({event,stage,code,cause,message})=>
+      ({event,stage,code,cause,trigger:code==='SQLITE_CONSTRAINT_TRIGGER'?message:undefined}))));
     const {packet_hex,target,stale}=frames.find(f=>f.event==='obs-cut-packet');
     assert.equal(stale,'obs_cut_packet_stale_reference');
     if(obsRecovery||obsInterruption){
       const sample=await (await load('obs-discovery.mjs')).inspectObsCut({port:portable.port,password:portable.password});
-      assert.equal(sample.program_scene_uuid,obsInterruption&&!unsent?target:portable.program_scene_uuid);
+      assert.equal(sample.program_scene_uuid,obsInterruption&&(!unsent||obsResume)?target:portable.program_scene_uuid);
     }
     if(!obsCut)await verifyObsCutGuard(t,{port:portable.port,password:portable.password,initial:portable.program_scene_uuid,target,
       catalog:frames.find(f=>f.event==='obs-scene-confirmed').ready,packet_hex});
@@ -2120,6 +2132,52 @@ print('schema and cross-object checks passed')`,specimen],{cwd:path.join(suiteRo
     const worker=new Database(path.join(core,'supervisor-journal.db'),{readonly:true,fileMustExist:true});
     const business=new Database(path.join(core,'controller.sqlite'),{readonly:true,fileMustExist:true});
     try{
+      if(obsResume){
+        const old=frames.find(f=>f.event==='obs-cut-interrupted').finished.body.record;
+        const resourceRows=business.prepare('SELECT body_jcs FROM device_initial_resource').pluck().all().map(JSON.parse);
+        assert.equal(business.prepare('SELECT count(*) FROM device_execution_binding').pluck().get(),2);
+        assert.equal(business.prepare('SELECT count(*) FROM obs_scene_confirmation').pluck().get(),2);
+        assert.equal(business.prepare('SELECT count(*) FROM worker_runtime_withdrawal').pluck().get(),2);
+        const [replacementText,replacementDigest]=business.prepare('SELECT body_jcs,body_digest FROM obs_worker_launch_replacement').raw().get();
+        const replacement=JSON.parse(replacementText);
+        assert.equal(replacementDigest,digestValue(replacement));
+        assert.equal(replacement.retirement.state,'retired');
+        assert.equal(business.prepare('SELECT count(DISTINCT activation_operation_id) FROM worker_launch_preparation').pluck().get(),1);
+        assert.deepEqual(worker.prepare('SELECT observation_jcs FROM worker_retirement').pluck().all().map(value=>JSON.parse(value).active_processes),[0,0]);
+        assert.equal(business.prepare("SELECT count(*) FROM execution_write_attempt JOIN execution_frame_record USING(record_id) WHERE message_type='DISPATCH'").pluck().get(),1);
+        if(unsent){
+          const {opened,released,acquired,sample,stale,retained}=frames.find(f=>f.event==='obs-recovery-cut');
+          const prior=opened.resources.value.inventory.prior_execution;
+          assert.equal(released.state,'effective');
+          assert.equal(acquired.state,'effective');
+          assert.equal(opened.control.gate_state,'ready');
+          assert.equal(sample.program_scene_uuid,portable.program_scene_uuid);
+          assert.equal(stale.status,422);
+          assert.deepEqual(retained.body.record,old);
+          assert.equal(prior.length,1);
+          assert.notEqual(prior[0].ipc_session_id,opened.ready.value.binding.ipc_session_id);
+          assert.equal(prior[0].ipc_session_id,replacement.previous_session_id);
+          assert.equal(acquired.operation_id,replacement.control_operation_id);
+          assert.deepEqual(JSON.parse(business.prepare('SELECT body_jcs FROM execution_initial_fence WHERE fence_id=?')
+            .pluck().get(opened.resources.value.inventory.initial_fence_ref.id)).prior_execution,prior);
+          assert.equal(prior[0].retirement.state,'retired');
+          assert.deepEqual(prior[0].commands.map(value=>value.command_id),[old.command_id]);
+          assert.deepEqual(resourceRows.find(value=>value.id===opened.resources.ref.id),opened.resources.value);
+          const result=frames.find(f=>f.event==='obs-cut-command-result').finished.body.record;
+          assert.notEqual(result.command_id,old.command_id);
+          assert.equal(result.state.outcome,'succeeded');
+          assert.equal(result.state.resource_status,'clear');
+          assert.deepEqual(business.prepare('SELECT charged_bytes FROM command_transmission_issue').pluck().all(),[52,52]);
+        }else{
+          const protectedState=frames.find(f=>f.event==='obs-recovery-protected');
+          assert.equal(protectedState?.code,'obs_prior_execution_holds');
+          assert.equal(protectedState.control.gate_state,'protected');
+          assert.equal(resourceRows.length,1);
+          assert.equal(business.prepare('SELECT count(*) FROM command_hold_clearance').pluck().get(),0);
+        }
+        assert.deepEqual(business.pragma('foreign_key_check'),[]);
+        return;
+      }
       const retired=JSON.parse(worker.prepare('SELECT observation_jcs FROM worker_retirement').pluck().get());
       assert.equal(retired.active_processes,0);
       assert.equal(business.prepare('SELECT count(*) FROM extension_resource_owner').pluck().get(),1);

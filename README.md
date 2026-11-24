@@ -138,6 +138,8 @@ sealed表示该次内容封存提交，不能代替当前可用性查询、安�
 
 `@leafseamer/suite/local-import`提供`serveInstallationClient({store,registration_id,channel_id,channel,validation_policy_ref,reader_sids=[],platform_profile_ref=null})`与`createInstallationClient({channel,channel_id})`。注册ID、channel ID、固定校验策略Ref、平台资格Ref及内容读取SID由可信配置选择；平台Ref和读取身份在首次等待前复制，管理工具不能通过IMPORT_BEGIN增添SID或平台批准，默认不额外授予读取主体。服务端在同一writer事务中先核当前对端、未撤销注册、操作权限和目标范围，再查原或受理；新请求另核当前真实发行记录及宿主信任代。客户端`attach(fd)`登记已经打开的只读普通文件，得到仅限本连接的`source_attachment_id`；`begin(input)`、`query(identity)`和`cancel(identity)`走固定SDK九帧中的对应请求。省略服务端校验策略Ref时不能开始导入。Ref匹配不替代策略配置本身的批准。
 
+需要等待人员恢复操作的安装协调端可在可信服务端配置 `request_idle_ms`。取值为 5000 至 90000 之间的整数毫秒，默认 5000。该值只用于服务端等待下一个请求，连接、写入和客户端等待回复仍用原时限。进程身份和每条请求的注册权限持续核验。
+
 附件传输使用长度前缀内的专用二进制记录：请求为标记字节0及8字节小端无符号客户端HANDLE，成功响应为字节`0,1`及36字节ASCII UUID，拒绝为`0,0`；它不增加SDK业务消息。服务端只向该连接已经固定的真实peer进程调用`DuplicateHandle`，核对象为普通磁盘文件、最大512MiB且访问权不含写入／删除／修改权限，再由Node自身libuv转为描述符。每连接最多8个未消费附件及4096次登记；句柄和附件ID不写入持久操作。客户端须保留原fd直至`attach`完成，之后可以关闭。源字节仍可能被其它持有人修改，最终以完整复制长度及摘要判定。API依据为[Microsoft句柄复制](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle)、[对象访问权查询](https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntqueryobject)和[libuv描述符转换](https://docs.libuv.org/en/v1.x/fs.html#helper-functions)；对象查询不可用时拒绝附件。
 
 开始请求先返回持久受理状态，后台依次完成复制、ZIP检查和受保护内容准备，查询／取消不等待整个任务。相同operation的重投共享同一后台任务，不再次复制或创建内容根；已有静态校验结果的原operation可继续准备，无需重传源附件。读取策略与平台Ref均绑定进行中的任务，不接受另一配置借原任务改变ACL或资格。关闭连接清理未用附件并等待已受理任务释放资源，不自动取消已受理操作；store关闭也须等待整条任务完成。准备失败保留原尝试及失败结果，可沿原operation重核，不自动删除目录。未配置平台Ref时止于validating；配置后以该资格和请求中原发行授权继续封存。发行会话更换后须由可信安装入口提供新的当前发行授权续接，不能改写原请求intent。sealed之后的query、cancel及同identity重投均返回原收据，不重新物化。

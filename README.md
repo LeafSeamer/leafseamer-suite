@@ -148,7 +148,9 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 `startSupervised()` 返回两端的 `referenceAdmissions`。宿主在专用套接字核验对应核心的 PID 和账号，交付原准入并转接受监督的提供者。各核心先写入原运行绑定，再完成连接握手，随后开启保护态 HTTPS。采集连接失联会关闭该代的两个核心。退役后可通过 `referenceAdmission(role)` 读回原件。[Compose 宿主入口](src/linux-compose-host.mjs)
 
-切换运行代时，先在原宿主账本中完成旧代退役。宿主核对原提供者进程已退出、原 cgroup 为空及旧容器端点已关闭，再保存退役证据。新核心通过专用通道读取同一服务和数据库的原证据，在新认证时钟域内，从确认收到退役证据的时刻起等待完整的轮询间隔或退避期限。等待完成后使用新的请求和采集原件生成锚点。旧证据缺失、身份不符或存在未知的发送结果时，来源保持保护态。跨运行域恢复适用于原批准仍有效的同一来源。[Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+切换运行代时，先在原宿主账本中完成旧代退役。宿主核对原提供者进程已退出、原 cgroup 为空及旧容器端点已关闭，再保存退役证据。新核心通过专用通道读取同一服务和数据库的原证据，在新认证时钟域内，从确认收到退役证据的时刻起等待完整的轮询间隔或退避期限。等待完成后使用新的请求和采集原件生成锚点。旧证据缺失、身份不符或存在未知的发送结果时，来源保持保护态。[Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+
+使用新批准替换授时来源时，先将 Controller 和 Seamer 数据库分别显式迁移到 Schema `111` 和 `35`，再使用绑定新批准的新运行代。恢复记录会保存上一来源摘要、原退役凭证、来源槽和新批准。首次预约还需核对该记录及其等待截止。原来源和新来源的适用退避继续生效，旧采集和锚点保留原件。
 
 启用受保护的业务授时采集时，另配置 `clock_evidence` 与 `reference_providers.capture`。后者的 `controller` 和 `seamer` 分别提供 `directory` 和 `approval_sha256`，每个目录专用并只读挂载。目录归 root 所有，属组为对应核心 GID，权限 `0750`。目录内的 `approval.json` 和 `capture.key` 归同一所有者及属组，权限 `0440`，密钥使用独立的 32 字节随机值。
 

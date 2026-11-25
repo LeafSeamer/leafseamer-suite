@@ -94,7 +94,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const host='manage.fixture.invalid',authority=host+':'+port,origin='https://'+authority;
   const range='10.234.'+crypto.randomInt(1,255);
   const login={login:'compose.fixture',password:'Synthetic-compose-test-password-632'};
-  const referenceExecutable=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER,legacyReference={};
+  const scheduledDispatch=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULED_DISPATCH==='1';
+  const referenceImage=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER;
+  const referenceExecutable=scheduledDispatch?undefined:referenceImage,legacyReference={};
   let enrollment;
   function certificates(role,serverName,loopback=false){
     const certificate_file=path.join(root,role+'.pem'),private_key_file=path.join(root,role+'.key');
@@ -117,14 +119,14 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     if(role==='controller'){
       const config=path.join(root,'controller-init.json');
       fs.writeFileSync(config,JSON.stringify({package_root:'/opt/leafseamer',data_dir:'/var/lib/leafseamer',login,
-        ...(referenceExecutable&&{storage_revision:109})}),{mode:0o600});owned(config);
+        ...((referenceExecutable||scheduledDispatch)&&{storage_revision:scheduledDispatch?113:109})}),{mode:0o600});owned(config);
       const seed=bootstrap(role,data_dir,['--mount','type=bind,source='+file('./fixtures/linux-ingress-service.mjs')+',target=/tmp/seed.mjs,readonly',
         '--mount','type=bind,source='+config+',target=/tmp/config.json,readonly'],['/tmp/seed.mjs','/tmp/config.json']);
       enrollment=JSON.parse(seed);
       identity=enrollment.identity;
     }else{
       identity=JSON.parse(bootstrap(role,data_dir,[],[...args,'init-storage',...directoryArgs]));
-      bootstrap(role,data_dir,[],[...args,'migrate-storage',...directoryArgs,'--to-revision','33']);
+      bootstrap(role,data_dir,[],[...args,'migrate-storage',...directoryArgs,'--to-revision',scheduledDispatch?'39':'33']);
     }
     if(referenceExecutable){
       const filename=path.join(data_dir,role+'.sqlite');
@@ -170,9 +172,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     ...(manage&&{cgroup:{driver:'cgroupfs',generation_id:generationId,namespace:'private'}}),...(workerControl&&{worker_control:true})};
   let source,admissions,referenceAdmissions;
   assert.ok(!referenceExecutable||supervised);
-  if(referenceExecutable){
+  if(referenceImage){
     const executable=path.join(root,'reference-provider');
-    fs.copyFileSync(referenceExecutable,executable);fs.chmodSync(executable,0o555);
+    fs.copyFileSync(referenceImage,executable);fs.chmodSync(executable,0o555);
     plan.reference_providers={image:{file:executable,sha256:'sha256:'+hash(fs.readFileSync(executable))},
       controller:{uid:1002,gid:1002},seamer:{uid:1003,gid:1003}};
   }
@@ -190,9 +192,10 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   assert.ok(!captureNTS||captureTest);
   assert.ok(!recoverReference||captureNTS&&qualifyReference);
   assert.ok(!switchReference||recoverReference);
-  if(captureTest){
+  assert.ok(!scheduledDispatch||supervised&&referenceImage&&chronyFile&&!captureTest&&!recoverReference);
+  if(captureTest||scheduledDispatch){
     let network;
-    if(captureNTS){
+    if(captureNTS||scheduledDispatch){
       const name='reference-nts.fixture.invalid';
       ntsServer=await startReferenceNTS(t,root,name,certificates('reference-nts',name));
       network=ntsServer.network;
@@ -224,8 +227,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       fs.mkdirSync(directory,{mode:0o750});fs.chownSync(directory,0,scope.gid);
       captureKeys[role]=key;
       const original=label=>({id:crypto.randomUUID(),revision:'1',digest:'sha256:'+hash('compose-reference:'+label)});
-      const qualified=qualifyReference?{utc_mode:'normal_utc_no_smear',elapsed_error_ppm:100,span_quantization_ns:'1000',
-        t2_error_ns:'20000000',t3_error_ns:'20000000',tref_error_ns:'20000000',max_upstream_age_ns:'60000000000',max_half_width_ns:'500000000',
+      const qualified=qualifyReference||scheduledDispatch?{utc_mode:'normal_utc_no_smear',elapsed_error_ppm:100,span_quantization_ns:'1000',
+        t2_error_ns:'20000000',t3_error_ns:'20000000',tref_error_ns:'20000000',
+        max_upstream_age_ns:scheduledDispatch?'120000000000':'60000000000',max_half_width_ns:'500000000',
         independent_source_ref:independentSources[role]=original(role+'-chrony'),monitoring_ref:original('loopback-monitoring'),
         platform_qualification_ref:original('vm-clock-boottime'),source_provenance_ref:original('loopback-server'),
         leap_schedule:{bulletin_ref:original('isolated-test-leap-window'),events:[],valid_from_ns:String(now-60000000000n),
@@ -233,7 +237,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       const approval=canonical({format:'leafseamer-linux-reference-capture-approval/'+(qualified?'2':'1'),
         scope:{service_id:scope.service_id,database_instance_id:scope.database_instance_id},
         provider_digest:plan.reference_providers.image.sha256,approval_id:crypto.randomUUID(),approval_revision:'1',network,
-        archive_budget_bytes:captureNTS?458752:65536,capture_key_id:crypto.randomUUID(),
+        archive_budget_bytes:scheduledDispatch?917504:captureNTS?458752:65536,capture_key_id:crypto.randomUUID(),
         not_before_ns:String(now-60000000000n),expires_ns:String(now+180000000000n),
         ...(qualified&&{reference:qualified})});
       for(const [name,bytes] of [['approval.json',approval],['capture.key',key]]){
@@ -242,10 +246,13 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       return [role,{directory,approval_sha256:'sha256:'+hash(approval)}];
     }));
   }
+  const scheduledReference=scheduledDispatch?plan.reference_providers:null;
+  if(scheduledReference)delete plan.reference_providers;
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
   const pairedSimulator=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRED_SIMULATOR==='1';
   assert.ok(!pairingTest||chronyFile);
   assert.ok(!pairedSimulator||pairingTest&&workerControl&&process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE);
+  assert.ok(!scheduledDispatch||pairedSimulator);
   assert.ok(!process.env.LEAFSEAMER_TEST_COMPOSE_BROWSER||pairingTest);
   assert.ok(process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION!=='1'||pairingTest);
   const clocks={};
@@ -520,14 +527,15 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     const {runtime_profile_ref,native_artifact_ref,health_profile_ref,system_time_source_ref,environment_approval_ref}=policy;
     clock.runtime=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,descriptor_digest,
       policy_ref:ref(policy),runtime_profile_ref,native_artifact_ref,environment_approval_ref,
-      continuity,native_binary_digest,valid_before_tick_ns:String(source.tick()+60000000000n)});
+      continuity,native_binary_digest,valid_before_tick_ns:String(source.tick()+(scheduledDispatch?120000000000n:60000000000n))});
     const profile=path.join(admin,'profile.json'),statement=path.join(admin,'statement.json'),signed=path.join(admin,'evidence.json');
     fs.writeFileSync(profile,canonical({format:'leafseamer.authentication-clock-signing-profile/2',service_id,database_instance_id,
       policy_digest:policy.digest,native_binary_digest,private_key_file:privateFile,evidence_file:signed,chrony}),{mode:0o600});
+    const healthLifetime=scheduledDispatch?BigInt(policy.sample_ttl_ns):4600000000n;
     clock.publish=()=>{
       const health=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,runtime_ref:ref(clock.runtime),
         policy_ref:ref(policy),health_profile_ref,system_time_source_ref,environment_approval_ref,state:'synchronized',holdover_ref:null,
-        valid_before_tick_ns:String(source.tick()+4600000000n)});
+        valid_before_tick_ns:String(source.tick()+healthLifetime)});
       fs.writeFileSync(statement,canonical({challenge,evidence:{policy,runtime:clock.runtime,health}}),{mode:0o600});
       const result=run(process.execPath,[path.join(clockDir,'clock-evidence.mjs'),'--profile',profile,'--statement',statement],5000);
       assert.deepEqual(JSON.parse(result),{state:'published',service_id,service_boot_id});
@@ -580,18 +588,24 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       await delay(500);
       assert.equal(countCaptures(),3);
     }
-    const old=clocks.controller.publish();
-    for(let i=0;i<4;i++){
-      clocks.seamer.publish();
-      await delay(1400);
-      state('seamer','available','verified');
+    if(scheduledDispatch){
+      for(const role of ['controller','seamer'])clocks[role].publish();
+      await delay(850);
+      for(const role of ['controller','seamer'])state(role,'available','verified');
+    }else{
+      const old=clocks.controller.publish();
+      for(let i=0;i<4;i++){
+        clocks.seamer.publish();
+        await delay(1400);
+        state('seamer','available','verified');
+      }
+      assert.ok(source.tick()>=BigInt(old.valid_before_tick_ns));
+      state('controller','faulted','expired');
+      clocks.controller.publish();
+      state('controller','faulted','verified');
+      assert.equal((await send('/auth/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(login)})).status,503);
+      assert.equal((await send(draft)).status,401);
     }
-    assert.ok(source.tick()>=BigInt(old.valid_before_tick_ns));
-    state('controller','faulted','expired');
-    clocks.controller.publish();
-    state('controller','faulted','verified');
-    assert.equal((await send('/auth/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(login)})).status,503);
-    assert.equal((await send(draft)).status,401);
   }
   const [backend]=Object.values(containers.seamer.NetworkSettings.Networks);
   assert.equal(JSON.parse(docker('network','inspect',backend.NetworkID))[0].Internal,true);
@@ -744,7 +758,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         const history=db.prepare('SELECT DISTINCT health_digest FROM authentication_clock_acquisition WHERE service_boot_id=? AND clock_domain_id=?').all(...args);
         assert.ok(history.length>=2,role+' did not persist a renewal');
         const faults=db.prepare('SELECT count(*) AS count FROM authentication_clock_fault WHERE service_boot_id=? AND clock_domain_id=?').get(...args);
-        assert.equal(faults.count,role==='controller'?1:0);
+        assert.equal(faults.count,!scheduledDispatch&&role==='controller'?1:0);
       }
     }finally{db.close();}
   }
@@ -871,7 +885,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   assert.equal(compose('ps','--all','--quiet').trim(),'');
   created=false;
   delete plan.reference_providers;
-  if(process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE){
+  if(process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE&&!scheduledDispatch){
     assert.ok(workerControl);
     managedHost.close();managedHost=null;
     const fixtureImage=process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE;
@@ -1042,9 +1056,10 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     async function launch(pairing){
       const id=crypto.randomUUID(),generationDirectory=path.join(root,id);
       fs.writeFileSync(planPath,JSON.stringify({...pairPlan,pairing,cgroup:{...plan.cgroup,generation_id:id},
+        ...(scheduledReference&&{reference_providers:scheduledReference}),
         ...(pairingWorkerRuntime&&{worker_runtime:pairingWorkerRuntime})}));
       run(process.execPath,[...generate.slice(0,-1),generationDirectory]);
-      await prepareParents(id);
+      await prepareParents(id,!!scheduledReference);
       let simulatorFiles=null;
       if(simulator){
         const {linuxContainerCgroup}=await import('../dist/linux-cgroup-retirement.mjs');
@@ -1059,7 +1074,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish'),
           runApproval:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1',
           armPreflight:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1',
-          armCompletion:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1'};
+          armCompletion:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1',scheduledDispatch};
         const start=fileFor('worker-start'),result=fileFor('worker-result.json');
         fs.writeFileSync(path.join(controller.data_dir,'worker-test.json'),clockValues.canonical({
           policy:pairPlan.bootstrap.controller,launchId,containment,channelDirectory:'/run/leafseamer-worker',data,start,result,intakeRef,paired
@@ -1122,7 +1137,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       };
     }
     await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
-      verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator});
+      verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch});
+    if(scheduledDispatch)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
     if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1')t.diagnostic('模拟器定义发布、审批原件和未布防运行已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1')t.diagnostic('模拟器运行的人类审批、Controller 认可和布防前置观察已核对');

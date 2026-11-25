@@ -11,13 +11,15 @@ import {readSimulatorFile,verifyComposeSimulatorSubscription,verifyDurableSimula
 import {approveComposeSimulatorRun,composeSimulatorDeviceScope,publishComposeSimulatorDefinition,runApprovalRoute,verifyDurableSimulatorPublication,
   verifyDurableSimulatorRunApproval} from './linux-compose-simulator-publication.mjs';
 
+import {runComposeSimulatorSchedule,schedulePermissions,verifyDurableSimulatorSchedule} from './linux-compose-simulator-schedule.mjs';
+
 const id=()=>crypto.randomUUID();
 const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
 const mount='/etc/leafseamer/pairing/';
 const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='https://127.0.0.1:8444';
 const permissions=['auth.manage','auth.read'];
 
-export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,verifyLocalExtension=false,pairedSimulator=false}){
+export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,verifyLocalExtension=false,pairedSimulator=false,scheduledDispatch=false}){
   const {canonical,digest}=clockValues;
   const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
   const certificates=path.join(root,'pairing-certificates');
@@ -72,14 +74,14 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     assert.equal(result.status,0,operation+' '+result.diagnostic);
     return JSON.parse(result.output);
   }
-  async function waitFor(operation){
-    const deadline=performance.now()+12000;
+  async function waitFor(operation,timeout=12000,missing='Compose pairing state did not become available'){
+    const deadline=performance.now()+timeout;
     do{
       const result=await operation();
       if(result)return result;
       await delay(100);
     }while(performance.now()<deadline);
-    assert.fail('Compose pairing state did not become available');
+    assert.fail(missing);
   }
   async function loginThroughProxy(){
     const request={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(login)};
@@ -115,6 +117,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   assert.ok(!simulatorRunApproval||simulatorPublication);
   assert.ok(!simulatorArmPreflight||simulatorRunApproval);
   assert.ok(!simulatorArmCompletion||simulatorArmPreflight);
+  assert.ok(!scheduledDispatch||simulatorArmCompletion);
   const verifySourceSubscription=pairedSimulator||process.env.LEAFSEAMER_TEST_COMPOSE_SOURCE_SUBSCRIPTION==='1';
   if(verifySourceSubscription)localParty.permissions.push('event.internal.subscribe');
   if(simulatorPublication)localParty.permissions.push('automation.bindings.read','events.internal.read');
@@ -141,13 +144,14 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const seamerPairing=profile('seamer','controller',{scope:{service_id,database_instance_id},first_pairing_authorization_id:null,
     public_api:{...loopbackTls,host:'127.0.0.1',port:8444,binding_id:localParty.binding_id,allowed_origins:[],local_permissions:true,
       ...(verifySourceSubscription&&{local_source_subscriptions:true}),...(simulatorPublication&&{local_event_bindings:true}),
-      ...(simulatorRunApproval&&{local_run_approvals:true})},
+      ...(simulatorRunApproval&&{local_run_approvals:true}),...(scheduledDispatch&&{local_schedules:true})},
     ...publicationProfile,...armProfile},{...((verifyPublication||simulatorPublication)&&{[approvalFile]:approval}),
       ...(simulatorArmPreflight&&{[armFile]:armApproval})});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights,armedSimulator,verifyReadyArmPreflight;
+  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights,armedSimulator,scheduledSimulator,verifyReadyArmPreflight;
   try{
-    const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready')):null;
+    const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready'),scheduledDispatch?25000:12000,
+      'Compose simulator did not publish its verified baseline'):null;
     if(baseline)localParty.object_scope_digest=digest(composeSimulatorDeviceScope(controller,baseline));
     const actor=await loginThroughProxy();
     const identityToken=await issueToken(actor,controller.service_id,['session.read']);
@@ -196,7 +200,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     }
     const definitions=verifyBrowser||verifyPublication||simulatorPublication?['definition.edit','definition.read','request.create','request.read']:[];
     const audiencePermissions=[...permissions,...definitions,...(verifyPublication||simulatorPublication?['definition.publish']:[]),
-      ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[]),...(simulatorArmPreflight?['run.arm']:[])].sort();
+      ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[]),...(simulatorArmPreflight?['run.arm']:[]),...(scheduledDispatch?schedulePermissions:[])].sort();
     await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
       not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
     const bearer=await issueToken(actor,service_id,permissions);
@@ -209,9 +213,15 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         let data='';res.on('data',chunk=>data+=chunk);res.on('end',()=>process.stdout.write(JSON.stringify({status:res.statusCode,data})));
       });req.setTimeout(5000,()=>req.destroy());req.end(body);`;
     async function localRequest(route,operation,request,authorization=bearer){
-      const response=await execute(generation.containers.seamer,['-e',inspection],{route,bearer:authorization,body:canonical({operation,request})});
-      assert.equal(response.status,0,response.diagnostic);
-      return JSON.parse(response.output);
+      const call=async()=>{
+        const response=await execute(generation.containers.seamer,['-e',inspection],{route,bearer:authorization,body:canonical({operation,request})});
+        assert.equal(response.status,0,response.diagnostic);
+        const reply=JSON.parse(response.output);
+        if(scheduledDispatch&&operation==='inspect'&&reply.status===503&&
+          ['WORKER_NOT_READY','CLOCK_UNTRUSTED'].includes(JSON.parse(reply.data).error))return null;
+        return reply;
+      };
+      return scheduledDispatch&&operation==='inspect'?waitFor(call):call();
     }
     const localPermissions=(operation,request)=>localRequest('/auth/local-permissions/v1',operation,request);
     const grant=await waitFor(async()=>{
@@ -239,10 +249,16 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         const armBearer=await issueToken(actor,service_id,['request.create','run.read','run.arm']);
         const reader=await issueToken(actor,service_id,['request.create','run.read']);
         const contextRequest={ttl_ms:30000,max_unique_requests:2};
+        const retryable=(reply,body)=>scheduledDispatch&&reply.status===503&&['WORKER_NOT_READY','CLOCK_UNTRUSTED'].includes(body.error);
         const call=async(operation,request,status=200,authorization=armBearer)=>{
-          const reply=await localRequest(runApprovalRoute,operation,request,authorization);
-          assert.equal(reply.status,status,operation+' '+reply.data);
-          return JSON.parse(reply.data).result;
+          async function local(){
+            const reply=await localRequest(runApprovalRoute,operation,request,authorization);
+            const body=JSON.parse(reply.data);
+            if(status===200&&['observe-and-arm','complete-arm'].includes(operation)&&retryable(reply,body))return null;
+            assert.equal(reply.status,status,operation+' '+reply.data);
+            return body;
+          }
+          return (await (scheduledDispatch?waitFor(local):local())).result;
         };
         await call('create-arm-context',contextRequest,403,reader);
         const {context_id}=await call('create-arm-context',contextRequest);
@@ -298,6 +314,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
               const reply=await localRequest(runApprovalRoute,'complete-arm',{operation_ref},armBearer);
               const body=JSON.parse(reply.data);
               if(reply.status===409&&body.error==='PREPARATION_PENDING')return null;
+              if(retryable(reply,body))return null;
               assert.equal(reply.status,200,reply.data);
               return body.result;
             });
@@ -313,6 +330,16 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
           assert.equal(armed.last_receive_seq,'1');
           assert.deepEqual(await call('observe-and-arm',armRequest),reserved);
           assert.deepEqual(await call('complete-arm',{operation_ref}),completed);
+          if(scheduledDispatch){
+            const scheduleBearer=await issueToken(actor,service_id,['request.create',...schedulePermissions]);
+            try{
+              scheduledSimulator=await runComposeSimulatorSchedule({armed,compiled:publishedSimulator.compiled,
+                localRequest,bearer:scheduleBearer,readRun,waitFor});
+            }catch(error){
+              const failures=generation.events('controller').filter(frame=>['simulator_eligibility_failed','simulator_scheduled_command_failed'].includes(frame.event)).slice(-6);
+              throw new Error('定时派发未完成 '+JSON.stringify(failures),{cause:error});
+            }
+          }
           armedSimulator={reserved,completed};
           armPreflights=[pending,{preflight_ref:operation.preflight_ref}];
         };
@@ -322,7 +349,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         await finishArmPreflights?.();
       }:null;
       simulatorSubscription=await verifyComposeSimulatorSubscription({plan,simulator:generation.simulator,baseline,pairing:activated,
-        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite,afterWrite});
+        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite,afterWrite,scheduledDispatch});
     }else if(verifySourceSubscription){
       const route='/auth/local-source-subscriptions/v1',reference=entity_kind=>({authority_service_id:controller.service_id,
         database_instance_id:controller.database_instance_id,entity_kind,entity_id:id(),entity_epoch:id(),revision:'1',content_digest:'a'.repeat(64)});
@@ -381,11 +408,13 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   try{
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
-    if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription});
+    if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription,scheduledDispatch});
+    if(scheduledDispatch)verifyDurableSimulatorSchedule(store,issuer,scheduledSimulator,digest);
     if(simulatorPublication){assert.ok(publishedSimulator);verifyDurableSimulatorPublication(store,publishedSimulator,digest);}
     if(simulatorRunApproval){
       assert.ok(approvedSimulator);
-      verifyDurableSimulatorRunApproval(store,issuer,approvedSimulator,digest,armedSimulator?.completed.completion.completed_run_revision);
+      verifyDurableSimulatorRunApproval(store,issuer,approvedSimulator,digest,
+        scheduledSimulator?.completedRun.revision??armedSimulator?.completed.completion.completed_run_revision);
     }
     if(simulatorArmPreflight){
       assert.equal(armPreflights?.length,2);

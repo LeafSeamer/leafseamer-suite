@@ -15,7 +15,7 @@ export function readSimulatorFile(files,name){
   return fs.existsSync(files[name])&&fs.statSync(files[name]).size?JSON.parse(fs.readFileSync(files[name],'utf8')):null;
 }
 
-export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null,afterWrite=null}){
+export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null,afterWrite=null,scheduledDispatch=false}){
   const {controller,seamer}=plan,{scope}=baseline;
   const pairing_ref={id:pairing.binding_id,revision:pairing.revision,digest:pairing.digest};
   const {not_before_ns,expires_ns}=pairing;
@@ -67,13 +67,13 @@ export async function verifyComposeSimulatorSubscription({plan,simulator,baselin
     const result=await waitFor(()=>readSimulatorFile(simulator,'result'));
     assert.deepEqual(result.simulatorEvent.incremental.event,event);
     assert.match(fs.readFileSync(simulator.groupFile+'/cgroup.events','utf8'),/^populated 0$/m);
-    assert.equal(publisher.prepare('SELECT count(*) AS n FROM command_settlement').get().n,2);
+    assert.equal(publisher.prepare('SELECT count(*) AS n FROM command_settlement').get().n,scheduledDispatch?3:2);
     return {linked,event,sourceKey:baseline.baseline.origin.source_key};
   }finally{publisher.close();}
 }
 
 // Seamer 正常运行时独占文件库，退役后对照两端的原始提交。
-export function verifyDurableSimulatorSubscription({receiver,publisher,linked,event,sourceKey}){
+export function verifyDurableSimulatorSubscription({receiver,publisher,linked,event,sourceKey,scheduledDispatch=false}){
   const snapshot=receiver.prepare('SELECT body_jcs,receipt_jcs FROM snapshot_ingest_apply WHERE apply_id=?').get(linked.apply_id);
   const stored=JSON.parse(snapshot.body_jcs),receipt=JSON.parse(snapshot.receipt_jcs);
   assert.equal(receipt.delivery_binding.subscription_id,linked.subscription_id);
@@ -87,7 +87,8 @@ export function verifyDurableSimulatorSubscription({receiver,publisher,linked,ev
   assert.equal(consumed.receiver_boot_id,receipt.service_boot_id);
   assert.equal(consumed.receive_sequence,1);
   assert.equal(observation.delivery_mode,'live');
-  assert.equal(observation.age_basis,'unproven');
+  if(scheduledDispatch)assert.ok(['trusted_utc','unproven'].includes(observation.age_basis));
+  else assert.equal(observation.age_basis,'unproven');
   assert.equal(observation.disposition.state,'observed_only');
   const acknowledged=publisher.prepare(`SELECT d.body_digest,a.connection_generation FROM service_subscription_delivery d
     JOIN service_subscription_delivery_ack a USING(subscription_id,cursor) WHERE d.subscription_id=? AND d.cursor=?`)

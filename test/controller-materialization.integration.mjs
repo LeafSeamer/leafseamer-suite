@@ -10,7 +10,8 @@ import {verifySnapshotMigration} from './snapshot-migration.mjs';
 const snapshotMigration=process.env.LEAFSEAMER_SNAPSHOT_MIGRATION_TEST==='1';
 import {verifyChannelMigration} from './event-channel-migration.mjs';
 const channelMigration=process.env.LEAFSEAMER_EVENT_CHANNEL_MIGRATION_TEST==='1';
-const exerciseScheduledAdmission=process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_ADMISSION_TEST==='1';
+const exerciseScheduledDispatch=process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_DISPATCH_TEST==='1';
+const exerciseScheduledAdmission=exerciseScheduledDispatch||process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_ADMISSION_TEST==='1';
 const exerciseArmChain=exerciseScheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_ARM_CHAIN_TEST==='1';
 const exerciseSourceReference=exerciseScheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_SOURCE_REFERENCE_TEST==='1';
 const exerciseReceiverAge=exerciseScheduledAdmission||process.env.LEAFSEAMER_EVENT_RECEIVER_NATIVE_TEST==='1';
@@ -335,7 +336,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   assert.equal((await store.sealImport(identity,{platform_profile_ref:profile,release_authorization_ref:authorized.result.reference})).state,'sealed');
   const sealed=store.sealedArtifact(identity),receipt=sealed.receipt;
   if(mode==='stage'||usesConfiguration){
-    const schema=scheduledAdmission?112:mode===currentSchemaExecution?103:mode===commandMigrationExecution?102:obs?99:mode.endsWith('_ready_automatic')||armChain?97:mode.endsWith('_ready_manual_migration')?95:sourceReferenceCapture?94:firstEnrollment?93:referenceWatermark || finalAdmissionOmissions[mode]==='command_issue_order'?92:referenceAcceptance?90:referenceSchema?88:mode===retirementSchemaExecution?80:mode===preparationSchemaExecution?(preserveExecutionHistory?78:79):mode.endsWith('_capture_events')?(scopeMigration?64:subscriptionMigration?65:sourceProjectionMigration?66:snapshotMigration?67:channelMigration?68:80):mode==='supervisor_create_module_writable_peer_capabilities'?62:mode.endsWith('_successor_control')||mode.includes('_control_queued')||mode.endsWith('_control_unresolved')?58:mode.includes('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
+    const schema=scheduledAdmission?113:mode===currentSchemaExecution?103:mode===commandMigrationExecution?102:obs?99:mode.endsWith('_ready_automatic')||armChain?97:mode.endsWith('_ready_manual_migration')?95:sourceReferenceCapture?94:firstEnrollment?93:referenceWatermark || finalAdmissionOmissions[mode]==='command_issue_order'?92:referenceAcceptance?90:referenceSchema?88:mode===retirementSchemaExecution?80:mode===preparationSchemaExecution?(preserveExecutionHistory?78:79):mode.endsWith('_capture_events')?(scopeMigration?64:subscriptionMigration?65:sourceProjectionMigration?66:snapshotMigration?67:channelMigration?68:80):mode==='supervisor_create_module_writable_peer_capabilities'?62:mode.endsWith('_successor_control')||mode.includes('_control_queued')||mode.endsWith('_control_unresolved')?58:mode.includes('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
     let controllerStore=openStorage(core),manager;
     try{
       let installations=controllerStore.extensionInstallations;installations.bindSource(store);
@@ -731,7 +732,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
    source_reference_capture:sourceReferenceCapture,native_receiver_age:sourceReferenceCapture&&exerciseReceiverAge,
    incremental_source_event:mode.endsWith('_capture_events')&&!scopeMigration&&!subscriptionMigration&&!sourceProjectionMigration&&!snapshotMigration&&!channelMigration,
    first_enrollment:firstEnrollment,publication_gui:publicationGui,arm_target:armChain?runtimeInput.devices[1]:null,
-   target_gate_only:targetGateOnly,verify_armed_target_ready:armedTargetReady,verify_armed_target_dispatch:armedTargetDispatch,focused_dispatch:focusedDispatch,scheduled_admission:scheduledAdmission};}
+   target_gate_only:targetGateOnly,verify_armed_target_ready:armedTargetReady,verify_armed_target_dispatch:armedTargetDispatch,focused_dispatch:focusedDispatch,scheduled_admission:scheduledAdmission,
+   scheduled_dispatch:scheduledAdmission&&exerciseScheduledDispatch};}
   let runFence=null;
   if(mode===retirementSchemaExecution||mode===preparationSchemaExecution&&!preserveExecutionHistory){
     const {adoptRunGenerationDenial}=await load('run-generation-denial.mjs');
@@ -955,6 +957,19 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
         assert.equal(source.schedule_binding.admission_ref.digest,digestValue(admissionProof.admission));
         assert.deepEqual(source.schedule_binding.step_window_ref,admissionProof.admission.step_window_ref);
         assert.equal(db.prepare('SELECT body_digest FROM time_provider_reference_anchor WHERE anchor_id=?').pluck().get(accepted.anchor_ref.id),accepted.anchor_ref.digest);
+        if(exerciseScheduledDispatch){
+          const final=JSON.parse(db.prepare('SELECT body_jcs FROM command_final_admission WHERE command_id=?').pluck().get(id));
+          assert.equal(final.guard.time_required,true);
+          assert.equal(final.schedule_guard.occurrence_ref.id,admissionProof.admission.occurrence_id);
+          assert.equal(final.schedule_guard.admission_ref.digest,digestValue(admissionProof.admission));
+          assert.deepEqual(final.schedule_guard.step_window_ref,admissionProof.admission.step_window_ref);
+          assert.equal(final.schedule_guard.execution_id,admissionProof.admission.execution_id);
+          const settled=JSON.parse(db.prepare('SELECT record_jcs FROM command_lifecycle_revision WHERE command_id=? AND revision=5').pluck().get(id));
+          assert.equal(settled.state.outcome,'succeeded');
+          assert.equal(settled.completion.achieved,'effect_verified');
+          assert.equal(admissionProof.terminal.record_ref.digest,settled.record_digest);
+          assert.deepEqual(admissionProof.terminal.state,settled.state);
+        }
       }else if(armedTargetDispatch){
         const proof=frames.find(frame=>frame.event==='native-automation-target-dispatch');assert.ok(proof);
         assert.equal(proof.receiver_reference,exerciseReceiverAge?'native':'fixture');

@@ -349,6 +349,13 @@ sealed表示该次内容封存提交，不能代替当前可用性查询、安�
 
 跨仓本机联调使用`test/controller-materialization.integration.mjs`：先构建两仓，将`LEAFSEAMER_CONTROLLER_TEST_ROOT`设为Controller绝对路径，再运行`node --disallow-code-generation-from-strings --test test/controller-materialization.integration.mjs`。它使用临时安装库、真实进程与管道；合成发行／平台批准只供测试，不授予生产资格。
 
+Windows 定时派发验收还需构建采用同一 Controller 的 Seamer。将 `LEAFSEAMER_SEAMER_TEST_ROOT` 设为 Seamer 绝对路径，`LEAFSEAMER_SUPERVISOR_DIST` 设为含参考时间提供者的 Controller 制品目录。临时库使用 Schema 113，测试经回环双向 TLS 自动受理场次并核对实际模拟器效果、两端终态和活动槽释放。
+
+```powershell
+$env:LEAFSEAMER_SIMULATOR_SCHEDULED_DISPATCH_TEST = '1'
+node --disallow-code-generation-from-strings --test --test-name-pattern 'closure_cleanup_successor_capture_events$' test/controller-materialization.integration.mjs
+```
+
 Linux 安装协调者可通过 `@leafseamer/suite/installation` 对已校验的包调用 `prepareMaterialization(identity, {reader_sids: [], release_authorization_ref})`。安装账户独占准备目录，实物目录和文件分别使用 `0500` 和 `0400`。准备成功后，`platformQualifications.observe(identity)` 返回绑定当前文件系统和安装实现的资格范围。部署者持有相应验收批准和证据后，使用 `configure` 登记资格，再通过 `sealImport` 在安装库中生成收据。
 
 Linux 的本机 `queryIntake`、`verifyMaterialization` 及三个 `describe` 接口会复核当前发行信任、平台资格、内容身份与库存摘要。读取静态文档受原库存和字节预算约束。观察时间使用 Linux `/proc/uptime` 的启动时钟，按百分之一秒精度保守核验四秒窗口。[Linux 内核 uptime 实现](https://raw.githubusercontent.com/torvalds/linux/v6.12/fs/proc/uptime.c) · [安装库联调](test/content-preparation.test.mjs)

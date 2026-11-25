@@ -41,6 +41,7 @@ type AuthenticationInterval struct {
 	ObservedTickNS, ExpiresTickNS uint64
 	Binding, Acquisition          string
 	SourceReadTickNS              uint64
+	providerReadID                string
 	AcquisitionRef, PolicyRef     AuthenticationReference
 	RuntimeRef, SourceRef         AuthenticationReference
 	projection                    *authenticationProjection

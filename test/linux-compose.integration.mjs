@@ -184,7 +184,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   let ntsServer;
   assert.ok(!captureTest||referenceExecutable&&chronyFile);
   assert.ok(!qualifyReference||captureTest);
-  assert.ok(!captureNTS||captureTest&&!qualifyReference);
+  assert.ok(!captureNTS||captureTest);
   if(captureTest){
     let network;
     if(captureNTS){
@@ -1061,7 +1061,7 @@ function checkReferenceCaptures(db,role,key,packets,settings,qualified,nts){
       if(previous)assert.ok(BigInt(candidate.m1_tick_ns)-BigInt(previous.m4_tick_ns)>=16000000000n);
       previous=candidate;
       const anchors=db.prepare('SELECT body_jcs,body_digest FROM time_provider_reference_anchor WHERE capture_id=?').all(capture.capture_id);
-      assert.equal(anchors.length,qualified&&index===0?1:0);
+      assert.equal(anchors.length,qualified&&(nts||index===0)?1:0);
       if(anchors.length){
         const [{body_jcs,body_digest}]=anchors,anchor=JSON.parse(body_jcs);
         assert.equal(body_digest,'sha256:'+hash(body_jcs));
@@ -1075,7 +1075,29 @@ function checkReferenceCaptures(db,role,key,packets,settings,qualified,nts){
           .get(bundle.era.independent_time_ref.id,anchor.service_boot_id);
         assert.deepEqual({...authority},bundle.era.independent_time_ref);
         assert.equal(bundle.error.upstream_age_upper_at_m1_ns,anchor.evidence.upstream_age_at_m1_ns);
-        assert.ok(BigInt(anchor.evidence.upstream_age_at_m1_ns)>1000000000n);
+        if(nts){
+          const {bootstrap}=anchor.qualification_original,{bootstrap_digest,...original}=bootstrap;
+          const signed=JSON.stringify(original);
+          assert.equal(bootstrap_digest,'sha256:'+hash(signed));
+          assert.deepEqual(bundle.authentication.bootstrap_ref,{id:bootstrap.bootstrap_id,revision:'1',digest:bootstrap_digest});
+          assert.equal(bootstrap.key_reply_digest,candidate.key_reply_digest);
+          assert.equal(bootstrap.capture_ref.id,capture.capture_id);
+          assert.equal(bootstrap.alpn,'ntske/1');
+          assert.equal(bootstrap.aead_algorithm,15);
+          assert.equal(bundle.authentication.mode,'nts');
+          assert.ok(bootstrap.root_digests.includes(bootstrap.chain_digests.at(-1)));
+          assert.equal(Object.keys(bootstrap.reads).length,4);
+          for(const read of Object.values(bootstrap.reads)){
+            const saved=db.prepare('SELECT id,revision,digest FROM authentication_clock_acquisition WHERE id=? AND service_boot_id=?')
+              .get(read.acquisition_ref.id,anchor.service_boot_id);
+            assert.deepEqual({...saved},read.acquisition_ref);
+            assert.ok(BigInt(read.read_tick_ns)<=BigInt(read.tick_ns));
+            assert.ok(BigInt(read.tick_ns)<BigInt(read.valid_before_tick_ns));
+          }
+          assert.ok(BigInt(bootstrap.reads.send.tick_ns)<=BigInt(candidate.m1_tick_ns));
+          assert.ok(BigInt(bootstrap.reads.receive.read_tick_ns)>=BigInt(candidate.m4_tick_ns));
+          assert.ok(!JSON.stringify(bundle).includes(candidate.key_reply));
+        }else assert.ok(BigInt(anchor.evidence.upstream_age_at_m1_ns)>1000000000n);
         assert.ok(BigInt(anchor.published_tick_ns)>=BigInt(anchor.m4_tick_ns));
       }
     }finally{plain.fill(0);}

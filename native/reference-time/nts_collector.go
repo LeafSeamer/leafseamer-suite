@@ -35,6 +35,7 @@ type NTSObservation struct {
 	ServerName                  string
 	TLSAuthentication           AuthenticationInterval
 	KeyCompletionAuthentication AuthenticationInterval
+	SendAuthentication          AuthenticationInterval
 	PollAuthentication          AuthenticationInterval
 	RootDigests, ChainDigests   [][32]byte
 	KeyReply                    []byte
@@ -264,11 +265,13 @@ func (c *NTSCollector) Poll(ctx context.Context, sourceID string) (NTSObservatio
 		source.forgetKeys()
 		return NTSObservation{}, errPacket
 	}
+	var sendAuth AuthenticationInterval
 	result, err := source.udp.exchange(ctx, session.observation.ntpEndpoint, c.tick, raw, func() (uint64, error) {
 		value, err := c.currentSession(ctx, session)
 		if err != nil {
 			return 0, err
 		}
+		sendAuth = value
 		clear(cookie)
 		session.cookies[0] = nil
 		session.cookies = session.cookies[1:]
@@ -307,7 +310,8 @@ func (c *NTSCollector) Poll(ctx context.Context, sourceID string) (NTSObservatio
 	result.Reply = *reply
 	evidence := session.observation
 	return NTSObservation{Exchange: result, KeyEndpoint: evidence.keEndpoint, ServerName: evidence.serverName,
-		TLSAuthentication: evidence.atTLS, KeyCompletionAuthentication: evidence.atCompletion, PollAuthentication: current,
+		TLSAuthentication: evidence.atTLS, KeyCompletionAuthentication: evidence.atCompletion,
+		SendAuthentication: sendAuth, PollAuthentication: current,
 		RootDigests: append([][32]byte(nil), evidence.roots...), ChainDigests: append([][32]byte(nil), evidence.chain...),
 		KeyReply: bytes.Clone(evidence.reply),
 	}, nil

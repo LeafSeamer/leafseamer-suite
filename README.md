@@ -161,7 +161,7 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 NTS 采集先以当前独立认证区间校验证书，再对获准的 UDP 端点进行有认证的采样。密钥协商材料和请求、响应原件存入加密归档，核心还会核对两份 UDP 原件的唯一标识和 NTP 请求关联。NTS 认证失败时停止该次采集。证书私钥由授时服务器持有，安装批准只包含 CA 证书。 [IETF RFC 8915](https://www.rfc-editor.org/rfc/rfc8915.html)
 
-需要业务 UTC 锚点时，采用 `leafseamer-linux-reference-capture-approval/2` 并增加 `reference`。每个服务保留自己的批准、采集和认证时钟原件。验收该授时环境后，再填写以下字段。
+需要业务 UTC 锚点时，采用 `leafseamer-linux-reference-capture-approval/2` 并增加 `reference`。当前两种采集模式均支持本配置。NTS 需要采用支持 `nts-bootstrap/1` 的提供者制品。每个服务保留自己的批准、采集和认证时钟原件。验收该授时环境后，再填写以下字段。
 
 | 字段 | 配置 |
 | --- | --- |
@@ -173,7 +173,7 @@ NTS 采集先以当前独立认证区间校验证书，再对获准的 UDP 端�
 | `max_upstream_age_ns`、`max_half_width_ns` | 上游年龄与 UTC 区间半宽上限，分别大于 0 且不超过 24 小时与 1 秒，采用纳秒字符串。 |
 | `leap_schedule` | `bulletin_ref` 引用已批准的公告原件，`valid_from_ns` 和 `valid_until_ns` 界定其覆盖期。`events` 为按时序排列的公告事件，每项包含 UTC 整秒的 `utc_ns` 和整数 `direction`（1 或 -1）。 |
 
-两端用当前独立认证区间裁定 NTP 时代，再由报文时间戳与批准误差计算条件 UTC 区间。公告覆盖期、事件前后各 24 小时、认证资格和批准期限一并限制锚点的发布与使用。通过全部检查才在原报文归档的事务中保存锚点与证据包。采样过期、认证时钟失效或批准撤下后，当前服务停止提供相应资格。监测发现上游或部署前提失效时，由宿主管理员撤下批准。更新批准使用新的受监督运行代。此配置支持批准端点的受信网络采集。NTS 证书证据包和条件 UTC 锚点、跨运行域恢复及实地授时环境验收仍待完成。[授时模型与资格要求](docs/rebirth-df03-time-profile-design.md)
+两端用当前独立认证区间裁定 NTP 时代，再由报文时间戳与批准误差计算条件 UTC 区间。公告覆盖期、事件前后各 24 小时、认证资格和批准期限一并限制锚点的发布与使用。通过全部检查才在原报文归档的事务中保存锚点与证据包。NTS 证据关联此尝试实际签发的四次认证读取、已验证的证书链摘要和密钥协商原件摘要。业务证据包通过 `authentication.bootstrap_ref` 引用完整的本地证据。采样过期、认证时钟失效或批准撤下后，当前服务停止提供相应资格。监测发现上游或部署前提失效时，由宿主管理员撤下批准。更新批准使用新的受监督运行代。跨运行域恢复及实地授时环境仍待验收。[授时模型与资格要求](docs/rebirth-df03-time-profile-design.md)
 
 核心准入需要启停账本 Schema 2 或更高版本。首次初始化采用 Schema 3。已有 Schema 1 可继续运行普通保护态计划，也可在停机时显式升级，保留身份标记与原启停记录。`admission(role)` 查询已持久保存的核心准入原件。[Compose 联调](test/linux-compose.integration.mjs)
 

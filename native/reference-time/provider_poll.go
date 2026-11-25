@@ -3,11 +3,14 @@ package collector
 import (
 	"context"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"net/netip"
 	"strconv"
 	"time"
+
+	"github.com/facebook/time/ntp/ntske"
 )
 
 const providerCaptureMaximum = 98304
@@ -136,6 +139,7 @@ type providerPoll struct {
 	sequence          uint64
 	endpoint          netip.AddrPort
 	nts               *NTSSourceConfig
+	ntsBootstrap      bool
 	minimum           uint64
 	persistentControl bool
 }
@@ -195,6 +199,7 @@ func parseProviderPoll(frame wireObject, bindingDigest, serviceBoot string) (pro
 			return providerPoll{}, errProviderLink
 		}
 		poll.nts = &config
+		poll.ntsBootstrap = network["bootstrap_evidence"] == "nts-bootstrap/1"
 	default:
 		return providerPoll{}, errProviderLink
 	}
@@ -225,7 +230,11 @@ func wireNTSConfig(object wireObject) (NTSSourceConfig, bool) {
 	roots, _ := object["root_der"].([]any)
 	targets, _ := object["targets"].([]any)
 	preferred, _ := object["default_target"].(map[string]any)
-	if !fields(object, "authentication default_target key_endpoint root_der server_name targets") ||
+	keys := "authentication default_target key_endpoint root_der server_name targets"
+	if object["bootstrap_evidence"] == "nts-bootstrap/1" {
+		keys = "authentication bootstrap_evidence default_target key_endpoint root_der server_name targets"
+	}
+	if !fields(object, keys) ||
 		len(roots) < 1 || len(roots) > 8 || len(targets) < 1 || len(targets) > 16 || !fields(preferred, "name port") {
 		return config, false
 	}
@@ -252,6 +261,24 @@ func wireNTSConfig(object wireObject) (NTSSourceConfig, bool) {
 	return config, config.KeyEndpoint.IsValid() && config.Targets[config.DefaultTarget].IsValid()
 }
 
+func ntsBootstrapObservation(value NTSObservation) wireObject {
+	read := func(interval AuthenticationInterval) wireObject {
+		return wireObject{"read_id": interval.providerReadID, "tick_ns": strconv.FormatUint(interval.ObservedTickNS, 10)}
+	}
+	digests := func(values [][32]byte) []string {
+		result := make([]string, 0, len(values))
+		for _, value := range values {
+			result = append(result, "sha256:"+hex.EncodeToString(value[:]))
+		}
+		return result
+	}
+	return wireObject{"format": "nts-bootstrap/1", "key_endpoint": value.KeyEndpoint.String(), "server_name": value.ServerName,
+		"tls_version": "1.3", "alpn": ntske.ALPNProtocol, "aead_algorithm": int(ntsAlgorithm),
+		"root_digests": digests(value.RootDigests), "chain_digests": digests(value.ChainDigests),
+		"tls": read(value.TLSAuthentication), "key_completion": read(value.KeyCompletionAuthentication),
+		"send": read(value.SendAuthentication), "receive": read(value.PollAuthentication)}
+}
+
 func runProviderPoll(ctx context.Context, poll providerPoll, auth AuthenticationSource) wireObject {
 	reply := wireObject{"status": "unavailable", "candidate": nil, "control": nil}
 	now, err := nativeTick()
@@ -267,6 +294,7 @@ func runProviderPoll(ctx context.Context, poll providerPoll, auth Authentication
 	}
 	var result Exchange
 	var keyReply, keyReplyDigest any
+	var bootstrap wireObject
 	if poll.nts == nil {
 		collector, createErr := NewTrustedNetworkCollector(map[string]netip.AddrPort{poll.id: poll.endpoint})
 		if createErr != nil {
@@ -290,6 +318,9 @@ func runProviderPoll(ctx context.Context, poll providerPoll, auth Authentication
 		if err == nil {
 			keyReply = base64.RawURLEncoding.EncodeToString(observed.KeyReply)
 			keyReplyDigest = hashWire(observed.KeyReply)
+			if poll.ntsBootstrap {
+				bootstrap = ntsBootstrapObservation(observed)
+			}
 		}
 		clear(observed.KeyReply)
 	}
@@ -304,9 +335,13 @@ func runProviderPoll(ctx context.Context, poll providerPoll, auth Authentication
 		reply["status"] = "failed"
 	default:
 		reply["status"] = "candidate"
-		reply["candidate"] = wireObject{"endpoint": result.Endpoint.String(), "m1_tick_ns": strconv.FormatUint(result.SendBeforeTickNS, 10),
+		candidate := wireObject{"endpoint": result.Endpoint.String(), "m1_tick_ns": strconv.FormatUint(result.SendBeforeTickNS, 10),
 			"m4_tick_ns": strconv.FormatUint(result.ReceiveAfterTickNS, 10), "key_reply": keyReply, "key_reply_digest": keyReplyDigest,
 			"request": base64.RawURLEncoding.EncodeToString(result.Request), "response": base64.RawURLEncoding.EncodeToString(result.Response)}
+		if bootstrap != nil {
+			candidate["nts_bootstrap"] = bootstrap
+		}
+		reply["candidate"] = candidate
 	}
 	return reply
 }

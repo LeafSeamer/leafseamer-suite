@@ -170,6 +170,6 @@ func readProviderAuthentication(raw []byte, id, bindingDigest string, domain wir
 	}
 	return AuthenticationInterval{
 		Lower: lo, Upper: hi, ObservedTickNS: received, ExpiresTickNS: expires, Binding: hashWire(authority), Acquisition: acquisition.ID,
-		SourceReadTickNS: tick, AcquisitionRef: acquisition, PolicyRef: policy, RuntimeRef: runtime, SourceRef: source, projection: &projection,
+		SourceReadTickNS: tick, providerReadID: id, AcquisitionRef: acquisition, PolicyRef: policy, RuntimeRef: runtime, SourceRef: source, projection: &projection,
 	}, nil
 }

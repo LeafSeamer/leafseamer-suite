@@ -27,6 +27,42 @@ function run(program,args,timeout=30000){
 }
 const docker=(...args)=>run('docker',args,90000);
 
+async function startReferenceNTS(t,root,name,{certificate_file,private_key_file}){
+  const udp=dgram.createSocket('udp4'),tcp=net.createServer();
+  udp.bind(0,'127.0.0.1');tcp.listen(0,'127.0.0.1');
+  await Promise.all([once(udp,'listening'),once(tcp,'listening')]);
+  const port=udp.address().port,keyPort=tcp.address().port;
+  await Promise.all([new Promise(resolve=>udp.close(resolve)),new Promise(resolve=>tcp.close(resolve))]);
+  const config=path.join(root,'reference-nts.conf');
+  const commandSocket=path.join(fs.mkdtempSync(path.join(root,'nts-control-')),'server.sock');
+  fs.writeFileSync(config,['user root','bindaddress 127.0.0.1','allow 127.0.0.1','cmdport 0',
+    'bindcmdaddress '+commandSocket,'pidfile '+path.join(root,'reference-nts.pid'),
+    'port '+port,'ntsport '+keyPort,'local stratum 9','ntsservercert '+certificate_file,'ntsserverkey '+private_key_file].join('\n')+'\n',
+  {mode:0o600});
+  const service=spawn('/usr/sbin/chronyd',['-d','-x','-f',config],{stdio:['ignore','ignore','pipe']});
+  const exited=once(service,'close');
+  let diagnostics='';
+  service.stderr.setEncoding('utf8').on('data',chunk=>{diagnostics=(diagnostics+chunk).slice(-8192);});
+  t.after(async()=>{if(service.exitCode===null)service.kill();await exited;});
+  const deadline=performance.now()+4000;
+  for(;;){
+    assert.ok(service.exitCode===null&&performance.now()<deadline,'NTS server unavailable '+diagnostics);
+    const probe=net.createConnection(keyPort,'127.0.0.1');
+    try{await once(probe,'connect');break;}catch{await delay(100);}finally{probe.destroy();}
+  }
+  const network={authentication:'nts',server_name:name,key_endpoint:'127.0.0.1:'+keyPort,
+    root_der:[new crypto.X509Certificate(fs.readFileSync(certificate_file)).raw.toString('base64url')],
+    default_target:{name:'127.0.0.1',port},targets:[{name:'127.0.0.1',port,endpoint:'127.0.0.1:'+port}]};
+  const stats=()=>run('/usr/bin/chronyc',['-u','root','-n','-h',commandSocket,'serverstats'],1000);
+  assert.ok(fs.existsSync(commandSocket),diagnostics);
+  stats();
+  return {network,stats,count(){
+    const count=/^Authenticated NTP packets\s*:\s*(\d+)$/m.exec(stats());
+    assert.ok(count,'Chrony authenticated packet counter missing');
+    return Number(count[1]);
+  }};
+}
+
 test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及数据',{
   skip:process.platform!=='linux'||!guiRoot||Object.values(images).some(value=>!value),timeout:180000
 },async t=>{
@@ -143,31 +179,41 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
   const captureTest=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_CAPTURE==='1';
   const qualifyReference=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_QUALIFICATION==='1';
+  const captureNTS=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_NTS==='1';
   const captureKeys={},capturePackets=new Map(),independentSources={};
+  let ntsServer;
   assert.ok(!captureTest||referenceExecutable&&chronyFile);
   assert.ok(!qualifyReference||captureTest);
+  assert.ok(!captureNTS||captureTest&&!qualifyReference);
   if(captureTest){
-    const provider=dgram.createSocket('udp4');
-    provider.bind(0,'127.0.0.1');await once(provider,'listening');
-    t.after(()=>new Promise(resolve=>provider.close(resolve)));
-    provider.on('message',(request,peer)=>{
-      if(request.length!==48||request[0]!==35)return;
-      const reply=Buffer.alloc(48);reply[0]=36;reply[1]=1;
-      if(qualifyReference){
-        const received=BigInt(Date.now()),stamp=(offset,ms)=>{
-          reply.writeUInt32BE(Number((ms/1000n+2208988800n)&0xffffffffn),offset);
-          reply.writeUInt32BE(Number((ms%1000n)*(1n<<32n)/1000n),offset+4);
-        };
-        reply.writeInt8(-20,3);
-        stamp(16,received-(capturePackets.size<2?1000n:180000n));
-        stamp(32,received);stamp(40,BigInt(Date.now()));
-      }else{reply[19]=1;reply[35]=2;reply[43]=3;}
-      request.copy(reply,24,40,48);
-      capturePackets.set(request.toString('base64url'),reply.toString('base64url'));
-      provider.send(reply,peer.port,peer.address);
-    });
+    let network;
+    if(captureNTS){
+      const name='reference-nts.fixture.invalid';
+      ntsServer=await startReferenceNTS(t,root,name,certificates('reference-nts',name));
+      network=ntsServer.network;
+    }else{
+      const provider=dgram.createSocket('udp4');
+      provider.bind(0,'127.0.0.1');await once(provider,'listening');
+      t.after(()=>new Promise(resolve=>provider.close(resolve)));
+      provider.on('message',(request,peer)=>{
+        if(request.length!==48||request[0]!==35)return;
+        const reply=Buffer.alloc(48);reply[0]=36;reply[1]=1;
+        if(qualifyReference){
+          const received=BigInt(Date.now()),stamp=(offset,ms)=>{
+            reply.writeUInt32BE(Number((ms/1000n+2208988800n)&0xffffffffn),offset);
+            reply.writeUInt32BE(Number((ms%1000n)*(1n<<32n)/1000n),offset+4);
+          };
+          reply.writeInt8(-20,3);
+          stamp(16,received-(capturePackets.size<2?1000n:180000n));
+          stamp(32,received);stamp(40,BigInt(Date.now()));
+        }else{reply[19]=1;reply[35]=2;reply[43]=3;}
+        request.copy(reply,24,40,48);
+        capturePackets.set(request.toString('base64url'),reply.toString('base64url'));
+        provider.send(reply,peer.port,peer.address);
+      });
+      network={authentication:'trusted_network',endpoint:'127.0.0.1:'+provider.address().port};
+    }
     const {canonical}=await import('../dist/import-input.mjs'),now=BigInt(Date.now())*1000000n;
-    const network={authentication:'trusted_network',endpoint:'127.0.0.1:'+provider.address().port};
     plan.reference_providers.capture=Object.fromEntries([['controller',controller],['seamer',seamer]].map(([role,scope])=>{
       const directory=path.join(root,role+'-reference-source'),key=crypto.randomBytes(32);
       fs.mkdirSync(directory,{mode:0o750});fs.chownSync(directory,0,scope.gid);
@@ -182,7 +228,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       const approval=canonical({format:'leafseamer-linux-reference-capture-approval/'+(qualified?'2':'1'),
         scope:{service_id:scope.service_id,database_instance_id:scope.database_instance_id},
         provider_digest:plan.reference_providers.image.sha256,approval_id:crypto.randomUUID(),approval_revision:'1',network,
-        archive_budget_bytes:65536,capture_key_id:crypto.randomUUID(),not_before_ns:String(now-60000000000n),expires_ns:String(now+180000000000n),
+        archive_budget_bytes:captureNTS?458752:65536,capture_key_id:crypto.randomUUID(),
+        not_before_ns:String(now-60000000000n),expires_ns:String(now+180000000000n),
         ...(qualified&&{reference:qualified})});
       for(const [name,bytes] of [['approval.json',approval],['capture.key',key]]){
         const filename=path.join(directory,name);fs.writeFileSync(filename,bytes,{mode:0o440});fs.chownSync(filename,0,scope.gid);
@@ -510,20 +557,23 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     await delay(850);
     for(const role of ['controller','seamer'])state(role,'available','verified');
     if(captureTest){
-      async function awaitCaptures(count,wait){
+      const countCaptures=()=>ntsServer?.count()??capturePackets.size;
+      async function awaitCaptures(expected,wait){
         const deadline=performance.now()+wait;
-        while(capturePackets.size<count){
-          if(performance.now()>=deadline)assert.fail('reference capture timeout\n'+compose('logs','--no-color'));
+        let count;
+        while((count=countCaptures())<expected){
+          if(performance.now()>=deadline)assert.fail('reference capture timeout\n'+(ntsServer?.stats()??'')+compose('logs','--no-color'));
           clocks.controller.publish();clocks.seamer.publish();await delay(1000);
         }
-        assert.equal(capturePackets.size,count);
+        assert.equal(count,expected);
       }
       await awaitCaptures(2,6000);
+      if(captureNTS)await delay(500);
       const directory=plan.reference_providers.capture.controller.directory;
       fs.renameSync(path.join(directory,'approval.json'),path.join(directory,'withdrawn.json'));
       await awaitCaptures(3,22000);
       await delay(500);
-      assert.equal(capturePackets.size,3);
+      assert.equal(countCaptures(),3);
     }
     const old=clocks.controller.publish();
     for(let i=0;i<4;i++){
@@ -658,7 +708,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           assert.equal(original.body_jcs,prior.text);
           assert.equal(original.body_digest,prior.digest);
           assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
-          if(captureTest)checkReferenceCaptures(db,role,captureKeys[role],capturePackets,plan.reference_providers.capture[role],qualifyReference);
+          if(captureTest)checkReferenceCaptures(db,role,captureKeys[role],capturePackets,plan.reference_providers.capture[role],qualifyReference,captureNTS);
         }
       }
       if(workerControl&&role==='controller'){
@@ -965,7 +1015,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
 });
 
-function checkReferenceCaptures(db,role,key,packets,settings,qualified){
+function checkReferenceCaptures(db,role,key,packets,settings,qualified,nts){
   const rows=db.prepare(`SELECT c.ciphertext,c.nonce,c.tag,c.body_jcs,r.body_jcs AS reservation,x.confirmation_jcs AS acknowledgement,
     a.body_jcs AS attempt FROM time_provider_capture c JOIN time_provider_poll_reservation r USING(poll_id)
     JOIN time_provider_poll_attempt a USING(poll_id) JOIN time_provider_poll_release x USING(poll_id) ORDER BY c.rowid`).all();
@@ -985,7 +1035,28 @@ function checkReferenceCaptures(db,role,key,packets,settings,qualified){
     try{
       assert.equal('sha256:'+hash(plain),capture.plaintext_digest);
       const candidate=JSON.parse(plain.toString('utf8'));
-      assert.equal(packets.get(candidate.request),candidate.response);
+      if(nts){
+        assert.equal(reservation.reserved_bytes,114688);
+        assert.equal(reservation.authorization.poll_lease_ns,'5000000000');
+        const ke=Buffer.from(candidate.key_reply,'base64url');
+        try{
+          assert.equal(candidate.key_reply_digest,'sha256:'+hash(ke));
+          const records=[];
+          for(let offset=0;offset<ke.length;){
+            assert.ok(ke.length-offset>=4);
+            const type=ke.readUInt16BE(offset)&0x7fff,length=ke.readUInt16BE(offset+2);
+            assert.ok(offset+4+length<=ke.length);records.push(type);offset+=4+length;
+          }
+          assert.ok([1,4,5].every(type=>records.includes(type)));
+          assert.equal(records.at(-1),0);
+          const request=Buffer.from(candidate.request,'base64url'),response=Buffer.from(candidate.response,'base64url');
+          assert.ok(request.length>48&&response.length>48);
+          assert.deepEqual(request.subarray(40,48),response.subarray(24,32));
+          assert.equal(request.readUInt16BE(48),0x0104);
+          assert.equal(response.readUInt16BE(48),0x0104);
+          assert.deepEqual(request.subarray(52,84),response.subarray(52,84));
+        }finally{ke.fill(0);}
+      }else assert.equal(packets.get(candidate.request),candidate.response);
       assert.ok(BigInt(candidate.m1_tick_ns)>=BigInt(attempt.attempted_tick_ns));
       if(previous)assert.ok(BigInt(candidate.m1_tick_ns)-BigInt(previous.m4_tick_ns)>=16000000000n);
       previous=candidate;

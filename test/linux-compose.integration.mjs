@@ -12,6 +12,7 @@ import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
 import {DatabaseSync} from 'node:sqlite';
+import {inflateRawSync} from 'node:zlib';
 
 const images={controller:process.env.LEAFSEAMER_COMPOSE_CONTROLLER_IMAGE,seamer:process.env.LEAFSEAMER_COMPOSE_SEAMER_IMAGE,nginx:process.env.LEAFSEAMER_COMPOSE_NGINX_IMAGE};
 const guiRoot=process.env.LEAFSEAMER_COMPOSE_GUI_ROOT;
@@ -141,15 +142,26 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
   const chronyFile=process.env.LEAFSEAMER_TEST_CHRONY_PROFILE;
   const captureTest=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_CAPTURE==='1';
-  const captureKeys={},capturePackets=new Map();
+  const qualifyReference=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_QUALIFICATION==='1';
+  const captureKeys={},capturePackets=new Map(),independentSources={};
   assert.ok(!captureTest||referenceExecutable&&chronyFile);
+  assert.ok(!qualifyReference||captureTest);
   if(captureTest){
     const provider=dgram.createSocket('udp4');
     provider.bind(0,'127.0.0.1');await once(provider,'listening');
     t.after(()=>new Promise(resolve=>provider.close(resolve)));
     provider.on('message',(request,peer)=>{
       if(request.length!==48||request[0]!==35)return;
-      const reply=Buffer.alloc(48);reply[0]=36;reply[1]=1;reply[19]=1;reply[35]=2;reply[43]=3;
+      const reply=Buffer.alloc(48);reply[0]=36;reply[1]=1;
+      if(qualifyReference){
+        const received=BigInt(Date.now()),stamp=(offset,ms)=>{
+          reply.writeUInt32BE(Number((ms/1000n+2208988800n)&0xffffffffn),offset);
+          reply.writeUInt32BE(Number((ms%1000n)*(1n<<32n)/1000n),offset+4);
+        };
+        reply.writeInt8(-20,3);
+        stamp(16,received-(capturePackets.size<2?1000n:180000n));
+        stamp(32,received);stamp(40,BigInt(Date.now()));
+      }else{reply[19]=1;reply[35]=2;reply[43]=3;}
       request.copy(reply,24,40,48);
       capturePackets.set(request.toString('base64url'),reply.toString('base64url'));
       provider.send(reply,peer.port,peer.address);
@@ -160,10 +172,18 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       const directory=path.join(root,role+'-reference-source'),key=crypto.randomBytes(32);
       fs.mkdirSync(directory,{mode:0o750});fs.chownSync(directory,0,scope.gid);
       captureKeys[role]=key;
-      const approval=canonical({format:'leafseamer-linux-reference-capture-approval/1',
+      const original=label=>({id:crypto.randomUUID(),revision:'1',digest:'sha256:'+hash('compose-reference:'+label)});
+      const qualified=qualifyReference?{utc_mode:'normal_utc_no_smear',elapsed_error_ppm:100,span_quantization_ns:'1000',
+        t2_error_ns:'20000000',t3_error_ns:'20000000',tref_error_ns:'20000000',max_upstream_age_ns:'60000000000',max_half_width_ns:'500000000',
+        independent_source_ref:independentSources[role]=original(role+'-chrony'),monitoring_ref:original('loopback-monitoring'),
+        platform_qualification_ref:original('vm-clock-boottime'),source_provenance_ref:original('loopback-server'),
+        leap_schedule:{bulletin_ref:original('isolated-test-leap-window'),events:[],valid_from_ns:String(now-60000000000n),
+          valid_until_ns:String(now+180000000000n)}}:null;
+      const approval=canonical({format:'leafseamer-linux-reference-capture-approval/'+(qualified?'2':'1'),
         scope:{service_id:scope.service_id,database_instance_id:scope.database_instance_id},
         provider_digest:plan.reference_providers.image.sha256,approval_id:crypto.randomUUID(),approval_revision:'1',network,
-        archive_budget_bytes:65536,capture_key_id:crypto.randomUUID(),not_before_ns:String(now-60000000000n),expires_ns:String(now+180000000000n)});
+        archive_budget_bytes:65536,capture_key_id:crypto.randomUUID(),not_before_ns:String(now-60000000000n),expires_ns:String(now+180000000000n),
+        ...(qualified&&{reference:qualified})});
       for(const [name,bytes] of [['approval.json',approval],['capture.key',key]]){
         const filename=path.join(directory,name);fs.writeFileSync(filename,bytes,{mode:0o440});fs.chownSync(filename,0,scope.gid);
       }
@@ -207,7 +227,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         fs.writeFileSync(privateFile,privateKey.export({format:'pem',type:'pkcs8'}),{mode:0o600});
         const approval=()=>({id:crypto.randomUUID(),revision:'1',digest:'sha256:'+'a'.repeat(64)});
         const policy=seal({id:crypto.randomUUID(),revision:'1',service_id:scope.service_id,runtime_profile_ref:approval(),
-          native_artifact_ref:approval(),system_time_source_ref:approval(),environment_approval_ref:approval(),
+          native_artifact_ref:approval(),system_time_source_ref:independentSources[role]??approval(),environment_approval_ref:approval(),
           health_profile_ref:{...approval(),digest:digest(chrony)},max_system_error_ns:'100000000',
           wall_quantization_ns:'100',monotonic_quantization_ns:'10',drift_ppb:1000,capture_limit_ns:'20000000',sample_period_ns:'500000000',
           sample_ttl_ns:'5000000000',sample_window_policy:'authentication-clock-sample/2'});
@@ -638,7 +658,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           assert.equal(original.body_jcs,prior.text);
           assert.equal(original.body_digest,prior.digest);
           assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
-          if(captureTest)checkReferenceCaptures(db,role,captureKeys[role],capturePackets,plan.reference_providers.capture[role]);
+          if(captureTest)checkReferenceCaptures(db,role,captureKeys[role],capturePackets,plan.reference_providers.capture[role],qualifyReference);
         }
       }
       if(workerControl&&role==='controller'){
@@ -945,17 +965,18 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   }
 });
 
-function checkReferenceCaptures(db,role,key,packets,settings){
+function checkReferenceCaptures(db,role,key,packets,settings,qualified){
   const rows=db.prepare(`SELECT c.ciphertext,c.nonce,c.tag,c.body_jcs,r.body_jcs AS reservation,x.confirmation_jcs AS acknowledgement,
     a.body_jcs AS attempt FROM time_provider_capture c JOIN time_provider_poll_reservation r USING(poll_id)
     JOIN time_provider_poll_attempt a USING(poll_id) JOIN time_provider_poll_release x USING(poll_id) ORDER BY c.rowid`).all();
   assert.equal(rows.length,role==='controller'?1:2);
   assert.equal(db.prepare('SELECT count(*) AS count FROM time_provider_poll_attempt').get().count,rows.length);
   let previous;
-  for(const row of rows){
+  for(const [index,row] of rows.entries()){
     const capture=JSON.parse(row.body_jcs),reservation=JSON.parse(row.reservation),attempt=JSON.parse(row.attempt);
     const ack=JSON.parse(row.acknowledgement);
-    assert.equal(reservation.authorization.approval_ref.digest,settings.approval_sha256);
+    assert.equal(reservation.authorization.configuration_ref.digest,settings.approval_sha256);
+    if(!qualified) assert.equal(reservation.authorization.approval_ref.digest,settings.approval_sha256);
     assert.equal(ack.type,'POLL_STORED_ACK');assert.equal(ack.receipt.capture_ref.id,capture.capture_id);
     assert.equal(ack.receipt.plaintext_digest,capture.plaintext_digest);
     const decipher=crypto.createDecipheriv('aes-256-gcm',key,row.nonce);decipher.setAuthTag(row.tag);
@@ -968,7 +989,29 @@ function checkReferenceCaptures(db,role,key,packets,settings){
       assert.ok(BigInt(candidate.m1_tick_ns)>=BigInt(attempt.attempted_tick_ns));
       if(previous)assert.ok(BigInt(candidate.m1_tick_ns)-BigInt(previous.m4_tick_ns)>=16000000000n);
       previous=candidate;
+      const anchors=db.prepare('SELECT body_jcs,body_digest FROM time_provider_reference_anchor WHERE capture_id=?').all(capture.capture_id);
+      assert.equal(anchors.length,qualified&&index===0?1:0);
+      if(anchors.length){
+        const [{body_jcs,body_digest}]=anchors,anchor=JSON.parse(body_jcs);
+        assert.equal(body_digest,'sha256:'+hash(body_jcs));
+        const packed=anchor.reference_bundle;
+        const bundle=JSON.parse(inflateRawSync(Buffer.from(packed.body,'base64url'))).bundle;
+        assert.equal(packed.digest,bundle.bundle_digest);
+        assert.deepEqual(bundle.anchor.utc_at_anchor,{lower_ns:anchor.lower_utc_ns,upper_ns:anchor.upper_utc_ns});
+        assert.equal(bundle.exchange.parser_receipt_ref.id,capture.capture_id);
+        assert.deepEqual(bundle.era.independent_time_ref,anchor.qualification_original.clock_sample.acquisition_ref);
+        const authority=db.prepare('SELECT id,revision,digest FROM authentication_clock_acquisition WHERE id=? AND service_boot_id=?')
+          .get(bundle.era.independent_time_ref.id,anchor.service_boot_id);
+        assert.deepEqual({...authority},bundle.era.independent_time_ref);
+        assert.equal(bundle.error.upstream_age_upper_at_m1_ns,anchor.evidence.upstream_age_at_m1_ns);
+        assert.ok(BigInt(anchor.evidence.upstream_age_at_m1_ns)>1000000000n);
+        assert.ok(BigInt(anchor.published_tick_ns)>=BigInt(anchor.m4_tick_ns));
+      }
     }finally{plain.fill(0);}
+  }
+  if(qualified&&role==='controller'){
+    const failures=db.prepare('SELECT cause FROM time_provider_reference_invalidation').all();
+    assert.deepEqual(failures.map(row=>row.cause),['authority_changed']);
   }
 }
 

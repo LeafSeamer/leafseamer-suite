@@ -152,7 +152,21 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 `approval.json` 采用规范 JSON `leafseamer-linux-reference-capture-approval/1`，使用 `scope.service_id`、`scope.database_instance_id` 和 `provider_digest` 绑定服务与制品。`approval_id`、`approval_revision` 和 `capture_key_id` 标识批准及归档密钥，`not_before_ns` 与 `expires_ns` 采用 UTC 纳秒十进制字符串。`network` 填写 `authentication: "trusted_network"` 和已批准的数字端点 `endpoint`。`archive_budget_bytes` 为累计归档预留上限，为 16 KiB 至 1 GiB 的整数，每次采样预留 16 KiB。
 
-有效的独立认证时钟限定采集授权期限。移走或改写批准文件会使当前运行停止后续采集。采集结果写入加密归档，同运行域内按至少 16 秒的间隔发起下一次采集。业务 UTC 锚点和跨运行域恢复仍待接入。
+有效的独立认证时钟限定采集授权期限。移走或改写批准文件会使当前运行停止后续采集。采集结果写入加密归档，同运行域内按至少 16 秒的间隔发起下一次采集。格式 `/1` 用于诊断归档。
+
+需要业务 UTC 锚点时，采用 `leafseamer-linux-reference-capture-approval/2` 并增加 `reference`。每个服务保留自己的批准、采集和认证时钟原件。验收该授时环境后，再填写以下字段。
+
+| 字段 | 配置 |
+| --- | --- |
+| `utc_mode` | `normal_utc_no_smear`。来源资格应覆盖 UTC 实现、无平滑和失效监测。 |
+| `independent_source_ref` | 与本服务认证时钟策略的 `system_time_source_ref` 一致。审核时确认其独立于业务采集报文和采集器。 |
+| `source_provenance_ref`、`monitoring_ref`、`platform_qualification_ref` | 分别引用上游来源、环境监测要求和平台时钟包络的批准原件。引用包含 `id`、`revision` 和 `digest`。 |
+| `elapsed_error_ppm`、`span_quantization_ns` | 经批准的单调计数误差包络。速率使用 1 至 1000 的整数，量化使用 1 至 1000000 的纳秒字符串。 |
+| `t2_error_ns`、`t3_error_ns`、`tref_error_ns` | 接收、发送和参考时间戳的误差上界，各采用大于 0 且不超过 1 秒的纳秒字符串。 |
+| `max_upstream_age_ns`、`max_half_width_ns` | 上游年龄与 UTC 区间半宽上限，分别大于 0 且不超过 24 小时与 1 秒，采用纳秒字符串。 |
+| `leap_schedule` | `bulletin_ref` 引用已批准的公告原件，`valid_from_ns` 和 `valid_until_ns` 界定其覆盖期。`events` 为按时序排列的公告事件，每项包含 UTC 整秒的 `utc_ns` 和整数 `direction`（1 或 -1）。 |
+
+两端用当前独立认证区间裁定 NTP 时代，再由报文时间戳与批准误差计算条件 UTC 区间。公告覆盖期、事件前后各 24 小时、认证资格和批准期限一并限制锚点的发布与使用。通过全部检查才在原报文归档的事务中保存锚点与证据包。采样过期、认证时钟失效或批准撤下后，当前服务停止提供相应资格。监测发现上游或部署前提失效时，由宿主管理员撤下批准。更新批准使用新的受监督运行代。此配置支持批准端点的受信网络采集。NTS 配置、跨运行域恢复及实地授时环境验收仍待完成。[授时模型与资格要求](docs/rebirth-df03-time-profile-design.md)
 
 核心准入需要启停账本 Schema 2 或更高版本。首次初始化采用 Schema 3。已有 Schema 1 可继续运行普通保护态计划，也可在停机时显式升级，保留身份标记与原启停记录。`admission(role)` 查询已持久保存的核心准入原件。[Compose 联调](test/linux-compose.integration.mjs)
 

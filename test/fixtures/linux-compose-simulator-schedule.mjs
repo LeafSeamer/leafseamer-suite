@@ -7,7 +7,7 @@ const id=()=>crypto.randomUUID();
 const waitingForClock=(response,body)=>response.status===503&&['WORKER_NOT_READY','CLOCK_UNTRUSTED'].includes(body.error);
 export const schedulePermissions=['schedule.read','schedule.publish','schedule.activate'];
 
-export async function runComposeSimulatorSchedule({armed,compiled,localRequest,bearer,readRun,waitFor}){
+export async function runComposeSimulatorSchedule({armed,compiled,localRequest,bearer,readRun,waitFor,withdrawReference=null}){
   async function request(operation,input,retryClock=false){
     const response=await localRequest(route,operation,input,bearer);
     const body=JSON.parse(response.data);
@@ -19,8 +19,10 @@ export async function runComposeSimulatorSchedule({armed,compiled,localRequest,b
     const {context_id}=await request('create-context',{operation_id,ttl_ms:30000,max_unique_requests:1});
     return {context_id,idempotency_key:id()};
   }
+  const priorRun=withdrawReference?await readRun():null;
+  if(priorRun){assert.equal(priorRun.lifecycle,'armed');assert.equal(priorRun.active_execution_id,null);}
   const schedule_id=id(),publish=await context('publishSchedule'),activate=await context('activateSchedule');
-  const local_start=new Date(Date.now()+8000).toISOString().slice(0,-1);
+  const start=Date.now()+8000,local_start=new Date(start).toISOString().slice(0,-1);
   const actionSteps=compiled.program.groups.flatMap(group=>group.steps.filter(step=>step.kind==='action'));
   assert.equal(actionSteps.length,1);
   const [{step_id,parameters}]=actionSteps;
@@ -40,6 +42,31 @@ export async function runComposeSimulatorSchedule({armed,compiled,localRequest,b
   };
   const tracking=await waitFor(read);
   assert.equal(tracking.state,'tracking',JSON.stringify(tracking));
+  if(withdrawReference){
+    assert.ok(Date.now()<start,'Schedule window opened before reference withdrawal');
+    const restore=withdrawReference();
+    let blocked;
+    try{
+      blocked=await waitFor(async()=>{
+        const occurrence=await read();
+        if(!occurrence)return null;
+        assert.ok(['tracking','reference_unavailable','blocked'].includes(occurrence.state),JSON.stringify(occurrence));
+        return occurrence.state==='blocked'&&occurrence;
+      },16000,'Scheduled occurrence did not persist its stop');
+      assert.equal(blocked.occurrence_id,tracking.occurrence_id);
+      assert.equal(blocked.stop.reason,'reference_time_lost');
+      assert.deepEqual(blocked.stop.boundary_ref,tracking.boundary_ref);
+      assert.deepEqual(blocked.stop.activation_ref,activation.ref);
+    }finally{restore();}
+    await delay(750);
+    assert.ok(Date.now()<start+12000,'The original step window expired before the stopped occurrence was checked again');
+    assert.deepEqual(await waitFor(read),blocked);
+    const run=await readRun();
+    assert.equal(run.active_execution_id,null);
+    assert.equal(run.lifecycle,'armed');
+    assert.equal(run.last_execution_id,priorRun.last_execution_id);
+    return blocked.stop;
+  }
   let qualification=null;
   const admission=await waitFor(async()=>{
     await delay(350);
@@ -65,6 +92,16 @@ export async function runComposeSimulatorSchedule({armed,compiled,localRequest,b
     return current;
   },18000).catch(error=>{throw new Error('Scheduled run did not settle '+JSON.stringify(observedRun),{cause:error});});
   return {admission,parameters,completedRun};
+}
+
+export function verifyDurableSimulatorScheduleStop(receiver,publisher,stopped,digest){
+  const {occurrence_id}=stopped;
+  const row=receiver.prepare('SELECT body_jcs,body_digest FROM schedule_occurrence_stop WHERE occurrence_id=?').get(occurrence_id);
+  assert.deepEqual(JSON.parse(row.body_jcs),stopped);
+  assert.equal(row.body_digest,digest(stopped));
+  assert.equal(receiver.prepare('SELECT 1 FROM schedule_execution_admission WHERE occurrence_id=?').get(occurrence_id),undefined);
+  assert.equal(publisher.prepare(`SELECT 1 FROM command_admission_source
+    WHERE json_extract(body_jcs,'$.metadata.dispatch.mode')='scheduled'`).get(),undefined);
 }
 
 export function verifyDurableSimulatorSchedule(receiver,publisher,{admission,parameters},digest){

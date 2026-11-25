@@ -95,6 +95,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const range='10.234.'+crypto.randomInt(1,255);
   const login={login:'compose.fixture',password:'Synthetic-compose-test-password-632'};
   const scheduledDispatch=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULED_DISPATCH==='1';
+  const scheduleClockLoss=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_CLOCK_LOSS==='1';
+  assert.ok(!scheduleClockLoss||scheduledDispatch);
   const referenceImage=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER;
   const referenceExecutable=scheduledDispatch?undefined:referenceImage,legacyReference={};
   let enrollment;
@@ -1108,6 +1110,13 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       return {containers,inbox:path.join(generationDirectory,'first-pairing'),phase:()=>phase,
         simulator:simulatorFiles,
         events:role=>docker('logs',containers[role]).split('\n').filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)),
+        ...(scheduleClockLoss&&{withdrawSeamerReference(){
+          const {directory}=scheduledReference.capture.seamer;
+          const approval=path.join(directory,'approval.json'),withdrawn=path.join(directory,'withdrawn.json');
+          assert.equal(fs.existsSync(withdrawn),false);
+          fs.renameSync(approval,withdrawn);
+          return ()=>fs.renameSync(withdrawn,approval);
+        }}),
         async stop(){
           clearInterval(renew);
           try{
@@ -1138,7 +1147,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     }
     await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
       verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch});
-    if(scheduledDispatch)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
+    if(scheduledDispatch&&!scheduleClockLoss)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
+    if(scheduleClockLoss)t.diagnostic('Seamer 授时失效后原场次持久停发，恢复审批文件后未补发');
     if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1')t.diagnostic('模拟器定义发布、审批原件和未布防运行已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1')t.diagnostic('模拟器运行的人类审批、Controller 认可和布防前置观察已核对');

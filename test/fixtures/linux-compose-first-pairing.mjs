@@ -11,7 +11,7 @@ import {readSimulatorFile,verifyComposeSimulatorSubscription,verifyDurableSimula
 import {approveComposeSimulatorRun,composeSimulatorDeviceScope,publishComposeSimulatorDefinition,runApprovalRoute,verifyDurableSimulatorPublication,
   verifyDurableSimulatorRunApproval} from './linux-compose-simulator-publication.mjs';
 
-import {runComposeSimulatorSchedule,schedulePermissions,verifyDurableSimulatorSchedule} from './linux-compose-simulator-schedule.mjs';
+import {runComposeSimulatorSchedule,schedulePermissions,verifyDurableSimulatorSchedule,verifyDurableSimulatorScheduleStop} from './linux-compose-simulator-schedule.mjs';
 
 const id=()=>crypto.randomUUID();
 const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
@@ -148,7 +148,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     ...publicationProfile,...armProfile},{...((verifyPublication||simulatorPublication)&&{[approvalFile]:approval}),
       ...(simulatorArmPreflight&&{[armFile]:armApproval})});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
-  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights,armedSimulator,scheduledSimulator,verifyReadyArmPreflight;
+  let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights,armedSimulator,scheduledSimulator,stoppedSchedule,verifyReadyArmPreflight;
   try{
     const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready'),scheduledDispatch?25000:12000,
       'Compose simulator did not publish its verified baseline'):null;
@@ -333,8 +333,10 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
           if(scheduledDispatch){
             const scheduleBearer=await issueToken(actor,service_id,['request.create',...schedulePermissions]);
             try{
-              scheduledSimulator=await runComposeSimulatorSchedule({armed,compiled:publishedSimulator.compiled,
-                localRequest,bearer:scheduleBearer,readRun,waitFor});
+              const result=await runComposeSimulatorSchedule({armed,compiled:publishedSimulator.compiled,
+                localRequest,bearer:scheduleBearer,readRun,waitFor,withdrawReference:generation.withdrawSeamerReference});
+              if(generation.withdrawSeamerReference)stoppedSchedule=result;
+              else scheduledSimulator=result;
             }catch(error){
               const failures=generation.events('controller').filter(frame=>['simulator_eligibility_failed','simulator_scheduled_command_failed'].includes(frame.event)).slice(-6);
               throw new Error('定时派发未完成 '+JSON.stringify(failures),{cause:error});
@@ -349,7 +351,8 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         await finishArmPreflights?.();
       }:null;
       simulatorSubscription=await verifyComposeSimulatorSubscription({plan,simulator:generation.simulator,baseline,pairing:activated,
-        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite,afterWrite,scheduledDispatch});
+        admin:(operation,request)=>admin(generation,operation,request),localRequest,waitFor,digest,beforeWrite,afterWrite,
+        expectedSettlements:scheduledDispatch&&!generation.withdrawSeamerReference?3:2});
     }else if(verifySourceSubscription){
       const route='/auth/local-source-subscriptions/v1',reference=entity_kind=>({authority_service_id:controller.service_id,
         database_instance_id:controller.database_instance_id,entity_kind,entity_id:id(),entity_epoch:id(),revision:'1',content_digest:'a'.repeat(64)});
@@ -409,7 +412,10 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
     if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription,scheduledDispatch});
-    if(scheduledDispatch)verifyDurableSimulatorSchedule(store,issuer,scheduledSimulator,digest);
+    if(scheduledDispatch){
+      if(generation.withdrawSeamerReference)verifyDurableSimulatorScheduleStop(store,issuer,stoppedSchedule,digest);
+      else verifyDurableSimulatorSchedule(store,issuer,scheduledSimulator,digest);
+    }
     if(simulatorPublication){assert.ok(publishedSimulator);verifyDurableSimulatorPublication(store,publishedSimulator,digest);}
     if(simulatorRunApproval){
       assert.ok(approvedSimulator);

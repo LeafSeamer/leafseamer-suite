@@ -15,7 +15,7 @@ export function readSimulatorFile(files,name){
   return fs.existsSync(files[name])&&fs.statSync(files[name]).size?JSON.parse(fs.readFileSync(files[name],'utf8')):null;
 }
 
-export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null,afterWrite=null,scheduledDispatch=false}){
+export async function verifyComposeSimulatorSubscription({plan,simulator,baseline,pairing,admin,localRequest,waitFor,digest,beforeWrite=null,afterWrite=null,expectedSettlements=2}){
   const {controller,seamer}=plan,{scope}=baseline;
   const pairing_ref={id:pairing.binding_id,revision:pairing.revision,digest:pairing.digest};
   const {not_before_ns,expires_ns}=pairing;
@@ -67,7 +67,7 @@ export async function verifyComposeSimulatorSubscription({plan,simulator,baselin
     const result=await waitFor(()=>readSimulatorFile(simulator,'result'));
     assert.deepEqual(result.simulatorEvent.incremental.event,event);
     assert.match(fs.readFileSync(simulator.groupFile+'/cgroup.events','utf8'),/^populated 0$/m);
-    assert.equal(publisher.prepare('SELECT count(*) AS n FROM command_settlement').get().n,scheduledDispatch?3:2);
+    assert.equal(publisher.prepare('SELECT count(*) AS n FROM command_settlement').get().n,expectedSettlements);
     return {linked,event,sourceKey:baseline.baseline.origin.source_key};
   }finally{publisher.close();}
 }

@@ -180,11 +180,13 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const captureTest=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_CAPTURE==='1';
   const qualifyReference=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_QUALIFICATION==='1';
   const captureNTS=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_NTS==='1';
+  const recoverReference=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_RECOVERY==='1';
   const captureKeys={},capturePackets=new Map(),independentSources={};
   let ntsServer;
   assert.ok(!captureTest||referenceExecutable&&chronyFile);
   assert.ok(!qualifyReference||captureTest);
   assert.ok(!captureNTS||captureTest);
+  assert.ok(!recoverReference||captureNTS&&qualifyReference);
   if(captureTest){
     let network;
     if(captureNTS){
@@ -334,12 +336,12 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const installationDirectory=path.join(root,'installation');
   const hostOptions={installationDirectory,planFile:planPath,generationDirectory:output,socketPath,pidFile,source};
   let openLinuxComposeHost,installation;
-  const prepareParents=async id=>{
+  const prepareParents=async (id,withReference=referenceExecutable&&id===generationId)=>{
     const {linuxContainerCgroup}=await import('../dist/linux-cgroup-retirement.mjs');
     for(const role of ['controller','seamer']){
       const group='/sys/fs/cgroup'+linuxContainerCgroup({driver:'cgroupfs',generationId:id,role}).groupPath;
       fs.mkdirSync(group);groups.push(group);
-      if(referenceExecutable&&id===generationId){fs.mkdirSync(group+'/reference');groups.unshift(group+'/reference');}
+      if(withReference){fs.mkdirSync(group+'/reference');groups.unshift(group+'/reference');}
     }
   };
   const projectFor=(id,hostId=installation.host_installation_id)=>'leafseamer-'+hostId.replaceAll('-','')+'-'+id.replaceAll('-','');
@@ -654,6 +656,11 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       }
     }
     assert.equal(retired.phase,'retired');
+    if(referenceExecutable)for(const role of ['controller','seamer']){
+      const observed=retired.detail.reference_retirement[role],original=referenceAdmissions[role].process_observation;
+      assert.equal(observed.provider_pid,original.provider_pid);
+      assert.equal(observed.start_ticks,original.start_ticks);
+    }
     assert.match(retired.detail.endpoint_evidence_digest,/^sha256:[a-f0-9]{64}$/);
     assert.deepEqual(managedHost.retire(),retired);
     assert.equal(compose('ps','--all','--quiet').trim(),'');
@@ -737,7 +744,70 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       }
     }finally{db.close();}
   }
-  if(manage){
+  if(recoverReference){
+    const nextId=crypto.randomUUID(),nextDirectory=path.join(root,'reference-recovery');
+    const {directory}=plan.reference_providers.capture.controller;
+    fs.renameSync(path.join(directory,'withdrawn.json'),path.join(directory,'approval.json'));
+    fs.writeFileSync(planPath,JSON.stringify({...plan,cgroup:{...plan.cgroup,generation_id:nextId}}));
+    run(process.execPath,[...generate.slice(0,-1),nextDirectory]);
+    await prepareParents(nextId,true);
+    project=projectFor(nextId);
+    composePath=path.join(nextDirectory,'compose.json');
+    managedHost=openLinuxComposeHost({...hostOptions,generationDirectory:nextDirectory});
+    created=true;
+    const next=await managedHost.startSupervised();
+    const roles=['controller','seamer'];
+    for(const role of roles){
+      assert.notEqual(next.admissions[role].descriptor.clock_domain_id,admissions[role].descriptor.clock_domain_id);
+      const deadline=performance.now()+10000;
+      while(!bindClockPublisher(role,next.admissions[role].descriptor)){
+        assert.ok(performance.now()<deadline,role+' did not issue a fresh authentication challenge');
+        await delay(100);
+      }
+      clocks[role].publish();
+    }
+    function renew(){
+      for(const role of roles)clocks[role].publish();
+    }
+    for(let i=0;i<3;i++){renew();await delay(1000);assert.equal(ntsServer.count(),3);}
+    const until=performance.now()+22000;
+    while(ntsServer.count()<5){
+      assert.ok(performance.now()<until,'second launch did not resume both reference sources\n'+ntsServer.stats()+compose('logs','--no-color'));
+      renew();await delay(800);
+    }
+    assert.equal(ntsServer.count(),5);
+    await delay(500);
+    let retired=managedHost.retire();
+    const retireDeadline=performance.now()+5000;
+    while(retired.phase==='closing'&&performance.now()<retireDeadline){await delay(50);retired=managedHost.retire();}
+    assert.equal(retired.phase,'retired');
+    await managedHost.close();managedHost=null;
+    for(const role of roles){
+      const db=new DatabaseSync(path.join(plan[role].data_dir,role+'.sqlite'),{readOnly:true});
+      try{
+        const history=db.prepare('SELECT body_jcs FROM time_provider_source_recovery ORDER BY rowid').all().map(row=>JSON.parse(row.body_jcs));
+        assert.equal(history.length,1);
+        const [recovery]=history;
+        const old=referenceAdmissions[role],domain=next.admissions[role].receipt.domain_ref;
+        assert.deepEqual(recovery.observation.record.admission_receipt,old.receipt);
+        assert.deepEqual(recovery.observation.record.process_observation,old.process_observation);
+        assert.equal(recovery.observation.record.generation_id,generationId);
+        assert.deepEqual(recovery.observation.record.provider_exit,{active_processes:0});
+        assert.deepEqual(recovery.observation.record.core_exit,{active_processes:0});
+        assert.deepEqual(recovery.observation.receiving_domain_ref,domain);
+        assert.ok(BigInt(recovery.wait_until_tick_ns)-BigInt(recovery.observation.received_tick_ns)>=16000000000n);
+        const rows=db.prepare('SELECT body_jcs FROM time_provider_reference_anchor WHERE service_boot_id=?').all(recovery.receiver_boot_id);
+        assert.equal(rows.length,1);
+        const anchor=JSON.parse(rows[0].body_jcs);
+        assert.ok(BigInt(anchor.m1_tick_ns)>=BigInt(recovery.wait_until_tick_ns));
+        const binding=db.prepare('SELECT body_jcs,body_digest FROM time_provider_runtime_binding WHERE service_boot_id=?').get(recovery.receiver_boot_id);
+        assert.deepEqual(JSON.parse(binding.body_jcs).admission_receipt,next.referenceAdmissions[role].receipt);
+        assert.notEqual(recovery.old_runtime_digest,binding.body_digest);
+        assert.equal(anchor.runtime_digest,binding.body_digest);
+        assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
+      }finally{db.close();}
+    }
+  }else if(manage){
     const nextId=crypto.randomUUID(),nextDirectory=path.join(root,'next');
     const {bootstrap:_policy,clock_evidence:_clock,worker_control:_workerControl,reference_providers:_reference,...protectedPlan}=plan;
     fs.writeFileSync(planPath,JSON.stringify({...protectedPlan,cgroup:{driver:'cgroupfs',generation_id:nextId}}));

@@ -7,7 +7,7 @@ import {openInstallationStore,requireInstallationStore} from './installation-sto
 import {readDeploymentFile} from './linux-ingress.mjs';
 import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs,verifyLinuxComposeReferenceCapture} from './linux-compose.mjs';
 import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent,readLinuxReferenceGroup} from './linux-cgroup-retirement.mjs';
-import {openLinuxComposeChannel,openLinuxInstallationChannel,openLinuxReferenceChannel} from './linux-compose-channel.mjs';
+import {openLinuxComposeChannel,openLinuxInstallationChannel,openLinuxReferenceChannel,openLinuxReferenceRetirementChannel} from './linux-compose-channel.mjs';
 import {serveLinuxInstallationRead} from './linux-installation-read.mjs';
 import {admitLinuxMember} from './linux-member-bootstrap.mjs';
 import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
@@ -259,8 +259,23 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       verifyFiles();
       const bound=binding(record);
       if(containerIds().length!==0||networkIds().length!==0)return null;
-      if(reference)need(equal(bound.reference_groups,referenceGroups()),'compose_host_reference_group_changed');
-      return digest({format:'leafseamer.compose-endpoints-closed/1',runtime_binding:bound});
+      const endpointDigest=digest({format:'leafseamer.compose-endpoints-closed/1',runtime_binding:bound});
+      if(!reference)return endpointDigest;
+      const groups=referenceGroups(),proof={};
+      for(const role of coreRoles){
+        const observed=groups[role],original=bound.reference_groups[role];
+        need(equal(observed.group,original.group)&&observed.group_path===original.group_path,'compose_host_reference_group_changed');
+        if(observed.populated)return null;
+        const admission=journal.referenceAdmission(generation_id,role);
+        if(!admission){proof[role]=null;continue;}
+        const {provider_pid,start_ticks}=admission.process_observation;
+        let live;
+        try{live=readLinuxCgroupLeader(provider_pid);}
+        catch(error){if(!['ENOENT','ESRCH','cgroup_leader_missing'].includes(error.code))throw error;}
+        if(live?.start_ticks===start_ticks)return null;
+        proof[role]={group:observed.group,group_path:observed.group_path,provider_pid,start_ticks};
+      }
+      return {digest:endpointDigest,reference_retirement:proof};
     }
     function assertSurvivingCores(bound,present){
       const ids=coreRoles.map(role=>bound.containers[role]).filter(id=>present.includes(id));
@@ -352,8 +367,23 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       if(draining){await provider.retire();need(false,'compose_host_reference_binding');}
       providers.set(role,provider);
       void provider.ended.then(closeAfterLoss);
-      const forward=openLinuxReferenceChannel({directory:path.join(generationDirectory,'bootstrap-'+role),uid,gid,
-        corePid:expected.leader.pid,timeoutMs:core.policy.bootstrap_timeout_ms,provider,coreReceiptId:core.receipt.receipt_id});
+      const directory=path.join(generationDirectory,'bootstrap-'+role),timeoutMs=core.policy.bootstrap_timeout_ms;
+      const retirement=reference.capture&&openLinuxReferenceRetirementChannel({directory,uid,gid,corePid:expected.leader.pid,timeoutMs,
+        coreReceiptId:core.receipt.receipt_id,assertCurrent:assertLive,read(key){
+          if(key.generation_id===generation_id)return null;
+          const scope=journal.lookup(key.generation_id)?.intent?.[role];
+          if(!scope||!equal(scope,spec[role]))return null;
+          const original=journal.referenceRetirement(key.generation_id,role);
+          return original?.launch_intent.launch_id===key.launch_id&&original.core_receipt_id===key.core_receipt_id&&
+            digest(original.launch_intent)===key.launch_intent_digest?original:null;
+        }});
+      if(retirement){
+        channels.set('reference-retirement-'+role,retirement);
+        void retirement.ended.then(closeAfterLoss);
+        await retirement.ready;
+      }
+      const forward=openLinuxReferenceChannel({directory,uid,gid,
+        corePid:expected.leader.pid,timeoutMs,provider,coreReceiptId:core.receipt.receipt_id,retirement:!!retirement});
       channels.set('reference-'+role,forward);
       void forward.ended.then(closeAfterLoss);
       await forward.ready;

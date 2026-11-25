@@ -136,11 +136,46 @@ export function openLinuxInstallationChannel({directory,uid,gid,corePid,timeoutM
   return Object.freeze({...channel,peer});
 }
 
-export function openLinuxReferenceChannel({directory,uid,gid,corePid,timeoutMs,provider,coreReceiptId}){
+const retirementFormat='leafseamer-linux-reference-retirement/1';
+export function openLinuxReferenceRetirementChannel({directory,uid,gid,corePid,timeoutMs,coreReceiptId,assertCurrent,read}){
+  const channel=openChannel({directory,name:'ref-retire.sock',uid,gid,timeoutMs,expectedPid:corePid});
+  const timer=setTimeout(channel.close,timeoutMs);timer.unref();
+  const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$(?![\s\S])/;
+  const hash=/^sha256:[a-f0-9]{64}$(?![\s\S])/;
+  void channel.ended.then(()=>clearTimeout(timer));
+  void channel.accept(pid=>{need(pid===corePid,'compose_channel_peer');assertCurrent();}).then(async socket=>{
+    clearTimeout(timer);
+    let buffer=Buffer.alloc(0);
+    for await(const chunk of socket){
+      need(buffer.length+chunk.length<=2048,'compose_reference_retirement_request');
+      buffer=Buffer.concat([buffer,chunk]);
+      const end=buffer.indexOf(10);
+      if(end===-1)continue;
+      need(end===buffer.length-1,'compose_reference_retirement_request');
+      const text=buffer.subarray(0,end).toString('utf8'),request=JSON.parse(text);
+      buffer=Buffer.alloc(0);
+      const {format,request_id,current_core_receipt_id,key}=request;
+      need(canonical(request)===text&&Object.keys(request).sort().join(',')==='current_core_receipt_id,format,key,request_id'&&
+        format===retirementFormat&&uuid.test(request_id)&&current_core_receipt_id===coreReceiptId&&
+        key&&Object.keys(key).sort().join(',')==='core_receipt_id,generation_id,launch_id,launch_intent_digest'&&
+        ['core_receipt_id','generation_id','launch_id'].every(k=>typeof key[k]==='string'&&uuid.test(key[k]))&&
+        hash.test(key.launch_intent_digest),'compose_reference_retirement_request');
+      assertCurrent();
+      const result=canonical({format,request_id,current_core_receipt_id,record:read(key)})+'\n';
+      need(Buffer.byteLength(result)<=16385,'compose_reference_retirement_record');
+      assertCurrent();
+      await new Promise((resolve,reject)=>socket.write(result,error=>error?reject(error):resolve()));
+    }
+    channel.close();
+  }).catch(channel.close);
+  return channel;
+}
+
+export function openLinuxReferenceChannel({directory,uid,gid,corePid,timeoutMs,provider,coreReceiptId,retirement=false}){
   need(Number.isInteger(corePid)&&corePid>1&&provider?.collector&&!provider.collector.destroyed,'compose_reference_channel');
   const {intent,descriptor,receipt,process_observation}=provider.admission;
   const preamble=canonical({format:'leafseamer-linux-reference-admission/1',core_receipt_id:coreReceiptId,
-    provider:{intent,descriptor,receipt,process_observation}})+'\n';
+    provider:{intent,descriptor,receipt,process_observation},...(retirement&&{retirement:retirementFormat})})+'\n';
   need(Buffer.byteLength(preamble)<=16385,'compose_reference_channel');
   const channel=openChannel({directory,name:'reference.sock',uid,gid,timeoutMs,expectedPid:corePid});
   const timer=setTimeout(channel.close,timeoutMs);timer.unref();

@@ -189,6 +189,20 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
       }));},
       referenceLaunch(id,role){referenceScope(id,role);return record(launchTable,id,role);},
       referenceAdmission(id,role){referenceScope(id,role);return record(referenceTable,id,role);},
+      referenceRetirement(id,role){
+        referenceScope(id,role);
+        const retired=lookup(id),evidence=retired?.detail.reference_retirement?.[role];
+        if(retired?.phase!=='retired'||!evidence)return null;
+        const launch=record(launchTable,id,role),admission=record(referenceTable,id,role);
+        need(launch&&admission&&same(launch.intent,admission.intent)&&
+          same(evidence.group,launch.group)&&evidence.group_path===launch.group_path&&
+          evidence.provider_pid===admission.process_observation.provider_pid&&
+          evidence.start_ticks===admission.process_observation.start_ticks,'linux_deployment_reference_binding');
+        return {format:'leafseamer-linux-reference-retired/1',core_receipt_id:launch.core_receipt_id,
+          launch_intent:launch.intent,admission_receipt:admission.receipt,process_observation:admission.process_observation,
+          generation_id:id,evidence,provider_exit:{active_processes:0},core_exit:{active_processes:0},
+          endpoint_evidence_digest:retired.detail.endpoint_evidence_digest,retirement_digest:digest(retired)};
+      },
       reserveReference(id,role,settings,value){
         referenceScope(id,role);
         return operation(()=>transaction(()=>{
@@ -258,15 +272,19 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
           const before=observe();
           if(before.includes('indeterminate'))return lost();
           if(before.includes('populated'))return prior;
-          let endpointDigest;
-          try{endpointDigest=endpointClosure(JSON.parse(canonical(prior)));}
+          let closure;
+          try{closure=endpointClosure(JSON.parse(canonical(prior)));}
           catch(error){throw new InstallationError('linux_deployment_endpoints_unavailable',{cause:error});}
-          need(endpointDigest===null||matches(endpointDigest,hash),'linux_deployment_endpoints');
-          if(endpointDigest===null)return prior;
+          if(closure===null)return prior;
+          const projected=fields(closure,'digest,reference_retirement');
+          const endpointDigest=projected?closure.digest:closure;
+          need(matches(endpointDigest,hash)&&(!projected||prior.intent.reference_digest&&fields(closure.reference_retirement,'controller,seamer')),
+            'linux_deployment_endpoints');
           const after=observe();
           if(after.includes('indeterminate'))return lost();
           if(after.includes('populated'))return prior;
-          return append(prior.intent,4,'retired',{...prior.detail,endpoint_evidence_digest:endpointDigest});
+          return append(prior.intent,4,'retired',{...prior.detail,endpoint_evidence_digest:endpointDigest,
+            ...(projected&&{reference_retirement:closure.reference_retirement})});
         });
         if(result.phase!=='closing')unbind();
         return result;

@@ -10,7 +10,8 @@ import {verifySnapshotMigration} from './snapshot-migration.mjs';
 const snapshotMigration=process.env.LEAFSEAMER_SNAPSHOT_MIGRATION_TEST==='1';
 import {verifyChannelMigration} from './event-channel-migration.mjs';
 const channelMigration=process.env.LEAFSEAMER_EVENT_CHANNEL_MIGRATION_TEST==='1';
-const exerciseScheduledDispatch=process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_DISPATCH_TEST==='1';
+const exerciseScheduledWithdrawal=process.env.LEAFSEAMER_SIMULATOR_SCHEDULE_REFERENCE_WITHDRAWAL_TEST==='1';
+const exerciseScheduledDispatch=exerciseScheduledWithdrawal||process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_DISPATCH_TEST==='1';
 const exerciseScheduledAdmission=exerciseScheduledDispatch||process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_ADMISSION_TEST==='1';
 const exerciseArmChain=exerciseScheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_ARM_CHAIN_TEST==='1';
 const exerciseSourceReference=exerciseScheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_SOURCE_REFERENCE_TEST==='1';
@@ -733,7 +734,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
    incremental_source_event:mode.endsWith('_capture_events')&&!scopeMigration&&!subscriptionMigration&&!sourceProjectionMigration&&!snapshotMigration&&!channelMigration,
    first_enrollment:firstEnrollment,publication_gui:publicationGui,arm_target:armChain?runtimeInput.devices[1]:null,
    target_gate_only:targetGateOnly,verify_armed_target_ready:armedTargetReady,verify_armed_target_dispatch:armedTargetDispatch,focused_dispatch:focusedDispatch,scheduled_admission:scheduledAdmission,
-   scheduled_dispatch:scheduledAdmission&&exerciseScheduledDispatch};}
+   scheduled_dispatch:scheduledAdmission&&exerciseScheduledDispatch,scheduled_reference_withdrawal:scheduledAdmission&&exerciseScheduledWithdrawal};}
   let runFence=null;
   if(mode===retirementSchemaExecution||mode===preparationSchemaExecution&&!preserveExecutionHistory){
     const {adoptRunGenerationDenial}=await load('run-generation-denial.mjs');
@@ -896,6 +897,11 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       let reader;
       try{
         reader=new Database(path.join(core,'controller.sqlite'),{readonly:true,fileMustExist:true});
+        if(exerciseScheduledWithdrawal)error.scheduledLedger=reader.prepare(`SELECT g.disposition,d.permit_id IS NOT NULL AS dispatch_recorded,
+          w.permit_id IS NOT NULL AS write_recorded FROM command_final_admission f
+          LEFT JOIN command_guard_request r ON r.final_transaction_id=f.transaction_id LEFT JOIN command_guard_ack g USING(guard_id)
+          LEFT JOIN command_dispatch_request d ON d.final_transaction_id=f.transaction_id LEFT JOIN command_dispatch_write w USING(permit_id)
+          WHERE json_extract(f.body_jcs,'$.guard.time_required')=1`).raw().all();
         error.subscriptionState=reader.prepare("SELECT r.state,r.revision,json_extract(a.body_jcs,'$.reason_code') FROM service_event_subscription_revision r JOIN service_event_subscription_head h USING(subscription_id,revision) JOIN service_event_subscription_audit a USING(operation_id)").raw().all();
         error.snapshotTimes=reader.prepare("SELECT json_extract(body_jcs,'$.created_at'),json_extract(body_jcs,'$.expires_at') FROM service_snapshot_manifest").raw().all();
         error.delivery=reader.prepare('SELECT cursor,journal_sequence FROM service_subscription_delivery ORDER BY cursor').raw().all();
@@ -964,11 +970,34 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
           assert.equal(final.schedule_guard.admission_ref.digest,digestValue(admissionProof.admission));
           assert.deepEqual(final.schedule_guard.step_window_ref,admissionProof.admission.step_window_ref);
           assert.equal(final.schedule_guard.execution_id,admissionProof.admission.execution_id);
-          const settled=JSON.parse(db.prepare('SELECT record_jcs FROM command_lifecycle_revision WHERE command_id=? AND revision=5').pluck().get(id));
-          assert.equal(settled.state.outcome,'succeeded');
-          assert.equal(settled.completion.achieved,'effect_verified');
-          assert.equal(admissionProof.terminal.record_ref.digest,settled.record_digest);
-          assert.deepEqual(admissionProof.terminal.state,settled.state);
+          if(exerciseScheduledWithdrawal){
+            const withdrawal=frames.find(frame=>frame.event==='scheduled-reference-withdrawn');
+            assert.equal(withdrawal?.command_id,id);
+            assert.equal(withdrawal.permit_id,final.permit.permit_id);
+            assert.equal(withdrawal.guard_id,final.guard.guard_id);
+            assert.ok(BigInt(withdrawal.tick_ns)<BigInt(final.seal.send_window.before_tick_ns));
+            const [recordId,disposition]=db.prepare(`SELECT d.record_id,g.disposition FROM command_dispatch_request d
+              JOIN command_guard_ack g USING(guard_id) WHERE d.permit_id=?`).raw().get(withdrawal.permit_id);
+            assert.equal(disposition,'installed');
+            assert.equal(db.prepare('SELECT 1 FROM execution_write_attempt WHERE record_id=?').pluck().get(recordId),undefined);
+            for(const table of ['command_dispatch_write','command_dispatch_report','command_dispatch_evidence','command_settlement'])
+              assert.equal(db.prepare('SELECT 1 FROM '+table+' WHERE permit_id=?').pluck().get(withdrawal.permit_id),undefined,table);
+            const invalidation=JSON.parse(db.prepare('SELECT body_jcs FROM time_provider_reference_invalidation WHERE anchor_id=?').pluck().get(accepted.anchor_ref.id));
+            assert.equal(invalidation.cause,'authority_changed');
+            assert.equal(invalidation.minimum_time_generation,'2');
+            assert.ok(db.prepare('SELECT 1 FROM execution_session_end WHERE ipc_session_id=?').pluck().get(final.seal.binding.ipc_session_id));
+            const closure=JSON.parse(db.prepare('SELECT body_jcs FROM command_unsent_closure WHERE permit_id=?').pluck().get(withdrawal.permit_id));
+            assert.equal(closure.future_writes_closed.automatic_resends,false);
+            assert.equal(closure.evidence[0].body.kind,'never_sent');
+            assert.equal(admissionProof.terminal.record_ref.digest,closure.record_digest);
+            assert.equal(admissionProof.terminal.state.outcome,'blocked');
+          }else{
+            const settled=JSON.parse(db.prepare('SELECT record_jcs FROM command_lifecycle_revision WHERE command_id=? AND revision=5').pluck().get(id));
+            assert.equal(settled.state.outcome,'succeeded');
+            assert.equal(settled.completion.achieved,'effect_verified');
+            assert.equal(admissionProof.terminal.record_ref.digest,settled.record_digest);
+            assert.deepEqual(admissionProof.terminal.state,settled.state);
+          }
         }
       }else if(armedTargetDispatch){
         const proof=frames.find(frame=>frame.event==='native-automation-target-dispatch');assert.ok(proof);

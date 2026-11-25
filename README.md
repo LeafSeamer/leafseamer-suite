@@ -356,6 +356,8 @@ $env:LEAFSEAMER_SIMULATOR_SCHEDULED_DISPATCH_TEST = '1'
 node --disallow-code-generation-from-strings --test --test-name-pattern 'closure_cleanup_successor_capture_events$' test/controller-materialization.integration.mjs
 ```
 
+同一 Windows 原生用例也可设置 `LEAFSEAMER_SIMULATOR_SCHEDULE_REFERENCE_WITHDRAWAL_TEST=1`。测试在 Guard 已安装且派发请求已落库后、原截止前撤下测试批准，核对零写入尝试、持久 `never_sent` 证明和 Seamer 的阻止终态。[原生联调](test/controller-materialization.integration.mjs)
+
 Linux 定时派发验收使用同一隔离客体中的受监督 Compose、Chrony、NTS 提供者和配对模拟器镜像。启用首次配对、定义发布、运行审批及布防用例后，设置 `LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULED_DISPATCH=1`。测试通过 Seamer 发布和激活一次性场次，退役后核对 Controller 与 Seamer 的 SQLite 原件、一次写入的效果和活动槽释放。[Compose 定时联调](test/linux-compose.integration.mjs) · [持久结果断言](test/fixtures/linux-compose-simulator-schedule.mjs)
 
 另一次隔离运行可设置 `LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_CLOCK_LOSS=1`，验证已跟踪场次在临时授时批准撤下后持久停发。测试在原窗口截止前放回审批文件，核对原场次仍为 `blocked`，两端均没有为它登记新的执行或命令。[停发断言](test/fixtures/linux-compose-simulator-schedule.mjs)

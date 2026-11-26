@@ -1087,9 +1087,11 @@ Linux Compose 联调已核对同一场次的定时受理、有效 Guard 回执�
 
 **第 127 轮验证 Windows 定时派发在写入前撤回授时资格。** 原生 Controller 和 Worker 已完成定时 Guard 安装，Controller 提交派发请求后在原截止前撤下测试批准。账本保存原 Guard 回执、派发请求、授时失效和会话关闭，未登记写入尝试或设备回报。Controller 持久保存 `never_sent` 证明，Seamer 采用同一 `blocked` 终态并暂停原执行。Linux 同阶段的故障注入和新合格运行域中的新场次继续验收。[原生联调](../test/controller-materialization.integration.mjs)
 
-**第 128 轮完成本地产生的小型 Guard 帧的严格校验路径。** Controller 对不超过 16 KiB 的本地 Guard 安装帧使用 SDK 严格解析器完成校验，写前仍按原截止及当前授时资格判定。Seamer 的制品锁收录更新后的 Windows 与 Linux Controller 构建。Windows 原生正常定时派发与写前撤回均通过复测。Linux 已完成制品构建，写前撤回和新合格运行域中的新场次仍待验收。[Windows 原生联调](../test/controller-materialization.integration.mjs)
+**第 128 轮完成本地产生的小型 Guard 帧的严格校验路径。** Controller 对不超过 16 KiB 的本地 Guard 安装帧使用 SDK 严格解析器完成校验，写前仍按原截止及当前授时资格判定。Seamer 的制品锁收录更新后的 Windows 与 Linux Controller 构建。Windows 原生写前撤回及通用派发用例通过复测。Linux 已完成制品构建，写前撤回和新合格运行域中的新场次仍待验收。[Windows 原生联调](../test/controller-materialization.integration.mjs)
 
 **第 129 轮验证 Linux 在定时派发写入前撤回授时资格。** 隔离 Compose 中的真实 Controller、Worker 和 Seamer 保存了已安装的定时 Guard 和派发请求。原截止前撤回授时资格后，Controller 持久保存 `never_sent`，Seamer 保存与该证明对应的 `blocked` 终态并暂停原执行。账本确认该命令零写入尝试、零设备回报。新合格运行域中授权并执行新场次仍待验收。[Linux 写前撤回联调](../test/linux-compose.integration.mjs)
+
+**第 130 轮完成 Controller 本地小型编码帧的严格校验。** 不超过 16 KiB 的本地编码帧复用 SDK 严格解析器，校验预算、原认证窗口和实际写前复核继续生效。Windows 原生联调通过正常定时派发、一次模拟器写入、`effect_verified` 终态和活动槽释放。Linux 已构建并采用同源 Controller 制品，正常定时派发复测仍有 Guard 资格失效，完整闭环待复核。[Windows 原生联调](../test/controller-materialization.integration.mjs) · [Linux Compose 联调](../test/linux-compose.integration.mjs)
 
 **2026-11-04已确认的实施顺序。** 全局架构、权限、事务及故障方案已有设计的 SDK、服务和 GUI 开始业务实现；仅影响具体型号适配器的编码、字段及读回精度绑定，保留为首期必须完成的实现任务，不再阻挡其它已定领域开工。对应适配器必须在发送和支持声明前补齐具名绑定、失败行为及验收，不能用未知值占位、猜编码或降低功能范围。发行可信时间等实质产品取舍仍独立保留，未定部分不得凭开工授权代批。
 

@@ -1283,15 +1283,30 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
             const {readRunProtectionExits}=await load('run-protection-exits.mjs');
             assert.deepEqual(db.transaction(()=>readRunProtectionExits(db,target.device_id,result.plan)).immediate(),target);
             const {readRunProtectionWork}=await load('run-generation-denial.mjs');
-            const {commitRunProtectionCompletion}=await load('run-approval-protection-completion.mjs');
+            const {commitRunProtectionCompletion,observeRunProtectionCompletion}=await load('run-approval-protection-completion.mjs');
+            const {canonical,digest}=await load('auth-clock-value.mjs');
             const targetScope={authority_service_id:coreIdentity.service_id,database_instance_id:coreIdentity.database_instance_id};
             const seal=plan=>db.transaction(()=>commitRunProtectionCompletion(db,readRunProtectionWork(db,targetScope,runFence.rejection_id),plan)).immediate();
+            const observe=()=>db.transaction(()=>observeRunProtectionCompletion(db,readRunProtectionWork(db,targetScope,runFence.rejection_id),result.plan)).immediate();
+            assert.deepEqual(observe(),{state:'pending',completion:null});
             assert.deepEqual(seal({...result.plan,device_ids:[...result.plan.device_ids,crypto.randomUUID()].sort()}),{state:'pending',receipt:null});
             db.exec('CREATE TEMP TRIGGER omit_final BEFORE INSERT ON run_approval_protection_completion BEGIN SELECT RAISE(IGNORE); END');
             assert.throws(()=>seal(result.plan),{code:'run_protection_completion_storage'});db.exec('DROP TRIGGER omit_final');
             const final=seal(result.plan);assert.equal(final.state,'delivered');assert.equal(final.receipt.protection_state,'applied');
             assert.equal(final.receipt.rejection.receipt_id,runFence.rejection_id);
             assert.deepEqual(seal(result.plan),{state:'acknowledged',receipt:final.receipt});
+            assert.deepEqual(observe(),{state:'verified',completion:final.receipt});
+            const [boot,text]=db.prepare(`SELECT p.service_boot_id,p.intent_jcs FROM worker_launch_device d
+              JOIN worker_launch_preparation p USING(launch_id) WHERE d.device_id=? ORDER BY launch_id LIMIT 1`).raw().get(target.device_id);
+            const launch={...JSON.parse(text),launch_id:crypto.randomUUID()};
+            db.exec(`CREATE TEMP TABLE worker_launch_device AS SELECT launch_id,device_id FROM main.worker_launch_device;
+              CREATE TEMP TABLE worker_launch_preparation AS SELECT launch_id,intent_digest,service_boot_id,intent_jcs FROM main.worker_launch_preparation`);
+            try{
+              db.prepare('INSERT INTO temp.worker_launch_device VALUES(?,?)').run(launch.launch_id,target.device_id);
+              db.prepare('INSERT INTO temp.worker_launch_preparation VALUES(?,?,?,?)').run(launch.launch_id,digest(launch),boot,canonical(launch));
+              assert.deepEqual(observe(),{state:'indeterminate',completion:final.receipt});
+              assert.deepEqual(seal(result.plan),{state:'acknowledged',receipt:final.receipt});
+            }finally{db.exec('DROP TABLE temp.worker_launch_preparation; DROP TABLE temp.worker_launch_device');}
             assert.equal(db.prepare('SELECT count(*) FROM run_approval_protection_completion').pluck().get(),1);
           }
         }

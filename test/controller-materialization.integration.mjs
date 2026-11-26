@@ -1187,6 +1187,9 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
       try{const cut=JSON.parse(db.prepare('SELECT body_jcs FROM control_command_cut WHERE operation_id=?').pluck().get(released.operation.operation_id));
         assert.equal(cut.commands.length,1);assert.equal(cut.commands[0].queued,true);assert.equal(cut.commands[0].transmission,null);
         for(const table of ['command_final_admission','command_device_hold','command_transmission_issue'])assert.equal(db.prepare('SELECT count(*) FROM '+table).pluck().get(),0);
+        const {readCommandRecord,readCommandResource}=await load('command-record-store.mjs');
+        const resource=db.transaction(()=>readCommandResource(db,readCommandRecord(db,closed.current.record.command_id))).immediate();
+        assert.equal(resource.status,'never_acquired');assert.equal(resource.hold_ref,null);assert.ok(resource.resource_commit_ref);
         assert.equal(db.prepare('SELECT count(*) FROM ca_command_initial').pluck().get(),1);assert.deepEqual(db.pragma('foreign_key_check'),[]);
       }finally{db.close();}return;
     }
@@ -1473,8 +1476,10 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
         assert.equal(evidence.command_selection.commands.length,1);const selected=evidence.command_selection.commands[0];
         assert.equal(selected.disposition,'in_flight');assert.equal(selected.resource_status,'unresolved');
         assert.ok(evidence.receipts.length>0&&evidence.receipts.every(r=>r.retirement?.result==='confirmed_empty'||r.record===null));
-        const {readCommandRecord}=await load('command-record-store.mjs'),saved=db.transaction(()=>readCommandRecord(db,history.current.record.command_id)).immediate();
+        const {readCommandRecord,readCommandResource}=await load('command-record-store.mjs'),saved=db.transaction(()=>readCommandRecord(db,history.current.record.command_id)).immediate();
         assert.deepEqual(saved.record,history.current.record);assert.equal(db.prepare('SELECT count(*) FROM command_transmission_issue').pluck().get(),1);
+        const resource=db.transaction(()=>readCommandResource(db,readCommandRecord(db,history.current.record.command_id))).immediate();
+        assert.equal(resource.status,'unresolved');assert.ok(resource.hold_ref);assert.equal(resource.resource_commit_ref,null);
        }
        assert.deepEqual(db.pragma('foreign_key_check'),[]);
       }finally{db.close();}return;

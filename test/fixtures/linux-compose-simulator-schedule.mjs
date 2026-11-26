@@ -7,7 +7,8 @@ const id=()=>crypto.randomUUID();
 const waitingForClock=(response,body)=>response.status===503&&['WORKER_NOT_READY','CLOCK_UNTRUSTED'].includes(body.error);
 export const schedulePermissions=['schedule.read','schedule.publish','schedule.activate'];
 
-export async function runComposeSimulatorSchedule({armed,compiled,localRequest,bearer,readRun,waitFor,withdrawReference=null,readDispatchWithdrawal=null}){
+export async function runComposeSimulatorSchedule({armed,compiled,localRequest,bearer,readRun,waitFor,
+  withdrawReference=null,readDispatchWithdrawal=null,reconcileScheduledWrite=false}){
   async function request(operation,input,retryClock=false){
     const response=await localRequest(route,operation,input,bearer);
     const body=JSON.parse(response.data);
@@ -85,14 +86,14 @@ export async function runComposeSimulatorSchedule({armed,compiled,localRequest,b
     const current=await readRun();
     observedRun={lifecycle:current.lifecycle,active:current.active_execution_id===admission.execution_id,
       completed:current.last_execution_id===admission.execution_id};
-    if(readDispatchWithdrawal&&observedRun.lifecycle==='paused'){
+    if((readDispatchWithdrawal||reconcileScheduledWrite)&&observedRun.lifecycle==='paused'){
       assert.equal(observedRun.active,true);
       assert.equal(observedRun.completed,false);
       return current;
     }
     assert.ok(['armed','running'].includes(current.lifecycle),JSON.stringify(observedRun));
     if(!observedRun.completed)return false;
-    assert.equal(readDispatchWithdrawal,null,'Scheduled dispatch unexpectedly completed');
+    assert.ok(!readDispatchWithdrawal&&!reconcileScheduledWrite,'Scheduled dispatch unexpectedly completed');
     assert.equal(current.lifecycle,'armed');
     assert.equal(current.active_execution_id,null);
     return current;
@@ -146,7 +147,7 @@ export function verifyDurableSimulatorDispatchWithdrawal(receiver,publisher,{adm
   assert.equal(closure.record_digest,terminal.record_ref.digest);
 }
 
-export function verifyDurableSimulatorSchedule(receiver,publisher,{admission,parameters},digest){
+export function verifyDurableSimulatorSchedule(receiver,publisher,{admission,parameters,recovery},digest){
   const {execution_id,first_step_id}=admission;
   const stored=receiver.prepare('SELECT body_jcs,body_digest FROM schedule_execution_admission WHERE execution_id=?').get(execution_id);
   assert.deepEqual(JSON.parse(stored.body_jcs),admission);
@@ -155,8 +156,26 @@ export function verifyDurableSimulatorSchedule(receiver,publisher,{admission,par
     .get(execution_id,first_step_id).body_jcs);
   assert.equal(terminal.state.outcome,'succeeded');
   assert.equal(terminal.completion_achieved,'effect_verified');
-  const {notification_jcs}=receiver.prepare('SELECT notification_jcs FROM automation_execution_commit WHERE execution_id=?').get(execution_id);
-  assert.equal(JSON.parse(notification_jcs).event_id,execution_id+'.completed');
+  const regular=receiver.prepare('SELECT notification_jcs FROM automation_execution_commit WHERE execution_id=?').get(execution_id);
+  if(recovery){
+    const {completion,operationId}=recovery;
+    assert.equal(regular,undefined);
+    const row=receiver.prepare(`SELECT c.body_jcs,c.body_digest,c.notification_jcs,l.released_by
+      FROM automation_recovery_execution_commit c JOIN automation_recovery_lock l USING(operation_id)
+      WHERE c.source_execution_id=? AND c.operation_id=?`).get(execution_id,operationId);
+    assert.equal(row.body_digest,completion.digest);
+    assert.equal(row.released_by,completion.digest);
+    assert.deepEqual(JSON.parse(row.body_jcs),completion.body);
+    assert.deepEqual(JSON.parse(row.notification_jcs),completion.notification);
+    assert.deepEqual(completion.body.steps,[{step_id:first_step_id,decision:'retain_success',
+      outcome:'succeeded',evidence_digest:digest(terminal)}]);
+    assert.equal(receiver.prepare('SELECT 1 FROM automation_recovery_dispatch_submission WHERE execution_id=?')
+      .get(completion.body.execution_ref.object_id),undefined);
+    const {preparation_id,grant_ref}=recovery.preparation;
+    const grant=publisher.prepare('SELECT body_jcs,body_digest FROM run_preparation_grant WHERE preparation_id=?').get(preparation_id);
+    assert.equal(grant.body_digest,grant_ref.digest);
+    assert.equal(digest(JSON.parse(grant.body_jcs)),grant.body_digest);
+  }else assert.equal(JSON.parse(regular.notification_jcs).event_id,execution_id+'.completed');
   const commandId=terminal.command_ref.object_id;
   const settled=publisher.prepare('SELECT body_jcs,body_digest FROM command_settlement WHERE command_id=?').get(commandId);
   const settlement=JSON.parse(settled.body_jcs);

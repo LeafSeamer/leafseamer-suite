@@ -106,6 +106,8 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 [Compose 联调用例](test/linux-compose.integration.mjs) 使用 `LEAFSEAMER_COMPOSE_CONTROLLER_IMAGE`、`LEAFSEAMER_COMPOSE_SEAMER_IMAGE`、`LEAFSEAMER_COMPOSE_NGINX_IMAGE` 指定本机镜像，以 `LEAFSEAMER_COMPOSE_GUI_ROOT` 指向构建好的 GUI。用例运行在独立 Compose 项目，使用临时数据库与证书。
 
+已启用定时模拟器派发的联调可追加 `LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RECOVERY_RECONCILIATION=1`。用例在临时 Seamer 库注入原结算失败，随后经人员批准核对已完成的写入。停机后对照两端的命令终态、恢复结算和活动槽释放，并验证模拟器只收到一次写入。
+
 ### Linux 父组退役观察
 
 设置 `cgroup` 后，生成器按启动代和服务配置不同的 Docker `cgroup_parent`。宿主需采用与计划相同的 cgroup 驱动，并保留观察所用父组。systemd 驱动采用独立的顶层 slice。[Docker cgroup 父组](https://docs.docker.com/reference/cli/dockerd/#default-cgroup-parent) · [systemd slice](https://www.freedesktop.org/software/systemd/man/latest/systemd.slice.html)

@@ -13,6 +13,7 @@ import {approveComposeSimulatorRun,composeSimulatorDeviceScope,publishComposeSim
 
 import {runComposeSimulatorSchedule,schedulePermissions,verifyDurableSimulatorSchedule,verifyDurableSimulatorScheduleStop,
   verifyDurableSimulatorDispatchWithdrawal} from './linux-compose-simulator-schedule.mjs';
+import {reconcileComposeSimulatorWrite,recoveryPermissions} from './linux-compose-simulator-recovery.mjs';
 
 const id=()=>crypto.randomUUID();
 const sha=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
@@ -20,7 +21,8 @@ const mount='/etc/leafseamer/pairing/';
 const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='https://127.0.0.1:8444';
 const permissions=['auth.manage','auth.read'];
 
-export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,verifyLocalExtension=false,pairedSimulator=false,scheduledDispatch=false}){
+export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,
+  verifyLocalExtension=false,pairedSimulator=false,scheduledDispatch=false,reconcileScheduledWrite=false}){
   const {canonical,digest}=clockValues;
   const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
   const certificates=path.join(root,'pairing-certificates');
@@ -123,6 +125,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   if(verifySourceSubscription)localParty.permissions.push('event.internal.subscribe');
   if(simulatorPublication)localParty.permissions.push('automation.bindings.read','events.internal.read');
   if(simulatorRunApproval)localParty.permissions.push('automation.prepare','automation.prepare.read');
+  if(reconcileScheduledWrite)localParty.permissions.push('automation.protect');
   localParty.permissions.sort();
   const policyScope={authority_service_id:service_id,database_instance_id};
   const eventLimits={event_age_limits:[{authority_id:controller.service_id,registration_ref:{id:id(),revision:'1',digest:digest('fixture-registration')},
@@ -167,6 +170,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       assert.equal(JSON.parse(denied.diagnostic).error,'extension_management_denied');
     }
     const controllerPurposes=simulatorRunApproval?['automation.prepare.read']:[];
+    if(reconcileScheduledWrite)controllerPurposes.push('automation.protect');
     const staged=await admin(generation,'stage',{request_id:id(),transcript:{format:'leafseamer.peer-pairing/1',pair_attempt_id:id(),parties:[party('controller',controllerPurposes),localParty]}});
     const authorization=await admin(generation,'export',{binding_id:staged.binding_id,transcript_digest:staged.transcript_digest});
     assert.equal(authorization.authorization.administrator.principal_id,principal_id);
@@ -201,7 +205,8 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     }
     const definitions=verifyBrowser||verifyPublication||simulatorPublication?['definition.edit','definition.read','request.create','request.read']:[];
     const audiencePermissions=[...permissions,...definitions,...(verifyPublication||simulatorPublication?['definition.publish']:[]),
-      ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[]),...(simulatorArmPreflight?['run.arm']:[]),...(scheduledDispatch?schedulePermissions:[])].sort();
+      ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[]),
+      ...(simulatorArmPreflight?['run.arm']:[]),...(scheduledDispatch?schedulePermissions:[]),...(reconcileScheduledWrite?recoveryPermissions:[])].sort();
     await admin(generation,'grant-audience',{request_id:id(),principal_id,audience:service_id,expected_revision:null,permissions:audiencePermissions,
       not_before_ns:activated.not_before_ns,expires_ns:activated.expires_ns,pairing_ref:{id:activated.binding_id,revision:activated.revision,digest:activated.digest}});
     const bearer=await issueToken(actor,service_id,permissions);
@@ -335,7 +340,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
             const scheduleBearer=await issueToken(actor,service_id,['request.create',...schedulePermissions]);
             try{
               const result=await runComposeSimulatorSchedule({armed,compiled:publishedSimulator.compiled,
-                localRequest,bearer:scheduleBearer,readRun,waitFor,withdrawReference:generation.withdrawSeamerReference,
+                localRequest,bearer:scheduleBearer,readRun,waitFor,reconcileScheduledWrite,withdrawReference:generation.withdrawSeamerReference,
                 readDispatchWithdrawal:generation.scheduledReferenceWithdrawal?()=>generation.events('controller')
                   .find(frame=>frame.event==='scheduled-reference-withdrawn'):null});
               if(generation.withdrawSeamerReference)stoppedSchedule=result;
@@ -343,6 +348,12 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
             }catch(error){
               const failures=generation.events('controller').filter(frame=>['simulator_eligibility_failed','simulator_scheduled_command_failed'].includes(frame.event)).slice(-6);
               throw new Error('定时派发未完成 '+JSON.stringify(failures),{cause:error});
+            }
+            if(reconcileScheduledWrite){
+              const recoveryBearer=await issueToken(actor,service_id,['request.create','run.approve','run.read',...recoveryPermissions]);
+              scheduledSimulator.recovery=await reconcileComposeSimulatorWrite({scheduled:scheduledSimulator,priorApproval:approvedSimulator,
+                bindingId:activated.binding_id,admin:(operation,request)=>admin(generation,operation,request),
+                localRequest,bearer:recoveryBearer,readRun,waitFor,digest});
             }
           }
           armedSimulator={reserved,completed};
@@ -423,8 +434,9 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     if(simulatorPublication){assert.ok(publishedSimulator);verifyDurableSimulatorPublication(store,publishedSimulator,digest);}
     if(simulatorRunApproval){
       assert.ok(approvedSimulator);
-      verifyDurableSimulatorRunApproval(store,issuer,approvedSimulator,digest,
-        scheduledSimulator?.run.revision??armedSimulator?.completed.completion.completed_run_revision);
+      const recovery=scheduledSimulator?.recovery;
+      verifyDurableSimulatorRunApproval(store,issuer,recovery?.approval??approvedSimulator,digest,
+        recovery?.completion.body.run_revision_after??scheduledSimulator?.run.revision??armedSimulator?.completed.completion.completed_run_revision);
     }
     if(simulatorArmPreflight){
       assert.equal(armPreflights?.length,2);
@@ -444,7 +456,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       const expected=simulatorArmCompletion?1:0;
       assert.equal(store.prepare('SELECT count(*) AS n FROM automation_arm_budget').get().n,expected);
       assert.equal(store.prepare('SELECT count(*) AS n FROM automation_activation_slot').get().n,expected);
-      if(simulatorArmCompletion)verifyDurableSimulatorArm(store,issuer,armedSimulator,digest);
+      if(simulatorArmCompletion)verifyDurableSimulatorArm(store,issuer,armedSimulator,digest,scheduledSimulator?.recovery);
     }
     if(eventConsumer){
       const stored=issuer.prepare(`SELECT body_jcs FROM service_principal_revision
@@ -461,7 +473,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   }finally{store.close();issuer.close();}
 }
 
-function verifyDurableSimulatorArm(receiver,publisher,{reserved,completed},digest){
+function verifyDurableSimulatorArm(receiver,publisher,{reserved,completed},digest,recovery){
   const {operation,operation_ref}=reserved,{completion,completion_ref}=completed;
   const {operation_id,run_id}=operation,[target]=operation.targets;
   const {preparation_id}=target;
@@ -483,7 +495,7 @@ function verifyDurableSimulatorArm(receiver,publisher,{reserved,completed},diges
   assert.equal(grant.arm_generation,'1');
   assert.equal(grant.principal.principal_kind,'service');
   assert.deepEqual(grant.device_actions,target.device_actions);
-  assert.equal(publisher.prepare('SELECT count(*) AS n FROM run_preparation WHERE run_id=?').get(run_id).n,1);
+  assert.equal(publisher.prepare('SELECT count(*) AS n FROM run_preparation WHERE run_id=?').get(run_id).n,recovery?2:1);
   const slot=receiver.prepare('SELECT run_id,operation_id,revision FROM automation_activation_slot WHERE definition_id=?').get(operation.definition_id);
   assert.deepEqual([slot.run_id,slot.operation_id,slot.revision],[run_id,operation_id,operation.committed_slot_revision]);
   assert.deepEqual(publisher.prepare('PRAGMA foreign_key_check').all(),[]);

@@ -99,8 +99,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const scheduledDispatch=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULED_DISPATCH==='1';
   const scheduleClockLoss=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_CLOCK_LOSS==='1';
   const scheduledReferenceWithdrawal=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_REFERENCE_WITHDRAWAL==='1';
-  assert.ok(!(scheduleClockLoss||scheduledReferenceWithdrawal)||scheduledDispatch);
-  assert.ok(!(scheduleClockLoss&&scheduledReferenceWithdrawal));
+  const reconcileScheduledWrite=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RECOVERY_RECONCILIATION==='1';
+  const scheduleVariants=[scheduleClockLoss,scheduledReferenceWithdrawal,reconcileScheduledWrite].filter(Boolean).length;
+  assert.ok(scheduleVariants===0||scheduleVariants===1&&scheduledDispatch);
   const referenceImage=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER;
   const referenceExecutable=scheduledDispatch?undefined:referenceImage,legacyReference={};
   let enrollment;
@@ -132,7 +133,15 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       identity=enrollment.identity;
     }else{
       identity=JSON.parse(bootstrap(role,data_dir,[],[...args,'init-storage',...directoryArgs]));
-      bootstrap(role,data_dir,[],[...args,'migrate-storage',...directoryArgs,'--to-revision',scheduledDispatch?'39':'33']);
+      const revision=reconcileScheduledWrite?'47':scheduledDispatch?'39':'33';
+      bootstrap(role,data_dir,[],[...args,'migrate-storage',...directoryArgs,'--to-revision',revision]);
+      if(reconcileScheduledWrite){
+        const db=new DatabaseSync(path.join(data_dir,'seamer.sqlite'));
+        try{
+          db.exec(`CREATE TRIGGER test_original_execution_commit BEFORE INSERT ON automation_execution_commit
+            BEGIN SELECT RAISE(IGNORE); END;`);
+        }finally{db.close();}
+      }
     }
     if(referenceExecutable){
       const filename=path.join(data_dir,role+'.sqlite');
@@ -1081,7 +1090,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish'),
           runApproval:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1',
           armPreflight:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1',
-          armCompletion:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1',scheduledDispatch,scheduledReferenceWithdrawal};
+          armCompletion:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1',scheduledDispatch,scheduledReferenceWithdrawal,reconcileScheduledWrite};
         const start=fileFor('worker-start'),result=fileFor('worker-result.json');
         fs.writeFileSync(path.join(controller.data_dir,'worker-test.json'),clockValues.canonical({
           policy:pairPlan.bootstrap.controller,launchId,containment,channelDirectory:'/run/leafseamer-worker',data,start,result,intakeRef,paired
@@ -1155,8 +1164,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       };
     }
     await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
-      verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch});
-    if(scheduledDispatch&&!scheduleClockLoss&&!scheduledReferenceWithdrawal)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
+      verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch,reconcileScheduledWrite});
+    if(reconcileScheduledWrite)t.diagnostic('Linux 模拟器定时写入后的恢复结算已落库，原有写入只执行一次');
+    else if(scheduledDispatch&&!scheduleClockLoss&&!scheduledReferenceWithdrawal)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
     if(scheduledReferenceWithdrawal)t.diagnostic('Linux 定时派发写前撤回，实际停发及两端持久结果已核对');
     if(scheduleClockLoss)t.diagnostic('Seamer 授时失效后原场次持久停发，恢复审批文件后未补发');
     if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');

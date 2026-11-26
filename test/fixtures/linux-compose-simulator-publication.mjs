@@ -171,7 +171,7 @@ export async function approveComposeSimulatorRun({run,baseline,controller,princi
     return preflight;
   }
   await observePreflight('baseline_required');
-  return {proposal_ref,endorsement_ref,approval_ref,policy,observePreflight};
+  return {proposal_ref,endorsement_ref,approval_ref,proposalRequest,policy,observePreflight};
 }
 
 export function verifyDurableSimulatorRunApproval(receiver,publisher,{proposal_ref,endorsement_ref,approval_ref,policy,preflight},digest,

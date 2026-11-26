@@ -8,9 +8,10 @@ import https from 'node:https';
 import net from 'node:net';
 import dgram from 'node:dgram';
 import {once} from 'node:events';
-import {spawn,spawnSync} from 'node:child_process';
+import {execFile,spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
+import {promisify} from 'node:util';
 import {DatabaseSync} from 'node:sqlite';
 import {inflateRawSync} from 'node:zlib';
 
@@ -20,6 +21,7 @@ const socketPath=process.env.LEAFSEAMER_TEST_DOCKER_SOCKET,pidFile=process.env.L
 const file=name=>fileURLToPath(new URL(name,import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const parseFile=name=>JSON.parse(fs.readFileSync(name,'utf8'));
+const execFileAsync=promisify(execFile);
 function run(program,args,timeout=30000){
   const result=spawnSync(program,args,{encoding:'utf8',timeout});
   assert.equal(result.status,0,result.stderr||result.error?.message);
@@ -96,7 +98,9 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const login={login:'compose.fixture',password:'Synthetic-compose-test-password-632'};
   const scheduledDispatch=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULED_DISPATCH==='1';
   const scheduleClockLoss=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_CLOCK_LOSS==='1';
-  assert.ok(!scheduleClockLoss||scheduledDispatch);
+  const scheduledReferenceWithdrawal=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_REFERENCE_WITHDRAWAL==='1';
+  assert.ok(!(scheduleClockLoss||scheduledReferenceWithdrawal)||scheduledDispatch);
+  assert.ok(!(scheduleClockLoss&&scheduledReferenceWithdrawal));
   const referenceImage=process.env.LEAFSEAMER_TEST_COMPOSE_REFERENCE_PROVIDER;
   const referenceExecutable=scheduledDispatch?undefined:referenceImage,legacyReference={};
   let enrollment;
@@ -488,7 +492,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       while(!bindClockPublisher(role,admissions[role].descriptor)){
         assert.ok(performance.now()<expires,role+' did not issue its authentication challenge');await delay(100);
       }
-      clocks[role].publish();
+      await clocks[role].publish();
     }
   }
   const deadline=performance.now()+15000;
@@ -534,13 +538,14 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     fs.writeFileSync(profile,canonical({format:'leafseamer.authentication-clock-signing-profile/2',service_id,database_instance_id,
       policy_digest:policy.digest,native_binary_digest,private_key_file:privateFile,evidence_file:signed,chrony}),{mode:0o600});
     const healthLifetime=scheduledDispatch?BigInt(policy.sample_ttl_ns):4600000000n;
-    clock.publish=()=>{
+    clock.publish=async()=>{
       const health=seal({id:crypto.randomUUID(),revision:'1',service_id,service_boot_id,clock_domain_id,runtime_ref:ref(clock.runtime),
         policy_ref:ref(policy),health_profile_ref,system_time_source_ref,environment_approval_ref,state:'synchronized',holdover_ref:null,
         valid_before_tick_ns:String(source.tick()+healthLifetime)});
       fs.writeFileSync(statement,canonical({challenge,evidence:{policy,runtime:clock.runtime,health}}),{mode:0o600});
-      const result=run(process.execPath,[path.join(clockDir,'clock-evidence.mjs'),'--profile',profile,'--statement',statement],5000);
-      assert.deepEqual(JSON.parse(result),{state:'published',service_id,service_boot_id});
+      // 签名子进程运行时，测试宿主仍须接收受监督核心的连接和确认请求。
+      const {stdout}=await execFileAsync(process.execPath,[path.join(clockDir,'clock-evidence.mjs'),'--profile',profile,'--statement',statement],{timeout:5000});
+      assert.deepEqual(JSON.parse(stdout),{state:'published',service_id,service_boot_id});
       owned(signed);
       fs.renameSync(signed,path.join(exchange,'evidence-'+service_boot_id+'.json'));
       return health;
@@ -567,7 +572,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       assert.equal(body.authentication_clock,expected);
     };
     if(!captureTest)for(const role of ['controller','seamer']){
-      state(role,'unqualified','missing');clocks[role].publish();
+      state(role,'unqualified','missing');await clocks[role].publish();
     }
     await delay(850);
     for(const role of ['controller','seamer'])state(role,'available','verified');
@@ -578,7 +583,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         let count;
         while((count=countCaptures())<expected){
           if(performance.now()>=deadline)assert.fail('reference capture timeout\n'+(ntsServer?.stats()??'')+compose('logs','--no-color'));
-          clocks.controller.publish();clocks.seamer.publish();await delay(1000);
+          await clocks.controller.publish();await clocks.seamer.publish();await delay(1000);
         }
         assert.equal(count,expected);
       }
@@ -591,19 +596,19 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       assert.equal(countCaptures(),3);
     }
     if(scheduledDispatch){
-      for(const role of ['controller','seamer'])clocks[role].publish();
+      for(const role of ['controller','seamer'])await clocks[role].publish();
       await delay(850);
       for(const role of ['controller','seamer'])state(role,'available','verified');
     }else{
-      const old=clocks.controller.publish();
+      const old=await clocks.controller.publish();
       for(let i=0;i<4;i++){
-        clocks.seamer.publish();
+        await clocks.seamer.publish();
         await delay(1400);
         state('seamer','available','verified');
       }
       assert.ok(source.tick()>=BigInt(old.valid_before_tick_ns));
       state('controller','faulted','expired');
-      clocks.controller.publish();
+      await clocks.controller.publish();
       state('controller','faulted','verified');
       assert.equal((await send('/auth/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(login)})).status,503);
       assert.equal((await send(draft)).status,401);
@@ -815,17 +820,17 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         assert.ok(performance.now()<deadline,role+' did not issue a fresh authentication challenge');
         await delay(100);
       }
-      clocks[role].publish();
+      await clocks[role].publish();
     }
-    function renew(){
-      for(const role of roles)clocks[role].publish();
+    async function renew(){
+      for(const role of roles)await clocks[role].publish();
     }
     const baseline=switchReference?0:3;
-    for(let i=0;i<3;i++){renew();await delay(1000);assert.equal(nextNTS.count(),baseline);}
+    for(let i=0;i<3;i++){await renew();await delay(1000);assert.equal(nextNTS.count(),baseline);}
     const until=performance.now()+22000;
     while(nextNTS.count()<baseline+2){
       assert.ok(performance.now()<until,'second launch did not resume both reference sources\n'+nextNTS.stats()+compose('logs','--no-color'));
-      renew();await delay(800);
+      await renew();await delay(800);
     }
     assert.equal(nextNTS.count(),baseline+2);
     if(switchReference)assert.equal(ntsServer.count(),3);
@@ -1076,7 +1081,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         const paired={login,ready:fileFor('simulator-ready.json'),proceed:fileFor('simulator-write'),finish:fileFor('simulator-finish'),
           runApproval:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1',
           armPreflight:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_PREFLIGHT==='1',
-          armCompletion:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1',scheduledDispatch};
+          armCompletion:process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_ARM_COMPLETION==='1',scheduledDispatch,scheduledReferenceWithdrawal};
         const start=fileFor('worker-start'),result=fileFor('worker-result.json');
         fs.writeFileSync(path.join(controller.data_dir,'worker-test.json'),clockValues.canonical({
           policy:pairPlan.bootstrap.controller,launchId,containment,channelDirectory:'/run/leafseamer-worker',data,start,result,intakeRef,paired
@@ -1099,16 +1104,19 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           assert.ok(performance.now()<limit,role+' clock challenge did not arrive');
           await delay(50);
         }
-        clocks[role].publish();
+        await clocks[role].publish();
       }
-      let renewalFailure=null,phase=record.phase;
+      let renewal=null,renewalFailure=null,phase=record.phase;
+      async function publishClocks(){
+        for(const role of ['controller','seamer'])await clocks[role].publish();
+      }
       const renew=setInterval(()=>{
-        try{for(const role of ['controller','seamer'])clocks[role].publish();}
-        catch(error){renewalFailure=error;clearInterval(renew);}
+        if(renewal)return;
+        renewal=publishClocks().catch(error=>{renewalFailure=error;clearInterval(renew);}).finally(()=>{renewal=null;});
       },1200);
       const containers=record.detail.runtime_binding.containers;
       return {containers,inbox:path.join(generationDirectory,'first-pairing'),phase:()=>phase,
-        simulator:simulatorFiles,
+        simulator:simulatorFiles,scheduledReferenceWithdrawal,
         events:role=>docker('logs',containers[role]).split('\n').filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)),
         ...(scheduleClockLoss&&{withdrawSeamerReference(){
           const {directory}=scheduledReference.capture.seamer;
@@ -1119,6 +1127,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         }}),
         async stop(){
           clearInterval(renew);
+          await renewal;
           try{
             phase=managedHost.retire().phase;
             assert.equal(phase,'retired');
@@ -1147,7 +1156,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     }
     await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
       verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch});
-    if(scheduledDispatch&&!scheduleClockLoss)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
+    if(scheduledDispatch&&!scheduleClockLoss&&!scheduledReferenceWithdrawal)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
+    if(scheduledReferenceWithdrawal)t.diagnostic('Linux 定时派发写前撤回，实际停发及两端持久结果已核对');
     if(scheduleClockLoss)t.diagnostic('Seamer 授时失效后原场次持久停发，恢复审批文件后未补发');
     if(pairedSimulator)t.diagnostic('同代模拟器来源原件、Seamer 摄取和 Controller 确认已核对');
     if(process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1')t.diagnostic('模拟器定义发布、审批原件和未布防运行已核对');

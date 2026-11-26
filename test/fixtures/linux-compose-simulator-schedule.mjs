@@ -7,7 +7,7 @@ const id=()=>crypto.randomUUID();
 const waitingForClock=(response,body)=>response.status===503&&['WORKER_NOT_READY','CLOCK_UNTRUSTED'].includes(body.error);
 export const schedulePermissions=['schedule.read','schedule.publish','schedule.activate'];
 
-export async function runComposeSimulatorSchedule({armed,compiled,localRequest,bearer,readRun,waitFor,withdrawReference=null}){
+export async function runComposeSimulatorSchedule({armed,compiled,localRequest,bearer,readRun,waitFor,withdrawReference=null,readDispatchWithdrawal=null}){
   async function request(operation,input,retryClock=false){
     const response=await localRequest(route,operation,input,bearer);
     const body=JSON.parse(response.data);
@@ -80,18 +80,26 @@ export async function runComposeSimulatorSchedule({armed,compiled,localRequest,b
   assert.deepEqual(admission.activation_ref,activation.ref);
   assert.equal(admission.first_step_id,step_id);
   let observedRun=null;
-  const completedRun=await waitFor(async()=>{
+  const run=await waitFor(async()=>{
     await delay(350);
     const current=await readRun();
     observedRun={lifecycle:current.lifecycle,active:current.active_execution_id===admission.execution_id,
       completed:current.last_execution_id===admission.execution_id};
+    if(readDispatchWithdrawal&&observedRun.lifecycle==='paused'){
+      assert.equal(observedRun.active,true);
+      assert.equal(observedRun.completed,false);
+      return current;
+    }
     assert.ok(['armed','running'].includes(current.lifecycle),JSON.stringify(observedRun));
     if(!observedRun.completed)return false;
+    assert.equal(readDispatchWithdrawal,null,'Scheduled dispatch unexpectedly completed');
     assert.equal(current.lifecycle,'armed');
     assert.equal(current.active_execution_id,null);
     return current;
   },18000).catch(error=>{throw new Error('Scheduled run did not settle '+JSON.stringify(observedRun),{cause:error});});
-  return {admission,parameters,completedRun};
+  const withdrawal=readDispatchWithdrawal?.()??null;
+  if(readDispatchWithdrawal)assert.ok(withdrawal,'Controller did not withdraw before the scheduled write');
+  return {admission,parameters,run,withdrawal};
 }
 
 export function verifyDurableSimulatorScheduleStop(receiver,publisher,stopped,digest){
@@ -102,6 +110,40 @@ export function verifyDurableSimulatorScheduleStop(receiver,publisher,stopped,di
   assert.equal(receiver.prepare('SELECT 1 FROM schedule_execution_admission WHERE occurrence_id=?').get(occurrence_id),undefined);
   assert.equal(publisher.prepare(`SELECT 1 FROM command_admission_source
     WHERE json_extract(body_jcs,'$.metadata.dispatch.mode')='scheduled'`).get(),undefined);
+}
+
+export function verifyDurableSimulatorDispatchWithdrawal(receiver,publisher,{admission,withdrawal},digest){
+  const {execution_id,first_step_id}=admission,{command_id,permit_id,guard_id,tick_ns}=withdrawal;
+  const saved=receiver.prepare('SELECT body_jcs,body_digest FROM schedule_execution_admission WHERE execution_id=?').get(execution_id);
+  assert.deepEqual(JSON.parse(saved.body_jcs),admission);
+  assert.equal(saved.body_digest,digest(admission));
+  const terminal=JSON.parse(receiver.prepare('SELECT body_jcs FROM automation_execution_command_terminal WHERE execution_id=? AND step_id=?')
+    .get(execution_id,first_step_id).body_jcs);
+  assert.equal(terminal.command_ref.object_id,command_id);
+  assert.equal(terminal.state.outcome,'blocked');
+  assert.equal(terminal.state.reason_code,'execution_closed');
+  assert.equal(receiver.prepare('SELECT 1 FROM automation_execution_commit WHERE execution_id=?').get(execution_id),undefined);
+  const original=JSON.parse(publisher.prepare('SELECT body_jcs FROM command_admission_source WHERE command_id=?').get(command_id).body_jcs);
+  assert.equal(original.schedule_binding.occurrence_ref.id,admission.occurrence_id);
+  const final=JSON.parse(publisher.prepare('SELECT body_jcs FROM command_final_admission WHERE permit_id=? AND command_id=?').get(permit_id,command_id).body_jcs);
+  assert.equal(final.guard.time_required,true);
+  assert.equal(final.guard.guard_id,guard_id);
+  assert.ok(BigInt(tick_ns)<BigInt(final.seal.send_window.before_tick_ns));
+  const dispatch=publisher.prepare(`SELECT d.record_id,g.disposition FROM command_dispatch_request d
+    JOIN command_guard_ack g USING(guard_id) WHERE d.permit_id=? AND d.guard_id=?`).get(permit_id,guard_id);
+  assert.equal(dispatch.disposition,'installed');
+  assert.equal(publisher.prepare('SELECT 1 FROM execution_write_attempt WHERE record_id=?').get(dispatch.record_id),undefined);
+  for(const table of ['command_dispatch_write','command_dispatch_report','command_dispatch_evidence','command_settlement'])
+    assert.equal(publisher.prepare('SELECT 1 FROM '+table+' WHERE permit_id=?').get(permit_id),undefined,table);
+  const invalidation=JSON.parse(publisher.prepare('SELECT body_jcs FROM time_provider_reference_invalidation WHERE anchor_id=?')
+    .get(original.accepted_reference.anchor_ref.id).body_jcs);
+  assert.equal(invalidation.cause,'authority_changed');
+  assert.equal(invalidation.minimum_time_generation,'2');
+  assert.ok(publisher.prepare('SELECT 1 FROM execution_session_end WHERE ipc_session_id=?').get(final.seal.binding.ipc_session_id));
+  const closure=JSON.parse(publisher.prepare('SELECT body_jcs FROM command_unsent_closure WHERE permit_id=?').get(permit_id).body_jcs);
+  assert.equal(closure.evidence[0].body.kind,'never_sent');
+  assert.equal(closure.future_writes_closed.automatic_resends,false);
+  assert.equal(closure.record_digest,terminal.record_ref.digest);
 }
 
 export function verifyDurableSimulatorSchedule(receiver,publisher,{admission,parameters},digest){

@@ -362,6 +362,8 @@ Linux 定时派发验收使用同一隔离客体中的受监督 Compose、Chrony
 
 另一次隔离运行可设置 `LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_CLOCK_LOSS=1`，验证已跟踪场次在临时授时批准撤下后持久停发。测试在原窗口截止前放回审批文件，核对原场次仍为 `blocked`，两端均没有为它登记新的执行或命令。[停发断言](test/fixtures/linux-compose-simulator-schedule.mjs)
 
+设置 `LEAFSEAMER_TEST_COMPOSE_SIMULATOR_SCHEDULE_REFERENCE_WITHDRAWAL=1` 可验收 Controller 的写前撤回。测试在定时 Guard 安装且派发请求提交后、原截止前撤回测试授时资格。退役后对照两端账本，核对零写入尝试、Controller 的 `never_sent` 和 Seamer 的 `blocked` 终态。两种撤回场景各自运行。[写前撤回断言](test/fixtures/linux-compose-simulator-schedule.mjs)
+
 Linux 安装协调者可通过 `@leafseamer/suite/installation` 对已校验的包调用 `prepareMaterialization(identity, {reader_sids: [], release_authorization_ref})`。安装账户独占准备目录，实物目录和文件分别使用 `0500` 和 `0400`。准备成功后，`platformQualifications.observe(identity)` 返回绑定当前文件系统和安装实现的资格范围。部署者持有相应验收批准和证据后，使用 `configure` 登记资格，再通过 `sealImport` 在安装库中生成收据。
 
 Linux 的本机 `queryIntake`、`verifyMaterialization` 及三个 `describe` 接口会复核当前发行信任、平台资格、内容身份与库存摘要。读取静态文档受原库存和字节预算约束。观察时间使用 Linux `/proc/uptime` 的启动时钟，按百分之一秒精度保守核验四秒窗口。[Linux 内核 uptime 实现](https://raw.githubusercontent.com/torvalds/linux/v6.12/fs/proc/uptime.c) · [安装库联调](test/content-preparation.test.mjs)

@@ -42,7 +42,7 @@ function backupPlan(value) {
 }
 
 export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,
-  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,readLinuxRetirement}) {
+  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,windowsFenceEnabled=false,readLinuxRetirement}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
@@ -151,7 +151,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
 
   function buildRestore(){
     return restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,requireFreeHelper,
-      recoveryPlansEnabled,retirementEnabled,readLinuxRetirement,
+      recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,readLinuxRetirement,
       claimHelper(){
         need(active===0,'backup_helper_in_use');
         active++;
@@ -516,5 +516,6 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
     }
   });
   return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},
-    enableRecoveryPlans(){restore.enablePlans();},enableRecoveryRetirement(){restore.enableRetirement();},get active(){return active;}};
+    enableRecoveryPlans(){restore.enablePlans();},enableRecoveryRetirement(){restore.enableRetirement();},
+    enableWindowsRecoveryFencing(){restore.enableWindowsFencing();},get active(){return active;}};
 }

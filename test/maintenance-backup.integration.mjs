@@ -376,7 +376,7 @@ async function nativeDeploymentFixture(store,scopes){
 
 async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}){
   const supervisor=distributions.controller;
-  const {initializeProcessHost,installedCoreDigest,startProcessHost}=await import(
+  const {initializeProcessHost,installedCoreDigest,startProcessHost,readProcessRecoveryRetirement}=await import(
     pathToFileURL(path.join(supervisor.directory,'process-host.mjs')).href);
   for(const directory of Object.values(sources))await initializeProcessHost(directory);
   const policy=(scope,artifactDigest)=>({format:'leafseamer-core-bootstrap-policy/1',service_id:scope.service_id,
@@ -444,7 +444,10 @@ async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredP
     runtime_generation:index===0?journalGeneration(sources.controller):seamerGeneration}))};
   const runtime_generation_id=crypto.randomUUID();
   const authority=()=>({...authorize(),runtime_generation_id,windows_runtime});
-  const record=(choose=authority)=>retiredPlan.recordWindowsRecoveryRetirement(retirementRequest,choose);
+  await assert.rejects(retiredPlan.recordWindowsRecoveryRetirement(retirementRequest,authority),
+    {code:'recovery_windows_fencing_migration_required'});
+  let ledger=f.store.enableWindowsRecoveryFencing();
+  const record=(choose=authority,request=retirementRequest)=>ledger.recordWindowsRecoveryRetirement(request,choose);
   const withWriters=writers=>()=>({...authority(),windows_runtime:{...windows_runtime,writers}});
   await assert.rejects(record(withWriters(windows_runtime.writers.slice(0,1))),{code:'recovery_retirement_target_mismatch'});
   await assert.rejects(record(withWriters([{...windows_runtime.writers[0],database_instance_id:crypto.randomUUID()},
@@ -459,17 +462,52 @@ async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredP
   assert.equal((await newer.close()).exitCode,0);
   await assert.rejects(record(),{code:'recovery_windows_retirement_unproven'});
   windows_runtime.writers[0].runtime_generation=journalGeneration(sources.controller);
+
+  const sorted=windows_runtime.writers.slice().sort((a,b)=>a.database_instance_id<b.database_instance_id?-1:1);
+  const readMember=({data_directory,runtime_generation,service_id,database_instance_id})=>readProcessRecoveryRetirement({
+    dataDir:data_directory,runtimeGeneration:runtime_generation,serviceId:service_id,databaseInstanceId:database_instance_id});
+  const originalMembers=await Promise.all(sorted.map(async writer=>({...await readMember(writer),authority:writer.authority})));
+  assert.ok(originalMembers.every(member=>!member.startup_fence));
+  const historical={...retirementRequest,approval_id:acceptedPlan.approval.approval_id,evidence:{
+    format:'leafseamer-windows-deployment-retirement/1',generation_id:runtime_generation_id,
+    source_digest:digest('prior verified supervisor distribution'),members:originalMembers}};
+  // 模拟升级前已经持久化的只读见证，字节与摘要必须能够原样查回。
+  f.close();
+  const installationDb=new DatabaseSync(path.join(f.root,'installation.db'));
+  try{installationDb.prepare('INSERT INTO maintenance_recovery_retirement VALUES (?,?,?,?,?,?)').run(retirementRequest.plan_ref.restore_id,
+    retirementRequest.retirement_id,historical.approval_id,retirementRequest.plan_ref.digest,Buffer.from(canonical(historical)),digest(historical));}
+  finally{installationDb.close();}
+  ledger=f.reopen().backupMaintenance();
+  const historicalView={...acceptedPlan,historical_retirement:historical};
+  assert.deepEqual(ledger.getRecoveryPlan(retirementRequest.plan_ref.restore_id),historicalView);
+
+  const expectedFence={plan_digest:retirementRequest.plan_ref.digest,retirement_id:retirementRequest.retirement_id};
+  await assert.rejects(record(({action,writer})=>({...authority(),
+    allowed:action!=='fence_recovery_startup'||writer.database_instance_id!==sorted[1].database_instance_id})),{code:'restore_not_authorized'});
+  assert.deepEqual((await readMember(sorted[0])).startup_fence,expectedFence);
+  assert.equal((await readMember(sorted[1])).startup_fence,undefined);
+  ledger=f.reopen().backupMaintenance();
+  const pending=ledger.getRecoveryPlan(retirementRequest.plan_ref.restore_id);
+  assert.equal(pending.phase,'plan_reviewed');
+  assert.deepEqual(pending.historical_retirement,historical);
+  assert.equal(pending.retirement_intent.retirement_id,retirementRequest.retirement_id);
+  await assert.rejects(record(authority,{...retirementRequest,retirement_id:crypto.randomUUID()}),{code:'recovery_retirement_conflict'});
   await assert.rejects(record(({action})=>({...authority(),
     ...(action==='adopt_recovery_retirement'&&{runtime_generation_id:crypto.randomUUID()})})),{code:'recovery_runtime_generation_changed'});
-  assert.deepEqual(retiredPlan.getRecoveryPlan(retirementRequest.plan_ref.restore_id),acceptedPlan);
+  assert.deepEqual(ledger.getRecoveryPlan(retirementRequest.plan_ref.restore_id),pending);
+  for(const writer of sorted){
+    assert.deepEqual((await readMember(writer)).startup_fence,expectedFence);
+    await assert.rejects(startProcessHost({dataDir:writer.data_directory}),{code:'process_recovery_startup_fenced'});
+  }
   const retired=await record();
   assert.equal(retired.phase,'old_writers_retired');
   assert.equal(retired.retirement.approval_id,acceptedPlan.approval.approval_id);
-  assert.equal(retired.retirement.evidence.format,'leafseamer-windows-deployment-retirement/1');
+  assert.equal(retired.retirement.evidence.format,'leafseamer-windows-deployment-retirement/2');
   assert.deepEqual(retired.retirement.evidence.members.map(({authority,service_id,database_instance_id})=>
     ({authority,service_id,database_instance_id})).sort((a,b)=>a.authority.localeCompare(b.authority)),
   scopes.map(({authority,service_id,database_instance_id})=>({authority,service_id,database_instance_id})));
-  assert.ok(retired.retirement.evidence.members.every(member=>member.active_processes===0));
+  assert.deepEqual(retired.retirement.evidence.members,originalMembers.map(member=>({...member,startup_fence:expectedFence})));
+  assert.deepEqual(retired.historical_retirement,historical);
   const reopened=f.reopen().backupMaintenance();
   assert.deepEqual(reopened.getRecoveryPlan(retirementRequest.plan_ref.restore_id),retired);
   assert.deepEqual(await reopened.recordWindowsRecoveryRetirement(retirementRequest,authority),retired);
@@ -695,6 +733,9 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     const reopenedRetirement=f.reopen().backupMaintenance();
     assert.deepEqual(reopenedRetirement.getRecoveryPlan(restoreId),retired);
     assert.deepEqual(reopenedRetirement[method](retirementRequest,hostAuthority),retired);
+    const upgraded=f.store.enableWindowsRecoveryFencing();
+    assert.deepEqual(upgraded.getRecoveryPlan(restoreId),retired);
+    assert.deepEqual(upgraded[method](retirementRequest,hostAuthority),retired);
   }else{
     assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,authorize),
       {code:'recovery_retirement_platform'});

@@ -16,7 +16,7 @@ const reportLimit=65536;
 const authorities=['controller','seamer'];
 const workerFormat='leafseamer-backup-verifier/1';
 
-export async function loadDistributionExport({directory,manifest_sha256},authority,entry,exportName,errorCode){
+export async function loadVerifiedDistributionModule({directory,manifest_sha256},authority,entry,errorCode){
   const manifestFile=path.join(directory,'build-manifest.json');
   const stat=await fs.lstat(manifestFile);
   need(stat.isFile()&&stat.nlink===1&&stat.size>0&&stat.size<=262144,errorCode);
@@ -59,9 +59,7 @@ export async function loadDistributionExport({directory,manifest_sha256},authori
   }
   await verifyFiles(directory);
   need(expectedFiles.size===0,errorCode);
-  const value=(await import(pathToFileURL(path.join(directory,entry)).href))[exportName];
-  need(typeof value==='function',errorCode);
-  return value;
+  return import(pathToFileURL(path.join(directory,entry)).href);
 }
 
 async function reviewBatch(inputs,distributions){
@@ -93,8 +91,11 @@ async function verifyBatch({distributions,inputs,reviewCommands}){
   const original=reviewCommands?await Promise.all(inputs.map(({file})=>fs.lstat(file,{bigint:true}))):null;
   for(const {file,receipt} of inputs){
     const authority=receipt.scope.authority;
-    if(!readers.has(authority))readers.set(authority,await loadDistributionExport(distributions[authority],authority,
-      'storage.mjs','verifyBackupSnapshot',verificationError));
+    if(!readers.has(authority)){
+      const {verifyBackupSnapshot}=await loadVerifiedDistributionModule(distributions[authority],authority,'storage.mjs',verificationError);
+      need(typeof verifyBackupSnapshot==='function',verificationError);
+      readers.set(authority,verifyBackupSnapshot);
+    }
     const report=readers.get(authority)(file,receipt);
     need(report?.format==='leafseamer.'+authority+'-backup-validation/1'&&
       report.backup_operation_id===receipt.backup_operation_id&&report.engine?.version===receipt.engine&&

@@ -14,9 +14,9 @@ const bytes=value=>Buffer.from(canonical(value));
 const unknownStorage=new Set(['installation_storage_unknown','installation_unavailable','installation_directory_changed']);
 
 export function restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,claimHelper,
-  requireFreeHelper,recoveryPlansEnabled,retirementEnabled,readLinuxRetirement}){
+  requireFreeHelper,recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,readLinuxRetirement}){
   const buildPlans=()=>recoveryPlanStore({db,transact,rows,decode,identity,staging,published,original,claimHelper,requireFreeHelper,
-    retirementEnabled,readLinuxRetirement});
+    retirementEnabled,windowsFenceEnabled,readLinuxRetirement});
   let plans=recoveryPlansEnabled?buildPlans():null;
   function original(restoreId){
     return rows(db,`SELECT i.*,r.state,r.body,r.digest FROM maintenance_restore_intent i
@@ -139,6 +139,7 @@ export function restoreMaintenance({db,transact,rows,decode,identity,staging,con
     },
     enablePlans(){plans=buildPlans();},
     enableRetirement(){retirementEnabled=true;plans=buildPlans();},
+    enableWindowsFencing(){windowsFenceEnabled=true;plans=buildPlans();},
     recordLinuxRetirement(input,authority,native=false){
       need(plans,'recovery_plan_migration_required');
       return plans.recordLinuxRetirement(input,authority,native);

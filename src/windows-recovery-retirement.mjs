@@ -1,8 +1,9 @@
 import path from 'node:path';
-import {digest,InstallationError,requireValue as need} from './import-input.mjs';
-import {loadDistributionExport} from './backup-domain-verification.mjs';
+import {canonical,digest,InstallationError,requireValue as need} from './import-input.mjs';
+import {loadVerifiedDistributionModule} from './backup-domain-verification.mjs';
 
-export const windowsRetirementFormat='leafseamer-windows-deployment-retirement/1';
+export const historicalWindowsRetirementFormat='leafseamer-windows-deployment-retirement/1';
+export const windowsRetirementFormat='leafseamer-windows-deployment-retirement/2';
 const unproven='recovery_windows_retirement_unproven';
 const generation=/^[0-9a-f]{32}(?![\s\S])/;
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])/;
@@ -10,6 +11,7 @@ const hash=/^sha256:[a-f0-9]{64}(?![\s\S])/;
 const matches=(pattern,value)=>typeof value==='string'&&pattern.test(value);
 const fields=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===keys;
 const localDirectory=value=>typeof value==='string'&&/^[A-Za-z]:\\/.test(value)&&path.resolve(value)===value;
+const same=(left,right)=>canonical(left)===canonical(right);
 
 export function windowsRecoverySource(decision,plan){
   const {runtime_generation_id:id,windows_runtime:runtime}=decision;
@@ -34,21 +36,60 @@ export function windowsRecoverySource(decision,plan){
   return structuredClone({generation_id:id,supervisor:runtime.supervisor,writers});
 }
 
-export async function readWindowsRetirement(source){
+export function windowsRetirementFacts({generation_id,members}){
+  return {generation_id,members:members.map(({startup_fence,...member})=>member)};
+}
+
+export function withWindowsStartupFences(preflight,binding){
+  return {...preflight,format:windowsRetirementFormat,members:preflight.members.map(member=>({...member,startup_fence:binding}))};
+}
+
+async function nativeCall(fn){
   try{
-    const read=await loadDistributionExport(source.supervisor,'controller','process-host.mjs','readProcessRecoveryRetirement',unproven);
-    const members=[];
-    for(const {authority,data_directory,runtime_generation,service_id,database_instance_id} of source.writers){
-      const proof=await read({dataDir:data_directory,runtimeGeneration:runtime_generation,serviceId:service_id,databaseInstanceId:database_instance_id});
-      need(proof?.format==='leafseamer-windows-process-retirement/1'&&proof.runtime_generation===runtime_generation&&
-        proof.service_id===service_id&&proof.database_instance_id===database_instance_id&&proof.active_processes===0&&
-        matches(hash,proof.retirement_digest)&&members.every(member=>member.directory_id!==proof.directory_id&&
-          member.journal_incarnation!==proof.journal_incarnation),unproven);
-      members.push({...proof,authority});
-    }
-    return {format:windowsRetirementFormat,generation_id:source.generation_id,source_digest:digest(source),members};
+    return await fn();
   }catch(error){
     if(error instanceof InstallationError)throw error;
-    throw new InstallationError(unproven);
+    throw new InstallationError(error?.code==='process_recovery_fence_conflict'?'recovery_windows_fence_conflict':unproven);
   }
+}
+
+export async function windowsRetirementReader(source){
+  const {readProcessRecoveryRetirement:read,fenceProcessRecoveryStartup:fence}=await nativeCall(()=>
+    loadVerifiedDistributionModule(source.supervisor,'controller','process-host.mjs',unproven));
+  need(typeof read==='function'&&typeof fence==='function','recovery_windows_supervisor_fencing_required');
+
+  function options({data_directory,runtime_generation,service_id,database_instance_id}){
+    return {dataDir:data_directory,runtimeGeneration:runtime_generation,serviceId:service_id,databaseInstanceId:database_instance_id};
+  }
+
+  async function observe(binding,requireFence){
+    const members=[];
+    for(const writer of source.writers){
+      const proof=await nativeCall(()=>read(options(writer)));
+      need(proof?.format==='leafseamer-windows-process-retirement/1'&&proof.runtime_generation===writer.runtime_generation&&
+        proof.service_id===writer.service_id&&proof.database_instance_id===writer.database_instance_id&&proof.active_processes===0&&
+        matches(hash,proof.retirement_digest)&&members.every(member=>member.directory_id!==proof.directory_id&&
+          member.journal_incarnation!==proof.journal_incarnation),unproven);
+      if(requireFence||proof.startup_fence)
+        need(proof.startup_fence&&same(proof.startup_fence,binding),'recovery_windows_fence_conflict');
+      members.push({...proof,authority:writer.authority});
+    }
+    const facts={generation_id:source.generation_id,members};
+    return {format:requireFence?windowsRetirementFormat:historicalWindowsRetirementFormat,
+      source_digest:digest(source),...(requireFence?facts:windowsRetirementFacts(facts))};
+  }
+
+  return {
+    preflight:binding=>observe(binding,false),
+    async seal(binding,expected,assertCurrent){
+      for(const [index,writer] of source.writers.entries()){
+        assertCurrent(writer);
+        const proof=await nativeCall(()=>fence({...options(writer),planDigest:binding.plan_digest,retirementId:binding.retirement_id}));
+        need(same({...proof,authority:writer.authority},expected.members[index]),'recovery_runtime_generation_changed');
+      }
+      const confirmed=await observe(binding,true);
+      need(same(confirmed,expected),'recovery_runtime_generation_changed');
+      return confirmed;
+    }
+  };
 }

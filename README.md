@@ -467,9 +467,9 @@ Linux 原生部署使用 `recordLinuxNativeRecoveryRetirement({plan_ref, retirem
 
 ### 核对 Windows 旧写入者退役
 
-Schema 6 的 `recordWindowsRecoveryRetirement({plan_ref, retirement_id}, authorize)` 采用原生 Job 退役证据。可信本机装配在 `read_recovery_retirement` 和 `adopt_recovery_retirement` 为 `windows_native` 返回旧部署代 UUID `runtime_generation_id` 和 `windows_runtime`。它须从当前部署权威取得全体旧写入者并持续阻止旧代重启与新代启动，才可返回 `writers_fenced: true`。`supervisor` 提供受保护 Controller 制品的绝对 `directory` 和 `manifest_sha256`。`writers` 每项提供 `authority`、`service_id`、`database_instance_id`、`data_directory` 和该服务监督日志内的 `runtime_generation`。
+Windows 恢复须在 Schema 6 安装账本上显式调用 `enableWindowsRecoveryFencing()`，再使用 `recordWindowsRecoveryRetirement({plan_ref, retirement_id}, authorize)`。可信本机装配在 `read_recovery_retirement`、`begin_recovery_fencing`、逐写入者的 `fence_recovery_startup` 和最终的 `adopt_recovery_retirement` 返回当前部署代、旧部署代 UUID `runtime_generation_id` 和 `windows_runtime`。装配须从当前部署权威取得全体旧写入者，并在操作期间阻止旧代重启及新代启动，才可返回 `writers_fenced: true`。`supervisor` 提供支持启动封锁的受保护 Controller 制品的绝对 `directory` 和 `manifest_sha256`。`writers` 每项提供 `authority`、`service_id`、`database_instance_id`、`data_directory` 和该服务监督日志内的 `runtime_generation`。
 
-Suite 核对制品库存、恢复范围内每个库的身份，以及名册中每个服务最后一次启动的 Job 清空证据。仅当两次读取一致、写入前再次授权且仍指向同一名册时，Suite 才入账 `old_writers_retired`。缺失、正在运行或已被新运行代取代的写入者使计划继续停在 `plan_reviewed`。入账后新库准备和激活仍须各自核对当前部署与现场状态。
+Suite 先核对全体写入者的制品、库身份及最后一次启动的 Job 清空证据，再持久化封锁意图。每台原生监督器完成封锁、回读同一计划及操作标识且授权仍有效后，才入账 `old_writers_retired`。中断时 `getRecoveryPlan` 返回 `retirement_intent`，沿同一 `retirement_id` 和名册重试，已完成的封锁继续生效。旧版仅包含 Job 清空证据的回执会显示在 `historical_retirement`，沿原计划和操作补齐封锁后才可进入下一阶段。新库准备和激活仍须分别核对当前部署与现场状态。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

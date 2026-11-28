@@ -5,6 +5,7 @@ import {canonical, digest, InstallationError, requireValue as need} from './impo
 import {stageSQLiteSnapshot} from './sqlite-snapshot.mjs';
 import {encryptionInput,inspectBackupManifest,materializeBackupArchive} from './maintenance-backup-archive.mjs';
 import {verifyBackupSnapshots} from './backup-domain-verification.mjs';
+import {restoreMaintenance} from './maintenance-restore.mjs';
 
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])/;
 const id = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}(?![\s\S])/;
@@ -40,10 +41,11 @@ function backupPlan(value) {
   return JSON.parse(canonical(value));
 }
 
-export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false}) {
+export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,restoreEnabled=false}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
+  let restore=restoreEnabled?buildRestore():null;
 
   function key(value) {
     const human = value?.origin==='human';
@@ -143,6 +145,27 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       LEFT JOIN maintenance_backup_publication_result r USING(operation_id)
       WHERE r.operation_id IS NULL OR r.state='indeterminate' LIMIT 1`).pluck().get(),
     'backup_helper_in_use');
+    need(!restore?.inUse(),'backup_helper_in_use');
+  }
+
+  function buildRestore(){
+    return restoreMaintenance({db,transact,rows,decode,staging,contentDirectory,runtime,published,requireFreeHelper,
+      claimHelper(){
+        need(active===0,'backup_helper_in_use');
+        active++;
+        return ()=>{active--;};
+      }});
+  }
+
+  function published(archiveId){
+    const record=publication(archiveId);
+    need(record?.state==='published','restore_archive_unpublished');
+    const archive=decode(record.result_body,record.result_digest);
+    need(archive.archive_id===archiveId&&archive.source_trust==='verified'&&archive.format==='leafseamer-backup-age/1',
+      'restore_archive_unpublished');
+    const row=current(archiveId);
+    return {archive,plan:row.plan,proof:decode(record.body,record.digest),receipts:snapshotReceipts(row),
+      sourceDigest:record.result_digest};
   }
 
   function snapshots(operationId) {
@@ -163,6 +186,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
           WHERE i.runtime_id<>? AND r.operation_id IS NULL`,runtime);
         for(const row of pending)recordArchiveResult(row.operation_id,'indeterminate',{reason:'backup_helper_unconfirmed'});
       }
+      restore?.recover();
     });
   }
 
@@ -243,16 +267,19 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
   function selectPublication(operationId,revision){
     const row=expect(operationId,revision);
     need(row.phase==='running'&&row.step==='snapshots_staged'&&!publication(operationId),'backup_operation_phase');
-    const copies=snapshots(operationId);
+    return {row,receipts:snapshotReceipts(row)};
+  }
+
+  function snapshotReceipts(row){
+    const copies=snapshots(row.operation_id);
     need(copies.length===row.plan.target_service_scopes.length&&copies.every((item,index)=>
       item.target_index===index&&item.body!==null),'backup_target_integrity');
-    const receipts=copies.map((item,index)=>{
+    return copies.map((item,index)=>{
       const receipt=decode(item.body,item.digest);
       need(matches(uuid,item.backup_operation_id)&&receipt.backup_operation_id===item.backup_operation_id&&
         canonical(receipt.scope)===canonical(row.plan.target_service_scopes[index]),'backup_target_integrity');
       return receipt;
     });
-    return {row,receipts};
   }
 
   function verifyCopies(operationId,receipts,distributions,deadline){
@@ -437,6 +464,14 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
     collectSnapshots:collect,
     verifySnapshots,
     publishArchive,
+    stageRestore(input,authority){
+      need(restore,'restore_migration_required');
+      return restore.stage(input,authority);
+    },
+    getRestore(restoreId){
+      need(restore,'restore_migration_required');
+      return restore.get(restoreId);
+    },
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
       return transact(()=>{
@@ -454,5 +489,5 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       });
     }
   });
-  return {api,recover,enablePublication(){publicationEnabled=true;},get active(){return active;}};
+  return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},get active(){return active;}};
 }

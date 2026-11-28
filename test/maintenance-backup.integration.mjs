@@ -262,8 +262,8 @@ const distributionDirectories={
   seamer:process.env.LEAFSEAMER_TEST_BACKUP_SEAMER_DIST
 };
 
-test('requires the two built service readers and binds their exact reports into the published archive',{
-  timeout:60000,skip:!Object.values(distributionDirectories).every(Boolean)
+test('publishes a dual-service archive and verifies its exact snapshots in isolated recovery',{
+  timeout:120000,skip:!Object.values(distributionDirectories).every(Boolean)
 },async t=>{
   const f=await fixture(t);
   f.store.enableBackupMaintenance();
@@ -338,15 +338,63 @@ test('requires the two built service readers and binds their exact reports into 
   const result=await ledger.publishArchive(id,revision,options,authority);
   assert.equal(result.phase,'succeeded');
   assert.deepEqual(actions,['verify_snapshots','seal_archive','publish_archive']);
-  assert.deepEqual(f.reopen().backupMaintenance().getArchive(id),result.archive);
-  const restore=path.join(directory,'restore');
-  await fs.mkdir(restore);
-  await fs.copyFile(path.join(f.root,'content',id,'archive.age'),path.join(restore,'ciphertext.age'));
-  execFileSync(cryptoTool,['open','--mode','passphrase','--directory',restore,
-    '--expected-bytes',String(result.archive.ciphertext_bytes),'--expected-sha256',result.archive.ciphertext_sha256],
-  {windowsHide:true,input:options.passphrase});
-  const restored=await exec(cryptoTool,['verify','--directory',restore],{windowsHide:true});
-  assert.equal(JSON.parse(restored.stdout).manifest_sha256,hash(manifestRaw));
+  const reopened=f.reopen(),beforeRestore=reopened.backupMaintenance();
+  assert.deepEqual(beforeRestore.getArchive(id),result.archive);
+  const restoreId=crypto.randomUUID();
+  assert.throws(()=>beforeRestore.getRestore(restoreId),{code:'restore_migration_required'});
+  const recovery=reopened.enableBackupRestore();
+  const request={restore_id:restoreId,archive_id:id,expected_generation:generation,distributions,secret:options.passphrase};
+  assert.deepEqual(recovery.getArchive(id),result.archive);
+  await assert.rejects(recovery.stageRestore(request,()=>({allowed:true,generation:'8'})),{code:'restore_generation_conflict'});
+  assert.equal(recovery.getRestore(restoreId),null);
+  const failedId=crypto.randomUUID();
+  const failed=await recovery.stageRestore({...request,restore_id:failedId,secret:Buffer.from('wrong secret')},authorize);
+  assert.equal(failed.phase,'failed');
+  assert.equal(failed.reason_code,'restore_decrypt');
+  await assert.rejects(fs.stat(path.join(f.root,'staging','restore-'+failedId)),{code:'ENOENT'});
+  assert.equal(recovery.getRestore(failedId).phase,'failed');
+  const restoreActions=[];
+  const restored=await recovery.stageRestore(request,({action,archive,restore})=>{
+    restoreActions.push(action);
+    assert.deepEqual(archive,result.archive);
+    if(action==='adopt_isolated_restore')assert.equal(restore.verification_ref,verification_ref);
+    return authorize();
+  });
+  assert.equal(restored.phase,'isolated_validated');
+  assert.equal(restored.snapshot_count,2);
+  assert.equal(restored.manifest_sha256,hash(manifestRaw));
+  assert.deepEqual(restoreActions,['stage_restore','adopt_isolated_restore']);
+  const isolated=path.join(f.root,'staging','restore-'+restoreId);
+  assert.deepEqual(await fs.readdir(isolated),['restored.partial']);
+  for(const {path:member,sha256} of files)
+    assert.equal(hash(await fs.readFile(path.join(isolated,'restored.partial','files',member))),sha256);
+  const durable=f.reopen().backupMaintenance();
+  assert.deepEqual(durable.getRestore(restoreId),restored);
+  assert.deepEqual(await durable.stageRestore({...request,secret:undefined},authorize),restored);
+
+  const interrupted=crypto.randomUUID();
+  f.close();
+  const child=`
+    import {openInstallationStore} from '@leafseamer/suite/installation';
+    const store=openInstallationStore(process.argv[1]);
+    await store.backupMaintenance().stageRestore({
+      archive_id:process.argv[2], restore_id:process.argv[3], expected_generation:'7',
+      distributions:JSON.parse(process.argv[4]), secret:Buffer.from('synthetic publication secret')
+    },({action})=>{
+      if(action==='adopt_isolated_restore')process.exit(74);
+      return {allowed:true,generation:'7'};
+    });
+  `;
+  await assert.rejects(exec(process.execPath,['--disallow-code-generation-from-strings','--input-type=module','--eval',
+    child,f.root,id,interrupted,JSON.stringify(distributions)],
+  {cwd:new URL('../',import.meta.url),windowsHide:true}),{code:74});
+  const afterCrash=f.reopen().backupMaintenance();
+  const unresolved=afterCrash.getRestore(interrupted);
+  assert.equal(unresolved.phase,'indeterminate');
+  assert.equal(unresolved.reason_code,'restore_helper_unconfirmed');
+  await assert.rejects(afterCrash.stageRestore({...request,restore_id:crypto.randomUUID()},authorize),{code:'backup_helper_in_use'});
+  assert.deepEqual(await afterCrash.stageRestore({...request,restore_id:interrupted,secret:undefined},authorize),unresolved);
+  assert.deepEqual(afterCrash.getArchive(id),result.archive);
 });
 
 test('a process exit after file synchronization leaves an unpublished orphan and an indeterminate task',{timeout:30000},async t=>{

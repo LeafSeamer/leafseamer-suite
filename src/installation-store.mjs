@@ -25,6 +25,7 @@ const read = promisify(fs.read);
 const sql = ['installation.sql','trust-metadata.sql','installation-sealing.sql'].map(name=>fs.readFileSync(new URL('./'+name,import.meta.url),'utf8')).join('\n');
 const backupSql = fs.readFileSync(new URL('./maintenance-backup.sql',import.meta.url),'utf8');
 const publicationSql = fs.readFileSync(new URL('./maintenance-backup-publication.sql',import.meta.url),'utf8');
+const restoreSql = fs.readFileSync(new URL('./maintenance-restore.sql',import.meta.url),'utf8');
 const schemaDigest = 'sha256:' + crypto.createHash('sha256').update(sql).digest('hex');
 const engine = ['3.53.4', '2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc'];
 const applicationId = 0x4c53494e;
@@ -75,6 +76,7 @@ function schemaShape(revision) {
       db.exec(sql);
       if(revision>=2)db.exec(backupSql);
       if(revision>=3)db.exec(publicationSql);
+      if(revision>=4)db.exec(restoreSql);
       expectedShapes.set(revision,canonical(shape(db)));
     }
     finally { db.close(); }
@@ -135,7 +137,7 @@ export function openInstallationStore(dataDirectory) {
       marker.directory_identity === directory_identity && marker.database_file_identity === fileIdentity(filename)&&marker.content_directory_identity===contentIdentity, 'installation_marker');
     db = database(filename);
     let revision=pragma(db, 'user_version');
-    need(pragma(db, 'application_id') === applicationId && [1,2,3].includes(revision) && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
+    need(pragma(db, 'application_id') === applicationId && [1,2,3,4].includes(revision) && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
     need(canonical(shape(db)) === schemaShape(revision) && pragma(db, 'quick_check') === 'ok' && rows(db, 'PRAGMA foreign_key_check').length === 0, 'installation_integrity');
     const identities = rows(db, 'SELECT * FROM installation_identity');
     need(identities.length === 1, 'installation_identity');
@@ -162,7 +164,8 @@ export function openInstallationStore(dataDirectory) {
         poisoned = true; throw new InstallationError('installation_storage_unknown', {cause: error});
       }
     };
-    const buildMaintenance=()=>backupMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,publicationEnabled:revision===3});
+    const buildMaintenance=()=>backupMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,
+      publicationEnabled:revision>=3,restoreEnabled:revision>=4});
     let maintenance=revision>=2 ? buildMaintenance() : null;
     maintenance?.recover();
     let linuxJournal=null,memberJournal=null;
@@ -273,6 +276,21 @@ export function openInstallationStore(dataDirectory) {
           });
           revision=3;
           maintenance.enablePublication();
+        }
+        return maintenance.api;
+      },
+      enableBackupRestore(){
+        available();
+        need(revision>=3,'backup_publication_migration_required');
+        if(revision===3){
+          need(!maintenance.active,'backup_helper_in_use');
+          transact(()=>{
+            db.exec(restoreSql);
+            need(canonical(shape(db))===schemaShape(4),'installation_integrity');
+            pragma(db,'user_version=4');
+          });
+          revision=4;
+          maintenance.enableRestore();
         }
         return maintenance.api;
       },

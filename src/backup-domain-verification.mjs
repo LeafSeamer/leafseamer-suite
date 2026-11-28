@@ -103,6 +103,7 @@ export async function verifyBackupSnapshots(inputs,distributions,deadline){
       [authority,{directory:distributions[authority].directory,manifest_sha256}]));
     const worker=new Worker(new URL(import.meta.url),{
       workerData:{format:workerFormat,inputs,distributions:selected},
+      execArgv:[],
       resourceLimits:{maxOldGenerationSizeMb:256}
     });
     let stopped=false,result;

@@ -437,6 +437,16 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 辅助程序校验 TAR 后加密，独占创建 `content/<operation_id>/archive.age` 并同步文件和目录。账本核对密文字节和 SHA-256 后提交发布回执，`getArchive` 据此读取原记录。密钥槽接入、旧进程退役证明和恢复激活由维护流程分别处理。
 
+### 隔离验证本机备份
+
+本机维护程序可显式调用 `enableBackupRestore()`，在已有 Schema 3 的安装账本上增设恢复意图和结果表。安装身份、已发布归档和业务库保持原值，普通打开沿用库的原版本。
+
+调用 `stageRestore({restore_id, archive_id, expected_generation, distributions, secret}, authorize)` 时，使用新 UUID 作为 `restore_id`，并选定本安装账本中已发布、带业务库校验报告的归档。按原发布证明使用相同的服务制品摘要。 `secret` 是口令或 X25519 私钥的字节，只经本机继承通道提供给辅助程序。授权函数在 `stage_restore` 和 `adopt_isolated_restore` 两步核对当前权限和部署代。
+
+恢复候选展开到受保护的 `staging/restore-<restore_id>/restored.partial`。Suite 核对密文、归档清单、原快照回执和报告，再对展开的业务库重跑原验证。 `getRestore(restore_id)` 返回持久结果及校验引用。重放原请求可查原结果，无需再次提交秘密。未确认结束的作业在重开后记录为 `indeterminate`，新任务须等待其退役得到核对。
+
+`isolated_validated` 表示原归档已通过隔离验证。切换仍需重验候选文件、核对跨库关联和未决命令、批准新的保护域并确认旧写入者退役。外部归档导入和新代激活沿各自的维护流程实施。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

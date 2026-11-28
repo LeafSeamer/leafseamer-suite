@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
+import {constants} from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
@@ -66,20 +67,19 @@ export async function inspectBackupManifest(directory, operationId, plan, snapsh
     const file=reportFiles.get(path);
     return listedReports.has(path)&&file?.size===size&&file.sha256===sha256;
   }),'backup_archive_domain_reports');
-  return {manifest_sha256:crypto.createHash('sha256').update(raw).digest('hex'),files:manifest.files.length};
+  return {manifest_sha256:crypto.createHash('sha256').update(raw).digest('hex'),files:manifest.files.length,
+    databaseMembers:snapshots.map(snapshot=>points.get(snapshot.backup_operation_id).path)};
 }
 
-async function seal(directory, destination, manifest, profile, secret, deadline) {
-  const args=['seal','--directory',directory,'--destination',destination,'--manifest-sha256',manifest,
-    '--mode',profile.mode,...profile.recipients.flatMap(key=>['--recipient',key])];
+async function runHelper(args, secret, deadline, errorCode) {
   let result;
   try {
     result=await new Promise((resolve,reject)=>{
       const budget=deadline-performance.now();
       need(budget>0,'backup_archive_deadline');
       const child=spawn(executable,args,{windowsHide:true,stdio:['pipe','pipe','ignore']});
-      const timer=setTimeout(()=>child.kill('SIGKILL'),budget);
-      let size=0, failure=false;const chunks=[];
+      let size=0, failure=false, expired=false;const chunks=[];
+      const timer=setTimeout(()=>{expired=true;child.kill('SIGKILL');},budget);
       child.on('error',()=>{failure=true;});
       child.stdout.on('data',chunk=>{
         size+=chunk.length;
@@ -88,7 +88,8 @@ async function seal(directory, destination, manifest, profile, secret, deadline)
       child.stdin.on('error',()=>{failure=true;});
       child.on('close',code=>{
         clearTimeout(timer);
-        if(code!==0||failure)reject(new InstallationError('backup_archive_seal'));
+        if(expired)reject(new InstallationError('backup_archive_deadline'));
+        else if(code!==0||failure)reject(new InstallationError(errorCode));
         else resolve(Buffer.concat(chunks,size));
       });
       child.stdin.end(secret??undefined);
@@ -96,10 +97,60 @@ async function seal(directory, destination, manifest, profile, secret, deadline)
   }finally{secret?.fill(0);}
   let receipt;
   try {receipt=JSON.parse(result);}
-  catch {throw new InstallationError('backup_archive_seal');}
+  catch {throw new InstallationError(errorCode);}
+  return receipt;
+}
+
+async function seal(directory, destination, manifest, profile, secret, deadline) {
+  const args=['seal','--directory',directory,'--destination',destination,'--manifest-sha256',manifest,
+    '--mode',profile.mode,...profile.recipients.flatMap(key=>['--recipient',key])];
+  const receipt=await runHelper(args,secret,deadline,'backup_archive_seal');
   need(receipt?.state==='staged'&&Number.isSafeInteger(receipt.ciphertext_bytes)&&receipt.ciphertext_bytes>0&&
     receipt.ciphertext_bytes<=maxArchive&&typeof receipt.ciphertext_sha256==='string'&&hash.test(receipt.ciphertext_sha256),'backup_archive_seal');
   return receipt;
+}
+
+export async function expandPublishedArchive(file,directory,archive,proof,secret,deadline){
+  const checksum=archive.ciphertext_sha256;
+  const size=archive.ciphertext_bytes;
+  need(Number.isSafeInteger(size)&&size>0&&size<=maxArchive&&typeof checksum==='string'&&hash.test(checksum),
+    'restore_ciphertext');
+  const source=await fs.lstat(file);
+  need(source.isFile()&&source.nlink===1&&source.size===size,'restore_ciphertext');
+  const input=path.join(directory,'ciphertext.age');
+  await copyCiphertext(file,input,source,deadline);
+  const opened=await runHelper(['open','--directory',directory,'--mode',proof.encryption.mode,
+    '--expected-bytes',String(size),'--expected-sha256',checksum],secret,deadline,'restore_decrypt');
+  need(opened?.state==='staged'&&opened.ciphertext_bytes===size&&opened.ciphertext_sha256===checksum,'restore_decrypt');
+  await fs.unlink(input);
+  const receipt=await runHelper(['unpack','--directory',directory],null,deadline,'restore_unpack');
+  need(receipt?.state==='staged'&&receipt.manifest_sha256===proof.manifest_sha256,'restore_manifest');
+  await fs.unlink(path.join(directory,'plaintext.tar.partial'));
+  return path.join(directory,'restored.partial');
+}
+
+async function copyCiphertext(file,destination,decision,deadline){
+  let input,output;
+  try{
+    input=await fs.open(file,constants.O_RDONLY|(constants.O_NOFOLLOW??0));
+    output=await fs.open(destination,'wx',0o600);
+    const opened=await input.stat();
+    need(opened.ino===decision.ino&&opened.dev===decision.dev&&opened.size===decision.size,'restore_ciphertext');
+    let size=0;
+    for await(const chunk of input.createReadStream({autoClose:false,start:0,end:decision.size-1})){
+      need(performance.now()<deadline,'backup_archive_deadline');
+      let offset=0;
+      while(offset<chunk.length){
+        const {bytesWritten}=await output.write(chunk,offset,chunk.length-offset);
+        need(bytesWritten>0,'restore_ciphertext');
+        offset+=bytesWritten;
+      }
+      size+=offset;
+    }
+    need(size===decision.size,'restore_ciphertext');
+  }finally{
+    try{await output?.close();}finally{await input?.close();}
+  }
 }
 
 export async function materializeBackupArchive(directory,destination,manifest,profile,secret,deadline){

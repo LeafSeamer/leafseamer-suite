@@ -388,8 +388,11 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       need(extent.get(nextId)===0,code);
       const heads=db.prepare(`SELECT e.launch_id FROM linux_member_event e WHERE e.revision=1 AND e.rowid=(
         SELECT max(p.rowid) FROM linux_member_event p WHERE p.role=e.role AND p.revision=1) ORDER BY e.rowid`).pluck().all().map(id=>lookup(id));
-      const selected=heads.filter(item=>item.intent.generation_id===id);
-      need(heads.at(-1)?.intent.generation_id===id&&selected.length>0&&selected.length===extent.get(id),code);
+      const deployment=item=>item?.detail.recovery?.deployment_generation_id??item?.intent.generation_id;
+      const latest=heads.at(-1),deploymentId=deployment(latest);
+      need(latest&&(id===deploymentId||id===latest.intent.generation_id)&&deploymentId!==nextId,code);
+      const selected=heads.filter(item=>deployment(item)===deploymentId);
+      need(selected.length>0&&selected.length===extent.get(deploymentId),code);
       const checked=[];
       for(const launch of heads){
         const {spec,groupPath}=intent(launch.intent),{launch_id,role,service_id,database_instance_id}=spec;
@@ -403,13 +406,15 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         for(let revision=1;revision<=launch.revision;revision++){
           const entry=lookup(launch_id,revision);
           need(entry?.phase===phases[revision-1]&&same(entry.intent,spec)&&
-            ['host','parent_group','group_path','group','image','helper_digest'].every(key=>same(entry.detail[key],detail[key]))&&
+          ['host','parent_group','group_path','group','image','helper_digest'].every(key=>same(entry.detail[key],detail[key]))&&
+          same(entry.detail.recovery??null,detail.recovery??null)&&
             (revision===1||same(entry.detail.leader,detail.leader)),code);
         }
         checked.push({authority:role,service_id,database_instance_id,launch_id,generation_id:spec.generation_id,
           launch_digest:digest(launch),retirement_digest:digest(retired),containment_digest:digest(evidence)});
       }
-      return {format:'leafseamer-linux-native-retirement/1',generation_id:id,members:checked.filter(item=>item.generation_id===id),
+      const selectedIds=new Set(selected.map(({intent})=>intent.launch_id));
+      return {format:'leafseamer-linux-native-retirement/1',generation_id:deploymentId,members:checked.filter(item=>selectedIds.has(item.launch_id)),
         journal_identity_digest:digest(identity),retirement_digest:digest(checked)};
     }
     function appendRetirement(launch,revision,phase,evidence){
@@ -457,7 +462,8 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         const policy=bootstrap?validateLinuxBootstrapPolicy(spec,bootstrap.policy):null;
         const policyDigest=policy?digest(policy):null;
         if(prior){
-          need(same(prior.intent,spec)&&(prior.detail.bootstrap_policy_digest??null)===policyDigest,'linux_member_launch_conflict');
+          need(same(prior.intent,spec)&&(prior.detail.bootstrap_policy_digest??null)===policyDigest&&
+            same(prior.detail.recovery??null,bootstrap?.recovery??null),'linux_member_launch_conflict');
           return {record:prior,bootstrap:null};
         }
         const host=readLinuxCgroupHost();
@@ -468,7 +474,7 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         helper=pinHelper();
         image=pinExecutable(spec.image_path,spec.image_sha256,256*1024*1024);
         const detail={host,parent_group:parent.group,group_path:groupPath,group,image:image.identity,helper_digest:helper.digest,
-          ...(policy&&{bootstrap_policy_digest:policyDigest})};
+          ...(policy&&{bootstrap_policy_digest:policyDigest}),...(bootstrap?.recovery&&{recovery:bootstrap.recovery})};
         function checkGroup(){
           const current=readLinuxCgroupParent(parentInput);
           need(current.populated&&same(parent.group,current.group)&&same(group,groupIdentity(groupPath)),
@@ -543,14 +549,17 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
     const observations={schemaRevision:version,lookup:id=>lookup(id),lookupRetirement:id=>lookupRetirement(id),recoveryRetirement,close};
     if(assertCurrent===null)return Object.freeze(observations);
     return Object.freeze({...observations,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
-      launch:input=>launch(input),admit(input,{policy,source,workerControl=false,workerRuntime=null}={}){
+      launch:input=>launch(input),admit(input,{policy,source,workerControl=false,workerRuntime=null,recovery=null}={}){
       need(source&&typeof source.capture==='function'&&typeof source.tick==='function','linux_bootstrap_clock');
       need(workerControl===false||workerControl===true&&input.role==='controller'&&version===2,'linux_worker_control_scope');
       need(workerRuntime===null||workerControl&&[workerRuntime.uid,workerRuntime.gid].every(id=>Number.isInteger(id)&&id>0&&id<0xffffffff)&&
         workerRuntime.uid!==input.uid&&workerRuntime.gid!==input.gid&&path.isAbsolute(workerRuntime.directory)&&path.isAbsolute(workerRuntime.entry)&&
         (!workerRuntime.channelDirectory||path.isAbsolute(workerRuntime.channelDirectory))&&
         typeof workerRuntime.acquire==='function'&&typeof workerRuntime.assertCurrent==='function','linux_worker_runtime');
-      return launch(input,{policy,source,workerControl,workerRuntime});
+      need(recovery===null||version===2&&!workerControl&&fields(recovery,'deployment_generation_id,selection_digest,storage_digest')&&
+        matches(recovery.deployment_generation_id,uuid)&&matches(recovery.selection_digest,sha)&&matches(recovery.storage_digest,sha),
+        'linux_member_recovery_binding');
+      return launch(input,{policy,source,workerControl,workerRuntime,recovery});
     }});
   }catch(error){
     if(db?.open)db.close();

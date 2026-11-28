@@ -8,9 +8,10 @@ import {validateLinuxBootstrapPolicy} from './linux-member-bootstrap.mjs';
 import {linuxContainerCgroup,readLinuxCgroupHost,readLinuxCgroupParent} from './linux-cgroup-retirement.mjs';
 import {pinExecutable} from './linux-native-artifact.mjs';
 import {verifyProtectedRecoveryCandidate} from './recovery-site-review.mjs';
-import {publishLinuxRecoveryStorage} from './linux-recovery-storage.mjs';
+import {inspectLinuxRecoveryStorage,publishLinuxRecoveryStorage,reopenLinuxRecoveryStorage} from './linux-recovery-storage.mjs';
 
 const sha=/^sha256:[a-f0-9]{64}$(?![\s\S])/;
+const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])/.test(value);
 const filename=/^[A-Za-z0-9_.-]+$(?![\s\S])/;
 const hash=bytes=>'sha256:'+crypto.createHash('sha256').update(bytes).digest('hex');
 const fields=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===keys;
@@ -169,13 +170,9 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
       recovery?.assertCurrent();
       const plan=verifyPlan(file,expected);
       verifyInputs(plan,spec,policy,{recovery:!!recovery});
-      if(recovery&&record.phase!=='executed_closed'){
-        const name=spec.role+'.sqlite',directory=fs.lstatSync(plan.data_directory,{bigint:true});
-        const stat=fs.lstatSync(path.join(plan.data_directory,name),{bigint:true}),pin=recovery.pins.get(spec.launch_id);
-        const entries=fs.readdirSync(plan.data_directory);
-        need(directory.gid===BigInt(spec.gid)&&(directory.mode&0o7777n)===0o700n&&entries.length===1&&entries[0]===name&&
-          stat.isFile()&&stat.nlink===1n&&stat.uid===BigInt(spec.uid)&&stat.gid===BigInt(spec.gid)&&(stat.mode&0o7777n)===0o600n&&
-          ['dev','ino','size','mtimeNs','ctimeNs'].every(key=>stat[key]===pin[key]),'linux_recovery_data');
+      if(recovery){
+        need(same(record.detail.recovery,recovery.binding),'linux_recovery_data');
+        if(record.phase!=='executed_closed')recovery.verifyMember(spec);
       }
       return true;
     });
@@ -228,11 +225,11 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
             }}}:null;
         runtime?.assertCurrent();
         openPlan={file,expected,spec,policy,recovery};
-        try{return (await journal.admit(spec,{policy,source,workerControl,workerRuntime:runtime})).record;}
+        try{return (await journal.admit(spec,{policy,source,workerControl,workerRuntime:runtime,recovery:recovery?.binding??null})).record;}
         finally{openPlan=null;}
     }
 
-    async function startRecovery({planFile,selectionDigest,authorize}={}){
+    async function startRecovery({planFile,selectionDigest,authorize,restart:restartRequest=null}={}){
       idle();recoveryBusy=true;
       const admitted=[];
       try{
@@ -274,18 +271,52 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
           first.plan.port!==second.plan.port,'linux_recovery_plan');
         const distributions=Object.fromEntries(members.map(({spec,plan})=>[spec.role,plan.distribution]));
         need(digest(distributions)===archive.preparation_intent.distributions_digest,'linux_recovery_distribution');
+        const restart=structuredClone(restartRequest);
+        let prior=null,legacy=false;
+        if(restart!==null){
+          need(fields(restart,'launchIds,previousLaunchIds,runtimeGenerationId')&&uuid(restart.runtimeGenerationId)&&
+            [restart.launchIds,restart.previousLaunchIds].every(ids=>fields(ids,'controller,seamer')&&
+              Object.values(ids).every(uuid)&&ids.controller!==ids.seamer),'linux_recovery_restart');
+          prior=journal.recoveryRetirement(deployment.generation_id,restart.runtimeGenerationId);
+          need(prior.members.length===members.length,'linux_recovery_restart');
+          for(const core of members){
+            const {spec}=core,{role}=spec,launchId=restart.previousLaunchIds[role];
+            need(prior.members.some(item=>item.authority===role&&item.launch_id===launchId),'linux_recovery_restart');
+            const launch=journal.lookup(launchId);
+            need(same(launch.intent,{...spec,generation_id:launch.intent.generation_id,launch_id:launchId})&&
+              (launch.detail.recovery?.selection_digest===selectionDigest||
+                !launch.detail.recovery&&launch.phase==='executed_closed'&&launchId===spec.launch_id&&
+                launch.intent.generation_id===deployment.generation_id),'linux_recovery_restart');
+            core.previousBinding=launch.detail.recovery??null;
+            core.spec={...spec,generation_id:restart.runtimeGenerationId,launch_id:restart.launchIds[role]};
+          }
+          legacy=members.every(core=>core.previousBinding===null);
+        }
         const secretBindingsDigest=digest(deployment.services.map(({scope,secret_binding_ref,secret_binding_digest,secret_policy_ref})=>
           ({scope,secret_binding_ref,secret_binding_digest,secret_policy_ref})));
-        const recovery={assertCurrent(){
+        const retirementDigest=prior===null?null:digest(prior);
+        const recovery={assertCurrent(checkLegacy=false){
           need(installation.currentRecoverySelection()?.selection_digest===selectionDigest,'linux_recovery_selection');
           protectedPath(runtimeRoot,{directory:true});
           const current=fs.lstatSync(runtimeRoot,{bigint:true});
           need(current.dev===root.dev&&current.ino===root.ino,'linux_recovery_plan');
-          const decision=authorize(structuredClone({selection:selected,secret_bindings_digest:secretBindingsDigest}));
+          const decision=authorize(structuredClone({selection:selected,secret_bindings_digest:secretBindingsDigest,
+            ...(restart&&{restart,retirement_digest:retirementDigest,legacy_storage:checkLegacy===true})}));
           need(decision?.allowed===true&&decision.selection_digest===selectionDigest&&
             decision.release_manifest_digest===deployment.release_manifest_digest&&decision.secret_bindings_digest===secretBindingsDigest,
             'linux_recovery_authority');
+          if(restart)need(decision.runtime_generation_id===restart.runtimeGenerationId&&decision.retirement_digest===retirementDigest&&
+            (!checkLegacy||legacy&&decision.legacy_storage_verified===true),'linux_recovery_authority');
+        },verifyMember(spec){
+          const core=members.find(entry=>entry.spec.role===spec.role);
+          const {binding,stat}=inspectLinuxRecoveryStorage(destination,core,!!restart);
+          const {directory,database}=storage.layout.services.find(entry=>entry.role===spec.role);
+          const rootStat=fs.lstatSync(destination,{bigint:true});
+          const pin=storage.pins.get(spec.launch_id);
+          need(String(rootStat.dev)===storage.layout.root.device&&String(rootStat.ino)===storage.layout.root.inode&&
+            same(binding,{directory,database})&&['size','mtimeNs','ctimeNs'].every(key=>stat[key]===pin[key]),'linux_recovery_data');
         }};
+        let storage;
         recovery.assertCurrent();
         need(members.every(({spec})=>journal.lookup(spec.launch_id)===null),'linux_recovery_start_indeterminate');
         const host=readLinuxCgroupHost();
@@ -295,8 +326,15 @@ export function openLinuxNativeHost({installationDirectory,source}={}){
           need(!readLinuxCgroupParent({...input,host}).populated&&fs.lstatSync('/sys/fs/cgroup'+groupPath+'/core').isDirectory(),
             'linux_recovery_group');
         }
-        await verifyProtectedRecoveryCandidate(path.dirname(sourceDirectory),archive.preparation,performance.now()+1800000);
-        recovery.pins=await publishLinuxRecoveryStorage({destination,source:sourceDirectory,members,assertCurrent:recovery.assertCurrent});
+        if(restart){
+          storage=await reopenLinuxRecoveryStorage({destination,selectionDigest,members,legacy,assertCurrent:recovery.assertCurrent});
+          need(members.every(core=>core.previousBinding===null||core.previousBinding.storage_digest===storage.storageDigest),'linux_recovery_data');
+          storage.pins=new Map(members.map(core=>[core.spec.launch_id,inspectLinuxRecoveryStorage(destination,core,true).stat]));
+        }else{
+          await verifyProtectedRecoveryCandidate(path.dirname(sourceDirectory),archive.preparation,performance.now()+1800000);
+          storage=await publishLinuxRecoveryStorage({destination,source:sourceDirectory,members,selectionDigest,assertCurrent:recovery.assertCurrent});
+        }
+        recovery.binding={deployment_generation_id:deployment.generation_id,selection_digest:selectionDigest,storage_digest:storage.storageDigest};
         for(const member of members){
           admitted.push(await startCore(member,recovery));
         }

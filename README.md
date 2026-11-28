@@ -495,6 +495,8 @@ Suite 在 `check_recovery_site_review` 与 `adopt_recovery_site_review` 核对�
 
 宿主同时复验两端的制品、配置、库字节和数据代身份，再把两个运行库一起发布到新代目录。授权方在交接与监督启动各边界确认 `selection_digest`、`release_manifest_digest` 及 `secret_bindings_digest`。两端返回 `executed_closed` 后仍需现场审核与恢复。发现已有交接目录或启动记录时，使用计划中的两个启动标识调用 `lookup` 查原。已激活恢复组合的安装使用受控恢复入口，旧的 Linux 原生及 Compose 常规启动入口会拒绝启动。
 
+双服务原写入者均有持久退役回执时，可在同一次 `startRecovery` 调用中增加 `restart: {previousLaunchIds, runtimeGenerationId, launchIds}`。两个 ID 映射均以 `controller` 和 `seamer` 为键，`runtimeGenerationId` 和新启动 ID 使用未占用的 UUID。宿主核对最新双服务退役、既有运行库文件身份及原活动选择，新进程使用新 cgroup，继续写入同一数据代。授权决定还须匹配 `runtime_generation_id` 和 `retirement_digest`。由旧版本首次启动且缺少运行库交接记录的安装，在确认为首组启动原件后由本机安装程序检测现有库，提供 `legacy_storage_verified: true` 以登记原文件身份。缺少退役回执或遇到文件身份不符时保持保护。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

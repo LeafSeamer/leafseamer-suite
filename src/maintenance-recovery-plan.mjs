@@ -267,7 +267,8 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,cont
         const generationId=decision.runtime_generation_id;
         if(retirement){
           need(retirement.retirement_id===request.retirement_id&&
-            retirement.evidence.generation_id===generationId&&retirement.evidence.format===evidenceFormat,
+            retirement.evidence.format===evidenceFormat&&(retirement.evidence.generation_id===generationId||
+              native&&retirement.evidence.members.at(-1)?.generation_id===generationId),
           'recovery_retirement_conflict');
           return current(request.plan_ref.restore_id);
         }

@@ -407,17 +407,42 @@ async function checkNativeRecoveryStartup(f,{planFile,members},selected){
   const {openLinuxNativeHost}=await import('../dist/linux-native-host.mjs');
   const {openNativeClock}=await import(pathToFileURL(path.join(distributionDirectories.controller,'native-clock.mjs')));
   f.close();
-  const host=openLinuxNativeHost({installationDirectory:f.root,source:openNativeClock()});
+  const openHost=()=>openLinuxNativeHost({installationDirectory:f.root,source:openNativeClock()});
+  let host=openHost();
   const directories=[],start={planFile,selectionDigest:selected.selection_digest,
-    authorize({selection,secret_bindings_digest}){return {allowed:true,selection_digest:selection.selection_digest,
-      release_manifest_digest:selection.deployment.release_manifest_digest,secret_bindings_digest};}};
-  try{
+    authorize({selection,secret_bindings_digest,restart,retirement_digest}){return {allowed:true,selection_digest:selection.selection_digest,
+      release_manifest_digest:selection.deployment.release_manifest_digest,secret_bindings_digest,
+      ...(restart&&{runtime_generation_id:restart.runtimeGenerationId,retirement_digest})};}};
+  const previousLaunchIds=Object.fromEntries(members.map(({core})=>[core.role,core.launch_id]));
+  const restart={previousLaunchIds,runtimeGenerationId:crypto.randomUUID(),launchIds:{controller:crypto.randomUUID(),seamer:crypto.randomUUID()}};
+  const allLaunches=[...Object.values(previousLaunchIds),...Object.values(restart.launchIds)];
+  async function makeGroups(runtimeGenerationId){
     for(const {core} of members){
-      const {groupPath}=linuxContainerCgroup({driver:core.driver,role:core.role,generationId:core.generation_id});
+      const {groupPath}=linuxContainerCgroup({driver:core.driver,role:core.role,generationId:runtimeGenerationId});
       for(const directory of ['/sys/fs/cgroup'+groupPath,'/sys/fs/cgroup'+groupPath+'/core']){
         await fs.mkdir(directory);directories.push(directory);
       }
     }
+  }
+  async function retire(launchId){
+    for(let attempt=0;attempt<100;attempt++){
+      if(host.retire(launchId).phase==='retired')return;
+      await delay(20);
+    }
+    assert.fail('recovery writer did not retire');
+  }
+  async function checkProtectedHealth(port){
+    let health;
+    for(let attempt=0;attempt<50;attempt++){
+      health=await fetch('http://127.0.0.1:'+port+'/health/ready',{signal:AbortSignal.timeout(300)}).catch(()=>null);
+      if(health)break;
+      await delay(20);
+    }
+    assert.equal(health?.status,503);
+    assert.equal((await health.json()).ready,false);
+  }
+  try{
+    await makeGroups(members[0].core.generation_id);
     await assert.rejects(host.start({planFile:members[0].file,planDigest:members[0].digest}),{code:'linux_recovery_start_required'});
     await assert.rejects(host.startRecovery({...start,selectionDigest:digest('wrong selection')}),{code:'linux_recovery_selection'});
     await assert.rejects(host.startRecovery({...start,authorize:()=>({allowed:false})}),{code:'linux_recovery_authority'});
@@ -433,27 +458,62 @@ async function checkNativeRecoveryStartup(f,{planFile,members},selected){
     for(const [index,{core}] of members.entries()){
       assert.equal(result.members[index].detail.admission.receipt.gate_state,'closed');
       assert.equal((await fs.stat(core.data_directory)).uid,core.uid);
-      let health;
-      for(let attempt=0;attempt<50;attempt++){
-        health=await fetch('http://127.0.0.1:'+core.port+'/health/ready',{signal:AbortSignal.timeout(300)}).catch(()=>null);
-        if(health)break;
-        await delay(20);
-      }
-      assert.equal(health?.status,503);
-      const content=await health.json();
-      assert.equal(content.ready,false);
+      await checkProtectedHealth(core.port);
     }
     await assert.rejects(host.startRecovery(start),{code:'linux_recovery_start_indeterminate'});
+    await makeGroups(restart.runtimeGenerationId);
+    await assert.rejects(host.startRecovery({...start,restart}),{code:'recovery_linux_native_retirement_unproven'});
+    for(const id of Object.values(previousLaunchIds))await retire(id);
+    host.close();
+    host=null;
+    host=openHost();
+    await assert.rejects(host.startRecovery({...start,restart:{...restart,previousLaunchIds:{...previousLaunchIds,controller:crypto.randomUUID()}}}),
+      {code:'linux_recovery_restart'});
+    await assert.rejects(host.startRecovery({...start,restart,authorize:context=>({...start.authorize(context),retirement_digest:digest('obsolete')})}),
+      {code:'linux_recovery_authority'});
+    const {core}=members[0],runtimeFile=path.join(core.data_directory,core.role+'.sqlite'),originalFile=path.join(f.root,'first-runtime.sqlite');
+    await fs.rename(runtimeFile,originalFile);
+    try{
+      await fs.copyFile(originalFile,runtimeFile);
+      await fs.chown(runtimeFile,core.uid,core.gid);
+      await assert.rejects(host.startRecovery({...start,restart}),{code:'linux_recovery_data'});
+    }finally{await fs.rename(originalFile,runtimeFile);}
+    for(const id of Object.values(restart.launchIds))assert.equal(host.lookup(id).launch,null);
+    const restarted=await host.startRecovery({...start,restart});
+    assert.equal(restarted.selection_digest,result.selection_digest);
+    assert.equal(restarted.phase,'executed_closed');
+    for(const [index,{core}] of members.entries()){
+      const prior=result.members[index],current=restarted.members[index];
+      assert.notEqual(prior.detail.admission.receipt.member_boot_id,current.detail.admission.receipt.member_boot_id);
+      assert.equal(current.intent.generation_id,restart.runtimeGenerationId);
+      assert.equal(current.intent.database_instance_id,prior.intent.database_instance_id);
+      assert.equal(current.detail.admission.receipt.gate_state,'closed');
+      assert.deepEqual(current.detail.recovery,prior.detail.recovery);
+      await checkProtectedHealth(core.port);
+      await retire(current.intent.launch_id);
+      const retained=path.join(f.root,core.role+'-restart-check.sqlite'),database=path.join(core.data_directory,core.role+'.sqlite');
+      await fs.copyFile(database,retained);
+      await fs.copyFile(database+'-wal',retained+'-wal').catch(error=>{if(error.code!=='ENOENT')throw error;});
+      const after=new DatabaseSync(retained);
+      try{assert.equal(after.prepare('SELECT count(*) AS count FROM service_boot').get().count,2);}
+      finally{after.close();}
+    }
+    host.close();
+    host=null;
+    const journal=f.reopen().openLinuxMemberJournal(null);
+    try{
+      const nextGeneration=crypto.randomUUID();
+      const after=journal.recoveryRetirement(selected.deployment.generation_id,nextGeneration);
+      assert.deepEqual(after.members.map(entry=>entry.generation_id),[restart.runtimeGenerationId,restart.runtimeGenerationId]);
+      assert.deepEqual(journal.recoveryRetirement(restart.runtimeGenerationId,nextGeneration),after);
+    }finally{journal.close();f.close();}
   }finally{
     try{
-      for(const {core} of members){
-        if(!host.lookup(core.launch_id).launch?.detail.leader)continue;
-        for(let attempt=0;attempt<100;attempt++){
-          if(host.retire(core.launch_id).phase==='retired')break;
-          await delay(20);
-        }
+      for(const id of host?allLaunches:[]){
+        const record=host.lookup(id);
+        if(record.launch?.detail.leader&&record.retirement?.phase!=='retired')await retire(id);
       }
-    }finally{host.close();}
+    }finally{host?.close();}
     for(const directory of directories.reverse())await fs.rmdir(directory);
   }
 }
@@ -1003,7 +1063,7 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     assert.deepEqual(await durable.recordRecoverySiteReview(siteInput,siteAuthority),approvedSite);
     assert.deepEqual(await fs.readFile(filePath),original);
     if(nativeFixture){
-      await t.test('starts both selected recovery cores in their new protected generation',()=>checkNativeRecoveryStartup(f,nativeFixture,activated));
+      await t.test('restarts both selected recovery cores without losing their runtime databases',()=>checkNativeRecoveryStartup(f,nativeFixture,activated));
       assert.deepEqual(await fs.readFile(output),verifiedBytes);
       assert.deepEqual(f.reopen().backupMaintenance().getActiveDeployment(),activated);
     }

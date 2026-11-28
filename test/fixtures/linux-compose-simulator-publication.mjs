@@ -107,11 +107,9 @@ export function verifyDurableSimulatorPublication(store,{published,compiled,arti
   assert.deepEqual({...state,last_receive_seq:last_receive_cursor.receive_sequence},run);
 }
 
-export async function approveComposeSimulatorRun({run,baseline,controller,principalId,bindingId,pairing,admin,localRequest,issueBearer}){
+export async function approveComposeSimulatorRun({run,baseline,controller,principalId,bindingId,pairing,admin,localRequest,approver,reader}){
   const run_id=run.run_id,context={ttl_ms:30000,max_unique_requests:1};
   const targetDevice=baseline.target_device??baseline.device;
-  const approver=await issueBearer(['run.approve','run.read','request.create']);
-  const reader=await issueBearer(['run.read','request.create']);
   async function operation(name,request,granted=true,expected=200){
     const result=await localRequest(runApprovalRoute,name,request,granted?approver:reader);
     assert.equal(result.status,expected,name+' '+result.data);

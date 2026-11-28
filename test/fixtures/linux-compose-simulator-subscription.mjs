@@ -37,10 +37,11 @@ export async function verifyComposeSimulatorSubscription({plan,simulator,baselin
   assert.equal(policy.format,'local-service-receiver-policy/2');
   const linked=await waitFor(async()=>{
     const {status,data}=await submit();
+    if(status===503&&JSON.parse(data).error==='CLOCK_UNTRUSTED')return null;
     assert.equal(status,200,data);
     const {result}=JSON.parse(data);
     return result.transport_ready&&result;
-  });
+  },12000,'Compose simulator subscription did not become ready with a trusted clock');
   assert.equal(linked.state,'confirmed');
   await beforeWrite?.();
   const publisher=new DatabaseSync(path.join(controller.data_dir,'controller.sqlite'),{readOnly:true,timeout:500});

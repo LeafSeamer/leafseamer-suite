@@ -247,13 +247,15 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
         const publicationBearer=await issueToken(actor,service_id,audiencePermissions);
         publishedSimulator=await publishComposeSimulatorDefinition({serviceId:service_id,controller,baseline,bindingId:localParty.binding_id,
           policyRef,selection,bearer:publicationBearer,send,localRequest,canonical,digest});
-        if(simulatorRunApproval)approvedSimulator=await approveComposeSimulatorRun({run:publishedSimulator.run,baseline,controller,principalId:principal_id,
+        if(!simulatorRunApproval)return;
+        const approver=await issueToken(actor,service_id,['run.approve','run.read','request.create']);
+        const reader=await issueToken(actor,service_id,['run.read','request.create']);
+        approvedSimulator=await approveComposeSimulatorRun({run:publishedSimulator.run,baseline,controller,principalId:principal_id,
           bindingId:localParty.binding_id,pairing:activated,admin:(operation,request)=>admin(generation,operation,request),
-          localRequest,issueBearer:scopes=>issueToken(actor,service_id,scopes)});
+          localRequest,approver,reader});
         if(!simulatorArmPreflight)return;
         assert.ok(baseline.target_device&&baseline.target_device!==baseline.device);
-        const armBearer=await issueToken(actor,service_id,['request.create','run.read','run.arm']);
-        const reader=await issueToken(actor,service_id,['request.create','run.read']);
+        let armBearer=publicationBearer;
         const contextRequest={ttl_ms:30000,max_unique_requests:2};
         const retryable=(reply,body)=>scheduledDispatch&&reply.status===503&&['WORKER_NOT_READY','CLOCK_UNTRUSTED'].includes(body.error);
         const call=async(operation,request,status=200,authorization=armBearer)=>{
@@ -299,7 +301,9 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
             await call('record-arm-preflight',preflightRequest,429);
             return;
           }
-          const armRequest={run_id:preflightRequest.run_id,reservation:{context:{context_id,idempotency_key:id()},expected_run_revision:'2'}};
+          armBearer=await issueToken(actor,service_id,['request.create','run.read','run.arm']);
+          const readyContext=await call('create-arm-context',contextRequest);
+          const armRequest={run_id:preflightRequest.run_id,reservation:{context:{context_id:readyContext.context_id,idempotency_key:id()},expected_run_revision:'2'}};
           const reserved=await call('observe-and-arm',armRequest);
           const {operation_ref,operation}=reserved;
           assert.equal(operation.state,'reserved');

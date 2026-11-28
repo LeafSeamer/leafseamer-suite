@@ -31,6 +31,7 @@ const recoveryRetirementSql = fs.readFileSync(new URL('./maintenance-recovery-re
 const recoveryWindowsFenceSql = fs.readFileSync(new URL('./maintenance-recovery-windows-fence.sql',import.meta.url),'utf8');
 const recoveryPreparationSql = fs.readFileSync(new URL('./maintenance-recovery-preparation.sql',import.meta.url),'utf8');
 const recoverySiteReviewSql = fs.readFileSync(new URL('./maintenance-recovery-site-review.sql',import.meta.url),'utf8');
+const recoveryActivationSql = fs.readFileSync(new URL('./maintenance-recovery-activation.sql',import.meta.url),'utf8');
 const schemaDigest = 'sha256:' + crypto.createHash('sha256').update(sql).digest('hex');
 const engine = ['3.53.4', '2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc'];
 const applicationId = 0x4c53494e;
@@ -87,6 +88,7 @@ function schemaShape(revision) {
       if(revision>=7)db.exec(recoveryWindowsFenceSql);
       if(revision>=8)db.exec(recoveryPreparationSql);
       if(revision>=9)db.exec(recoverySiteReviewSql);
+      if(revision>=10)db.exec(recoveryActivationSql);
       expectedShapes.set(revision,canonical(shape(db)));
     }
     finally { db.close(); }
@@ -147,7 +149,7 @@ export function openInstallationStore(dataDirectory) {
       marker.directory_identity === directory_identity && marker.database_file_identity === fileIdentity(filename)&&marker.content_directory_identity===contentIdentity, 'installation_marker');
     db = database(filename);
     let revision=pragma(db, 'user_version');
-    need(pragma(db, 'application_id') === applicationId && [1,2,3,4,5,6,7,8,9].includes(revision) && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
+    need(pragma(db, 'application_id') === applicationId && [1,2,3,4,5,6,7,8,9,10].includes(revision) && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
     need(canonical(shape(db)) === schemaShape(revision) && pragma(db, 'quick_check') === 'ok' && rows(db, 'PRAGMA foreign_key_check').length === 0, 'installation_integrity');
     const identities = rows(db, 'SELECT * FROM installation_identity');
     need(identities.length === 1, 'installation_identity');
@@ -176,7 +178,8 @@ export function openInstallationStore(dataDirectory) {
     };
     const buildMaintenance=()=>backupMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,
       publicationEnabled:revision>=3,restoreEnabled:revision>=4,recoveryPlansEnabled:revision>=5,
-      retirementEnabled:revision>=6,windowsFenceEnabled:revision>=7,preparationEnabled:revision>=8,siteReviewEnabled:revision>=9,readLinuxRetirement});
+      retirementEnabled:revision>=6,windowsFenceEnabled:revision>=7,preparationEnabled:revision>=8,siteReviewEnabled:revision>=9,
+      activationEnabled:revision>=10,readLinuxRetirement});
     let maintenance=revision>=2 ? buildMaintenance() : null;
     maintenance?.recover();
     let linuxJournal=null,memberJournal=null;
@@ -384,6 +387,21 @@ export function openInstallationStore(dataDirectory) {
           });
           revision=9;
           maintenance.enableRecoverySiteReview();
+        }
+        return maintenance.api;
+      },
+      enableProtectedRecoveryActivation(){
+        available();
+        need(revision>=9,'recovery_site_review_migration_required');
+        if(revision===9){
+          need(!maintenance.active,'backup_helper_in_use');
+          transact(()=>{
+            db.exec(recoveryActivationSql);
+            need(canonical(shape(db))===schemaShape(10),'installation_integrity');
+            pragma(db,'user_version=10');
+          });
+          revision=10;
+          maintenance.enableProtectedRecoveryActivation();
         }
         return maintenance.api;
       },

@@ -848,6 +848,68 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     assert.equal(refreshed.revision,2);
     assert.deepEqual(reviewed.getRecoveryPlan(restoreId),{...prepared,site_review:refreshed});
     assert.deepEqual(await reviewed.recordRecoverySiteReview(siteInput,siteAuthority),approvedSite);
+
+    const activeInput={generation:review.plan.expected_generation,generation_id:prepared.retirement.evidence.generation_id,
+      deployment_plan_ref:'deployment.previous',deployment_plan_digest:digest('previous deployment'),
+      release_manifest_digest:digest('previous release'),services:scopes.map((scope,index)=>({
+        scope,data_generation_id:crypto.randomUUID(),data_ref:'data.previous.'+index,
+        configuration_ref:'configuration.previous.'+index,configuration_digest:digest(['previous configuration',index]),
+        secret_policy_ref:'secrets.previous.policy.'+index,secret_binding_ref:'secrets.previous.binding.'+index,
+        secret_binding_digest:digest(['previous secret binding',index])}))};
+    const activeAuthority=({deployment_digest})=>({allowed:true,generation:activeInput.generation,
+      origin:'local_os',os_subject:subject,active_current:true,deployment_digest});
+    const activationInput={activation_id:crypto.randomUUID(),plan_ref:siteInput.plan_ref,
+      expected_selection_digest:digest('no active selection'),review_digest:refreshed.review_digest};
+    const activationAuthority=({deployment_digest})=>({...preparationAuthority(),origin:'local_os',os_subject:subject,
+      deployment_digest,review_digest:refreshed.review_digest});
+    assert.throws(()=>reviewed.getActiveDeployment(),{code:'recovery_activation_migration_required'});
+    const ledger=f.store.enableProtectedRecoveryActivation();
+    assert.equal(ledger.getActiveDeployment(),null);
+    await assert.rejects(ledger.activateProtectedRecovery(activationInput,activationAuthority),{code:'active_deployment_required'});
+    assert.throws(()=>ledger.registerActiveDeployment({...activeInput,services:activeInput.services.slice(0,1)},activeAuthority),
+      {code:'active_deployment_baseline'});
+    assert.throws(()=>ledger.registerActiveDeployment(activeInput,()=>({...activeAuthority({}),origin:'remote'})),
+      {code:'recovery_local_admin_required'});
+    const initial=ledger.registerActiveDeployment(activeInput,activeAuthority);
+    activationInput.expected_selection_digest=initial.selection_digest;
+    assert.deepEqual(ledger.registerActiveDeployment(activeInput,activeAuthority),initial);
+    assert.throws(()=>ledger.registerActiveDeployment({...activeInput,generation_id:crypto.randomUUID()},activeAuthority),
+      {code:'deployment_selection_conflict'});
+    await assert.rejects(ledger.activateProtectedRecovery({...activationInput,expected_selection_digest:digest('obsolete')},activationAuthority),
+      {code:'deployment_selection_conflict'});
+    await assert.rejects(ledger.activateProtectedRecovery({...activationInput,review_digest:approvedSite.review_digest},activationAuthority),
+      {code:'recovery_activation_review'});
+    await assert.rejects(ledger.activateProtectedRecovery(activationInput,context=>({...activationAuthority(context),
+      retirement_current:context.action!=='adopt_recovery_activation'})),{code:'recovery_activation_authority'});
+    await fs.writeFile(output,damaged);
+    try{await assert.rejects(ledger.activateProtectedRecovery(activationInput,activationAuthority),{code:'recovery_preparation_files'});}
+    finally{await fs.writeFile(output,verifiedBytes);}
+    assert.equal(ledger.getRecoveryActivation(activationInput.activation_id),null);
+    assert.deepEqual(ledger.getActiveDeployment(),initial);
+
+    const activated=await ledger.activateProtectedRecovery(activationInput,activationAuthority);
+    assert.equal(activated.phase,'activated_protected');
+    assert.equal(activated.deployment.generation,'8');
+    assert.equal(activated.deployment.generation_id,review.plan.target.generation_id);
+    assert.equal(activated.deployment.release_manifest_digest,review.plan.target.release_manifest_digest);
+    assert.equal(activated.deployment.deployment_plan_digest,review.plan.target.deployment_plan_digest);
+    assert.deepEqual(activated.deployment.services,updatedEvidence.services.map((service,index)=>({
+      ...service,data_ref:{attempt_id:prepared.preparation.attempt_id,directory_name:prepared.preparation.services[index].directory_name,
+        sha256:prepared.preparation.services[index].sha256,bytes:prepared.preparation.services[index].bytes}
+    })));
+    const durable=f.reopen().backupMaintenance();
+    assert.deepEqual(durable.getActiveDeployment(),activated);
+    assert.deepEqual(durable.getRecoveryActivation(activationInput.activation_id),activated);
+    assert.deepEqual(durable.getRecoveryPlan(restoreId),{...prepared,site_review:refreshed,phase:'activated_protected',activation:activated});
+    assert.deepEqual(await durable.activateProtectedRecovery(activationInput,()=>assert.fail('a committed activation must only be read')),activated);
+    await assert.rejects(durable.activateProtectedRecovery({...activationInput,review_digest:approvedSite.review_digest},activationAuthority),
+      {code:'deployment_selection_conflict'});
+    await assert.rejects(durable.activateProtectedRecovery({...activationInput,activation_id:crypto.randomUUID()},activationAuthority),
+      {code:'recovery_activation_review'});
+    await assert.rejects(durable.recordRecoverySiteReview({...secondInput,review_id:crypto.randomUUID(),
+      previous_review_digest:refreshed.review_digest},evidenceAuthority(updatedEvidence)),{code:'recovery_site_preparation'});
+    assert.deepEqual(await durable.recordRecoverySiteReview(siteInput,siteAuthority),approvedSite);
+    assert.deepEqual(await fs.readFile(filePath),original);
   }
 
   const interrupted=crypto.randomUUID();

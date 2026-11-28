@@ -14,9 +14,10 @@ const bytes=value=>Buffer.from(canonical(value));
 const unknownStorage=new Set(['installation_storage_unknown','installation_unavailable','installation_directory_changed']);
 
 export function restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,claimHelper,
-  requireFreeHelper,recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,readLinuxRetirement}){
+  requireFreeHelper,recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,activationEnabled,
+  validScope,readLinuxRetirement}){
   const buildPlans=()=>recoveryPlanStore({db,transact,rows,decode,identity,staging,contentDirectory,published,original,claimHelper,requireFreeHelper,
-    retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,readLinuxRetirement});
+    retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,activationEnabled,validScope,readLinuxRetirement});
   let plans=recoveryPlansEnabled?buildPlans():null;
   function original(restoreId){
     return rows(db,`SELECT i.*,r.state,r.body,r.digest FROM maintenance_restore_intent i
@@ -142,6 +143,8 @@ export function restoreMaintenance({db,transact,rows,decode,identity,staging,con
     enableWindowsFencing(){windowsFenceEnabled=true;plans=buildPlans();},
     enablePreparation(){preparationEnabled=true;plans=buildPlans();},
     enableSiteReview(){siteReviewEnabled=true;plans=buildPlans();},
+    enableActivation(){activationEnabled=true;plans=buildPlans();},
+    activation(){return plans.activation;},
     recordLinuxRetirement(input,authority,native=false){
       need(plans,'recovery_plan_migration_required');
       return plans.recordLinuxRetirement(input,authority,native);

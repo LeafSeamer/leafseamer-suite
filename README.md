@@ -483,6 +483,12 @@ Suite 复验隔离归档，在本安装的保护内容根 `content/<attempt_id>`
 
 Suite 在 `check_recovery_site_review` 与 `adopt_recovery_site_review` 核对本机管理员、当前部署代、同一发行物、原退役仍有效、目标尚未启动，以及当前现场证据摘要。两次之间重新读回新库的字节和目录权限。`getRecoveryPlan` 在 `prepared_protected` 中返回最新 `site_review`，原审核仍可按其原请求查回。激活及设备侧恢复需要独立授权。
 
+### 激活受保护的恢复组合
+
+本机安装程序通过 `store.enableProtectedRecoveryActivation()` 显式启用安装账本 Schema 10。若尚未登记活动组合，先用 `registerActiveDeployment(existing, authorize)` 记录现场核验的原组合。该调用绑定原部署代计数和运行代 ID、部署计划及发行物摘要，以及逐服务的实例范围、数据引用、配置摘要和秘密绑定引用。本机管理员针对请求中的 `deployment_digest` 确认 `active_current`。
+
+`activateProtectedRecovery({plan_ref, activation_id, expected_selection_digest, review_digest}, authorize)` 使用 `getActiveDeployment()` 返回的原选择摘要和最新现场审核摘要。可信安装程序在 `check_recovery_activation` 与 `adopt_recovery_activation` 核对本机管理员，返回 `retirement_current`、`target_inactive` 和匹配的 `release_manifest_digest`、`deployment_digest`、`review_digest`。Suite 核对原活动组合与完整退役名册，重新验证各新库的文件身份、摘要与权限，在同一事务更新完整部署选择并写入 `activated_protected` 回执。提交结果不明时调用 `getRecoveryActivation(activation_id)` 查原操作。启动器接入和现场恢复验收是后续步骤。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

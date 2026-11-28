@@ -42,7 +42,8 @@ function backupPlan(value) {
 }
 
 export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,
-  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,windowsFenceEnabled=false,preparationEnabled=false,siteReviewEnabled=false,readLinuxRetirement}) {
+  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,windowsFenceEnabled=false,preparationEnabled=false,
+  siteReviewEnabled=false,activationEnabled=false,readLinuxRetirement}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
@@ -151,7 +152,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
 
   function buildRestore(){
     return restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,requireFreeHelper,
-      recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,readLinuxRetirement,
+      recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,activationEnabled,validScope,readLinuxRetirement,
       claimHelper(){
         need(active===0,'backup_helper_in_use');
         active++;
@@ -506,6 +507,10 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       need(restore,'restore_migration_required');
       return restore.recordSiteReview(input,authority);
     },
+    registerActiveDeployment(input,authority){return activation().registerActive(input,authority);},
+    getActiveDeployment(){return activation().active();},
+    async activateProtectedRecovery(input,authority){return activation().activate(input,authority);},
+    getRecoveryActivation(id){return activation().query(id);},
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
       return transact(()=>{
@@ -523,9 +528,14 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       });
     }
   });
+  function activation(){
+    need(activationEnabled,'recovery_activation_migration_required');
+    return restore.activation();
+  }
   return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},
     enableRecoveryPlans(){restore.enablePlans();},enableRecoveryRetirement(){restore.enableRetirement();},
     enableWindowsRecoveryFencing(){restore.enableWindowsFencing();},
     enableProtectedRecoveryPreparation(){restore.enablePreparation();},
-    enableRecoverySiteReview(){restore.enableSiteReview();},get active(){return active;}};
+    enableRecoverySiteReview(){restore.enableSiteReview();},
+    enableProtectedRecoveryActivation(){restore.enableActivation();activationEnabled=true;},get active(){return active;}};
 }

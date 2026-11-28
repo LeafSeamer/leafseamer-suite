@@ -29,7 +29,7 @@ function checkEvidence(evidence,plan){
   }
 }
 
-async function verifyProtection(parent,preparation,deadline){
+export async function verifyProtectedRecoveryCandidate(parent,preparation,deadline){
   const root=path.join(parent,preparation.attempt_id);
   if(process.platform==='win32'){
     const native=installationContentPlatform();
@@ -88,7 +88,8 @@ export function recoverySiteReviewStore({db,transact,rows,decode,contentDirector
       }
       const selected=transact(()=>{
         const context=load(id,request.plan_ref);
-        need(context.phase==='prepared_protected'&&digest(context.preparation)===request.preparation_digest,'recovery_site_preparation');
+        need(['prepared_protected','activated_protected'].includes(context.phase)&&
+          digest(context.preparation)===request.preparation_digest,'recovery_site_preparation');
         checkEvidence(request.evidence,context.plan);
         const os_subject=checkAuthority('check_recovery_site_review',context);
         const [prior]=rows(db,'SELECT restore_id,body,digest FROM maintenance_recovery_site_review WHERE review_id=?',request.review_id);
@@ -98,13 +99,14 @@ export function recoverySiteReviewStore({db,transact,rows,decode,contentDirector
             'recovery_site_review_conflict');
           return {prior:{...review,review_digest:prior.digest}};
         }
+        need(context.phase==='prepared_protected','recovery_site_preparation');
         need((context.site_review?.review_digest??null)===request.previous_review_digest,'recovery_site_review_conflict');
         requireFreeHelper();
         return {context,os_subject};
       });
       if(selected.prior)return selected.prior;
       const {context,os_subject}=selected;
-      await verifyProtection(contentDirectory,context.preparation,deadline);
+      await verifyProtectedRecoveryCandidate(contentDirectory,context.preparation,deadline);
       return transact(()=>{
         need(performance.now()<deadline,'backup_archive_deadline');
         const latest=load(id,request.plan_ref);

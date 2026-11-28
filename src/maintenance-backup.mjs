@@ -42,7 +42,7 @@ function backupPlan(value) {
 }
 
 export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,
-  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,windowsFenceEnabled=false,readLinuxRetirement}) {
+  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,windowsFenceEnabled=false,preparationEnabled=false,readLinuxRetirement}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
@@ -151,7 +151,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
 
   function buildRestore(){
     return restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,requireFreeHelper,
-      recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,readLinuxRetirement,
+      recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,readLinuxRetirement,
       claimHelper(){
         need(active===0,'backup_helper_in_use');
         active++;
@@ -498,6 +498,10 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       need(restore,'restore_migration_required');
       return restore.recordWindowsRetirement(input,authority);
     },
+    async prepareProtectedRecovery(input,authority){
+      need(restore,'restore_migration_required');
+      return restore.prepareStorage(input,authority);
+    },
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
       return transact(()=>{
@@ -517,5 +521,6 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
   });
   return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},
     enableRecoveryPlans(){restore.enablePlans();},enableRecoveryRetirement(){restore.enableRetirement();},
-    enableWindowsRecoveryFencing(){restore.enableWindowsFencing();},get active(){return active;}};
+    enableWindowsRecoveryFencing(){restore.enableWindowsFencing();},
+    enableProtectedRecoveryPreparation(){restore.enablePreparation();},get active(){return active;}};
 }

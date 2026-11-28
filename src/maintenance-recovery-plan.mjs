@@ -2,6 +2,7 @@ import {randomUUID} from 'node:crypto';
 import path from 'node:path';
 import {canonical,digest,InstallationError,requireValue as need} from './import-input.mjs';
 import {readExpandedManifest,verifyExpandedArchive} from './maintenance-backup-archive.mjs';
+import {prepareRecoveryFiles,verifyProtectedRecoveryFiles} from './recovery-storage-preparation.mjs';
 import {historicalWindowsRetirementFormat,windowsRecoverySource,windowsRetirementFacts,windowsRetirementFormat,
   windowsRetirementReader,withWindowsStartupFences} from './windows-recovery-retirement.mjs';
 
@@ -38,8 +39,8 @@ function targetPlan(value,receipts){
   return structuredClone({...value,services});
 }
 
-export function recoveryPlanStore({db,transact,rows,decode,identity,staging,published,original,claimHelper,requireFreeHelper,
-  readLinuxRetirement,retirementEnabled,windowsFenceEnabled}){
+export function recoveryPlanStore({db,transact,rows,decode,identity,staging,contentDirectory,published,original,claimHelper,requireFreeHelper,
+  readLinuxRetirement,retirementEnabled,windowsFenceEnabled,preparationEnabled}){
   const installation={installation_id:identity.host_installation_id,installation_epoch:identity.installation_epoch};
   const candidateDirectory=id=>path.join(staging,'restore-'+id,'restored.partial');
   const planReference=(id,planId,hashValue)=>({...installation,restore_id:id,plan_id:planId,revision:'1',digest:hashValue});
@@ -54,7 +55,7 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
     return {row,value,source};
   }
 
-  function current(id){
+  function retirementView(id){
     const [row]=rows(db,`SELECT p.*,a.body AS approval_body,a.digest AS approval_digest,a.approval_id
       FROM maintenance_recovery_plan p LEFT JOIN maintenance_recovery_approval a USING(restore_id) WHERE restore_id=?`,id);
     if(!row)return null;
@@ -91,6 +92,24 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
       evidence.members.every(member=>member.startup_fence&&same(member.startup_fence,{plan_digest,retirement_id})),
     'recovery_plan_integrity');
     return {...value,phase:'old_writers_retired',retirement};
+  }
+
+  function current(id){
+    const value=retirementView(id);
+    if(!preparationEnabled||!value)return value;
+    const [row]=rows(db,`SELECT i.preparation_id,i.body AS intent,i.digest AS intent_digest,r.attempt_id,r.body,r.digest
+      FROM maintenance_recovery_preparation i LEFT JOIN maintenance_recovery_preparation_result r USING(restore_id) WHERE i.restore_id=?`,id);
+    if(!row)return value;
+    const preparation_intent=decode(row.intent,row.intent_digest);
+    need(value.phase==='old_writers_retired'&&preparation_intent.preparation_id===row.preparation_id&&
+      same(preparation_intent.plan_ref,value.plan_ref)&&preparation_intent.retirement_digest===digest(value.retirement),'recovery_plan_integrity');
+    if(!row.attempt_id)return {...value,preparation_intent};
+    const preparation=decode(row.body,row.digest);
+    need(preparation.format==='leafseamer-protected-recovery-preparation/1'&&preparation.attempt_id===row.attempt_id&&matches(uuid,row.attempt_id)&&
+      preparation.intent_digest===row.intent_digest&&Array.isArray(preparation.services)&&preparation.services.length===value.plan.services.length&&
+      preparation.services.every((service,index)=>service.directory_name==='db-'+index&&same(service.next_scope,value.plan.services[index].next_scope)&&
+        service.origin?.data_generation_id===value.plan.target.services[index].data_generation_id),'recovery_plan_integrity');
+    return {...value,phase:'prepared_protected',preparation_intent,preparation};
   }
 
   function authorized(authority,action,expected,context){
@@ -313,6 +332,84 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
     }finally{unlock();}
   }
 
-  return {prepare,approve,recordLinuxRetirement,recordWindowsRetirement,
+  async function prepareStorage(input,authority){
+    need(preparationEnabled,'recovery_preparation_migration_required');
+    need(['linux','win32'].includes(process.platform),'recovery_preparation_platform');
+    need(fields(input,'plan_ref,preparation_id')&&matches(uuid,input.plan_ref?.restore_id)&&
+      matches(uuid,input.preparation_id),'recovery_preparation_request');
+    const request=structuredClone(input),id=request.plan_ref.restore_id,deadline=performance.now()+1800000;
+    const unlock=claimHelper();
+    try{
+      function load(){
+        const {source}=isolation(id),candidate=current(id);
+        need(candidate&&same(candidate.plan_ref,request.plan_ref),'recovery_plan_ref');
+        need(['old_writers_retired','prepared_protected'].includes(candidate.phase),'recovery_retirement_required');
+        return {archive:source.archive,...candidate};
+      }
+      function distributionFor(action,context,extra){
+        const decision=authorized(authority,action,context.plan.expected_generation,{...context,...extra,preparation_request:request});
+        const {distributions}=decision,roles=[...new Set(context.plan.services.map(({next_scope})=>next_scope.authority))].sort();
+        need(decision.retirement_current===true&&decision.target_inactive===true&&
+          decision.release_manifest_digest===context.plan.target.release_manifest_digest,'recovery_preparation_authority');
+        need(fields(distributions,roles.join(','))&&roles.every(role=>{
+          const pinned=distributions[role];
+          return ['controller','seamer'].includes(role)&&fields(pinned,'directory,manifest_sha256')&&
+            typeof pinned.directory==='string'&&path.isAbsolute(pinned.directory)&&path.resolve(pinned.directory)===pinned.directory&&
+            matches(hash,pinned.manifest_sha256);
+        }),'recovery_preparation_distribution');
+        return structuredClone(distributions);
+      }
+      const selected=transact(()=>{
+        const context=load(),distributions=distributionFor('begin_recovery_preparation',context);
+        const intent={...request,retirement_digest:digest(context.retirement),distributions_digest:digest(distributions)};
+        const prior=context.preparation_intent;
+        if(prior)need(same(prior,intent),'recovery_preparation_conflict');
+        if(context.preparation)return {completed:current(id)};
+        requireFreeHelper();
+        if(!prior){
+          need(!db.prepare('SELECT 1 FROM maintenance_recovery_preparation WHERE preparation_id=?').get(request.preparation_id),
+            'recovery_preparation_conflict');
+          db.prepare('INSERT INTO maintenance_recovery_preparation VALUES (?,?,?,?)').run(id,request.preparation_id,encode(intent),digest(intent));
+        }
+        return {context,distributions,intent,receipts:isolation(id).source.receipts};
+      });
+      if(selected.completed)return selected.completed;
+      const {context,distributions,intent,receipts}=selected,expanded=candidateDirectory(id),parent=contentDirectory;
+      const manifest=await verifyExpandedArchive(expanded,context.plan.manifest_sha256,deadline);
+      const inputs=context.plan.services.map(({source_scope,snapshot_receipt_id,snapshot_sha256,next_scope},index)=>{
+        const receipt=receipts[index],data_generation_id=context.plan.target.services[index].data_generation_id;
+        const member=manifest.databases.find(record=>record.consistency_point===snapshot_receipt_id);
+        need(receipt?.backup_operation_id===snapshot_receipt_id&&receipt.sha256===snapshot_sha256&&same(receipt.scope,source_scope)&&
+          member?.service===source_scope.service_id&&member.database_instance===source_scope.database_instance_id&&
+          manifest.files.some(file=>file.path===member.path&&file.role==='database'&&file.size===receipt.bytes&&file.sha256===receipt.sha256),
+        'recovery_preparation_source');
+        return {next_scope,receipt,data_generation_id,sourceFile:path.join(expanded,'files',member.path)};
+      });
+      const attempt_id=randomUUID();
+      function checked(action,extra){
+        const latest=load();
+        need(latest.phase==='old_writers_retired'&&same(latest.preparation_intent,intent),'recovery_preparation_conflict');
+        requireFreeHelper();
+        need(same(distributionFor(action,latest,extra),distributions),'recovery_preparation_distribution');
+      }
+      transact(()=>{
+        checked('create_recovery_preparation_attempt',{attempt_id});
+        db.prepare('INSERT INTO maintenance_recovery_preparation_attempt VALUES (?,?)').run(attempt_id,id);
+      });
+      const report=await prepareRecoveryFiles({parent,attempt_id,plan_digest:request.plan_ref.digest,inputs,distributions},deadline);
+      await verifyProtectedRecoveryFiles(path.join(parent,attempt_id),report,deadline);
+      const result={format:'leafseamer-protected-recovery-preparation/1',attempt_id,intent_digest:digest(intent),...report};
+      const body=encode(result);
+      need(body.length<=524288,'recovery_preparation_capacity');
+      return transact(()=>{
+        need(performance.now()<deadline,'backup_archive_deadline');
+        checked('adopt_recovery_preparation',{result});
+        db.prepare('INSERT INTO maintenance_recovery_preparation_result VALUES (?,?,?,?)').run(id,attempt_id,body,digest(result));
+        return current(id);
+      });
+    }finally{unlock();}
+  }
+
+  return {prepare,approve,recordLinuxRetirement,recordWindowsRetirement,prepareStorage,
     get(id){need(matches(uuid,id),'restore_request');return transact(()=>current(id));}};
 }

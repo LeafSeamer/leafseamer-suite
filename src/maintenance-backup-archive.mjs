@@ -111,6 +111,7 @@ export async function verifyExpandedArchive(directory,expected,deadline){
     }
   }
   await verifyFiles(path.join(directory,'files'),tree);
+  return manifest;
 }
 
 async function verifyExpandedFile(file,member,deadline){

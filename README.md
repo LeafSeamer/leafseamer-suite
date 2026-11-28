@@ -471,6 +471,12 @@ Windows 恢复须在 Schema 6 安装账本上显式调用 `enableWindowsRecovery
 
 Suite 先核对全体写入者的制品、库身份及最后一次启动的 Job 清空证据，再持久化封锁意图。每台原生监督器完成封锁、回读同一计划及操作标识且授权仍有效后，才入账 `old_writers_retired`。中断时 `getRecoveryPlan` 返回 `retirement_intent`，沿同一 `retirement_id` 和名册重试，已完成的封锁继续生效。旧版仅包含 Job 清空证据的回执会显示在 `historical_retirement`，沿原计划和操作补齐封锁后才可进入下一阶段。新库准备和激活仍须分别核对当前部署与现场状态。
 
+### 准备受保护的新库
+
+在 Schema 7 安装账本显式调用 `enableProtectedRecoveryPreparation()` 后，对已取得旧写入者退役回执的计划调用 `prepareProtectedRecovery({plan_ref, preparation_id}, authorize)`。可信安装程序使用同一个 UUID 重试，并在 `begin_recovery_preparation`、`create_recovery_preparation_attempt`、`adopt_recovery_preparation` 返回当前部署代、`retirement_current`、`target_inactive`、计划批准的 `release_manifest_digest` 和各服务制品 `distributions`。每个制品提供绝对 `directory` 和 `manifest_sha256`。
+
+Suite 复验隔离归档，在本安装的保护内容根 `content/<attempt_id>` 内逐库调用已核对制品的新库准备入口，随后刷新文件和目录，并重新读取新库的摘要和文件身份。完整回执采用后，`getRecoveryPlan` 返回 `prepared_protected`，并包含实际采用的 `attempt_id` 及各库的逻辑数据代与目录名。中断或拒绝采用后保留准备意图及原尝试，重试使用新的独占目录。新库仍等待秘密重配、现场核对及激活授权。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

@@ -514,7 +514,7 @@ async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredP
 }
 
 test('publishes a dual-service archive and verifies its exact snapshots in isolated recovery',{
-  timeout:180000,skip:!Object.values(distributionDirectories).every(Boolean)
+  timeout:360000,skip:!Object.values(distributionDirectories).every(Boolean)
 },async t=>{
   const f=await fixture(t);
   f.store.enableBackupMaintenance();
@@ -743,6 +743,58 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
       {code:'recovery_retirement_platform'});
     if(process.platform==='win32')await t.test('adopts both Windows writer Jobs into the approved plan',t=>
       checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}));
+  }
+
+  if(['linux','win32'].includes(process.platform)){
+    const prepareInput={plan_ref:review.plan_ref,preparation_id:crypto.randomUUID()};
+    const preparationAuthority=()=>({...authorize(),retirement_current:true,target_inactive:true,
+      release_manifest_digest:target.release_manifest_digest,distributions});
+    const retired=f.store.backupMaintenance();
+    const retiredView=retired.getRecoveryPlan(restoreId);
+    await assert.rejects(retired.prepareProtectedRecovery(prepareInput,preparationAuthority),{code:'recovery_preparation_migration_required'});
+    const preparationLedger=f.store.enableProtectedRecoveryPreparation();
+    await assert.rejects(preparationLedger.prepareProtectedRecovery(prepareInput,()=>({...preparationAuthority(),retirement_current:false})),
+      {code:'recovery_preparation_authority'});
+    assert.deepEqual(preparationLedger.getRecoveryPlan(restoreId),retiredView);
+    const filePath=path.join(isolated,'restored.partial','files',databases[0].path),original=await fs.readFile(filePath);
+    await fs.appendFile(filePath,'changed');
+    try{await assert.rejects(preparationLedger.prepareProtectedRecovery(prepareInput,preparationAuthority),{code:'restore_candidate_changed'});}
+    finally{await fs.writeFile(filePath,original);}
+    const pending=f.reopen().backupMaintenance();
+    assert.equal(pending.getRecoveryPlan(restoreId).phase,'old_writers_retired');
+    assert.equal(pending.getRecoveryPlan(restoreId).preparation_intent.preparation_id,prepareInput.preparation_id);
+    await assert.rejects(pending.prepareProtectedRecovery({...prepareInput,preparation_id:crypto.randomUUID()},preparationAuthority),
+      {code:'recovery_preparation_conflict'});
+    const used=[];
+    await assert.rejects(pending.prepareProtectedRecovery(prepareInput,({action,result})=>{
+      if(action==='adopt_recovery_preparation')used.push(result.attempt_id);
+      return {...preparationAuthority(),target_inactive:action!=='adopt_recovery_preparation'};
+    }),{code:'recovery_preparation_authority'});
+    assert.equal(pending.getRecoveryPlan(restoreId).phase,'old_writers_retired');
+    const retried=f.reopen().backupMaintenance();
+    const prepared=await retried.prepareProtectedRecovery(prepareInput,preparationAuthority);
+    assert.equal(prepared.phase,'prepared_protected');
+    assert.equal(prepared.preparation.flush_method,process.platform==='win32'?'FlushFileBuffers':'fsync');
+    assert.notEqual(prepared.preparation.attempt_id,used[0]);
+    assert.deepEqual(prepared.preparation.services.map(service=>service.next_scope),review.plan.services.map(service=>service.next_scope));
+    for(const [index,service] of prepared.preparation.services.entries()){
+      const {authority,service_id,database_instance_id,request_epoch}=service.next_scope;
+      assert.equal(service.origin.data_generation_id,target.services[index].data_generation_id);
+      const generationDirectory=path.join(f.root,'content',prepared.preparation.attempt_id,service.directory_name);
+      const name=authority+'.sqlite',output=path.join(generationDirectory,name);
+      assert.deepEqual(await fs.readdir(generationDirectory),[name]);
+      assert.equal(hash(await fs.readFile(output)),service.sha256);
+      const db=new DatabaseSync(output,{readOnly:true});
+      try{
+        assert.deepEqual({...db.prepare('SELECT service_id,database_instance_id,request_epoch,maintenance_state FROM service_state').get()},
+          {service_id,database_instance_id,request_epoch,maintenance_state:'protected'});
+        assert.equal(db.prepare('SELECT count(*) AS count FROM service_boot').get().count,0);
+      }finally{db.close();}
+    }
+    const reopened=f.reopen().backupMaintenance();
+    assert.deepEqual(reopened.getRecoveryPlan(restoreId),prepared);
+    assert.deepEqual(await reopened.prepareProtectedRecovery(prepareInput,preparationAuthority),prepared);
+    assert.deepEqual(await fs.readFile(filePath),original);
   }
 
   const interrupted=crypto.randomUUID();

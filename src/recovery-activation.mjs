@@ -19,7 +19,7 @@ function baseline(input,validScope){
   need(fields(input,'deployment_plan_digest,deployment_plan_ref,generation,generation_id,release_manifest_digest,services')&&
     matches(counter,input.generation)&&matches(uuid,input.generation_id)&&matches(reference,input.deployment_plan_ref)&&
     matches(hash,input.deployment_plan_digest)&&matches(hash,input.release_manifest_digest)&&
-    Array.isArray(input.services)&&input.services.length>=2&&input.services.length<=256,'active_deployment_baseline');
+    Array.isArray(input.services)&&input.services.length>=1&&input.services.length<=256,'active_deployment_baseline');
   for(const service of input.services){
     need(fields(service,'configuration_digest,configuration_ref,data_generation_id,data_ref,scope,secret_binding_digest,secret_binding_ref,secret_policy_ref')&&
       validScope(service.scope)&&matches(uuid,service.data_generation_id)&&
@@ -28,7 +28,8 @@ function baseline(input,validScope){
   }
   const {services}=input;
   need(new Set(serviceKeys(services)).size===services.length&&new Set(services.map(item=>item.data_generation_id)).size===services.length&&
-    ['controller','seamer'].every(role=>services.some(({scope})=>scope.authority===role)),'active_deployment_baseline');
+    services.some(({scope})=>scope.authority==='controller')&&
+    (services.some(({scope})=>scope.authority==='seamer')||process.platform==='win32'&&services.length===1),'active_deployment_baseline');
   return structuredClone(input);
 }
 

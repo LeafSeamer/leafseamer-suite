@@ -497,6 +497,12 @@ Suite 在 `check_recovery_site_review` 与 `adopt_recovery_site_review` 核对�
 
 双服务原写入者均有持久退役回执时，可在同一次 `startRecovery` 调用中增加 `restart: {previousLaunchIds, runtimeGenerationId, launchIds}`。两个 ID 映射均以 `controller` 和 `seamer` 为键，`runtimeGenerationId` 和新启动 ID 使用未占用的 UUID。宿主核对最新双服务退役、既有运行库文件身份及原活动选择，新进程使用新 cgroup，继续写入同一数据代。授权决定还须匹配 `runtime_generation_id` 和 `retirement_digest`。由旧版本首次启动且缺少运行库交接记录的安装，在确认为首组启动原件后由本机安装程序检测现有库，提供 `legacy_storage_verified: true` 以登记原文件身份。缺少退役回执或遇到文件身份不符时保持保护。
 
+### 启动 Windows 独立 Controller 恢复代
+
+Windows 的安装账本接受独立 Controller 的活动部署基线。激活后，可信本机程序从 `@leafseamer/suite/windows-native-host` 打开 `openWindowsNativeHost({installationDirectory})`，并调用 `startRecovery({plan, configuration, selectionDigest, authorize})`。部署计划使用 `leafseamer.windows-native-recovery/1`，包含已激活的部署计划引用、发行摘要、新代 ID 和 Controller 配置引用。现场审核固定配置摘要，配置格式为 `leafseamer.windows-native-core/1`，包含安装 ID、构建清单固定的 Controller 制品目录、回环端口和绑定新库身份的监督启动策略。
+
+授权决定绑定当前部署选择、发行摘要、退役摘要和已审阅的秘密绑定摘要，并提供原 Windows 写入者名册以复验持久启动封锁。Suite 将审核过的原库复制到独立运行目录，核对副本字节和 ACL，初始化新监督日志并创建认证闭锁 Job。调用方持有运行句柄，可用 `close()` 等待 Job 退役。已有运行目录保留原尝试供核对。Windows SCM 接入、已启动运行代续启及现场动作仍属各自后续步骤。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

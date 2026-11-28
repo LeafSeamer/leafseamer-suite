@@ -518,6 +518,60 @@ async function checkNativeRecoveryStartup(f,{planFile,members},selected){
   }
 }
 
+async function checkWindowsRecoveryStartup({f,plan,configuration,activated,windowsAuthority}){
+  const {openWindowsNativeHost}=await import('@leafseamer/suite/windows-native-host');
+  const {readProcessRecoveryRetirement}=await import(pathToFileURL(path.join(configuration.distribution.directory,'process-host.mjs')));
+  f.close();
+  const open=()=>openWindowsNativeHost({installationDirectory:f.root}),host=open();
+  const start={plan,configuration,selectionDigest:activated.selection_digest,
+    authorize({selection,retirement_digest,secret_binding_digest}){
+      return {...windowsAuthority(),selection_digest:selection.selection_digest,
+        release_manifest_digest:selection.deployment.release_manifest_digest,retirement_digest,secret_binding_digest};
+    }};
+  const {data_ref,scope}=activated.deployment.services[0],content=path.join(f.root,'content');
+  const source=path.join(content,data_ref.attempt_id,data_ref.directory_name,'controller.sqlite');
+  const directory=path.join(content,plan.generation_id,data_ref.directory_name);
+  try{
+    await assert.rejects(host.startRecovery({...start,selectionDigest:digest('obsolete deployment')}),{code:'windows_recovery_selection'});
+    await assert.rejects(host.startRecovery({...start,configuration:{...configuration,port:1}}),{code:'windows_recovery_configuration'});
+    await assert.rejects(host.startRecovery({...start,authorize:context=>({...start.authorize(context),secret_binding_digest:digest('old secrets')})}),
+      {code:'windows_recovery_authority'});
+    await assert.rejects(host.startRecovery({...start,authorize:context=>({...start.authorize(context),runtime_generation_id:crypto.randomUUID()})}),
+      {code:'windows_recovery_retirement'});
+    const bytes=await fs.readFile(source),damaged=Buffer.from(bytes);
+    damaged[damaged.length-1]^=1;
+    await fs.writeFile(source,damaged);
+    try{await assert.rejects(host.startRecovery(start),{code:'recovery_preparation_files'});}
+    finally{await fs.writeFile(source,bytes);}
+    assert.equal(await fs.stat(directory).catch(error=>error.code),'ENOENT');
+    const runtime=await host.startRecovery(start);
+    assert.equal(runtime.selection_digest,activated.selection_digest);
+    assert.equal(runtime.containment.bootstrap_authenticated,true);
+    assert.equal(runtime.containment.runtime_admitted,false);
+    let health;
+    for(let attempt=0;attempt<100;attempt++){
+      health=await fetch('http://127.0.0.1:'+configuration.port+'/health/ready',{signal:AbortSignal.timeout(300)}).catch(()=>null);
+      if(health)break;
+      await delay(20);
+    }
+    assert.equal(health?.status,503);
+    assert.equal((await health.json()).ready,false);
+    assert.equal((await runtime.close()).active_processes,0);
+    const journal=new DatabaseSync(path.join(directory,'supervisor-journal.db'),{readOnly:true});
+    let runtimeGeneration;
+    try{
+      runtimeGeneration=journal.prepare("SELECT json_extract(descriptor_jcs,'$.runtime_generation') AS id FROM core_bootstrap").get().id;
+    }finally{journal.close();}
+    const receipt=await readProcessRecoveryRetirement({dataDir:directory,runtimeGeneration,
+      serviceId:scope.service_id,databaseInstanceId:scope.database_instance_id});
+    assert.equal(receipt.containment_id,runtime.containment.containment_id);
+    assert.equal(receipt.active_processes,0);
+  }finally{await host.close();}
+  const reopened=open();
+  try{await assert.rejects(reopened.startRecovery(start),{code:'windows_recovery_start_indeterminate'});}
+  finally{await reopened.close();}
+}
+
 async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}){
   const supervisor=distributions.controller;
   const {initializeProcessHost,installedCoreDigest,startProcessHost,readProcessRecoveryRetirement}=await import(
@@ -540,6 +594,19 @@ async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredP
     return app;
   }
   const controllerHost=await startController();
+  if(!seamer){
+    assert.equal((await controllerHost.close()).exitCode,0);
+    const runtime_generation_id=crypto.randomUUID();
+    const windows_runtime={supervisor,writers_fenced:true,writers:[{authority:'controller',service_id:controller.service_id,
+      database_instance_id:controller.database_instance_id,data_directory:sources.controller,runtime_generation:journalGeneration(sources.controller)}]};
+    const authority=()=>({...authorize(),runtime_generation_id,windows_runtime});
+    const ledger=f.store.enableWindowsRecoveryFencing();
+    const retired=await ledger.recordWindowsRecoveryRetirement(retirementRequest,authority);
+    assert.equal(retired.retirement.evidence.members.length,1);
+    assert.equal(retired.retirement.evidence.format,'leafseamer-windows-deployment-retirement/2');
+    await assert.rejects(startProcessHost({dataDir:sources.controller}),{code:'process_recovery_startup_fenced'});
+    return authority;
+  }
   const seamerHost=path.join(f.root,'fixture-seamer-host'),artifacts={};
   for(const name of ['native/leafseamer_process_host.exe','runtime/node.exe']){
     const target=path.join(seamerHost,name);
@@ -657,8 +724,9 @@ async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredP
   assert.deepEqual(await reopened.recordWindowsRecoveryRetirement(retirementRequest,authority),retired);
 }
 
-test('publishes a dual-service archive and verifies its exact snapshots in isolated recovery',{
-  timeout:360000,skip:!Object.values(distributionDirectories).every(Boolean)
+for(const standalone of [false,true])test(standalone?'recovers and starts the standalone Windows Controller':
+  'publishes a dual-service archive and verifies its exact snapshots in isolated recovery',{
+  timeout:360000,skip:standalone?(process.platform!=='win32'||!distributionDirectories.controller):!Object.values(distributionDirectories).every(Boolean)
 },async t=>{
   const f=await fixture(t);
   f.store.enableBackupMaintenance();
@@ -666,6 +734,7 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   const distributions={},sources={},scopes=[];
   const hash=value=>crypto.createHash('sha256').update(value).digest('hex');
   for(const [authority,directory] of Object.entries(distributionDirectories)){
+    if(standalone&&authority!=='controller')continue;
     const source=path.join(f.root,'source-'+authority);
     const storage=await import(pathToFileURL(path.join(directory,'storage.mjs')).href);
     const initial=storage.initializeStorage(source);
@@ -687,10 +756,10 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   assert.equal(ready.step,'snapshots_staged');
   const {operation_id:id,revision}=ready;
   const {reports,verifiers,verification_ref}=await ledger.verifySnapshots(id,revision,distributions,authorize);
-  assert.equal(reports.length,2);
+  assert.equal(reports.length,scopes.length);
   assert.deepEqual(reports.map(report=>JSON.parse(report.text).scope),scopes);
   assert.ok(JSON.parse(reports[0].text).command_inventory);
-  assert.ok(JSON.parse(reports[1].text).execution_inventory);
+  if(!standalone)assert.ok(JSON.parse(reports[1].text).execution_inventory);
   await assert.rejects(ledger.verifySnapshots(id,revision,{...distributions,
     controller:{...distributions.controller,manifest_sha256:'sha256:'+'0'.repeat(64)}},authorize),
   {code:'backup_snapshot_verification'});
@@ -758,7 +827,7 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     return authorize();
   });
   assert.equal(restored.phase,'isolated_validated');
-  assert.equal(restored.snapshot_count,2);
+  assert.equal(restored.snapshot_count,scopes.length);
   assert.equal(restored.command_review.state,'matched');
   assert.equal(restored.command_review.checked,0);
   assert.match(restored.command_review.review_digest,/^sha256:[a-f0-9]{64}$/);
@@ -784,7 +853,10 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     generation_id:target.generation_id,release_manifest_digest:target.release_manifest_digest,runtime_root:path.join(path.dirname(f.root),'runtime'),
     configuration_refs:Object.fromEntries(scopes.map((scope,index)=>[scope.authority,target.services[index].configuration_ref]))}:null;
   if(linuxPlan)target.deployment_plan_digest=digest(linuxPlan);
-  await assert.rejects(plans.prepareRecoveryPlan(restoreId,{...target,services:target.services.slice(0,1)},authorize),
+  const windowsPlan=standalone?{format:'leafseamer.windows-native-recovery/1',deployment_plan_ref:target.deployment_plan_ref,
+    generation_id:target.generation_id,release_manifest_digest:target.release_manifest_digest,configuration_ref:target.services[0].configuration_ref}:null;
+  if(windowsPlan)target.deployment_plan_digest=digest(windowsPlan);
+  await assert.rejects(plans.prepareRecoveryPlan(restoreId,{...target,services:target.services.slice(1)},authorize),
     {code:'recovery_target_plan'});
   const review=await plans.prepareRecoveryPlan(restoreId,target,authorize);
   assert.equal(review.phase,'awaiting_local_approval');
@@ -845,6 +917,7 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   assert.throws(()=>approved.recordLinuxRecoveryRetirement(retirementRequest,authorize),
     {code:'recovery_retirement_migration_required'});
   const retiredPlan=f.store.enableRecoveryRetirement();
+  let windowsAuthority;
   if(process.platform==='linux'){
     await assert.rejects(retiredPlan.recordWindowsRecoveryRetirement(retirementRequest,authorize),{code:'recovery_retirement_platform'});
     const native=process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1';
@@ -891,8 +964,9 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
       {code:'recovery_retirement_platform'});
     assert.throws(()=>retiredPlan.recordLinuxNativeRecoveryRetirement(retirementRequest,authorize),
       {code:'recovery_retirement_platform'});
-    if(process.platform==='win32')await t.test('adopts both Windows writer Jobs into the approved plan',t=>
-      checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}));
+    if(process.platform==='win32')await t.test(standalone?'fences the old standalone Controller Job':'adopts both Windows writer Jobs into the approved plan',async t=>{
+      windowsAuthority=await checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan});
+    });
   }
 
   if(['linux','win32'].includes(process.platform)){
@@ -949,12 +1023,26 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     assert.deepEqual(await fs.readFile(filePath),original);
 
     const nativeFixture=linuxPlan?await prepareNativeRecoveryFixture(f,target,review,distributions,linuxPlan):null;
+    let windowsCore=null;
+    if(windowsPlan){
+      const {installedCoreDigest}=await import(pathToFileURL(path.join(distributions.controller.directory,'process-host.mjs')));
+      const listener=net.createServer().listen(0,'127.0.0.1');
+      await once(listener,'listening');
+      const {port}=listener.address();
+      await new Promise(resolve=>listener.close(resolve));
+      const {service_id,database_instance_id}=review.plan.services[0].next_scope;
+      windowsCore={format:'leafseamer.windows-native-core/1',host_installation_id:f.identity.host_installation_id,
+        distribution:distributions.controller,port,
+        bootstrap:{format:'leafseamer-core-bootstrap-policy/1',service_id,database_instance_id,bootstrap_timeout_ms:12000,
+          clock_backend_revision:'1',policy_revision:'1',platform_profile_ref:{profile_id:'fixture.recovery',revision:'1'},
+          artifact_manifest_ref:{manifest_id:'fixture.windows',revision:'1',digest:installedCoreDigest()}}};
+    }
     const siteEvidence={coverage_digest:review.plan.coverage_digest,unresolved_digest:review.plan.unresolved_digest,
       command_review_digest:review.plan.command_review.review_digest,site_observation_ref:'site.fixture',
       site_observation_digest:digest('observed site'),unresolved_disposition:'hold_without_replay',
       services:review.plan.target.services.map((service,index)=>({scope:review.plan.services[index].next_scope,
         data_generation_id:service.data_generation_id,configuration_ref:service.configuration_ref,
-        configuration_digest:nativeFixture?.members[index].digest??digest(['configuration',index]),
+        configuration_digest:nativeFixture?.members[index].digest??(windowsCore?digest(windowsCore):digest(['configuration',index])),
         secret_policy_ref:service.secret_policy_ref,secret_binding_ref:'secrets.fixture.'+index,secret_binding_digest:digest(['secret binding',index]),
         secret_state:index===0?'reconfigured':'not_required'}))};
     const siteInput={plan_ref:review.plan_ref,review_id:crypto.randomUUID(),previous_review_digest:null,
@@ -1018,7 +1106,7 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     const ledger=f.store.enableProtectedRecoveryActivation();
     assert.equal(ledger.getActiveDeployment(),null);
     await assert.rejects(ledger.activateProtectedRecovery(activationInput,activationAuthority),{code:'active_deployment_required'});
-    assert.throws(()=>ledger.registerActiveDeployment({...activeInput,services:activeInput.services.slice(0,1)},activeAuthority),
+    assert.throws(()=>ledger.registerActiveDeployment({...activeInput,services:[]},activeAuthority),
       {code:'active_deployment_baseline'});
     assert.throws(()=>ledger.registerActiveDeployment(activeInput,()=>({...activeAuthority({}),origin:'remote'})),
       {code:'recovery_local_admin_required'});
@@ -1064,6 +1152,12 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     assert.deepEqual(await fs.readFile(filePath),original);
     if(nativeFixture){
       await t.test('restarts both selected recovery cores without losing their runtime databases',()=>checkNativeRecoveryStartup(f,nativeFixture,activated));
+      assert.deepEqual(await fs.readFile(output),verifiedBytes);
+      assert.deepEqual(f.reopen().backupMaintenance().getActiveDeployment(),activated);
+    }
+    if(windowsCore){
+      await t.test('starts the selected Controller in an authenticated Windows Job',()=>
+        checkWindowsRecoveryStartup({f,plan:windowsPlan,configuration:windowsCore,activated,windowsAuthority}));
       assert.deepEqual(await fs.readFile(output),verifiedBytes);
       assert.deepEqual(f.reopen().backupMaintenance().getActiveDeployment(),activated);
     }

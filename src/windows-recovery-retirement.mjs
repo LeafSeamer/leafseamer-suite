@@ -81,6 +81,7 @@ export async function windowsRetirementReader(source){
 
   return {
     preflight:binding=>observe(binding,false),
+    confirm:binding=>observe(binding,true),
     async seal(binding,expected,assertCurrent){
       for(const [index,writer] of source.writers.entries()){
         assertCurrent(writer);

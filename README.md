@@ -394,6 +394,20 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 上游兼容检查入口为`node scripts/check-tuf-upstream.mjs <固定源码检出目录>`；先按该提交的package-lock安装测试依赖并构建。入口核对固定提交及源码未变，把该提交的客户端测试映射到本仓实际补丁产物；上游测试依赖只供本地验证，不进入Suite运行包。
 
+### 备份加解密辅助程序
+
+使用 Go 1.27.2 执行 `npm run build -- --backup-crypto`。Go 可从 `PATH` 解析，或由 `LEAFSEAMER_BACKUP_GO` 指定。Linux 可同时选择 `--linux-member`。制品位于 `dist/native`，包含 `leafseamer_backup_crypto`（Windows 后缀为 `.exe`）、内部清单及依赖许可证，均有 Suite 清单中的 SHA-256 记录。
+
+受信任父进程为每项操作分配独占、仅维护账户可访问的暂存目录，并以绝对路径传入 `--directory`。输入与结果采用固定文件名。
+
+| 命令 | 输入 | 暂存结果 |
+| --- | --- | --- |
+| `seal --mode x25519`，重复 `--recipient` 指定 1–16 个不同公钥 | `plaintext.tar` | `ciphertext.age.partial` |
+| `seal --mode passphrase` | `plaintext.tar` 和标准输入管道中的口令 | `ciphertext.age.partial` |
+| `open --mode x25519\|passphrase --expected-bytes N --expected-sha256 SHA256` | `ciphertext.age` 和标准输入管道中的单一对应私钥或口令 | `plaintext.tar.partial` |
+
+父进程按原始字节写入秘密并关闭管道，最大 16 KiB。口令加密固定 scrypt logN 为 18，解密上限为 18。两端数据分别以 64 GiB 为上限。解密核对密文长度、SHA-256 和 age 认证。退出码为 0 且标准输出返回 `state: "staged"`、`ciphertext_bytes`、`ciphertext_sha256` 时，暂存文件已同步落盘。维护流程负责校验归档内容、发布或激活，以及对超时、中断或丢失结果的暂存目录进行清理。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

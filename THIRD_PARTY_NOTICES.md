@@ -2,6 +2,8 @@
 
 本仓主许可为 Apache-2.0。
 
+备份加解密辅助程序使用 [age v1.3.2 官方库](https://github.com/FiloSottile/age/tree/v1.3.2)，编译输入由 `native/backup-crypto/go.mod` 与 `go.sum` 锁定。选择构建该制品时，编译所用模块及 Go 工具链的许可随包保留在 `dist/native/backup-crypto-licenses`，版本和许可摘要列于 `dist/native/backup-crypto-manifest.json`。
+
 `docs/rebirth-design.md` 与 `docs/rebirth-review.md` 从 LeafSeamer Legacy 的设计与审阅文档延续，并调整为新 Suite 的维护入口。
 
 - 来源：[LeafSeamer Legacy 最终提交](https://github.com/ikenainanodesu/leafseamer-legacy/tree/5d60491d7158f87fc27b564f510d321074aedac9)。

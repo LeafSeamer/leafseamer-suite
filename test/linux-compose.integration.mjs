@@ -264,8 +264,10 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const scheduledReference=scheduledDispatch?plan.reference_providers:null;
   if(scheduledReference)delete plan.reference_providers;
   const pairingTest=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING==='1';
+  const restartPairing=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRING_RESTART==='1';
   const pairedSimulator=process.env.LEAFSEAMER_TEST_COMPOSE_PAIRED_SIMULATOR==='1';
   assert.ok(!pairingTest||chronyFile);
+  assert.ok(!restartPairing||pairingTest&&!pairedSimulator);
   assert.ok(!pairedSimulator||pairingTest&&workerControl&&process.env.LEAFSEAMER_COMPOSE_WORKER_FIXTURE_IMAGE);
   assert.ok(!scheduledDispatch||pairedSimulator);
   assert.ok(!process.env.LEAFSEAMER_TEST_COMPOSE_BROWSER||pairingTest);
@@ -1124,7 +1126,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         renewal=publishClocks().catch(error=>{renewalFailure=error;clearInterval(renew);}).finally(()=>{renewal=null;});
       },1200);
       const containers=record.detail.runtime_binding.containers;
-      return {containers,inbox:path.join(generationDirectory,'first-pairing'),phase:()=>phase,
+      return {containers,admissions,inbox:path.join(generationDirectory,'first-pairing'),phase:()=>phase,
         simulator:simulatorFiles,scheduledReferenceWithdrawal,
         events:role=>docker('logs',containers[role]).split('\n').filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)),
         ...(scheduleClockLoss&&{withdrawSeamerReference(){
@@ -1164,7 +1166,8 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
       };
     }
     await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
-      verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch,reconcileScheduledWrite});
+      verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch,reconcileScheduledWrite,restartPairing});
+    if(restartPairing)t.diagnostic('已配对双服务在新受监督运行代查询原草稿，旧写上下文拒绝，新上下文写入并持久保存');
     if(reconcileScheduledWrite)t.diagnostic('Linux 模拟器定时写入后的恢复结算已落库，原有写入只执行一次');
     else if(scheduledDispatch&&!scheduleClockLoss&&!scheduledReferenceWithdrawal)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
     if(scheduledReferenceWithdrawal)t.diagnostic('Linux 定时派发写前撤回，实际停发及两端持久结果已核对');

@@ -22,7 +22,7 @@ const node='/usr/local/bin/node',cli='/opt/leafseamer/dist/cli.mjs',loopback='ht
 const permissions=['auth.manage','auth.read'];
 
 export async function completeLinuxComposeFirstPairing({root,plan,enrollment,login,clockValues,launch,send,selection,verifyBrowser=null,
-  verifyLocalExtension=false,pairedSimulator=false,scheduledDispatch=false,reconcileScheduledWrite=false}){
+  verifyLocalExtension=false,pairedSimulator=false,scheduledDispatch=false,reconcileScheduledWrite=false,restartPairing=false}){
   const {canonical,digest}=clockValues;
   const {controller,seamer}=plan,{principal_id,issuer_id,issuer_epoch}=enrollment;
   const certificates=path.join(root,'pairing-certificates');
@@ -111,6 +111,14 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   }
   const localParty=party('seamer',['auth.introspect']);
   const {service_id,database_instance_id}=seamer;
+  const api='/services/'+service_id+'/api/v1';
+  const draftPermissions=['definition.edit','definition.read','request.create','request.read'];
+  const postDraft=(token,target,body)=>send(api+target,{method:'POST',headers:{Authorization:token,'Content-Type':'application/json'},body:canonical(body)});
+  async function draftContext(token,operations){
+    const response=await postDraft(token,'/request-contexts',{audience:service_id,selection,operations,ttl_ms:60000,max_unique_requests:1});
+    assert.equal(response.status,201,response.body.toString());
+    return JSON.parse(response.body).data;
+  }
   const verifyPublication=process.env.LEAFSEAMER_TEST_COMPOSE_PUBLICATION==='1';
   const simulatorPublication=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_PUBLICATION==='1';
   const simulatorRunApproval=process.env.LEAFSEAMER_TEST_COMPOSE_SIMULATOR_RUN_APPROVAL==='1';
@@ -153,6 +161,18 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       ...(simulatorArmPreflight&&{[armFile]:armApproval})});
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
   let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights,armedSimulator,scheduledSimulator,stoppedSchedule,verifyReadyArmPreflight;
+  let originalDraft,oldWrite,secondDraft,freshWrite;
+  function draftRequest(context,name){
+    return {context:{context_id:context.context_id,idempotency_key:id()},content:{policy_ref:policyRef,selections:[],
+      program:{kind:'rule',trigger_binding_id:'fixture-input',condition:{kind:'literal',value:true},groups:[{mode:'sequence',steps:[{
+        step_id:'fixture-delay',depends_on:[],required:true,failure_policy:'stop',kind:'delay',delay_ms:0,max_lateness_ms:100
+      }]}]}},metadata:{name,description:'',layout:{}}};
+  }
+  async function createRestartDraft(token,context,name){
+    const response=await postDraft(token,'/definitions',draftRequest(context,name));
+    assert.equal(response.status,201,response.body.toString());
+    return JSON.parse(response.body);
+  }
   try{
     const baseline=pairedSimulator?await waitFor(()=>readSimulatorFile(generation.simulator,'ready'),scheduledDispatch?25000:12000,
       'Compose simulator did not publish its verified baseline'):null;
@@ -203,7 +223,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       await admin(generation,'approve-event-consumer',{permissions:['event.internal.subscribe','device.command']},'service_identity_input');
       await admin(generation,'approve-event-policy',{permissions:['event.internal.subscribe','device.command']},'service_identity_input');
     }
-    const definitions=verifyBrowser||verifyPublication||simulatorPublication?['definition.edit','definition.read','request.create','request.read']:[];
+    const definitions=verifyBrowser||verifyPublication||simulatorPublication||restartPairing?draftPermissions:[];
     const audiencePermissions=[...permissions,...definitions,...(verifyPublication||simulatorPublication?['definition.publish']:[]),
       ...(simulatorPublication?['run.manage','run.read']:[]),...(simulatorRunApproval?['run.approve']:[]),
       ...(simulatorArmPreflight?['run.arm']:[]),...(scheduledDispatch?schedulePermissions:[]),...(reconcileScheduledWrite?recoveryPermissions:[])].sort();
@@ -236,10 +256,15 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       return JSON.parse(data).result;
     });
     assert.deepEqual(grant.permissions,permissions);
-    if(verifyBrowser||verifyPublication||simulatorPublication){
+    if(definitions.length){
       const changed=await localPermissions('replace',{request_id:id(),principal_id,principal_kind:'human',expected_revision:grant.revision,
         permissions:audiencePermissions,definition_scope:grant.definition_scope,not_before_ns:grant.not_before_ns,expires_ns:grant.expires_ns});
       assert.equal(changed.status,200,changed.data);
+    }
+    if(restartPairing){
+      const token=await issueToken(actor,service_id,draftPermissions);
+      originalDraft=await createRestartDraft(token,await draftContext(token,['createDefinition','getDraft']),'首代 Compose 草稿');
+      oldWrite=await draftContext(token,['createDefinition','getDraft']);
     }
     if(pairedSimulator){
       let finishArmPreflights;
@@ -424,11 +449,53 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
     }
   }finally{await generation.stop();}
   assert.equal(generation.phase(),'retired');
+  if(restartPairing){
+    const successor=await launch({controller:controllerPairing,seamer:seamerPairing});
+    try{
+      assert.equal(fs.existsSync(successor.inbox),false);
+      for(const role of ['controller','seamer']){
+        const before=generation.admissions[role],after=successor.admissions[role];
+        assert.notEqual(successor.containers[role],generation.containers[role]);
+        assert.notEqual(after.receipt.member_boot_id,before.receipt.member_boot_id);
+        assert.notEqual(after.descriptor.clock_domain_id,before.descriptor.clock_domain_id);
+      }
+      const actor=await loginThroughProxy();
+      const token=await issueToken(actor,service_id,draftPermissions);
+      const read=await waitFor(async()=>{
+        const response=await send(api+'/definitions/'+originalDraft.definition_id+'/draft',{headers:{Authorization:token}}).catch(()=>null);
+        return response&&![502,503].includes(response.status)?response:null;
+      });
+      assert.equal(read.status,200,read.body.toString());
+      assert.deepEqual(JSON.parse(read.body),originalDraft);
+      assert.ok(Date.now()<Date.parse(oldWrite.expires_at),'旧写入上下文仍处于原签发期限内');
+      const stale=await postDraft(token,'/definitions',draftRequest(oldWrite,'不应写入的草稿'));
+      assert.equal(stale.status,403,stale.body.toString());
+      assert.equal(JSON.parse(stale.body).code,'PERMISSION_DENIED');
+      freshWrite=await draftContext(token,['createDefinition','getDraft']);
+      secondDraft=await createRestartDraft(token,freshWrite,'次代 Compose 草稿');
+      assert.notEqual(secondDraft.definition_id,originalDraft.definition_id);
+      assert.deepEqual(secondDraft.scope,originalDraft.scope);
+      assert.equal(successor.events('seamer').some(event=>event.event==='first_pairing_staged'),false);
+    }finally{await successor.stop();}
+    assert.equal(successor.phase(),'retired');
+  }
   const store=new DatabaseSync(path.join(seamer.data_dir,'seamer.sqlite'),{readOnly:true});
   const issuer=new DatabaseSync(path.join(controller.data_dir,'controller.sqlite'),{readOnly:true});
   try{
     assert.equal(store.prepare('SELECT authorization_id FROM first_pairing_completion').get().authorization_id,authorizationId);
     assert.equal(issuer.prepare('SELECT binding_id FROM peer_pairing_head').get().binding_id,activated.binding_id);
+    if(restartPairing){
+      assert.equal(store.prepare('SELECT count(*) AS n FROM first_pairing_completion').get().n,1);
+      const contextBoot=store.prepare('SELECT service_boot_id FROM local_request_context WHERE context_id=?');
+      assert.notEqual(contextBoot.get(oldWrite.context_id).service_boot_id,contextBoot.get(freshWrite.context_id).service_boot_id);
+      const contextCharges=store.prepare('SELECT count(*) AS n FROM local_context_request WHERE context_id=?');
+      assert.equal(contextCharges.get(oldWrite.context_id).n,0);
+      assert.equal(contextCharges.get(freshWrite.context_id).n,1);
+      const saved=store.prepare("SELECT definition_id FROM definition_metadata WHERE json_extract(metadata_jcs,'$.name') IN (?,?)")
+        .all(originalDraft.metadata.name,secondDraft.metadata.name).map(row=>row.definition_id);
+      assert.deepEqual(saved.sort(),[originalDraft.definition_id,secondDraft.definition_id].sort());
+      assert.equal(store.prepare('SELECT count(*) AS n FROM definition_identity').get().n,2+Number(!!browserDraft)+(verifyPublication?3:0));
+    }
     if(simulatorSubscription)verifyDurableSimulatorSubscription({receiver:store,publisher:issuer,...simulatorSubscription,scheduledDispatch});
     if(scheduledDispatch){
       if(generation.withdrawSeamerReference)verifyDurableSimulatorScheduleStop(store,issuer,stoppedSchedule,digest);
@@ -468,7 +535,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       assert.deepEqual(JSON.parse(stored.body_jcs),eventConsumer);
       assert.equal(issuer.prepare('SELECT count(*) AS n FROM service_approval WHERE principal_id=?').get(eventConsumer.id).n,0);
     }
-    if(browserDraft&&!verifyPublication)assert.deepEqual(store.prepare('SELECT definition_id FROM definition_identity').all().map(row=>row.definition_id),[browserDraft]);
+    if(browserDraft&&!verifyPublication&&!restartPairing)assert.deepEqual(store.prepare('SELECT definition_id FROM definition_identity').all().map(row=>row.definition_id),[browserDraft]);
     if(verifyPublication){
       assert.equal(store.prepare('SELECT count(*) AS n FROM definition_version_reservation').get().n,5);
       assert.equal(store.prepare('SELECT count(*) AS n FROM definition_publication').get().n,0);

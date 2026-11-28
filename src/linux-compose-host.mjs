@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
 import {canonical,digest,requireValue as need} from './import-input.mjs';
 import {openInstallationStore,requireInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
@@ -83,7 +84,28 @@ function daemonIdentity(socketPath,pidFile){
   return {host:readLinuxCgroupHost(),leader,listener:sockets[0],socket:{device:String(socket.dev),inode:String(socket.ino)}};
 }
 
-export function openLinuxComposeHost({installationDirectory,installationStore=null,planFile,generationDirectory,socketPath='/run/docker.sock',pidFile='/run/docker.pid',source=null}={}){
+async function openPinnedClock(directory,artifact){
+  protectedParents(directory);
+  protectedPath(directory,stat=>stat.isDirectory());
+  const manifestFile=path.join(directory,'build-manifest.json');
+  protectedPath(manifestFile,stat=>stat.isFile());
+  const bytes=readDeploymentFile(manifestFile,1048576);
+  const controller_build_sha256=fileHash(bytes).slice(7),node_sha256=fileHash(fs.readFileSync('/proc/self/exe')).slice(7);
+  need(digest({controller_build_sha256,node_sha256})===artifact,'compose_host_clock_artifact');
+  const manifest=JSON.parse(bytes);
+  need(manifest.format==='leafseamer-controller-build/1','compose_host_clock_artifact');
+  for(const name of ['native-clock.mjs','linux-kernel-sleep.mjs','native/manifest.json','native/leafseamer_clock.node']){
+    const file=path.join(directory,name),expected=manifest.artifacts?.[name];
+    need(typeof expected==='string'&&imageId.test('sha256:'+expected),'compose_host_clock_artifact');
+    protectedParents(file);
+    const {fd}=pinExecutable(file,'sha256:'+expected,4*1024*1024);
+    fs.closeSync(fd);
+  }
+  const {openNativeClock}=await import(pathToFileURL(path.join(directory,'native-clock.mjs')));
+  return openNativeClock();
+}
+
+export function openLinuxComposeHost({installationDirectory,installationStore=null,planFile,generationDirectory,socketPath='/run/docker.sock',pidFile='/run/docker.pid',source=null,clockDirectory=null}={}){
   need(process.platform==='linux','compose_host_platform');
   absolute(installationDirectory);absolute(planFile);absolute(generationDirectory);absolute(socketPath);absolute(pidFile);
   need(!socketPath.includes(' '),'compose_host_socket');
@@ -98,6 +120,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
   const {driver,generation_id,namespace}=plan.cgroup??{};
   const privateNamespace=namespace==='private';
   const supervised=Object.hasOwn(plan,'bootstrap');
+  if(clockDirectory!==null){absolute(clockDirectory);need(supervised&&source===null,'compose_host_bootstrap');}
   const reference=plan.reference_providers??null;
   const workerControl=plan.worker_control===true;
   if(supervised)need(process.geteuid()===0,'compose_host_bootstrap');
@@ -123,8 +146,9 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
   const installation=installationStore===null?openInstallationStore(installationDirectory):requireInstallationStore(installationStore,installationDirectory);
   const closeInstallation=()=>{if(installationStore===null)installation.close();};
   let journal;
-  let starting=false;
+  let starting=false,startedHere=false;
   let control=null,installationReader=null,closing=null,draining=null;
+  const loss=Promise.withResolvers();
   const channels=new Map(),providers=new Map();
   function closeChannels(){
     if(draining)return draining;
@@ -135,7 +159,10 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
     control?.close();control=null;
     return draining=Promise.all([...active.map(channel=>channel.ended),installationReader,...finished]);
   }
-  const closeAfterLoss=()=>{void closeChannels().catch(()=>{});};
+  const closeAfterLoss=()=>{
+    if(!draining)loss.resolve();
+    void closeChannels().catch(()=>{});
+  };
   try{
     const worker=plan.worker_runtime?composeLinuxWorkerRuntime(plan.worker_runtime,plan.controller,plan.bootstrap.controller,installation):null;
     if(worker){
@@ -296,7 +323,11 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       need(!prior||prior.phase==='retired','linux_deployment_previous_open');
       need(!journal.lookup(generation_id),'linux_deployment_generation_used');
       prepared=prepareLaunch();
-      try{return journal.start(spec);}finally{prepared=null;}
+      try{
+        const result=journal.start(spec);
+        startedHere=true;
+        return result;
+      }finally{prepared=null;}
     }
     async function admit(role,record){
       const bound=binding(record),expected=bound.core_containment[role],channel=channels.get(role),policy=plan.bootstrap[role];
@@ -389,18 +420,23 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       await forward.ready;
     }
     return Object.freeze({
+      generationId:generation_id,
+      channelLost:loss.promise,
+      startedHere:()=>startedHere,
       current:()=>journal.current(),
       admission:role=>journal.admission(generation_id,role),
       referenceAdmission:role=>journal.referenceAdmission(generation_id,role),
       start(){idle();need(!supervised,'compose_host_bootstrap');return start();},
       async startSupervised(){
-        idle();need(supervised&&journal.schemaRevision>=2&&(!reference||journal.schemaRevision>=3)&&source&&typeof source.capture==='function'&&
-          typeof source.tick==='function','compose_host_bootstrap');
+        idle();need(supervised&&journal.schemaRevision>=2&&(!reference||journal.schemaRevision>=3)&&
+          (clockDirectory!==null||source&&typeof source.capture==='function'&&typeof source.tick==='function'),'compose_host_bootstrap');
         verifyFiles();verifyAdmissionInputs();
         need(channels.size===0&&!journal.lookup(generation_id),'linux_deployment_generation_used');
         starting=true;
         draining=null;
         try{
+          if(clockDirectory!==null&&source===null)source=await openPinnedClock(clockDirectory,plan.bootstrap.controller.artifact_manifest_ref.digest);
+          need(source&&typeof source.capture==='function'&&typeof source.tick==='function','compose_host_bootstrap');
           for(const role of coreRoles){
             const {uid,gid}=plan[role];
             const channel=openLinuxComposeChannel({directory:path.join(generationDirectory,'bootstrap-'+role),uid,gid,
@@ -430,7 +466,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
         const present=containerIds();
         need(within(present,Object.values(bound.containers))&&within(networkIds(),bound.networks),'compose_host_inventory_changed');
         if(privateNamespace)assertSurvivingCores(bound,present);
-        closeAfterLoss();
+        void closeChannels().catch(()=>{});
         run([...composeArgs,'down','--timeout','8'],45000);
         return journal.observeRetirement(generation_id);
       },

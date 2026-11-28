@@ -162,6 +162,7 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
   const generation=await launch({controller:controllerPairing,seamer:{...seamerPairing,await_first_pairing:true}});
   let activated,authorizationId,browserDraft,eventConsumer,simulatorSubscription,publishedSimulator,approvedSimulator,armPreflights,armedSimulator,scheduledSimulator,stoppedSchedule,verifyReadyArmPreflight;
   let originalDraft,oldWrite,secondDraft,freshWrite;
+  let pairingFailure;
   function draftRequest(context,name){
     return {context:{context_id:context.context_id,idempotency_key:id()},content:{policy_ref:policyRef,selections:[],
       program:{kind:'rule',trigger_binding_id:'fixture-input',condition:{kind:'literal',value:true},groups:[{mode:'sequence',steps:[{
@@ -447,7 +448,14 @@ export async function completeLinuxComposeFirstPairing({root,plan,enrollment,log
       }finally{fs.writeFileSync(mountedApproval,approval);}
       await expectBlockedPublication(matching,403);
     }
-  }finally{await generation.stop();}
+  }catch(error){pairingFailure=error;throw error;}
+  finally{
+    try{await generation.stop();}
+    catch(error){
+      if(pairingFailure)throw new AggregateError([pairingFailure,error],'Compose pairing and retirement failed');
+      throw error;
+    }
+  }
   assert.equal(generation.phase(),'retired');
   if(restartPairing){
     const successor=await launch({controller:controllerPairing,seamer:seamerPairing});

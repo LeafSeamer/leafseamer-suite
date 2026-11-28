@@ -130,6 +130,16 @@ docker compose -p leafseamer -f /srv/leafseamer/generation/compose.json stop
 
 可信宿主装配可从 `@leafseamer/suite/linux-compose-host` 调用 `openLinuxComposeHost({installationDirectory, planFile, generationDirectory})`，再调用 `start()`、`current()`、`retire()` 和 `close()`。宿主需预建并保留计划中的两个 cgroup 父组，安装目录需已显式初始化启停账本。默认使用 `/usr/bin/docker`、`/run/docker.sock` 和 `/run/docker.pid`。明确配置本机 Unix socket 和 PID 文件时，使用 `socketPath` 与 `pidFile`。装配用户须能核对 daemon 的进程和 socket 归属。
 
+已安装的 Suite 提供 `leafseamer-compose` 命令。以 Linux 宿主 `root` 运行，使用仅 `root` 可访问且已初始化的安装目录、批准的部署计划和已生成的运行代目录。`--controller-dist` 指向批准的 Controller 制品目录。命令用部署计划中的制品引用校验本机 Node、构建清单和原生时钟文件，然后启动受监督组合。
+
+```sh
+leafseamer-compose run --installation /var/lib/leafseamer --plan /etc/leafseamer/plan.json \
+  --generation /var/lib/leafseamer-compose/generation --controller-dist /opt/leafseamer/controller/dist
+leafseamer-compose status --installation /var/lib/leafseamer
+```
+
+`run` 在前台持有监督通道和安装账本。`SIGINT` 或 `SIGTERM` 关闭本代入口并请求退役，终端输出最终账本阶段。通道意外结束时，命令尝试按原证据退役并以非零状态退出。前台进程结束后，可用同一计划和运行代目录执行 `leafseamer-compose retire` 核对或续接原代退役。只有得到 `retired` 后才能启动新的运行代。`status` 在运行中经安装目录下仅管理员可访问的套接字读取账本，在停止后直接读取账本。`running` 表示已登记的运行代，应用可用性以各自就绪状态为准。
+
 启动时重新生成并核对固定 Compose 文件，检查本机 daemon、预载镜像、空父组及项目清单，再用独立项目名启动保护态服务。停机先在账本关闭旧入口，只处理原记录内的容器和网络。项目端点已退出且两个原父组均为空后，才写入退役结果。临时检查失败可重试原代，未知容器或网络进入原项目时拒绝停机命令。若重开后无法重获原活进程观察，继续保留未证实状态。[Docker Compose 启动](https://docs.docker.com/reference/cli/docker/compose/up/) · [Docker Compose 停机](https://docs.docker.com/reference/cli/docker/compose/down/)
 
 在与测试进程同宿主的隔离 daemon 上，向 [Compose 用例](test/linux-compose.integration.mjs) 同时提供 `LEAFSEAMER_TEST_DOCKER_SOCKET` 和 `LEAFSEAMER_TEST_DOCKER_PID_FILE`，可运行经过启停账本的双代联调。普通计划使用保护态入口，带 `bootstrap` 的计划使用下述 DF02 受监督入口。

@@ -72,10 +72,11 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
   const output=path.join(root,'generation'),planPath=path.join(root,'plan.json');
   let composePath=path.join(output,'compose.json'),project='leafseamer-test-'+crypto.randomBytes(6).toString('hex');
   const compose=(...args)=>docker('compose','--project-name',project,'--file',composePath,...args);
-  let created=false,managedHost,extraContainer;
+  let created=false,managedHost,composeAdmin,extraContainer;
   const groups=[];
   t.after(async()=>{
     try{
+      if(composeAdmin){composeAdmin.child.kill('SIGTERM');await composeAdmin.exited;}
       await managedHost?.close();
       if(extraContainer)docker('container','rm','--force',extraContainer);
       if(created)compose('down','--timeout','8');
@@ -1071,6 +1072,66 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         protocol:deviceModuleEventProtocol,store:installation,deviceCount});
       simulator={installation,installDir,intakeRef:sealed.intakeRef,launchId:crypto.randomUUID()};
     }
+    const adminPath=file('../dist/linux-compose-admin.mjs');
+    const adminStatus=()=>JSON.parse(run(process.execPath,[adminPath,'status','--installation',hostOptions.installationDirectory]));
+    function adminArguments(action,generationDirectory){
+      return [adminPath,action,'--installation',hostOptions.installationDirectory,'--plan',planPath,'--generation',generationDirectory,
+        '--docker-socket',socketPath,'--docker-pid-file',pidFile];
+    }
+    async function startAdmin(id,generationDirectory,stopOnMemberLoss){
+      const clockDir=process.env.LEAFSEAMER_TEST_COMPOSE_CLOCK_DIST;
+      const args=adminArguments('run',generationDirectory),before=adminStatus();
+      const bad=path.join(generationDirectory,'wrong-clock');
+      fs.mkdirSync(bad);
+      const manifest=fs.readFileSync(path.join(clockDir,'build-manifest.json'));
+      fs.writeFileSync(path.join(bad,'build-manifest.json'),Buffer.concat([manifest,Buffer.from('\n')]));
+      const rejected=spawnSync(process.execPath,[...args,'--controller-dist',bad],{encoding:'utf8',timeout:5000});
+      assert.equal(rejected.status,1,rejected.stderr);
+      assert.equal(JSON.parse(rejected.stderr).error,'compose_host_clock_artifact');
+      assert.deepEqual(adminStatus(),before);
+      assert.equal(compose('ps','--all','--quiet').trim(),'');
+
+      const effective=[...args,'--controller-dist',clockDir];
+      const child=spawn(process.execPath,effective,{stdio:['ignore','pipe','pipe']});
+      const exited=once(child,'close'),ready=Promise.withResolvers();
+      let stdout='',stderr='';
+      child.stdout.setEncoding('utf8').on('data',chunk=>{
+        stdout+=chunk;
+        if(stdout.includes('\n')){
+          try{ready.resolve(JSON.parse(stdout.slice(0,stdout.indexOf('\n'))));}catch(error){ready.reject(error);}
+        }
+      });
+      child.stderr.setEncoding('utf8').on('data',chunk=>stderr+=chunk);
+      composeAdmin={child,exited};
+      const started=await Promise.race([ready.promise,exited.then(()=>assert.fail(stderr||'Compose supervisor exited before startup'))]);
+      const {members,...view}=started;
+      assert.deepEqual(view,{generation_id:id,phase:'running',revision:2,event:'started'});
+      assert.deepEqual(Object.keys(members),['controller','seamer']);
+      const duplicate=spawnSync(process.execPath,effective,{encoding:'utf8',timeout:5000});
+      assert.equal(duplicate.status,1,duplicate.stderr);
+      assert.equal(JSON.parse(duplicate.stderr).error,'installation_in_use');
+      assert.deepEqual(adminStatus(),{generation_id:id,phase:'running',revision:2});
+      const entries=Object.entries(members);
+      const containers=Object.fromEntries(entries.map(([role,{container_id}])=>[role,container_id]));
+      assert.ok(Object.values(containers).every(value=>/^[a-f0-9]{64}$/.test(value)));
+      const admissions=Object.fromEntries(entries.map(([role,{member_boot_id,clock_domain_id,descriptor_digest}])=>[role,
+        {receipt:{member_boot_id},descriptor:{clock_domain_id,descriptor_digest}}]));
+      return {containers,admissions,phase:view.phase,async stop(){
+        if(stopOnMemberLoss)await execFileAsync('docker',['container','kill','--signal','SIGKILL',containers.controller],{timeout:10000});
+        else assert.ok(child.kill('SIGTERM'));
+        const [status,signal]=await exited;
+        composeAdmin=null;
+        assert.equal(signal,null);
+        assert.equal(status,stopOnMemberLoss?1:0,stderr);
+        const stopped=JSON.parse(stdout.trim().split('\n').at(-1));
+        assert.deepEqual(stopped,{generation_id:id,phase:'retired',revision:4,event:'stopped',
+          cause:stopOnMemberLoss?'channel_lost':'terminate'});
+        const retired={generation_id:id,phase:'retired',revision:4};
+        assert.deepEqual(adminStatus(),retired);
+        assert.deepEqual(JSON.parse(run(process.execPath,adminArguments('retire',generationDirectory))),retired);
+        return stopped.phase;
+      }};
+    }
     async function launch(pairing){
       const id=crypto.randomUUID(),generationDirectory=path.join(root,id);
       fs.writeFileSync(planPath,JSON.stringify({...pairPlan,pairing,cgroup:{...plan.cgroup,generation_id:id},
@@ -1103,10 +1164,14 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           proceed:hostFile(paired.proceed),finish:hostFile(paired.finish),groupFile};
       }
       await managedHost?.close();
-      managedHost=openLinuxComposeHost({...hostOptions,generationDirectory,
-        ...(simulator&&{installationDirectory:simulator.installDir,installationStore:simulator.installation})});
+      managedHost=null;
       project=projectFor(id,simulator?.installation.identity.host_installation_id);composePath=path.join(generationDirectory,'compose.json');created=true;
-      const {record,admissions}=await managedHost.startSupervised();
+      let admin;
+      if(restartPairing)admin=await startAdmin(id,generationDirectory,!pairing.seamer.await_first_pairing);
+      else managedHost=openLinuxComposeHost({...hostOptions,generationDirectory,
+        ...(simulator&&{installationDirectory:simulator.installDir,installationStore:simulator.installation})});
+      const outcome=admin??await managedHost.startSupervised();
+      const {admissions}=outcome;
       if(simulatorFiles)fs.writeFileSync(simulatorFiles.start,'');
       for(const role of ['controller','seamer']){
         const limit=performance.now()+5000;
@@ -1117,7 +1182,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         }
         await clocks[role].publish();
       }
-      let renewal=null,renewalFailure=null,phase=record.phase;
+      let renewal=null,renewalFailure=null,phase=admin?.phase??outcome.record.phase;
       async function publishClocks(){
         for(const role of ['controller','seamer'])await clocks[role].publish();
       }
@@ -1125,7 +1190,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
         if(renewal)return;
         renewal=publishClocks().catch(error=>{renewalFailure=error;clearInterval(renew);}).finally(()=>{renewal=null;});
       },1200);
-      const containers=record.detail.runtime_binding.containers;
+      const containers=admin?.containers??outcome.record.detail.runtime_binding.containers;
       return {containers,admissions,inbox:path.join(generationDirectory,'first-pairing'),phase:()=>phase,
         simulator:simulatorFiles,scheduledReferenceWithdrawal,
         events:role=>docker('logs',containers[role]).split('\n').filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)),
@@ -1140,10 +1205,10 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
           clearInterval(renew);
           await renewal;
           try{
-            phase=managedHost.retire().phase;
+            phase=admin?await admin.stop():managedHost.retire().phase;
             assert.equal(phase,'retired');
             created=false;
-          }finally{await managedHost.close();managedHost=null;}
+          }finally{await managedHost?.close();managedHost=null;}
           assert.ifError(renewalFailure);
         }};
     }
@@ -1167,7 +1232,7 @@ test('Compose 从固定镜像启动双服务和 Nginx 并隔离端口、TLS 及�
     }
     await completeLinuxComposeFirstPairing({root,plan:pairPlan,enrollment,login,clockValues,launch,send,selection:manifest.selection,verifyBrowser,
       verifyLocalExtension:!!pairingWorkerRuntime&&!pairedSimulator,pairedSimulator,scheduledDispatch,reconcileScheduledWrite,restartPairing});
-    if(restartPairing)t.diagnostic('已配对双服务在新受监督运行代查询原草稿，旧写上下文拒绝，新上下文写入并持久保存');
+    if(restartPairing)t.diagnostic('Suite 命令正常启停并查询两代状态，拒绝错制品和重复启动，原配对与草稿读回一致');
     if(reconcileScheduledWrite)t.diagnostic('Linux 模拟器定时写入后的恢复结算已落库，原有写入只执行一次');
     else if(scheduledDispatch&&!scheduleClockLoss&&!scheduledReferenceWithdrawal)t.diagnostic('Linux 模拟器定时写入、实际效果和运行活动槽释放已核对');
     if(scheduledReferenceWithdrawal)t.diagnostic('Linux 定时派发写前撤回，实际停发及两端持久结果已核对');

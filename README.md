@@ -487,7 +487,13 @@ Suite 在 `check_recovery_site_review` 与 `adopt_recovery_site_review` 核对�
 
 本机安装程序通过 `store.enableProtectedRecoveryActivation()` 显式启用安装账本 Schema 10。若尚未登记活动组合，先用 `registerActiveDeployment(existing, authorize)` 记录现场核验的原组合。该调用绑定原部署代计数和运行代 ID、部署计划及发行物摘要，以及逐服务的实例范围、数据引用、配置摘要和秘密绑定引用。本机管理员针对请求中的 `deployment_digest` 确认 `active_current`。
 
-`activateProtectedRecovery({plan_ref, activation_id, expected_selection_digest, review_digest}, authorize)` 使用 `getActiveDeployment()` 返回的原选择摘要和最新现场审核摘要。可信安装程序在 `check_recovery_activation` 与 `adopt_recovery_activation` 核对本机管理员，返回 `retirement_current`、`target_inactive` 和匹配的 `release_manifest_digest`、`deployment_digest`、`review_digest`。Suite 核对原活动组合与完整退役名册，重新验证各新库的文件身份、摘要与权限，在同一事务更新完整部署选择并写入 `activated_protected` 回执。提交结果不明时调用 `getRecoveryActivation(activation_id)` 查原操作。启动器接入和现场恢复验收是后续步骤。
+`activateProtectedRecovery({plan_ref, activation_id, expected_selection_digest, review_digest}, authorize)` 使用 `getActiveDeployment()` 返回的原选择摘要和最新现场审核摘要。可信安装程序在 `check_recovery_activation` 与 `adopt_recovery_activation` 核对本机管理员，返回 `retirement_current`、`target_inactive` 和匹配的 `release_manifest_digest`、`deployment_digest`、`review_digest`。Suite 核对原活动组合与完整退役名册，重新验证各新库的文件身份、摘要与权限，在同一事务更新完整部署选择并写入 `activated_protected` 回执。提交结果不明时调用 `getRecoveryActivation(activation_id)` 查原操作。Linux 原生启动入口见下节。
+
+### 启动 Linux 原生恢复组合
+
+具备 Linux 原生退役凭证的双服务恢复可由可信宿主调用 `openLinuxNativeHost(...).startRecovery({planFile, selectionDigest, authorize})`。部署计划在安装目录的 `linux-native` 下，其实际文件摘要须匹配部署选择。计划格式为 `leafseamer.linux-native-recovery/1`，指定 `deployment_plan_ref`、`generation_id`、`release_manifest_digest`、受保护的绝对 `runtime_root` 和按服务区分的 `configuration_refs`。现场审核中的配置摘要固定各 `<configuration_ref>.json` 核心计划。每个核心计划指定独立账户、空的原生 cgroup、启动标识以及 `<runtime_root>/<generation_id>/db-<index>` 数据目录。闭锁启动可用 `null` 显式省去时钟或配对配置。
+
+宿主同时复验两端的制品、配置、库字节和数据代身份，再把两个运行库一起发布到新代目录。授权方在交接与监督启动各边界确认 `selection_digest`、`release_manifest_digest` 及 `secret_bindings_digest`。两端返回 `executed_closed` 后仍需现场审核与恢复。发现已有交接目录或启动记录时，使用计划中的两个启动标识调用 `lookup` 查原。已激活恢复组合的安装使用受控恢复入口，旧的 Linux 原生及 Compose 常规启动入口会拒绝启动。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

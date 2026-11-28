@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import {mkdirSync,rmdirSync,writeFileSync} from 'node:fs';
 import os from 'node:os';
+import net from 'node:net';
 import path from 'node:path';
 import {execFile,execFileSync,spawn} from 'node:child_process';
 import {once} from 'node:events';
@@ -374,6 +375,89 @@ async function nativeDeploymentFixture(store,scopes){
   }catch(error){await close();throw error;}
 }
 
+async function prepareNativeRecoveryFixture(f,target,review,distributions,plan){
+  const planDirectory=path.join(f.root,'linux-native'),planFile=path.join(planDirectory,'recovery.json');
+  await fs.chmod(path.dirname(f.root),0o711);
+  await fs.mkdir(planDirectory,{mode:0o700});
+  await fs.mkdir(plan.runtime_root,{mode:0o711});
+  await fs.writeFile(planFile,canonical(plan),{mode:0o600});
+  const image={file:process.execPath,sha256:'sha256:'+crypto.createHash('sha256').update(await fs.readFile(process.execPath)).digest('hex')};
+  const listeners=review.plan.services.map(()=>net.createServer().listen(0,'127.0.0.1'));
+  await Promise.all(listeners.map(listener=>once(listener,'listening')));
+  const ports=listeners.map(listener=>listener.address().port);
+  await Promise.all(listeners.map(listener=>new Promise(resolve=>listener.close(resolve))));
+  const members=await Promise.all(review.plan.services.map(async ({next_scope},index)=>{
+    const {authority:role,service_id,database_instance_id}=next_scope,distribution=distributions[role];
+    const core={format:'leafseamer.linux-native-core/1',host_installation_id:f.identity.host_installation_id,
+      role,driver:'cgroupfs',generation_id:target.generation_id,launch_id:crypto.randomUUID(),uid:65532+index,gid:65532+index,
+      port:ports[index],image,distribution,clock_profile:null,pairing_profile:null,
+      data_directory:path.join(plan.runtime_root,target.generation_id,'db-'+index),
+      bootstrap:{format:'leafseamer-core-bootstrap-policy/1',service_id,database_instance_id,bootstrap_timeout_ms:12000,
+        clock_backend_revision:'1',policy_revision:'1',platform_profile_ref:{profile_id:'fixture.recovery',revision:'1'},
+        artifact_manifest_ref:{manifest_id:'fixture.release',revision:'1',digest:digest({
+          [role+'_build_sha256']:distribution.manifest_sha256.slice(7),node_sha256:image.sha256.slice(7)})}}};
+    const file=path.join(planDirectory,plan.configuration_refs[role]+'.json');
+    await fs.writeFile(file,canonical(core),{mode:0o600});
+    return {file,digest:digest(core),core};
+  }));
+  return {planFile,members};
+}
+
+async function checkNativeRecoveryStartup(f,{planFile,members},selected){
+  const {openLinuxNativeHost}=await import('../dist/linux-native-host.mjs');
+  const {openNativeClock}=await import(pathToFileURL(path.join(distributionDirectories.controller,'native-clock.mjs')));
+  f.close();
+  const host=openLinuxNativeHost({installationDirectory:f.root,source:openNativeClock()});
+  const directories=[],start={planFile,selectionDigest:selected.selection_digest,
+    authorize({selection,secret_bindings_digest}){return {allowed:true,selection_digest:selection.selection_digest,
+      release_manifest_digest:selection.deployment.release_manifest_digest,secret_bindings_digest};}};
+  try{
+    for(const {core} of members){
+      const {groupPath}=linuxContainerCgroup({driver:core.driver,role:core.role,generationId:core.generation_id});
+      for(const directory of ['/sys/fs/cgroup'+groupPath,'/sys/fs/cgroup'+groupPath+'/core']){
+        await fs.mkdir(directory);directories.push(directory);
+      }
+    }
+    await assert.rejects(host.start({planFile:members[0].file,planDigest:members[0].digest}),{code:'linux_recovery_start_required'});
+    await assert.rejects(host.startRecovery({...start,selectionDigest:digest('wrong selection')}),{code:'linux_recovery_selection'});
+    await assert.rejects(host.startRecovery({...start,authorize:()=>({allowed:false})}),{code:'linux_recovery_authority'});
+    const changed=members[1].file,bytes=await fs.readFile(changed);
+    await fs.appendFile(changed,'\n');
+    try{await assert.rejects(host.startRecovery(start),{code:'linux_native_artifact_changed'});}
+    finally{await fs.writeFile(changed,bytes);}
+    for(const {core} of members)assert.equal(host.lookup(core.launch_id).launch,null);
+    assert.equal(await fs.stat(path.dirname(members[0].core.data_directory)).catch(error=>error.code),'ENOENT');
+    const result=await host.startRecovery(start);
+    assert.equal(result.phase,'executed_closed');
+    assert.deepEqual(result.members.map(member=>member.intent.database_instance_id),members.map(({core})=>core.bootstrap.database_instance_id));
+    for(const [index,{core}] of members.entries()){
+      assert.equal(result.members[index].detail.admission.receipt.gate_state,'closed');
+      assert.equal((await fs.stat(core.data_directory)).uid,core.uid);
+      let health;
+      for(let attempt=0;attempt<50;attempt++){
+        health=await fetch('http://127.0.0.1:'+core.port+'/health/ready',{signal:AbortSignal.timeout(300)}).catch(()=>null);
+        if(health)break;
+        await delay(20);
+      }
+      assert.equal(health?.status,503);
+      const content=await health.json();
+      assert.equal(content.ready,false);
+    }
+    await assert.rejects(host.startRecovery(start),{code:'linux_recovery_start_indeterminate'});
+  }finally{
+    try{
+      for(const {core} of members){
+        if(!host.lookup(core.launch_id).launch?.detail.leader)continue;
+        for(let attempt=0;attempt<100;attempt++){
+          if(host.retire(core.launch_id).phase==='retired')break;
+          await delay(20);
+        }
+      }
+    }finally{host.close();}
+    for(const directory of directories.reverse())await fs.rmdir(directory);
+  }
+}
+
 async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}){
   const supervisor=distributions.controller;
   const {initializeProcessHost,installedCoreDigest,startProcessHost,readProcessRecoveryRetirement}=await import(
@@ -630,10 +714,16 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   assert.throws(()=>durable.getRecoveryPlan(restoreId),{code:'recovery_plan_migration_required'});
 
   const plans=f.store.enableRecoveryPlans();
+  const nativeStart=process.platform==='linux'&&process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1'&&
+    process.env.LEAFSEAMER_TEST_RECOVERY_NATIVE_BOOT==='1';
   const target={deployment_plan_ref:'deployment.fixture.next',deployment_plan_digest:digest('approved deployment'),
     release_manifest_digest:digest('approved release'),generation_id:crypto.randomUUID(),
     services:scopes.map(scope=>({source_database_instance_id:scope.database_instance_id,data_generation_id:crypto.randomUUID(),
-      schema_revision:scope.schema_revision,configuration_ref:'configuration.fixture',secret_policy_ref:'secrets.fixture.reconfigure'}))};
+      schema_revision:scope.schema_revision,configuration_ref:'configuration.fixture.'+scope.authority,secret_policy_ref:'secrets.fixture.reconfigure'}))};
+  const linuxPlan=nativeStart?{format:'leafseamer.linux-native-recovery/1',deployment_plan_ref:target.deployment_plan_ref,
+    generation_id:target.generation_id,release_manifest_digest:target.release_manifest_digest,runtime_root:path.join(path.dirname(f.root),'runtime'),
+    configuration_refs:Object.fromEntries(scopes.map((scope,index)=>[scope.authority,target.services[index].configuration_ref]))}:null;
+  if(linuxPlan)target.deployment_plan_digest=digest(linuxPlan);
   await assert.rejects(plans.prepareRecoveryPlan(restoreId,{...target,services:target.services.slice(0,1)},authorize),
     {code:'recovery_target_plan'});
   const review=await plans.prepareRecoveryPlan(restoreId,target,authorize);
@@ -798,11 +888,13 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     assert.deepEqual(await reopened.prepareProtectedRecovery(prepareInput,preparationAuthority),prepared);
     assert.deepEqual(await fs.readFile(filePath),original);
 
+    const nativeFixture=linuxPlan?await prepareNativeRecoveryFixture(f,target,review,distributions,linuxPlan):null;
     const siteEvidence={coverage_digest:review.plan.coverage_digest,unresolved_digest:review.plan.unresolved_digest,
       command_review_digest:review.plan.command_review.review_digest,site_observation_ref:'site.fixture',
       site_observation_digest:digest('observed site'),unresolved_disposition:'hold_without_replay',
       services:review.plan.target.services.map((service,index)=>({scope:review.plan.services[index].next_scope,
-        data_generation_id:service.data_generation_id,configuration_ref:service.configuration_ref,configuration_digest:digest(['configuration',index]),
+        data_generation_id:service.data_generation_id,configuration_ref:service.configuration_ref,
+        configuration_digest:nativeFixture?.members[index].digest??digest(['configuration',index]),
         secret_policy_ref:service.secret_policy_ref,secret_binding_ref:'secrets.fixture.'+index,secret_binding_digest:digest(['secret binding',index]),
         secret_state:index===0?'reconfigured':'not_required'}))};
     const siteInput={plan_ref:review.plan_ref,review_id:crypto.randomUUID(),previous_review_digest:null,
@@ -910,6 +1002,11 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
       previous_review_digest:refreshed.review_digest},evidenceAuthority(updatedEvidence)),{code:'recovery_site_preparation'});
     assert.deepEqual(await durable.recordRecoverySiteReview(siteInput,siteAuthority),approvedSite);
     assert.deepEqual(await fs.readFile(filePath),original);
+    if(nativeFixture){
+      await t.test('starts both selected recovery cores in their new protected generation',()=>checkNativeRecoveryStartup(f,nativeFixture,activated));
+      assert.deepEqual(await fs.readFile(output),verifiedBytes);
+      assert.deepEqual(f.reopen().backupMaintenance().getActiveDeployment(),activated);
+    }
   }
 
   const interrupted=crypto.randomUUID();

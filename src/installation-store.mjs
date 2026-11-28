@@ -417,6 +417,10 @@ export function openInstallationStore(dataDirectory) {
       acquireMaterialization:value=>materialization.acquire(value),
       acquireLinuxWorkerMaterialization:(value,options)=>materialization.acquireLinux(value,options),
       identity: Object.freeze(identity),
+      currentRecoverySelection(){
+        available();
+        return revision>=10?maintenance.api.getActiveDeployment():null;
+      },
       initializeLinuxDeploymentJournal:()=>deploymentJournal(true,null),
       upgradeLinuxDeploymentJournal:()=>deploymentJournal(false,null,true),
       openLinuxDeploymentJournal:runtime=>deploymentJournal(false,runtime),

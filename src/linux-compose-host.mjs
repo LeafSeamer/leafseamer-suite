@@ -317,7 +317,9 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
     }
     journal=installation.openLinuxDeploymentJournal({launch,endpointClosure});
     const idle=()=>need(!starting,'compose_host_bootstrap_busy');
+    const requireOrdinaryStart=()=>need(installation.currentRecoverySelection()?.phase!=='activated_protected','linux_recovery_start_required');
     function start(){
+      requireOrdinaryStart();
       verifyFiles();assertDaemon();
       const prior=journal.current();
       need(!prior||prior.phase==='retired','linux_deployment_previous_open');
@@ -428,7 +430,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       referenceAdmission:role=>journal.referenceAdmission(generation_id,role),
       start(){idle();need(!supervised,'compose_host_bootstrap');return start();},
       async startSupervised(){
-        idle();need(supervised&&journal.schemaRevision>=2&&(!reference||journal.schemaRevision>=3)&&
+        idle();requireOrdinaryStart();need(supervised&&journal.schemaRevision>=2&&(!reference||journal.schemaRevision>=3)&&
           (clockDirectory!==null||source&&typeof source.capture==='function'&&typeof source.tick==='function'),'compose_host_bootstrap');
         verifyFiles();verifyAdmissionInputs();
         need(channels.size===0&&!journal.lookup(generation_id),'linux_deployment_generation_used');

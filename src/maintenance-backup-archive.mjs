@@ -24,7 +24,7 @@ export function encryptionInput(mode, recipients, passphrase){
   return {profile:{mode,recipients:[]},secret:Buffer.from(passphrase)};
 }
 
-export async function inspectBackupManifest(directory, operationId, plan, snapshots) {
+export async function inspectBackupManifest(directory, operationId, plan, snapshots, reports=[]) {
   const file = path.join(directory,'manifest.json');
   const before = await fs.lstat(file);
   need(before.isFile()&&before.nlink===1&&before.size>0&&before.size<=maxManifest,'backup_archive_manifest');
@@ -60,6 +60,12 @@ export async function inspectBackupManifest(directory, operationId, plan, snapsh
     return record.service===snapshot.scope.service_id&&record.database_instance===snapshot.scope.database_instance_id&&
       record.schema===snapshot.scope.schema_revision&&record.engine===snapshot.engine&&file.size===snapshot.bytes&&file.sha256===snapshot.sha256;
   }),'backup_archive_snapshots');
+  const reportFiles=new Map(manifest.files.filter(file=>file?.role==='validation_report').map(file=>[file.path,file]));
+  const listedReports=new Set(manifest.validation_reports);
+  need(reports.length===snapshots.length&&reports.every(({path,size,sha256})=>{
+    const file=reportFiles.get(path);
+    return listedReports.has(path)&&file?.size===size&&file.sha256===sha256;
+  }),'backup_archive_domain_reports');
   return {manifest_sha256:crypto.createHash('sha256').update(raw).digest('hex'),files:manifest.files.length};
 }
 

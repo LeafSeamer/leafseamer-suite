@@ -427,11 +427,15 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 调用方先登记固定计划，再按完整请求 Key 提交。`lookup` 查回原任务及修订。维护态与 L3 请求需先由本机审批绑定原计划摘要和部署代，再以当前修订调用 `collectSnapshots`。该入口核对当前授权和部署代，逐库写入真实快照回执。已知中断可在当前复制退出后取消。重开时，未确认已退出的复制会进入 `indeterminate`，并占用复制槽直到有独立的退役证明。暂存快照与 `snapshots_staged` 回执供后续归档发布流程采用。
 
-这些接口面向可信本机维护代码。调用方负责从当前安装权威取得部署代、权限与源目录，按当前读取范围提供查原结果，并在归档发布前完成业务不变量和覆盖核验。
+这些接口面向可信本机维护代码。调用方从当前安装权威取得部署代、权限、源目录和受保护的服务安装制品，并负责核对归档覆盖范围。
 
-启用 `enableBackupPublication()` 后，安装账本显式升级到 Schema 3。可信维护调用方先在本次操作的 `staging/backup-<operation_id>/archive` 目录生成 `manifest.json` 与 `plaintext.tar`，再调 `publishArchive`。清单的备份标识须等于操作标识，覆盖数组摘要须匹配计划，数据库条目须逐项匹配已入账的快照。调用方的授权函数还须核验准确的清单、验证引用和加密配置，并在密文入账前再次确认。口令经继承的匿名管道或无名 Unix 流套接字对交付辅助程序。
+启用 `enableBackupPublication()` 后，安装账本显式升级到 Schema 3。L2 和 L3 需要至少一个已入账的业务库快照。以当前任务修订调用 `verifySnapshots(operationId, revision, distributions, authorize)` 可取得每个库的业务校验报告。按计划中的服务类型提供 `distributions.controller` 和／或 `distributions.seamer`，每项包含受保护的绝对 `dist` 目录 `directory`，以及从可信安装配置取得的带 `sha256:` 前缀的 `manifest_sha256`。制品及其依赖由本机维护方保管。
 
-辅助程序校验 TAR 后加密，独占创建 `content/<operation_id>/archive.age` 并同步文件和目录。账本核对密文字节和 SHA-256 后提交发布回执，`getArchive` 据此读取原记录。缺项、无效档案、取消和未确认结束的作业均不会产生发布记录。源提供者的业务完成证据、密钥槽接入、旧进程退役证明和恢复激活由维护流程分别处理。
+调用方在本次操作的 `staging/backup-<operation_id>/archive` 目录生成 `manifest.json` 与 `plaintext.tar`。将 `verifySnapshots` 返回的每份报告按 `path` 放入归档，使用 `text` 的 UTF-8 原字节及对应的 `size` 和 `sha256`，并在 `validation_reports` 中列出。将同一组 `distributions` 传给 `publishArchive`。Suite 在发布阶段按已入账的快照重新生成报告，计算验证引用，并核对清单和 TAR 中对应成员。仅含配置或发行文件的 L0 和 L1 沿用由调用方获准的验证引用。
+
+授权函数在 `verify_snapshots` 核验当前权限和部署代，在 `seal_archive` 和 `publish_archive` 同时核验清单、覆盖、验证引用、服务制品摘要和加密配置。口令经继承的匿名管道或无名 Unix 流套接字对交付辅助程序。
+
+辅助程序校验 TAR 后加密，独占创建 `content/<operation_id>/archive.age` 并同步文件和目录。账本核对密文字节和 SHA-256 后提交发布回执，`getArchive` 据此读取原记录。密钥槽接入、旧进程退役证明和恢复激活由维护流程分别处理。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

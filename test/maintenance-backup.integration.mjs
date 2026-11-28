@@ -6,7 +6,7 @@ import path from 'node:path';
 import {execFile,execFileSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {promisify} from 'node:util';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import test from 'node:test';
 import {createInstallationStore,openInstallationStore} from '@leafseamer/suite/installation';
 import {digest} from '../dist/import-input.mjs';
@@ -186,23 +186,19 @@ test('process interruption keeps the original operation indeterminate and preven
 });
 
 async function publicationFixture(f,ledger,name,coverage=[]){
-  const {operation,input}=f.request(ledger,name,{coverage_digest:digest(coverage)});
+  const {operation,input}=f.request(ledger,name,{coverage_digest:digest(coverage),
+    backup_level:'L1',target_service_scopes:[]});
   const ready=await ledger.collectSnapshots(operation.operation_id,1,{authorize,sourceDirectory:()=>f.source});
   assert.equal(ready.step,'snapshots_staged');
-  const [{backup_operation_id:id,receipt}]=ledger.snapshots(ready.operation_id);
   const stage=path.join(f.root,'staging','backup-'+ready.operation_id);
-  const directory=path.join(stage,'archive'),entry='db/controller.sqlite',report='reports/fixture.json';
-  await fs.mkdir(path.join(directory,'files','db'),{recursive:true,mode:0o700});
-  await fs.mkdir(path.join(directory,'files','reports'),{mode:0o700});
-  await fs.copyFile(path.join(stage,id,'snapshot.partial','data.sqlite'),path.join(directory,'files',entry));
+  const directory=path.join(stage,'archive'),report='reports/fixture.json';
+  await fs.mkdir(path.join(directory,'files','reports'),{recursive:true,mode:0o700});
   const verified=Buffer.from('{"fixture":"structural checks passed"}');
   await fs.writeFile(path.join(directory,'files',report),verified,{mode:0o600});
   const reportHash=crypto.createHash('sha256').update(verified).digest('hex');
-  const manifest={format:'leafseamer-backup-tar/1',backup_id:ready.operation_id,level:'L2',consistency:'online',
-    files:[{role:'database',path:entry,size:receipt.bytes,sha256:receipt.sha256},
-      {role:'validation_report',path:report,size:verified.length,sha256:reportHash}],
-    databases:[{path:entry,service:receipt.scope.service_id,database_instance:receipt.scope.database_instance_id,
-      schema:receipt.scope.schema_revision,engine:receipt.engine,consistency_point:id}],
+  const manifest={format:'leafseamer-backup-tar/1',backup_id:ready.operation_id,level:'L1',consistency:'online',
+    files:[{role:'validation_report',path:report,size:verified.length,sha256:reportHash}],
+    databases:[],
     coverage,unresolved:[],validation_reports:[report]};
   const raw=Buffer.from(JSON.stringify(manifest));
   await fs.writeFile(path.join(directory,'manifest.json'),raw,{mode:0o600});
@@ -259,6 +255,98 @@ test('publishes a verified archive atomically and preserves its original across 
   assert.equal(reopened.getArchive(corrupt.operation.operation_id),null);
   assert.deepEqual(await fs.readFile(published),encrypted);
   assert.deepEqual(reopened.getArchive(archive.archive_id),archive);
+});
+
+const distributionDirectories={
+  controller:process.env.LEAFSEAMER_TEST_BACKUP_CONTROLLER_DIST,
+  seamer:process.env.LEAFSEAMER_TEST_BACKUP_SEAMER_DIST
+};
+
+test('requires the two built service readers and binds their exact reports into the published archive',{
+  timeout:60000,skip:!Object.values(distributionDirectories).every(Boolean)
+},async t=>{
+  const f=await fixture(t);
+  f.store.enableBackupMaintenance();
+  const ledger=f.store.enableBackupPublication();
+  const distributions={},sources={},scopes=[];
+  const hash=value=>crypto.createHash('sha256').update(value).digest('hex');
+  for(const [authority,directory] of Object.entries(distributionDirectories)){
+    const source=path.join(f.root,'source-'+authority);
+    const storage=await import(pathToFileURL(path.join(directory,'storage.mjs')).href);
+    const initial=storage.initializeStorage(source);
+    const revision=authority==='controller'?(await import(pathToFileURL(path.join(directory,'storage-revision.mjs')).href)).currentStorageRevision:'48';
+    await storage.migrateStorage(source,revision);
+    const opened=storage.openStorage(source),state=opened.identity;
+    opened.close();
+    assert.equal(state.service_id,initial.service_id);
+    scopes.push({authority,service_id:state.service_id,database_instance_id:state.database_instance_id,
+      schema_revision:state.schema_revision,request_epoch:state.request_epoch,control_epoch:state.control_epoch??null});
+    distributions[authority]={directory,manifest_sha256:'sha256:'+hash(await fs.readFile(path.join(directory,'build-manifest.json')))};
+    sources[authority]=source;
+  }
+  const {operation}=f.request(ledger,'real-domains',{target_service_scopes:scopes,coverage_digest:digest([])});
+  const ready=await ledger.collectSnapshots(operation.operation_id,operation.revision,
+    {authorize,sourceDirectory:scope=>sources[scope.authority]});
+  assert.equal(ready.step,'snapshots_staged');
+  const {operation_id:id,revision}=ready;
+  const {reports,verifiers,verification_ref}=await ledger.verifySnapshots(id,revision,distributions,authorize);
+  assert.equal(reports.length,2);
+  assert.deepEqual(reports.map(report=>JSON.parse(report.text).scope),scopes);
+  assert.ok(JSON.parse(reports[0].text).command_inventory);
+  assert.ok(JSON.parse(reports[1].text).execution_inventory);
+  await assert.rejects(ledger.verifySnapshots(id,revision,{...distributions,
+    controller:{...distributions.controller,manifest_sha256:'sha256:'+'0'.repeat(64)}},authorize),
+  {code:'backup_snapshot_verification'});
+
+  const stage=path.join(f.root,'staging','backup-'+id),directory=path.join(stage,'archive');
+  await fs.mkdir(path.join(directory,'files','db'),{recursive:true,mode:0o700});
+  await fs.mkdir(path.join(directory,'files','reports'),{mode:0o700});
+  const files=[],databases=[];
+  for(const {receipt,backup_operation_id:point} of ledger.snapshots(id)){
+    const {authority,service_id,database_instance_id,schema_revision}=receipt.scope;
+    const entry='db/'+authority+'.sqlite';
+    await fs.copyFile(path.join(stage,point,'snapshot.partial','data.sqlite'),path.join(directory,'files',entry));
+    files.push({role:'database',path:entry,size:receipt.bytes,sha256:receipt.sha256});
+    databases.push({path:entry,service:service_id,database_instance:database_instance_id,
+      schema:schema_revision,engine:receipt.engine,consistency_point:point});
+  }
+  for(const report of reports){
+    await fs.writeFile(path.join(directory,'files',report.path),report.text);
+    files.push({role:'validation_report',path:report.path,size:report.size,sha256:report.sha256});
+  }
+  files.sort((a,b)=>a.path<b.path?-1:1);
+  const manifest={format:'leafseamer-backup-tar/1',backup_id:id,level:'L2',consistency:'online',
+    files,databases,coverage:[],unresolved:[],validation_reports:reports.map(report=>report.path)};
+  const manifestFile=path.join(directory,'manifest.json'),manifestRaw=JSON.stringify(manifest);
+  const actions=[];
+  const authority=({action,archive})=>{
+    actions.push(action);
+    return {...authorize(),verified:archive?.verification_ref===verification_ref&&
+      archive?.manifest_sha256===hash(manifestRaw)&&Array.isArray(archive?.verifiers)&&
+      digest(archive.verifiers)===digest(verifiers)};
+  };
+  const options={distributions,mode:'passphrase',passphrase:Buffer.from('synthetic publication secret')};
+  await assert.rejects(ledger.publishArchive(id,revision,{...options,verification_ref},()=>({...authorize(),verified:true})),
+    {code:'backup_archive_verification'});
+  const badFiles=files.map(file=>file.path===reports[0].path?{...file,sha256:'0'.repeat(64)}:file);
+  await fs.writeFile(manifestFile,JSON.stringify({...manifest,files:badFiles}));
+  await assert.rejects(ledger.publishArchive(id,revision,options,()=>({...authorize(),verified:true})),
+    {code:'backup_archive_domain_reports'});
+  assert.equal(ledger.getArchive(id),null);
+  await fs.writeFile(manifestFile,manifestRaw);
+  await exec(cryptoTool,['pack','--directory',directory],{windowsHide:true});
+  const result=await ledger.publishArchive(id,revision,options,authority);
+  assert.equal(result.phase,'succeeded');
+  assert.deepEqual(actions,['verify_snapshots','seal_archive','publish_archive']);
+  assert.deepEqual(f.reopen().backupMaintenance().getArchive(id),result.archive);
+  const restore=path.join(directory,'restore');
+  await fs.mkdir(restore);
+  await fs.copyFile(path.join(f.root,'content',id,'archive.age'),path.join(restore,'ciphertext.age'));
+  execFileSync(cryptoTool,['open','--mode','passphrase','--directory',restore,
+    '--expected-bytes',String(result.archive.ciphertext_bytes),'--expected-sha256',result.archive.ciphertext_sha256],
+  {windowsHide:true,input:options.passphrase});
+  const restored=await exec(cryptoTool,['verify','--directory',restore],{windowsHide:true});
+  assert.equal(JSON.parse(restored.stdout).manifest_sha256,hash(manifestRaw));
 });
 
 test('a process exit after file synchronization leaves an unpublished orphan and an indeterminate task',{timeout:30000},async t=>{

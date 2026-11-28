@@ -4,6 +4,7 @@ import path from 'node:path';
 import {canonical, digest, InstallationError, requireValue as need} from './import-input.mjs';
 import {stageSQLiteSnapshot} from './sqlite-snapshot.mjs';
 import {encryptionInput,inspectBackupManifest,materializeBackupArchive} from './maintenance-backup-archive.mjs';
+import {verifyBackupSnapshots} from './backup-domain-verification.mjs';
 
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])/;
 const id = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}(?![\s\S])/;
@@ -172,6 +173,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
 
   async function collect(operationId, revision, {authorize,sourceDirectory} = {}) {
     need(typeof sourceDirectory==='function','backup_source_authority');
+    need(active===0,'backup_helper_in_use');
     const claimed = transact(()=>{
       const row = expect(operationId,revision);
       need(row.phase==='queued','backup_operation_phase');
@@ -238,29 +240,81 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
     return view(current(operationId));
   }
 
+  function selectPublication(operationId,revision){
+    const row=expect(operationId,revision);
+    need(row.phase==='running'&&row.step==='snapshots_staged'&&!publication(operationId),'backup_operation_phase');
+    const copies=snapshots(operationId);
+    need(copies.length===row.plan.target_service_scopes.length&&copies.every((item,index)=>
+      item.target_index===index&&item.body!==null),'backup_target_integrity');
+    const receipts=copies.map((item,index)=>{
+      const receipt=decode(item.body,item.digest);
+      need(matches(uuid,item.backup_operation_id)&&receipt.backup_operation_id===item.backup_operation_id&&
+        canonical(receipt.scope)===canonical(row.plan.target_service_scopes[index]),'backup_target_integrity');
+      return receipt;
+    });
+    return {row,receipts};
+  }
+
+  function verifyCopies(operationId,receipts,distributions,deadline){
+    const directory=path.join(staging,'backup-'+operationId);
+    return verifyBackupSnapshots(receipts.map(receipt=>({receipt,
+      file:path.join(directory,receipt.backup_operation_id,'snapshot.partial','data.sqlite')})),distributions,deadline);
+  }
+
+  async function verifySnapshots(operationId,revision,distributions,authority){
+    need(active===0,'backup_helper_in_use');
+    const deadline=performance.now()+1800000;
+    const receipts=transact(()=>{
+      const {row,receipts}=selectPublication(operationId,revision);
+      requireFreeHelper();
+      need(receipts.length>0,'backup_snapshot_verification');
+      authorized(authority,'verify_snapshots',row.key,row.plan,row);
+      return receipts;
+    });
+    active++;
+    try{
+      const verified=await verifyCopies(operationId,receipts,distributions,deadline);
+      transact(()=>{
+        const row=expect(operationId,revision);
+        authorized(authority,'verify_snapshots',row.key,row.plan,row);
+      });
+      return verified;
+    }finally{active--;}
+  }
+
   async function publishArchive(operationId,revision,input,authority){
     need(publicationEnabled,'backup_publication_migration_required');
     need(matches(uuid,operationId),'backup_operation_id');
-    need(input&&matches(hash,input.verification_ref),'backup_archive_verification');
+    need(input,'backup_archive_verification');
+    need(active===0,'backup_helper_in_use');
     const deadline=performance.now()+1800000;
-    const verificationRef=input.verification_ref;
     const {profile,secret}=encryptionInput(input.mode,input.recipients,input.passphrase);
     let claimed=false,ownedDirectory=false,terminal;
     const target=path.join(contentDirectory,operationId);
     active++;
     try{
       const selection=transact(()=>{
-        const row=expect(operationId,revision);
-        need(row.phase==='running'&&row.step==='snapshots_staged'&&!publication(operationId),'backup_operation_phase');
-        const copies=snapshots(operationId);
-        need(copies.length===row.plan.target_service_scopes.length&&copies.every(item=>item.body!==null),'backup_target_integrity');
-        return {plan:row.plan,copies:copies.map(item=>decode(item.body,item.digest))};
+        const {row,receipts}=selectPublication(operationId,revision);
+        requireFreeHelper();
+        if(receipts.length)authorized(authority,'verify_snapshots',row.key,row.plan,row);
+        return {plan:row.plan,receipts};
       });
+      let verificationRef=input.verification_ref,domain=null;
+      if(selection.receipts.length){
+        need(verificationRef===undefined,'backup_archive_verification');
+        domain=await verifyCopies(operationId,selection.receipts,input.distributions,deadline);
+        verificationRef=domain.verification_ref;
+      }else{
+        need(['L0','L1'].includes(selection.plan.backup_level)&&matches(hash,verificationRef),
+          'backup_archive_verification');
+      }
       const directory=path.join(staging,'backup-'+operationId,'archive');
-      const manifest=await inspectBackupManifest(directory,operationId,selection.plan,selection.copies);
+      const manifest=await inspectBackupManifest(directory,operationId,selection.plan,selection.receipts,domain?.reports);
+      need(performance.now()<deadline,'backup_archive_deadline');
       const proof={operation_id:operationId,manifest_sha256:manifest.manifest_sha256,
         coverage_digest:selection.plan.coverage_digest,verification_ref:verificationRef,
-        encryption_profile_ref:selection.plan.encryption_profile_ref,encryption:profile};
+        encryption_profile_ref:selection.plan.encryption_profile_ref,encryption:profile,
+        ...(domain&&{verifiers:domain.verifiers})};
       transact(()=>{
         const row=expect(operationId,revision);
         requireFreeHelper();
@@ -381,6 +435,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       });
     },
     collectSnapshots:collect,
+    verifySnapshots,
     publishArchive,
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');

@@ -362,6 +362,9 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   });
   assert.equal(restored.phase,'isolated_validated');
   assert.equal(restored.snapshot_count,2);
+  assert.equal(restored.command_review.state,'matched');
+  assert.equal(restored.command_review.checked,0);
+  assert.match(restored.command_review.review_digest,/^sha256:[a-f0-9]{64}$/);
   assert.equal(restored.manifest_sha256,hash(manifestRaw));
   assert.deepEqual(restoreActions,['stage_restore','adopt_isolated_restore']);
   const isolated=path.join(f.root,'staging','restore-'+restoreId);

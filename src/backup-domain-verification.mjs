@@ -4,7 +4,9 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {isMainThread,parentPort,Worker,workerData} from 'node:worker_threads';
+import Database from 'better-sqlite3';
 import {canonical,digest,InstallationError,requireValue as need} from './import-input.mjs';
+import {reviewRestoredCommands} from './restore-command-review.mjs';
 
 const verificationError='backup_snapshot_verification';
 const manifestHash=/^sha256:[a-f0-9]{64}(?![\s\S])/;
@@ -62,8 +64,33 @@ async function loadVerifier({directory,manifest_sha256},authority){
   return verifyBackupSnapshot;
 }
 
-async function verifyBatch({distributions,inputs}){
+async function reviewBatch(inputs,distributions){
+  const readers=new Map(),snapshots=[];
+  try{
+    for(const {receipt,file} of inputs){
+      const authority=receipt.scope.authority;
+      if(!readers.has(authority)){
+        const {directory}=distributions[authority];
+        const load=name=>import(pathToFileURL(path.join(directory,name)).href);
+        readers.set(authority,authority==='controller'?
+          {protocol:await load('peer-automation-command.mjs'),commandRecords:await load('command-record-store.mjs')}:
+          {protocol:await load('runtime/peer-automation-command.mjs')});
+      }
+      const db=new Database(file,{readonly:true,fileMustExist:true,timeout:0});
+      snapshots.push({db,receipt,...readers.get(authority)});
+      db.pragma('trusted_schema=OFF');
+      db.pragma('query_only=ON');
+      db.pragma('cache_size=-256');
+    }
+    return reviewRestoredCommands(snapshots);
+  }finally{
+    for(const {db} of snapshots)db.close();
+  }
+}
+
+async function verifyBatch({distributions,inputs,reviewCommands}){
   const readers=new Map(),reports=[];
+  const original=reviewCommands?await Promise.all(inputs.map(({file})=>fs.lstat(file,{bigint:true}))):null;
   for(const {file,receipt} of inputs){
     const authority=receipt.scope.authority;
     if(!readers.has(authority))readers.set(authority,await loadVerifier(distributions[authority],authority));
@@ -77,15 +104,23 @@ async function verifyBatch({distributions,inputs}){
     reports.push({path:'reports/'+receipt.backup_operation_id+'.json',text,size,
       sha256:crypto.createHash('sha256').update(text).digest('hex')});
   }
-  return reports;
+  if(!reviewCommands)return {reports};
+  const command_review=await reviewBatch(inputs,distributions);
+  for(const [index,{file}] of inputs.entries()){
+    const stat=await fs.lstat(file,{bigint:true}),before=original[index];
+    need(stat.isFile()&&stat.nlink===1n&&['dev','ino','size','mtimeNs','ctimeNs'].every(key=>stat[key]===before[key]),verificationError);
+  }
+  return {reports,command_review};
 }
 
 if(!isMainThread&&workerData?.format===workerFormat){
-  const {inputs,distributions}=workerData;
-  parentPort.postMessage(await verifyBatch({inputs,distributions}));
+  try{parentPort.postMessage(await verifyBatch(workerData));}
+  catch(error){
+    parentPort.postMessage({error:error?.code==='restore_command_conflict'?error.code:verificationError});
+  }
 }
 
-export async function verifyBackupSnapshots(inputs,distributions,deadline){
+export async function verifyBackupSnapshots(inputs,distributions,deadline,{reviewCommands=false}={}){
   need(distributions&&typeof distributions==='object'&&!Array.isArray(distributions),verificationError);
   const required=authorities.filter(authority=>inputs.some(({receipt})=>receipt.scope.authority===authority));
   need(Object.keys(distributions).length===required.length,verificationError);
@@ -98,11 +133,11 @@ export async function verifyBackupSnapshots(inputs,distributions,deadline){
   });
   const remaining=deadline-performance.now();
   need(remaining>0,'backup_archive_deadline');
-  const reports=await new Promise((resolve,reject)=>{
+  const {reports,command_review}=await new Promise((resolve,reject)=>{
     const selected=Object.fromEntries(verifiers.map(({authority,manifest_sha256})=>
       [authority,{directory:distributions[authority].directory,manifest_sha256}]));
     const worker=new Worker(new URL(import.meta.url),{
-      workerData:{format:workerFormat,inputs,distributions:selected},
+      workerData:{format:workerFormat,inputs,distributions:selected,reviewCommands},
       execArgv:[],
       resourceLimits:{maxOldGenerationSizeMb:256}
     });
@@ -113,9 +148,10 @@ export async function verifyBackupSnapshots(inputs,distributions,deadline){
     worker.once('exit',code=>{
       clearTimeout(timer);
       if(stopped)reject(new InstallationError('backup_archive_deadline'));
-      else if(code!==0||!Array.isArray(result))reject(new InstallationError(verificationError));
+      else if(code!==0||!Array.isArray(result?.reports))reject(new InstallationError(result?.error??verificationError));
       else resolve(result);
     });
   });
-  return {reports,verifiers,verification_ref:digest({verifiers,reports:reports.map(({path,size,sha256})=>({path,size,sha256}))})};
+  return {reports,verifiers,verification_ref:digest({verifiers,reports:reports.map(({path,size,sha256})=>({path,size,sha256}))}),
+    ...(reviewCommands&&{command_review})};
 }

@@ -89,10 +89,10 @@ export function restoreMaintenance({db,transact,rows,decode,staging,contentDirec
       need(manifest.manifest_sha256===proof.manifest_sha256,'restore_manifest');
       const inputs=receipts.map((receipt,index)=>({receipt,
         file:path.join(expanded,'files',manifest.databaseMembers[index])}));
-      const verified=await verifyBackupSnapshots(inputs,input.distributions,deadline);
+      const verified=await verifyBackupSnapshots(inputs,input.distributions,deadline,{reviewCommands:true});
       need(verified.verification_ref===proof.verification_ref,'restore_domain_reports_required');
       const receipt={manifest_sha256:manifest.manifest_sha256,verification_ref:verified.verification_ref,
-        source_digest:source.sourceDigest,snapshot_count:receipts.length};
+        source_digest:source.sourceDigest,snapshot_count:receipts.length,command_review:verified.command_review};
       return transact(()=>{
         need(performance.now()<deadline,'backup_archive_deadline');
         authorized(authority,'adopt_isolated_restore',archive,{restore_id:id,archive_id:archiveId,...receipt},expected);

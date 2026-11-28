@@ -445,7 +445,9 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 恢复候选展开到受保护的 `staging/restore-<restore_id>/restored.partial`。Suite 核对密文、归档清单、原快照回执和报告，再对展开的业务库重跑原验证。 `getRestore(restore_id)` 返回持久结果及校验引用。重放原请求可查原结果，无需再次提交秘密。未确认结束的作业在重开后记录为 `indeterminate`，新任务须等待其退役得到核对。
 
-`isolated_validated` 表示原归档已通过隔离验证。切换仍需重验候选文件、核对跨库关联和未决命令、批准新的保护域并确认旧写入者退役。外部归档导入和新代激活沿各自的维护流程实施。
+新生成的隔离结果含 `command_review`。Suite 按来源库、目标库、执行、步骤和原请求核对 Seamer 普通执行及恢复派发记录，以及 Controller 裁决和原终态修订。两端已有的不可变证据相冲突时，拒绝候选。若缺少对应快照或原件、终态未见或资源未决，保留 `requires_review`、原因计数和绑定快照与证据的摘要。多个库可能在不同时点复制，缺记录须交由后续现场核对。
+
+`isolated_validated` 表示原归档已通过隔离验证。切换仍需重验候选文件、处理未决命令、批准新的保护域并确认旧写入者退役。外部归档导入和新代激活沿各自的维护流程实施。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

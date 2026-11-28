@@ -501,7 +501,9 @@ Suite 在 `check_recovery_site_review` 与 `adopt_recovery_site_review` 核对�
 
 Windows 的安装账本接受独立 Controller 的活动部署基线。激活后，可信本机程序从 `@leafseamer/suite/windows-native-host` 打开 `openWindowsNativeHost({installationDirectory})`，并调用 `startRecovery({plan, configuration, selectionDigest, authorize})`。部署计划使用 `leafseamer.windows-native-recovery/1`，包含已激活的部署计划引用、发行摘要、新代 ID 和 Controller 配置引用。现场审核固定配置摘要，配置格式为 `leafseamer.windows-native-core/1`，包含安装 ID、构建清单固定的 Controller 制品目录、回环端口和绑定新库身份的监督启动策略。
 
-授权决定绑定当前部署选择、发行摘要、退役摘要和已审阅的秘密绑定摘要，并提供原 Windows 写入者名册以复验持久启动封锁。Suite 将审核过的原库复制到独立运行目录，核对副本字节和 ACL，初始化新监督日志并创建认证闭锁 Job。调用方持有运行句柄，可用 `close()` 等待 Job 退役。已有运行目录保留原尝试供核对。Windows SCM 接入、已启动运行代续启及现场动作仍属各自后续步骤。
+授权决定绑定当前部署选择、发行摘要、退役摘要和已审阅的秘密绑定摘要，并提供原 Windows 写入者名册以复验持久启动封锁。Suite 将审核过的原库复制到独立运行目录，核对副本字节和 ACL，初始化新监督日志并创建认证闭锁 Job。调用方持有运行句柄，可用 `close()` 等待 Job 退役。
+
+可信本机程序持有安装账本独占连接时，可用 `readRecoveryRetirement({plan, configuration, selectionDigest})` 核对当前运行库最新 Job 的退役原件。原件存在且活动进程为零时，将 `previous_retirement_digest` 作为下一次 `startRecovery` 的 `previousRetirementDigest`。授权方须确认该摘要。Suite 复验所选运行库、目录、监督日志与旧退役回执，继续使用现有 SQLite 库及 WAL，新 Job 重新走闭锁认证。由旧版首次启动、尚无运行目录登记的安装，需要本机安装程序核对现有库后明确提供 `legacy_storage_verified: true`。Windows SCM 与现场动作仍待接通。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

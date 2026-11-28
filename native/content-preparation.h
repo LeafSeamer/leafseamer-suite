@@ -74,7 +74,7 @@ public:
   std::wstring parentIdentity() const {
     content::need(!closed&&ancestors.size()>=2,"preparation_closed");return content::identity(ancestors[ancestors.size()-2]->value);
   }
-  Root(std::wstring parent,const std::wstring& name,const std::vector<std::wstring>& readers,const std::wstring& expected=L""):writer(callerSid()){
+  Root(std::wstring parent,const std::wstring& name,const std::vector<std::wstring>& readers,const std::wstring& expected=L"",bool observe=false):writer(callerSid()){
     content::need(name.size()==36&&name.find_first_not_of(L"0123456789abcdef-")==std::wstring::npos&&readers.size()<=16,"preparation_argument");
     if(parent.rfind(L"\\\\?\\",0)==0)parent.erase(0,4);
     content::need(parent.size()>3&&((parent[0]>=L'A'&&parent[0]<=L'Z')||(parent[0]>=L'a'&&parent[0]<=L'z'))&&parent[1]==L':'&&parent[2]==L'\\'&&GetDriveTypeW(parent.substr(0,3).c_str())==DRIVE_FIXED,"preparation_local_root");
@@ -86,10 +86,11 @@ public:
     content::need(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl.c_str(),SDDL_REVISION_1,&descriptor.value,nullptr)!=0,"preparation_acl");BOOL present=FALSE,defaulted=FALSE;
     content::need(GetSecurityDescriptorDacl(descriptor.value,&present,&acl,&defaulted)&&present&&acl,"preparation_acl");
     path=current+L"\\"+name;SECURITY_ATTRIBUTES security{sizeof(SECURITY_ATTRIBUTES),descriptor.value,FALSE};
-    if(expected.empty())content::need(CreateDirectoryW(path.c_str(),&security)!=0,"preparation_create");
-    else content::need(expected.size()==48&&expected.find_first_not_of(L"0123456789abcdef")==std::wstring::npos,"preparation_identity");
+    const bool create=expected.empty()&&!observe;
+    if(create)content::need(CreateDirectoryW(path.c_str(),&security)!=0,"preparation_create");
+    else if(!observe)content::need(expected.size()==48&&expected.find_first_not_of(L"0123456789abcdef")==std::wstring::npos,"preparation_identity");
     pinDirectory(path);identity=content::identity(ancestors.back()->value);
-    content::need(expected.empty()||identity==expected,"preparation_identity");check(L".",true,expected.empty());
+    content::need(expected.empty()||identity==expected,"preparation_identity");check(L".",true,create);
   }
   void check(const std::wstring& relative,bool directory,bool apply){
     std::vector<unsigned char> fileAcl;PACL desired=acl;

@@ -70,4 +70,4 @@ export function initializeInstallationContentDirectory(directory){try{implementa
 export function installationObservationTick(){return BigInt(implementation().materializationTick());}
 // 仅供安装器的独立静态物化worker使用，不是设备或第三方扩展API。
 export function installationContentPlatform(){const module=implementation();return Object.freeze(Object.fromEntries(
-  ['contentPin','contentVerify','contentRead','contentClose','prepareRoot','reopenPreparedRoot','protectObject','preparedDescribe','preparedClose','flushPreparedObject','flushPreparedParent'].map(name=>[name,module[name]])));}
+  ['contentPin','contentVerify','contentRead','contentClose','prepareRoot','reopenPreparedRoot','observePreparedRoot','protectObject','preparedDescribe','preparedClose','flushPreparedObject','flushPreparedParent'].map(name=>[name,module[name]])));}

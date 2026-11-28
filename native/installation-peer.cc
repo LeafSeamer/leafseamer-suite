@@ -178,6 +178,10 @@ napi_value reopenPreparedRoot(napi_env env,napi_callback_info info){try{
   const auto expected=string(env,a[3],48);need(expected.size()==48,"preparation_identity");
   return wrap(env,std::make_unique<prepared::Root>(string(env,a[0],32760),string(env,a[1],36),readers,expected),preparedTag);
 }catch(const std::exception& e){return fail(env,e);}}
+napi_value observePreparedRoot(napi_env env,napi_callback_info info){try{
+  const auto a=args(env,info,2);
+  return wrap(env,std::make_unique<prepared::Root>(string(env,a[0],32760),string(env,a[1],36),std::vector<std::wstring>{},L"",true),preparedTag);
+}catch(const std::exception& e){return fail(env,e);}}
 napi_value preparedDescribe(napi_env env,napi_callback_info info){try{
   const auto p=unwrap<prepared::Root>(env,args(env,info,1)[0],preparedTag);napi_value result;ok(napi_create_object(env,&result));
   prop(env,result,"root_identity",text(env,p->identity));prop(env,result,"writer_sid",text(env,p->writer));prop(env,result,"path",text(env,p->path));
@@ -207,7 +211,7 @@ napi_value init(napi_env env,napi_value exports){const napi_property_descriptor 
   {"duplicateSource",nullptr,duplicateSource,nullptr,nullptr,nullptr,napi_default,nullptr},
   {"contentPin",nullptr,contentPin,nullptr,nullptr,nullptr,napi_default,nullptr},{"contentVerify",nullptr,contentVerify,nullptr,nullptr,nullptr,napi_default,nullptr},
   {"contentClose",nullptr,contentClose,nullptr,nullptr,nullptr,napi_default,nullptr},{"contentRead",nullptr,contentRead,nullptr,nullptr,nullptr,napi_default,nullptr},{"prepareRoot",nullptr,prepareRoot,nullptr,nullptr,nullptr,napi_default,nullptr},
-  {"reopenPreparedRoot",nullptr,reopenPreparedRoot,nullptr,nullptr,nullptr,napi_default,nullptr},
+  {"reopenPreparedRoot",nullptr,reopenPreparedRoot,nullptr,nullptr,nullptr,napi_default,nullptr},{"observePreparedRoot",nullptr,observePreparedRoot,nullptr,nullptr,nullptr,napi_default,nullptr},
   {"protectObject",nullptr,protectObject,nullptr,nullptr,nullptr,napi_default,nullptr},{"preparedDescribe",nullptr,preparedDescribe,nullptr,nullptr,nullptr,napi_default,nullptr},
   {"preparedClose",nullptr,preparedClose,nullptr,nullptr,nullptr,napi_default,nullptr},
   {"flushPreparedObject",nullptr,flushPreparedObject,nullptr,nullptr,nullptr,napi_default,nullptr},{"flushPreparedParent",nullptr,flushPreparedParent,nullptr,nullptr,nullptr,napi_default,nullptr},

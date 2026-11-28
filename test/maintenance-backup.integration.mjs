@@ -520,17 +520,36 @@ async function checkNativeRecoveryStartup(f,{planFile,members},selected){
 
 async function checkWindowsRecoveryStartup({f,plan,configuration,activated,windowsAuthority}){
   const {openWindowsNativeHost}=await import('@leafseamer/suite/windows-native-host');
-  const {readProcessRecoveryRetirement}=await import(pathToFileURL(path.join(configuration.distribution.directory,'process-host.mjs')));
   f.close();
-  const open=()=>openWindowsNativeHost({installationDirectory:f.root}),host=open();
+  const open=()=>openWindowsNativeHost({installationDirectory:f.root});
+  let host=open();
   const start={plan,configuration,selectionDigest:activated.selection_digest,
-    authorize({selection,retirement_digest,secret_binding_digest}){
+    authorize({selection,retirement_digest,secret_binding_digest,previous_retirement_digest}){
       return {...windowsAuthority(),selection_digest:selection.selection_digest,
-        release_manifest_digest:selection.deployment.release_manifest_digest,retirement_digest,secret_binding_digest};
+        release_manifest_digest:selection.deployment.release_manifest_digest,retirement_digest,secret_binding_digest,previous_retirement_digest};
     }};
   const {data_ref,scope}=activated.deployment.services[0],content=path.join(f.root,'content');
   const source=path.join(content,data_ref.attempt_id,data_ref.directory_name,'controller.sqlite');
-  const directory=path.join(content,plan.generation_id,data_ref.directory_name);
+  const destination=path.join(content,plan.generation_id),directory=path.join(destination,data_ref.directory_name);
+  const marker=path.join(destination,'recovery-storage.json');
+  async function checkHealth(runtime){
+    assert.equal(runtime.selection_digest,activated.selection_digest);
+    assert.equal(runtime.containment.bootstrap_authenticated,true);
+    assert.equal(runtime.containment.runtime_admitted,false);
+    let health;
+    for(let attempt=0;attempt<100;attempt++){
+      health=await fetch('http://127.0.0.1:'+configuration.port+'/health/ready',{signal:AbortSignal.timeout(300)}).catch(()=>null);
+      if(health)break;
+      await delay(20);
+    }
+    assert.equal(health?.status,503);
+    assert.equal((await health.json()).ready,false);
+  }
+  async function reopen(){
+    await host.close();
+    host=null;
+    host=open();
+  }
   try{
     await assert.rejects(host.startRecovery({...start,selectionDigest:digest('obsolete deployment')}),{code:'windows_recovery_selection'});
     await assert.rejects(host.startRecovery({...start,configuration:{...configuration,port:1}}),{code:'windows_recovery_configuration'});
@@ -545,31 +564,46 @@ async function checkWindowsRecoveryStartup({f,plan,configuration,activated,windo
     finally{await fs.writeFile(source,bytes);}
     assert.equal(await fs.stat(directory).catch(error=>error.code),'ENOENT');
     const runtime=await host.startRecovery(start);
-    assert.equal(runtime.selection_digest,activated.selection_digest);
-    assert.equal(runtime.containment.bootstrap_authenticated,true);
-    assert.equal(runtime.containment.runtime_admitted,false);
-    let health;
-    for(let attempt=0;attempt<100;attempt++){
-      health=await fetch('http://127.0.0.1:'+configuration.port+'/health/ready',{signal:AbortSignal.timeout(300)}).catch(()=>null);
-      if(health)break;
-      await delay(20);
-    }
-    assert.equal(health?.status,503);
-    assert.equal((await health.json()).ready,false);
+    await checkHealth(runtime);
+    await assert.rejects(host.readRecoveryRetirement(start),{code:'windows_recovery_runtime_unproven'});
     assert.equal((await runtime.close()).active_processes,0);
-    const journal=new DatabaseSync(path.join(directory,'supervisor-journal.db'),{readOnly:true});
-    let runtimeGeneration;
-    try{
-      runtimeGeneration=journal.prepare("SELECT json_extract(descriptor_jcs,'$.runtime_generation') AS id FROM core_bootstrap").get().id;
-    }finally{journal.close();}
-    const receipt=await readProcessRecoveryRetirement({dataDir:directory,runtimeGeneration,
-      serviceId:scope.service_id,databaseInstanceId:scope.database_instance_id});
-    assert.equal(receipt.containment_id,runtime.containment.containment_id);
-    assert.equal(receipt.active_processes,0);
-  }finally{await host.close();}
-  const reopened=open();
-  try{await assert.rejects(reopened.startRecovery(start),{code:'windows_recovery_start_indeterminate'});}
-  finally{await reopened.close();}
+    const first=await host.readRecoveryRetirement(start);
+    assert.equal(first.retirement.containment_id,runtime.containment.containment_id);
+    assert.equal(first.retirement.active_processes,0);
+    await reopen();
+    await assert.rejects(host.startRecovery(start),{code:'windows_recovery_start_indeterminate'});
+    await assert.rejects(host.startRecovery({...start,previousRetirementDigest:digest('obsolete runtime')}),
+      {code:'windows_recovery_runtime_changed'});
+    const markerBytes=await fs.readFile(marker),layout=JSON.parse(markerBytes);
+    await fs.writeFile(marker,canonical({...layout,database_identity:'substituted database'}));
+    try{await assert.rejects(host.startRecovery({...start,previousRetirementDigest:first.previous_retirement_digest}),{code:'windows_recovery_data'});}
+    finally{await fs.writeFile(marker,markerBytes);}
+    const restarted=await host.startRecovery({...start,previousRetirementDigest:first.previous_retirement_digest});
+    await checkHealth(restarted);
+    assert.equal((await restarted.close()).active_processes,0);
+    const second=await host.readRecoveryRetirement(start);
+    assert.notEqual(second.retirement.runtime_generation,first.retirement.runtime_generation);
+    assert.equal(second.retirement.database_instance_id,scope.database_instance_id);
+    assert.equal(second.retirement.journal_incarnation,first.retirement.journal_incarnation);
+    assert.deepEqual(await fs.readFile(marker),markerBytes);
+
+    // 检查旧版未登记运行目录时的明确采用路径。
+    await reopen();
+    await fs.unlink(marker);
+    await assert.rejects(host.startRecovery({...start,previousRetirementDigest:second.previous_retirement_digest}),
+      {code:'windows_recovery_authority'});
+    const approvedLegacy=await host.startRecovery({...start,previousRetirementDigest:second.previous_retirement_digest,
+      authorize:context=>({...start.authorize(context),legacy_storage_verified:context.legacy_storage===true})});
+    await checkHealth(approvedLegacy);
+    assert.equal((await approvedLegacy.close()).active_processes,0);
+    assert.deepEqual(await fs.readFile(marker),markerBytes);
+    const database=path.join(directory,'controller.sqlite'),retained=path.join(f.root,'windows-restart-check.sqlite');
+    await fs.copyFile(database,retained);
+    await fs.copyFile(database+'-wal',retained+'-wal').catch(error=>{if(error.code!=='ENOENT')throw error;});
+    const after=new DatabaseSync(retained);
+    try{assert.equal(after.prepare('SELECT count(*) AS count FROM service_boot').get().count,3);}
+    finally{after.close();}
+  }finally{await host?.close();}
 }
 
 async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}){

@@ -24,7 +24,7 @@ names.push('maintenance-recovery-preparation.sql','recovery-storage-preparation.
 names.push('maintenance-recovery-site-review.sql','recovery-site-review.mjs');
 names.push('maintenance-recovery-activation.sql','recovery-activation.mjs');
 names.push('linux-recovery-storage.mjs');
-names.push('windows-native-host.mjs');
+names.push('windows-native-host.mjs','windows-recovery-storage.mjs');
 const files = await Promise.all(names.map(async name => [name, await fs.readFile(path.join(root, 'src', name))]));
 for(const name of ['linux-deployment-journal.mjs','linux-deployment-journal.sql','linux-deployment-admission.sql','linux-deployment-reference.sql','linux-compose-host.mjs','linux-compose-admin.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 for(const name of ['linux-member-journal.mjs','linux-member-journal.sql','linux-member-bootstrap.mjs','linux-member-retirement.sql','linux-native-host.mjs','linux-worker-control.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);

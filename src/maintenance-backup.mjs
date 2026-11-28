@@ -42,7 +42,7 @@ function backupPlan(value) {
 }
 
 export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,
-  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,windowsFenceEnabled=false,preparationEnabled=false,readLinuxRetirement}) {
+  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,windowsFenceEnabled=false,preparationEnabled=false,siteReviewEnabled=false,readLinuxRetirement}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
@@ -151,7 +151,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
 
   function buildRestore(){
     return restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,requireFreeHelper,
-      recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,readLinuxRetirement,
+      recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,readLinuxRetirement,
       claimHelper(){
         need(active===0,'backup_helper_in_use');
         active++;
@@ -502,6 +502,10 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       need(restore,'restore_migration_required');
       return restore.prepareStorage(input,authority);
     },
+    async recordRecoverySiteReview(input,authority){
+      need(restore,'restore_migration_required');
+      return restore.recordSiteReview(input,authority);
+    },
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
       return transact(()=>{
@@ -522,5 +526,6 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
   return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},
     enableRecoveryPlans(){restore.enablePlans();},enableRecoveryRetirement(){restore.enableRetirement();},
     enableWindowsRecoveryFencing(){restore.enableWindowsFencing();},
-    enableProtectedRecoveryPreparation(){restore.enablePreparation();},get active(){return active;}};
+    enableProtectedRecoveryPreparation(){restore.enablePreparation();},
+    enableRecoverySiteReview(){restore.enableSiteReview();},get active(){return active;}};
 }

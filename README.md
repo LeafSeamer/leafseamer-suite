@@ -477,6 +477,12 @@ Suite 先核对全体写入者的制品、库身份及最后一次启动的 Job 
 
 Suite 复验隔离归档，在本安装的保护内容根 `content/<attempt_id>` 内逐库调用已核对制品的新库准备入口，随后刷新文件和目录，并重新读取新库的摘要和文件身份。完整回执采用后，`getRecoveryPlan` 返回 `prepared_protected`，并包含实际采用的 `attempt_id` 及各库的逻辑数据代与目录名。中断或拒绝采用后保留准备意图及原尝试，重试使用新的独占目录。新库仍等待秘密重配、现场核对及激活授权。
 
+### 记录激活前现场审核
+
+在 Schema 8 安装账本显式调用 `enableRecoverySiteReview()` 后，可信安装程序可提交 `recordRecoverySiteReview({plan_ref, review_id, previous_review_digest, preparation_digest, evidence}, authorize)`。首次 `previous_review_digest` 为 `null`，更新须引用当前审核摘要。审核绑定已经采用的新库回执，并逐库提交计划规定的配置引用、配置摘要、秘密策略和已经核验的秘密绑定凭证。凭证只含引用、摘要及 `reconfigured` 或 `not_required` 状态。现场证据同时绑定隔离归档的覆盖、未决项与命令核对摘要，未决动作保持 `hold_without_replay`。
+
+Suite 在 `check_recovery_site_review` 与 `adopt_recovery_site_review` 核对本机管理员、当前部署代、同一发行物、原退役仍有效、目标尚未启动，以及当前现场证据摘要。两次之间重新读回新库的字节和目录权限。`getRecoveryPlan` 在 `prepared_protected` 中返回最新 `site_review`，原审核仍可按其原请求查回。激活及设备侧恢复需要独立授权。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

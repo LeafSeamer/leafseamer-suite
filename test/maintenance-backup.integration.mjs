@@ -784,7 +784,9 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
       const name=authority+'.sqlite',output=path.join(generationDirectory,name);
       assert.deepEqual(await fs.readdir(generationDirectory),[name]);
       assert.equal(hash(await fs.readFile(output)),service.sha256);
-      const db=new DatabaseSync(output,{readOnly:true});
+      const inspection=path.join(f.root,'prepared-inspection-'+index+'.sqlite');
+      await fs.copyFile(output,inspection);
+      const db=new DatabaseSync(inspection,{readOnly:true});
       try{
         assert.deepEqual({...db.prepare('SELECT service_id,database_instance_id,request_epoch,maintenance_state FROM service_state').get()},
           {service_id,database_instance_id,request_epoch,maintenance_state:'protected'});
@@ -795,6 +797,57 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     assert.deepEqual(reopened.getRecoveryPlan(restoreId),prepared);
     assert.deepEqual(await reopened.prepareProtectedRecovery(prepareInput,preparationAuthority),prepared);
     assert.deepEqual(await fs.readFile(filePath),original);
+
+    const siteEvidence={coverage_digest:review.plan.coverage_digest,unresolved_digest:review.plan.unresolved_digest,
+      command_review_digest:review.plan.command_review.review_digest,site_observation_ref:'site.fixture',
+      site_observation_digest:digest('observed site'),unresolved_disposition:'hold_without_replay',
+      services:review.plan.target.services.map((service,index)=>({scope:review.plan.services[index].next_scope,
+        data_generation_id:service.data_generation_id,configuration_ref:service.configuration_ref,configuration_digest:digest(['configuration',index]),
+        secret_policy_ref:service.secret_policy_ref,secret_binding_ref:'secrets.fixture.'+index,secret_binding_digest:digest(['secret binding',index]),
+        secret_state:index===0?'reconfigured':'not_required'}))};
+    const siteInput={plan_ref:review.plan_ref,review_id:crypto.randomUUID(),previous_review_digest:null,
+      preparation_digest:digest(prepared.preparation),evidence:siteEvidence};
+    const evidenceAuthority=evidence=>()=>({...preparationAuthority(),origin:'local_os',os_subject:subject,evidence_digest:digest(evidence)});
+    const siteAuthority=evidenceAuthority(siteEvidence);
+    await assert.rejects(reopened.recordRecoverySiteReview(siteInput,siteAuthority),{code:'recovery_site_review_migration_required'});
+    const reviewLedger=f.store.enableRecoverySiteReview();
+    await assert.rejects(reviewLedger.recordRecoverySiteReview(siteInput,preparationAuthority),{code:'recovery_local_admin_required'});
+    await assert.rejects(reviewLedger.recordRecoverySiteReview({...siteInput,preparation_digest:digest('wrong attempt')},siteAuthority),
+      {code:'recovery_site_preparation'});
+    await assert.rejects(reviewLedger.recordRecoverySiteReview({...siteInput,evidence:{...siteEvidence,unresolved_disposition:'replay'}},siteAuthority),
+      {code:'recovery_site_evidence'});
+    const wrongSecret=structuredClone(siteInput);wrongSecret.evidence.services[0].secret_policy_ref='unapproved.secret.policy';
+    await assert.rejects(reviewLedger.recordRecoverySiteReview(wrongSecret,evidenceAuthority(wrongSecret.evidence)),{code:'recovery_site_evidence'});
+
+    const first=prepared.preparation.services[0],output=path.join(f.root,'content',prepared.preparation.attempt_id,
+      first.directory_name,first.next_scope.authority+'.sqlite');
+    const verifiedBytes=await fs.readFile(output);
+    const damaged=Buffer.from(verifiedBytes);damaged[damaged.length-1]^=1;
+    await fs.writeFile(output,damaged);
+    try{await assert.rejects(reviewLedger.recordRecoverySiteReview(siteInput,siteAuthority),{code:'recovery_preparation_files'});}
+    finally{await fs.writeFile(output,verifiedBytes);}
+    if(process.platform==='linux'){
+      await fs.chmod(output,0o644);
+      try{await assert.rejects(reviewLedger.recordRecoverySiteReview(siteInput,siteAuthority),{code:'recovery_preparation_protection'});}
+      finally{await fs.chmod(output,0o600);}
+    }
+    await assert.rejects(reviewLedger.recordRecoverySiteReview(siteInput,({action})=>({...siteAuthority(),
+      retirement_current:action!=='adopt_recovery_site_review'})),{code:'recovery_site_authority'});
+    assert.deepEqual(reviewLedger.getRecoveryPlan(restoreId),prepared);
+
+    const approvedSite=await reviewLedger.recordRecoverySiteReview(siteInput,siteAuthority);
+    assert.equal(approvedSite.revision,1);
+    assert.equal(approvedSite.evidence_digest,digest(siteEvidence));
+    assert.equal(approvedSite.os_subject,subject);
+    const reviewed=f.reopen().backupMaintenance();
+    assert.deepEqual(reviewed.getRecoveryPlan(restoreId),{...prepared,site_review:approvedSite});
+    const updatedEvidence={...siteEvidence,site_observation_digest:digest('site observed after reconfiguration')};
+    const secondInput={...siteInput,review_id:crypto.randomUUID(),evidence:updatedEvidence};
+    await assert.rejects(reviewed.recordRecoverySiteReview(secondInput,evidenceAuthority(updatedEvidence)),{code:'recovery_site_review_conflict'});
+    const refreshed=await reviewed.recordRecoverySiteReview({...secondInput,previous_review_digest:approvedSite.review_digest},evidenceAuthority(updatedEvidence));
+    assert.equal(refreshed.revision,2);
+    assert.deepEqual(reviewed.getRecoveryPlan(restoreId),{...prepared,site_review:refreshed});
+    assert.deepEqual(await reviewed.recordRecoverySiteReview(siteInput,siteAuthority),approvedSite);
   }
 
   const interrupted=crypto.randomUUID();

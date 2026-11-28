@@ -14,9 +14,9 @@ const bytes=value=>Buffer.from(canonical(value));
 const unknownStorage=new Set(['installation_storage_unknown','installation_unavailable','installation_directory_changed']);
 
 export function restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,claimHelper,
-  requireFreeHelper,recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,readLinuxRetirement}){
+  requireFreeHelper,recoveryPlansEnabled,retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,readLinuxRetirement}){
   const buildPlans=()=>recoveryPlanStore({db,transact,rows,decode,identity,staging,contentDirectory,published,original,claimHelper,requireFreeHelper,
-    retirementEnabled,windowsFenceEnabled,preparationEnabled,readLinuxRetirement});
+    retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled,readLinuxRetirement});
   let plans=recoveryPlansEnabled?buildPlans():null;
   function original(restoreId){
     return rows(db,`SELECT i.*,r.state,r.body,r.digest FROM maintenance_restore_intent i
@@ -141,6 +141,7 @@ export function restoreMaintenance({db,transact,rows,decode,identity,staging,con
     enableRetirement(){retirementEnabled=true;plans=buildPlans();},
     enableWindowsFencing(){windowsFenceEnabled=true;plans=buildPlans();},
     enablePreparation(){preparationEnabled=true;plans=buildPlans();},
+    enableSiteReview(){siteReviewEnabled=true;plans=buildPlans();},
     recordLinuxRetirement(input,authority,native=false){
       need(plans,'recovery_plan_migration_required');
       return plans.recordLinuxRetirement(input,authority,native);
@@ -152,6 +153,10 @@ export function restoreMaintenance({db,transact,rows,decode,identity,staging,con
     async prepareStorage(input,authority){
       need(plans,'recovery_plan_migration_required');
       return plans.prepareStorage(input,authority);
+    },
+    async recordSiteReview(input,authority){
+      need(plans,'recovery_plan_migration_required');
+      return plans.recordSiteReview(input,authority);
     },
     get(restoreId){
       need(matches(uuid,restoreId),'restore_request');

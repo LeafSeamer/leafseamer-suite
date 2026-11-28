@@ -3,6 +3,7 @@ import path from 'node:path';
 import {canonical,digest,InstallationError,requireValue as need} from './import-input.mjs';
 import {readExpandedManifest,verifyExpandedArchive} from './maintenance-backup-archive.mjs';
 import {prepareRecoveryFiles,verifyProtectedRecoveryFiles} from './recovery-storage-preparation.mjs';
+import {recoverySiteReviewStore} from './recovery-site-review.mjs';
 import {historicalWindowsRetirementFormat,windowsRecoverySource,windowsRetirementFacts,windowsRetirementFormat,
   windowsRetirementReader,withWindowsStartupFences} from './windows-recovery-retirement.mjs';
 
@@ -40,10 +41,16 @@ function targetPlan(value,receipts){
 }
 
 export function recoveryPlanStore({db,transact,rows,decode,identity,staging,contentDirectory,published,original,claimHelper,requireFreeHelper,
-  readLinuxRetirement,retirementEnabled,windowsFenceEnabled,preparationEnabled}){
+  readLinuxRetirement,retirementEnabled,windowsFenceEnabled,preparationEnabled,siteReviewEnabled}){
   const installation={installation_id:identity.host_installation_id,installation_epoch:identity.installation_epoch};
   const candidateDirectory=id=>path.join(staging,'restore-'+id,'restored.partial');
   const planReference=(id,planId,hashValue)=>({...installation,restore_id:id,plan_id:planId,revision:'1',digest:hashValue});
+  const siteReview=siteReviewEnabled?recoverySiteReviewStore({db,transact,rows,decode,contentDirectory,claimHelper,requireFreeHelper,authorized,
+    load(id,reference){
+      const {source}=isolation(id),candidate=current(id);
+      need(candidate&&same(candidate.plan_ref,reference),'recovery_plan_ref');
+      return {archive:source.archive,...candidate};
+    }}):null;
 
   function isolation(id){
     const row=original(id);
@@ -109,7 +116,8 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,cont
       preparation.intent_digest===row.intent_digest&&Array.isArray(preparation.services)&&preparation.services.length===value.plan.services.length&&
       preparation.services.every((service,index)=>service.directory_name==='db-'+index&&same(service.next_scope,value.plan.services[index].next_scope)&&
         service.origin?.data_generation_id===value.plan.target.services[index].data_generation_id),'recovery_plan_integrity');
-    return {...value,phase:'prepared_protected',preparation_intent,preparation};
+    const prepared={...value,phase:'prepared_protected',preparation_intent,preparation};
+    return siteReview?siteReview.current(id,prepared):prepared;
   }
 
   function authorized(authority,action,expected,context){
@@ -411,5 +419,9 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,cont
   }
 
   return {prepare,approve,recordLinuxRetirement,recordWindowsRetirement,prepareStorage,
+    async recordSiteReview(input,authority){
+      need(siteReview,'recovery_site_review_migration_required');
+      return siteReview.record(input,authority);
+    },
     get(id){need(matches(uuid,id),'restore_request');return transact(()=>current(id));}};
 }

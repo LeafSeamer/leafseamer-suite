@@ -10,12 +10,13 @@ import {verifySnapshotMigration} from './snapshot-migration.mjs';
 const snapshotMigration=process.env.LEAFSEAMER_SNAPSHOT_MIGRATION_TEST==='1';
 import {verifyChannelMigration} from './event-channel-migration.mjs';
 const channelMigration=process.env.LEAFSEAMER_EVENT_CHANNEL_MIGRATION_TEST==='1';
+const exerciseRecoveryReconciliation=process.env.LEAFSEAMER_SIMULATOR_RECOVERY_RECONCILIATION_TEST==='1';
 const exerciseScheduledWithdrawal=process.env.LEAFSEAMER_SIMULATOR_SCHEDULE_REFERENCE_WITHDRAWAL_TEST==='1';
 const exerciseScheduledDispatch=exerciseScheduledWithdrawal||process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_DISPATCH_TEST==='1';
 const exerciseScheduledAdmission=exerciseScheduledDispatch||process.env.LEAFSEAMER_SIMULATOR_SCHEDULED_ADMISSION_TEST==='1';
-const exerciseArmChain=exerciseScheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_ARM_CHAIN_TEST==='1';
-const exerciseSourceReference=exerciseScheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_SOURCE_REFERENCE_TEST==='1';
-const exerciseReceiverAge=exerciseScheduledAdmission||process.env.LEAFSEAMER_EVENT_RECEIVER_NATIVE_TEST==='1';
+const exerciseArmChain=exerciseScheduledAdmission||exerciseRecoveryReconciliation||process.env.LEAFSEAMER_SIMULATOR_ARM_CHAIN_TEST==='1';
+const exerciseSourceReference=exerciseScheduledAdmission||exerciseRecoveryReconciliation||process.env.LEAFSEAMER_SIMULATOR_SOURCE_REFERENCE_TEST==='1';
+const exerciseReceiverAge=exerciseScheduledAdmission||exerciseRecoveryReconciliation||process.env.LEAFSEAMER_EVENT_RECEIVER_NATIVE_TEST==='1';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -271,8 +272,9 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   const armChain=exerciseArmChain&&mode.endsWith('_capture_events')&&!scopeMigration&&!subscriptionMigration&&!sourceProjectionMigration&&!snapshotMigration&&!channelMigration;
   const scheduledAdmission=armChain&&exerciseScheduledAdmission;
   const targetGateOnly=armChain&&!scheduledAdmission&&process.env.LEAFSEAMER_SIMULATOR_TARGET_GATE_TEST==='1';
-  const armedTargetDispatch=armChain&&!targetGateOnly&&(scheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_ARM_DISPATCH_TEST==='1');
-  const focusedDispatch=armedTargetDispatch&&(scheduledAdmission||process.env.LEAFSEAMER_SIMULATOR_FOCUSED_DISPATCH_TEST==='1');
+  const recoveryReconciliation=armChain&&exerciseRecoveryReconciliation;
+  const armedTargetDispatch=armChain&&!targetGateOnly&&(scheduledAdmission||recoveryReconciliation||process.env.LEAFSEAMER_SIMULATOR_ARM_DISPATCH_TEST==='1');
+  const focusedDispatch=armedTargetDispatch&&(scheduledAdmission||recoveryReconciliation||process.env.LEAFSEAMER_SIMULATOR_FOCUSED_DISPATCH_TEST==='1');
   const armedTargetReady=armChain&&!targetGateOnly&&(armedTargetDispatch||process.env.LEAFSEAMER_SIMULATOR_ARM_READY_TEST==='1');
   const firstEnrollment=mode.endsWith('_cleanup_successor_capture_events')&&!scopeMigration&&!subscriptionMigration&&!sourceProjectionMigration&&!snapshotMigration&&!channelMigration;
   const sourceReferenceCapture=exerciseSourceReference&&firstEnrollment;
@@ -337,7 +339,7 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
   assert.equal((await store.sealImport(identity,{platform_profile_ref:profile,release_authorization_ref:authorized.result.reference})).state,'sealed');
   const sealed=store.sealedArtifact(identity),receipt=sealed.receipt;
   if(mode==='stage'||usesConfiguration){
-    const schema=scheduledAdmission?113:mode===currentSchemaExecution?103:mode===commandMigrationExecution?102:obs?99:mode.endsWith('_ready_automatic')||armChain?97:mode.endsWith('_ready_manual_migration')?95:sourceReferenceCapture?94:firstEnrollment?93:referenceWatermark || finalAdmissionOmissions[mode]==='command_issue_order'?92:referenceAcceptance?90:referenceSchema?88:mode===retirementSchemaExecution?80:mode===preparationSchemaExecution?(preserveExecutionHistory?78:79):mode.endsWith('_capture_events')?(scopeMigration?64:subscriptionMigration?65:sourceProjectionMigration?66:snapshotMigration?67:channelMigration?68:80):mode==='supervisor_create_module_writable_peer_capabilities'?62:mode.endsWith('_successor_control')||mode.includes('_control_queued')||mode.endsWith('_control_unresolved')?58:mode.includes('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
+    const schema=scheduledAdmission||recoveryReconciliation?113:mode===currentSchemaExecution?103:mode===commandMigrationExecution?102:obs?99:mode.endsWith('_ready_automatic')||armChain?97:mode.endsWith('_ready_manual_migration')?95:sourceReferenceCapture?94:firstEnrollment?93:referenceWatermark || finalAdmissionOmissions[mode]==='command_issue_order'?92:referenceAcceptance?90:referenceSchema?88:mode===retirementSchemaExecution?80:mode===preparationSchemaExecution?(preserveExecutionHistory?78:79):mode.endsWith('_capture_events')?(scopeMigration?64:subscriptionMigration?65:sourceProjectionMigration?66:snapshotMigration?67:channelMigration?68:80):mode==='supervisor_create_module_writable_peer_capabilities'?62:mode.endsWith('_successor_control')||mode.includes('_control_queued')||mode.endsWith('_control_unresolved')?58:mode.includes('_cleanup_successor')?57:mode.includes('_closure_cleanup')?56:mode.includes('_dispatch_closure')?55:mode.includes('_guard_dispatch')?54:mode.includes('_t2_guard')?53:mode.includes('_encoding_t2')?52:commandEncodingCases.includes(mode)?51:50;const migration=await migrateStorage(core,schema);assert.equal(migration.schema_revision,String(schema));
     let controllerStore=openStorage(core),manager;
     try{
       let installations=controllerStore.extensionInstallations;installations.bindSource(store);
@@ -734,7 +736,8 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
    incremental_source_event:mode.endsWith('_capture_events')&&!scopeMigration&&!subscriptionMigration&&!sourceProjectionMigration&&!snapshotMigration&&!channelMigration,
    first_enrollment:firstEnrollment,publication_gui:publicationGui,arm_target:armChain?runtimeInput.devices[1]:null,
    target_gate_only:targetGateOnly,verify_armed_target_ready:armedTargetReady,verify_armed_target_dispatch:armedTargetDispatch,focused_dispatch:focusedDispatch,scheduled_admission:scheduledAdmission,
-   scheduled_dispatch:scheduledAdmission&&exerciseScheduledDispatch,scheduled_reference_withdrawal:scheduledAdmission&&exerciseScheduledWithdrawal};}
+   scheduled_dispatch:scheduledAdmission&&exerciseScheduledDispatch,scheduled_reference_withdrawal:scheduledAdmission&&exerciseScheduledWithdrawal,
+   recovery_reconciliation:recoveryReconciliation};}
   let runFence=null;
   if(mode===retirementSchemaExecution||mode===preparationSchemaExecution&&!preserveExecutionHistory){
     const {adoptRunGenerationDenial}=await load('run-generation-denial.mjs');
@@ -1000,15 +1003,27 @@ for(const mode of ['verified','receipt','observer','challenge','target','peer','
           }
         }
       }else if(armedTargetDispatch){
-        const proof=frames.find(frame=>frame.event==='native-automation-target-dispatch');assert.ok(proof);
-        assert.equal(proof.receiver_reference,exerciseReceiverAge?'native':'fixture');
-        t.diagnostic(exerciseReceiverAge?'Seamer 来源年龄采用原生接收证据':'Seamer 来源年龄采用测试参考证据');
+        const proof=frames.find(frame=>frame.event===(recoveryReconciliation?'native-recovery-reconciliation':'native-automation-target-dispatch'));
+        assert.ok(proof);
+        if(!recoveryReconciliation)assert.equal(proof.receiver_reference,exerciseReceiverAge?'native':'fixture');
+        t.diagnostic(recoveryReconciliation?'人员恢复采用真实 Controller 终态及释放证据':exerciseReceiverAge?'Seamer 来源年龄采用原生接收证据':'Seamer 来源年龄采用测试参考证据');
         const record=db.prepare('SELECT record_jcs FROM command_lifecycle_revision WHERE command_id=? AND revision=5').pluck().get(proof.reference.object_id);
         const command=JSON.parse(record);assert.equal(command.origin,'automation');assert.deepEqual(command.initial_command_ref,proof.reference);
         assert.equal(command.state.outcome,'succeeded');assert.equal(command.completion.achieved,'effect_verified');
         assert.equal(proof.terminal.record_ref.digest,command.record_digest);
         assert.deepEqual(proof.terminal.state,command.state);
         assert.equal(command.run_binding.grant_id,proof.grant_ref.object_id);
+        if(recoveryReconciliation){
+          assert.equal(proof.protection.state,'verified');
+          assert.equal(proof.resource.status,'released');
+          const preparations=db.prepare('SELECT request_jcs FROM run_preparation').pluck().all().map(JSON.parse);
+          assert.equal(preparations.length,2);
+          const recovery=preparations.find(value=>value.mode==='recovery');
+          assert.equal(recovery?.execution_id,proof.completion.body.execution_ref.object_id);
+          assert.deepEqual(recovery.operation_ref,proof.completion.body.operation_ref);
+          const commands=db.prepare("SELECT command_id FROM command_admission_source WHERE json_extract(body_jcs,'$.metadata.origin')='automation'").pluck().all();
+          assert.deepEqual(commands,[proof.reference.object_id]);
+        }
       }
       if(armedTargetReady){
         const [grant]=db.prepare('SELECT body_jcs FROM run_preparation_grant').pluck().all().map(JSON.parse);

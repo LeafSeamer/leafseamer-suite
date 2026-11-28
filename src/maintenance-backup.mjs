@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {canonical, digest, InstallationError, requireValue as need} from './import-input.mjs';
 import {stageSQLiteSnapshot} from './sqlite-snapshot.mjs';
+import {encryptionInput,inspectBackupManifest,materializeBackupArchive} from './maintenance-backup-archive.mjs';
 
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])/;
 const id = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}(?![\s\S])/;
@@ -38,7 +39,7 @@ function backupPlan(value) {
   return JSON.parse(canonical(value));
 }
 
-export function backupMaintenance({db, transact, rows, decode, identity, staging}) {
+export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
@@ -81,9 +82,26 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
   function view(row) {
     const [approval] = rows(db,`SELECT detail,detail_digest FROM maintenance_backup_event
       WHERE operation_id=? AND revision=2 AND phase='queued'`,row.operation_id);
-    return {operation_id:row.operation_id,plan_ref:planRef(row.plan_id,row.plan_digest),revision:row.revision,
+    const result = {operation_id:row.operation_id,plan_ref:planRef(row.plan_id,row.plan_digest),revision:row.revision,
       phase:row.phase,step:row.step,cancel_requested:!!row.cancel_requested,reason_code:row.detail.reason??null,
       local_approval_ref:approval ? decode(approval.detail,approval.detail_digest).approval.approval_ref : null};
+    const archive = publication(row.operation_id);
+    if(!archive) return result;
+    const terminal = archive.state!==null;
+    result.revision+=1+Number(archive.cancelled)+Number(terminal);
+    result.cancel_requested=!!archive.cancelled;
+    if(terminal){
+      const record=decode(archive.result_body,archive.result_digest);
+      result.phase=archive.state==='published' ? 'succeeded' : archive.state;
+      result.step=archive.state==='published' ? 'published' : 'stopped';
+      result.reason_code=record.reason??null;
+      if(archive.state==='published')result.archive=record;
+    }else{
+      result.phase=archive.runtime_id===runtime ? 'running' : 'indeterminate';
+      result.step=archive.runtime_id===runtime ? 'archive_sealing' : 'stopped';
+      result.reason_code=archive.runtime_id===runtime ? null : 'backup_helper_unconfirmed';
+    }
+    return result;
   }
 
   function event(operationId, revision, phase, step, runtimeId, cancelRequested, detail) {
@@ -93,16 +111,37 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
 
   function expect(operationId, revision) {
     const row = current(operationId);
-    need(Number.isSafeInteger(revision) && revision===row.revision, 'backup_operation_revision');
+    need(Number.isSafeInteger(revision) && revision===view(row).revision, 'backup_operation_revision');
     return row;
   }
 
-  function authorized(authority, action, requestKey, plan, row = null, approval = null) {
+  function authorized(authority, action, requestKey, plan, row = null, approval = null, archive = null) {
     need(typeof authority==='function', 'backup_authority');
     const decision = authority({action,request_key:structuredClone(requestKey),plan:structuredClone(plan),
-      operation:row ? view(row) : null,approval:approval ? structuredClone(approval) : null});
+      operation:row ? view(row) : null,approval:approval ? structuredClone(approval) : null,
+      archive:archive ? structuredClone(archive) : null});
     need(decision?.allowed===true,'backup_not_authorized');
     need(decision.generation===plan.expected_generation,'backup_generation_conflict');
+    if(archive)need(decision.verified===true,'backup_archive_verification');
+  }
+
+  function publication(operationId){
+    if(!publicationEnabled)return null;
+    return rows(db,`SELECT i.runtime_id,i.body,i.digest,r.state,r.body AS result_body,r.digest AS result_digest,
+      c.operation_id IS NOT NULL AS cancelled
+      FROM maintenance_backup_publication_intent i
+      LEFT JOIN maintenance_backup_publication_cancel c USING(operation_id)
+      LEFT JOIN maintenance_backup_publication_result r USING(operation_id)
+      WHERE i.operation_id=?`,operationId)[0]??null;
+  }
+
+  function requireFreeHelper(){
+    need(!db.prepare(`SELECT 1 FROM maintenance_backup_current WHERE phase='indeterminate'
+      OR (phase='running' AND step='snapshotting') LIMIT 1`).pluck().get(),'backup_helper_in_use');
+    if(publicationEnabled)need(!db.prepare(`SELECT 1 FROM maintenance_backup_publication_intent i
+      LEFT JOIN maintenance_backup_publication_result r USING(operation_id)
+      WHERE r.operation_id IS NULL OR r.state='indeterminate' LIMIT 1`).pluck().get(),
+    'backup_helper_in_use');
   }
 
   function snapshots(operationId) {
@@ -117,6 +156,12 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
         WHERE phase='running' AND step='snapshotting' AND runtime_id<>?`,runtime);
       for(const row of interrupted) event(row.operation_id,row.revision+1,'indeterminate','stopped',row.runtime_id,
         row.cancel_requested,{reason:'backup_helper_unconfirmed'});
+      if(publicationEnabled){
+        const pending=rows(db,`SELECT i.operation_id FROM maintenance_backup_publication_intent i
+          LEFT JOIN maintenance_backup_publication_result r USING(operation_id)
+          WHERE i.runtime_id<>? AND r.operation_id IS NULL`,runtime);
+        for(const row of pending)recordArchiveResult(row.operation_id,'indeterminate',{reason:'backup_helper_unconfirmed'});
+      }
     });
   }
 
@@ -131,8 +176,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       const row = expect(operationId,revision);
       need(row.phase==='queued','backup_operation_phase');
       authorized(authorize,'begin',row.key,row.plan,row);
-      need(!db.prepare(`SELECT 1 FROM maintenance_backup_current WHERE phase='indeterminate'
-        OR (phase='running' AND step='snapshotting') LIMIT 1`).pluck().get(),'backup_helper_in_use');
+      requireFreeHelper();
       const targets = snapshots(operationId);
       need(targets.length===row.plan.target_service_scopes.length &&
         targets.every((target,index)=>target.target_index===index && target.body===null && matches(uuid,target.backup_operation_id)),
@@ -186,6 +230,77 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
           finish(row,'failed','stopped',error?.code==='backup_generation_conflict' ? error.code : 'backup_snapshot_failed');
       });
     } finally { active--; }
+  }
+
+  function recordArchiveResult(operationId,state,body){
+    db.prepare('INSERT INTO maintenance_backup_publication_result VALUES (?,?,?,?)')
+      .run(operationId,state,bytes(body),digest(body));
+    return view(current(operationId));
+  }
+
+  async function publishArchive(operationId,revision,input,authority){
+    need(publicationEnabled,'backup_publication_migration_required');
+    need(matches(uuid,operationId),'backup_operation_id');
+    need(input&&matches(hash,input.verification_ref),'backup_archive_verification');
+    const deadline=performance.now()+1800000;
+    const verificationRef=input.verification_ref;
+    const {profile,secret}=encryptionInput(input.mode,input.recipients,input.passphrase);
+    let claimed=false,ownedDirectory=false,terminal;
+    const target=path.join(contentDirectory,operationId);
+    active++;
+    try{
+      const selection=transact(()=>{
+        const row=expect(operationId,revision);
+        need(row.phase==='running'&&row.step==='snapshots_staged'&&!publication(operationId),'backup_operation_phase');
+        const copies=snapshots(operationId);
+        need(copies.length===row.plan.target_service_scopes.length&&copies.every(item=>item.body!==null),'backup_target_integrity');
+        return {plan:row.plan,copies:copies.map(item=>decode(item.body,item.digest))};
+      });
+      const directory=path.join(staging,'backup-'+operationId,'archive');
+      const manifest=await inspectBackupManifest(directory,operationId,selection.plan,selection.copies);
+      const proof={operation_id:operationId,manifest_sha256:manifest.manifest_sha256,
+        coverage_digest:selection.plan.coverage_digest,verification_ref:verificationRef,
+        encryption_profile_ref:selection.plan.encryption_profile_ref,encryption:profile};
+      transact(()=>{
+        const row=expect(operationId,revision);
+        requireFreeHelper();
+        authorized(authority,'seal_archive',row.key,row.plan,row,null,proof);
+        db.prepare('INSERT INTO maintenance_backup_publication_intent VALUES (?,?,?,?,?)')
+          .run(operationId,revision,runtime,bytes(proof),digest(proof));
+      });
+      claimed=true;
+      await fs.mkdir(target,{mode:0o700});
+      ownedDirectory=true;
+      const ciphertext=await materializeBackupArchive(directory,target,manifest.manifest_sha256,profile,secret,deadline);
+      terminal=transact(()=>{
+        need(performance.now()<deadline,'backup_archive_deadline');
+        const row=current(operationId), pending=publication(operationId);
+        need(pending?.runtime_id===runtime&&pending.state===null,'backup_operation_phase');
+        if(pending.cancelled)return recordArchiveResult(operationId,'cancelled',{reason:'backup_cancelled'});
+        const original=decode(pending.body,pending.digest);
+        authorized(authority,'publish_archive',row.key,row.plan,row,null,original);
+        return recordArchiveResult(operationId,'published',{...installation,archive_id:operationId,format:'leafseamer-backup-age/1',
+          level:row.plan.backup_level,consistency:row.plan.consistency,source_trust:'verified',state:'published',...ciphertext});
+      });
+      return terminal;
+    }catch(error){
+      if(!claimed||error instanceof InstallationError&&['installation_storage_unknown','installation_unavailable','installation_directory_changed'].includes(error.code))
+        throw error;
+      terminal=transact(()=>{
+        const pending=publication(operationId);
+        need(pending?.runtime_id===runtime&&pending.state===null,'backup_operation_phase');
+        return pending.cancelled ? recordArchiveResult(operationId,'cancelled',{reason:'backup_cancelled'}) :
+          recordArchiveResult(operationId,'failed',{reason:error instanceof InstallationError ? error.code : 'backup_archive_failed'});
+      });
+      return terminal;
+    }finally{
+      secret?.fill(0);
+      if(ownedDirectory&&terminal?.phase!=='succeeded'&&terminal){
+        await fs.unlink(path.join(target,'archive.age')).catch(()=>{});
+        await fs.rmdir(target).catch(()=>{});
+      }
+      active--;
+    }
   }
 
   const api = Object.freeze({
@@ -248,6 +363,12 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       return transact(()=>{
         const row = expect(operationId,revision);
         authorized(authority,'cancel',row.key,row.plan,row);
+        const pending=publication(operationId);
+        if(pending){
+          need(pending.runtime_id===runtime&&pending.state===null,'backup_operation_phase');
+          if(!pending.cancelled)db.prepare('INSERT INTO maintenance_backup_publication_cancel VALUES (?)').run(operationId);
+          return view(current(operationId));
+        }
         if(row.phase==='running' && row.step==='snapshotting'){
           need(row.runtime_id===runtime,'backup_operation_phase');
           if(!row.cancel_requested) event(operationId,revision+1,'running','snapshotting',runtime,true,{});
@@ -260,6 +381,14 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       });
     },
     collectSnapshots:collect,
+    publishArchive,
+    getArchive(archiveId){
+      need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
+      return transact(()=>{
+        const result=publication(archiveId);
+        return result?.state==='published' ? decode(result.result_body,result.result_digest) : null;
+      });
+    },
     snapshots(operationId){
       return transact(()=>{
         const row = current(operationId);
@@ -270,5 +399,5 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       });
     }
   });
-  return {api,recover,get active(){return active;}};
+  return {api,recover,enablePublication(){publicationEnabled=true;},get active(){return active;}};
 }

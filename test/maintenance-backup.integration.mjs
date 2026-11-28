@@ -3,9 +3,10 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {execFile} from 'node:child_process';
+import {execFile,execFileSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {promisify} from 'node:util';
+import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import {createInstallationStore,openInstallationStore} from '@leafseamer/suite/installation';
 import {digest} from '../dist/import-input.mjs';
@@ -13,6 +14,7 @@ import {digest} from '../dist/import-input.mjs';
 const exec = promisify(execFile);
 const generation = '7';
 const authorize = () => ({allowed:true,generation});
+const cryptoTool = fileURLToPath(new URL('../dist/native/leafseamer_backup_crypto'+(process.platform==='win32'?'.exe':''),import.meta.url));
 
 async function fixture(t) {
   const base = await fs.mkdtemp(path.join(os.tmpdir(),'leafseamer-backup-ledger-'));
@@ -37,7 +39,7 @@ async function fixture(t) {
     db.close();
     store.close();
     assert.equal(path.dirname(path.resolve(base)),path.resolve(os.tmpdir()));
-    await fs.rm(base,{recursive:true,force:true});
+    await fs.rm(base,{recursive:true,force:true,maxRetries:5,retryDelay:50});
   });
   const key = (name,origin='local_os') => ({installation_id:identity.host_installation_id,
     installation_epoch:identity.installation_epoch,origin,operation:'requestMaintenanceOperation',
@@ -181,4 +183,113 @@ test('process interruption keeps the original operation indeterminate and preven
   await assert.rejects(reopened.collectSnapshots(second.operation.operation_id,1,{authorize,sourceDirectory:()=>f.source}),
     {code:'backup_helper_in_use'});
   assert.deepEqual(f.reopen().backupMaintenance().lookup(first.input.request_key),recovered);
+});
+
+async function publicationFixture(f,ledger,name,coverage=[]){
+  const {operation,input}=f.request(ledger,name,{coverage_digest:digest(coverage)});
+  const ready=await ledger.collectSnapshots(operation.operation_id,1,{authorize,sourceDirectory:()=>f.source});
+  assert.equal(ready.step,'snapshots_staged');
+  const [{backup_operation_id:id,receipt}]=ledger.snapshots(ready.operation_id);
+  const stage=path.join(f.root,'staging','backup-'+ready.operation_id);
+  const directory=path.join(stage,'archive'),entry='db/controller.sqlite',report='reports/fixture.json';
+  await fs.mkdir(path.join(directory,'files','db'),{recursive:true,mode:0o700});
+  await fs.mkdir(path.join(directory,'files','reports'),{mode:0o700});
+  await fs.copyFile(path.join(stage,id,'snapshot.partial','data.sqlite'),path.join(directory,'files',entry));
+  const verified=Buffer.from('{"fixture":"structural checks passed"}');
+  await fs.writeFile(path.join(directory,'files',report),verified,{mode:0o600});
+  const reportHash=crypto.createHash('sha256').update(verified).digest('hex');
+  const manifest={format:'leafseamer-backup-tar/1',backup_id:ready.operation_id,level:'L2',consistency:'online',
+    files:[{role:'database',path:entry,size:receipt.bytes,sha256:receipt.sha256},
+      {role:'validation_report',path:report,size:verified.length,sha256:reportHash}],
+    databases:[{path:entry,service:receipt.scope.service_id,database_instance:receipt.scope.database_instance_id,
+      schema:receipt.scope.schema_revision,engine:receipt.engine,consistency_point:id}],
+    coverage,unresolved:[],validation_reports:[report]};
+  const raw=Buffer.from(JSON.stringify(manifest));
+  await fs.writeFile(path.join(directory,'manifest.json'),raw,{mode:0o600});
+  await exec(cryptoTool,['pack','--directory',directory],{windowsHide:true});
+  return {operation:ready,input,directory,manifestHash:crypto.createHash('sha256').update(raw).digest('hex'),
+    options:{verification_ref:digest(reportHash),mode:'passphrase',passphrase:Buffer.from('synthetic publication secret')}};
+}
+
+function publisher(fixture){
+  return ({archive})=>({allowed:true,generation,verified:archive?.verification_ref===fixture.options.verification_ref&&
+    archive?.manifest_sha256===fixture.manifestHash&&archive.encryption_profile_ref==='age.fixture'&&archive.encryption.mode==='passphrase'});
+}
+
+test('publishes a verified archive atomically and preserves its original across failed candidates and reopen',{timeout:30000},async t=>{
+  const f=await fixture(t),old=f.store.enableBackupMaintenance();
+  const prepared=await publicationFixture(f,old,'archive');
+  const {operation,input,options}=prepared;
+  await assert.rejects(old.publishArchive(operation.operation_id,operation.revision,options,publisher(prepared)),
+    {code:'backup_publication_migration_required'});
+  const ledger=f.store.enableBackupPublication();
+  assert.deepEqual(ledger.lookup(input.request_key),operation);
+  await assert.rejects(ledger.publishArchive(operation.operation_id,operation.revision,options,authorize),
+    {code:'backup_archive_verification'});
+  const result=await ledger.publishArchive(operation.operation_id,operation.revision,options,publisher(prepared));
+  assert.equal(result.phase,'succeeded');
+  assert.equal(result.step,'published');
+  const archive=result.archive;
+  assert.deepEqual(ledger.getArchive(operation.operation_id),archive);
+  const published=path.join(f.root,'content',archive.archive_id,'archive.age');
+  const encrypted=await fs.readFile(published);
+  assert.equal(archive.ciphertext_bytes,encrypted.length);
+  assert.equal(archive.ciphertext_sha256,crypto.createHash('sha256').update(encrypted).digest('hex'));
+  const restore=path.join(prepared.directory,'restore');
+  await fs.mkdir(restore);
+  await fs.writeFile(path.join(restore,'ciphertext.age'),encrypted);
+  execFileSync(cryptoTool,['open','--mode','passphrase','--directory',restore,'--expected-bytes',String(encrypted.length),
+    '--expected-sha256',archive.ciphertext_sha256],{windowsHide:true,input:options.passphrase});
+  const verified=await exec(cryptoTool,['verify','--directory',restore],{windowsHide:true});
+  assert.equal(JSON.parse(verified.stdout).manifest_sha256,prepared.manifestHash);
+  const reopened=f.reopen().backupMaintenance();
+  assert.deepEqual(reopened.request(input,authorize),result);
+  assert.deepEqual(reopened.getArchive(archive.archive_id),archive);
+  assert.throws(()=>reopened.cancel(operation.operation_id,result.revision,authorize),{code:'backup_operation_phase'});
+
+  const incomplete=await publicationFixture(f,reopened,'coverage',[{kind:'configuration',reference:'fixture.missing',state:'missing',path:''}]);
+  await assert.rejects(reopened.publishArchive(incomplete.operation.operation_id,incomplete.operation.revision,incomplete.options,publisher(incomplete)),
+    {code:'backup_archive_coverage'});
+  assert.equal(reopened.getArchive(incomplete.operation.operation_id),null);
+  const corrupt=await publicationFixture(f,reopened,'corrupt');
+  const plaintext=path.join(corrupt.directory,'plaintext.tar');
+  await fs.truncate(plaintext,(await fs.stat(plaintext)).size-512);
+  const failed=await reopened.publishArchive(corrupt.operation.operation_id,corrupt.operation.revision,corrupt.options,publisher(corrupt));
+  assert.equal(failed.phase,'failed');
+  assert.equal(reopened.getArchive(corrupt.operation.operation_id),null);
+  assert.deepEqual(await fs.readFile(published),encrypted);
+  assert.deepEqual(reopened.getArchive(archive.archive_id),archive);
+});
+
+test('a process exit after file synchronization leaves an unpublished orphan and an indeterminate task',{timeout:30000},async t=>{
+  const f=await fixture(t);
+  f.store.enableBackupMaintenance();
+  const ledger=f.store.enableBackupPublication();
+  const {operation,input,options}=await publicationFixture(f,ledger,'orphan');
+  const pending=f.request(ledger,'queued-after-orphan');
+  f.close();
+  const child=`
+    import {openInstallationStore} from '@leafseamer/suite/installation';
+    const store=openInstallationStore(process.argv[1]);
+    await store.backupMaintenance().publishArchive(process.argv[2],Number(process.argv[3]),{
+      verification_ref:process.argv[4],mode:'passphrase',passphrase:Buffer.alloc(24,97)
+    },({action})=>{
+      if(action==='publish_archive')process.exit(73);
+      return {allowed:true,generation:'7',verified:true};
+    });
+  `;
+  await assert.rejects(exec(process.execPath,['--disallow-code-generation-from-strings','--input-type=module','--eval',
+    child,f.root,operation.operation_id,String(operation.revision),options.verification_ref],
+  {cwd:new URL('../',import.meta.url),windowsHide:true}),{code:73});
+  const file=path.join(f.root,'content',operation.operation_id,'archive.age');
+  assert.ok((await fs.stat(file)).size>0);
+  const reopened=f.reopen().backupMaintenance();
+  assert.equal(reopened.getArchive(operation.operation_id),null);
+  const record=reopened.lookup(input.request_key);
+  assert.equal(record.phase,'indeterminate');
+  assert.equal(record.reason_code,'backup_helper_unconfirmed');
+  assert.equal(record.revision,operation.revision+2);
+  await assert.rejects(reopened.collectSnapshots(pending.operation.operation_id,1,{authorize,sourceDirectory:()=>f.source}),
+    {code:'backup_helper_in_use'});
+  assert.deepEqual(f.reopen().backupMaintenance().lookup(input.request_key),record);
 });

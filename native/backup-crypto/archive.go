@@ -162,7 +162,7 @@ func allZero(data []byte) bool {
 	return true
 }
 
-func readArchive(input *os.File, size int64, destination *os.Root) (archiveReceipt, error) {
+func readArchive(input io.Reader, size int64, destination *os.Root) (archiveReceipt, error) {
 	source := &archiveInput{LimitedReader: &io.LimitedReader{R: input, N: size + 1}}
 	in := tar.NewReader(source)
 	header, wire, err := source.next(in)

@@ -52,6 +52,8 @@ type options struct {
 	recipients      recipients
 	bytes           int64
 	sha256          string
+	manifestSHA256  string
+	destination     string
 }
 
 func parse(args []string) (options, error) {
@@ -66,6 +68,8 @@ func parse(args []string) (options, error) {
 	flags.StringVar(&opts.directory, "directory", "", "")
 	if opts.seal {
 		flags.Var(&opts.recipients, "recipient", "")
+		flags.StringVar(&opts.manifestSHA256, "manifest-sha256", "", "")
+		flags.StringVar(&opts.destination, "destination", "", "")
 	} else {
 		flags.Int64Var(&opts.bytes, "expected-bytes", 0, "")
 		flags.StringVar(&opts.sha256, "expected-sha256", "", "")
@@ -79,6 +83,12 @@ func parse(args []string) (options, error) {
 		if (opts.mode == "x25519") != (len(opts.recipients) != 0) {
 			return opts, errProfile
 		}
+		if opts.destination != "" || opts.manifestSHA256 != "" {
+			if !filepath.IsAbs(opts.destination) || filepath.Clean(opts.destination) != opts.destination ||
+				opts.destination == opts.directory || !hexDigest(opts.manifestSHA256) {
+				return opts, errArguments
+			}
+		}
 		return opts, nil
 	}
 	digest, err := hex.DecodeString(opts.sha256)
@@ -91,7 +101,7 @@ func parse(args []string) (options, error) {
 
 func readSecret(pipe *os.File) ([]byte, error) {
 	info, err := pipe.Stat()
-	if err != nil || info.Mode()&os.ModeNamedPipe == 0 {
+	if err != nil || (info.Mode()&os.ModeNamedPipe == 0 && !inheritedLocalStream(pipe, info.Mode())) {
 		return nil, errSecret
 	}
 	value, err := io.ReadAll(io.LimitReader(pipe, maxSecret+1))
@@ -206,6 +216,18 @@ type receipt struct {
 }
 
 func seal(opts options, secret, input *os.File, size int64, output *os.File) (receipt, error) {
+	var archiveHash string
+	if opts.manifestSHA256 != "" {
+		hash := sha256.New()
+		archive, err := readArchive(io.TeeReader(input, hash), size, nil)
+		if err != nil || archive.ManifestSHA256 != opts.manifestSHA256 {
+			return receipt{}, errManifest
+		}
+		if _, err := input.Seek(0, io.SeekStart); err != nil {
+			return receipt{}, errInput
+		}
+		archiveHash = hex.EncodeToString(hash.Sum(nil))
+	}
 	keys, err := opts.encryptTo(secret)
 	if err != nil {
 		return receipt{}, err
@@ -216,9 +238,17 @@ func seal(opts options, secret, input *os.File, size int64, output *os.File) (re
 	if err != nil {
 		return receipt{}, errOutput
 	}
-	n, err := io.Copy(encrypted, io.LimitReader(input, size+1))
+	var archiveInput io.Reader = io.LimitReader(input, size+1)
+	plaintextHash := sha256.New()
+	if archiveHash != "" {
+		archiveInput = io.TeeReader(archiveInput, plaintextHash)
+	}
+	n, err := io.Copy(encrypted, archiveInput)
 	if err != nil || n != size {
 		return receipt{}, errInput
+	}
+	if archiveHash != "" && hex.EncodeToString(plaintextHash.Sum(nil)) != archiveHash {
+		return receipt{}, errArchiveIntegrity
 	}
 	if encrypted.Close() != nil {
 		return receipt{}, errOutput
@@ -274,7 +304,16 @@ func run(args []string, secret *os.File, result io.Writer) error {
 	if !opts.seal && size != opts.bytes {
 		return errCiphertext
 	}
-	output, err := root.OpenFile(outputName, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	target := root
+	if opts.destination != "" {
+		target, err = os.OpenRoot(opts.destination)
+		if err != nil {
+			return errDirectory
+		}
+		defer target.Close()
+		outputName = "archive.age"
+	}
+	output, err := target.OpenFile(outputName, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
 		return errOutput
 	}
@@ -282,7 +321,7 @@ func run(args []string, secret *os.File, result io.Writer) error {
 	defer func() {
 		if !keep {
 			output.Close()
-			root.Remove(outputName)
+			target.Remove(outputName)
 		}
 	}()
 	staged, err := transform(opts, secret, input, size, output)
@@ -291,6 +330,16 @@ func run(args []string, secret *os.File, result io.Writer) error {
 	}
 	if output.Sync() != nil || output.Close() != nil {
 		return errOutput
+	}
+	if opts.destination != "" {
+		parent, err := os.OpenRoot(filepath.Dir(opts.destination))
+		if err != nil {
+			return errOutput
+		}
+		defer parent.Close()
+		if syncArchiveDirectory(target) != nil || syncArchiveDirectory(parent) != nil {
+			return errOutput
+		}
 	}
 	if json.NewEncoder(result).Encode(staged) != nil {
 		return errOutput

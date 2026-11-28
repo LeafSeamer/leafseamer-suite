@@ -429,6 +429,10 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 这些接口面向可信本机维护代码。调用方负责从当前安装权威取得部署代、权限与源目录，按当前读取范围提供查原结果，并在归档发布前完成业务不变量和覆盖核验。
 
+启用 `enableBackupPublication()` 后，安装账本显式升级到 Schema 3。可信维护调用方先在本次操作的 `staging/backup-<operation_id>/archive` 目录生成 `manifest.json` 与 `plaintext.tar`，再调 `publishArchive`。清单的备份标识须等于操作标识，覆盖数组摘要须匹配计划，数据库条目须逐项匹配已入账的快照。调用方的授权函数还须核验准确的清单、验证引用和加密配置，并在密文入账前再次确认。口令经继承的匿名管道或无名 Unix 流套接字对交付辅助程序。
+
+辅助程序校验 TAR 后加密，独占创建 `content/<operation_id>/archive.age` 并同步文件和目录。账本核对密文字节和 SHA-256 后提交发布回执，`getArchive` 据此读取原记录。缺项、无效档案、取消和未确认结束的作业均不会产生发布记录。源提供者的业务完成证据、密钥槽接入、旧进程退役证明和恢复激活由维护流程分别处理。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

@@ -24,6 +24,7 @@ export {InstallationError};
 const read = promisify(fs.read);
 const sql = ['installation.sql','trust-metadata.sql','installation-sealing.sql'].map(name=>fs.readFileSync(new URL('./'+name,import.meta.url),'utf8')).join('\n');
 const backupSql = fs.readFileSync(new URL('./maintenance-backup.sql',import.meta.url),'utf8');
+const publicationSql = fs.readFileSync(new URL('./maintenance-backup-publication.sql',import.meta.url),'utf8');
 const schemaDigest = 'sha256:' + crypto.createHash('sha256').update(sql).digest('hex');
 const engine = ['3.53.4', '2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc'];
 const applicationId = 0x4c53494e;
@@ -70,7 +71,12 @@ const expectedShapes=new Map();
 function schemaShape(revision) {
   if (!expectedShapes.has(revision)) {
     const db = new Database(':memory:');
-    try { db.exec(revision===1 ? sql : sql+'\n'+backupSql); expectedShapes.set(revision,canonical(shape(db))); }
+    try {
+      db.exec(sql);
+      if(revision>=2)db.exec(backupSql);
+      if(revision>=3)db.exec(publicationSql);
+      expectedShapes.set(revision,canonical(shape(db)));
+    }
     finally { db.close(); }
   }
   return expectedShapes.get(revision);
@@ -128,8 +134,8 @@ export function openInstallationStore(dataDirectory) {
     need(Buffer.from(canonical(marker)).equals(markerBytes) && marker.format === 'leafseamer-installation-marker/1' &&
       marker.directory_identity === directory_identity && marker.database_file_identity === fileIdentity(filename)&&marker.content_directory_identity===contentIdentity, 'installation_marker');
     db = database(filename);
-    const revision=pragma(db, 'user_version');
-    need(pragma(db, 'application_id') === applicationId && [1,2].includes(revision) && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
+    let revision=pragma(db, 'user_version');
+    need(pragma(db, 'application_id') === applicationId && [1,2,3].includes(revision) && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
     need(canonical(shape(db)) === schemaShape(revision) && pragma(db, 'quick_check') === 'ok' && rows(db, 'PRAGMA foreign_key_check').length === 0, 'installation_integrity');
     const identities = rows(db, 'SELECT * FROM installation_identity');
     need(identities.length === 1, 'installation_identity');
@@ -156,8 +162,8 @@ export function openInstallationStore(dataDirectory) {
         poisoned = true; throw new InstallationError('installation_storage_unknown', {cause: error});
       }
     };
-    const buildMaintenance=()=>backupMaintenance({db,transact,rows,decode,identity,staging});
-    let maintenance=revision===2 ? buildMaintenance() : null;
+    const buildMaintenance=()=>backupMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,publicationEnabled:revision===3});
+    let maintenance=revision>=2 ? buildMaintenance() : null;
     maintenance?.recover();
     let linuxJournal=null,memberJournal=null;
     function deploymentJournal(create,runtime,upgrade=false){
@@ -245,6 +251,7 @@ export function openInstallationStore(dataDirectory) {
             need(canonical(shape(db))===schemaShape(2),'installation_integrity');
             pragma(db,'user_version=2');
           });
+          revision=2;
           maintenance=buildMaintenance();
         }
         return maintenance.api;
@@ -252,6 +259,21 @@ export function openInstallationStore(dataDirectory) {
       backupMaintenance(){
         available();
         need(maintenance,'backup_maintenance_migration_required');
+        return maintenance.api;
+      },
+      enableBackupPublication(){
+        available();
+        need(maintenance,'backup_maintenance_migration_required');
+        if(revision===2){
+          need(!maintenance.active,'backup_helper_in_use');
+          transact(()=>{
+            db.exec(publicationSql);
+            need(canonical(shape(db))===schemaShape(3),'installation_integrity');
+            pragma(db,'user_version=3');
+          });
+          revision=3;
+          maintenance.enablePublication();
+        }
         return maintenance.api;
       },
       trust,

@@ -139,9 +139,9 @@ export function restoreMaintenance({db,transact,rows,decode,identity,staging,con
     },
     enablePlans(){plans=buildPlans();},
     enableRetirement(){retirementEnabled=true;plans=buildPlans();},
-    recordLinuxRetirement(input,authority){
+    recordLinuxRetirement(input,authority,native=false){
       need(plans,'recovery_plan_migration_required');
-      return plans.recordLinuxRetirement(input,authority);
+      return plans.recordLinuxRetirement(input,authority,native);
     },
     get(restoreId){
       need(matches(uuid,restoreId),'restore_request');

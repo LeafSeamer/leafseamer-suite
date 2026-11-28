@@ -167,12 +167,13 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
     }finally{unlock();}
   }
 
-  function recordLinuxRetirement(input,authority){
+  function recordLinuxRetirement(input,authority,native){
     need(retirementEnabled,'recovery_retirement_migration_required');
     need(process.platform==='linux','recovery_retirement_platform');
     need(fields(input,'plan_ref,retirement_id')&&matches(uuid,input.plan_ref?.restore_id)&&
       matches(uuid,input.retirement_id),'recovery_retirement_request');
     const request=structuredClone(input),id=request.plan_ref.restore_id;
+    const evidenceFormat=native?'leafseamer-linux-native-retirement/1':'leafseamer-linux-deployment-retirement/1';
     const unlock=claimHelper();
     try{
       return transact(()=>{
@@ -180,22 +181,24 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
         need(candidate&&same(candidate.plan_ref,request.plan_ref),'recovery_plan_ref');
         const {plan,approval}=candidate;
         need(approval&&plan.isolation_digest===row.digest,'recovery_retirement_not_approved');
-        const context={archive:source.archive,...candidate,retirement_request_id:request.retirement_id};
+        const context={archive:source.archive,...candidate,retirement_request_id:request.retirement_id,
+          runtime_profile:native?'linux_native':'linux_compose'};
         const decision=authorized(authority,'read_recovery_retirement',plan.expected_generation,context);
         const generationId=decision.runtime_generation_id;
         if(candidate.retirement){
           need(candidate.retirement.retirement_id===request.retirement_id&&
-            candidate.retirement.evidence.generation_id===generationId,'recovery_retirement_conflict');
+            candidate.retirement.evidence.generation_id===generationId&&candidate.retirement.evidence.format===evidenceFormat,
+          'recovery_retirement_conflict');
           return candidate;
         }
         requireFreeHelper();
-        const evidence=readLinuxRetirement(generationId,plan.target.generation_id);
-        need(plan.services.every(({source_scope})=>evidence.members.some(member=>
+        const evidence=readLinuxRetirement(generationId,plan.target.generation_id,native);
+        need(evidence.format===evidenceFormat&&plan.services.every(({source_scope})=>evidence.members.some(member=>
           member.authority===source_scope.authority&&member.service_id===source_scope.service_id)),
         'recovery_retirement_target_mismatch');
         const checked=authorized(authority,'adopt_recovery_retirement',plan.expected_generation,{...context,evidence});
         need(checked.runtime_generation_id===generationId,'recovery_runtime_generation_changed');
-        need(same(readLinuxRetirement(generationId,plan.target.generation_id),evidence),'recovery_runtime_generation_changed');
+        need(same(readLinuxRetirement(generationId,plan.target.generation_id,native),evidence),'recovery_runtime_generation_changed');
         need(!db.prepare('SELECT 1 FROM maintenance_recovery_retirement WHERE retirement_id=?').get(request.retirement_id),
           'recovery_retirement_conflict');
         const receipt={...request,approval_id:approval.approval_id,evidence};

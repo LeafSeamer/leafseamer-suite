@@ -89,10 +89,14 @@ test('旧成员退出后仍等待整个子树，恢复后退役才能放行替�
   journal=store.openLinuxMemberJournal(()=>true);
   const launchId=former.intent.launch_id;
   assert.deepEqual(journal.lookup(launchId),old.record);
+  assert.throws(()=>journal.recoveryRetirement(former.intent.generation_id,replacement.intent.generation_id),
+    {code:'recovery_linux_native_retirement_unproven'});
   assert.throws(()=>journal.observeRetirement(launchId),{code:'linux_member_intake_open'});
   const closing=journal.closeIntake(launchId);
   assert.equal(closing.phase,'closing');
   assert.deepEqual(journal.observeRetirement(launchId),closing);
+  assert.throws(()=>journal.recoveryRetirement(former.intent.generation_id,replacement.intent.generation_id),
+    {code:'recovery_linux_native_retirement_unproven'});
   await assert.rejects(journal.launch(replacement.intent),{code:'linux_member_previous_unretired'});
   close();open();
   assert.deepEqual(journal.lookupRetirement(launchId),closing);
@@ -104,11 +108,21 @@ test('旧成员退出后仍等待整个子树，恢复后退役才能放行替�
   assert.equal(retired.evidence.populated,false);
   assert.deepEqual(retired.evidence.parent,old.record.detail.parent_group);
   assert.deepEqual(journal.lookup(launchId),old.record);
+  const proof=journal.recoveryRetirement(former.intent.generation_id,replacement.intent.generation_id);
+  assert.equal(proof.format,'leafseamer-linux-native-retirement/1');
+  assert.deepEqual(proof.members.map(({authority,service_id,database_instance_id,launch_id})=>
+    ({authority,service_id,database_instance_id,launch_id})),
+  [{authority:'controller',service_id:former.intent.service_id,database_instance_id:former.intent.database_instance_id,launch_id:launchId}]);
+  journal.close();
+  journal=store.openLinuxMemberJournal(null);
+  assert.equal(journal.launch,undefined);
+  assert.deepEqual(journal.recoveryRetirement(former.intent.generation_id,replacement.intent.generation_id),proof);
   close();open();
   assert.deepEqual(journal.lookupRetirement(launchId),retired);
   assert.deepEqual(await journal.launch(former.intent),{record:old.record,bootstrap:null});
   await assert.rejects(journal.launch({...former.intent,launch_id:id()}),{code:'linux_member_generation_used'});
   const opened=await start(replacement);
+  assert.throws(()=>journal.recoveryRetirement(former.intent.generation_id,id()),{code:'recovery_linux_native_retirement_unproven'});
   assert.equal(opened.message,'application_entered\n');
   assert.equal(opened.record.phase,'executed_closed');
   opened.bootstrap.write('Q');

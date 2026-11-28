@@ -463,6 +463,8 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 Suite 核对 Linux 部署账本的最新运行代、完整退役记录、对应服务和端点关闭摘要。已批准的新运行代必须尚未启动。核对通过后，`getRecoveryPlan` 返回 `old_writers_retired` 及持久退役回执。准备新库前仍须核对现场、批准计划和最新部署状态。
 
+Linux 原生部署使用 `recordLinuxNativeRecoveryRetirement({plan_ref, retirement_id}, authorize)`。Suite 从本安装的成员账本读回各角色最后一次启动的记录，核对关闭入口、原父组和组内进程清空的凭证。恢复范围内的成员必须属于宿主确认的旧运行代，其他已登记的写入者也须有退役记录。授权回调通过 `runtime_profile` 区分 `linux_native` 和 `linux_compose`。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

@@ -310,7 +310,7 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       db.close();
       return Object.freeze({schema_revision:2,changed:version===1});
     }
-    need(typeof assertCurrent==='function','linux_member_authority');
+    need(assertCurrent===null||typeof assertCurrent==='function','linux_member_authority');
     db.exec('BEGIN EXCLUSIVE; COMMIT;');
     let closed=false,busy=false,failed=false;
     const live=new Map();
@@ -323,10 +323,12 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         failed=true;throw new InstallationError('linux_member_file_identity',{cause:error});
       }
     }
-    function lookup(id){
+    function lookup(id,expectedRevision){
       open();
       need(matches(id,uuid),'linux_member_launch_id');
-      const row=db.prepare('SELECT role,revision,phase,body,digest FROM linux_member_event WHERE launch_id=? ORDER BY revision DESC LIMIT 1').raw().get(id);
+      const select='SELECT role,revision,phase,body,digest FROM linux_member_event WHERE launch_id=?';
+      const row=expectedRevision===undefined?db.prepare(select+' ORDER BY revision DESC LIMIT 1').raw().get(id):
+        db.prepare(select+' AND revision=?').raw().get(id,expectedRevision);
       if(!row)return null;
       const [role,revision,phase,body,stored]=row,record=JSON.parse(body);
       need(canonical(record)===body&&digest(record)===stored&&record.intent.launch_id===id&&record.intent.role===role&&
@@ -362,11 +364,13 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
       const child=live.get(id);
       if(child){child.stdin.destroy();child.stdio[3].destroy();}
     }
-    function lookupRetirement(id){
+    function lookupRetirement(id,expectedRevision){
       open();
       need(version===2,'linux_member_upgrade_required');
       need(matches(id,uuid),'linux_member_launch_id');
-      const row=db.prepare('SELECT source_revision,revision,phase,body,digest FROM linux_member_retirement WHERE launch_id=? ORDER BY revision DESC LIMIT 1').raw().get(id);
+      const select='SELECT source_revision,revision,phase,body,digest FROM linux_member_retirement WHERE launch_id=?';
+      const row=expectedRevision===undefined?db.prepare(select+' ORDER BY revision DESC LIMIT 1').raw().get(id):
+        db.prepare(select+' AND revision=?').raw().get(id,expectedRevision);
       if(!row)return null;
       const [sourceRevision,revision,phase,body,stored]=row,record=JSON.parse(body);
       const launch=lookup(id);
@@ -374,6 +378,39 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         record.phase===phase&&launch?.revision===sourceRevision&&same(record.source,{revision:sourceRevision,digest:digest(launch)}),
       'linux_member_retirement_integrity');
       return record;
+    }
+    function recoveryRetirement(id,nextId){
+      const code='recovery_linux_native_retirement_unproven';
+      open();need(!busy,'linux_member_busy');
+      need(version===2&&matches(id,uuid)&&matches(nextId,uuid)&&id!==nextId,code);
+      const generation="json_extract(body,'$.intent.generation_id')";
+      const extent=db.prepare('SELECT count(*) FROM linux_member_event WHERE revision=1 AND '+generation+'=?').pluck();
+      need(extent.get(nextId)===0,code);
+      const heads=db.prepare(`SELECT e.launch_id FROM linux_member_event e WHERE e.revision=1 AND e.rowid=(
+        SELECT max(p.rowid) FROM linux_member_event p WHERE p.role=e.role AND p.revision=1) ORDER BY e.rowid`).pluck().all().map(id=>lookup(id));
+      const selected=heads.filter(item=>item.intent.generation_id===id);
+      need(heads.at(-1)?.intent.generation_id===id&&selected.length>0&&selected.length===extent.get(id),code);
+      const checked=[];
+      for(const launch of heads){
+        const {spec,groupPath}=intent(launch.intent),{launch_id,role,service_id,database_instance_id}=spec;
+        const closing=lookupRetirement(launch_id,1),retired=lookupRetirement(launch_id,2);
+        const {detail}=launch,evidence=retired?.evidence;
+        need(closing?.phase==='closing'&&closing.evidence===null&&retired?.phase==='retired'&&evidence?.populated===false&&
+          evidence.group_path===path.posix.dirname(groupPath)&&detail.group_path===groupPath&&detail.leader?.group_path===groupPath&&
+          same(evidence.host,detail.host)&&same(evidence.parent,detail.parent_group)&&same(evidence.core,detail.group)&&
+          same(evidence.leader,detail.leader),code);
+        const phases=['reserved','created_closed','release_requested','executed_closed'];
+        for(let revision=1;revision<=launch.revision;revision++){
+          const entry=lookup(launch_id,revision);
+          need(entry?.phase===phases[revision-1]&&same(entry.intent,spec)&&
+            ['host','parent_group','group_path','group','image','helper_digest'].every(key=>same(entry.detail[key],detail[key]))&&
+            (revision===1||same(entry.detail.leader,detail.leader)),code);
+        }
+        checked.push({authority:role,service_id,database_instance_id,launch_id,generation_id:spec.generation_id,
+          launch_digest:digest(launch),retirement_digest:digest(retired),containment_digest:digest(evidence)});
+      }
+      return {format:'leafseamer-linux-native-retirement/1',generation_id:id,members:checked.filter(item=>item.generation_id===id),
+        journal_identity_digest:digest(identity),retirement_digest:digest(checked)};
     }
     function appendRetirement(launch,revision,phase,evidence){
       open();
@@ -496,7 +533,16 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         if(helper)fs.closeSync(helper.fd);
       }
     }
-    return Object.freeze({schemaRevision:version,lookup,lookupRetirement,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
+    function close(){
+      if(closed)return;
+      need(!busy,'linux_member_busy');
+      closed=true;
+      for(const id of live.keys())stop(id);
+      try{db.close();}finally{onClose();}
+    }
+    const observations={schemaRevision:version,lookup:id=>lookup(id),lookupRetirement:id=>lookupRetirement(id),recoveryRetirement,close};
+    if(assertCurrent===null)return Object.freeze(observations);
+    return Object.freeze({...observations,closeIntake,observeRetirement:id=>retire(id,false),terminateRetirement:id=>retire(id,true),
       launch:input=>launch(input),admit(input,{policy,source,workerControl=false,workerRuntime=null}={}){
       need(source&&typeof source.capture==='function'&&typeof source.tick==='function','linux_bootstrap_clock');
       need(workerControl===false||workerControl===true&&input.role==='controller'&&version===2,'linux_worker_control_scope');
@@ -505,12 +551,6 @@ export function linuxMemberJournal({root,installation,available,database,pragma,
         (!workerRuntime.channelDirectory||path.isAbsolute(workerRuntime.channelDirectory))&&
         typeof workerRuntime.acquire==='function'&&typeof workerRuntime.assertCurrent==='function','linux_worker_runtime');
       return launch(input,{policy,source,workerControl,workerRuntime});
-    },close(){
-      if(closed)return;
-      need(!busy,'linux_member_busy');
-      closed=true;
-      for(const id of live.keys())stop(id);
-      try{db.close();}finally{onClose();}
     }});
   }catch(error){
     if(db?.open)db.close();

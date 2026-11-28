@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {execFile,execFileSync,spawn} from 'node:child_process';
 import {once} from 'node:events';
+import {setTimeout as delay} from 'node:timers/promises';
 import {DatabaseSync} from 'node:sqlite';
 import {promisify} from 'node:util';
 import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -334,6 +335,45 @@ async function liveDeploymentFixture(store,scopes){
   }catch(error){await close();throw error;}
 }
 
+async function nativeDeploymentFixture(store,scopes){
+  const generation_id=crypto.randomUUID(),driver='cgroupfs';
+  const image_path=process.env.LEAFSEAMER_TEST_NATIVE_MEMBER_FIXTURE;
+  const image_sha256='sha256:'+crypto.createHash('sha256').update(await fs.readFile(image_path)).digest('hex');
+  const journal=store.openLinuxMemberJournal(()=>true),started=[],directories=[];
+  async function finish(launchId){
+    journal.closeIntake(launchId);
+    for(let attempt=0;attempt<100;attempt++){
+      if(journal.observeRetirement(launchId).phase==='retired')return;
+      await delay(20);
+    }
+    assert.fail('native test member did not retire');
+  }
+  async function close(){
+    try{for(const launchId of started)await finish(launchId);}
+    finally{
+      journal.close();
+      for(const directory of directories.reverse())rmdirSync(directory);
+    }
+  }
+  try{
+    for(const {authority:role,service_id,database_instance_id} of scopes){
+      const {groupPath}=linuxContainerCgroup({driver,generationId:generation_id,role});
+      const base='/sys/fs/cgroup'+groupPath,core=base+'/core';
+      for(const directory of [base,core]){mkdirSync(directory);directories.push(directory);}
+      const launch_id=crypto.randomUUID();
+      const {record,bootstrap}=await journal.launch({generation_id,driver,role,service_id,database_instance_id,
+        launch_id,uid:65534,gid:65534,image_path,image_sha256,args:[core+'/cgroup.procs',core+'/cgroup.procs']});
+      started.push(launch_id);
+      const [message]=await once(bootstrap,'data',{signal:AbortSignal.timeout(2000)});
+      assert.equal(record.phase,'executed_closed');
+      assert.equal(message.toString(),'application_entered\n');
+    }
+    return {generation_id,close,finishFirst:()=>finish(started[0]),async finish(){
+      for(const launchId of started)await finish(launchId);
+    }};
+  }catch(error){await close();throw error;}
+}
+
 test('publishes a dual-service archive and verifies its exact snapshots in isolated recovery',{
   timeout:120000,skip:!Object.values(distributionDirectories).every(Boolean)
 },async t=>{
@@ -515,32 +555,46 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     {code:'recovery_retirement_migration_required'});
   const retiredPlan=f.store.enableRecoveryRetirement();
   if(process.platform==='linux'){
-    f.store.initializeLinuxDeploymentJournal();
-    const fixture=process.env.LEAFSEAMER_TEST_CGROUP_HOST==='1'
+    const native=process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1';
+    if(native)f.store.initializeLinuxMemberJournal();
+    else f.store.initializeLinuxDeploymentJournal();
+    const fixture=native?await nativeDeploymentFixture(f.store,scopes):process.env.LEAFSEAMER_TEST_CGROUP_HOST==='1'
       ? await liveDeploymentFixture(f.store,scopes):writeDeploymentFixture(f.root,scopes);
+    const method=native?'recordLinuxNativeRecoveryRetirement':'recordLinuxRecoveryRetirement';
+    const unproven=native?'recovery_linux_native_retirement_unproven':'recovery_linux_retirement_unproven';
     const hostAuthority=()=>({...authorize(),runtime_generation_id:fixture.generation_id});
     let retired;
     try{
-      assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,hostAuthority),
-        {code:'recovery_linux_retirement_unproven'});
+      assert.throws(()=>retiredPlan[method](retirementRequest,hostAuthority),{code:unproven});
       assert.deepEqual(retiredPlan.getRecoveryPlan(restoreId),acceptedPlan);
+      if(native){
+        await fixture.finishFirst();
+        assert.throws(()=>retiredPlan[method](retirementRequest,hostAuthority),{code:unproven});
+      }
       await fixture.finish();
-      assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,
-        ()=>({...authorize(),runtime_generation_id:crypto.randomUUID()})),{code:'recovery_linux_retirement_unproven'});
-      assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,({action})=>({...hostAuthority(),
+      assert.throws(()=>retiredPlan[method](retirementRequest,
+        ()=>({...authorize(),runtime_generation_id:crypto.randomUUID()})),{code:unproven});
+      assert.throws(()=>retiredPlan[method](retirementRequest,({action})=>({...hostAuthority(),
         ...(action==='adopt_recovery_retirement'&&{runtime_generation_id:crypto.randomUUID()})})),
       {code:'recovery_runtime_generation_changed'});
-      retired=retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,hostAuthority);
+      retired=retiredPlan[method](retirementRequest,hostAuthority);
     }finally{await fixture.close?.();}
     assert.equal(retired.phase,'old_writers_retired');
     assert.deepEqual(retired.retirement.plan_ref,review.plan_ref);
     assert.equal(retired.retirement.approval_id,approval.approval_id);
-    assert.equal(retired.retirement.evidence.endpoint_evidence_digest,fixture.endpoint_evidence_digest);
+    if(native){
+      assert.equal(retired.retirement.evidence.format,'leafseamer-linux-native-retirement/1');
+      assert.equal(retired.retirement.evidence.members.length,2);
+      assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,hostAuthority),
+        {code:'recovery_retirement_conflict'});
+    }else assert.equal(retired.retirement.evidence.endpoint_evidence_digest,fixture.endpoint_evidence_digest);
     const reopenedRetirement=f.reopen().backupMaintenance();
     assert.deepEqual(reopenedRetirement.getRecoveryPlan(restoreId),retired);
-    assert.deepEqual(reopenedRetirement.recordLinuxRecoveryRetirement(retirementRequest,hostAuthority),retired);
+    assert.deepEqual(reopenedRetirement[method](retirementRequest,hostAuthority),retired);
   }else{
     assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,authorize),
+      {code:'recovery_retirement_platform'});
+    assert.throws(()=>retiredPlan.recordLinuxNativeRecoveryRetirement(retirementRequest,authorize),
       {code:'recovery_retirement_platform'});
   }
 

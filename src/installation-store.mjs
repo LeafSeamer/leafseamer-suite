@@ -182,9 +182,10 @@ export function openInstallationStore(dataDirectory) {
       if(!create&&!upgrade)linuxJournal=journal;
       return journal;
     }
-    function readLinuxRetirement(id,nextId){
-      if(linuxJournal)return linuxJournal.recoveryRetirement(id,nextId);
-      const observer=deploymentJournal(false,null);
+    function readLinuxRetirement(id,nextId,native){
+      const journal=native?memberJournal:linuxJournal;
+      if(journal)return journal.recoveryRetirement(id,nextId);
+      const observer=native?members(false,null):deploymentJournal(false,null);
       try{return observer.recoveryRetirement(id,nextId);}
       finally{observer.close();}
     }

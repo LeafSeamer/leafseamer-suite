@@ -490,6 +490,10 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       need(restore,'restore_migration_required');
       return restore.recordLinuxRetirement(input,authority);
     },
+    recordLinuxNativeRecoveryRetirement(input,authority){
+      need(restore,'restore_migration_required');
+      return restore.recordLinuxRetirement(input,authority,true);
+    },
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
       return transact(()=>{

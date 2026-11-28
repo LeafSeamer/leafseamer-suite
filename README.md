@@ -413,6 +413,14 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 `pack`、`verify` 和 `unpack` 的回执包含 `state`、`archive_bytes`、`manifest_sha256` 和数据文件数 `files`。成功的 `verify` 返回 `verified`，其余两项返回 `staged`。归档布局、文件角色、元数据及限额见 [备份内部格式](docs/rebirth-c12-deployment-design.md#1041-备份内部格式)。维护流程负责确认来源、检查数据库内容、发布归档、激活恢复结果，以及清理超时、中断或丢失回执的暂存目录。
 
+### SQLite 一致性快照
+
+使用 `npm run build -- --sqlite-snapshot --backup-crypto` 构建快照与归档制品。Linux x64 使用 `cc`，Windows x64 使用 Zig 0.15.2，可通过 `LEAFSEAMER_SNAPSHOT_ZIG` 指定其绝对路径。构建从已锁定的 `better-sqlite3` 包取得 SQLite 3.53.4 源码，并核对源码摘要。
+
+本机维护调用方可从 `@leafseamer/suite/sqlite-snapshot` 导入 `stageSQLiteSnapshot({sourceDirectory, stagingDirectory, operationId, scope})`。调用方配置受保护的源目录和本次独占暂存目录。`scope` 绑定 `authority`、`service_id`、`database_instance_id`、`request_epoch`、`schema_revision` 和 `control_epoch`，Seamer 的最后一项为 `null`。仅打开该权威对应的 WAL 业务库。允许共享读取的 Controller 可在线复制，独占连接需先关闭写入者。
+
+成功返回 `staged`、操作标识、库身份、引擎、字节数和 SHA-256。单文件副本位于 `snapshot.partial/data.sqlite`，可作为受限 TAR 的数据库成员。快照执行 SQLite Online Backup，核验身份、结构完整性和外键。维护调用方负责业务不变量核验、账本与归档发布。整组恢复仍以经核准的激活计划为准。 [SQLite Online Backup](https://www.sqlite.org/c3ref/backup_finish.html)
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

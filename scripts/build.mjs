@@ -6,12 +6,14 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {buildTuf} from './build-tuf.mjs';
 import {backupCryptoExecutable, buildBackupCrypto} from './build-backup-crypto.mjs';
+import {snapshotExecutable, buildSQLiteSnapshot} from './build-sqlite-snapshot.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const options=process.argv.slice(2);
 const linuxMember=options.includes('--linux-member');
 const backupCrypto=options.includes('--backup-crypto');
-if(new Set(options).size!==options.length||options.length!==Number(linuxMember)+Number(backupCrypto)||
+const sqliteSnapshot=options.includes('--sqlite-snapshot');
+if(new Set(options).size!==options.length||options.length!==Number(linuxMember)+Number(backupCrypto)+Number(sqliteSnapshot)||
   (linuxMember&&process.platform!=='linux'))throw new Error('suite_build_arguments');
 const names = ['installation-store.mjs', 'installation.sql', 'import-input.mjs', 'archive-verifier.mjs', 'trust-metadata.mjs', 'trust-metadata.sql', 'tuf-input.mjs', 'release-transport.mjs', 'release-authorization.mjs', 'local-peer.mjs', 'local-import.mjs', 'validation-policy.mjs', 'linux-ingress.mjs', 'linux-compose.mjs', 'linux-cgroup-retirement.mjs'];
 const files = await Promise.all(names.map(async name => [name, await fs.readFile(path.join(root, 'src', name))]));
@@ -22,6 +24,8 @@ files.push(['content-preparation.mjs',await fs.readFile(path.join(root,'src/cont
 for(const name of ['prepared-content.mjs','linux-prepared-content.mjs','platform-qualification.mjs','installation-sealing.mjs','installation-sealing.sql','materialization.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 files.push(...await buildTuf());
 if(backupCrypto)files.push(...await buildBackupCrypto());
+files.push(['sqlite-snapshot.mjs',await fs.readFile(path.join(root,'src/sqlite-snapshot.mjs'))]);
+if(sqliteSnapshot)files.push(...await buildSQLiteSnapshot());
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const memberTools=['linux-member','linux-compose-channel'];
 const executablePath=name=>'native/leafseamer_'+name.replaceAll('-','_');
@@ -72,6 +76,7 @@ await fs.rm(output, {recursive: true, force: true}); await fs.mkdir(output);
 for (const [name, bytes] of files) { await fs.mkdir(path.dirname(path.join(output, name)), {recursive: true}); await fs.writeFile(path.join(output, name), bytes); }
 if(linuxMember)for(const tool of memberTools)await fs.chmod(path.join(output,executablePath(tool)),0o755);
 if(backupCrypto&&process.platform!=='win32')await fs.chmod(path.join(output,backupCryptoExecutable),0o755);
+if(sqliteSnapshot&&process.platform!=='win32')await fs.chmod(path.join(output,snapshotExecutable),0o755);
 if(process.platform==='linux')await fs.chmod(path.join(output,'linux-compose-admin.mjs'),0o755);
 await fs.writeFile(path.join(output, 'build-manifest.json'), JSON.stringify({format: 'leafseamer-suite-build/1',
   artifacts: Object.fromEntries(files.map(([name, bytes]) => [name, crypto.createHash('sha256').update(bytes).digest('hex')]))}, null, 2) + '\n');

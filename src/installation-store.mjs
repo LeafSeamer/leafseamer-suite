@@ -17,11 +17,13 @@ import {materializationProvider} from './materialization.mjs';
 import {linuxDeploymentJournal} from './linux-deployment-journal.mjs';
 import {linuxMemberJournal} from './linux-member-journal.mjs';
 import {linuxFlush} from './linux-prepared-content.mjs';
+import {backupMaintenance} from './maintenance-backup.mjs';
 export {createReleaseTransport} from './release-transport.mjs';
 export {InstallationError};
 
 const read = promisify(fs.read);
 const sql = ['installation.sql','trust-metadata.sql','installation-sealing.sql'].map(name=>fs.readFileSync(new URL('./'+name,import.meta.url),'utf8')).join('\n');
+const backupSql = fs.readFileSync(new URL('./maintenance-backup.sql',import.meta.url),'utf8');
 const schemaDigest = 'sha256:' + crypto.createHash('sha256').update(sql).digest('hex');
 const engine = ['3.53.4', '2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc'];
 const applicationId = 0x4c53494e;
@@ -64,13 +66,14 @@ function checkJournalSchema(db,source,code='linux_deployment_integrity'){
     need(canonical(shape(db))===canonical(shape(memory))&&rows(db,'PRAGMA foreign_key_check').length===0,code);
   }finally{memory.close();}
 }
-let expectedShape;
-function schemaShape() {
-  if (!expectedShape) {
+const expectedShapes=new Map();
+function schemaShape(revision) {
+  if (!expectedShapes.has(revision)) {
     const db = new Database(':memory:');
-    try { db.exec(sql); expectedShape = canonical(shape(db)); } finally { db.close(); }
+    try { db.exec(revision===1 ? sql : sql+'\n'+backupSql); expectedShapes.set(revision,canonical(shape(db))); }
+    finally { db.close(); }
   }
-  return expectedShape;
+  return expectedShapes.get(revision);
 }
 function decode(body, hash) {
   const value = JSON.parse(body.toString('utf8'));
@@ -125,8 +128,9 @@ export function openInstallationStore(dataDirectory) {
     need(Buffer.from(canonical(marker)).equals(markerBytes) && marker.format === 'leafseamer-installation-marker/1' &&
       marker.directory_identity === directory_identity && marker.database_file_identity === fileIdentity(filename)&&marker.content_directory_identity===contentIdentity, 'installation_marker');
     db = database(filename);
-    need(pragma(db, 'application_id') === applicationId && pragma(db, 'user_version') === 1 && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
-    need(canonical(shape(db)) === schemaShape() && pragma(db, 'quick_check') === 'ok' && rows(db, 'PRAGMA foreign_key_check').length === 0, 'installation_integrity');
+    const revision=pragma(db, 'user_version');
+    need(pragma(db, 'application_id') === applicationId && [1,2].includes(revision) && pragma(db, 'journal_mode') === 'wal', 'installation_schema');
+    need(canonical(shape(db)) === schemaShape(revision) && pragma(db, 'quick_check') === 'ok' && rows(db, 'PRAGMA foreign_key_check').length === 0, 'installation_integrity');
     const identities = rows(db, 'SELECT * FROM installation_identity');
     need(identities.length === 1, 'installation_identity');
     const {singleton, ...identity} = identities[0];
@@ -152,6 +156,9 @@ export function openInstallationStore(dataDirectory) {
         poisoned = true; throw new InstallationError('installation_storage_unknown', {cause: error});
       }
     };
+    const buildMaintenance=()=>backupMaintenance({db,transact,rows,decode,identity,staging});
+    let maintenance=revision===2 ? buildMaintenance() : null;
+    maintenance?.recover();
     let linuxJournal=null,memberJournal=null;
     function deploymentJournal(create,runtime,upgrade=false){
       available();
@@ -230,6 +237,23 @@ export function openInstallationStore(dataDirectory) {
       event(operation,1,'accepted',null,{kind:'import_accepted'});return view(required(request.intent.identity));
     }
     const store = {
+      enableBackupMaintenance(){
+        available();
+        if(!maintenance){
+          transact(()=>{
+            db.exec(backupSql);
+            need(canonical(shape(db))===schemaShape(2),'installation_integrity');
+            pragma(db,'user_version=2');
+          });
+          maintenance=buildMaintenance();
+        }
+        return maintenance.api;
+      },
+      backupMaintenance(){
+        available();
+        need(maintenance,'backup_maintenance_migration_required');
+        return maintenance.api;
+      },
       trust,
       validationPolicies:policies,
       platformQualifications:qualifications.api,
@@ -554,6 +578,7 @@ export function openInstallationStore(dataDirectory) {
       close() {
         need(linuxJournal===null,'linux_deployment_in_use');
         need(memberJournal===null,'linux_member_in_use');
+        need(!maintenance?.active,'backup_helper_in_use');
         need(activeCopies.size === 0 && activeValidations.size === 0&&activePreparations.size===0&&sealing.activeCount===0&&materialization.activeCount===0&&activeImports.size===0 && trust.activeCount === 0 && clientBindings.size===0, 'import_copy_in_progress');
         if (!closed) { closed = true; db.close(); }
       }

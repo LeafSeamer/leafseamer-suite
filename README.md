@@ -421,6 +421,14 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 成功返回 `staged`、操作标识、库身份、引擎、字节数和 SHA-256。单文件副本位于 `snapshot.partial/data.sqlite`，可作为受限 TAR 的数据库成员。快照执行 SQLite Online Backup，核验身份、结构完整性和外键。维护调用方负责业务不变量核验、账本与归档发布。整组恢复仍以经核准的激活计划为准。 [SQLite Online Backup](https://www.sqlite.org/c3ref/backup_finish.html)
 
+### 备份任务账本
+
+可信本机安装代码在持有 `openInstallationStore` 的独占写入连接时，可显式调用 `enableBackupMaintenance()` 安装账本 Schema 2。既有安装身份、标记及数据行保持原值。普通打开旧库时仍使用 Schema 1。后续打开 Schema 2 通过 `backupMaintenance()` 取得备份操作入口。
+
+调用方先登记固定计划，再按完整请求 Key 提交。`lookup` 查回原任务及修订。维护态与 L3 请求需先由本机审批绑定原计划摘要和部署代，再以当前修订调用 `collectSnapshots`。该入口核对当前授权和部署代，逐库写入真实快照回执。已知中断可在当前复制退出后取消。重开时，未确认已退出的复制会进入 `indeterminate`，并占用复制槽直到有独立的退役证明。暂存快照与 `snapshots_staged` 回执供后续归档发布流程采用。
+
+这些接口面向可信本机维护代码。调用方负责从当前安装权威取得部署代、权限与源目录，按当前读取范围提供查原结果，并在归档发布前完成业务不变量和覆盖核验。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

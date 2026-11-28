@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 
 const source = fileURLToPath(new URL('../native/backup-crypto/', import.meta.url));
 const version = 'go1.27.2';
-const sourceFiles = ['main.go', 'go.mod', 'go.sum'];
+const sourceFiles = ['archive-manifest.go', 'archive.go', 'main.go', 'go.mod', 'go.sum'];
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const sourceHashes = async () => Object.fromEntries(await Promise.all(sourceFiles.map(async name =>
   [name, sha256(await fs.readFile(path.join(source, name)))])));

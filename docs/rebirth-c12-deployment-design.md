@@ -284,6 +284,23 @@ agent仅在确定步骤生成SecretRequest：slot_id、purpose=encrypt_passphras
 
 下载POST使用正常service-audience bearer并核Origin，不用签发Controller的Cookie替另一服务授权；成功设置不可读的Secure／HttpOnly／SameSite=Strict专用Cookie，Path精确限定该服务的该archive content路径，无Domain。票据32随机字节，仅保存其hash，绑定原会话／完整Principal、archive摘要及权限版本，期限10分钟，不续期；POST同Key返原会话状态而不复活已失效票据，需新下载时由人显式申请新Key。GET不允许跨origin重定向、CDN缓存或URL票据，Content-Disposition为固定无用户路径的附件名，Cache-Control为no-store；支持同一密文的单Range续读，ETag固定SHA-256，变更或权限失效拒绝。每块至多1MiB，每块释放前核当前授权且授权快照不得旧于DF06允许期限；撤权停止尚未释放字节，不能回收已下载内容。GUI显示服务提供的摘要供下载后核验，成功发出链接／HTTP结束不冒充用户磁盘校验完成。
 
+#### 10.4.1 备份内部格式
+
+`leafseamer-backup-tar/1` 使用未压缩 TAR。首项固定为 `manifest.json`，其余普通文件按清单的 `files` 顺序排列。`files` 按相对路径的 UTF-8 字节排序，路径区分原始大小写，同时拒绝按 Unicode 大小写折叠会碰撞的文件或父目录。可移植路径须使用 `/`，总长至多 1024 字节，单段至多 255 字节。文件头使用固定 Go 工具链生成的 USTAR 或 PAX 表示，模式固定为 `0600`，PAX 只接受该表示按需生成的 `path`、`size`。文件填充和最后两个 512 字节终止块使用零字节。归档总长度包含全部头部、填充与终止块，10.4 的普通文件数包含清单自身。 [Go TAR 接口](https://pkg.go.dev/archive/tar)
+
+清单为 UTF-8 紧凑 JSON。顶层字段按下表顺序写入，记录内字段也按对应行的列举顺序写入。字符串按 Go `encoding/json` 默认规则编码，空列表写为 `[]`。标识和引用为至多 256 字节的非空字符串。
+
+| 字段 | 内容 |
+| --- | --- |
+| `format`、`backup_id`、`level`、`consistency` | 固定格式标识、备份引用、L0–L3、`online` 或 `maintenance` |
+| `files` | 每项为 `role`、`path`、`size`、`sha256`。大小为整数字节数，摘要由 64 个小写十六进制字符组成 |
+| `databases` | 每个数据库成员对应一项 `path`、`service`、`database_instance`、`schema`、`engine`、`consistency_point` |
+| `coverage` | 每项为 `kind`、`reference`、`state`、`path`。类别为 `component`、`configuration` 或 `secret`，状态为 `included`、`missing` 或 `excluded`。仅 `included` 填文件路径，其余填空字符串 |
+| `unresolved` | 未决事实引用列表 |
+| `validation_reports` | 所有 `validation_report` 成员的路径列表 |
+
+L0 文件角色为 `release`、`template`。L1 增加 `configuration`、`definition`、`catalog`、`module_approval`、`validation_report`。L2 增加 `database`、`audit`、`unresolved`、`nodecg`、`log`。L3 增加 `secret`，每个秘密文件必须由一项明确的 `included` 覆盖声明引用。辅助程序逐文件核对角色、长度和摘要，逐项按清单匹配头部，并将已校验的清单摘要交给维护流程。隔离展开仅创建新的暂存目录。来源信任、各库一致点真实性、运行资格及激活继续沿 DEP06／DEP07 的独立步骤核验。
+
 ### 10.5 退役、取消与恢复后的查原
 
 queued／awaiting_local_approval／awaiting_secret可CAS取消，清理未发布暂存并记录cancelled。running时仅登记cancel_requested，逐步骤在安全边界响应：在线备份停止复制／helper并核其退出，尚未发布才cancelled；一旦published保留成功结果，取消不得删除已发布包。进入old_writers_retired后取消只能终止后续激活并保留protected状态，不能自动重开旧writer；取消结果须带protected结果。activation事务已提交或无法确定时返回cancellation_too_late或operation_indeterminate，查原activation_operation_id，不用“取消”反向切回旧generation。服务退役或helper结果不明均indeterminate，禁止猜成功／失败及自动二次激活。

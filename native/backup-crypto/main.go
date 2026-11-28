@@ -250,6 +250,9 @@ func open(opts options, secret, input *os.File, size int64, output *os.File) (re
 }
 
 func run(args []string, secret *os.File, result io.Writer) error {
+	if len(args) > 0 && (args[0] == "pack" || args[0] == "verify" || args[0] == "unpack") {
+		return runArchive(args, result)
+	}
 	opts, err := parse(args)
 	if err != nil {
 		return err

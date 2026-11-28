@@ -402,11 +402,16 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 | 命令 | 输入 | 暂存结果 |
 | --- | --- | --- |
+| `pack` | `manifest.json` 及其列出的 `files/` 下的普通文件 | `plaintext.tar` |
 | `seal --mode x25519`，重复 `--recipient` 指定 1–16 个不同公钥 | `plaintext.tar` | `ciphertext.age.partial` |
 | `seal --mode passphrase` | `plaintext.tar` 和标准输入管道中的口令 | `ciphertext.age.partial` |
 | `open --mode x25519\|passphrase --expected-bytes N --expected-sha256 SHA256` | `ciphertext.age` 和标准输入管道中的单一对应私钥或口令 | `plaintext.tar.partial` |
+| `verify` | `plaintext.tar.partial` | 仅返回校验回执 |
+| `unpack` | `plaintext.tar.partial` | `restored.partial/manifest.json` 和 `restored.partial/files/` |
 
-父进程按原始字节写入秘密并关闭管道，最大 16 KiB。口令加密固定 scrypt logN 为 18，解密上限为 18。两端数据分别以 64 GiB 为上限。解密核对密文长度、SHA-256 和 age 认证。退出码为 0 且标准输出返回 `state: "staged"`、`ciphertext_bytes`、`ciphertext_sha256` 时，暂存文件已同步落盘。维护流程负责校验归档内容、发布或激活，以及对超时、中断或丢失结果的暂存目录进行清理。
+父进程按原始字节写入秘密并关闭管道，最大 16 KiB。口令加密固定 scrypt logN 为 18，解密上限为 18。两端数据分别以 64 GiB 为上限。解密核对密文长度、SHA-256 和 age 认证。加解密成功返回 `state: "staged"`、`ciphertext_bytes` 和 `ciphertext_sha256`。
+
+`pack`、`verify` 和 `unpack` 的回执包含 `state`、`archive_bytes`、`manifest_sha256` 和数据文件数 `files`。成功的 `verify` 返回 `verified`，其余两项返回 `staged`。归档布局、文件角色、元数据及限额见 [备份内部格式](docs/rebirth-c12-deployment-design.md#1041-备份内部格式)。维护流程负责确认来源、检查数据库内容、发布归档、激活恢复结果，以及清理超时、中断或丢失回执的暂存目录。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

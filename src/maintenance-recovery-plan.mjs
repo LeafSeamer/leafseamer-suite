@@ -36,7 +36,8 @@ function targetPlan(value,receipts){
   return structuredClone({...value,services});
 }
 
-export function recoveryPlanStore({db,transact,rows,decode,identity,staging,published,original,claimHelper,requireFreeHelper}){
+export function recoveryPlanStore({db,transact,rows,decode,identity,staging,published,original,claimHelper,requireFreeHelper,
+  readLinuxRetirement,retirementEnabled}){
   const installation={installation_id:identity.host_installation_id,installation_epoch:identity.installation_epoch};
   const candidateDirectory=id=>path.join(staging,'restore-'+id,'restored.partial');
   const planReference=(id,planId,hashValue)=>({...installation,restore_id:id,plan_id:planId,revision:'1',digest:hashValue});
@@ -59,7 +60,15 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
     need(plan.restore_id===id&&plan.isolation_digest===row.isolation_digest,'recovery_plan_integrity');
     const approval=row.approval_id===null?null:decode(row.approval_body,row.approval_digest);
     if(approval)need(approval.approval_id===row.approval_id&&same(approval.plan_ref,plan_ref),'recovery_plan_integrity');
-    return {phase:approval?'plan_reviewed':'awaiting_local_approval',plan_ref,plan,approval};
+    const value={phase:approval?'plan_reviewed':'awaiting_local_approval',plan_ref,plan,approval};
+    if(!retirementEnabled)return value;
+    const [proof]=rows(db,'SELECT * FROM maintenance_recovery_retirement WHERE restore_id=?',id);
+    if(!proof)return value;
+    const retirement=decode(proof.body,proof.digest);
+    need(approval&&proof.approval_id===approval.approval_id&&proof.plan_digest===plan_ref.digest&&
+      retirement.retirement_id===proof.retirement_id&&retirement.approval_id===approval.approval_id&&
+      same(retirement.plan_ref,plan_ref),'recovery_plan_integrity');
+    return {...value,phase:'old_writers_retired',retirement};
   }
 
   function authorized(authority,action,expected,context){
@@ -158,5 +167,44 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
     }finally{unlock();}
   }
 
-  return {prepare,approve,get(id){need(matches(uuid,id),'restore_request');return transact(()=>current(id));}};
+  function recordLinuxRetirement(input,authority){
+    need(retirementEnabled,'recovery_retirement_migration_required');
+    need(process.platform==='linux','recovery_retirement_platform');
+    need(fields(input,'plan_ref,retirement_id')&&matches(uuid,input.plan_ref?.restore_id)&&
+      matches(uuid,input.retirement_id),'recovery_retirement_request');
+    const request=structuredClone(input),id=request.plan_ref.restore_id;
+    const unlock=claimHelper();
+    try{
+      return transact(()=>{
+        const {source,row}=isolation(id),candidate=current(id);
+        need(candidate&&same(candidate.plan_ref,request.plan_ref),'recovery_plan_ref');
+        const {plan,approval}=candidate;
+        need(approval&&plan.isolation_digest===row.digest,'recovery_retirement_not_approved');
+        const context={archive:source.archive,...candidate,retirement_request_id:request.retirement_id};
+        const decision=authorized(authority,'read_recovery_retirement',plan.expected_generation,context);
+        const generationId=decision.runtime_generation_id;
+        if(candidate.retirement){
+          need(candidate.retirement.retirement_id===request.retirement_id&&
+            candidate.retirement.evidence.generation_id===generationId,'recovery_retirement_conflict');
+          return candidate;
+        }
+        requireFreeHelper();
+        const evidence=readLinuxRetirement(generationId,plan.target.generation_id);
+        need(plan.services.every(({source_scope})=>evidence.members.some(member=>
+          member.authority===source_scope.authority&&member.service_id===source_scope.service_id)),
+        'recovery_retirement_target_mismatch');
+        const checked=authorized(authority,'adopt_recovery_retirement',plan.expected_generation,{...context,evidence});
+        need(checked.runtime_generation_id===generationId,'recovery_runtime_generation_changed');
+        need(same(readLinuxRetirement(generationId,plan.target.generation_id),evidence),'recovery_runtime_generation_changed');
+        need(!db.prepare('SELECT 1 FROM maintenance_recovery_retirement WHERE retirement_id=?').get(request.retirement_id),
+          'recovery_retirement_conflict');
+        const receipt={...request,approval_id:approval.approval_id,evidence};
+        db.prepare('INSERT INTO maintenance_recovery_retirement VALUES (?,?,?,?,?,?)')
+          .run(id,request.retirement_id,approval.approval_id,candidate.plan_ref.digest,encode(receipt),digest(receipt));
+        return current(id);
+      });
+    }finally{unlock();}
+  }
+
+  return {prepare,approve,recordLinuxRetirement,get(id){need(matches(uuid,id),'restore_request');return transact(()=>current(id));}};
 }

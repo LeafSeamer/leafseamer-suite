@@ -457,6 +457,12 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 `getRecoveryPlan(restoreId)` 可查回固定计划，以及已入账的 `plan_reviewed` 回执。后续准备流程须沿用该计划的来源、目标和身份。已批准计划仍要求现场核对与保护态启动。
 
+### 核对 Linux 旧写入者退役
+
+本机安装程序可显式调用 `enableRecoveryRetirement()`，把 Schema 5 安装账本升级到 Schema 6。已批准的恢复计划可通过 `recordLinuxRecoveryRetirement({plan_ref, retirement_id}, authorize)` 采用本安装的 Linux 部署账本。 `retirement_id` 使用新 UUID。可信宿主在 `read_recovery_retirement` 和 `adopt_recovery_retirement` 返回当前部署代，以及与其绑定的旧 `runtime_generation_id`。
+
+Suite 核对 Linux 部署账本的最新运行代、完整退役记录、对应服务和端点关闭摘要。已批准的新运行代必须尚未启动。核对通过后，`getRecoveryPlan` 返回 `old_writers_retired` 及持久退役回执。准备新库前仍须核对现场、批准计划和最新部署状态。
+
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 
 新项目主许可为 [Apache-2.0](LICENSE)。从旧仓延续的设计文档保留其 MIT 声明，详见 [来源与许可说明](THIRD_PARTY_NOTICES.md)。

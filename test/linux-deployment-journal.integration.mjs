@@ -82,6 +82,8 @@ test('宿主账本持久关闭旧入口，等待真实父组与端点，再放�
   assert.throws(()=>installationStore.openLinuxDeploymentJournal(runtime),{code:'linux_deployment_in_use'});
   assert.throws(()=>installationStore.close(),{code:'linux_deployment_in_use'});
   assert.equal(journal.start(first).phase,'running');
+  assert.throws(()=>journal.recoveryRetirement(first.generation_id,second.generation_id),
+    {code:'recovery_linux_retirement_unproven'});
   assert.throws(()=>journal.start(second),{code:'linux_deployment_previous_open'});
   assert.equal(launches,1);
   assert.equal(journal.closeIntake(first.generation_id).phase,'closing');
@@ -112,6 +114,15 @@ test('宿主账本持久关闭旧入口，等待真实父组与端点，再放�
   const retired=journal.observeRetirement(first.generation_id);
   assert.equal(retired.phase,'retired');
   assert.equal(retired.detail.endpoint_evidence_digest,endpointEvidence);
+  const proof=journal.recoveryRetirement(first.generation_id,second.generation_id);
+  assert.deepEqual(proof.members.map(({authority,service_id,database_instance_id})=>({authority,service_id,database_instance_id})),
+    ['controller','seamer'].map(authority=>({authority,...first[authority]})));
+  assert.equal(proof.endpoint_evidence_digest,endpointEvidence);
+  assert.throws(()=>journal.recoveryRetirement(second.generation_id,first.generation_id),{code:'recovery_linux_retirement_unproven'});
+  journal.close();
+  journal=installationStore.openLinuxDeploymentJournal(null);
+  assert.equal(journal.start,undefined);
+  assert.deepEqual(journal.recoveryRetirement(first.generation_id,second.generation_id),proof);
   journal.close();installationStore.close();
   const raw=new DatabaseSync(path.join(root,'linux-deployment.db'));
   try{
@@ -134,6 +145,8 @@ test('宿主账本持久关闭旧入口，等待真实父组与端点，再放�
   assert.deepEqual(journal.lookup(first.generation_id),retired);
   assert.throws(()=>journal.start(first),{code:'linux_deployment_generation_used'});
   assert.equal(journal.start(second).phase,'running');
+  assert.throws(()=>journal.recoveryRetirement(first.generation_id,generation().generation_id),
+    {code:'recovery_linux_retirement_unproven'});
   assert.equal(launches,2);
   journal.closeIntake(second.generation_id);
   journal.close();installationStore.close();

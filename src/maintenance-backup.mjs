@@ -42,7 +42,7 @@ function backupPlan(value) {
 }
 
 export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,
-  restoreEnabled=false,recoveryPlansEnabled=false}) {
+  restoreEnabled=false,recoveryPlansEnabled=false,retirementEnabled=false,readLinuxRetirement}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
@@ -150,7 +150,8 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
   }
 
   function buildRestore(){
-    return restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,requireFreeHelper,recoveryPlansEnabled,
+    return restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,requireFreeHelper,
+      recoveryPlansEnabled,retirementEnabled,readLinuxRetirement,
       claimHelper(){
         need(active===0,'backup_helper_in_use');
         active++;
@@ -485,6 +486,10 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       need(restore,'restore_migration_required');
       return restore.getPlan(restoreId);
     },
+    recordLinuxRecoveryRetirement(input,authority){
+      need(restore,'restore_migration_required');
+      return restore.recordLinuxRetirement(input,authority);
+    },
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
       return transact(()=>{
@@ -503,5 +508,5 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
     }
   });
   return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},
-    enableRecoveryPlans(){restore.enablePlans();},get active(){return active;}};
+    enableRecoveryPlans(){restore.enablePlans();},enableRecoveryRetirement(){restore.enableRetirement();},get active(){return active;}};
 }

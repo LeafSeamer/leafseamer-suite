@@ -88,8 +88,9 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
       db.close();
       return Object.freeze({schema_revision:currentVersion,changed:version<currentVersion});
     }
-    need(fields(runtime,'endpointClosure,launch')&&typeof runtime.launch==='function'&&typeof runtime.endpointClosure==='function','linux_deployment_runtime');
-    const launch=runtime.launch,endpointClosure=runtime.endpointClosure;
+    need(runtime===null||fields(runtime,'endpointClosure,launch')&&
+      typeof runtime.launch==='function'&&typeof runtime.endpointClosure==='function','linux_deployment_runtime');
+    const {launch,endpointClosure}=runtime??{};
 
     let closed=false,busy=false,poisoned=false,readers=null;
     function currentFile(){
@@ -111,11 +112,12 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
         throw new InstallationError('linux_deployment_storage_unknown',{cause:error});
       }
     }
-    function lookup(generationId){
+    function lookup(generationId,expectedRevision){
       currentFile();
       const projection='SELECT generation_id,revision,phase,body,digest FROM linux_deployment_event ';
-      const row=generationId===undefined?db.prepare(projection+'ORDER BY serial DESC LIMIT 1').raw().get():
-        db.prepare(projection+'WHERE generation_id=? ORDER BY revision DESC LIMIT 1').raw().get(generationId);
+      const row=expectedRevision!==undefined?db.prepare(projection+'WHERE generation_id=? AND revision=?').raw().get(generationId,expectedRevision):
+        generationId===undefined?db.prepare(projection+'ORDER BY serial DESC LIMIT 1').raw().get():
+          db.prepare(projection+'WHERE generation_id=? ORDER BY revision DESC LIMIT 1').raw().get(generationId);
       if(!row)return null;
       const [id,revision,phase,body,hashValue]=row,record=JSON.parse(body);
       need(canonical(record)===body&&digest(record)===hashValue&&record.intent.generation_id===id&&
@@ -132,6 +134,11 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
       if(!readers)return;
       const prior=readers;readers=null;
       try{prior.controller?.close();}finally{prior.seamer?.close();}
+    }
+    function close(){
+      if(closed)return;
+      need(!busy,'linux_deployment_busy');closed=true;
+      try{unbind();}finally{try{db.close();}finally{onClose();}}
     }
     function bind(spec,host,leaders,expected=null){
       const next={};
@@ -169,10 +176,59 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
     function referenceScope(id,role){
       currentFile();need(version===currentVersion&&matches(id,uuid)&&roles.includes(role),'linux_deployment_reference');
     }
-    return Object.freeze({
+
+    function referenceRetirement(id,role){
+      referenceScope(id,role);
+      const retired=lookup(id),evidence=retired?.detail.reference_retirement?.[role];
+      if(retired?.phase!=='retired'||!evidence)return null;
+      const launch=record(launchTable,id,role),admission=record(referenceTable,id,role);
+      need(launch&&admission&&same(launch.intent,admission.intent)&&
+        same(evidence.group,launch.group)&&evidence.group_path===launch.group_path&&
+        evidence.provider_pid===admission.process_observation.provider_pid&&
+        evidence.start_ticks===admission.process_observation.start_ticks,'linux_deployment_reference_binding');
+      return {format:'leafseamer-linux-reference-retired/1',core_receipt_id:launch.core_receipt_id,
+        launch_intent:launch.intent,admission_receipt:admission.receipt,process_observation:admission.process_observation,
+        generation_id:id,evidence,provider_exit:{active_processes:0},core_exit:{active_processes:0},
+        endpoint_evidence_digest:retired.detail.endpoint_evidence_digest,retirement_digest:digest(retired)};
+    }
+
+    function recoveryRetirement(id,nextId){
+      const code='recovery_linux_retirement_unproven';
+      need(matches(id,uuid)&&matches(nextId,uuid)&&id!==nextId,code);
+      const retired=lookup();
+      need(retired?.intent.generation_id===id&&retired.phase==='retired'&&retired.revision===4&&
+        matches(retired.detail?.endpoint_evidence_digest,hash)&&!lookup(nextId),code);
+      const spec=intent(retired.intent),started=lookup(id,1),running=lookup(id,2),closing=lookup(id,3);
+      const {endpoint_evidence_digest,reference_retirement,...closed}=retired.detail;
+      need(started?.phase==='launching'&&running?.phase==='running'&&closing?.phase==='closing'&&
+        [started,running,closing].every(original=>same(original.intent,spec))&&
+        same(closed,closing.detail)&&same(closed,running.detail)&&fields(closed.members,'controller,seamer'),code);
+      if(spec.reference_digest)need(version===currentVersion&&fields(reference_retirement,'controller,seamer'),code);
+      else need(reference_retirement===undefined,code);
+      const members=roles.map(role=>{
+        const member=closed.members[role];
+        const {groupPath}=linuxContainerCgroup({driver:spec.driver,generationId:id,role});
+        need(member?.driver===spec.driver&&member.generation_id===id&&member.role===role&&member.group_path===groupPath&&
+          member.leader?.group_path?.startsWith(groupPath+'/')&&member.group&&same(member.host,started.detail.host),code);
+        if(spec.reference_digest){
+          const admission=record(referenceTable,id,role);
+          need(admission?referenceRetirement(id,role)!==null:reference_retirement[role]===null,code);
+        }
+        return {authority:role,...spec[role],containment_digest:digest(member)};
+      });
+      return {format:'leafseamer-linux-deployment-retirement/1',generation_id:id,members,endpoint_evidence_digest,
+        journal_identity_digest:digest(identity),retirement_digest:digest(retired)};
+    }
+
+    const observations={
       schemaRevision:version,
       current:()=>lookup(),
       lookup(id){need(matches(id,uuid),'linux_deployment_generation');return lookup(id);},
+      recoveryRetirement,close
+    };
+    if(runtime===null)return Object.freeze(observations);
+    return Object.freeze({
+      ...observations,
       admission(id,role){
         currentFile();need(version>=2&&matches(id,uuid)&&roles.includes(role),'linux_deployment_admission');
         return record(coreTable,id,role);
@@ -189,20 +245,7 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
       }));},
       referenceLaunch(id,role){referenceScope(id,role);return record(launchTable,id,role);},
       referenceAdmission(id,role){referenceScope(id,role);return record(referenceTable,id,role);},
-      referenceRetirement(id,role){
-        referenceScope(id,role);
-        const retired=lookup(id),evidence=retired?.detail.reference_retirement?.[role];
-        if(retired?.phase!=='retired'||!evidence)return null;
-        const launch=record(launchTable,id,role),admission=record(referenceTable,id,role);
-        need(launch&&admission&&same(launch.intent,admission.intent)&&
-          same(evidence.group,launch.group)&&evidence.group_path===launch.group_path&&
-          evidence.provider_pid===admission.process_observation.provider_pid&&
-          evidence.start_ticks===admission.process_observation.start_ticks,'linux_deployment_reference_binding');
-        return {format:'leafseamer-linux-reference-retired/1',core_receipt_id:launch.core_receipt_id,
-          launch_intent:launch.intent,admission_receipt:admission.receipt,process_observation:admission.process_observation,
-          generation_id:id,evidence,provider_exit:{active_processes:0},core_exit:{active_processes:0},
-          endpoint_evidence_digest:retired.detail.endpoint_evidence_digest,retirement_digest:digest(retired)};
-      },
+      referenceRetirement,
       reserveReference(id,role,settings,value){
         referenceScope(id,role);
         return operation(()=>transaction(()=>{
@@ -288,12 +331,7 @@ export function linuxDeploymentJournal({root,installation,available,database,pra
         });
         if(result.phase!=='closing')unbind();
         return result;
-      });},
-      close(){
-        if(closed)return;
-        need(!busy,'linux_deployment_busy');closed=true;
-        try{unbind();}finally{try{db.close();}finally{onClose();}}
-      }
+      });}
     });
   }catch(error){
     if(db?.open)db.close();

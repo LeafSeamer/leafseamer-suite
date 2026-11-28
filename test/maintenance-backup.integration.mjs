@@ -1,15 +1,18 @@
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
+import {mkdirSync,rmdirSync,writeFileSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {execFile,execFileSync} from 'node:child_process';
+import {execFile,execFileSync,spawn} from 'node:child_process';
+import {once} from 'node:events';
 import {DatabaseSync} from 'node:sqlite';
 import {promisify} from 'node:util';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import test from 'node:test';
 import {createInstallationStore,openInstallationStore} from '@leafseamer/suite/installation';
-import {digest} from '../dist/import-input.mjs';
+import {canonical,digest} from '../dist/import-input.mjs';
+import {linuxContainerCgroup} from '../dist/linux-cgroup-retirement.mjs';
 
 const exec = promisify(execFile);
 const generation = '7';
@@ -262,6 +265,75 @@ const distributionDirectories={
   seamer:process.env.LEAFSEAMER_TEST_BACKUP_SEAMER_DIST
 };
 
+function writeDeploymentFixture(root,scopes){
+  const roleNames=['controller','seamer'],generation_id=crypto.randomUUID(),driver='cgroupfs';
+  const intent={generation_id,driver,compose_digest:digest('fixture compose'),
+    ...Object.fromEntries(scopes.map(({authority,service_id,database_instance_id})=>[authority,{service_id,database_instance_id}]))};
+  const host={boot_id:crypto.randomUUID(),root:{device:'3',inode:'1'}};
+  const members=Object.fromEntries(roleNames.map((role,index)=>{
+    const {groupPath}=linuxContainerCgroup({driver,generationId:generation_id,role});
+    return [role,{driver,generation_id,role,host,group_path:groupPath,group:{device:'3',inode:String(index+2)},
+      leader:{pid:100+index,start_ticks:'10',group_path:groupPath+'/core'}}];
+  }));
+  function event(revision,phase,detail){
+    const db=new DatabaseSync(path.join(root,'linux-deployment.db'));
+    try{
+      const record={intent,revision,phase,detail};
+      db.prepare('INSERT INTO linux_deployment_event(generation_id,revision,phase,body,digest) VALUES (?,?,?,?,?)')
+        .run(generation_id,revision,phase,canonical(record),digest(record));
+    }finally{db.close();}
+  }
+  event(1,'launching',{host,predecessor:null});
+  event(2,'running',{members});
+  event(3,'closing',{members});
+  const endpoint_evidence_digest=digest('fixture closed endpoints');
+  return {generation_id,endpoint_evidence_digest,finish(){
+    event(4,'retired',{members,endpoint_evidence_digest});
+  }};
+}
+
+async function liveDeploymentFixture(store,scopes){
+  const generation_id=crypto.randomUUID(),driver='cgroupfs';
+  const intent={generation_id,driver,compose_digest:digest('fixture live deployment'),
+    ...Object.fromEntries(scopes.map(({authority,service_id,database_instance_id})=>[authority,{service_id,database_instance_id}]))};
+  const children=[],groups=[],endpoint_evidence_digest=digest('fixture closed endpoints');
+  const journal=store.openLinuxDeploymentJournal({
+    launch(){
+      return Object.fromEntries(['controller','seamer'].map(role=>{
+        const {groupPath}=linuxContainerCgroup({driver,generationId:generation_id,role});
+        const base='/sys/fs/cgroup'+groupPath,core=base+'/core';
+        for(const directory of [base,core]){mkdirSync(directory);groups.push(directory);}
+        const child=spawn('/bin/cat',{stdio:['pipe','ignore','inherit']});
+        child.stdin.on('error',()=>{});
+        children.push({child,exit:once(child,'close')});
+        writeFileSync(core+'/cgroup.procs',String(child.pid));
+        return [role,child.pid];
+      }));
+    },
+    endpointClosure(){return endpoint_evidence_digest;}
+  });
+  async function stop(){
+    for(const {child} of children)child.stdin.end();
+    const timer=setTimeout(()=>{for(const {child} of children)if(child.exitCode===null)child.kill('SIGKILL');},2000);
+    try{await Promise.all(children.map(({exit})=>exit));}finally{clearTimeout(timer);}
+  }
+  async function close(){
+    try{await stop();}finally{
+      journal.close();
+      for(const group of groups.reverse())rmdirSync(group);
+    }
+  }
+  try{
+    assert.equal(journal.start(intent).phase,'running');
+    assert.equal(journal.closeIntake(generation_id).phase,'closing');
+    assert.equal(journal.observeRetirement(generation_id).phase,'closing');
+    return {generation_id,endpoint_evidence_digest,close,async finish(){
+      await stop();
+      assert.equal(journal.observeRetirement(generation_id).phase,'retired');
+    }};
+  }catch(error){await close();throw error;}
+}
+
 test('publishes a dual-service archive and verifies its exact snapshots in isolated recovery',{
   timeout:120000,skip:!Object.values(distributionDirectories).every(Boolean)
 },async t=>{
@@ -438,6 +510,39 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   await assert.rejects(approved.approveRecoveryPlan({...approval,approval_id:crypto.randomUUID()},admin),
     {code:'recovery_approval_conflict'});
   assert.deepEqual(approved.getRestore(restoreId),restored);
+  const retirementRequest={plan_ref:review.plan_ref,retirement_id:crypto.randomUUID()};
+  assert.throws(()=>approved.recordLinuxRecoveryRetirement(retirementRequest,authorize),
+    {code:'recovery_retirement_migration_required'});
+  const retiredPlan=f.store.enableRecoveryRetirement();
+  if(process.platform==='linux'){
+    f.store.initializeLinuxDeploymentJournal();
+    const fixture=process.env.LEAFSEAMER_TEST_CGROUP_HOST==='1'
+      ? await liveDeploymentFixture(f.store,scopes):writeDeploymentFixture(f.root,scopes);
+    const hostAuthority=()=>({...authorize(),runtime_generation_id:fixture.generation_id});
+    let retired;
+    try{
+      assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,hostAuthority),
+        {code:'recovery_linux_retirement_unproven'});
+      assert.deepEqual(retiredPlan.getRecoveryPlan(restoreId),acceptedPlan);
+      await fixture.finish();
+      assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,
+        ()=>({...authorize(),runtime_generation_id:crypto.randomUUID()})),{code:'recovery_linux_retirement_unproven'});
+      assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,({action})=>({...hostAuthority(),
+        ...(action==='adopt_recovery_retirement'&&{runtime_generation_id:crypto.randomUUID()})})),
+      {code:'recovery_runtime_generation_changed'});
+      retired=retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,hostAuthority);
+    }finally{await fixture.close?.();}
+    assert.equal(retired.phase,'old_writers_retired');
+    assert.deepEqual(retired.retirement.plan_ref,review.plan_ref);
+    assert.equal(retired.retirement.approval_id,approval.approval_id);
+    assert.equal(retired.retirement.evidence.endpoint_evidence_digest,fixture.endpoint_evidence_digest);
+    const reopenedRetirement=f.reopen().backupMaintenance();
+    assert.deepEqual(reopenedRetirement.getRecoveryPlan(restoreId),retired);
+    assert.deepEqual(reopenedRetirement.recordLinuxRecoveryRetirement(retirementRequest,hostAuthority),retired);
+  }else{
+    assert.throws(()=>retiredPlan.recordLinuxRecoveryRetirement(retirementRequest,authorize),
+      {code:'recovery_retirement_platform'});
+  }
 
   const interrupted=crypto.randomUUID();
   f.close();

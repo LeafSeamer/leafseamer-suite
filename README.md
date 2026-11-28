@@ -447,7 +447,15 @@ Windows OBS 只读集成用例需要将 `LEAFSEAMER_OBS_PORTABLE_TEST_ROOT` 指�
 
 新生成的隔离结果含 `command_review`。Suite 按来源库、目标库、执行、步骤和原请求核对 Seamer 普通执行及恢复派发记录，以及 Controller 裁决和原终态修订。两端已有的不可变证据相冲突时，拒绝候选。若缺少对应快照或原件、终态未见或资源未决，保留 `requires_review`、原因计数和绑定快照与证据的摘要。多个库可能在不同时点复制，缺记录须交由后续现场核对。
 
-`isolated_validated` 表示原归档已通过隔离验证。切换仍需重验候选文件、处理未决命令、批准新的保护域并确认旧写入者退役。外部归档导入和新代激活沿各自的维护流程实施。
+`isolated_validated` 表示原归档已通过隔离验证。切换仍需处理未决命令、准备新的保护域并确认旧写入者退役。外部归档导入和新代激活沿各自的维护流程实施。
+
+### 审核恢复计划
+
+在 Schema 4 安装账本上显式调用 `enableRecoveryPlans()` 后，可用 `prepareRecoveryPlan(restoreId, target, authorize)` 为已隔离验证的归档固定一个恢复计划。目标包含 `deployment_plan_ref`、`deployment_plan_digest`、`release_manifest_digest`、新运行代 `generation_id`，以及逐库 `services`。每库目标包含 `source_database_instance_id`、`data_generation_id`、`schema_revision`、`configuration_ref` 和 `secret_policy_ref`。授权方从本机安装权威核对对应部署、制品和目标引用。计划为每个新库固定新的库实例和请求 epoch，并为 Controller 固定新的控制 epoch。
+
+本机管理员核对隔离清单、跨库命令报告和缺项后，调用 `approveRecoveryPlan`，提交新的 `approval_id`、完整 `plan_ref`、`command_review_digest`、`coverage_digest` 和 `unresolved_digest`。Suite 重新核对隔离目录的成员、字节和摘要，在提交前再次核对部署代及管理员身份。可信宿主在 `check_recovery_approval` 和 `approve_recovery_plan` 返回从本机身份验证取得的 `origin: 'local_os'` 和 `os_subject`。
+
+`getRecoveryPlan(restoreId)` 可查回固定计划，以及已入账的 `plan_reviewed` 回执。后续准备流程须沿用该计划的来源、目标和身份。已批准计划仍要求现场核对与保护态启动。
 
 旧版 [leafseamer-legacy](https://github.com/ikenainanodesu/leafseamer-legacy) 已停止维护，保留旧代码及 Git 历史。旧数据库不自动迁移，新版仅提供人工迁移建议。
 

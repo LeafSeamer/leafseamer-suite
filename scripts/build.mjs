@@ -18,6 +18,7 @@ if(new Set(options).size!==options.length||options.length!==Number(linuxMember)+
 const names = ['installation-store.mjs', 'installation.sql', 'import-input.mjs', 'archive-verifier.mjs', 'trust-metadata.mjs', 'trust-metadata.sql', 'tuf-input.mjs', 'release-transport.mjs', 'release-authorization.mjs', 'local-peer.mjs', 'local-import.mjs', 'validation-policy.mjs', 'linux-ingress.mjs', 'linux-compose.mjs', 'linux-cgroup-retirement.mjs'];
 names.push('maintenance-backup.mjs','maintenance-backup.sql','maintenance-backup-archive.mjs','maintenance-backup-publication.sql','backup-domain-verification.mjs');
 names.push('maintenance-restore.mjs','maintenance-restore.sql','restore-command-review.mjs');
+names.push('maintenance-recovery-plan.mjs','maintenance-recovery-plan.sql');
 const files = await Promise.all(names.map(async name => [name, await fs.readFile(path.join(root, 'src', name))]));
 for(const name of ['linux-deployment-journal.mjs','linux-deployment-journal.sql','linux-deployment-admission.sql','linux-deployment-reference.sql','linux-compose-host.mjs','linux-compose-admin.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);
 for(const name of ['linux-member-journal.mjs','linux-member-journal.sql','linux-member-bootstrap.mjs','linux-member-retirement.sql','linux-native-host.mjs','linux-worker-control.mjs'])files.push([name,await fs.readFile(path.join(root,'src',name))]);

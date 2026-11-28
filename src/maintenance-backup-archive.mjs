@@ -25,7 +25,7 @@ export function encryptionInput(mode, recipients, passphrase){
   return {profile:{mode,recipients:[]},secret:Buffer.from(passphrase)};
 }
 
-export async function inspectBackupManifest(directory, operationId, plan, snapshots, reports=[]) {
+async function readArchiveManifest(directory){
   const file = path.join(directory,'manifest.json');
   const before = await fs.lstat(file);
   need(before.isFile()&&before.nlink===1&&before.size>0&&before.size<=maxManifest,'backup_archive_manifest');
@@ -46,6 +46,11 @@ export async function inspectBackupManifest(directory, operationId, plan, snapsh
   let manifest;
   try { manifest=JSON.parse(raw); }
   catch { throw new InstallationError('backup_archive_manifest'); }
+  return {manifest,sha256:crypto.createHash('sha256').update(raw).digest('hex')};
+}
+
+export async function inspectBackupManifest(directory, operationId, plan, snapshots, reports=[]) {
+  const {manifest,sha256}=await readArchiveManifest(directory);
   need(manifest?.format==='leafseamer-backup-tar/1'&&manifest.backup_id===operationId&&
     manifest.level===plan.backup_level&&manifest.consistency===plan.consistency&&Array.isArray(manifest.coverage)&&
     digest(manifest.coverage)===plan.coverage_digest&&manifest.coverage.every(entry=>entry?.state!=='missing')&&
@@ -67,8 +72,65 @@ export async function inspectBackupManifest(directory, operationId, plan, snapsh
     const file=reportFiles.get(path);
     return listedReports.has(path)&&file?.size===size&&file.sha256===sha256;
   }),'backup_archive_domain_reports');
-  return {manifest_sha256:crypto.createHash('sha256').update(raw).digest('hex'),files:manifest.files.length,
+  return {manifest_sha256:sha256,files:manifest.files.length,
     databaseMembers:snapshots.map(snapshot=>points.get(snapshot.backup_operation_id).path)};
+}
+
+export async function readExpandedManifest(directory,expected){
+  for(const parent of [path.dirname(directory),directory])
+    need((await fs.lstat(parent)).isDirectory(),'restore_candidate_changed');
+  const {manifest,sha256}=await readArchiveManifest(directory);
+  need(sha256===expected,'restore_candidate_changed');
+  return manifest;
+}
+
+export async function verifyExpandedArchive(directory,expected,deadline){
+  const manifest=await readExpandedManifest(directory,expected);
+  const rootEntries=await fs.readdir(directory);
+  need(rootEntries.length===2&&rootEntries.includes('manifest.json')&&rootEntries.includes('files'),'restore_candidate_changed');
+  const tree=new Map();
+  for(const member of manifest.files){
+    const parts=member.path.split('/'),filename=parts.pop();
+    let parent=tree;
+    for(const name of parts){
+      if(!parent.has(name))parent.set(name,new Map());
+      parent=parent.get(name);
+    }
+    parent.set(filename,member);
+  }
+  async function verifyFiles(root,expectedFiles){
+    need((await fs.lstat(root)).isDirectory(),'restore_candidate_changed');
+    const entries=await fs.readdir(root);
+    need(entries.length===expectedFiles.size,'restore_candidate_changed');
+    for(const name of entries){
+      need(performance.now()<deadline,'backup_archive_deadline');
+      const file=path.join(root,name),member=expectedFiles.get(name);
+      need(member,'restore_candidate_changed');
+      if(member instanceof Map)await verifyFiles(file,member);
+      else await verifyExpandedFile(file,member,deadline);
+    }
+  }
+  await verifyFiles(path.join(directory,'files'),tree);
+}
+
+async function verifyExpandedFile(file,member,deadline){
+  const identity=await fs.lstat(file,{bigint:true});
+  const same=value=>value.isFile()&&value.nlink===1n&&value.size===BigInt(member.size)&&
+    ['dev','ino','mtimeNs','ctimeNs'].every(field=>value[field]===identity[field]);
+  need(same(identity),'restore_candidate_changed');
+  const fd=await fs.open(file,constants.O_RDONLY|(constants.O_NOFOLLOW??0));
+  try{
+    need(same(await fd.stat({bigint:true})),'restore_candidate_changed');
+    const checksum=crypto.createHash('sha256');
+    let size=0;
+    for await(const chunk of fd.createReadStream({autoClose:false,start:0,end:member.size})){
+      need(performance.now()<deadline,'backup_archive_deadline');
+      size+=chunk.length;
+      checksum.update(chunk);
+    }
+    need(size===member.size&&checksum.digest('hex')===member.sha256&&
+      same(await fd.stat({bigint:true}))&&same(await fs.lstat(file,{bigint:true})),'restore_candidate_changed');
+  }finally{await fd.close();}
 }
 
 async function runHelper(args, secret, deadline, errorCode) {

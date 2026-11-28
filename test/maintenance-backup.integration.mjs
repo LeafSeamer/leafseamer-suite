@@ -284,7 +284,9 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     distributions[authority]={directory,manifest_sha256:'sha256:'+hash(await fs.readFile(path.join(directory,'build-manifest.json')))};
     sources[authority]=source;
   }
-  const {operation}=f.request(ledger,'real-domains',{target_service_scopes:scopes,coverage_digest:digest([])});
+  const coverage=[{kind:'secret',reference:'fixture.device-credential',state:'excluded',path:''}];
+  const archiveUnresolved=['fixture.site-check'];
+  const {operation}=f.request(ledger,'real-domains',{target_service_scopes:scopes,coverage_digest:digest(coverage)});
   const ready=await ledger.collectSnapshots(operation.operation_id,operation.revision,
     {authorize,sourceDirectory:scope=>sources[scope.authority]});
   assert.equal(ready.step,'snapshots_staged');
@@ -316,7 +318,7 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   }
   files.sort((a,b)=>a.path<b.path?-1:1);
   const manifest={format:'leafseamer-backup-tar/1',backup_id:id,level:'L2',consistency:'online',
-    files,databases,coverage:[],unresolved:[],validation_reports:reports.map(report=>report.path)};
+    files,databases,coverage,unresolved:archiveUnresolved,validation_reports:reports.map(report=>report.path)};
   const manifestFile=path.join(directory,'manifest.json'),manifestRaw=JSON.stringify(manifest);
   const actions=[];
   const authority=({action,archive})=>{
@@ -374,6 +376,68 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
   const durable=f.reopen().backupMaintenance();
   assert.deepEqual(durable.getRestore(restoreId),restored);
   assert.deepEqual(await durable.stageRestore({...request,secret:undefined},authorize),restored);
+  assert.throws(()=>durable.getRecoveryPlan(restoreId),{code:'recovery_plan_migration_required'});
+
+  const plans=f.store.enableRecoveryPlans();
+  const target={deployment_plan_ref:'deployment.fixture.next',deployment_plan_digest:digest('approved deployment'),
+    release_manifest_digest:digest('approved release'),generation_id:crypto.randomUUID(),
+    services:scopes.map(scope=>({source_database_instance_id:scope.database_instance_id,data_generation_id:crypto.randomUUID(),
+      schema_revision:scope.schema_revision,configuration_ref:'configuration.fixture',secret_policy_ref:'secrets.fixture.reconfigure'}))};
+  await assert.rejects(plans.prepareRecoveryPlan(restoreId,{...target,services:target.services.slice(0,1)},authorize),
+    {code:'recovery_target_plan'});
+  const review=await plans.prepareRecoveryPlan(restoreId,target,authorize);
+  assert.equal(review.phase,'awaiting_local_approval');
+  assert.equal(review.plan.expected_generation,generation);
+  assert.equal(review.plan.coverage_digest,digest(coverage));
+  assert.equal(review.plan.unresolved_digest,digest(archiveUnresolved));
+  assert.equal(review.plan.uncovered_count,1);
+  assert.equal(review.plan.unresolved_count,1);
+  assert.equal(review.plan.has_review_items,true);
+  assert.equal(review.plan.requires_site_review,true);
+  assert.equal(review.plan.requires_protected_start,true);
+  assert.deepEqual(review.plan.target,target);
+  assert.deepEqual(review.plan.services.map(service=>service.source_scope),scopes);
+  for(const {source_scope:source,next_scope:next} of review.plan.services){
+    assert.equal(next.service_id,source.service_id);
+    assert.notEqual(next.database_instance_id,source.database_instance_id);
+    assert.notEqual(next.request_epoch,source.request_epoch);
+    if(source.authority==='controller')assert.notEqual(next.control_epoch,source.control_epoch);
+    else assert.equal(next.control_epoch,null);
+  }
+  assert.deepEqual(await plans.prepareRecoveryPlan(restoreId,target,authorize),review);
+  await assert.rejects(plans.prepareRecoveryPlan(restoreId,{...target,release_manifest_digest:digest('other release')},authorize),
+    {code:'recovery_plan_conflict'});
+
+  const approval={approval_id:crypto.randomUUID(),plan_ref:review.plan_ref,
+    command_review_digest:review.plan.command_review.review_digest,coverage_digest:review.plan.coverage_digest,
+    unresolved_digest:review.plan.unresolved_digest};
+  const subject=process.platform==='win32'?'S-1-5-21-1-2-3-1001':'uid:0';
+  const admin=()=>({...authorize(),origin:'local_os',os_subject:subject});
+  await assert.rejects(plans.approveRecoveryPlan(approval,authorize),{code:'recovery_local_admin_required'});
+  await assert.rejects(plans.approveRecoveryPlan({...approval,unresolved_digest:digest([])},admin),
+    {code:'recovery_approval_invalid'});
+  const database=path.join(isolated,'restored.partial','files',databases[0].path);
+  const originalDatabase=await fs.readFile(database),changed=Buffer.from(originalDatabase);
+  changed[changed.length-1]^=1;
+  await fs.writeFile(database,changed);
+  await assert.rejects(plans.approveRecoveryPlan(approval,admin),{code:'restore_candidate_changed'});
+  await fs.writeFile(database,originalDatabase);
+  await fs.writeFile(database+'-wal','unexpected sidecar');
+  await assert.rejects(plans.approveRecoveryPlan(approval,admin),{code:'restore_candidate_changed'});
+  await fs.unlink(database+'-wal');
+  await assert.rejects(plans.approveRecoveryPlan(approval,({action})=>
+    ({...admin(),generation:action==='approve_recovery_plan'?'8':generation})),{code:'restore_generation_conflict'});
+  assert.equal(plans.getRecoveryPlan(restoreId).approval,null);
+  const acceptedPlan=await plans.approveRecoveryPlan(approval,admin);
+  assert.equal(acceptedPlan.phase,'plan_reviewed');
+  assert.deepEqual(acceptedPlan.approval,{...approval,os_subject:subject});
+  assert.equal(acceptedPlan.plan.requires_site_review,true);
+  const approved=f.reopen().backupMaintenance();
+  assert.deepEqual(approved.getRecoveryPlan(restoreId),acceptedPlan);
+  assert.deepEqual(await approved.approveRecoveryPlan(approval,admin),acceptedPlan);
+  await assert.rejects(approved.approveRecoveryPlan({...approval,approval_id:crypto.randomUUID()},admin),
+    {code:'recovery_approval_conflict'});
+  assert.deepEqual(approved.getRestore(restoreId),restored);
 
   const interrupted=crypto.randomUUID();
   f.close();

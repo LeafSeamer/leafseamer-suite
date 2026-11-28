@@ -41,7 +41,8 @@ function backupPlan(value) {
   return JSON.parse(canonical(value));
 }
 
-export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,restoreEnabled=false}) {
+export function backupMaintenance({db, transact, rows, decode, identity, staging, contentDirectory, publicationEnabled=false,
+  restoreEnabled=false,recoveryPlansEnabled=false}) {
   const runtime = crypto.randomUUID();
   const installation = {installation_id:identity.host_installation_id, installation_epoch:identity.installation_epoch};
   let active = 0;
@@ -149,7 +150,7 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
   }
 
   function buildRestore(){
-    return restoreMaintenance({db,transact,rows,decode,staging,contentDirectory,runtime,published,requireFreeHelper,
+    return restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,requireFreeHelper,recoveryPlansEnabled,
       claimHelper(){
         need(active===0,'backup_helper_in_use');
         active++;
@@ -472,6 +473,18 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       need(restore,'restore_migration_required');
       return restore.get(restoreId);
     },
+    prepareRecoveryPlan(restoreId,target,authority){
+      need(restore,'restore_migration_required');
+      return restore.preparePlan(restoreId,target,authority);
+    },
+    approveRecoveryPlan(input,authority){
+      need(restore,'restore_migration_required');
+      return restore.approvePlan(input,authority);
+    },
+    getRecoveryPlan(restoreId){
+      need(restore,'restore_migration_required');
+      return restore.getPlan(restoreId);
+    },
     getArchive(archiveId){
       need(publicationEnabled&&matches(uuid,archiveId),'backup_archive_id');
       return transact(()=>{
@@ -489,5 +502,6 @@ export function backupMaintenance({db, transact, rows, decode, identity, staging
       });
     }
   });
-  return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},get active(){return active;}};
+  return {api,recover,enablePublication(){publicationEnabled=true;},enableRestore(){restore=buildRestore();},
+    enableRecoveryPlans(){restore.enablePlans();},get active(){return active;}};
 }

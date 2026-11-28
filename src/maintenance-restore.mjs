@@ -5,6 +5,7 @@ import {canonical,digest,InstallationError,requireValue as need} from './import-
 import {expandPublishedArchive,inspectBackupManifest} from './maintenance-backup-archive.mjs';
 import {verifyBackupSnapshots} from './backup-domain-verification.mjs';
 import {initializeInstallationContentDirectory} from './local-peer.mjs';
+import {recoveryPlanStore} from './maintenance-recovery-plan.mjs';
 
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])/;
 const generation=/^(0|[1-9][0-9]{0,19})(?![\s\S])/;
@@ -12,7 +13,10 @@ const matches=(pattern,value)=>typeof value==='string'&&pattern.test(value);
 const bytes=value=>Buffer.from(canonical(value));
 const unknownStorage=new Set(['installation_storage_unknown','installation_unavailable','installation_directory_changed']);
 
-export function restoreMaintenance({db,transact,rows,decode,staging,contentDirectory,runtime,published,claimHelper,requireFreeHelper}){
+export function restoreMaintenance({db,transact,rows,decode,identity,staging,contentDirectory,runtime,published,claimHelper,
+  requireFreeHelper,recoveryPlansEnabled}){
+  const buildPlans=()=>recoveryPlanStore({db,transact,rows,decode,identity,staging,published,original,claimHelper,requireFreeHelper});
+  let plans=recoveryPlansEnabled?buildPlans():null;
   function original(restoreId){
     return rows(db,`SELECT i.*,r.state,r.body,r.digest FROM maintenance_restore_intent i
       LEFT JOIN maintenance_restore_result r USING(restore_id) WHERE restore_id=?`,restoreId)[0];
@@ -120,6 +124,19 @@ export function restoreMaintenance({db,transact,rows,decode,staging,contentDirec
 
   return {
     stage,
+    preparePlan(id,target,authority){
+      need(plans,'recovery_plan_migration_required');
+      return plans.prepare(id,target,authority);
+    },
+    approvePlan(input,authority){
+      need(plans,'recovery_plan_migration_required');
+      return plans.approve(input,authority);
+    },
+    getPlan(id){
+      need(plans,'recovery_plan_migration_required');
+      return plans.get(id);
+    },
+    enablePlans(){plans=buildPlans();},
     get(restoreId){
       need(matches(uuid,restoreId),'restore_request');
       return transact(()=>view(original(restoreId)));

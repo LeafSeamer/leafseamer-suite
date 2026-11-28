@@ -374,8 +374,109 @@ async function nativeDeploymentFixture(store,scopes){
   }catch(error){await close();throw error;}
 }
 
+async function checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}){
+  const supervisor=distributions.controller;
+  const {initializeProcessHost,installedCoreDigest,startProcessHost}=await import(
+    pathToFileURL(path.join(supervisor.directory,'process-host.mjs')).href);
+  for(const directory of Object.values(sources))await initializeProcessHost(directory);
+  const policy=(scope,artifactDigest)=>({format:'leafseamer-core-bootstrap-policy/1',service_id:scope.service_id,
+    database_instance_id:scope.database_instance_id,artifact_manifest_ref:{manifest_id:'fixture.runtime',revision:'1',digest:artifactDigest},
+    platform_profile_ref:{profile_id:'fixture.windows',revision:'1'},policy_revision:'1',bootstrap_timeout_ms:10000,clock_backend_revision:'1'});
+  const [controller,seamer]=scopes;
+  async function startController(){
+    let output='';
+    const app=await startProcessHost({dataDir:sources.controller,bootstrapPolicy:policy(controller,installedCoreDigest()),
+      onCoreOutput:chunk=>{output+=chunk;}});
+    t.after(()=>app.close());
+    const deadline=performance.now()+12000;
+    while(!output.includes('"event":"listening"')){
+      assert.ok(performance.now()<deadline,'Controller did not listen: '+output);
+      await delay(20);
+    }
+    return app;
+  }
+  const controllerHost=await startController();
+  const seamerHost=path.join(f.root,'fixture-seamer-host'),artifacts={};
+  for(const name of ['native/leafseamer_process_host.exe','runtime/node.exe']){
+    const target=path.join(seamerHost,name);
+    await fs.mkdir(path.dirname(target),{recursive:true});
+    await fs.copyFile(path.join(supervisor.directory,name),target);
+    artifacts[name]=crypto.createHash('sha256').update(await fs.readFile(target)).digest('hex');
+  }
+  const importURL=name=>JSON.stringify(pathToFileURL(path.join(distributions.seamer.directory,name)).href);
+  const entry=`import {openStorage} from ${importURL('storage.mjs')};
+    import {createCoreBootstrapChannel,verifyCoreAssignment,verifyCoreAdmission,validateBootstrapPolicy} from ${importURL('core-bootstrap.mjs')};
+    const dataDirectory=process.argv[process.argv.indexOf('--data-dir')+1];
+    const policy=validateBootstrapPolicy(JSON.parse(process.argv[process.argv.indexOf('--bootstrap-policy')+1]));
+    const db=openStorage(dataDirectory);
+    const channel=createCoreBootstrapChannel(process.stdin,process.stdout,{timeoutMs:policy.bootstrap_timeout_ms});
+    const assignment=await channel.assignment();
+    verifyCoreAssignment(assignment,policy,db.identity);
+    const binding=await verifyCoreAdmission(assignment,await channel.proveAndReceive(assignment),policy);
+    channel.release();
+    process.stderr.write(binding.descriptor.runtime_generation+'\\n');
+    process.stdin.once('data',()=>process.stdin.destroy());
+    process.stdin.once('close',()=>db.close());
+    process.stdin.resume();`;
+  await fs.writeFile(path.join(seamerHost,'core.mjs'),entry);
+  artifacts['core.mjs']=crypto.createHash('sha256').update(entry).digest('hex');
+  const manifest=JSON.stringify({format:'leafseamer-controller-build/1',artifacts});
+  await fs.writeFile(path.join(seamerHost,'build-manifest.json'),manifest);
+  const seamerPolicy=policy(seamer,digest({controller_build_sha256:crypto.createHash('sha256').update(manifest).digest('hex'),
+    node_sha256:artifacts['runtime/node.exe']}));
+  const peer=spawn(path.join(seamerHost,'native/leafseamer_process_host.exe'),
+    [sources.seamer,path.join(seamerHost,'runtime/node.exe'),path.join(seamerHost,'core.mjs'),'contained-core-auth',
+      '--bootstrap-policy',canonical(seamerPolicy)],{windowsHide:true,stdio:['pipe','pipe','pipe']});
+  const ended=once(peer,'close');ended.catch(()=>{});peer.stdin.on('error',()=>{});peer.stdout.resume();
+  const finishSeamer=()=>{if(!peer.stdin.writableEnded)peer.stdin.end('stop\n');return ended;};
+  t.after(finishSeamer);
+  const [message]=await once(peer.stderr,'data',{signal:AbortSignal.timeout(15000)});
+  const seamerGeneration=message.toString().trim();
+  assert.match(seamerGeneration,/^[a-f0-9]{32}$/);
+  assert.equal((await controllerHost.close()).exitCode,0);
+  function journalGeneration(directory){
+    const db=new DatabaseSync(path.join(directory,'supervisor-journal.db'),{readOnly:true});
+    try{return db.prepare("SELECT json_extract(descriptor_jcs,'$.runtime_generation') AS id FROM core_bootstrap ORDER BY rowid DESC LIMIT 1").get().id;}
+    finally{db.close();}
+  }
+  const windows_runtime={supervisor,writers_fenced:true,writers:scopes.map((scope,index)=>({authority:scope.authority,
+    service_id:scope.service_id,database_instance_id:scope.database_instance_id,data_directory:sources[scope.authority],
+    runtime_generation:index===0?journalGeneration(sources.controller):seamerGeneration}))};
+  const runtime_generation_id=crypto.randomUUID();
+  const authority=()=>({...authorize(),runtime_generation_id,windows_runtime});
+  const record=(choose=authority)=>retiredPlan.recordWindowsRecoveryRetirement(retirementRequest,choose);
+  const withWriters=writers=>()=>({...authority(),windows_runtime:{...windows_runtime,writers}});
+  await assert.rejects(record(withWriters(windows_runtime.writers.slice(0,1))),{code:'recovery_retirement_target_mismatch'});
+  await assert.rejects(record(withWriters([{...windows_runtime.writers[0],database_instance_id:crypto.randomUUID()},
+    windows_runtime.writers[1]])),{code:'recovery_retirement_target_mismatch'});
+  await assert.rejects(record(()=>({...authority(),windows_runtime:{...windows_runtime,writers_fenced:false}})),{code:'recovery_windows_runtime'});
+  await assert.rejects(record(),{code:'recovery_windows_retirement_unproven'});
+  assert.deepEqual(retiredPlan.getRecoveryPlan(retirementRequest.plan_ref.restore_id),acceptedPlan);
+  assert.deepEqual(await finishSeamer(),[0,null]);
+  await assert.rejects(record(()=>({...authority(),windows_runtime:{...windows_runtime,
+    supervisor:{...supervisor,manifest_sha256:'sha256:'+'0'.repeat(64)}}})),{code:'recovery_windows_retirement_unproven'});
+  const newer=await startController();
+  assert.equal((await newer.close()).exitCode,0);
+  await assert.rejects(record(),{code:'recovery_windows_retirement_unproven'});
+  windows_runtime.writers[0].runtime_generation=journalGeneration(sources.controller);
+  await assert.rejects(record(({action})=>({...authority(),
+    ...(action==='adopt_recovery_retirement'&&{runtime_generation_id:crypto.randomUUID()})})),{code:'recovery_runtime_generation_changed'});
+  assert.deepEqual(retiredPlan.getRecoveryPlan(retirementRequest.plan_ref.restore_id),acceptedPlan);
+  const retired=await record();
+  assert.equal(retired.phase,'old_writers_retired');
+  assert.equal(retired.retirement.approval_id,acceptedPlan.approval.approval_id);
+  assert.equal(retired.retirement.evidence.format,'leafseamer-windows-deployment-retirement/1');
+  assert.deepEqual(retired.retirement.evidence.members.map(({authority,service_id,database_instance_id})=>
+    ({authority,service_id,database_instance_id})).sort((a,b)=>a.authority.localeCompare(b.authority)),
+  scopes.map(({authority,service_id,database_instance_id})=>({authority,service_id,database_instance_id})));
+  assert.ok(retired.retirement.evidence.members.every(member=>member.active_processes===0));
+  const reopened=f.reopen().backupMaintenance();
+  assert.deepEqual(reopened.getRecoveryPlan(retirementRequest.plan_ref.restore_id),retired);
+  assert.deepEqual(await reopened.recordWindowsRecoveryRetirement(retirementRequest,authority),retired);
+}
+
 test('publishes a dual-service archive and verifies its exact snapshots in isolated recovery',{
-  timeout:120000,skip:!Object.values(distributionDirectories).every(Boolean)
+  timeout:180000,skip:!Object.values(distributionDirectories).every(Boolean)
 },async t=>{
   const f=await fixture(t);
   f.store.enableBackupMaintenance();
@@ -551,10 +652,13 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
     {code:'recovery_approval_conflict'});
   assert.deepEqual(approved.getRestore(restoreId),restored);
   const retirementRequest={plan_ref:review.plan_ref,retirement_id:crypto.randomUUID()};
+  await assert.rejects(approved.recordWindowsRecoveryRetirement(retirementRequest,authorize),
+    {code:'recovery_retirement_migration_required'});
   assert.throws(()=>approved.recordLinuxRecoveryRetirement(retirementRequest,authorize),
     {code:'recovery_retirement_migration_required'});
   const retiredPlan=f.store.enableRecoveryRetirement();
   if(process.platform==='linux'){
+    await assert.rejects(retiredPlan.recordWindowsRecoveryRetirement(retirementRequest,authorize),{code:'recovery_retirement_platform'});
     const native=process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1';
     if(native)f.store.initializeLinuxMemberJournal();
     else f.store.initializeLinuxDeploymentJournal();
@@ -596,6 +700,8 @@ test('publishes a dual-service archive and verifies its exact snapshots in isola
       {code:'recovery_retirement_platform'});
     assert.throws(()=>retiredPlan.recordLinuxNativeRecoveryRetirement(retirementRequest,authorize),
       {code:'recovery_retirement_platform'});
+    if(process.platform==='win32')await t.test('adopts both Windows writer Jobs into the approved plan',t=>
+      checkWindowsRetirement(t,{f,sources,scopes,distributions,retiredPlan,retirementRequest,acceptedPlan}));
   }
 
   const interrupted=crypto.randomUUID();

@@ -143,6 +143,10 @@ export function restoreMaintenance({db,transact,rows,decode,identity,staging,con
       need(plans,'recovery_plan_migration_required');
       return plans.recordLinuxRetirement(input,authority,native);
     },
+    async recordWindowsRetirement(input,authority){
+      need(plans,'recovery_plan_migration_required');
+      return plans.recordWindowsRetirement(input,authority);
+    },
     get(restoreId){
       need(matches(uuid,restoreId),'restore_request');
       return transact(()=>view(original(restoreId)));

@@ -2,6 +2,7 @@ import {randomUUID} from 'node:crypto';
 import path from 'node:path';
 import {canonical,digest,InstallationError,requireValue as need} from './import-input.mjs';
 import {readExpandedManifest,verifyExpandedArchive} from './maintenance-backup-archive.mjs';
+import {readWindowsRetirement,windowsRecoverySource,windowsRetirementFormat} from './windows-recovery-retirement.mjs';
 
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])/;
 const reference=/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}(?![\s\S])/;
@@ -167,29 +168,47 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
     }finally{unlock();}
   }
 
-  function recordLinuxRetirement(input,authority,native){
+  function retirementRequest(input,platform){
     need(retirementEnabled,'recovery_retirement_migration_required');
-    need(process.platform==='linux','recovery_retirement_platform');
+    need(process.platform===platform,'recovery_retirement_platform');
     need(fields(input,'plan_ref,retirement_id')&&matches(uuid,input.plan_ref?.restore_id)&&
       matches(uuid,input.retirement_id),'recovery_retirement_request');
-    const request=structuredClone(input),id=request.plan_ref.restore_id;
+    return structuredClone(input);
+  }
+
+  function retirementContext(request,runtime_profile){
+    const id=request.plan_ref.restore_id,{source,row}=isolation(id),candidate=current(id);
+    need(candidate&&same(candidate.plan_ref,request.plan_ref),'recovery_plan_ref');
+    need(candidate.approval&&candidate.plan.isolation_digest===row.digest,'recovery_retirement_not_approved');
+    return {archive:source.archive,...candidate,retirement_request_id:request.retirement_id,runtime_profile};
+  }
+
+  function persistRetirement(request,context,evidence){
+    need(!db.prepare('SELECT 1 FROM maintenance_recovery_retirement WHERE retirement_id=?').get(request.retirement_id),
+      'recovery_retirement_conflict');
+    const id=request.plan_ref.restore_id,receipt={...request,approval_id:context.approval.approval_id,evidence};
+    const body=encode(receipt);
+    need(body.length<=8192,'recovery_retirement_capacity');
+    db.prepare('INSERT INTO maintenance_recovery_retirement VALUES (?,?,?,?,?,?)')
+      .run(id,request.retirement_id,receipt.approval_id,context.plan_ref.digest,body,digest(receipt));
+    return current(id);
+  }
+
+  function recordLinuxRetirement(input,authority,native){
+    const request=retirementRequest(input,'linux');
     const evidenceFormat=native?'leafseamer-linux-native-retirement/1':'leafseamer-linux-deployment-retirement/1';
     const unlock=claimHelper();
     try{
       return transact(()=>{
-        const {source,row}=isolation(id),candidate=current(id);
-        need(candidate&&same(candidate.plan_ref,request.plan_ref),'recovery_plan_ref');
-        const {plan,approval}=candidate;
-        need(approval&&plan.isolation_digest===row.digest,'recovery_retirement_not_approved');
-        const context={archive:source.archive,...candidate,retirement_request_id:request.retirement_id,
-          runtime_profile:native?'linux_native':'linux_compose'};
+        const context=retirementContext(request,native?'linux_native':'linux_compose');
+        const {plan,retirement}=context;
         const decision=authorized(authority,'read_recovery_retirement',plan.expected_generation,context);
         const generationId=decision.runtime_generation_id;
-        if(candidate.retirement){
-          need(candidate.retirement.retirement_id===request.retirement_id&&
-            candidate.retirement.evidence.generation_id===generationId&&candidate.retirement.evidence.format===evidenceFormat,
+        if(retirement){
+          need(retirement.retirement_id===request.retirement_id&&
+            retirement.evidence.generation_id===generationId&&retirement.evidence.format===evidenceFormat,
           'recovery_retirement_conflict');
-          return candidate;
+          return current(request.plan_ref.restore_id);
         }
         requireFreeHelper();
         const evidence=readLinuxRetirement(generationId,plan.target.generation_id,native);
@@ -199,15 +218,41 @@ export function recoveryPlanStore({db,transact,rows,decode,identity,staging,publ
         const checked=authorized(authority,'adopt_recovery_retirement',plan.expected_generation,{...context,evidence});
         need(checked.runtime_generation_id===generationId,'recovery_runtime_generation_changed');
         need(same(readLinuxRetirement(generationId,plan.target.generation_id,native),evidence),'recovery_runtime_generation_changed');
-        need(!db.prepare('SELECT 1 FROM maintenance_recovery_retirement WHERE retirement_id=?').get(request.retirement_id),
-          'recovery_retirement_conflict');
-        const receipt={...request,approval_id:approval.approval_id,evidence};
-        db.prepare('INSERT INTO maintenance_recovery_retirement VALUES (?,?,?,?,?,?)')
-          .run(id,request.retirement_id,approval.approval_id,candidate.plan_ref.digest,encode(receipt),digest(receipt));
-        return current(id);
+        return persistRetirement(request,context,evidence);
       });
     }finally{unlock();}
   }
 
-  return {prepare,approve,recordLinuxRetirement,get(id){need(matches(uuid,id),'restore_request');return transact(()=>current(id));}};
+  async function recordWindowsRetirement(input,authority){
+    const request=retirementRequest(input,'win32'),id=request.plan_ref.restore_id;
+    const unlock=claimHelper();
+    try{
+      const selection=transact(()=>{
+        const context=retirementContext(request,'windows_native'),{plan,retirement}=context;
+        const decision=authorized(authority,'read_recovery_retirement',plan.expected_generation,context);
+        const source=windowsRecoverySource(decision,plan);
+        if(retirement){
+          need(retirement.retirement_id===request.retirement_id&&retirement.evidence.format===windowsRetirementFormat&&
+            retirement.evidence.source_digest===digest(source),'recovery_retirement_conflict');
+          return {prior:current(id)};
+        }
+        requireFreeHelper();
+        return {context,source};
+      });
+      if(selection.prior)return selection.prior;
+      const {context,source}=selection,evidence=await readWindowsRetirement(source);
+      need(same(evidence,await readWindowsRetirement(source)),'recovery_runtime_generation_changed');
+      return transact(()=>{
+        const latest=retirementContext(request,'windows_native');
+        need(same(latest,context),'recovery_retirement_conflict');
+        requireFreeHelper();
+        const decision=authorized(authority,'adopt_recovery_retirement',latest.plan.expected_generation,{...latest,evidence});
+        need(same(windowsRecoverySource(decision,latest.plan),source),'recovery_runtime_generation_changed');
+        return persistRetirement(request,latest,evidence);
+      });
+    }finally{unlock();}
+  }
+
+  return {prepare,approve,recordLinuxRetirement,recordWindowsRetirement,
+    get(id){need(matches(uuid,id),'restore_request');return transact(()=>current(id));}};
 }

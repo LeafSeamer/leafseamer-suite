@@ -16,52 +16,52 @@ const reportLimit=65536;
 const authorities=['controller','seamer'];
 const workerFormat='leafseamer-backup-verifier/1';
 
-async function loadVerifier({directory,manifest_sha256},authority){
+export async function loadDistributionExport({directory,manifest_sha256},authority,entry,exportName,errorCode){
   const manifestFile=path.join(directory,'build-manifest.json');
   const stat=await fs.lstat(manifestFile);
-  need(stat.isFile()&&stat.nlink===1&&stat.size>0&&stat.size<=262144,verificationError);
+  need(stat.isFile()&&stat.nlink===1&&stat.size>0&&stat.size<=262144,errorCode);
   const raw=await fs.readFile(manifestFile);
-  need('sha256:'+crypto.createHash('sha256').update(raw).digest('hex')===manifest_sha256,verificationError);
+  need('sha256:'+crypto.createHash('sha256').update(raw).digest('hex')===manifest_sha256,errorCode);
   const manifest=JSON.parse(raw);
   need(manifest?.format==='leafseamer-'+authority+'-build/1'&&manifest.artifacts&&
     typeof manifest.artifacts==='object'&&!Array.isArray(manifest.artifacts)&&
-    Object.hasOwn(manifest.artifacts,'storage.mjs'),verificationError);
+    Object.hasOwn(manifest.artifacts,entry),errorCode);
   const assets=Object.entries(manifest.artifacts);
-  need(assets.length<=1024,verificationError);
+  need(assets.length<=1024,errorCode);
   let total=0;
   const expectedFiles=new Map(),expectedDirs=new Set();
   for(const [name,sha] of assets){
     const parts=name.split('/');
     need(name!=='build-manifest.json'&&parts.length<=16&&
       parts.every(part=>part!=='.'&&part!=='..'&&!part.endsWith('.')&&filename.test(part))&&
-      typeof sha==='string'&&checksum.test(sha),verificationError);
+      typeof sha==='string'&&checksum.test(sha),errorCode);
     expectedFiles.set(name,sha);
     for(let i=1;i<parts.length;i++)expectedDirs.add(parts.slice(0,i).join('/'));
   }
   async function verifyFiles(base,prefix=''){
-    need((await fs.lstat(base)).isDirectory(),verificationError);
+    need((await fs.lstat(base)).isDirectory(),errorCode);
     for(const entry of await fs.readdir(base,{withFileTypes:true})){
       const name=prefix+entry.name,file=path.join(base,entry.name);
       if(name==='build-manifest.json')continue;
       if(entry.isDirectory()){
-        need(expectedDirs.has(name),verificationError);
+        need(expectedDirs.has(name),errorCode);
         await verifyFiles(file,name+'/');
         continue;
       }
       const info=await fs.lstat(file),sha=expectedFiles.get(name);
       total+=info.size;
-      need(info.isFile()&&info.nlink===1&&sha!==undefined&&total<=512*1024**2,verificationError);
+      need(info.isFile()&&info.nlink===1&&sha!==undefined&&total<=512*1024**2,errorCode);
       const hash=crypto.createHash('sha256');
       for await(const chunk of createReadStream(file))hash.update(chunk);
-      need(hash.digest('hex')===sha,verificationError);
+      need(hash.digest('hex')===sha,errorCode);
       expectedFiles.delete(name);
     }
   }
   await verifyFiles(directory);
-  need(expectedFiles.size===0,verificationError);
-  const {verifyBackupSnapshot}=await import(pathToFileURL(path.join(directory,'storage.mjs')).href);
-  need(typeof verifyBackupSnapshot==='function',verificationError);
-  return verifyBackupSnapshot;
+  need(expectedFiles.size===0,errorCode);
+  const value=(await import(pathToFileURL(path.join(directory,entry)).href))[exportName];
+  need(typeof value==='function',errorCode);
+  return value;
 }
 
 async function reviewBatch(inputs,distributions){
@@ -93,7 +93,8 @@ async function verifyBatch({distributions,inputs,reviewCommands}){
   const original=reviewCommands?await Promise.all(inputs.map(({file})=>fs.lstat(file,{bigint:true}))):null;
   for(const {file,receipt} of inputs){
     const authority=receipt.scope.authority;
-    if(!readers.has(authority))readers.set(authority,await loadVerifier(distributions[authority],authority));
+    if(!readers.has(authority))readers.set(authority,await loadDistributionExport(distributions[authority],authority,
+      'storage.mjs','verifyBackupSnapshot',verificationError));
     const report=readers.get(authority)(file,receipt);
     need(report?.format==='leafseamer.'+authority+'-backup-validation/1'&&
       report.backup_operation_id===receipt.backup_operation_id&&report.engine?.version===receipt.engine&&

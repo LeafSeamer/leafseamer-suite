@@ -375,6 +375,127 @@ async function nativeDeploymentFixture(store,scopes){
   }catch(error){await close();throw error;}
 }
 
+async function composeRecoveryFixture(f,scopes,distributions,generation,dataDirectories){
+  const root=path.join(path.dirname(f.root),'compose-'+generation.slice(0,8));
+  const roles=['controller','seamer'],groups=[];
+  const image=role=>process.env['LEAFSEAMER_COMPOSE_'+role.toUpperCase()+'_IMAGE'];
+  await fs.chmod(path.dirname(f.root),0o755);
+  await fs.mkdir(root,{mode:0o755});
+  const listener=net.createServer().listen(0,'127.0.0.1');
+  await once(listener,'listening');
+  const {port}=listener.address();
+  await new Promise(resolve=>listener.close(resolve));
+  const host='manage.fixture.invalid',origin='https://'+host+':'+port;
+  async function certificates(role,serverName,uid,gid){
+    const certificate_file=path.join(root,role+'.pem'),private_key_file=path.join(root,role+'.key');
+    await exec('openssl',['req','-x509','-newkey','ec','-pkeyopt','ec_paramgen_curve:P-256','-nodes','-days','1','-subj','/CN='+serverName,
+      '-addext','subjectAltName=DNS:'+serverName,'-keyout',private_key_file,'-out',certificate_file]);
+    await fs.chown(private_key_file,uid,gid);
+    return {certificate_file,private_key_file};
+  }
+  const range='10.245.'+crypto.randomInt(1,255),bootstrap={};
+  const nodeDigest=crypto.createHash('sha256').update(await fs.readFile(process.execPath)).digest('hex');
+  const cores=Object.fromEntries(await Promise.all(scopes.map(async (scope,index)=>{
+    const {authority:role,service_id,database_instance_id}=scope,uid=21001+index,gid=uid,server_name=role+'.fixture.invalid';
+    const tls=await certificates(role,server_name,uid,gid);
+    bootstrap[role]={format:'leafseamer-core-bootstrap-policy/1',service_id,database_instance_id,bootstrap_timeout_ms:20000,
+      clock_backend_revision:'1',policy_revision:'1',platform_profile_ref:{profile_id:'fixture.compose',revision:'1'},
+      artifact_manifest_ref:{manifest_id:'fixture.compose.'+role,revision:'1',
+        digest:digest({[role+'_build_sha256']:distributions[role].manifest_sha256.slice(7),node_sha256:nodeDigest})}};
+    return [role,{image:image(role),uid,gid,address:range+'.'+(2+index),data_dir:dataDirectories[role],server_name,
+      service_id,database_instance_id,...tls,ca_file:tls.certificate_file}];
+  })));
+  const directory=path.join(root,'gui'),guiSource=process.env.LEAFSEAMER_COMPOSE_GUI_ROOT;
+  const manifest=JSON.parse(await fs.readFile(path.join(guiSource,'gui-manifest.json')));
+  await fs.cp(guiSource,directory,{recursive:true});
+  const site=JSON.stringify({format:'leafseamer.gui.site/2',service_id:cores.controller.service_id,database_instance_id:cores.controller.database_instance_id,
+    site_label:'恢复联调',selection:manifest.selection,seamer:{service_id:cores.seamer.service_id,database_instance_id:cores.seamer.database_instance_id,
+      base_url:origin+'/services/'+cores.seamer.service_id,service_label:'Seamer'}})+'\n';
+  await fs.writeFile(path.join(directory,'site.json'),site);
+  manifest.artifacts['site.json']=crypto.createHash('sha256').update(site).digest('hex');
+  const guiBytes=JSON.stringify(manifest);
+  await fs.writeFile(path.join(directory,'gui-manifest.json'),guiBytes);
+  const plan={format:'leafseamer.linux-compose-protected/1',...cores,subnet:range+'.0/29',bootstrap,
+    nginx:{image:image('nginx'),uid:21003,gid:21003,address:range+'.4'},
+    management:{bind_address:'127.0.0.1',host,port,...await certificates('management',host,21003,21003)},
+    gui:{directory,manifest_sha256:'sha256:'+crypto.createHash('sha256').update(guiBytes).digest('hex')},
+    cgroup:{driver:'cgroupfs',generation_id:generation,namespace:'private'}};
+  const planFile=path.join(root,'plan.json'),generationDirectory=path.join(root,'generation');
+  await fs.writeFile(planFile,canonical(plan),{mode:0o600});
+  const {openNativeClock}=await import(pathToFileURL(path.join(distributions.controller.directory,'native-clock.mjs')));
+  const options={installationDirectory:f.root,planFile,generationDirectory,source:openNativeClock()};
+  return {plan,options,configurationDigest:digest(plan),async prepareGroups(){
+    for(const role of roles){
+      const {groupPath}=linuxContainerCgroup({driver:'cgroupfs',generationId:generation,role});
+      const group='/sys/fs/cgroup'+groupPath;
+      await fs.mkdir(group);groups.push(group);
+    }
+  },async cleanup(){for(const group of groups.reverse())await fs.rmdir(group);}};
+}
+
+async function composeRetirementFixture(f,scopes,distributions,sources){
+  const generation_id=crypto.randomUUID(),fixture=await composeRecoveryFixture(f,scopes,distributions,generation_id,sources);
+  const {openLinuxComposeHost}=await import('@leafseamer/suite/linux-compose-host');
+  const {writeLinuxComposeDeployment}=await import('../dist/linux-compose.mjs');
+  for(const role of ['controller','seamer']){
+    const {uid,gid}=fixture.plan[role],directory=sources[role];
+    await fs.chown(directory,uid,gid);
+    for(const file of await fs.readdir(directory))await fs.chown(path.join(directory,file),uid,gid);
+  }
+  writeLinuxComposeDeployment(fixture.plan,fixture.options.generationDirectory);
+  await fixture.prepareGroups();
+  const host=openLinuxComposeHost({...fixture.options,installationStore:f.store});
+  const state={generation_id,endpoint_evidence_digest:null,async finish(){
+    const retired=host.retire();
+    assert.equal(retired.phase,'retired');
+    state.endpoint_evidence_digest=retired.detail.endpoint_evidence_digest;
+  },async close(){
+    try{if(host.startedHere()&&host.current().phase!=='retired')await state.finish();}
+    finally{await host.close();await fixture.cleanup();}
+  }};
+  try{
+    const result=await host.startSupervised();
+    assert.equal(result.admissions.controller.receipt.gate_state,'closed');
+    assert.equal(result.admissions.seamer.receipt.gate_state,'closed');
+    return state;
+  }catch(error){await state.close();throw error;}
+}
+
+async function checkComposeRecoveryStartup(f,fixture,recoveryPlan,selection){
+  f.close();
+  const {openLinuxComposeHost,openLinuxComposeRecoveryHost}=await import('@leafseamer/suite/linux-compose-host');
+  const options={...fixture.options,recoveryPlan,selectionDigest:selection.selection_digest,
+    authorize({configuration_digest,preparation_distributions_digest,secret_bindings_digest}){
+      return {allowed:true,selection_digest:selection.selection_digest,release_manifest_digest:selection.deployment.release_manifest_digest,
+        configuration_digest,preparation_distributions_digest,secret_bindings_digest};
+    }};
+  await fixture.prepareGroups();
+  let host;
+  try{
+    await assert.rejects(openLinuxComposeRecoveryHost({...options,selectionDigest:digest('obsolete choice')}),{code:'compose_recovery_selection'});
+    await assert.rejects(openLinuxComposeRecoveryHost({...options,authorize:()=>({allowed:false})}),{code:'compose_recovery_authority'});
+    host=await openLinuxComposeRecoveryHost(options);
+    const outcome=await host.startSupervised();
+    assert.equal(outcome.record.phase,'running');
+    assert.deepEqual(Object.keys(outcome.admissions).sort(),['controller','seamer']);
+    for(const role of ['controller','seamer']){
+      const selected=selection.deployment.services.find(({scope})=>scope.authority===role);
+      assert.equal(outcome.admissions[role].receipt.gate_state,'closed');
+      assert.equal(outcome.admissions[role].policy.database_instance_id,selected.scope.database_instance_id);
+      assert.equal((await fs.stat(fixture.plan[role].data_dir)).uid,fixture.plan[role].uid);
+    }
+    assert.equal(host.retire().phase,'retired');
+    await host.close();
+    host=null;
+    const ordinary=openLinuxComposeHost(fixture.options);
+    try{await assert.rejects(ordinary.startSupervised(),{code:'linux_recovery_start_required'});}
+    finally{await ordinary.close();}
+  }finally{
+    try{if(host?.startedHere()&&host.current().phase!=='retired')host.retire();}
+    finally{if(host)await host.close();await fixture.cleanup();}
+  }
+}
+
 async function prepareNativeRecoveryFixture(f,target,review,distributions,plan){
   const planDirectory=path.join(f.root,'linux-native'),planFile=path.join(planDirectory,'recovery.json');
   await fs.chmod(path.dirname(f.root),0o711);
@@ -877,7 +998,8 @@ for(const standalone of [false,true])test(standalone?'recovers and starts the st
   assert.throws(()=>durable.getRecoveryPlan(restoreId),{code:'recovery_plan_migration_required'});
 
   const plans=f.store.enableRecoveryPlans();
-  const nativeStart=process.platform==='linux'&&process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1'&&
+  const composeStart=process.platform==='linux'&&process.env.LEAFSEAMER_TEST_COMPOSE_RECOVERY==='1';
+  const nativeStart=!composeStart&&process.platform==='linux'&&process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1'&&
     process.env.LEAFSEAMER_TEST_RECOVERY_NATIVE_BOOT==='1';
   const target={deployment_plan_ref:'deployment.fixture.next',deployment_plan_digest:digest('approved deployment'),
     release_manifest_digest:digest('approved release'),generation_id:crypto.randomUUID(),
@@ -890,6 +1012,13 @@ for(const standalone of [false,true])test(standalone?'recovers and starts the st
   const windowsPlan=standalone?{format:'leafseamer.windows-native-recovery/1',deployment_plan_ref:target.deployment_plan_ref,
     generation_id:target.generation_id,release_manifest_digest:target.release_manifest_digest,configuration_ref:target.services[0].configuration_ref}:null;
   if(windowsPlan)target.deployment_plan_digest=digest(windowsPlan);
+  const composePlan=composeStart?{format:'leafseamer.linux-compose-recovery/1',deployment_plan_ref:target.deployment_plan_ref,
+    generation_id:target.generation_id,release_manifest_digest:target.release_manifest_digest,runtime_root:path.join(path.dirname(f.root),'runtime'),
+    configuration_refs:Object.fromEntries(scopes.map((scope,index)=>[scope.authority,target.services[index].configuration_ref]))}:null;
+  if(composePlan){
+    await fs.mkdir(composePlan.runtime_root,{mode:0o711});
+    target.deployment_plan_digest=digest(composePlan);
+  }
   await assert.rejects(plans.prepareRecoveryPlan(restoreId,{...target,services:target.services.slice(1)},authorize),
     {code:'recovery_target_plan'});
   const review=await plans.prepareRecoveryPlan(restoreId,target,authorize);
@@ -954,10 +1083,10 @@ for(const standalone of [false,true])test(standalone?'recovers and starts the st
   let windowsAuthority;
   if(process.platform==='linux'){
     await assert.rejects(retiredPlan.recordWindowsRecoveryRetirement(retirementRequest,authorize),{code:'recovery_retirement_platform'});
-    const native=process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1';
+    const native=!composeStart&&process.env.LEAFSEAMER_TEST_NATIVE_CGROUP==='1';
     if(native)f.store.initializeLinuxMemberJournal();
     else f.store.initializeLinuxDeploymentJournal();
-    const fixture=native?await nativeDeploymentFixture(f.store,scopes):process.env.LEAFSEAMER_TEST_CGROUP_HOST==='1'
+    const fixture=composeStart?await composeRetirementFixture(f,scopes,distributions,sources):native?await nativeDeploymentFixture(f.store,scopes):process.env.LEAFSEAMER_TEST_CGROUP_HOST==='1'
       ? await liveDeploymentFixture(f.store,scopes):writeDeploymentFixture(f.root,scopes);
     const method=native?'recordLinuxNativeRecoveryRetirement':'recordLinuxRecoveryRetirement';
     const unproven=native?'recovery_linux_native_retirement_unproven':'recovery_linux_retirement_unproven';
@@ -1057,6 +1186,9 @@ for(const standalone of [false,true])test(standalone?'recovers and starts the st
     assert.deepEqual(await fs.readFile(filePath),original);
 
     const nativeFixture=linuxPlan?await prepareNativeRecoveryFixture(f,target,review,distributions,linuxPlan):null;
+    const composeFixture=composePlan?await composeRecoveryFixture(f,review.plan.services.map(service=>service.next_scope),distributions,
+      target.generation_id,Object.fromEntries(prepared.preparation.services.map(({next_scope,directory_name})=>
+        [next_scope.authority,path.join(composePlan.runtime_root,target.generation_id,directory_name)]))):null;
     let windowsCore=null;
     if(windowsPlan){
       const {installedCoreDigest}=await import(pathToFileURL(path.join(distributions.controller.directory,'process-host.mjs')));
@@ -1076,7 +1208,7 @@ for(const standalone of [false,true])test(standalone?'recovers and starts the st
       site_observation_digest:digest('observed site'),unresolved_disposition:'hold_without_replay',
       services:review.plan.target.services.map((service,index)=>({scope:review.plan.services[index].next_scope,
         data_generation_id:service.data_generation_id,configuration_ref:service.configuration_ref,
-        configuration_digest:nativeFixture?.members[index].digest??(windowsCore?digest(windowsCore):digest(['configuration',index])),
+        configuration_digest:composeFixture?.configurationDigest??nativeFixture?.members[index].digest??(windowsCore?digest(windowsCore):digest(['configuration',index])),
         secret_policy_ref:service.secret_policy_ref,secret_binding_ref:'secrets.fixture.'+index,secret_binding_digest:digest(['secret binding',index]),
         secret_state:index===0?'reconfigured':'not_required'}))};
     const siteInput={plan_ref:review.plan_ref,review_id:crypto.randomUUID(),previous_review_digest:null,
@@ -1192,6 +1324,11 @@ for(const standalone of [false,true])test(standalone?'recovers and starts the st
     if(windowsCore){
       await t.test('starts the selected Controller in an authenticated Windows Job',()=>
         checkWindowsRecoveryStartup({f,plan:windowsPlan,configuration:windowsCore,activated,windowsAuthority}));
+      assert.deepEqual(await fs.readFile(output),verifiedBytes);
+      assert.deepEqual(f.reopen().backupMaintenance().getActiveDeployment(),activated);
+    }
+    if(composeFixture){
+      await t.test('starts both recovered databases in new closed Compose containers',()=>checkComposeRecoveryStartup(f,composeFixture,composePlan,activated));
       assert.deepEqual(await fs.readFile(output),verifiedBytes);
       assert.deepEqual(f.reopen().backupMaintenance().getActiveDeployment(),activated);
     }

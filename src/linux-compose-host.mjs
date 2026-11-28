@@ -6,7 +6,7 @@ import {pathToFileURL} from 'node:url';
 import {canonical,digest,requireValue as need} from './import-input.mjs';
 import {openInstallationStore,requireInstallationStore} from './installation-store.mjs';
 import {readDeploymentFile} from './linux-ingress.mjs';
-import {composePairingLabel,renderLinuxCompose,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs,verifyLinuxComposeReferenceCapture} from './linux-compose.mjs';
+import {composePairingLabel,renderLinuxCompose,writeLinuxComposeDeployment,verifyLinuxComposeClockInputs,verifyLinuxComposePairingInputs,verifyLinuxComposeReferenceCapture} from './linux-compose.mjs';
 import {checkLinuxWorkerGroup,observeLinuxComposeCore,readLinuxCgroupHost,readLinuxCgroupLeader,readLinuxCgroupParent,readLinuxReferenceGroup} from './linux-cgroup-retirement.mjs';
 import {openLinuxComposeChannel,openLinuxInstallationChannel,openLinuxReferenceChannel,openLinuxReferenceRetirementChannel} from './linux-compose-channel.mjs';
 import {serveLinuxInstallationRead} from './linux-installation-read.mjs';
@@ -15,6 +15,7 @@ import {bindLinuxWorkerControl} from './linux-worker-control.mjs';
 import {linuxWorkerRuntimeOptions,startLinuxReferenceProvider} from './linux-member-journal.mjs';
 import {pinExecutable} from './linux-native-artifact.mjs';
 import {composeLinuxWorkerRuntime} from './linux-native-host.mjs';
+import {prepareLinuxComposeRecovery} from './linux-compose-recovery.mjs';
 
 const docker='/usr/bin/docker';
 const roles=['controller','seamer','nginx'];
@@ -105,7 +106,25 @@ async function openPinnedClock(directory,artifact){
   return openNativeClock();
 }
 
-export function openLinuxComposeHost({installationDirectory,installationStore=null,planFile,generationDirectory,socketPath='/run/docker.sock',pidFile='/run/docker.pid',source=null,clockDirectory=null}={}){
+export function openLinuxComposeHost(options){
+  return composeHost(options);
+}
+
+export async function openLinuxComposeRecoveryHost({recoveryPlan,selectionDigest,authorize,...options}={}){
+  need(process.platform==='linux'&&process.geteuid()===0,'compose_host_platform');
+  const {installationDirectory,planFile,generationDirectory}=options;
+  for(const file of [installationDirectory,planFile,generationDirectory])protectedParents(absolute(file));
+  protectedPath(planFile,stat=>stat.isFile());
+  const installation=openInstallationStore(installationDirectory);
+  try{
+    const recovery=await prepareLinuxComposeRecovery({installation,installationDirectory,planFile,recoveryPlan,selectionDigest,authorize,
+      pinRuntimeRoot(root){protectedParents(absolute(root));return protectedPath(root,stat=>stat.isDirectory());}});
+    writeLinuxComposeDeployment(recovery.plan,generationDirectory);
+    return composeHost({...options,installationStore:installation},recovery);
+  }catch(error){installation.close();throw error;}
+}
+
+function composeHost({installationDirectory,installationStore=null,planFile,generationDirectory,socketPath='/run/docker.sock',pidFile='/run/docker.pid',source=null,clockDirectory=null}={},recovery=null){
   need(process.platform==='linux','compose_host_platform');
   absolute(installationDirectory);absolute(planFile);absolute(generationDirectory);absolute(socketPath);absolute(pidFile);
   need(!socketPath.includes(' '),'compose_host_socket');
@@ -144,7 +163,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
   }
   verifyFiles();
   const installation=installationStore===null?openInstallationStore(installationDirectory):requireInstallationStore(installationStore,installationDirectory);
-  const closeInstallation=()=>{if(installationStore===null)installation.close();};
+  const closeInstallation=()=>{if(installationStore===null||recovery)installation.close();};
   let journal;
   let starting=false,startedHere=false;
   let control=null,installationReader=null,closing=null,draining=null;
@@ -241,6 +260,8 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       need(prepared&&equal(config,spec),'compose_host_intent');
       const {before,images,referenceBefore}=prepared;
       verifyFiles();verifyAdmissionInputs();assertFreshProject();
+      recovery?.assertCurrent();
+      recovery?.assertSeed();
       need(equal(before,parents()),'compose_host_parent_changed');
       run([...composeArgs,'up','--detach','--no-build','--pull','never','--no-recreate'],45000);
       const after=parents();
@@ -260,7 +281,10 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
           config.CgroupParent===(compose.services[role].cgroup_parent??'')&&config.PidMode!=='host','compose_host_container');
         containers[role]=container.Id;
         pids[role]=container.State.Pid;
-        if(privateNamespace&&coreRoles.includes(role))core_containment[role]=coreContainment(role,container);
+        if(privateNamespace&&coreRoles.includes(role)){
+          core_containment[role]=coreContainment(role,container);
+          recovery?.assertMount(role,container.State.Pid);
+        }
         if(supervised&&coreRoles.includes(role)){
           const service=compose.services[role];
           need(equal(container.Config.Entrypoint,service.entrypoint)&&equal(container.Config.Cmd,service.command)&&
@@ -317,15 +341,19 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
     }
     journal=installation.openLinuxDeploymentJournal({launch,endpointClosure});
     const idle=()=>need(!starting,'compose_host_bootstrap_busy');
-    const requireOrdinaryStart=()=>need(installation.currentRecoverySelection()?.phase!=='activated_protected','linux_recovery_start_required');
+    function checkStartSelection(){
+      if(recovery)recovery.assertCurrent();
+      else need(installation.currentRecoverySelection()?.phase!=='activated_protected','linux_recovery_start_required');
+    }
     function start(){
-      requireOrdinaryStart();
+      checkStartSelection();
       verifyFiles();assertDaemon();
       const prior=journal.current();
       need(!prior||prior.phase==='retired','linux_deployment_previous_open');
       need(!journal.lookup(generation_id),'linux_deployment_generation_used');
       prepared=prepareLaunch();
       try{
+        recovery?.verifyRetirement(journal);
         const result=journal.start(spec);
         startedHere=true;
         return result;
@@ -339,9 +367,11 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       const result=await admitLinuxMember({intent:{role,generation_id,service_id:spec[role].service_id,launch_id:crypto.randomUUID()},
         detail:{host:daemon.host,...expected}},{policy,source,socket,compose:true,async commit(admission){
           verifyFiles();verifyAdmissionInputs();
+          recovery?.assertCurrent();
           const core=JSON.parse(run(['container','inspect',bound.containers[role]]));
           need(core.length===1&&core[0].Id===bound.containers[role]&&core[0].State?.Running===true&&
             equal(coreContainment(role,core[0]),expected)&&!socket.destroyed&&!socket.readableEnded,'compose_host_binding');
+          recovery?.assertMount(role,core[0].State.Pid);
           const saved=journal.recordAdmission(generation_id,role,admission);
           if(reference)await startReference(role,record,saved);
           if(controllerControl){
@@ -421,7 +451,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       void forward.ended.then(closeAfterLoss);
       await forward.ready;
     }
-    return Object.freeze({
+    const host=Object.freeze({
       generationId:generation_id,
       channelLost:loss.promise,
       startedHere:()=>startedHere,
@@ -430,7 +460,7 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
       referenceAdmission:role=>journal.referenceAdmission(generation_id,role),
       start(){idle();need(!supervised,'compose_host_bootstrap');return start();},
       async startSupervised(){
-        idle();requireOrdinaryStart();need(supervised&&journal.schemaRevision>=2&&(!reference||journal.schemaRevision>=3)&&
+        idle();checkStartSelection();need(supervised&&journal.schemaRevision>=2&&(!reference||journal.schemaRevision>=3)&&
           (clockDirectory!==null||source&&typeof source.capture==='function'&&typeof source.tick==='function'),'compose_host_bootstrap');
         verifyFiles();verifyAdmissionInputs();
         need(channels.size===0&&!journal.lookup(generation_id),'linux_deployment_generation_used');
@@ -452,7 +482,14 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
           for(const role of coreRoles)admissions[role]=await admit(role,record);
           if(!reference)return {record,admissions};
           return {record,admissions,referenceAdmissions:Object.fromEntries(coreRoles.map(role=>[role,providers.get(role).admission]))};
-        }catch(error){await closeChannels();throw error;}
+        }catch(error){
+          await closeChannels();
+          if(recovery&&startedHere){
+            starting=false;
+            try{host.retire();}catch(retirement){throw new AggregateError([error,retirement],'compose_recovery_retirement');}
+          }
+          throw error;
+        }
         finally{starting=false;}
       },
       retire(){
@@ -483,5 +520,6 @@ export function openLinuxComposeHost({installationDirectory,installationStore=nu
         return closing;
       }
     });
+    return host;
   }catch(error){journal?.close();closeInstallation();throw error;}
 }

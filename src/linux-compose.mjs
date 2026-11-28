@@ -365,18 +365,22 @@ export function renderLinuxCompose(plan,output){
   return {'controller-ingress.json':json(c.profile),'seamer-ingress.json':json(s.profile),...clockFiles,'nginx.conf':config,'compose.json':json(compose)};
 }
 
+export function writeLinuxComposeDeployment(plan,output){
+  absolute(output);
+  existing(path.posix.dirname(output),'directory');
+  const files=renderLinuxCompose(plan,output);
+  fs.mkdirSync(output,{mode:0o755});
+  if(Object.hasOwn(plan,'bootstrap'))for(const role of ['controller','seamer'])fs.mkdirSync(output+'/bootstrap-'+role,{mode:0o755});
+  if(plan.pairing?.seamer.await_first_pairing)fs.mkdirSync(output+'/first-pairing',{mode:0o755});
+  // Compose 文件最后落盘，只有完整生成后才出现可启动入口。
+  for(const [name,bytes] of Object.entries(files))fs.writeFileSync(output+'/'+name,bytes,{flag:'wx',mode:0o644});
+}
+
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   try{
     need(process.platform==='linux'&&process.argv.length===6&&process.argv[2]==='--config'&&process.argv[4]==='--output','compose_arguments');
-    const output=absolute(process.argv[5]);
-    existing(path.posix.dirname(output),'directory');
     const plan=JSON.parse(readDeploymentFile(absolute(process.argv[3]),65536));
-    const files=renderLinuxCompose(plan,output);
-    fs.mkdirSync(output,{mode:0o755});
-    if(Object.hasOwn(plan,'bootstrap'))for(const role of ['controller','seamer'])fs.mkdirSync(output+'/bootstrap-'+role,{mode:0o755});
-    if(plan.pairing?.seamer.await_first_pairing)fs.mkdirSync(output+'/first-pairing',{mode:0o755});
-    // Compose 文件最后落盘，只有完整生成后才出现可启动入口。
-    for(const [name,bytes] of Object.entries(files))fs.writeFileSync(output+'/'+name,bytes,{flag:'wx',mode:0o644});
+    writeLinuxComposeDeployment(plan,process.argv[5]);
   }catch(error){
     const code=/^(?:compose|ingress|cgroup)_[a-z_]+$/.test(error.code??'')?error.code:'compose_input';
     process.stderr.write(json({error:code}));
